@@ -1,0 +1,36 @@
+pipeline{
+    agent any
+
+    tools{
+        nodejs "nodejs"
+    }
+
+    environment{
+        REPO_NAME = 'educ-student-profile'
+        JOB_NAME = 'master'
+        OWNER = 'bcgov'
+
+        SOURCE_REPO_REF = 'master'
+        SOURCE_REPO_URL = 'https://github.com/${OWNER}/${REPO_NAME}.git'
+    }
+
+    stages{
+        stage('e2e tests'){
+            steps{
+                script{
+                    openshift.withCluster(){
+                        openshift.withProject('c2mvws-tools'){
+                            try {
+                                def bcE2E = openshift.process('-f', 'tools/openshift/e2e.bc.yaml', "REPO_NAME=${REPO_NAME}", "JOB_NAME=${JOB_NAME}", "SOURCE_REPO_URL=${SOURCE_REPO_URL}", "SOURCE_REPO_REF=${SOURCE_REPO_REF}")
+                                openshift.apply(bcE2E).narrow('bc').startBuild('-w').logs('-f')
+                            } catch(e) {
+                                echo "e2e testing failed"
+                                throw e
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

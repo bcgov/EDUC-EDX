@@ -1,0 +1,38 @@
+{
+  "server": {
+    "logLevel": "verbose",
+    "morganFormat": "dev",
+    "port": "8080",
+    "frontend": "http://localhost:8081"
+  },
+  "tokenGenerate": {
+    "privateKey": "-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQCCwwpHw1vbpRG4aG1OTG+L+HOETTQypRgkU5I8MPNgRLDlo5JZ\nMlSiON7rU45+CkSHsWuk3HcZEdu6ly9A9LtMt24JeWW/olcpzDO+U0DBleW1qDxk\nce5DfiUVdd6EYHvD+kfEa1IlSAoWbT65u9EqEm9GJtZ3sWFEhuekpZdE1QIDAQAB\nAoGACPJXTbmsG0ccA0YB1I2eRDFnlfHCVIS/Nh0RsFSZEkkg4VVjuf6bk83YUrmQ\n0kbZkX8uIkWDUI/MPOQDM6qK9ge9a3hfSJ6W/41Moy/EHXPlJDQxftEmzXWZ/hHa\nXrnJ4vh/rXqiXsVl/G6hKwA6FMZJpsPbShKJ4AGSXX4pHAECQQC3udOdE9Woiz6R\neB49EiFXR4uxnzQoi78OdHXQuvq5izpzvfj6ILz+ZK9lX9CsGJyL7eMXpaOkLein\n1FQAGO7BAkEAtjN0yao8TzpTk46b8/eFEXs30UsIZkuIES1Uv9Usso0na3CPtMxj\ngVMV7NT/XJ52NftGbWOk50trqQuam4ZvFQJAPCTa/1rU4L3kl55o17ktrPLA6j6h\nxnwo6UR6pP/wv/iyA922ubsp42V2fYsmNpA//xa69qzEqyRUO0yoyvdegQJAK0t8\n4/LM0/LDK1wG2OknOKkz8UrIGy61jYddDRyFu4PpKxGbRFYRCwkIO7e9Wm/ZHSix\naor0A3YbhhbYzT4bpQJALFNQYh7oS9WlAEvIU6pB/0h3E8tGbHpVvR0UZloGjdsA\nXa19ANQV3p+DCLzu9xZVgsXjqhx9wHVIABbd+zU7DQ==\n-----END RSA PRIVATE KEY-----",
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCCwwpHw1vbpRG4aG1OTG+L+HOE\nTTQypRgkU5I8MPNgRLDlo5JZMlSiON7rU45+CkSHsWuk3HcZEdu6ly9A9LtMt24J\neWW/olcpzDO+U0DBleW1qDxkce5DfiUVdd6EYHvD+kfEa1IlSAoWbT65u9EqEm9G\nJtZ3sWFEhuekpZdE1QIDAQAB\n-----END PUBLIC KEY-----",
+    "audience": "TEST AUDIENCE",
+    "issuer": "TEST ISSUER"
+  },
+  "oidc": {
+    "discovery": "https://c2mvws-test.pathfinder.gov.bc.ca/auth/realms/master/.well-known/openid-configuration",
+    "clientSecret": "12345"
+  },
+  "digitalID": {
+    "apiEndpoint": "http://localhost"
+  },
+  "student": {
+    "apiEndpoint": "http://localhost"
+  },
+  "studentRequest": {
+    "apiEndpoint": "http://localhost"
+  },
+  "penRequest": {
+    "apiEndpoint": "http://localhost"
+  },
+  "email": {
+    "apiEndpoint": "http://localhost",
+    "secretKey": "123456",
+    "tokenTTL": 1440
+  },
+  "demographics": {
+    "apiEndpoint": "http://localhost"
+  }
+}

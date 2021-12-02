@@ -1,0 +1,180 @@
+{
+  "name": "student-profile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Student Profile UI.",
+  "author": "Nathan Denny",
+  "scripts": {
+    "serve": "node_modules/.bin/vue-cli-service serve",
+    "build": "node_modules/.bin/vue-cli-service build",
+    "test:unit": "node_modules/.bin/vue-cli-service test:unit",
+    "local:e2e": "testcafe chrome ./tests/e2e/testCases",
+    "local:e2e:headless": "testcafe chrome:headless ./tests/e2e/testCases",
+    "local:e2e:mobile": "testcafe chrome:emulation:device=iphone 11 ./tests/e2e/testCases",
+    "test:e2e": "node_modules/.bin/testcafe chrome ./tests/e2e/test.ts",
+    "lint:fix": "node_modules/.bin/vue-cli-service lint --fix",
+    "lint": "node_modules/.bin/vue-cli-service lint --no-fix",
+    "purge": "rm -rf node_modules",
+    "rebuild": "npm run clean && npm run build",
+    "reinstall": "npm run purge && npm install",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "7.3.4",
+    "@fortawesome/fontawesome-free": "5.11.2",
+    "@js-joda/core": "^2.0.0",
+    "axios": "^0.21.2",
+    "core-js": "^2.6.12",
+    "cryptico-js": "^1.1.0",
+    "dotenv": "^8.2.0",
+    "faker": "4.1.0",
+    "glob-all": "^3.1.0",
+    "http-status-codes": "^1.4.0",
+    "jest-junit": "^7.0.0",
+    "minimist": "1.2.5",
+    "moment": "^2.29.1",
+    "nconf": "^0.10.0",
+    "path": "^0.12.7",
+    "prom-client": "^11.5.3",
+    "purgecss-webpack-plugin": "^1.6.0",
+    "regenerator-runtime": "^0.13.3",
+    "sass": "^1.32.4",
+    "sass-loader": "^7.1.0",
+    "testcafe": "1.6.0",
+    "vue": "^2.6.12",
+    "vue-clipboard2": "^0.3.1",
+    "vue-meta": "^2.4.0",
+    "vue-quick-chat": "^1.2.6",
+    "vue-router": "^3.4.9",
+    "vuetify": "^2.4.2",
+    "vuex": "^3.6.0",
+    "vuex-map-fields": "^1.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@vue/cli": "^3.12.1",
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-plugin-eslint": "^3.12.1",
+    "@vue/cli-plugin-unit-jest": "^3.12.1",
+    "@vue/cli-service": "^3.12.1",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.2.3",
+    "flush-promises": "^1.0.2",
+    "jest": "^24.8.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "jest-transform-stub": "^2.0.0",
+    "lodash": "^4.17.20",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^3.0.1",
+    "vue-cli-plugin-vuetify": "^0.6.3",
+    "vue-jest": "^3.0.7",
+    "vue-template-compiler": "^2.6.12",
+    "vuetify-loader": "^1.6.0",
+    "axios-mock-adapter": "1.17.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 20 versions",
+    "not ie <= 8"
+  ],
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly",
+      "_": false
+    },
+    "parserOptions": {
+      "parser": "babel-eslint",
+      "sourceType": "module",
+      "ecmaVersion": 8
+    },
+    "rules": {
+      "no-console": "off",
+      "eol-last": [
+        "error",
+        "always"
+      ],
+      "indent": [
+        "error",
+        2
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "clearMocks": true,
+    "setupFiles": [
+      "<rootDir>/node_modules/regenerator-runtime/runtime.js",
+      "<rootDir>/tests/unit/setup.js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue",
+      "jsx"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx)?$": "babel-jest",
+      ".*\\.(vue)$": "vue-jest",
+      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!vue-loading-spinner)"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testMatch": [
+      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+    ],
+    "testURL": "http://localhost/",
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,vue}",
+      "!src/main.js",
+      "!src/plugins/*.*",
+      "!src/router.js",
+      "!tests/e2e/student-form.js",
+      "!src/common/staticConfig.js"
+    ],
+    "testResultsProcessor": "jest-sonar-reporter"
+  },
+  "jestSonar": {
+    "reportPath": "coverage"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  }
+}

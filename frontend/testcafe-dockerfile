@@ -1,0 +1,10 @@
+FROM testcafe/testcafe:latest
+USER root
+WORKDIR /home/node
+
+COPY package*.json ./
+
+COPY . /home/node
+RUN npm install nconf && npm install dotenv && npm install faker
+
+RUN testcafe firefox:headless,chromium:headless /home/node/tests/e2e
