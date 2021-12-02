@@ -1,8 +1,8 @@
 {
-  "name": "student-profile",
+  "name": "edx",
   "version": "1.0.0",
   "private": true,
-  "description": "Student Profile UI.",
+  "description": "EDX UI.",
   "author": "Nathan Denny",
   "scripts": {
     "serve": "node_modules/.bin/vue-cli-service serve",

@@ -13,7 +13,7 @@ const {Locale} = require('@js-joda/locale_en');
 let discovery = null;
 
 axios.interceptors.request.use((axiosRequestConfig) => {
-  axiosRequestConfig.headers['X-Client-Name'] = 'PEN-STUDENT-PROFILE';
+  axiosRequestConfig.headers['X-Client-Name'] = 'PEN-EDX';
   return axiosRequestConfig;
 });
 // Returns OIDC Discovery values
@@ -164,8 +164,8 @@ async function postData(token, data, url, correlationID) {
 
     log.info('post Data Url', url);
     log.verbose('post Data Req', minify(data));
-    data.createUser = 'STUDENT-PROFILE';
-    data.updateUser = 'STUDENT-PROFILE';
+    data.createUser = 'EDX';
+    data.updateUser = 'EDX';
     const response = await axios.post(url, data, postDataConfig);
 
     log.info(`post Data Status for url ${url} :: is :: `, response.status);
@@ -191,7 +191,7 @@ async function putData(token, data, url, correlationID) {
 
     log.info('put Data Url', url);
     log.verbose('put Data Req', data);
-    data.updateUser = 'STUDENT-PROFILE';
+    data.updateUser = 'EDX';
     const response = await axios.put(url, data, putDataConfig);
 
     log.info(`put Data Status for url ${url} :: is :: `, response.status);

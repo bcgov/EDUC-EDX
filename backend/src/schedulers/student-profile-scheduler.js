@@ -64,7 +64,7 @@ async function findAndMoveRequestsToAbandoned(searchListCriteria, token, request
 const draftToAbandonRequestJob = new CronJob(schedulerCronPenRequestDraft, async () => {
   const redLock = redisUtil.getRedLock();
   try {
-    await redLock.lock('locks:student-profile-request:draft-abandoned', 6000); // no need to release the lock as it will auto expire after 6000 ms.
+    await redLock.lock('locks:edx-request:draft-abandoned', 6000); // no need to release the lock as it will auto expire after 6000 ms.
     const data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
     await Promise.allSettled([
       findAndUpdateDraftRequestsToAbandoned('penRequest', data.accessToken),
@@ -75,7 +75,7 @@ const draftToAbandonRequestJob = new CronJob(schedulerCronPenRequestDraft, async
       findAndSendEmailForStaleReturnedRequests('studentRequest', data.accessToken)
     ]);
   } catch (e) {
-    log.debug(`locks:student-profile-request:draft-abandoned, check other pods. ${e}`);
+    log.debug(`locks:edx-request:draft-abandoned, check other pods. ${e}`);
   }
 });
 

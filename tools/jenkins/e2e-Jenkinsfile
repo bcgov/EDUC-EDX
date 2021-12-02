@@ -6,7 +6,7 @@ pipeline{
     }
 
     environment{
-        REPO_NAME = 'educ-student-profile'
+        REPO_NAME = 'educ-edx'
         JOB_NAME = 'master'
         OWNER = 'bcgov'
 

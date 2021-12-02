@@ -1,5 +1,5 @@
-## Student Profile Backend
-The Node.js backend for the Student Profile application that handles authentication, authorization, and session management.
+## EDX Backend
+The Node.js backend for the EDX application that handles authentication, authorization, and session management.
 
 ### Local Setup
  **`Step 1`**. make sure you have Node.js installed in your local machine. if not download from here https://nodejs.org/en/ 

@@ -10,7 +10,7 @@ const natsOptions = {
   url: server,
   servers: [server],
   maxReconnectAttempts: 60,
-  name: 'STUDENT-PROFILE-NODE',
+  name: 'EDX-NODE',
   reconnectTimeWait: 5000, // wait 5 seconds before retrying...
   waitOnFirstConnect: true,
   pingInterval: 5000

@@ -11,7 +11,7 @@ pipeline{
     DEV = '8878b4-dev'
     TEST = '8878b4-test'
     PROD = '8878b4-prod'
-    REPO_NAME = 'educ-student-profile'
+    REPO_NAME = 'educ-edx'
     TESTS_REPO_NAME = 'educ-pen-reg-automation'
     OWNER = 'bcgov'
     JOB_NAME = 'master'
@@ -19,7 +19,7 @@ pipeline{
     TARGET_ENV = 'tools'
     TARGET_ENVIRONMENT = "${NAMESPACE}-${TARGET_ENV}"
 
-    APP_NAME = 'student-profile'
+    APP_NAME = 'edx'
     APP_DOMAIN = 'apps.silver.devops.gov.bc.ca'
 
     SOURCE_REPO_RAW = 'https://github.com/${OWNER}/${REPO_NAME}/master'
@@ -162,7 +162,7 @@ pipeline{
       steps {
         script {
             TOKEN = sh( script: "oc -n ${TOOLS} -o json get secret github-actions-token | sed -n 's/.*\"token\": \"\\(.*\\)\"/\\1/p' | base64 --decode", returnStdout: true);
-            extJSHelper.triggerWorkflow(TOKEN, 'smoke-test-student-profile-dev-environment')
+            extJSHelper.triggerWorkflow(TOKEN, 'smoke-test-edx-dev-environment')
             extJSHelper.waitForWorkflowRunComplete(TOKEN)
         }
       }

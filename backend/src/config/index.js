@@ -42,7 +42,7 @@ nconf.defaults({
   studentRequest: {
     apiEndpoint: process.env.STUDENT_PROFILE_API_ENDPOINT,
     replicateTime: process.env.STUDENT_PROFILE_REPLICATE_TIME || 8,
-    commentSagaEndpoint: '/student-profile-comment-saga'
+    commentSagaEndpoint: '/edx-comment-saga'
   },
   penRequest: {
     apiEndpoint: process.env.PEN_REQUEST_API_ENDPOINT,

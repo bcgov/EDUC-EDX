@@ -5,7 +5,7 @@ const SagaTopics = ['PEN_REQUEST_COMMENTS_SAGA_TOPIC','STUDENT_PROFILE_COMMENTS_
 
 function subscribeSagaMessages(nats, topic, handleMessage) {
   const opts = {
-    queue : 'student-profile-pen-req-saga-queue-group'
+    queue : 'edx-pen-req-saga-queue-group'
   };
   nats.subscribe(topic, opts, (msg, reply, subject, sid) => {
     log.info(`Received message, on ${subject} , Subscription Id ::  [${sid}], Reply to ::  [${reply}] :: Data ::`, JSON.parse(msg));

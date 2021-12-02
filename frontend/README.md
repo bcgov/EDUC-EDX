@@ -1,6 +1,6 @@
-# student-profile
+# edx
 
-> Simple Student Profile UI.
+> Simple EDX UI.
 
 ## Build Setup
 

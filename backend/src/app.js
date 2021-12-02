@@ -63,7 +63,7 @@ Redis.init(); // call the init to initialize appropriate client, and reuse it ac
 const RedisStore = connectRedis(session);
 const dbSession = new RedisStore({
   client: Redis.getRedisClient(),
-  prefix: 'student-profile-sess:',
+  prefix: 'edx-sess:',
 });
 const cookie = {
   secure: true,
