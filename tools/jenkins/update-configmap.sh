@@ -32,15 +32,12 @@ TKN=$(curl -s \
   -d "grant_type=password" \
   "https://$SOAM_KC/auth/realms/$SOAM_KC_REALM_ID/protocol/openid-connect/token" | jq -r '.access_token')
 
-if [ "$envValue" = "tools" ]
+if [ "$envValue" = "dev" ]
 then
   SERVER_FRONTEND="https://dev.educationdataexchange.gov.bc.ca"
-elif [ "$envValue" = "dev" ]
-then
-  SERVER_FRONTEND="https://test.educationdataexchange.gov.bc.ca"
 elif [ "$envValue" = "test" ]
 then
-  SERVER_FRONTEND="https://uat.educationdataexchange.gov.bc.ca"
+  SERVER_FRONTEND="https://test.educationdataexchange.gov.bc.ca"
 fi
 
 echo
@@ -62,7 +59,7 @@ echo Removing edx-soam if exists
 curl -sX DELETE "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients/$edxClientID" \
   -H "Authorization: Bearer $TKN"
 
-if [ "$edxServiceClientSecret" != "" ] && [ "$envValue" = "tools" ]
+if [ "$edxServiceClientSecret" != "" ] && [ "$envValue" = "dev" ]
 then
   echo
   echo Creating client edx-soam with secret
@@ -123,28 +120,23 @@ echo Setting environment variables for $APP_NAME-backend-$SOAM_KC_REALM_ID appli
 oc -n $OPENSHIFT_NAMESPACE-$envValue set env --from=configmap/$APP_NAME-backend-config-map dc/$APP_NAME-backend-$SOAM_KC_REALM_ID
 
 bceid_reg_url=""
-if [ "$envValue" = "tools" ] || [ "$envValue" = "dev"  ] || [ "$envValue" = "test"  ]
+if [ "$envValue" = "dev"  ] || [ "$envValue" = "test"  ]
 then
     bceid_reg_url="https://www.test.bceid.ca/os/?7081&SkipTo=Basic#action"
 else
     bceid_reg_url="https://www.bceid.ca/os/?7081&SkipTo=Basic#action"
 fi
 
-if [ "$envValue" = "tools" ]
+if [ "$envValue" = "dev" ]
 then
   HOST_ROUTE="dev.educationdataexchange.gov.bc.ca"
   bannerEnvironment="DEV"
   bannerColor="#dba424"
-elif [ "$envValue" = "dev" ]
+elif [ "$envValue" = "test" ]
 then
   HOST_ROUTE="test.educationdataexchange.gov.bc.ca"
   bannerEnvironment="TEST"
   bannerColor="#8d28d7"
-elif [ "$envValue" = "test" ]
-then
-  HOST_ROUTE="uat.educationdataexchange.gov.bc.ca"
-  bannerEnvironment="UAT"
-  bannerColor="#58fe01"
 fi
 
 snowplow="
