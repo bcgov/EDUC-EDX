@@ -21,18 +21,12 @@
   "student": {
     "apiEndpoint": "http://localhost"
   },
-  "studentRequest": {
-    "apiEndpoint": "http://localhost"
-  },
-  "penRequest": {
+  "secureExchange": {
     "apiEndpoint": "http://localhost"
   },
   "email": {
     "apiEndpoint": "http://localhost",
     "secretKey": "123456",
     "tokenTTL": 1440
-  },
-  "demographics": {
-    "apiEndpoint": "http://localhost"
   }
 }

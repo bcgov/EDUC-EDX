@@ -206,30 +206,10 @@ async function putData(token, data, url, correlationID) {
   }
 }
 
-const RequestStatuses = Object.freeze({
-  DRAFT: 'DRAFT',
-  INITREV: 'INITREV',
-  RETURNED: 'RETURNED',
-  SUBSREV: 'SUBSREV',
-  REJECTED: 'REJECTED',
-  ABANDONED: 'ABANDONED'
-});
-
-const EmailVerificationStatuses = Object.freeze({
-  VERIFIED: 'Y',
-  NOT_VERIFIED: 'N'
-});
-
-const VerificationResults = Object.freeze({
-  TOKEN_ERROR: 'token-error',
-  SERVER_ERROR: 'server-error',
-  EXPIRED: 'expired',
-  OK: 'ok'
-});
-
-const RequestApps = Object.freeze({
-  penRequest: 'gmp',
-  studentRequest: 'ump'
+const SecureExchangeStatuses = Object.freeze({
+  NEW: 'NEW',
+  INPROG: 'INPROG',
+  CLOSED: 'CLOSED'
 });
 
 function generateJWTToken(jwtid, subject, issuer, algorithm, payload) {
@@ -264,10 +244,7 @@ const utils = {
   forwardPostReq,
   postData,
   putData,
-  RequestStatuses,
-  VerificationResults,
-  EmailVerificationStatuses,
-  RequestApps,
+  SecureExchangeStatuses,
   generateJWTToken,
   formatCommentTimestamp
 };

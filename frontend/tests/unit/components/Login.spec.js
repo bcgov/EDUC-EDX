@@ -34,7 +34,7 @@ describe('Login.vue', () => {
   });
 
   test('Check login form exists', () => {
-    expect(wrapper.html()).toContain('login-cards');
+    expect(wrapper.html()).toContain('login');
   });
 
   test('Ensure clear storage works', () => {

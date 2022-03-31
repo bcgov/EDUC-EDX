@@ -1,7 +1,6 @@
 <!--suppress ALL -->
 <template>
   <v-container fluid class="full-height" v-if="!isAuthenticated && !isLoading">
-    <ModalJourney/>
     <!-- login article -->
     <article name="login-banner">
         <v-row align="center" justify="center" style="margin-right: 0;margin-left: 0">
@@ -67,14 +66,12 @@
 
 <script>
 import Login from './Login';
-import ModalJourney from './ModalJourney';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'home',
   components: {
     Login,
-    ModalJourney,
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated', 'isLoading']),

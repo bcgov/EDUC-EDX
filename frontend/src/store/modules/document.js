@@ -22,12 +22,12 @@ export default {
     },
   },
   actions: {
-    async getDocumentTypeCodes({commit, rootGetters}) {
-      const response = await ApiService.getDocumentTypeCodes(rootGetters.requestType);
+    async getDocumentTypeCodes({commit}) {
+      const response = await ApiService.getDocumentTypeCodes();
       commit('setDocumentTypeCodes', response.data);
     },
-    async deleteFile({commit, getters, rootGetters}, {requestID, documentID}){
-      await ApiService.deleteDocument(requestID, documentID, rootGetters.requestType);
+    async deleteFile({commit, getters}, {secureExchangeID, documentID}){
+      await ApiService.deleteDocument(secureExchangeID, documentID);
       const documents = getters.unsubmittedDocuments.filter(document => document.documentID !== documentID);
       commit('setUnsubmittedDocuments', documents);
     },

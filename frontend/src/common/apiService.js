@@ -60,110 +60,38 @@ export default {
     }
   },
 
-  async postRequest(userInfo, requestType){
+  async getDocumentTypeCodes() {
     try{
-      return await apiAxios.post(ApiRoutes[requestType].REQUEST, userInfo);
-    } catch(e) {
-      console.log(`Failed to post to Nodejs API - ${e}`);
-      throw e;
-    }
-  },
-
-  async updateRequestStatus(requestId, status, requestType){
-    try{
-      return await apiAxios.patch(`${ApiRoutes[requestType].REQUEST}/${requestId}`, {[`${requestType}StatusCode`]: status});
-    } catch(e) {
-      console.log(`Failed to post to Nodejs API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getCodes(requestType) {
-    try{
-      return await apiAxios.get(ApiRoutes[requestType].CODES);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getDocumentTypeCodes(requestType) {
-    try{
-      return await apiAxios.get(ApiRoutes[requestType].DOCUMENT_TYPE_CODES);
+      return await apiAxios.get(ApiRoutes.edx.DOCUMENT_TYPE_CODES);
     } catch(e) {
       console.log(`Failed to get from Nodejs getDocumentTypeCodes API - ${e}`);
       throw e;
     }
   },
 
-  async getFileRequirements(requestType) {
+  async getFileRequirements() {
     try{
-      return await apiAxios.get(ApiRoutes[requestType].FILE_REQUIREMENTS);
+      return await apiAxios.get(ApiRoutes.edx.FILE_REQUIREMENTS);
     } catch(e) {
       console.log(`Failed to get from Nodejs getFileRequirements API - ${e}`);
       throw e;
     }
   },
 
-  async uploadFile(requestId, fileData, requestType){
+  async uploadFile(secureExchangeID, fileData){
     try{
-      return await apiAxios.post(`${ApiRoutes[requestType].REQUEST}/${requestId}/documents`, fileData);
+      return await apiAxios.post(`${ApiRoutes.edx.EXCHANGE}/${secureExchangeID}/documents`, fileData);
     } catch(e) {
       console.log(`Failed to post to Nodejs uploadFile API - ${e}`);
       throw e;
     }
   },
 
-  async getRequest(requestId, requestType) {
+  async deleteDocument(secureExchangeID, documentID) {
     try{
-      return await apiAxios.get(ApiRoutes[requestType].REQUEST + `/${requestId}`);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getRequest API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getDocumentList(requestId, requestType) {
-    try{
-      return await apiAxios.get(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/documents');
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getDocumentList API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getDocument(requestId, documentId, requestType) {
-    try{
-      return await apiAxios.get(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/documents' + `/${documentId}`);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getDocument API - ${e}`);
-      throw e;
-    }
-  },
-
-  async deleteDocument(requestId, documentId, requestType) {
-    try{
-      return await apiAxios.delete(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/documents' + `/${documentId}`);
+      return await apiAxios.delete(ApiRoutes.edx.EXCHANGE + `/${secureExchangeID}` + '/documents' + `/${documentID}`);
     } catch(e) {
       console.log(`Failed to deleteDocument from Nodejs API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getCommentList(requestId, requestType) {
-    try{
-      return await apiAxios.get(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/comments');
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getCommentList API - ${e}`);
-      throw e;
-    }
-  },
-
-  async postComment(requestId, message, requestType) {
-    try {
-      return await apiAxios.post(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/comments', message);
-    } catch (e) {
-      console.log(`Failed to post to Nodejs postComment API - ${e}`);
       throw e;
     }
   },
@@ -177,14 +105,6 @@ export default {
     }
   },
 
-  async resendVerificationEmail(requestId, requestType){
-    try{
-      return await apiAxios.post(ApiRoutes[requestType].REQUEST + `/${requestId}` + '/verification-email');
-    } catch(e) {
-      console.log(`Failed to post to Nodejs resendVerificationEmail API - ${e}`);
-      throw e;
-    }
-  },
   async getConfig(configName) {
     try {
       const queryParams = {
@@ -195,7 +115,7 @@ export default {
       const response = await apiAxios.get(ApiRoutes.CONFIG, queryParams);
       return response.data.configValue;
     } catch (e) {
-      console.log(`Failed to do get from Nodejs getNumDaysAllowedInDraftStatus API - ${e}`);
+      console.log(`Failed to do get from Nodejs getConfig API - ${e}`);
       throw e;
     }
   },

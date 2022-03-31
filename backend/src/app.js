@@ -15,7 +15,6 @@ const bodyParser = require('body-parser');
 const connectRedis = require('connect-redis');
 dotenv.config();
 
-const scheduler = require('./schedulers/student-profile-scheduler');
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const OidcStrategy = require('passport-openidconnect-kc-idp').Strategy;
@@ -23,8 +22,7 @@ const noCache = require('nocache');
 const apiRouter = express.Router();
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
-const studentRequestRouter = require('./routes/studentRequest');
-const penRequestRouter = require('./routes/penRequest');
+const edxRouter = require('./routes/edx');
 const configRouter = require('./routes/config');
 const promMid = require('express-prometheus-middleware');
 const messageSubscriber = require('./messaging/message-subscriber');
@@ -75,7 +73,7 @@ if ('local' === config.get('environment')) {
 }
 //sets cookies for security purposes (prevent cookie access, allow secure connections only, etc)
 app.use(session({
-  name: 'student_profile_cookie',
+  name: 'edx_cookie',
   secret: config.get('oidc:clientSecret'),
   resave: false,
   saveUninitialized: true,
@@ -116,11 +114,7 @@ function addLoginPassportUse(discovery, strategyName, callbackURI, kc_idp_hint) 
 utils.getOidcDiscovery().then(discovery => {
   //OIDC Strategy is used for authorization
   addLoginPassportUse(discovery, 'oidcBcsc', config.get('server:frontend') + '/api/auth/callback_bcsc', 'keycloak_bcdevexchange_bcsc');
-  addLoginPassportUse(discovery, 'oidcBcscGMP', config.get('server:frontend') + '/api/auth/callback_bcsc_gmp', 'keycloak_bcdevexchange_bcsc');
-  addLoginPassportUse(discovery, 'oidcBcscUMP', config.get('server:frontend') + '/api/auth/callback_bcsc_ump', 'keycloak_bcdevexchange_bcsc');
   addLoginPassportUse(discovery, 'oidcBceid', config.get('server:frontend') + '/api/auth/callback_bceid', 'keycloak_bcdevexchange_bceid');
-  addLoginPassportUse(discovery, 'oidcBceidGMP', config.get('server:frontend') + '/api/auth/callback_bceid_gmp', 'keycloak_bcdevexchange_bceid');
-  addLoginPassportUse(discovery, 'oidcBceidUMP', config.get('server:frontend') + '/api/auth/callback_bceid_ump', 'keycloak_bcdevexchange_bceid');
 
   //JWT strategy is used for authorization
   passport.use('jwt', new JWTStrategy({
@@ -173,8 +167,7 @@ app.use(/(\/api)?/, apiRouter);
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/user', userRouter);
-apiRouter.use('/ump', studentRequestRouter);
-apiRouter.use('/gmp', penRequestRouter);
+apiRouter.use('/edx', edxRouter);
 apiRouter.use('/config',configRouter);
 
 //Handle 500 error
@@ -195,5 +188,4 @@ process.on('unhandledRejection', err => {
   log.error('Unhandled Rejection at:', err?.stack || err);
   // res.redirect(config.get('server:frontend') + '/error?message=unhandled_rejection');
 });
-scheduler.draftToAbandonRequestJob.start();
 module.exports = app;

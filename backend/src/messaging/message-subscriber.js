@@ -1,7 +1,7 @@
 'use strict';
 const config = require('../config/index');
 const log = require('../components/logger');
-const SagaMessageHandler = require('./handlers/profile-request-saga-message-handler');
+const SagaMessageHandler = require('./handlers/saga-message-handler');
 let connection={};
 const server = config.get('messaging:natsUrl');
 const nats = require('nats');

@@ -49,13 +49,11 @@ export default {
   methods: {
     ...mapMutations('auth', ['setLoading']),
     ...mapActions('auth', ['getJwtToken', 'getUserInfo', 'logout']),
-    ...mapActions('studentRequest', { getStudentRequestCodes: 'getCodes'}),
-    ...mapActions('penRequest', { getPenRequestCodes: 'getCodes'}),
   },
   async created() {
     this.setLoading(true);
     this.getJwtToken().then(() =>
-      Promise.all([this.getPenRequestCodes('penRequest'), this.getStudentRequestCodes('studentRequest'), this.getUserInfo()])
+      Promise.all([this.getUserInfo()])
     ).catch(e => {
       if(! e.response || e.response.status !== HttpStatus.UNAUTHORIZED) {
         this.logout();
