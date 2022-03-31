@@ -29,7 +29,7 @@ app.set('port', port);
 
 const server = http.createServer(app);
 const NATS = require('./messaging/message-subscriber');
-require('./schedulers/student-profile-saga-check-scheduler');
+require('./schedulers/saga-check-scheduler');
 /**
  * Listen on provided port, on all network interfaces.
  */

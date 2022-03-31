@@ -39,15 +39,9 @@ nconf.defaults({
     clientSecret: process.env.SOAM_CLIENT_SECRET,
     discovery: process.env.SOAM_DISCOVERY
   },
-  studentRequest: {
-    apiEndpoint: process.env.STUDENT_PROFILE_API_ENDPOINT,
-    replicateTime: process.env.STUDENT_PROFILE_REPLICATE_TIME || 8,
-    commentSagaEndpoint: '/edx-comment-saga'
-  },
-  penRequest: {
-    apiEndpoint: process.env.PEN_REQUEST_API_ENDPOINT,
-    replicateTime: process.env.PEN_REQUEST_REPLICATE_TIME || 8,
-    commentSagaEndpoint: '/pen-request-comment-saga'
+  secureExchange: {
+    apiEndpoint: process.env.EDX_API_ENDPOINT,
+    sagaApiEndpoint: process.env.EDX_API_ENDPOINT + '/saga',
   },
   tokenGenerate: {
     privateKey: process.env.UI_PRIVATE_KEY,
@@ -62,12 +56,8 @@ nconf.defaults({
     apiEndpoint: process.env.STUDENT_API_ENDPOINT,
   },
   email: {
-    apiEndpoint: process.env.STUDENT_PROFILE_EMAIL_API_ENDPOINT,
-    secretKey: process.env.STUDENT_PROFILE_EMAIL_SECRET_KEY,
+    secretKey: process.env.EMAIL_SECRET_KEY,
     tokenTTL: process.env.TOKEN_TTL_MINUTES
-  },
-  demographics: {
-    apiEndpoint: process.env.STUDENT_DEMOG_API_ENDPOINT,
   },
   redis:{
     host:process.env.REDIS_HOST,
@@ -75,15 +65,9 @@ nconf.defaults({
     password:process.env.REDIS_PASSWORD
   },
   scheduler :{
-    schedulerCronProfileRequestDraft:process.env.SCHEDULER_CRON_PROFILE_REQUEST_DRAFT,
-    numDaysAllowedInDraftStatus:process.env.NUM_DAYS_ALLOWED_IN_DRAFT_STATUS,
-    expectedDraftRequests: process.env.EXPECTED_DRAFT_REQUESTS,
-    numDaysAllowedInReturnStatusBeforeEmail:process.env.NUM_DAYS_ALLOWED_IN_RETURN_STATUS_BEFORE_EMAIL,
-    numDaysAllowedInReturnStatusBeforeAbandoned:process.env.NUM_DAYS_ALLOWED_IN_RETURN_STATUS_BEFORE_ABANDONED,
     schedulerCronStaleSagaRecordRedis: process.env.SCHEDULER_CRON_STALE_SAGA_RECORD_REDIS,
     minTimeBeforeSagaIsStaleInMinutes: process.env.MIN_TIME_BEFORE_SAGA_IS_STALE_IN_MINUTES
   },
-  profileSagaAPIURL: process.env.PROFILE_REQUEST_SAGA_API_URL,
   messaging:{
     natsUrl:process.env.NATS_URL,
     natsCluster:process.env.NATS_CLUSTER

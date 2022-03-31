@@ -110,13 +110,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['requestType']),
-    documentTypeCodes() {
-      return this.$store.getters[`${this.requestType}/documentTypeCodes`];
-    },
-    requestID() {
-      return this.$store.getters[`${this.requestType}/requestID`];
-    },
+    ...mapGetters('edx', ['documentTypeCodes']),
+    ...mapGetters('edx', ['secureExchangeID']),
     dataReady () {
       return this.validForm && this.file;
     },
@@ -127,7 +122,7 @@ export default {
   },
   methods: {
     setUploadedDocument(document) {
-      this.$store.commit(`${this.requestType}/setUploadedDocument`, document);
+      this.$store.commit('edx/setUploadedDocument', document);
     },
     closeForm() {
       this.resetForm();
@@ -194,7 +189,7 @@ export default {
         documentData: btoa(env.target.result)
       };
 
-      return ApiService.uploadFile(this.requestID, document, this.requestType).then(response => {
+      return ApiService.uploadFile(this.secureExchangeID, document).then(response => {
         this.setUploadedDocument(response.data);
         this.resetForm();
         this.setSuccessAlert();
@@ -213,7 +208,7 @@ export default {
       }
     },
     async getFileRules() {
-      const response = await ApiService.getFileRequirements(this.requestType);
+      const response = await ApiService.getFileRequirements();
       const fileRequirements = response.data;
       const maxSize = fileRequirements.maxSize;
       this.fileRules = [

@@ -7,7 +7,7 @@ jest.mock('../../../src/components/utils');
 const utils = require('../../../src/components/utils');
 jest.mock('../../../src/components/auth');
 
-const changeRequest = require('../../../src/components/request');
+const exchange = require('../../../src/components/secureExchange');
 const { ServiceError } = require('../../../src/components/error');
 const { mockRequest, mockResponse } = require('../helpers');
 const correlationID = '67590460-efe3-4e84-9f9a-9acffda79657';
@@ -21,13 +21,12 @@ describe('uploadFile', () => {
   const params = {
     id: 'requestId',
   };
-  const requestType = 'studentRequest';
   const session = {
-    [requestType]: {
-      studentRequestStatusCode: utils.RequestStatuses.RETURNED,
+    secureExchange: {
+      secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
     }
   };
-  const uploadFile = changeRequest.uploadFile(requestType);
+  const uploadFile = exchange.uploadFile;
 
   let req;
   let res;
@@ -52,7 +51,7 @@ describe('uploadFile', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalledWith(postRes);
-    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('studentRequest:apiEndpoint')}/${params.id}/documents`, correlationID);
+    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents`, correlationID);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -65,7 +64,7 @@ describe('uploadFile', () => {
 
   it('should return CONFLICT if no request in the session', async () => {
     const session = {
-      request: null,
+      secureExchange: null,
     };
     req = mockRequest(document, session, params);
 
@@ -74,9 +73,11 @@ describe('uploadFile', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
   });
 
-  it('should return CONFLICT if request is not RETURNED', async () => {
+  it('should return CONFLICT if secureExchange is CLOSED', async () => {
     const session = {
-      studentRequestStatusCode: utils.RequestStatuses.INITREV,
+      secureExchange: {
+        secureExchangeStatusCode: utils.SecureExchangeStatuses.CLOSED,
+      }
     };
     req = mockRequest(document, session, params);
 
@@ -102,7 +103,6 @@ describe('getDocument', () => {
   const documentID = 'documentID';
   const includeDocData = 'Y';
   const token = 'token';
-  const requestType = 'studentRequest';
 
   afterEach(() => {
     spy.mockClear();
@@ -111,16 +111,16 @@ describe('getDocument', () => {
   it('should return document data', async () => {
     utils.getData.mockResolvedValue(documentData);
 
-    const result = await changeRequest.__get__('getDocument')(token, requestID, documentID, requestType, includeDocData);
+    const result = await exchange.__get__('getDocument')(token, requestID, documentID, includeDocData);
 
     expect(result).toEqual(documentData);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('studentRequest:apiEndpoint')}/${requestID}/documents/${documentID}?includeDocData=${includeDocData}`);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${requestID}/documents/${documentID}?includeDocData=${includeDocData}`);
   });
 
   it('should throw ServiceError if getData is failed', async () => {
     utils.getData.mockRejectedValue(new Error('error'));
 
-    expect(changeRequest.__get__('getDocument')(token, requestID, documentID, requestType, includeDocData)).rejects.toThrowError(ServiceError);
+    expect(exchange.__get__('getDocument')(token, requestID, documentID, includeDocData)).rejects.toThrowError(ServiceError);
   });
 });
 
@@ -133,14 +133,13 @@ describe('deleteDocument', () => {
     id: 'requestId',
     documentId: 'documentId'
   };
-  const requestType = 'studentRequest';
   const session = {
-    [requestType]: {
-      studentRequestStatusCode: utils.RequestStatuses.RETURNED,
+    secureExchange: {
+      secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
       statusUpdateDate: '2020-03-01T12:13:16'
     }
   };
-  const deleteDocument = changeRequest.deleteDocument(requestType);
+  const deleteDocument = exchange.deleteDocument;
 
   let req;
   let res;
@@ -165,8 +164,8 @@ describe('deleteDocument', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('studentRequest:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=N`);
-    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('studentRequest:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=N`);
+    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -179,7 +178,7 @@ describe('deleteDocument', () => {
 
   it('should return CONFLICT if no request in the session', async () => {
     const session = {
-      request: null,
+      secureExchange: null,
     };
     req = mockRequest(null, session, params);
 
@@ -188,10 +187,12 @@ describe('deleteDocument', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
   });
 
-  it('should return CONFLICT if request is not RETURNED', async () => {
+  it('should return CONFLICT if secureExchange is CLOSED', async () => {
     const session = {
-      studentRequestStatusCode: utils.RequestStatuses.INITREV,
-      statusUpdateDate: '2020-03-01T12:13:16'
+      secureExchange: {
+        secureExchangeStatusCode: utils.SecureExchangeStatuses.CLOSED,
+        statusUpdateDate: '2020-03-01T12:13:16'
+      }
     };
     req = mockRequest(null, session, params);
 
@@ -202,8 +203,10 @@ describe('deleteDocument', () => {
 
   it('should return CONFLICT if document was uploaded before request was returned ', async () => {
     const session = {
-      studentRequestStatusCode: utils.RequestStatuses.RETURNED,
-      statusUpdateDate: '2020-03-03T12:13:16'
+      secureExchange: {
+        secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
+        statusUpdateDate: '2020-03-03T12:13:16'
+      }      
     };
     req = mockRequest(null, session, params);
 
@@ -231,7 +234,7 @@ describe('downloadFile', () => {
     id: 'requestId',
     documentId: 'documentId'
   };
-  const downloadFile = changeRequest.downloadFile('studentRequest');
+  const downloadFile = exchange.downloadFile;
 
   let req;
   let res;
@@ -257,7 +260,7 @@ describe('downloadFile', () => {
     expect(res.data.raw.toString()).toEqual('test data');
     expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'attachment; filename=' + document.fileName);
     expect(res.setHeader).toHaveBeenNthCalledWith(2, 'Content-type', document.fileExtension);
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('studentRequest:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=Y`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=Y`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {

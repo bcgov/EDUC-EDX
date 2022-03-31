@@ -35,7 +35,7 @@ async function removeStaleSagas(staleSagas) {
   try {
     const data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret')); // get the tokens first to make api calls.
     for (const saga of staleSagas) {
-      sagaRecordFromAPIPromises.push(getData(data.accessToken, `${config.get('profileSagaAPIURL')}/${saga.sagaId}`));
+      sagaRecordFromAPIPromises.push(getData(data.accessToken, `${config.get('secureExchange:sagaApiEndpoint')}/${saga.sagaId}`));
     }
     const results = await Promise.allSettled(sagaRecordFromAPIPromises);
     for (const result of results) {
@@ -46,7 +46,7 @@ async function removeStaleSagas(staleSagas) {
             sagaId: sagaFromAPI.sagaId,
             sagaStatus: sagaFromAPI.status
           };
-          await redisUtil.removeProfileRequestSagaRecordFromRedis(event);
+          await redisUtil.removeSagaRecordFromRedis(event);
         } else {
           log.warn(`saga ${sagaFromAPI.sagaId} is not yet completed.`);
         }
@@ -65,8 +65,8 @@ try {
     const redLock = redisUtil.getRedLock();
     try {
       await redLock.lock('locks:remove-stale-saga-record-edx', 6000); // no need to release the lock as it will auto expire after 6000 ms.
-      const staleSagas = findStaleSagaRecords(await redisUtil.getProfileRequestSagaEvents());
-      log.debug(`found ${staleSagas.length} stale GMP or UMP saga records`);
+      const staleSagas = findStaleSagaRecords(await redisUtil.getSagaEvents());
+      log.debug(`found ${staleSagas.length} stale EDX saga records`);
 
       if (staleSagas.length > 0) {
         await removeStaleSagas(staleSagas);

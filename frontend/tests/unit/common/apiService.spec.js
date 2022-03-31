@@ -1,9 +1,5 @@
 //import axios from 'axios';
 import ApiService from '@/common/apiService';
-import MockAdapter from 'axios-mock-adapter';
-import { ApiRoutes } from '@/utils/constants.js';
-
-const mockAxios = new MockAdapter(ApiService.apiAxios);
 
 describe('apiService.js', () => {
   const spy = jest.spyOn(ApiService.apiAxios, 'post');
@@ -32,12 +28,4 @@ describe('apiService.js', () => {
     ApiService.processQueue(null, 'token');
   });
 
-  it('should respond to axios post with 200', () => {
-    const requestType = 'studentRequest';
-    mockAxios.onPost(ApiRoutes[requestType].REQUEST).reply(200);
-
-    const info = {message: 'fakeMessage'};
-    const response = ApiService.postRequest(info, requestType);
-    expect(response).toBeTruthy();
-  });
 });

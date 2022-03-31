@@ -110,13 +110,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['requestType']),
-    documentTypeCodes() {
-      return this.$store.getters[`${this.requestType}/documentTypeCodes`];
-    },
-    requestID() {
-      return this.$store.getters[`${this.requestType}/requestID`];
-    },
+    ...mapGetters('edx', ['documentTypeCodes']),
+    ...mapGetters('edx', ['secureExchangeID']),
     documentType() {
       const typeCode = find(this.documentTypeCodes, ['documentTypeCode', this.document.documentTypeCode]);
       return typeCode && typeCode.label;
@@ -128,12 +123,12 @@ export default {
       return this.document.createDate.replace(/T/, ', ').replace(/\..+/, '');
     },
     documentUrl() {
-      return `${ApiRoutes[this.requestType].REQUEST}/${this.requestID}/documents/${this.document.documentID}/download/${this.document.fileName}`;
+      return `${ApiRoutes.edx.EXCHANGE}/${this.secureExchangeID}/documents/${this.document.documentID}/download/${this.document.fileName}`;
     },
   },
   methods: {
     deleteFile(documentData) {
-      return this.$store.dispatch(`${this.requestType}/deleteFile`, documentData);
+      return this.$store.dispatch(`edx/deleteFile`, documentData);
     },
     setSuccessAlert(alertMessage) {
       this.alertMessage = alertMessage;
@@ -148,7 +143,7 @@ export default {
     deleteDocument() {
       this.deleting = true;
       this.deleteFile({
-        requestID: this.requestID,
+        secureExchangeID: this.secureExchangeID,
         documentID: this.document.documentID
       }).then(() => {
         this.setSuccessAlert('Your document has been deleted successfully.');

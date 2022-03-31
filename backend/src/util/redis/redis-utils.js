@@ -1,7 +1,7 @@
 'use strict';
 const Redis = require('./redis-client');
 const log = require('../../components/logger');
-const profileRequestSagaEventKey = 'PROFILE_REQUEST_SAGA_EVENTS';
+const sagaEventKey = 'EDX_SAGA_EVENTS';
 const safeStringify = require('fast-safe-stringify');
 const RedLock = require('redlock');
 const {LocalDateTime} = require('@js-joda/core');
@@ -12,7 +12,7 @@ const redisUtil = {
    * @param event the event object to be stored , this contains sagaId, penRequestId,digitalId, eventPayload etc..
    * @returns {Promise<void>}
    */
-  async createProfileRequestSagaRecordInRedis(event) {
+  async createSagaRecordInRedis(event) {
     try {
       const redisClient = Redis.getRedisClient();
       if (redisClient) {
@@ -27,19 +27,19 @@ const redisUtil = {
       log.error(`Error ${e}`);
     }
   },
-  async removeProfileRequestSagaRecordFromRedis(event) {
+  async removeSagaRecordFromRedis(event) {
     let recordFoundFromRedis = false;
     const redisClient = Redis.getRedisClient();
     if (redisClient) {
       try {
-        const result = await redisClient.smembers(profileRequestSagaEventKey);
+        const result = await redisClient.smembers(sagaEventKey);
         if (result && result.length > 0) {
           for (const element of result) {
             const eventArrayElement = JSON.parse(element);
             if ((eventArrayElement.sagaId && event.sagaId && eventArrayElement.sagaId === event.sagaId) && ('COMPLETED' === event.sagaStatus || 'FORCE_STOPPED' === event.sagaStatus)) {
               log.info(`going to delete this event record as it is completed or force stopped. SAGA ID :: ${eventArrayElement.sagaId} AND STATUS :: ${event.sagaStatus}`);
               recordFoundFromRedis = true;
-              await this.removeSagaRecordFromRedis(event.sagaId, eventArrayElement);
+              await this.removeElementfromSagaRecordInRedis(event.sagaId, eventArrayElement);
               log.info(`Event record deleted from REDIS. SAGA ID :: ${eventArrayElement.sagaId} AND STATUS :: ${event.sagaStatus}`);
               break;
             }
@@ -53,10 +53,10 @@ const redisUtil = {
     }
     return recordFoundFromRedis;
   },
-  async getProfileRequestSagaEvents() {
+  async getSagaEvents() {
     const redisClient = Redis.getRedisClient();
     if (redisClient) {
-      return redisClient.smembers(profileRequestSagaEventKey);
+      return redisClient.smembers(sagaEventKey);
     } else {
       log.error('Redis client is not available, this should not have happened');
     }
@@ -68,7 +68,7 @@ const redisUtil = {
   async isSagaInProgressForDigitalID(digitalID) {
     let sagaInProgress = false;
     if(digitalID){
-      const eventsArrayFromRedis = await this.getProfileRequestSagaEvents();
+      const eventsArrayFromRedis = await this.getSagaEvents();
       for (const eventString of eventsArrayFromRedis) {
         const event = JSON.parse(eventString);
         if (event && event.digitalID && event.digitalID === digitalID) {
@@ -82,22 +82,22 @@ const redisUtil = {
     }
 
   },
-  async removeSagaRecordFromRedis(sagaId, eventToDelete) {
+  async removeElementfromSagaRecordInRedis(sagaId, eventToDelete) {
     const redisClient = Redis.getRedisClient();
     try {
-      await this.getRedLock().lock(`locks:profile-request-saga:deleteFromSet-${sagaId}`, 600);
-      await redisClient.srem(profileRequestSagaEventKey, safeStringify(eventToDelete));
+      await this.getRedLock().lock(`locks:edx-saga:deleteFromSet-${sagaId}`, 600);
+      await redisClient.srem(sagaEventKey, safeStringify(eventToDelete));
     } catch (e) {
-      log.info(`this pod could not acquire lock for locks:profile-request-saga:deleteFromSet-${sagaId}, check other pods. ${e}`);
+      log.info(`this pod could not acquire lock for locks:edx-saga:deleteFromSet-${sagaId}, check other pods. ${e}`);
     }
   },
   async addElementToSagaRecordInRedis(sagaId, eventToAdd) {
     const redisClient = Redis.getRedisClient();
     try {
-      await this.getRedLock().lock(`locks:profile-request-saga:addToSet-${sagaId}`, 600);
-      await redisClient.sadd(profileRequestSagaEventKey, safeStringify(eventToAdd));
+      await this.getRedLock().lock(`locks:edx-saga:addToSet-${sagaId}`, 600);
+      await redisClient.sadd(sagaEventKey, safeStringify(eventToAdd));
     } catch (e) {
-      log.info(`this pod could not acquire lock for locks:profile-request-saga:addToSet-${sagaId}, check other pods. ${e}`);
+      log.info(`this pod could not acquire lock for locks:edx-saga:addToSet-${sagaId}, check other pods. ${e}`);
     }
   },
   getRedLock() {

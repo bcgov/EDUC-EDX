@@ -1,0 +1,268 @@
+const HttpStatus = require('http-status-codes');
+const lodash = require('lodash');
+const config = require('../../../src/config/index');
+
+jest.mock('../../../src/components/utils');
+const utils = require('../../../src/components/utils');
+const exchange = require('../../../src/components/secureExchange');
+const {  __RewireAPI__: rewireRequest} =  require('../../../src/components/secureExchange');
+const { ServiceError } = require('../../../src/components/error');
+const { mockRequest, mockResponse } = require('../helpers');
+const redis = require('redis-mock');
+jest.mock('../../../src/util/redis/redis-client');
+const redisClient = require('../../../src/util/redis/redis-client');
+jest.mock('../../../src/util/redis/redis-utils');
+const redisUtil = require('../../../src/util/redis/redis-utils');
+const correlationID = '67590460-efe3-4e84-9f9a-9acffda79657';
+describe('verifyRequest', () => {
+  const requestID = 'RequestID';
+  const params = {
+    id: requestID,
+    documentId: 'documentId'
+  };
+  const session = {
+    secureExchange: {
+      secureExchangeID: requestID,
+    },
+    correlationID
+  };
+  const userInfo = { };
+  const verifyRequest = exchange.verifyRequest;
+
+  let req;
+  let res;
+  let next;
+
+  jest.spyOn(utils, 'getSessionUser');
+  jest.spyOn(redisClient, 'getRedisClient');
+  jest.spyOn(redisUtil, 'isSagaInProgressForDigitalID');
+
+  beforeEach(() => {
+    utils.getSessionUser.mockReturnValue(userInfo);
+    redisClient.getRedisClient.mockReturnValue(redis);
+    redisUtil.isSagaInProgressForDigitalID.mockReturnValue(false);
+    req = mockRequest(null, session, params);
+    res = mockResponse();
+    next = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should call next', () => {
+    verifyRequest(req, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it('should return UNAUTHORIZED if no session', async () => {
+    utils.getSessionUser.mockReturnValue(null);
+
+    verifyRequest(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('should return BAD_REQUEST if no request in session', async () => {
+    const session = {
+    };
+    req = mockRequest(null, session, params);
+    verifyRequest(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+  });
+
+  it('should return BAD_REQUEST if different requestID in session', async () => {
+    const session = {
+      secureExchange: {
+        secureExchangeID: 'OtherRequestID,'
+      }
+    };
+    req = mockRequest(null, session, params);
+    verifyRequest(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+  });
+});
+
+describe('getDigitalIdData', () => {
+  const digitalIdData = { data: 'data' };
+
+  const spy = jest.spyOn(utils, 'getData');
+
+  afterEach(() => {
+    spy.mockClear();
+  });
+
+  it('should return DigitalId data', async () => {
+    utils.getData.mockResolvedValue(digitalIdData);
+
+    const result = await exchange.__get__('getDigitalIdData')('token', 'digitalID', correlationID);
+
+    expect(result).toBeTruthy();
+    expect(result.data).toEqual(digitalIdData.data);
+    //expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith('token', config.get('digitalID:apiEndpoint') + '/digitalID', correlationID);
+  });
+
+  it('should throw ServiceError if getData is failed', async () => {
+    utils.getData.mockRejectedValue(new Error('error'));
+
+    expect(exchange.__get__('getDigitalIdData')('token', 'digitalID')).rejects.toThrowError(ServiceError);
+  });
+});
+
+describe('getServerSideCodes', () => {
+  const codes =[
+    {
+      code: 'M',
+      label: 'Male',
+    },
+    {
+      code: 'F',
+      label: 'Female',
+    }
+  ];
+
+  const spy = jest.spyOn(utils, 'getData');
+
+  afterEach(() => {
+    spy.mockClear();
+    exchange.__set__('codes', null);
+  });
+
+  it('should return codes', async () => {
+    utils.getData.mockResolvedValue(codes);
+
+    const result = await exchange.__get__('getServerSideCodes')('token');
+
+    expect(result).toBeTruthy();
+    expect(result.sexCodes).toEqual(codes);
+    expect(result.identityTypes).toEqual(codes);
+    expect(exchange.__get__('codes').sexCodes).toEqual(codes);
+    expect(exchange.__get__('codes').identityTypes).toEqual(codes);
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('student:apiEndpoint')}/sex-codes`);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`);
+  });
+
+  it('should not call getData if codes exist', async () => {
+    exchange.__set__('codes', {
+      sexCodes: codes,
+      identityTypes: codes
+    });
+
+    const result = await exchange.__get__('getServerSideCodes')('token');
+
+    expect(result).toBeTruthy();
+    expect(result.sexCodes).toEqual(codes);
+    expect(result.identityTypes).toEqual(codes);
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should throw ServiceError if getData is failed', async () => {
+    utils.getData.mockRejectedValue(new Error('error'));
+
+    expect(exchange.__get__('getServerSideCodes')('token')).rejects.toThrowError(ServiceError);
+  });
+});
+
+describe('getUserInfo', () => {
+  const digitalID = 'ac337def-704b-169f-8170-653e2f7c001';
+
+  const sessionUser = {
+    jwt: 'token',
+    _json: {
+      digitalIdentityID: digitalID,
+      displayName: 'Firstname Lastname',
+      accountType: 'BCEID',
+    }
+  };
+
+  const digitalIdData = {
+    identityTypeCode: 'BASIC',
+    studentID: null
+  };
+
+  const codes = {
+    sexCodes: [
+      {
+        sexCode: 'M',
+        label: 'Male',
+      },
+      {
+        sexCode: 'F',
+        label: 'Female',
+      }
+    ],
+    identityTypes: [
+      {
+        identityTypeCode: 'BCSC',
+        label: 'BC Services Card',
+      },
+      {
+        identityTypeCode: 'BASIC',
+        label: 'Basic BCeID',
+      }
+    ]
+  };
+
+  let req;
+  let res;
+
+  jest.spyOn(utils, 'getSessionUser');
+
+  beforeEach(() => {
+    utils.getSessionUser.mockReturnValue(sessionUser);
+    req = mockRequest();
+    res = mockResponse();
+    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
+    rewireRequest.__Rewire__('getServerSideCodes', () => Promise.resolve(codes));
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    rewireRequest.__ResetDependency__('getDigitalIdData');
+    rewireRequest.__ResetDependency__('getServerSideCodes');
+  });
+
+  it('should return UNAUTHORIZED if no session', async () => {
+    utils.getSessionUser.mockReturnValue(null);
+
+    await exchange.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('should return user info without student info if no student info', async () => {
+    await exchange.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
+    expect(res.json).toHaveBeenCalledWith({
+      displayName: sessionUser._json.displayName,
+      accountType: sessionUser._json.accountType,
+      identityTypeLabel: lodash.find(codes.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]).label,
+    });
+  });
+
+  it('should return INTERNAL_SERVER_ERROR if invalid identityTypeCode', async () => {
+    const digitalIdData = {
+      identityTypeCode: 'INVALID',
+      studentID: null
+    };
+
+    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
+
+    await exchange.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+  });
+
+  it('should return INTERNAL_SERVER_ERROR if exceptions thrown', async () => {
+    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.reject(new ServiceError('error')));
+
+    await exchange.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+  });
+});
