@@ -180,13 +180,11 @@ jobs:
 
     - name: Build caddy v2 from Dockerfile
       id: build-caddy
-      uses: redhat-actions/buildah-build@v2
+      uses: docker/build-push-action@v2
       with:
-        image: caddy
-        tags: v2
-        dockerfiles: |
-          https://github.com/caddyserver/caddy-docker/frontend/Dockerfile
         context: https://github.com/caddyserver/caddy-docker/frontend
+        push: true
+        tags: v2
 
     - name: Build frontend from Dockerfile
       id: build-image-frontend
