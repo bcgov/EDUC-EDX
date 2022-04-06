@@ -64,7 +64,8 @@ env:
   REPO_NAME: "educ-edx"
   JOB_NAME: "master"
   APP_NAME_BACKEND: "edx-backend-master"
-  APP_NAME_FRONTEND: "edx-frontend-static"
+  APP_NAME_FRONTEND: "edx-frontend"
+  APP_NAME_FRONTEND_STATIC: "edx-frontend-static"
   NAMESPACE: ${{ secrets.NAMESPACE_NO_ENV }}
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
   TAG: "latest"
@@ -177,6 +178,16 @@ jobs:
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
+    - name: Build caddy v2 from Dockerfile
+      id: build-caddy
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: caddy
+        tags: v2
+        dockerfiles: |
+          https://github.com/caddyserver/caddy-docker/frontend/Dockerfile
+        context: https://github.com/caddyserver/caddy-docker/frontend
+
     - name: Build frontend from Dockerfile
       id: build-image-frontend
       uses: redhat-actions/buildah-build@v2
@@ -189,6 +200,24 @@ jobs:
         # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
         dockerfiles: |
           ./frontend/Dockerfile
+        context: ./frontend
+
+    - name: Build frontend static from Dockerfile
+      id: build-image-frontend-static
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.APP_NAME_FRONTEND_STATIC }}
+        base-image: ${{ steps.build-caddy.outputs.image }}
+        tags: ${{ env.IMAGE_TAGS }}
+
+        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
+        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
+        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
+        dockerfile: |-
+          FROM ${{ steps.build-image-frontend.outputs.image }}
+          EXPOSE 2015
+          COPY /tmp/src/dist /srv
+          COPY /tmp/src/Caddyfile /etc/caddy/Caddyfile
         context: ./frontend
 
     # https://github.com/redhat-actions/push-to-registry#readme

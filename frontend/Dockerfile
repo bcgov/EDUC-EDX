@@ -11,3 +11,6 @@ COPY . /opt/app-root/src
 
 EXPOSE 8080 443
 RUN npm run build
+
+
+
