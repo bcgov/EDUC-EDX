@@ -153,7 +153,7 @@ jobs:
 
     # https://github.com/redhat-actions/buildah-build#readme
     - name: Build backend from Dockerfile
-      id: build-image
+      id: build-image-backend
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.APP_NAME_BACKEND }}
@@ -168,7 +168,7 @@ jobs:
 
       # https://github.com/redhat-actions/push-to-registry#readme
     - name: Push backend to registry
-      id: push-image
+      id: push-image-backend
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
@@ -178,7 +178,7 @@ jobs:
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
     - name: Build frontend from Dockerfile
-      id: build-image
+      id: build-image-frontend
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.APP_NAME_FRONTEND }}
@@ -193,7 +193,7 @@ jobs:
 
     # https://github.com/redhat-actions/push-to-registry#readme
     - name: Push frontend to registry
-      id: push-image
+      id: push-image-frontent
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
