@@ -222,7 +222,7 @@ jobs:
         || true && echo "No rollout in progress"
         
         # Create the image stream if it doesn't exist
-        oc create imagestream ${{ env.REPO_NAME }}-backend-${{ env.JOB_NAME }} 2> /dev/null
+        #oc create imagestream ${{ env.REPO_NAME }}-backend-${{ env.JOB_NAME }} 2> /dev/null
         oc create imagestream ${{ env.REPO_NAME }}-frontend-static 2> /dev/null
         
         oc tag ${{ steps.push-image-backend.outputs.registry-path }} ${{ env.REPO_NAME }}-backend-${{ env.JOB_NAME }}:${{ env.TAG }}
