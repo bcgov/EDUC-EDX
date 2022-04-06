@@ -24,7 +24,7 @@ objects:
         openshift.io/imported-from: image-registry.openshift-image-registry.svc:5000/8878b4-tools/caddy:v2
       from:
         kind: DockerImage
-        name: image-registry.openshift-image-registry.svc:5000/8878b4-tools/caddy:v2
+        name: image-registry.openshift-image-registry.svc:5000/${LICENSE_PLATE}-tools/caddy:v2
       generation:
       importPolicy: {}
       name: v2
@@ -50,7 +50,7 @@ objects:
     creationTimestamp:
     labels:
       build: "${REPO_NAME}-frontend-static"
-    name: "${REPO_NAME}-frontend-static"
+    name: "${REPO_NAME}-frontend-static-${JOB_NAME}"
   spec:
     completionDeadlineSeconds: 600
     successfulBuildsHistoryLimit: 3
@@ -71,7 +71,7 @@ objects:
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
-        FROM image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/caddy:v2
+        FROM image-registry.openshift-image-registry.svc:5000/${LICENSE_PLATE}-tools/caddy:v2
         EXPOSE 2015
         COPY /tmp/src/dist /srv
         COPY /tmp/src/Caddyfile /etc/caddy/Caddyfile
@@ -100,4 +100,7 @@ parameters:
   required: true
 - name: NAMESPACE
   description: Target namespace reference (i.e. 'k8vopl-dev')
+  required: true
+- name: LICENSE_PLATE
+  description: Target namespace reference (i.e. 'k8vopl')
   required: true

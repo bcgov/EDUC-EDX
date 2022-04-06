@@ -69,6 +69,7 @@ env:
   APP_NAME_FRONTEND: "edx-frontend"
   APP_NAME_FRONTEND_STATIC: "edx-frontend-static"
   NAMESPACE: ${{ secrets.NAMESPACE_NO_ENV }}
+  NAMESPACE_TOOLS: ${{ secrets.NAMESPACE_NO_ENV }}-tools
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
   TAG: "latest"
   TARGET_ENV: "dev"
@@ -200,15 +201,15 @@ jobs:
         set -eux
         # Login to OpenShift and select project
         oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
-        oc project ${{ env.OPENSHIFT_NAMESPACE }}
+        oc project ${{ env.NAMESPACE_TOOLS }}
         
         # Process and apply deployment template
         oc process -f tools/openshift/frontend.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p SOURCE_REPO_URL=${{ env.SOURCE_REPO_URL }} -p SOURCE_REPO_REF=master\
         | oc apply -f -
-        
+
         oc start-build ${{ env.REPO_NAME }}-frontend-${{ env.JOB_NAME }} --wait
         
-        oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}\
+        oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.NAMESPACE_TOOLS }}\
         | oc apply -f -
         
         oc start-build ${{ env.REPO_NAME }}-frontend-static --wait
