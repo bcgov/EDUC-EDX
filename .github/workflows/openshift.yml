@@ -205,7 +205,7 @@ jobs:
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.APP_NAME_FRONTEND_STATIC }}
-        base-image: ${{ steps.build-caddy.outputs.image }}
+        base-image: docker.io/caddy/2.4.6-alpine
         tags: ${{ env.IMAGE_TAGS }}
 
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
