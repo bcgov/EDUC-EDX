@@ -209,7 +209,7 @@ jobs:
 
         oc start-build ${{ env.REPO_NAME }}-frontend-${{ env.JOB_NAME }} --wait
         
-        oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.NAMESPACE_TOOLS }}\
+        oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.NAMESPACE_TOOLS }} -p LICENSE_PLATE={{ env.NAMESPACE }}\
         | oc apply -f -
         
         oc start-build ${{ env.REPO_NAME }}-frontend-static --wait
