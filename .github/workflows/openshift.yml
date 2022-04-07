@@ -181,6 +181,12 @@ jobs:
 #        username: ${{ env.IMAGE_REGISTRY_USER }}
 #        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node_modules
+
     - name: Install NPM
       working-directory: ./frontend
       run: npm install
