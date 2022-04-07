@@ -67,6 +67,7 @@ env:
   JOB_NAME: "master"
   APP_NAME_BACKEND: "edx-backend-master"
   APP_NAME_FRONTEND: "edx-frontend"
+  APP_NAME_FRONTEND_MASTER: "edx-frontend-master"
   APP_NAME_FRONTEND_STATIC: "edx-frontend-static"
   NAMESPACE: ${{ secrets.NAMESPACE_NO_ENV }}
   NAMESPACE_TOOLS: ${{ secrets.NAMESPACE_NO_ENV }}-tools
@@ -257,9 +258,12 @@ jobs:
         # Start rollout (if necessary) and follow it
         oc rollout latest dc/${{ env.IMAGE_NAME }} 2> /dev/null \
         || true && echo "Rollout in progress"
-        oc logs -f dc/${{ env.IMAGE_NAME }}
-        # Get status, returns 0 if rollout is successful
-        oc rollout status dc/${{ env.IMAGE_NAME }}
+        
+        oc rollout latest dc/${{ env.APP_NAME_FRONTEND_MASTER }} 2> /dev/null \
+        || true && echo "Rollout in progress"
+#        oc logs -f dc/${{ env.IMAGE_NAME }}
+#        # Get status, returns 0 if rollout is successful
+#        oc rollout status dc/${{ env.IMAGE_NAME }}
 #    - name: Deploy
 #      uses: actions/checkout@v2
 #      run: |
