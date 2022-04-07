@@ -155,7 +155,7 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-#    # https://github.com/redhat-actions/buildah-build#readme
+    # https://github.com/redhat-actions/buildah-build#readme
 #    - name: Build backend from Dockerfile
 #      id: build-image-backend
 #      uses: redhat-actions/buildah-build@v2
@@ -181,32 +181,22 @@ jobs:
 #        username: ${{ env.IMAGE_REGISTRY_USER }}
 #        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-#    - name: Build frontend from Dockerfile
-#      id: build-image-frontend
-#      uses: redhat-actions/buildah-build@v2
-#      with:
-#        image: ${{ env.APP_NAME_FRONTEND }}
-#        tags: ${{ env.IMAGE_TAGS }}
-#
-#        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
-#        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
-#        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
-#        dockerfiles: |
-#          ./frontend/Dockerfile
-#        context: ./frontend
+    - name: Build native application
+      run: npm run build
 
-    - uses: actions/checkout@v2
-    - name: Build frontend
-      run: |
-        set -eux
-        # Login to OpenShift and select project
-        oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
-        oc project ${{ env.NAMESPACE_TOOLS }}
-        
-        oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.NAMESPACE_TOOLS }} -p LICENSE_PLATE=${{ env.NAMESPACE }}\
-        | oc apply -f -
-        
-        oc start-build ${{ env.REPO_NAME }}-frontend-static --wait
+    - name: Build frontend from Dockerfile
+      id: build-image-frontend
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.APP_NAME_FRONTEND }}
+        tags: ${{ env.IMAGE_TAGS }}
+
+        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
+        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
+        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
+        dockerfiles: |
+          ./frontend/Dockerfile
+        context: ./frontend
 
     - name: Install oc
       uses: redhat-actions/openshift-tools-installer@v1
