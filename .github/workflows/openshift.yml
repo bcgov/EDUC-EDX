@@ -156,30 +156,30 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     # https://github.com/redhat-actions/buildah-build#readme
-#    - name: Build backend from Dockerfile
-#      id: build-image-backend
-#      uses: redhat-actions/buildah-build@v2
-#      with:
-#        image: ${{ env.APP_NAME_BACKEND }}
-#        tags: ${{ env.IMAGE_TAGS }}
-#
-#        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
-#        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
-#        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
-#        dockerfiles: |
-#          ./backend/Dockerfile
-#        context: ./backend
-#
-#      # https://github.com/redhat-actions/push-to-registry#readme
-#    - name: Push backend to registry
-#      id: push-image-backend
-#      uses: redhat-actions/push-to-registry@v2
-#      with:
-#        image: ${{ steps.build-image-backend.outputs.image }}
-#        tags: ${{ steps.build-image-backend.outputs.tags }}
-#        registry: ${{ env.IMAGE_REGISTRY }}
-#        username: ${{ env.IMAGE_REGISTRY_USER }}
-#        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+    - name: Build backend from Dockerfile
+      id: build-image-backend
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.APP_NAME_BACKEND }}
+        tags: ${{ env.IMAGE_TAGS }}
+
+        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
+        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
+        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
+        dockerfiles: |
+          ./backend/Dockerfile
+        context: ./backend
+
+      # https://github.com/redhat-actions/push-to-registry#readme
+    - name: Push backend to registry
+      id: push-image-backend
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image-backend.outputs.image }}
+        tags: ${{ steps.build-image-backend.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
 #    - name: Install NPM
 #      working-directory: ./frontend
