@@ -181,7 +181,7 @@ jobs:
 #        username: ${{ env.IMAGE_REGISTRY_USER }}
 #        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-    - name: Build native application
+    - name: Install NPM
       working-directory: ./frontend
       run: npm install
 
