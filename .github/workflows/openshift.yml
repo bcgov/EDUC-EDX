@@ -203,11 +203,11 @@ jobs:
         oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
         oc project ${{ env.NAMESPACE_TOOLS }}
         
-#        # Process and apply deployment template
-#        oc process -f tools/openshift/frontend.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p SOURCE_REPO_URL=${{ env.SOURCE_REPO_URL }} -p SOURCE_REPO_REF=master\
-#        | oc apply -f -
-#
-#        oc start-build ${{ env.REPO_NAME }}-frontend-${{ env.JOB_NAME }} --wait
+        # Process and apply deployment template
+        oc process -f tools/openshift/frontend.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p SOURCE_REPO_URL=${{ env.SOURCE_REPO_URL }} -p SOURCE_REPO_REF=master\
+        | oc apply -f -
+
+        oc start-build ${{ env.REPO_NAME }}-frontend-${{ env.JOB_NAME }} --wait
         
         oc process -f tools/openshift/frontend-static.bc.yaml -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.NAMESPACE_TOOLS }} -p LICENSE_PLATE=${{ env.NAMESPACE }}\
         | oc apply -f -
