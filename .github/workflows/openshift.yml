@@ -182,6 +182,7 @@ jobs:
 #        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
     - name: Build native application
+      working-directory: ./frontend
       run: npm run build
 
     - name: Build frontend from Dockerfile

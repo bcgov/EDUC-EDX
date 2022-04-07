@@ -1,16 +1,8 @@
-FROM docker-remote.artifacts.developer.gov.bc.ca/node:14-alpine
+FROM docker-remote.artifacts.developer.gov.bc.ca/caddy:2.4.6-alpine
 
-WORKDIR /opt/app-root/src
-
-COPY package*.json ./
-RUN npm ci --cache .npm  --prefer-offline --no-audit
-# --no-optional --production
-
-# Build Application
-COPY . /opt/app-root/src
-
-EXPOSE 8080 443
-RUN npm run build
+EXPOSE 2015
+COPY /tmp/src/dist /srv
+COPY /tmp/src/Caddyfile /etc/caddy/Caddyfile
 
 
 
