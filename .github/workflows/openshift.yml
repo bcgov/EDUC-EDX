@@ -183,6 +183,10 @@ jobs:
 
     - name: Build native application
       working-directory: ./frontend
+      run: npm install
+
+    - name: Build native application
+      working-directory: ./frontend
       run: npm run build
 
     - name: Build frontend from Dockerfile
