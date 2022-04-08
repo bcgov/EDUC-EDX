@@ -80,7 +80,9 @@ env:
   MAX_CPU: "100m"
   MIN_MEM: "200Mi"
   MAX_MEM: "250Mi"
-  HOST_ROUTE: "dev.educationdataexchange.gov.bc.ca"
+  #HOST_ROUTE: "dev.educationdataexchange.gov.bc.ca"
+  #TODO: change HOST_ROUTE to above once certificate is installed.
+  HOST_ROUTE: "https://edx-d4cdde-dev.apps.silver.devops.gov.bc.ca/"
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
