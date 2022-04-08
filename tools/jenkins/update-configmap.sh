@@ -9,8 +9,10 @@ TZVALUE="America/Vancouver"
 SOAM_KC_REALM_ID="master"
 SOAM_KC=soam-$envValue.apps.silver.devops.gov.bc.ca
 siteMinderLogoutUrl=""
-HOST_ROUTE="${envValue}.educationdataexchange.gov.bc.ca"
-SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
+HOST_ROUTE="https://edx-d4cdde-${envValue}.apps.silver.devops.gov.bc.ca"
+#HOST_ROUTE="${envValue}.educationdataexchange.gov.bc.ca"
+#SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
+SERVER_FRONTEND="https://edx-d4cdde-${envValue}.apps.silver.devops.gov.bc.ca"
 if [ "$envValue" != "prod" ]
 then
   siteMinderLogoutUrl="https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
@@ -31,14 +33,6 @@ TKN=$(curl -s \
   -d "password=$SOAM_KC_LOAD_USER_PASS" \
   -d "grant_type=password" \
   "https://$SOAM_KC/auth/realms/$SOAM_KC_REALM_ID/protocol/openid-connect/token" | jq -r '.access_token')
-
-if [ "$envValue" = "dev" ]
-then
-  SERVER_FRONTEND="https://dev.educationdataexchange.gov.bc.ca"
-elif [ "$envValue" = "test" ]
-then
-  SERVER_FRONTEND="https://test.educationdataexchange.gov.bc.ca"
-fi
 
 echo
 echo Retrieving client ID for edx-soam
@@ -129,12 +123,10 @@ fi
 
 if [ "$envValue" = "dev" ]
 then
-  HOST_ROUTE="dev.educationdataexchange.gov.bc.ca"
   bannerEnvironment="DEV"
   bannerColor="#dba424"
 elif [ "$envValue" = "test" ]
 then
-  HOST_ROUTE="test.educationdataexchange.gov.bc.ca"
   bannerEnvironment="TEST"
   bannerColor="#8d28d7"
 fi
