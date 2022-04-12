@@ -27,3 +27,12 @@ export const ApiRoutes = Object.freeze({
   }
 });
 
+export const PAGE_TITLES = Object.freeze(
+  {
+    EXCHANGE: 'Secure Exchange Messaging',
+    NEW_EXCHANGE: 'New Message',
+  }
+);
+
+export const Routes = Object.freeze(object);
+
