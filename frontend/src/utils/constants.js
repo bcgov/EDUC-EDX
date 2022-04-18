@@ -4,8 +4,7 @@ const edxRoot = baseRoot + '/edx';
 let object;
 
 object = {
-  LOGIN:'/',
-  LOGIN_BCSC: authRoot + '/logout?loginBcsc=true',
+  LOGIN: authRoot + '/login',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
   LOGOUT: authRoot + '/logout',
   SESSION_EXPIRED: authRoot + '/logout?sessionExpired=true',
@@ -26,4 +25,9 @@ export const ApiRoutes = Object.freeze({
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
   }
 });
+
+export const PAGE_TITLES = Object.freeze(
+  {
+    DASHBOARD: 'Dashboard'
+  });
 

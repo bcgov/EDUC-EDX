@@ -1,12 +1,19 @@
 <template>
-  <v-toolbar class="toolbar_header" dense width="100%">
+  <v-system-bar app absolute color="rgb(0, 51, 102)" height="56rem" class="sysBar pl-10 pr-10">
     <!-- Navbar content -->
+    <a tabindex="-1" href="/">
       <img
-              src="@/assets/images/bc-gov-logo.svg"
-              class="img-theme"
-              alt="B.C. Government Logo"
+          tabindex="-1"
+          src="@/assets/images/bc-gov-logo.svg"
+          width="155"
+          class="logo"
+          alt="B.C. Government Logo"
       >
-    <v-toolbar-title><span class="span-title">{{ appTitle }}</span></v-toolbar-title>
+    </a>
+    <a tabindex="-1" href="/">
+      <v-toolbar-title><h3 style="color:white">{{ appTitle }}</h3></v-toolbar-title>
+    </a>
+
 
     <v-spacer></v-spacer>
     <div v-if="isAuthenticated && dataReady">
@@ -34,7 +41,7 @@
       <v-skeleton-loader type="chip">
       </v-skeleton-loader>
     </div>
-  </v-toolbar>
+  </v-system-bar>
 </template>
 
 <script>
@@ -49,109 +56,46 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapGetters('auth', ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
     }
   },
 };
 </script>
-
 <style>
-  .v-icon {
-    padding-left: 10px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  .v-toolbar__content {
-    padding: 4px 10px 4px 65px;
-  }
-
-  .title {
-    width: 50%;
-    height: auto;
-    max-height: 50px !important;
-  }
-  .span-title{
-    color: white;
-    text-align: center !important;
-  }
-  @media screen and (min-width: 601px) {
-    .span-title {
-      font-size: 20px;
-    }
-    .img-theme {
-      width: 20%;
-      max-height: 40px !important;
-    }
-    .display-name{
-      display: inline-block;
-    }
-  }
-
-  @media screen and (min-width: 301px) and (max-width: 600px) {
-    .span-title {
-      padding-left: 2px !important;
-      font-size: 12px;
-    }
-    .img-theme {
-      align-content: center;
-      width: 35%;
-      max-height: 100px !important;
-      padding-right: inherit;
-    }
-    .display-name{
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 300px) {
-    .span-title {
-      padding-left: 2px !important;
-      font-size: 15px;
-    }
-    .img-theme {
-      width: 15%;
-      max-height: 100px !important;
-      padding-right: inherit;
-    }
-    .display-name{
-      display: none;
-    }
-  }
-  .toolbar_header {
-    background-color: rgb(0, 51, 102) !important;
-    border-bottom: 2px solid rgb(252, 186, 25) !important;
-    max-height: 3.5rem;
-  }
-
-  .gov-header .v-btn,
-  .v-btn--active.title:before,
-  .v-btn.title:focus:before,
-  .v-btn.title:hover:before {
-    color: #fff;
-    background: none;
-  }
-
-  .secondary_color {
-    background-color: var(--v-secondary-base);
-  }
-
-  .v-input__slot {
-    padding-top: 10px
-  }
-
-  .top-down {
-    padding-top: 20px;
-    height: 80%;
-  }
-
-  .v-alert {
-    margin-bottom: 0;
-  }
-
+.gov-header .v-icon{
+  padding-left: 10px;
+}
+a {
+  text-decoration: none;
+}
+.logo{
+  padding-right: 15px;
+}
+.gov-header .title {
+  color: #fff;
+  text-decoration: none;
+}
+.sysBar {
+  border-bottom: 2px solid rgb(252, 186, 25) !important;
+  z-index: 8;
+}
+.gov-header .v-btn,
+.v-btn--active.title:before,
+.v-btn.title:focus:before,
+.v-btn.title:hover:before {
+  color: #fff;
+  background: none;
+}
+.secondary_color {
+  background-color: var(--v-secondary-base);
+}
+.v-input__slot{
+  padding-top: 10px
+}
+.top-down{
+  padding-top: 20px;
+  height: 80%;
+}
 </style>

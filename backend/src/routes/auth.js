@@ -16,12 +16,7 @@ const router = express.Router();
 router.get('/', (_req, res) => {
   res.status(200).json({
     endpoints: [
-      '/callback_bcsc',
-      '/callback_bcsc_gmp',
-      '/callback_bcsc_ump',
       '/callback_bceid',
-      '/callback_bceid_gmp',
-      '/callback_bceid_ump',
       '/login',
       '/logout',
       '/refresh',
@@ -41,12 +36,7 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
   );
 }
 
-addOIDCRouterGet('oidcBcsc', '/callback_bcsc', config.get('server:frontend'));
-addOIDCRouterGet('oidcBcscGMP', '/callback_bcsc_gmp', config.get('server:frontend') + '/gmp');
-addOIDCRouterGet('oidcBcscUMP', '/callback_bcsc_ump', config.get('server:frontend') + '/ump');
 addOIDCRouterGet('oidcBceid', '/callback_bceid', config.get('server:frontend'));
-addOIDCRouterGet('oidcBceidGMP', '/callback_bceid_gmp', config.get('server:frontend') + '/gmp');
-addOIDCRouterGet('oidcBceidUMP', '/callback_bceid_ump', config.get('server:frontend') + '/ump');
 
 //a prettier way to handle errors
 router.get('/error', (_req, res) => {
@@ -59,12 +49,8 @@ function addBaseRouterGet(strategyName, callbackURI) {
   }));
 }
 
-addBaseRouterGet('oidcBcsc', '/login_bcsc');
-addBaseRouterGet('oidcBcscGMP', '/login_bcsc_gmp');
-addBaseRouterGet('oidcBcscUMP', '/login_bcsc_ump');
 addBaseRouterGet('oidcBceid', '/login_bceid');
-addBaseRouterGet('oidcBceidGMP', '/login_bceid_gmp');
-addBaseRouterGet('oidcBceidUMP', '/login_bceid_ump');
+
 
 //removes tokens and destroys session
 router.get('/logout', async (req, res) => {
@@ -75,18 +61,8 @@ router.get('/logout', async (req, res) => {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired');
   } else if (req.query && req.query.loginError) {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/login-error');
-  } else if (req.query && req.query.loginBcsc) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bcsc');
-  } else if (req.query && req.query.loginBcscGMP) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bcsc_gmp');
-  } else if (req.query && req.query.loginBcscUMP) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bcsc_ump');
   } else if (req.query && req.query.loginBceid) {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
-  } else if (req.query && req.query.loginBceidGMP) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_gmp');
-  } else if (req.query && req.query.loginBceidUMP) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_ump');
   } else {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
   }
@@ -170,4 +146,9 @@ router.get('/user-session-remaining-time', passport.authenticate('jwt', {session
     return res.sendStatus(401);
   }
 });
+
+//redirects to the SSO login screen
+router.get('/login', passport.authenticate('oidcBceid', {
+  failureRedirect: 'error'
+}));
 module.exports = router;
