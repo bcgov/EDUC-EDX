@@ -9,10 +9,10 @@ TZVALUE="America/Vancouver"
 SOAM_KC_REALM_ID="master"
 SOAM_KC=soam-$envValue.apps.silver.devops.gov.bc.ca
 siteMinderLogoutUrl=""
-HOST_ROUTE="https://edx-d4cdde-${envValue}.apps.silver.devops.gov.bc.ca"
+HOST_ROUTE="edx-${OPENSHIFT_NAMESPACE}-${envValue}.apps.silver.devops.gov.bc.ca"
 #HOST_ROUTE="${envValue}.educationdataexchange.gov.bc.ca"
 #SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
-SERVER_FRONTEND="https://edx-d4cdde-${envValue}.apps.silver.devops.gov.bc.ca"
+SERVER_FRONTEND="edx-${OPENSHIFT_NAMESPACE}-${envValue}.apps.silver.devops.gov.bc.ca"
 if [ "$envValue" != "prod" ]
 then
   siteMinderLogoutUrl="https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
