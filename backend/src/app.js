@@ -113,7 +113,6 @@ function addLoginPassportUse(discovery, strategyName, callbackURI, kc_idp_hint) 
 //initialize our authentication strategy
 utils.getOidcDiscovery().then(discovery => {
   //OIDC Strategy is used for authorization
-  addLoginPassportUse(discovery, 'oidcBcsc', config.get('server:frontend') + '/api/auth/callback_bcsc', 'keycloak_bcdevexchange_bcsc');
   addLoginPassportUse(discovery, 'oidcBceid', config.get('server:frontend') + '/api/auth/callback_bceid', 'keycloak_bcdevexchange_bceid');
 
   //JWT strategy is used for authorization
@@ -147,19 +146,6 @@ utils.getOidcDiscovery().then(discovery => {
 passport.serializeUser((user, next) => next(null, user));
 passport.deserializeUser((obj, next) => next(null, obj));
 
-
-// GetOK Base API Directory
-apiRouter.get('/', (_req, res) => {
-  res.status(200).json({
-    endpoints: [
-      '/api/auth',
-      '/api/student'
-    ],
-    versions: [
-      1
-    ]
-  });
-});
 
 app.use(morgan(config.get('server:morganFormat'), { 'stream': logStream }));
 //set up routing to auth and main API

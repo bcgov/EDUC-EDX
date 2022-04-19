@@ -9,13 +9,12 @@ import Logout from './components/Logout';
 import SessionExpired from './components/SessionExpired';
 import ErrorPage from '@/components/ErrorPage.vue';
 import LoginError from '@/components/LoginError.vue';
-import RouterView from './components/RouterView';
 import authStore from './store/modules/auth';
 import store from './store/index';
 import Login from '@/components/Login.vue';
 import BackendSessionExpired from '@/components/BackendSessionExpired';
-import ExchangePage from './components/ExchangePage';
-import { PAGE_TITLES } from './utils/constants';
+import {PAGE_TITLES} from '@/utils/constants';
+
 Vue.prototype.moment = moment;
 
 Vue.use(VueRouter);
@@ -30,6 +29,7 @@ const router = new VueRouter({
       name: 'home',
       component: Home,
       meta: {
+        pageTitle: PAGE_TITLES.DASHBOARD,
         requiresAuth: true
       },
 
@@ -71,39 +71,18 @@ const router = new VueRouter({
       path: '/token-expired',
       name: 'backend-session-expired',
       component: BackendSessionExpired
-    },
-    {
-      path: '/',
-      component: RouterView,
-      children: [
-        {
-          path: 'inbox',
-          name: 'inbox',
-          component: ExchangePage,
-          meta: {
-            pageTitle: PAGE_TITLES.EXCHANGE,
-            requiresAuth: true,
-            role: '*'
-          }
-        },
-        /*{
-          path: 'newExchange',
-          name: 'newExchange',
-          component: NewMessagePage,
-          meta: {
-            pageTitle: PAGE_TITLES.NEW_EXCHANGE,
-            requiresAuth: true,
-            role: 'EXCHANGE_ROLE'
-          }
-        }*/
-      ]
-    },
-
+    }
 
   ]
 });
 
 router.beforeEach((to, _from, next) => {
+  // this section is to set page title in vue store
+  if (to && to.meta) {
+    store.commit('app/setPageTitle',to.meta.pageTitle);
+  } else {
+    store.commit('app/setPageTitle','');
+  }
   if (to.meta.requiresAuth && authStore.state.isAuthenticated) {
     store.dispatch('auth/getJwtToken').then(() => {
       if (!authStore.state.isAuthenticated) {

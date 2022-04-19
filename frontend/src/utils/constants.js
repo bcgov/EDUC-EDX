@@ -4,8 +4,7 @@ const edxRoot = baseRoot + '/edx';
 let object;
 
 object = {
-  LOGIN:'/',
-  LOGIN_BCSC: authRoot + '/logout?loginBcsc=true',
+  LOGIN: authRoot + '/login',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
   LOGOUT: authRoot + '/logout',
   SESSION_EXPIRED: authRoot + '/logout?sessionExpired=true',
@@ -29,10 +28,6 @@ export const ApiRoutes = Object.freeze({
 
 export const PAGE_TITLES = Object.freeze(
   {
-    EXCHANGE: 'Secure Exchange Messaging',
-    NEW_EXCHANGE: 'New Message',
-  }
-);
-
-export const Routes = Object.freeze(object);
+    DASHBOARD: 'Dashboard'
+  });
 
