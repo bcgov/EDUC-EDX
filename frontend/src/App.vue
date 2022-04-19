@@ -2,6 +2,8 @@
   <v-app id="app">
     <MsieBanner v-if="isIE"/>
     <Header/>
+    <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
+    <v-main fluid class="align-start">
     <v-app-bar v-if="bannerColor !== ''"
                style="color:white;"
                :color="bannerColor"
@@ -10,18 +12,20 @@
     ><div><h3>{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
     <ModalIdle v-if="isAuthenticated"/>
     <router-view/>
+    </v-main>
     <Footer/>
   </v-app>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapMutations, mapGetters,mapState } from 'vuex';
 import HttpStatus from 'http-status-codes';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ModalIdle from './components/ModalIdle';
 import MsieBanner from './components/MsieBanner';
 import StaticConfig from './common/staticConfig';
+import NavBar from '@/components/util/NavBar';
 
 export default {
   name: 'app',
@@ -29,13 +33,15 @@ export default {
     Header,
     Footer,
     ModalIdle,
-    MsieBanner
+    MsieBanner,
+    NavBar,
   },
   metaInfo: {
     meta: StaticConfig.VUE_APP_META_DATA
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated', 'loginError', 'isLoading']),
+    ...mapState('app', ['pageTitle']),
     isIE() {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }

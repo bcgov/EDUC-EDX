@@ -13,6 +13,7 @@ import authStore from './store/modules/auth';
 import store from './store/index';
 import Login from '@/components/Login.vue';
 import BackendSessionExpired from '@/components/BackendSessionExpired';
+import {PAGE_TITLES} from '@/utils/constants';
 
 Vue.prototype.moment = moment;
 
@@ -28,6 +29,7 @@ const router = new VueRouter({
       name: 'home',
       component: Home,
       meta: {
+        pageTitle: PAGE_TITLES.DASHBOARD,
         requiresAuth: true
       },
 
@@ -75,6 +77,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, _from, next) => {
+  // this section is to set page title in vue store
+  if (to && to.meta) {
+    store.commit('app/setPageTitle',to.meta.pageTitle);
+  } else {
+    store.commit('app/setPageTitle','');
+  }
   if (to.meta.requiresAuth && authStore.state.isAuthenticated) {
     store.dispatch('auth/getJwtToken').then(() => {
       if (!authStore.state.isAuthenticated) {

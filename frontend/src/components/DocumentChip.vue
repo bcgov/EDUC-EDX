@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     deleteFile(documentData) {
-      return this.$store.dispatch(`edx/deleteFile`, documentData);
+      return this.$store.dispatch('edx/deleteFile', documentData);
     },
     setSuccessAlert(alertMessage) {
       this.alertMessage = alertMessage;
