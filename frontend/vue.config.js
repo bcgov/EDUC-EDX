@@ -33,7 +33,6 @@ module.exports = {
     }
   },
   devServer: {
-
     proxy:
       {
         ...['/api'].reduce(
