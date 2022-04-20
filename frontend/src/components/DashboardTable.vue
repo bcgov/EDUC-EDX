@@ -1,5 +1,5 @@
 <template>
-  <v-card flat :color="colour" class="mt-2" height="100%">
+  <v-card  :color="colour" class="mt-2" height="100%">
     <v-row class="pt-4 px-8">
       <v-col class="pa-0" cols="2">
         <v-card-title class="pa-0">

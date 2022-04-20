@@ -71,6 +71,10 @@ nconf.defaults({
   messaging:{
     natsUrl:process.env.NATS_URL,
     natsCluster:process.env.NATS_CLUSTER
+  },
+  edx: {
+    rootURL: process.env.EDX_API_URL,
+    exchangeURL: process.env.EDX_API_URL + '/exchange',
   }
 });
 module.exports = nconf;

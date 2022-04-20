@@ -7,11 +7,11 @@
           <v-expansion-panel-content>
             <v-list dense>
               <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item v-on:click="clickShowMessageType('messages')">
+                <v-list-item> <!--v-on:click="clickShowMessageType('messages')">-->
                   <v-list-item-content>All Messages</v-list-item-content>
                   <v-list-item-avatar>1</v-list-item-avatar>
                 </v-list-item>
-                <v-list-item v-on:click="clickShowMessageType('completed')">
+                <v-list-item> <!--v-on:click="clickShowMessageType('completed')">-->
                   <v-list-item-content>Completed Messages</v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -21,7 +21,7 @@
       </v-expansion-panels>
     </v-col>
     <v-col>
-      <v-row class='d-flex justify-end pb-2'>
+      <v-row class='d-flex justify-lg-end pb-2'>
         <PrimaryButton
           id="newMessageBtn"
           text="New Message"
@@ -133,7 +133,7 @@
           <v-select
               id="status-text-field"
               v-model="headerSearchParams.status"
-              :items="statuses"
+              :items="[]"
               item-text='secureExchangeStatusCode'
               item-value='secureExchangeStatusCode'
               class="header-text"
@@ -164,9 +164,9 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+
 import ApiService from '../common/apiService';
-import {Routes} from '@/utils/constants';
+import {ApiRoutes} from '@/utils/constants';
 
 import PrimaryButton from './util/PrimaryButton';
 
@@ -239,46 +239,12 @@ export default {
     }
   },
   created() {
-    /* this.$store.dispatch('app/getCodes');
     this.$store.dispatch('edx/getCodes');
-    this.getRequests();*/
-    this.getMockData();
+    this.getRequests();
+    /*this.getMockData();*/
   },
   methods: {
-    getMockData(){
-      this.requests = [{
-        'SECURE_EXCHANGE_ID': '8E23DD717F041E7E817F046EBDC60000',
-        'secureExchangeContactTypeCode': 'SCHOOL',
-        'EDX_MINISTRY_OWNERSHIP_TEAM_ID': 'D81977F81ADCBAD7E0539AE9228EF97C',
-        'contact': '06161018',
-        'secureExchangeStatusCode': 'NEW',
-        'REVIEWER': 'MINYANG',
-        'IS_READ_BY_MINISTRY': 'Y',
-        'IS_READ_BY_CONTACT': 'N',
-        'subject': 'ID Document',
-        'STATUS_UPDATE_TIMESTAMP': '2022-02-16 13:27:20',
-        'sequenceNumber': 26,
-        'CREATE_USER': 'MINYANG',
-        'createDate': '2022-02-16 13:27:20',
-        'UPDATE_USER': 'MINYANG',
-        'UPDATE_DATE': '2022-02-16 13:27:20'
-      }];
-      this.totalRequests = 1;
-      this.loadingTable = false;
 
-    },
-    clickViewMessageDetails(message) {
-      //mocked function that will show the full message details when clicked
-      // console.log(`message id ${message.secureExchangeID} was clicked`);
-      console.log('message was clicked');
-    },
-    clickShowMessageType(messageType) {
-      //mocked function that will send a get request for the message inbox items
-      //console.log('showing ' + messageType);
-      console.log('showing ');
-      /*this.getRequests();*/
-      this.getMockData();
-    },
     getRequests() {
       this.loadingTable = true;
       this.requests = [];
@@ -287,7 +253,7 @@ export default {
         createDate: 'ASC'
       };
 
-      ApiService.apiAxios.get(Routes.edx.EXCHANGE_URL, {params: {pageNumber: this.pageNumber - 1, pageSize: this.pageSize, sort}})
+      ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {params: {pageNumber: this.pageNumber - 1, pageSize: this.pageSize, sort}})
         .then(response => {
           this.requests = response.data.content;
           this.totalRequests = response.data.totalElements;
@@ -325,12 +291,12 @@ export default {
   },
   watch: {
     pageSize() {
-      /*this.getRequests();*/
-      this.getMockData();
+      this.getRequests();
+      /*this.getMockData();*/
     },
     pageNumber() {
-      /*this.getRequests();*/
-      this.getMockData();
+      this.getRequests();
+      /*this.getMockData();*/
     }
   }
 };

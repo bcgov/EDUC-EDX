@@ -1,11 +1,12 @@
 'use strict';
-
-const { getSessionUser, getAccessToken, deleteData, getData, postData, SecureExchangeStatuses } = require('./utils');
+const {FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
+const { getSessionUser, getAccessToken, deleteData, getData, postData, SecureExchangeStatuses, errorResponse } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
 const lodash = require('lodash');
 const HttpStatus = require('http-status-codes');
 const { ServiceError } = require('./error');
+const {LocalDateTime} = require('@js-joda/core');
 
 let codes = null;
 
@@ -217,11 +218,73 @@ async function downloadFile(req, res) {
   }
 }
 
+async function getExchanges(req, res) {
+
+  const params = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: req.query.searchParams?JSON.stringify(buildSearchParams(req.query.searchParams)):'[]',
+    }
+  };
+
+  try {
+    const token = getAccessToken(req);
+
+    const response = await getData(token, config.get('edx:exchangeURL')+'/paginated', params);
+    return res.status(HttpStatus.OK).json(response);
+  } catch (e) {
+    log.error(e, 'getExchanges', 'Error getting paginated list of secure exchanges.');
+    return errorResponse(res);
+  }
+}
+
+/**
+ * Returns an array of search criteria objects to query EDX API
+ *
+ * @param searchParams object with keys of the columns we are searching for
+ */
+const buildSearchParams = (searchParams) => {
+  return Object.entries(JSON.parse(searchParams))
+    .map(([key, value]) => createSearchParamObject(key, value));
+};
+
+/**
+ * Returns an object that has the following properties key, value, operation, valueType
+ * Helper function when building search params for querying EDX API
+ *
+ * @param key of what we are searching in
+ * @param value of what we are searching for
+ */
+const createSearchParamObject = (key, value) => {
+  let operation = FILTER_OPERATION.CONTAINS_IGNORE_CASE;
+  let valueType = VALUE_TYPE.STRING;
+
+  if (key === 'sequenceNumber') {
+    operation = FILTER_OPERATION.EQUAL;
+  }
+
+  if (key === 'createDate') {
+    value.forEach((date, index) => {
+      value[index] = date + 'T00:00:01';
+    });
+    if (value.length === 1) {
+      value.push(LocalDateTime.now().toString());
+    }
+    value = value.join(',');
+    operation = FILTER_OPERATION.BETWEEN;
+    valueType = VALUE_TYPE.DATE_TIME;
+  }
+  return {key, value, operation, valueType};
+};
+
 module.exports = {
   getUserInfo,
   verifyRequest,
   deleteDocument,
   downloadFile,
   uploadFile,
-  uploadFileWithoutRequest
+  uploadFileWithoutRequest,
+  getExchanges
 };

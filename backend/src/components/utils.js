@@ -232,6 +232,13 @@ function formatCommentTimestamp(time) {
   return timestamp.format(DateTimeFormatter.ofPattern('yyyy-MM-dd h:mma').withLocale(Locale.CANADA));
 }
 
+function errorResponse(res, msg, code) {
+  return res.status(code || HttpStatus.INTERNAL_SERVER_ERROR).json({
+    message: msg || 'INTERNAL SERVER ERROR',
+    code: code || HttpStatus.INTERNAL_SERVER_ERROR
+  });
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -246,7 +253,8 @@ const utils = {
   putData,
   SecureExchangeStatuses,
   generateJWTToken,
-  formatCommentTimestamp
+  formatCommentTimestamp,
+  errorResponse
 };
 
 module.exports = utils;

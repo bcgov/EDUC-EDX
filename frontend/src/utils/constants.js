@@ -21,6 +21,7 @@ export const ApiRoutes = Object.freeze({
   CONFIG: baseRoot + '/config',
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
+    EXCHANGE_URL:edxRoot + '/exchange',
     DOCUMENT_TYPE_CODES: edxRoot + '/document-type-codes',
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
   }
@@ -28,6 +29,8 @@ export const ApiRoutes = Object.freeze({
 
 export const PAGE_TITLES = Object.freeze(
   {
-    DASHBOARD: 'Dashboard'
+    DASHBOARD: 'Dashboard',
+    EXCHANGE: 'Secure Exchange Inbox',
+    NEW_EXCHANGE: 'New Message'
   });
 
