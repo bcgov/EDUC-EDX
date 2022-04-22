@@ -139,7 +139,7 @@ describe('getServerSideCodes', () => {
     expect(result).toBeTruthy();
     expect(result.identityTypes).toEqual(codes);
     expect(exchange.__get__('codes').identityTypes).toEqual(codes);
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('token', `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`);
   });
 
