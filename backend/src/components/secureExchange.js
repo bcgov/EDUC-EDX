@@ -87,12 +87,11 @@ async function getServerSideCodes(accessToken, correlationID) {
   if(!codes) {
     try{
       const codeUrls = [
-        `${config.get('student:apiEndpoint')}/sex-codes`,
         `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`
       ];
 
-      const [sexCodes, identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
-      codes = {sexCodes, identityTypes};
+      const [identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
+      codes = {identityTypes};
     } catch(e) {
       throw new ServiceError('getServerSideCodes error', e);
     }
