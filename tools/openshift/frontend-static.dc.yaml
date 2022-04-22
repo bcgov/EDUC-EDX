@@ -34,14 +34,14 @@
             deploymentconfig: "${APP_NAME}-frontend-${JOB_NAME}"
         spec:
           containers:
-          - image: docker-registry.default.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
+          - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
             imagePullPolicy: Always
             volumeMounts:
             - name: tls-certs
               mountPath: "/etc/tls-certs"
               readOnly: true
             - name: config-env
-              mountPath: "/var/www/html/js/config"
+              mountPath: "/srv/js/config"
             livenessProbe:
               failureThreshold: 3
               httpGet:
@@ -136,10 +136,10 @@
       port:
         targetPort: 2015-tcp
       tls:
-        caCertificate: "${CA_CERT}"
-        certificate: "${CERTIFICATE}"
+        caCertificate: ${CA_CERT}
+        certificate: ${CERTIFICATE}
         insecureEdgeTerminationPolicy: Redirect
-        key: "${PRIVATE_KEY}"
+        key: ${PRIVATE_KEY}
         termination: edge
       to:
         kind: Service
