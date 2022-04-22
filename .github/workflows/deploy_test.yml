@@ -22,8 +22,6 @@ env:
   IMAGE_REGISTRY_PASSWORD: ${{ github.token }}
 
   IMAGE_NAME: edx-backend-master
-  DOCKER_ARTIFACTORY_REPO: docker-remote.artifacts.developer.gov.bc.ca
-  ARTIFACTORY_REPO: artifacts.developer.gov.bc.ca
 
   APP_NAME: 'edx'
   REPO_NAME: "educ-edx"
@@ -35,16 +33,15 @@ env:
   NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}
   NAMESPACE_TOOLS: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-tools
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
-  TAG: "latest"
-  TARGET_ENV: "dev"
+  TARGET_ENV: "test"
   MIN_REPLICAS: "1"
   MAX_REPLICAS: "1"
   MIN_CPU: "50m"
   MAX_CPU: "100m"
   MIN_MEM: "200Mi"
   MAX_MEM: "250Mi"
-  HOST_ROUTE: "test.educationdataexchange.gov.bc.ca"
-  #TODO: change HOST_ROUTE to above once certificate is installed.
+  # SITE_URL should have no scheme or port. It will be prepended with https://
+  HOST_ROUTE: ${{ secrets.SITE_URL }}
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
