@@ -12,7 +12,7 @@ siteMinderLogoutUrl=""
 HOST_ROUTE="edx-${OPENSHIFT_NAMESPACE}-${envValue}.apps.silver.devops.gov.bc.ca"
 #HOST_ROUTE="${envValue}.educationdataexchange.gov.bc.ca"
 #SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
-SERVER_FRONTEND="edx-${OPENSHIFT_NAMESPACE}-${envValue}.apps.silver.devops.gov.bc.ca"
+SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
 if [ "$envValue" != "prod" ]
 then
   siteMinderLogoutUrl="https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
