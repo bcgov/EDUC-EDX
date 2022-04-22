@@ -74,7 +74,7 @@ objects:
             limits:
               cpu: "${MAX_CPU}"
               memory: "${MAX_MEM}"
-        - image: docker-remote.artifacts.developer.gov.bc.ca/fluent/fluent-bit:1.5.7
+        - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/fluent-bit:1.5.7
           name: "${APP_NAME}-${BRANCH}-fluent-bit-sidecar"
           imagePullPolicy: Always
           imagePullSecrets:
