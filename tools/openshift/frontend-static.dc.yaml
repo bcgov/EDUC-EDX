@@ -14,13 +14,13 @@
         openshift.io/generated-by: OpenShiftNewApp
       creationTimestamp:
       labels:
-        app: "${APP_NAME}-${JOB_NAME}"
-      name: "${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+      name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       replicas: ${{MIN_REPLICAS}}
       selector:
-        app: "${APP_NAME}-${JOB_NAME}"
-        deploymentconfig: "${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+        deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
       strategy:
         resources: {}
         type: Rolling
@@ -30,8 +30,8 @@
             openshift.io/generated-by: OpenShiftNewApp
           creationTimestamp:
           labels:
-            app: "${APP_NAME}-${JOB_NAME}"
-            deploymentconfig: "${APP_NAME}-frontend-${JOB_NAME}"
+            app: "${APP_NAME}-${BRANCH}"
+            deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
         spec:
           containers:
           - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
@@ -51,7 +51,7 @@
               periodSeconds: 10
               successThreshold: 1
               timeoutSeconds: 1
-            name: "${APP_NAME}-frontend-${JOB_NAME}"
+            name: "${APP_NAME}-frontend-${BRANCH}"
             ports:
             - containerPort: 2015
               protocol: TCP
@@ -89,8 +89,8 @@
         openshift.io/generated-by: OpenShiftNewApp
       creationTimestamp:
       labels:
-        app: "${APP_NAME}-${JOB_NAME}"
-      name: "${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+      name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       ports:
       - name: 2015-tcp
@@ -98,16 +98,16 @@
         protocol: TCP
         targetPort: 2015
       selector:
-        app: "${APP_NAME}-${JOB_NAME}"
-        deploymentconfig: "${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+        deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
   - apiVersion: v1
     kind: Route
     metadata:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: "${APP_NAME}-${JOB_NAME}"
-      name: "${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+      name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       host: "${HOST_ROUTE}"
       port:
@@ -120,7 +120,7 @@
         termination: edge
       to:
         kind: Service
-        name: "${APP_NAME}-frontend-${JOB_NAME}"
+        name: "${APP_NAME}-frontend-${BRANCH}"
         weight: 100
       wildcardPolicy: None
   - apiVersion: v1
@@ -129,8 +129,8 @@
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: "${APP_NAME}-${JOB_NAME}"
-      name: "www.${APP_NAME}-frontend-${JOB_NAME}"
+        app: "${APP_NAME}-${BRANCH}"
+      name: "www.${APP_NAME}-frontend-${BRANCH}"
     spec:
       host: "www.${HOST_ROUTE}"
       port:
@@ -143,18 +143,18 @@
         termination: edge
       to:
         kind: Service
-        name: "${APP_NAME}-frontend-${JOB_NAME}"
+        name: "${APP_NAME}-frontend-${BRANCH}"
         weight: 100
       wildcardPolicy: None
   - apiVersion: autoscaling/v2beta1
     kind: HorizontalPodAutoscaler
     metadata:
-      name: "${APP_NAME}-frontend-${JOB_NAME}-cpu-autoscaler"
+      name: "${APP_NAME}-frontend-${BRANCH}-cpu-autoscaler"
     spec:
       scaleTargetRef:
         apiVersion: apps.openshift.io/v1
         kind: DeploymentConfig
-        name: "${APP_NAME}-frontend-${JOB_NAME}"
+        name: "${APP_NAME}-frontend-${BRANCH}"
         subresource: scale
       minReplicas: ${{MIN_REPLICAS}}
       maxReplicas: ${{MAX_REPLICAS}}
@@ -167,7 +167,7 @@
   - name: REPO_NAME
     description: Application repository name
     required: true
-  - name: JOB_NAME
+  - name: BRANCH
     description: Job identifier (i.e. 'pr-5' OR 'master')
     required: true
   - name: NAMESPACE
