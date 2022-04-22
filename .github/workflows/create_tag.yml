@@ -61,4 +61,4 @@ jobs:
         oc project ${{ env.OPENSHIFT_NAMESPACE }}
         
         oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:latest ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ github.event.inputs.version }}
-        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-{{ env.BRANCH }}:latest ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-{{ env.BRANCH }}:${{ github.event.inputs.version }}
+        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:latest ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ github.event.inputs.version }}
