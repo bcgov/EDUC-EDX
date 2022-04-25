@@ -3,7 +3,7 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges } = require('../components/secureExchange');
-const { forwardGetReq } = require('../components/utils');
+const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
@@ -41,5 +41,5 @@ router.get('/exchanges/:id/documents/:documentId/download/:fileName', auth.refre
 router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, deleteDocument]);
 
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
-
+router.get('/exchange/statuses', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:exchangeStatusesURL', 'exchangeStatuses'));
 module.exports = router;

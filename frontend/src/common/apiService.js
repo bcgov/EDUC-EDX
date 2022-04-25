@@ -119,4 +119,15 @@ export default {
       throw e;
     }
   },
+  getExchangeStatuses: getCodes(`${ApiRoutes.edx.STATUSES_URL}`),
 };
+function getCodes(url) {
+  return async function getCodesHandler(query) {
+    try {
+      return await apiAxios.get(url, query);
+    } catch (e) {
+      console.log(`Failed to get from Nodejs API - ${e}`);
+      throw e;
+    }
+  };
+}

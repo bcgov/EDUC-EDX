@@ -9,7 +9,7 @@
               <v-list-item-group v-model="selectedItem" color="primary">
                 <v-list-item> <!--v-on:click="clickShowMessageType('messages')">-->
                   <v-list-item-content>All Messages</v-list-item-content>
-                  <v-list-item-avatar>1</v-list-item-avatar>
+                  <v-list-item-avatar>{{totalRequests}}</v-list-item-avatar>
                 </v-list-item>
                 <v-list-item> <!--v-on:click="clickShowMessageType('completed')">-->
                   <v-list-item-content>Completed Messages</v-list-item-content>
