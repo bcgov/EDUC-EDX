@@ -137,25 +137,20 @@ describe('getServerSideCodes', () => {
     const result = await exchange.__get__('getServerSideCodes')('token');
 
     expect(result).toBeTruthy();
-    expect(result.sexCodes).toEqual(codes);
     expect(result.identityTypes).toEqual(codes);
-    expect(exchange.__get__('codes').sexCodes).toEqual(codes);
     expect(exchange.__get__('codes').identityTypes).toEqual(codes);
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('student:apiEndpoint')}/sex-codes`);
+    expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('token', `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`);
   });
 
   it('should not call getData if codes exist', async () => {
     exchange.__set__('codes', {
-      sexCodes: codes,
       identityTypes: codes
     });
 
     const result = await exchange.__get__('getServerSideCodes')('token');
 
     expect(result).toBeTruthy();
-    expect(result.sexCodes).toEqual(codes);
     expect(result.identityTypes).toEqual(codes);
     expect(spy).toHaveBeenCalledTimes(0);
   });
@@ -185,16 +180,6 @@ describe('getUserInfo', () => {
   };
 
   const codes = {
-    sexCodes: [
-      {
-        sexCode: 'M',
-        label: 'Male',
-      },
-      {
-        sexCode: 'F',
-        label: 'Female',
-      }
-    ],
     identityTypes: [
       {
         identityTypeCode: 'BCSC',

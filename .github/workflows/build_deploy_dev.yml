@@ -1,30 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# 💁 The OpenShift Starter workflow will:
-# - Checkout your repository
-# - Perform a container image build
-# - Push the built image to the GitHub Container Registry (GHCR)
-# - Log in to your OpenShift cluster
-# - Create an OpenShift app from the image and expose it to the internet
-
-# ℹ️ Configure your repository and the workflow with the following steps:
-# 1. Have access to an OpenShift cluster. Refer to https://www.openshift.com/try
-# 2. Create the OPENSHIFT_SERVER and OPENSHIFT_TOKEN repository secrets. Refer to:
-#   - https://github.com/redhat-actions/oc-login#readme
-#   - https://docs.github.com/en/actions/reference/encrypted-secrets
-#   - https://cli.github.com/manual/gh_secret_set
-# 3. (Optional) Edit the top-level 'env' section as marked with '🖊️' if the defaults are not suitable for your project.
-# 4. (Optional) Edit the build-image step to build your project.
-#    The default build type is by using a Dockerfile at the root of the repository,
-#    but can be replaced with a different file, a source-to-image build, or a step-by-step buildah build.
-# 5. Commit and push the workflow file to your default branch to trigger a workflow run.
-
-# 👋 Visit our GitHub organization at https://github.com/redhat-actions/ to see our actions and provide feedback.
-
-name: OpenShift
+name: Build & Deploy to DEV
 
 env:
   # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
@@ -33,19 +7,13 @@ env:
   OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
-  OPENSHIFT_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE }}
+  OPENSHIFT_NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-dev
 
   SPLUNK_TOKEN: ${{ secrets.SPLUNK_TOKEN }}
 
-  CA_CERT: ${{ secrets.CA_CERT_DEV }}
-  CERTIFICATE: ${{ secrets.CERT_DEV }}
-  PRIVATE_KEY: ${{ secrets.PRIV_KEY_DEV }}
-
-
-  # 🖊️ EDIT with the port your application should be accessible on.
-  # If the container image exposes *exactly one* port, this can be left blank.
-  # Refer to the 'port' input of https://github.com/redhat-actions/oc-new-app
-  APP_PORT: ""
+  CA_CERT: ${{ secrets.CA_CERT }}
+  CERTIFICATE: ${{ secrets.CERT }}
+  PRIVATE_KEY: ${{ secrets.PRIV_KEY }}
 
   # 🖊️ EDIT to change the image registry settings.
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
@@ -53,24 +21,19 @@ env:
   IMAGE_REGISTRY_USER: ${{ github.actor }}
   IMAGE_REGISTRY_PASSWORD: ${{ github.token }}
 
-  # 🖊️ EDIT to specify custom tags for the container image, or default tags will be generated below.
-  IMAGE_TAGS: ""
-
-  SOURCE_REPO_URL: https://github.com/bcgov/educ-edx.git
-
   IMAGE_NAME: edx-backend-master
   DOCKER_ARTIFACTORY_REPO: docker-remote.artifacts.developer.gov.bc.ca
   ARTIFACTORY_REPO: artifacts.developer.gov.bc.ca
 
   APP_NAME: 'edx'
   REPO_NAME: "educ-edx"
-  JOB_NAME: "master"
+  BRANCH: "master"
   APP_NAME_BACKEND: "edx-backend-master"
   APP_NAME_FRONTEND: "edx-frontend"
   APP_NAME_FRONTEND_MASTER: "edx-frontend-master"
   APP_NAME_FRONTEND_STATIC: "edx-frontend-static"
-  NAMESPACE: ${{ secrets.NAMESPACE_NO_ENV }}
-  NAMESPACE_TOOLS: ${{ secrets.NAMESPACE_NO_ENV }}-tools
+  NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}
+  NAMESPACE_TOOLS: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-tools
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
   TAG: "latest"
   TARGET_ENV: "dev"
@@ -80,9 +43,8 @@ env:
   MAX_CPU: "100m"
   MIN_MEM: "200Mi"
   MAX_MEM: "250Mi"
-  #HOST_ROUTE: "dev.educationdataexchange.gov.bc.ca"
-  #TODO: change HOST_ROUTE to above once certificate is installed.
-  HOST_ROUTE: "edx-${{ secrets.NAMESPACE_NO_ENV }}-dev.apps.silver.devops.gov.bc.ca"
+  # SITE_URL should have no scheme or port. It will be prepended with https://
+  HOST_ROUTE: ${{ secrets.SITE_URL }}
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
@@ -90,10 +52,10 @@ on:
 
 jobs:
   openshift-ci-cd:
-    name: Build and deploy to OpenShift
+    name: Build and deploy to DEV
     # ubuntu-20.04 can also be used.
     runs-on: ubuntu-18.04
-    environment: production
+    environment: dev
 
     outputs:
       ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
@@ -146,11 +108,6 @@ jobs:
       run: |
         echo "APP_NAME_BACKEND=$(basename $PWD)" | tee -a $GITHUB_ENV
 
-    - name: Determine image tags
-      if: env.IMAGE_TAGS == ''
-      run: |
-        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
-
     - name: Login to Docker Hub
       uses: docker/login-action@v1
       with:
@@ -164,7 +121,7 @@ jobs:
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.APP_NAME_BACKEND }}
-        tags: ${{ env.IMAGE_TAGS }}
+        tags: "latest"
 
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
         # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
@@ -184,26 +141,12 @@ jobs:
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-#    - name: Install NPM
-#      working-directory: ./frontend
-#      run: npm install
-
-#    - name: Cache node modules
-#      uses: actions/cache@v3
-#      with:
-#        path: frontend/node_modules
-#        key: ${{ runner.os }}-node_modules
-
-#    - name: Build native application
-#      working-directory: ./frontend
-#      run: npm run build
-
     - name: Build frontend from Dockerfile
       id: build-image-frontend
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.APP_NAME_FRONTEND }}
-        tags: ${{ env.IMAGE_TAGS }}
+        tags: "latest"
 
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
         # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
@@ -241,21 +184,21 @@ jobs:
         || true && echo "No rollout in progress"
         
         # Create the image stream if it doesn't exist
-        oc create imagestream ${{ env.REPO_NAME }}-backend-${{ env.JOB_NAME }} 2> /dev/null || true && echo "Backend image stream in place"
+        oc create imagestream ${{ env.REPO_NAME }}-backend-${{ env.BRANCH }} 2> /dev/null || true && echo "Backend image stream in place"
         oc create imagestream ${{ env.REPO_NAME }}-frontend-static 2> /dev/null || true && echo "Frontend image stream in place"
         
-        oc tag ${{ steps.push-image-backend.outputs.registry-path }} ${{ env.REPO_NAME }}-backend-${{ env.JOB_NAME }}:${{ env.TAG }}
+        oc tag ${{ steps.push-image-backend.outputs.registry-path }} ${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ env.TAG }}
         oc tag ${{ steps.push-image-frontend.outputs.registry-path }} ${{ env.REPO_NAME }}-frontend-static:${{ env.TAG }}
         
         # Process and apply deployment template
-        oc process -f tools/openshift/backend.dc.ocp4.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ env.TAG }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }}\
+        oc process -f tools/openshift/backend.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ env.TAG }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }}\
         | oc apply -f -
         
         # Process and apply deployment template
-        oc process -f tools/openshift/frontend-static.dc.ocp4.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p JOB_NAME=${{ env.JOB_NAME }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ env.TAG }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }} -p CA_CERT=${{ env.CA_CERT }} -p CERTIFICATE=${{ env.CERTIFICATE }} -p PRIVATE_KEY=${{ env.PRIVATE_KEY }}\
+        oc process -f tools/openshift/frontend-static.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ env.TAG }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }} -p CA_CERT="${{ env.CA_CERT }}" -p CERTIFICATE="${{ env.CERTIFICATE }}" -p PRIVATE_KEY="${{ env.PRIVATE_KEY }}"\
         | oc apply -f -
         
-        curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/master/tools/jenkins/update-configmap.sh | bash /dev/stdin ${{ env.TARGET_ENV }} ${{ env.APP_NAME }} ${{ env.NAMESPACE }} ${{ env.COMMON_NAMESPACE }} ${{ env.SPLUNK_TOKEN }}
+        curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/master/tools/config/update-configmap.sh | bash /dev/stdin ${{ env.TARGET_ENV }} ${{ env.APP_NAME }} ${{ env.NAMESPACE }} ${{ env.COMMON_NAMESPACE }} ${{ env.SPLUNK_TOKEN }}
         
         # Start rollout (if necessary) and follow it
         oc rollout latest dc/${{ env.IMAGE_NAME }} 2> /dev/null \
@@ -263,34 +206,11 @@ jobs:
         
         oc rollout latest dc/${{ env.APP_NAME_FRONTEND_MASTER }} 2> /dev/null \
         || true && echo "Rollout in progress"
-#        oc logs -f dc/${{ env.IMAGE_NAME }}
-#        # Get status, returns 0 if rollout is successful
-#        oc rollout status dc/${{ env.IMAGE_NAME }}
-#    - name: Deploy
-#      uses: actions/checkout@v2
-#      run: |
+        oc logs -f dc/${{ env.IMAGE_NAME }}
+        # Get status, returns 0 if rollout is successful
+        oc rollout status dc/${{ env.IMAGE_NAME }}
 
-
-#    # This step should create a deployment, service, and route to run your app and expose it to the internet.
-#    # https://github.com/redhat-actions/oc-new-app#readme
-#    - name: Create and expose app
-#      id: deploy-and-expose
-#      uses: redhat-actions/oc-new-app@v1
-#      with:
-#        app_name: ${{ env.APP_NAME }}
-#        image: ${{ steps.push-image.outputs.registry-path }}
-#        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-#        port: ${{ env.APP_PORT }}
-#
-#    - name: Print application URL
-#      env:
-#        ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
-#        SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
-#      run: |
-#        [[ -n ${{ env.ROUTE }} ]] || (echo "Determining application route failed in previous step"; exit 1)
-#        echo
-#        echo "======================== Your application is available at: ========================"
-#        echo ${{ env.ROUTE }}
-#        echo "==================================================================================="
-#        echo
-#        echo "Your app can be taken down with: \"oc delete all --selector='${{ env.SELECTOR }}'\""
+    - name: ZAP Scan
+      uses: zaproxy/action-full-scan@v0.3.0
+      with:
+        target: 'https://${{ env.HOST_ROUTE }}'
