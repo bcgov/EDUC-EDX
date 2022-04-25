@@ -120,6 +120,7 @@ export default {
     }
   },
   getExchangeStatuses: getCodes(`${ApiRoutes.edx.STATUSES_URL}`),
+  getMinistryTeamCodes: getCodes(`${ApiRoutes.edx.MINISTRY_TEAM_URL}`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

@@ -63,6 +63,8 @@
           <v-text-field
               id="contact-text-field"
               v-model="headerSearchParams.contact"
+              item-text="ministryOwnershipTeamID"
+              item-value="ministryOwnershipTeamID"
               class="header-text"
               outlined
               dense
@@ -144,20 +146,6 @@
           </v-select>
         </template>
         <template v-slot:no-data>There are no messages.</template>
-<!--        <template v-slot:item="{ item, index }">
-          <tr v-on:click="clickViewMessageDetails(item)"
-              :key="index"
-              :class="[{'unread': item.isReadByMinistry === 'N'}, 'tableRow']">
-            <td>{{ item.sequenceNumber }}</td>
-            <td>{{ getContactName(item)}}</td>
-            <td>{{ item.subject }}</td>
-            <td>{{
-                item.createDate ? moment(item.createDate).format('YYYY/MM/DD') : ''
-              }}
-            </td>
-            <td>{{ item.secureExchangeStatusCode }}</td>
-          </tr>
-        </template>-->
       </v-data-table>
     </v-col>
   </v-row>
@@ -240,8 +228,8 @@ export default {
   },
   created() {
     this.$store.dispatch('edx/getCodes');
+    this.$store.dispatch('edx/getMinistryTeams');
     this.getRequests();
-    /*this.getMockData();*/
   },
   methods: {
 
@@ -292,11 +280,9 @@ export default {
   watch: {
     pageSize() {
       this.getRequests();
-      /*this.getMockData();*/
     },
     pageNumber() {
       this.getRequests();
-      /*this.getMockData();*/
     }
   }
 };

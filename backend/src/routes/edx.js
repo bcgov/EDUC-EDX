@@ -42,4 +42,6 @@ router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt
 
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
 router.get('/exchange/statuses', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:exchangeStatusesURL', 'exchangeStatuses'));
+router.get('users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', 'ministryTeams'));
+
 module.exports = router;

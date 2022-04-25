@@ -1,6 +1,7 @@
 const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
+
 let object;
 
 object = {
@@ -25,6 +26,7 @@ export const ApiRoutes = Object.freeze({
     DOCUMENT_TYPE_CODES: edxRoot + '/document-type-codes',
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
     STATUSES_URL: edxRoot + '/exchange/statuses',
+    MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams'
   }
 });
 

@@ -329,7 +329,8 @@ const utils = {
   formatCommentTimestamp,
   errorResponse,
   getCodes,
-  cacheMiddleware
+  cacheMiddleware,
+  getCodeTable
 };
 
 module.exports = utils;

@@ -1,18 +1,27 @@
 'use strict';
 const {FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
-const { getSessionUser, getAccessToken, deleteData, getData, postData, SecureExchangeStatuses, errorResponse } = require('./utils');
+const {
+  getSessionUser,
+  getAccessToken,
+  deleteData,
+  getData,
+  postData,
+  SecureExchangeStatuses,
+  errorResponse,
+  getCodeTable
+} = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
 const lodash = require('lodash');
 const HttpStatus = require('http-status-codes');
-const { ServiceError } = require('./error');
+const {ServiceError} = require('./error');
 const {LocalDateTime} = require('@js-joda/core');
 
 let codes = null;
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
-  if(!userInfo) {
+  if (!userInfo) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       status: HttpStatus.UNAUTHORIZED,
       message: 'you are not authorized to access this page'
@@ -20,7 +29,7 @@ function verifyRequest(req, res, next) {
   }
 
   const secureExchangeID = req.params.id;
-  if(!req || !req.session || !req.session['secureExchange'] || req.session['secureExchange']['secureExchangeID'] !== secureExchangeID) {
+  if (!req || !req.session || !req.session['secureExchange'] || req.session['secureExchange']['secureExchangeID'] !== secureExchangeID) {
     return res.status(HttpStatus.BAD_REQUEST).json({
       message: 'Wrong secureExchangeID'
     });
@@ -40,7 +49,7 @@ async function getDigitalIdData(token, digitalID, correlationID) {
 async function getUserInfo(req, res) {
   const userInfo = getSessionUser(req);
   const correlationID = req.session?.correlationID;
-  if(!userInfo || !userInfo.jwt || !userInfo._json || !userInfo._json.digitalIdentityID) {
+  if (!userInfo || !userInfo.jwt || !userInfo._json || !userInfo._json.digitalIdentityID) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No session data'
     });
@@ -55,14 +64,14 @@ async function getUserInfo(req, res) {
   ]).then(async ([digitalIdData, codesData]) => {
 
     const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
-    if(! identityType) {
+    if (!identityType) {
       log.error('getIdentityType Error identityTypeCode', digitalIdData.identityTypeCode);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: 'Wrong identityTypeCode'
       });
     }
 
-    if(req && req.session){
+    if (req && req.session) {
       req.session.digitalIdentityData = digitalIdData;
       req.session.digitalIdentityData.identityTypeLabel = identityType.label;
     } else {
@@ -85,15 +94,15 @@ async function getUserInfo(req, res) {
 }
 
 async function getServerSideCodes(accessToken, correlationID) {
-  if(!codes) {
-    try{
+  if (!codes) {
+    try {
       const codeUrls = [
         `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`
       ];
 
       const [identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
       codes = {identityTypes};
-    } catch(e) {
+    } catch (e) {
       throw new ServiceError('getServerSideCodes error', e);
     }
   }
@@ -101,15 +110,15 @@ async function getServerSideCodes(accessToken, correlationID) {
 }
 
 async function uploadFile(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
     }
 
-    if(!req.session['secureExchange'] || req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
+    if (!req.session['secureExchange'] || req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Upload secureExchange file not allowed'
       });
@@ -120,7 +129,7 @@ async function uploadFile(req, res) {
 
     const data = await postData(accessToken, req.body, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
-  } catch(e) {
+  } catch (e) {
     log.error('uploadFile Error', e.stack);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'Upload secureExchange file error'
@@ -129,9 +138,9 @@ async function uploadFile(req, res) {
 }
 
 async function uploadFileWithoutRequest(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -145,7 +154,7 @@ async function uploadFileWithoutRequest(req, res) {
     //save documentID to session
     req.session['secureExchangeDocumentIDs'] = (req.session['secureExchangeDocumentIDs'] || []).concat(data.documentID);
     return res.status(HttpStatus.OK).json(data);
-  } catch(e) {
+  } catch (e) {
     log.error('uploadFileWithoutRequest Error', e.stack);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'Upload secureExchange file error'
@@ -163,9 +172,9 @@ async function getDocument(token, secureExchangeID, documentID, includeDocData =
 }
 
 async function deleteDocument(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -173,7 +182,7 @@ async function deleteDocument(req, res) {
 
     let resData = await getDocument(accessToken, req.params.id, req.params.documentId, 'N');
 
-    if(!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
+    if (!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
       req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
@@ -194,9 +203,9 @@ async function deleteDocument(req, res) {
 }
 
 async function downloadFile(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -224,19 +233,39 @@ async function getExchanges(req, res) {
       pageNumber: req.query.pageNumber,
       pageSize: req.query.pageSize,
       sort: req.query.sort,
-      searchCriteriaList: req.query.searchParams?JSON.stringify(buildSearchParams(req.query.searchParams)):'[]',
+      searchCriteriaList: req.query.searchParams ? JSON.stringify(buildSearchParams(req.query.searchParams)) : '[]',
     }
   };
 
-  try {
-    const token = getAccessToken(req);
+  const token = getAccessToken(req);
+  return Promise.all([
+    getCodeTable(token,'exchangeStatuses' ,config.get('edx:ministryTeamURL')),
+    getCodeTable(token,'ministryTeamCodes' ,config.get('edx:exchangeStatusesURL')),
+    getData(token, config.get('edx:exchangeURL') + '/paginated', params)
+  ])
+    .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
+      if(statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content){
+        dataResponse['content'].forEach((element) => {
+          if(element['secureExchangeStatusCode']){
+            let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === element['secureExchangeStatusCode']);
+            if (tempStatus?.label) {
+              element['secureExchangeStatusCode'] = tempStatus.label;
+            }
+          }
+          if(element['ministryOwnershipTeamID']){
+            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['ministryOwnershipTeamID']);
+            if (tempMinTeam?.teamName) {
+              element['ministryOwnershipTeamID'] = tempMinTeam.teamName;
+            }
+          }
+        });
+      }
+      return res.status(200).json(dataResponse);
+    }).catch(e => {
+      log.error(e, 'getExchanges', 'Error getting paginated list of secure exchanges.');
+      return errorResponse(res);
+    });
 
-    const response = await getData(token, config.get('edx:exchangeURL')+'/paginated', params);
-    return res.status(HttpStatus.OK).json(response);
-  } catch (e) {
-    log.error(e, 'getExchanges', 'Error getting paginated list of secure exchanges.');
-    return errorResponse(res);
-  }
 }
 
 /**
