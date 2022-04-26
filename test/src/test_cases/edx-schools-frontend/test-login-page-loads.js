@@ -11,6 +11,7 @@ fixture `edx-login`
         getToken().then(async (data) => {
         // retrieve data from a backend API 'service' (Data priming)
         const getMinistryTeams = await getAllMinistryTeams(data.access_token);
+        log.info("Setup complete");
     }).catch((error => {
         log.error(error)
         throw new Error("Setup failed")
