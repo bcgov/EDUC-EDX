@@ -14,7 +14,7 @@ nconf.argv()
 
 nconf.defaults({
     url: {
-        base_url: process.env.BASE_URL,
+        base_url: process.env.SITE_URL,
         edx_api_base_url: process.env.EDX_API_BASE_URL
       },
     adminCredential: {
