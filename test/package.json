@@ -1,0 +1,36 @@
+{
+  "name": "edx-test-automation",
+  "version": "1.0.0",
+  "description": "e2e testing cases using testcafe.",
+  "directories": {
+    "test": "src"
+  },
+  "scripts": {
+    "smoke-test": "node --max-http-header-size=81000 src/test_suites/smoke-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgov/EDUC-EDX-AUTOMATION.git"
+  },
+  "keywords": [
+    "edx",
+    "test",
+    "automation",
+    "educ"
+  ],
+  "author": "chris.ditcher",
+  "bugs": {
+    "url": "https://github.com/bcgov/EDUC-EDX-AUTOMATION/issues"
+  },
+  "homepage": "https://github.com/bcgov/EDUC-EDX-AUTOMATION#readme",
+  "dependencies": {
+    "@testing-library/testcafe": "^4.4.0",
+    "axios": "^0.21.1",
+    "date-and-time": "^0.14.2",
+    "dotenv": "^8.2.0",
+    "faker": "^5.5.3",
+    "nconf": "^0.10.0",
+    "npmlog": "^4.1.2",
+    "testcafe": "^1.18.5"
+  }
+}

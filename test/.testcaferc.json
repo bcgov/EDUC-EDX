@@ -1,0 +1,20 @@
+{
+    "_comment": "browsers should accept: edge -private, firefox -private-window, chrome -incognito",
+    "browsers": ["chrome:headless -incognito"],
+    "reporter": "list",
+    "quarantineMode": false,
+    "developmentMode": true,
+    "skipJsErrors": true,
+    "color": true,
+    "stopOnFirstFail": true,
+    "disablePageCaching": true,
+    "speed": 1,
+    "retryTestPages": true,
+    "hostname": "localhost",
+    "pageLoadTimeout": 20000,
+    "selectorTimeout": 20000,
+    "disableMultipleWindows": true,
+    "clientScripts": [
+        { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" }
+      ]
+}
