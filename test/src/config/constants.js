@@ -11,11 +11,11 @@ module.exports.credentials = Object.freeze({
   });
 
 //Token related config
-module.exports.token_namespace = config.get('token:token_namespace');
-module.exports.token_environment = config.get('token:token_environment');
+//module.exports.token_namespace = config.get('token:token_namespace');
+//module.exports.token_environment = config.get('token:token_environment');
 module.exports.token_client_id = config.get('token:token_client_id');
 module.exports.token_client_secret = config.get('token:token_client_secret');
-module.exports.getTokenUrl = 'https://soam-'+ module.exports.token_environment +'.apps.silver.devops.gov.bc.ca/auth/realms/master/protocol/openid-connect/token';
+module.exports.token_endpoint = config.get('token:token_endpoint');
 
 // URLS
 module.exports.edx_api_url = module.exports.base_url + config.get('url:edx_api_url');
