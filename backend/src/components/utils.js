@@ -251,9 +251,14 @@ function getCodeTable(token, key, url, useCache = true) {
           Authorization: `Bearer ${token}`,
         }
       };
+      log.info('get Data Url', url);
+
       return axios.get(url, getDataConfig)
         .then(response => {
           useCache && memCache.put(key, response.data);
+          log.info(`get Data Status for url ${url} :: is :: `, response.status);
+          log.info(`get Data StatusText for url ${url}  :: is :: `, response.statusText);
+          log.verbose(`get Data Response for url ${url}  :: is :: `, minify(response.data));
           return response.data;
         })
         .catch(e => {

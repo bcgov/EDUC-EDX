@@ -8,14 +8,16 @@ const {
   postData,
   SecureExchangeStatuses,
   errorResponse,
-  getCodeTable
+  getCodeTable,
+  getDataWithParams
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
 const lodash = require('lodash');
 const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
-const {LocalDateTime} = require('@js-joda/core');
+const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
+const {CACHE_KEYS} = require('./constants');
 
 let codes = null;
 
@@ -231,7 +233,7 @@ async function getExchanges(req, res) {
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
-      pageSize: req.query.pageSize,
+      pageSize: 1,
       sort: req.query.sort,
       searchCriteriaList: req.query.searchParams ? JSON.stringify(buildSearchParams(req.query.searchParams)) : '[]',
     }
@@ -239,9 +241,9 @@ async function getExchanges(req, res) {
 
   const token = getAccessToken(req);
   return Promise.all([
-    getCodeTable(token,'exchangeStatuses' ,config.get('edx:ministryTeamURL')),
-    getCodeTable(token,'ministryTeamCodes' ,config.get('edx:exchangeStatusesURL')),
-    getData(token, config.get('edx:exchangeURL') + '/paginated', params)
+    getCodeTable(token,CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS ,config.get('edx:exchangeStatusesURL')),
+    getCodeTable(token,CACHE_KEYS.EDX_MINISTRY_TEAMS ,config.get('edx:ministryTeamURL')),
+    getDataWithParams(token, config.get('edx:exchangeURL') + '/paginated', params)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if(statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content){
@@ -253,10 +255,13 @@ async function getExchanges(req, res) {
             }
           }
           if(element['ministryOwnershipTeamID']){
-            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['ministryOwnershipTeamID']);
+            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['contactIdentifier']);
             if (tempMinTeam?.teamName) {
-              element['ministryOwnershipTeamID'] = tempMinTeam.teamName;
+              element['contactIdentifier'] = tempMinTeam.teamName;
             }
+          }
+          if(element['createDate']){
+            element['createDate'] = LocalDateTime.parse(element['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd'));
           }
         });
       }

@@ -54,7 +54,7 @@
               clearable
           ></v-text-field>
         </template>
-        <template v-slot:header.contact="{ header }">
+        <template v-slot:header.contactIdentifier="{ header }">
           <th
               id="contact-header"
           >
@@ -63,8 +63,8 @@
           <v-text-field
               id="contact-text-field"
               v-model="headerSearchParams.contact"
-              item-text="ministryOwnershipTeamID"
-              item-value="ministryOwnershipTeamID"
+              item-text="contactIdentifier"
+              item-value="contactIdentifier"
               class="header-text"
               outlined
               dense
@@ -135,8 +135,8 @@
           <v-select
               id="status-text-field"
               v-model="headerSearchParams.status"
-              :items="[]"
-              item-text='secureExchangeStatusCode'
+              :items="statuses"
+              item-text='label'
               item-value='secureExchangeStatusCode'
               class="header-text"
               outlined
@@ -157,6 +157,7 @@ import ApiService from '../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 
 import PrimaryButton from './util/PrimaryButton';
+import {mapState} from 'vuex';
 
 export default {
   name: 'ExchangePage',
@@ -187,7 +188,7 @@ export default {
     };
   },
   computed: {
-    /* ...mapState({
+   /*  ...mapState({
       userName: state => state.auth.userInfo.userName
     }),
     ...mapState('auth', ['userInfo']),
@@ -196,6 +197,7 @@ export default {
     myTeam() {
       return this.ministryTeams.find(team => this.userInfo.userRoles.some(role => team.groupRoleIdentifier === role)) || {};
     },*/
+    ...mapState('edx', ['statuses']),
     headers() {
       return [
         {
@@ -205,7 +207,7 @@ export default {
         },
         {
           text: 'Contact',
-          value: 'contact',
+          value: 'contactIdentifier',
           sortable: false
         },
         {
