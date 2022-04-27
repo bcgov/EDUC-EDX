@@ -7,11 +7,11 @@
           <v-expansion-panel-content>
             <v-list dense>
               <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item> <!--v-on:click="clickShowMessageType('messages')">-->
-                  <v-list-item-content>All Messages</v-list-item-content>
-                  <v-list-item-avatar>{{totalRequests}}</v-list-item-avatar>
+                <v-list-item>
+                  <v-list-item-content>Active Messages</v-list-item-content>
+                  <v-list-item-avatar>{{ totalRequests }}</v-list-item-avatar>
                 </v-list-item>
-                <v-list-item> <!--v-on:click="clickShowMessageType('completed')">-->
+                <v-list-item>
                   <v-list-item-content>Completed Messages</v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -23,9 +23,9 @@
     <v-col>
       <v-row class='d-flex justify-lg-end pb-2'>
         <PrimaryButton
-          id="newMessageBtn"
-          text="New Message"
-          to="newExchange"
+            id="newMessageBtn"
+            text="New Message"
+            to="newExchange"
         ></PrimaryButton>
       </v-row>
       <v-data-table
@@ -63,8 +63,8 @@
           <v-text-field
               id="contact-text-field"
               v-model="headerSearchParams.contact"
-              item-text="contactIdentifier"
-              item-value="contactIdentifier"
+              item-text="contactIdentifierName"
+              item-value="ministryOwnershipTeamID"
               class="header-text"
               outlined
               dense
@@ -134,7 +134,7 @@
           </th>
           <v-select
               id="status-text-field"
-              v-model="headerSearchParams.status"
+              v-model="headerSearchParams.secureExchangeStatusCode"
               :items="statuses"
               item-text='label'
               item-value='secureExchangeStatusCode'
@@ -145,7 +145,19 @@
           >
           </v-select>
         </template>
+        <template v-slot:item="{ item, index }">
+          <tr
+              :key="index"
+              :class="[{'unread': item.isReadByExchangeContact === 'N'}, 'tableRow']">
+            <td>{{ item.sequenceNumber }}</td>
+            <td>{{ item.contactIdentifierName }}</td>
+            <td>{{ item.subject }}</td>
+            <td>{{ item.createDate }}</td>
+            <td>{{ item.secureExchangeStatusCode }}</td>
+          </tr>
+        </template>
         <template v-slot:no-data>There are no messages.</template>
+
       </v-data-table>
     </v-col>
   </v-row>
@@ -158,6 +170,7 @@ import {ApiRoutes} from '@/utils/constants';
 
 import PrimaryButton from './util/PrimaryButton';
 import {mapState} from 'vuex';
+import {isEmpty, omitBy} from 'lodash';
 
 export default {
   name: 'ExchangePage',
@@ -178,7 +191,7 @@ export default {
         contact: '',
         subject: '',
         createDate: [],
-        status: ''
+        secureExchangeStatusCode: ''
       },
       headerSortParams: {
         currentSort: 'createDate',
@@ -188,15 +201,6 @@ export default {
     };
   },
   computed: {
-   /*  ...mapState({
-      userName: state => state.auth.userInfo.userName
-    }),
-    ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'statuses']),
-    ...mapState('app', ['mincodeSchoolNames']),
-    myTeam() {
-      return this.ministryTeams.find(team => this.userInfo.userRoles.some(role => team.groupRoleIdentifier === role)) || {};
-    },*/
     ...mapState('edx', ['statuses']),
     headers() {
       return [
@@ -230,54 +234,39 @@ export default {
   },
   created() {
     this.$store.dispatch('edx/getCodes');
-    this.$store.dispatch('edx/getMinistryTeams');
+    this.headerSearchParams.secureExchangeStatusCode=['NEW','INPROG'];
     this.getRequests();
   },
   methods: {
-
+    getCompletedRequests() {
+      this.headerSearchParams.secureExchangeStatusCode=['COMPLETE'];
+      this.getRequests();
+    },
     getRequests() {
       this.loadingTable = true;
       this.requests = [];
       const sort = {
-        isReadByMinistry: 'ASC',
+        isReadByExchangeContact: 'ASC',
         createDate: 'ASC'
       };
 
-      ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {params: {pageNumber: this.pageNumber - 1, pageSize: this.pageSize, sort}})
-        .then(response => {
-          this.requests = response.data.content;
-          this.totalRequests = response.data.totalElements;
-        })
-        .catch(error => {
-          console.log(error);
-        })
-        .finally(() => {
-          this.loadingTable = false;
-        });
+
+      ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {
+        params: {
+          pageNumber: this.pageNumber - 1,
+          pageSize: this.pageSize,
+          sort,
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+        }
+      }).then(response => {
+        this.requests = response.data.content;
+        this.totalRequests = response.data.totalElements;
+      }).catch(error => {
+        console.log(error);
+      }).finally(() => {
+        this.loadingTable = false;
+      });
     },
-    /* getContactName(secureExchange) {
-      let contactName = '';
-
-      switch (secureExchange.secureExchangeContactTypeCode) {
-      case 'MINTEAM' :
-        if (this.ministryTeams.length > 0) {
-          let ministryTeam = this.ministryTeams.find((minTeam) => minTeam.ministryOwnershipTeamId === secureExchange.ministryOwnershipTeamID);
-          contactName = ministryTeam?.teamName || 'minteam not found';
-        }
-        break;
-      case 'SCHOOL' :
-        if (this.mincodeSchoolNames.size > 0) {
-          let schoolName = this.mincodeSchoolNames.get(secureExchange.contactIdentifier);
-          contactName = schoolName ? `${schoolName} (${secureExchange.contactIdentifier})` : 'school not found';
-        }
-        break;
-      default:
-        console.error(`unable to process Secure Exchange Contact Type Code ${secureExchange.secureExchangeContactTypeCode}`);
-        contactName = 'Contact Type Not Found';
-      }
-
-      return contactName;
-    }*/
   },
   watch: {
     pageSize() {

@@ -13,13 +13,13 @@ const {
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
-const lodash = require('lodash');
+
 const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
 const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('./constants');
 
-let codes = null;
+
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
@@ -40,76 +40,6 @@ function verifyRequest(req, res, next) {
   next();
 }
 
-async function getDigitalIdData(token, digitalID, correlationID) {
-  try {
-    return await getData(token, config.get('digitalID:apiEndpoint') + `/${digitalID}`, correlationID);
-  } catch (e) {
-    throw new ServiceError('getDigitalIdData error', e);
-  }
-}
-
-async function getUserInfo(req, res) {
-  const userInfo = getSessionUser(req);
-  const correlationID = req.session?.correlationID;
-  if (!userInfo || !userInfo.jwt || !userInfo._json || !userInfo._json.digitalIdentityID) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No session data'
-    });
-  }
-
-  const accessToken = userInfo.jwt;
-  const digitalID = userInfo._json.digitalIdentityID;
-
-  return Promise.all([
-    getDigitalIdData(accessToken, digitalID, correlationID),
-    getServerSideCodes(accessToken, correlationID),
-  ]).then(async ([digitalIdData, codesData]) => {
-
-    const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
-    if (!identityType) {
-      log.error('getIdentityType Error identityTypeCode', digitalIdData.identityTypeCode);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Wrong identityTypeCode'
-      });
-    }
-
-    if (req && req.session) {
-      req.session.digitalIdentityData = digitalIdData;
-      req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-    } else {
-      throw new ServiceError('userInfo error: session does not exist');
-    }
-    let resData = {
-      displayName: userInfo._json.displayName,
-      accountType: userInfo._json.accountType,
-      identityTypeLabel: identityType.label,
-    };
-
-    return res.status(HttpStatus.OK).json(resData);
-  }).catch(e => {
-    log.error('getUserInfo Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Get userInfo error',
-      errorSource: e.errorSource
-    });
-  });
-}
-
-async function getServerSideCodes(accessToken, correlationID) {
-  if (!codes) {
-    try {
-      const codeUrls = [
-        `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`
-      ];
-
-      const [identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
-      codes = {identityTypes};
-    } catch (e) {
-      throw new ServiceError('getServerSideCodes error', e);
-    }
-  }
-  return codes;
-}
 
 async function uploadFile(req, res) {
   try {
@@ -228,39 +158,60 @@ async function downloadFile(req, res) {
   }
 }
 
-async function getExchanges(req, res) {
+function getCriteria( key, value, operation, valueType) {
+  return {key, value, operation, valueType};
+}
 
+function getExchangesPaginated(req) {
+  if(!req.session.userMinCodes){
+    throw new ServiceError('getExchangesPaginated error: User Mincodes does not exist in session');
+  }
+  let criteria=[];
+  if(req.query.searchParams){
+    criteria = buildSearchParams(req.query.searchParams);
+  }
+  criteria.push(getCriteria('contactIdentifier',req.session.userMinCodes,FILTER_OPERATION.IN,VALUE_TYPE.STRING));
+  criteria.push(getCriteria('secureExchangeContactTypeCode','SCHOOL',FILTER_OPERATION.EQUAL,VALUE_TYPE.STRING));
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
-      pageSize: 1,
+      pageSize: req.query.pageSize,
       sort: req.query.sort,
-      searchCriteriaList: req.query.searchParams ? JSON.stringify(buildSearchParams(req.query.searchParams)) : '[]',
+      searchCriteriaList: JSON.stringify(criteria),
     }
   };
 
+  return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+}
+
+async function getExchanges(req, res) {
   const token = getAccessToken(req);
+  if (!token && req.session.userMinCode) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
   return Promise.all([
-    getCodeTable(token,CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS ,config.get('edx:exchangeStatusesURL')),
-    getCodeTable(token,CACHE_KEYS.EDX_MINISTRY_TEAMS ,config.get('edx:ministryTeamURL')),
-    getDataWithParams(token, config.get('edx:exchangeURL') + '/paginated', params)
+    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getExchangesPaginated(req)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
-      if(statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content){
+      if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
         dataResponse['content'].forEach((element) => {
-          if(element['secureExchangeStatusCode']){
+          if (element['secureExchangeStatusCode']) {
             let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === element['secureExchangeStatusCode']);
             if (tempStatus?.label) {
               element['secureExchangeStatusCode'] = tempStatus.label;
             }
           }
-          if(element['ministryOwnershipTeamID']){
-            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['contactIdentifier']);
+          if (element['ministryOwnershipTeamID']) {
+            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['ministryOwnershipTeamID']);
             if (tempMinTeam?.teamName) {
-              element['contactIdentifier'] = tempMinTeam.teamName;
+              element['contactIdentifierName'] = tempMinTeam.teamName;
             }
           }
-          if(element['createDate']){
+          if (element['createDate']) {
             element['createDate'] = LocalDateTime.parse(element['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd'));
           }
         });
@@ -309,11 +260,14 @@ const createSearchParamObject = (key, value) => {
     operation = FILTER_OPERATION.BETWEEN;
     valueType = VALUE_TYPE.DATE_TIME;
   }
+  if(key=== 'secureExchangeStatusCode'){
+    value = value.join(',');
+    operation = FILTER_OPERATION.IN;
+  }
   return {key, value, operation, valueType};
 };
 
 module.exports = {
-  getUserInfo,
   verifyRequest,
   deleteDocument,
   downloadFile,
