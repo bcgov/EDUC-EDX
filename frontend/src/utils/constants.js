@@ -1,6 +1,7 @@
 const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
+
 let object;
 
 object = {
@@ -21,13 +22,18 @@ export const ApiRoutes = Object.freeze({
   CONFIG: baseRoot + '/config',
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
+    EXCHANGE_URL:edxRoot + '/exchange',
     DOCUMENT_TYPE_CODES: edxRoot + '/document-type-codes',
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
+    STATUSES_URL: edxRoot + '/exchange/statuses',
+    MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams'
   }
 });
 
 export const PAGE_TITLES = Object.freeze(
   {
-    DASHBOARD: 'Dashboard'
+    DASHBOARD: 'Dashboard',
+    EXCHANGE: 'Secure Exchange Inbox',
+    NEW_EXCHANGE: 'New Message'
   });
 

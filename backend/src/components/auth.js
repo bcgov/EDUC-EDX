@@ -7,8 +7,8 @@ const jsonwebtoken = require('jsonwebtoken');
 const qs = require('querystring');
 const utils = require('./utils');
 const HttpStatus = require('http-status-codes');
-const { ApiError } = require('./error');
-const { pick } =  require('lodash');
+const {ApiError} = require('./error');
+const {pick} = require('lodash');
 
 const auth = {
   // Check if JWT Access Token has expired
@@ -52,10 +52,10 @@ const auth = {
       );
 
       log.verbose('renew', utils.prettyStringify(response.data));
-      if(response && response.data && response.data.access_token && response.data.refresh_token){
+      if (response && response.data && response.data.access_token && response.data.refresh_token) {
         result.jwt = response.data.access_token;
         result.refreshToken = response.data.refresh_token;
-      } else{
+      } else {
         log.error('Access token or refresh token not retreived properly');
       }
     } catch (error) {
@@ -99,15 +99,15 @@ const auth = {
   },
 
   generateUiToken() {
-    const i  = config.get('tokenGenerate:issuer');
+    const i = config.get('tokenGenerate:issuer');
     const s = 'user@penrequest.ca';
-    const a  = config.get('server:frontend');
+    const a = config.get('server:frontend');
     const signOptions = {
-      issuer:  i,
+      issuer: i,
       subject: s,
-      audience:  a,
-      expiresIn:  '30m',
-      algorithm:  'RS256'
+      audience: a,
+      expiresIn: '30m',
+      algorithm: 'RS256'
     };
 
     const privateKey = config.get('tokenGenerate:privateKey');
@@ -143,7 +143,7 @@ const auth = {
     } catch (error) {
       log.error('getApiCredentials Error', error.response ? pick(error.response, ['status', 'statusText', 'data']) : error.message);
       const status = error.response ? error.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-      throw new ApiError(status, { message: 'Get getApiCredentials error'}, error);
+      throw new ApiError(status, {message: 'Get getApiCredentials error'}, error);
     }
   },
   isValidBackendToken() {

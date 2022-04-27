@@ -1,17 +1,29 @@
 'use strict';
-
-const { getSessionUser, getAccessToken, deleteData, getData, postData, SecureExchangeStatuses } = require('./utils');
+const {FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
+const {
+  getSessionUser,
+  getAccessToken,
+  deleteData,
+  getData,
+  postData,
+  SecureExchangeStatuses,
+  errorResponse,
+  getCodeTable,
+  getDataWithParams
+} = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
-const lodash = require('lodash');
-const HttpStatus = require('http-status-codes');
-const { ServiceError } = require('./error');
 
-let codes = null;
+const HttpStatus = require('http-status-codes');
+const {ServiceError} = require('./error');
+const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
+const {CACHE_KEYS} = require('./constants');
+
+
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
-  if(!userInfo) {
+  if (!userInfo) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       status: HttpStatus.UNAUTHORIZED,
       message: 'you are not authorized to access this page'
@@ -19,7 +31,7 @@ function verifyRequest(req, res, next) {
   }
 
   const secureExchangeID = req.params.id;
-  if(!req || !req.session || !req.session['secureExchange'] || req.session['secureExchange']['secureExchangeID'] !== secureExchangeID) {
+  if (!req || !req.session || !req.session['secureExchange'] || req.session['secureExchange']['secureExchangeID'] !== secureExchangeID) {
     return res.status(HttpStatus.BAD_REQUEST).json({
       message: 'Wrong secureExchangeID'
     });
@@ -28,87 +40,17 @@ function verifyRequest(req, res, next) {
   next();
 }
 
-async function getDigitalIdData(token, digitalID, correlationID) {
-  try {
-    return await getData(token, config.get('digitalID:apiEndpoint') + `/${digitalID}`, correlationID);
-  } catch (e) {
-    throw new ServiceError('getDigitalIdData error', e);
-  }
-}
-
-async function getUserInfo(req, res) {
-  const userInfo = getSessionUser(req);
-  const correlationID = req.session?.correlationID;
-  if(!userInfo || !userInfo.jwt || !userInfo._json || !userInfo._json.digitalIdentityID) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No session data'
-    });
-  }
-
-  const accessToken = userInfo.jwt;
-  const digitalID = userInfo._json.digitalIdentityID;
-
-  return Promise.all([
-    getDigitalIdData(accessToken, digitalID, correlationID),
-    getServerSideCodes(accessToken, correlationID),
-  ]).then(async ([digitalIdData, codesData]) => {
-
-    const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
-    if(! identityType) {
-      log.error('getIdentityType Error identityTypeCode', digitalIdData.identityTypeCode);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Wrong identityTypeCode'
-      });
-    }
-
-    if(req && req.session){
-      req.session.digitalIdentityData = digitalIdData;
-      req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-    } else {
-      throw new ServiceError('userInfo error: session does not exist');
-    }
-    let resData = {
-      displayName: userInfo._json.displayName,
-      accountType: userInfo._json.accountType,
-      identityTypeLabel: identityType.label,
-    };
-
-    return res.status(HttpStatus.OK).json(resData);
-  }).catch(e => {
-    log.error('getUserInfo Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Get userInfo error',
-      errorSource: e.errorSource
-    });
-  });
-}
-
-async function getServerSideCodes(accessToken, correlationID) {
-  if(!codes) {
-    try{
-      const codeUrls = [
-        `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`
-      ];
-
-      const [identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
-      codes = {identityTypes};
-    } catch(e) {
-      throw new ServiceError('getServerSideCodes error', e);
-    }
-  }
-  return codes;
-}
 
 async function uploadFile(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
     }
 
-    if(!req.session['secureExchange'] || req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
+    if (!req.session['secureExchange'] || req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Upload secureExchange file not allowed'
       });
@@ -119,7 +61,7 @@ async function uploadFile(req, res) {
 
     const data = await postData(accessToken, req.body, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
-  } catch(e) {
+  } catch (e) {
     log.error('uploadFile Error', e.stack);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'Upload secureExchange file error'
@@ -128,9 +70,9 @@ async function uploadFile(req, res) {
 }
 
 async function uploadFileWithoutRequest(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -144,7 +86,7 @@ async function uploadFileWithoutRequest(req, res) {
     //save documentID to session
     req.session['secureExchangeDocumentIDs'] = (req.session['secureExchangeDocumentIDs'] || []).concat(data.documentID);
     return res.status(HttpStatus.OK).json(data);
-  } catch(e) {
+  } catch (e) {
     log.error('uploadFileWithoutRequest Error', e.stack);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'Upload secureExchange file error'
@@ -162,9 +104,9 @@ async function getDocument(token, secureExchangeID, documentID, includeDocData =
 }
 
 async function deleteDocument(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -172,7 +114,7 @@ async function deleteDocument(req, res) {
 
     let resData = await getDocument(accessToken, req.params.id, req.params.documentId, 'N');
 
-    if(!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
+    if (!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
       req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
@@ -193,9 +135,9 @@ async function deleteDocument(req, res) {
 }
 
 async function downloadFile(req, res) {
-  try{
+  try {
     const accessToken = getAccessToken(req);
-    if(!accessToken) {
+    if (!accessToken) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No access token'
       });
@@ -216,11 +158,120 @@ async function downloadFile(req, res) {
   }
 }
 
+function getCriteria(key, value, operation, valueType) {
+  return {key, value, operation, valueType};
+}
+
+async function getExchangesPaginated(req) {
+  if (!req.session.userMinCodes) {//this implementation has to change when registration part is added.
+    return Promise.reject('getExchangesPaginated error: User Mincodes does not exist in session');
+  }
+  let criteria = [];
+  if (req.query.searchParams) {
+    criteria = buildSearchParams(req.query.searchParams);
+  }
+  criteria.push(getCriteria('contactIdentifier', req.session.userMinCodes[0], FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  const params = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: JSON.stringify(criteria),
+    }
+  };
+
+  return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+}
+
+async function getExchanges(req, res) {
+  const token = getAccessToken(req);
+  if (!token && req.session.userMinCodes) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  return Promise.all([
+    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getExchangesPaginated(req)
+  ])
+    .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
+      if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
+        dataResponse['content'].forEach((element) => {
+          if (element['secureExchangeStatusCode']) {
+            let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === element['secureExchangeStatusCode']);
+            if (tempStatus?.label) {
+              element['secureExchangeStatusCode'] = tempStatus.label;
+            }
+          }
+          if (element['ministryOwnershipTeamID']) {
+            let tempMinTeam = ministryTeamCodeResponse.find(minstryTeam => minstryTeam['ministryOwnershipTeamId'] === element['ministryOwnershipTeamID']);
+            if (tempMinTeam?.teamName) {
+              element['contactIdentifierName'] = tempMinTeam.teamName;
+            }
+          }
+          if (element['createDate']) {
+            element['createDate'] = LocalDateTime.parse(element['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd'));
+          }
+        });
+      }
+      return res.status(200).json(dataResponse);
+    }).catch(e => {
+      log.error(e, 'getExchanges', 'Error getting paginated list of secure exchanges.');
+      return errorResponse(res);
+    });
+
+}
+
+/**
+ * Returns an array of search criteria objects to query EDX API
+ *
+ * @param searchParams object with keys of the columns we are searching for
+ */
+const buildSearchParams = (searchParams) => {
+  return Object.entries(JSON.parse(searchParams))
+    .map(([key, value]) => createSearchParamObject(key, value));
+};
+
+/**
+ * Returns an object that has the following properties key, value, operation, valueType
+ * Helper function when building search params for querying EDX API
+ *
+ * @param key of what we are searching in
+ * @param value of what we are searching for
+ */
+const createSearchParamObject = (key, value) => {
+  let operation = FILTER_OPERATION.CONTAINS_IGNORE_CASE;
+  let valueType = VALUE_TYPE.STRING;
+
+  if (key === 'sequenceNumber') {
+    operation = FILTER_OPERATION.EQUAL;
+  }
+
+  if (key === 'createDate') {
+    value.forEach((date, index) => {
+      value[index] = date + 'T00:00:01';
+    });
+    if (value.length === 1) {
+      value.push(LocalDateTime.now().toString());
+    }
+    value = value.join(',');
+    operation = FILTER_OPERATION.BETWEEN;
+    valueType = VALUE_TYPE.DATE_TIME;
+  }
+  if (key === 'secureExchangeStatusCode') {
+    value = value.join(',');
+    operation = FILTER_OPERATION.IN;
+  }
+  return {key, value, operation, valueType};
+};
+
 module.exports = {
-  getUserInfo,
   verifyRequest,
   deleteDocument,
   downloadFile,
   uploadFile,
-  uploadFileWithoutRequest
+  uploadFileWithoutRequest,
+  getExchanges
 };

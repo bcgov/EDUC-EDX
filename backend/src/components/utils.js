@@ -11,6 +11,8 @@ const {v4: uuidv4} = require('uuid');
 const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {Locale} = require('@js-joda/locale_en');
 let discovery = null;
+const cache = require('memory-cache');
+let memCache = new cache.Cache();
 
 axios.interceptors.request.use((axiosRequestConfig) => {
   axiosRequestConfig.headers['X-Client-Name'] = 'PEN-EDX';
@@ -232,6 +234,86 @@ function formatCommentTimestamp(time) {
   return timestamp.format(DateTimeFormatter.ofPattern('yyyy-MM-dd h:mma').withLocale(Locale.CANADA));
 }
 
+function errorResponse(res, msg, code) {
+  return res.status(code || HttpStatus.INTERNAL_SERVER_ERROR).json({
+    message: msg || 'INTERNAL SERVER ERROR',
+    code: code || HttpStatus.INTERNAL_SERVER_ERROR
+  });
+}
+function getCodeTable(token, key, url, useCache = true) {
+  try {
+    let cacheContent = useCache && memCache.get(key);
+    if (cacheContent) {
+      return cacheContent;
+    } else {
+      const getDataConfig = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      };
+      log.info('get Data Url', url);
+
+      return axios.get(url, getDataConfig)
+        .then(response => {
+          useCache && memCache.put(key, response.data);
+          return response.data;
+        })
+        .catch(e => {
+          log.error(e, 'getCodeTable', 'Error during get on ' + url);
+          const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+          throw new ApiError(status, {message: 'API get error'}, e);
+        });
+    }
+  } catch (e) {
+    throw new Error(`getCodeTable error, ${e}`);
+  }
+}
+function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
+  return async function getCodesHandler(req, res) {
+    try {
+      const token = getBackendToken(req);
+      if (!token) {
+        return unauthorizedError(res);
+      }
+      const url = config.get(urlKey);
+      const codes = await getCodeTable(token, cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
+
+      return res.status(HttpStatus.OK).json(codes);
+
+    } catch (e) {
+      log.error(e, 'getCodes', `Error occurred while attempting to GET ${cacheKey}.`);
+      return errorResponse(res);
+    }
+  };
+}
+function cacheMiddleware() {
+  return (req, res, next) => {
+    let key = '__express__' + req.originalUrl || req.url;
+    let cacheContent = memCache.get(key);
+    if (cacheContent) {
+      res.send(cacheContent);
+    } else {
+      res.sendResponse = res.send;
+      res.send = (body) => {
+        if (res.statusCode < 300 && res.statusCode >= 200) {
+          memCache.put(key, body);
+        }
+        res.sendResponse(body);
+      };
+      next();
+    }
+  };
+}
+function getBackendToken(req) {
+  const thisSession = req.session;
+  return thisSession && thisSession['passport'] && thisSession['passport'].user && thisSession['passport'].user.jwt;
+}
+function unauthorizedError(res) {
+  return res.status(HttpStatus.UNAUTHORIZED).json({
+    message: 'No access token'
+  });
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -246,7 +328,11 @@ const utils = {
   putData,
   SecureExchangeStatuses,
   generateJWTToken,
-  formatCommentTimestamp
+  formatCommentTimestamp,
+  errorResponse,
+  getCodes,
+  cacheMiddleware,
+  getCodeTable
 };
 
 module.exports = utils;

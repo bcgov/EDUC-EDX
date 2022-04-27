@@ -14,6 +14,8 @@ import store from './store/index';
 import Login from '@/components/Login.vue';
 import BackendSessionExpired from '@/components/BackendSessionExpired';
 import {PAGE_TITLES} from '@/utils/constants';
+import ExchangePage from './components/ExchangePage';
+import RouterView from './components/RouterView';
 
 Vue.prototype.moment = moment;
 
@@ -71,7 +73,33 @@ const router = new VueRouter({
       path: '/token-expired',
       name: 'backend-session-expired',
       component: BackendSessionExpired
-    }
+    },
+    {
+      path: '/',
+      component: RouterView,
+      children: [
+        {
+          path: 'inbox',
+          name: 'inbox',
+          component: ExchangePage,
+          meta: {
+            pageTitle: PAGE_TITLES.EXCHANGE,
+            requiresAuth: true,
+            role: '*'
+          }
+        },
+        /*{
+          path: 'newExchange',
+          name: 'newExchange',
+          component: NewMessagePage,
+          meta: {
+            pageTitle: PAGE_TITLES.NEW_EXCHANGE,
+            requiresAuth: true,
+            role: 'EXCHANGE_ROLE'
+          }
+        }*/
+      ]
+    },
 
   ]
 });
