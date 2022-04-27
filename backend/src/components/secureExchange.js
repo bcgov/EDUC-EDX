@@ -158,20 +158,20 @@ async function downloadFile(req, res) {
   }
 }
 
-function getCriteria( key, value, operation, valueType) {
+function getCriteria(key, value, operation, valueType) {
   return {key, value, operation, valueType};
 }
 
-function getExchangesPaginated(req) {
-  if(!req.session.userMinCodes){
-    throw new ServiceError('getExchangesPaginated error: User Mincodes does not exist in session');
+async function getExchangesPaginated(req) {
+  if (!req.session.userMinCodes) {//this implementation has to change when registration part is added.
+    return Promise.reject('getExchangesPaginated error: User Mincodes does not exist in session');
   }
-  let criteria=[];
-  if(req.query.searchParams){
+  let criteria = [];
+  if (req.query.searchParams) {
     criteria = buildSearchParams(req.query.searchParams);
   }
-  criteria.push(getCriteria('contactIdentifier',req.session.userMinCodes,FILTER_OPERATION.IN,VALUE_TYPE.STRING));
-  criteria.push(getCriteria('secureExchangeContactTypeCode','SCHOOL',FILTER_OPERATION.EQUAL,VALUE_TYPE.STRING));
+  criteria.push(getCriteria('contactIdentifier', req.session.userMinCodes[0], FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
@@ -186,7 +186,7 @@ function getExchangesPaginated(req) {
 
 async function getExchanges(req, res) {
   const token = getAccessToken(req);
-  if (!token && req.session.userMinCode) {
+  if (!token && req.session.userMinCodes) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No access token'
     });
@@ -260,7 +260,7 @@ const createSearchParamObject = (key, value) => {
     operation = FILTER_OPERATION.BETWEEN;
     valueType = VALUE_TYPE.DATE_TIME;
   }
-  if(key=== 'secureExchangeStatusCode'){
+  if (key === 'secureExchangeStatusCode') {
     value = value.join(',');
     operation = FILTER_OPERATION.IN;
   }

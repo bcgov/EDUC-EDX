@@ -1,19 +1,19 @@
 const HttpStatus = require('http-status-codes');
-const lodash = require('lodash');
-const config = require('../../../src/config/index');
 
 jest.mock('../../../src/components/utils');
 const utils = require('../../../src/components/utils');
 const exchange = require('../../../src/components/secureExchange');
-const {  __RewireAPI__: rewireRequest} =  require('../../../src/components/secureExchange');
-const { ServiceError } = require('../../../src/components/error');
-const { mockRequest, mockResponse } = require('../helpers');
+const {mockRequest, mockResponse} = require('../helpers');
 const redis = require('redis-mock');
 jest.mock('../../../src/util/redis/redis-client');
 const redisClient = require('../../../src/util/redis/redis-client');
 jest.mock('../../../src/util/redis/redis-utils');
 const redisUtil = require('../../../src/util/redis/redis-utils');
 const correlationID = '67590460-efe3-4e84-9f9a-9acffda79657';
+const sampleJsonResponseEdxPaginated = {data: '{"content":[{"createUser":"EDX-API","updateUser":"EDX-API","createDate":"2022/02/15","updateDate":"2022-02-15T17:22:25","secureExchangeID":"8e2018f5-7f00-1eb6-817f-001f9a490000","contactIdentifier":"d81977f8-1adc-bad7-e053-9ae9228ef97c","ministryOwnershipTeamID":"d81977f8-1adc-bad7-e053-9ae9228ef97c","secureExchangeContactTypeCode":"MINTEAM","secureExchangeStatusCode":"New exchange","reviewer":null,"subject":"Hello Student","isReadByMinistry":"N","isReadByExchangeContact":"N","statusUpdateDate":"2022-02-15T17:22:25","sequenceNumber":"1","commentsList":[{"createUser":"TEST","updateUser":"TEST","createDate":"2022-02-15T17:22:25","updateDate":"2022-02-15T17:22:25","secureExchangeCommentID":null,"secureExchangeID":"8e2018f5-7f00-1eb6-817f-001f9a490000","edxUserID":null,"staffUserIdentifier":"TEST","commentUserName":"JACKSON, JAMES","content":"This is content","commentTimestamp":"2022-02-15T17:22:25"}],"contactIdentifierName":"PEN"}],"pageable":{"sort":{"sorted":true,"unsorted":false,"empty":false},"offset":0,"pageNumber":0,"pageSize":25,"paged":true,"unpaged":false},"totalPages":1,"totalElements":1,"last":true,"size":1,"number":0,"sort":{"sorted":true,"unsorted":false,"empty":false},"numberOfElements":1,"first":true,"empty":false}'};
+const statuses = {data: '[{secureExchangeStatusCode:\'COMPLETE\',label:\'Complete\',description:\'Secure exchange completed.\',displayOrder:3,effectiveDate:\'2020-01-01T00:00:00\',expiryDate:\'2099-12-31T00:00:00\'},{secureExchangeStatusCode:\'NEW\',label:\'New\',description:\'New secure exchange.\',displayOrder:1,effectiveDate:\'2020-01-01T00:00:00\',expiryDate:\'2099-12-31T00:00:00\'},{secureExchangeStatusCode:\'INPROG\',label:\'In Progress\',description:\'Secure exchange in progress.\',displayOrder:2,effectiveDate:\'2020-01-01T00:00:00\',expiryDate:\'2099-12-31T00:00:00\'}]'};
+const ministryTeamCodes = {data:'[{createUser:\'IDIR/MVILLENE\',updateUser:\'IDIR/MVILLENE\',createDate:\'2019-11-07T00:00:00\',updateDate:\'2019-11-07T00:00:00\',ministryOwnershipTeamId:\'d81977f8-1adc-bad7-e053-9ae9228ef97c\',teamName:\'PEN Team\',groupRoleIdentifier:\'PEN_TEAM_ROLE\'}]'};
+const token = 'token';
 describe('verifyRequest', () => {
   const requestID = 'RequestID';
   const params = {
@@ -26,7 +26,7 @@ describe('verifyRequest', () => {
     },
     correlationID
   };
-  const userInfo = { };
+  const userInfo = {};
   const verifyRequest = exchange.verifyRequest;
 
   let req;
@@ -64,8 +64,7 @@ describe('verifyRequest', () => {
   });
 
   it('should return BAD_REQUEST if no request in session', async () => {
-    const session = {
-    };
+    const session = {};
     req = mockRequest(null, session, params);
     verifyRequest(req, res, next);
 
@@ -85,169 +84,29 @@ describe('verifyRequest', () => {
   });
 });
 
-describe('getDigitalIdData', () => {
-  const digitalIdData = { data: 'data' };
-
-  const spy = jest.spyOn(utils, 'getData');
-
-  afterEach(() => {
-    spy.mockClear();
-  });
-
-  it('should return DigitalId data', async () => {
-    utils.getData.mockResolvedValue(digitalIdData);
-
-    const result = await exchange.__get__('getDigitalIdData')('token', 'digitalID', correlationID);
-
-    expect(result).toBeTruthy();
-    expect(result.data).toEqual(digitalIdData.data);
-    //expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith('token', config.get('digitalID:apiEndpoint') + '/digitalID', correlationID);
-  });
-
-  it('should throw ServiceError if getData is failed', async () => {
-    utils.getData.mockRejectedValue(new Error('error'));
-
-    expect(exchange.__get__('getDigitalIdData')('token', 'digitalID')).rejects.toThrowError(ServiceError);
-  });
-});
-
-describe('getServerSideCodes', () => {
-  const codes =[
-    {
-      code: 'M',
-      label: 'Male',
-    },
-    {
-      code: 'F',
-      label: 'Female',
-    }
-  ];
-
-  const spy = jest.spyOn(utils, 'getData');
-
-  afterEach(() => {
-    spy.mockClear();
-    exchange.__set__('codes', null);
-  });
-
-  it('should return codes', async () => {
-    utils.getData.mockResolvedValue(codes);
-
-    const result = await exchange.__get__('getServerSideCodes')('token');
-
-    expect(result).toBeTruthy();
-    expect(result.identityTypes).toEqual(codes);
-    expect(exchange.__get__('codes').identityTypes).toEqual(codes);
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`);
-  });
-
-  it('should not call getData if codes exist', async () => {
-    exchange.__set__('codes', {
-      identityTypes: codes
-    });
-
-    const result = await exchange.__get__('getServerSideCodes')('token');
-
-    expect(result).toBeTruthy();
-    expect(result.identityTypes).toEqual(codes);
-    expect(spy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should throw ServiceError if getData is failed', async () => {
-    utils.getData.mockRejectedValue(new Error('error'));
-
-    expect(exchange.__get__('getServerSideCodes')('token')).rejects.toThrowError(ServiceError);
-  });
-});
-
-describe('getUserInfo', () => {
-  const digitalID = 'ac337def-704b-169f-8170-653e2f7c001';
-
-  const sessionUser = {
-    jwt: 'token',
-    _json: {
-      digitalIdentityID: digitalID,
-      displayName: 'Firstname Lastname',
-      accountType: 'BCEID',
-    }
+describe('getExchanges', () => {
+  const session = {
+    correlationID,
+    userMinCodes: ['00618200']
   };
-
-  const digitalIdData = {
-    identityTypeCode: 'BASIC',
-    studentID: null
-  };
-
-  const codes = {
-    identityTypes: [
-      {
-        identityTypeCode: 'BCSC',
-        label: 'BC Services Card',
-      },
-      {
-        identityTypeCode: 'BASIC',
-        label: 'Basic BCeID',
-      }
-    ]
-  };
-
   let req;
   let res;
-
-  jest.spyOn(utils, 'getSessionUser');
-
   beforeEach(() => {
-    utils.getSessionUser.mockReturnValue(sessionUser);
-    req = mockRequest();
+    req = mockRequest(null, session, {});
     res = mockResponse();
-    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
-    rewireRequest.__Rewire__('getServerSideCodes', () => Promise.resolve(codes));
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-    rewireRequest.__ResetDependency__('getDigitalIdData');
-    rewireRequest.__ResetDependency__('getServerSideCodes');
   });
+  it('should return results when all the api calls are success', async () => {
+    utils.getDataWithParams.mockResolvedValue(sampleJsonResponseEdxPaginated);
+    utils.getAccessToken.mockResolvedValue(token);
+    utils.getCodeTable.mockReturnValueOnce(statuses);
+    utils.getCodeTable.mockReturnValueOnce(ministryTeamCodes);
+    const result = await exchange.getExchanges(req,res);
 
-  it('should return UNAUTHORIZED if no session', async () => {
-    utils.getSessionUser.mockReturnValue(null);
-
-    await exchange.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
-  });
-
-  it('should return user info without student info if no student info', async () => {
-    await exchange.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
-    expect(res.json).toHaveBeenCalledWith({
-      displayName: sessionUser._json.displayName,
-      accountType: sessionUser._json.accountType,
-      identityTypeLabel: lodash.find(codes.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]).label,
-    });
-  });
-
-  it('should return INTERNAL_SERVER_ERROR if invalid identityTypeCode', async () => {
-    const digitalIdData = {
-      identityTypeCode: 'INVALID',
-      studentID: null
-    };
-
-    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
-
-    await exchange.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
-  });
-
-  it('should return INTERNAL_SERVER_ERROR if exceptions thrown', async () => {
-    rewireRequest.__Rewire__('getDigitalIdData', () => Promise.reject(new ServiceError('error')));
-
-    await exchange.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+    expect(result.status).toHaveBeenCalledWith(HttpStatus.OK);
+    expect(result.data.json).toBe(sampleJsonResponseEdxPaginated);
   });
 });
