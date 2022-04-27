@@ -73,11 +73,11 @@ nconf.defaults({
     natsCluster:process.env.NATS_CLUSTER
   },
   edx: {
-    rootURL: process.env.EDX_API_URL,
-    exchangeURL: process.env.EDX_API_URL + '/exchange',
-    exchangeStatusesURL: process.env.EDX_API_URL + '/exchange/statuses',
-    ministryTeamURL : process.env.EDX_API_URL+ '/user/ministry-teams',
-    edxUsersURL: process.env.EDX_API_URL+ '/users'
+    rootURL: process.env.EDX_API_ENDPOINT,
+    exchangeURL: process.env.EDX_API_ENDPOINT + '/exchange',
+    exchangeStatusesURL: process.env.EDX_API_ENDPOINT + '/exchange/statuses',
+    ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/user/ministry-teams',
+    edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users'
   }
 });
 module.exports = nconf;
