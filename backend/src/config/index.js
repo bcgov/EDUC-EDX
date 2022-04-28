@@ -76,7 +76,7 @@ nconf.defaults({
     rootURL: process.env.EDX_API_ENDPOINT,
     exchangeURL: process.env.EDX_API_ENDPOINT + '/exchange',
     exchangeStatusesURL: process.env.EDX_API_ENDPOINT + '/exchange/statuses',
-    ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/user/ministry-teams',
+    ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/users/ministry-teams',
     edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users'
   }
 });
