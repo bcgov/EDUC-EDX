@@ -62,6 +62,7 @@ jobs:
           TOKEN_ENVIRONMENT: ${{ secrets.TOKEN_ENVIRONMENT }}
           TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
           TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
+          TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
   TearDown:
     runs-on: ubuntu-latest
     if: ${{ always() }}
