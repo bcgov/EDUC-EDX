@@ -6,7 +6,7 @@ const { getToken } = require('../../helpers/oauth-utils');
 const { getAllMinistryTeams } = require('../../services/edx-api-service');
 
 fixture `edx-login`
-    .page(base_url)
+    .page("https://dev.educationdataexchange.gov.bc.ca")
     .before(tkn => {
         getToken().then(async (data) => {
         // retrieve data from a backend API 'service' (Data priming)
