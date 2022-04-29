@@ -9,7 +9,7 @@ fixture `edx-login`
     .page(base_url)
     .before(tkn => {
         getToken().then(async (data) => {
-        // retrieve data from a backend API 'service' (Data priming)
+        log.info("Received token, hitting api");
         const getMinistryTeams = await getAllMinistryTeams(data.access_token);
         log.info("Setup complete");
     }).catch((error => {
