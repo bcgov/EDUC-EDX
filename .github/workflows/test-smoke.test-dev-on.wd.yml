@@ -47,7 +47,7 @@ jobs:
     needs: [DeployRunner]
     defaults:
       run:
-        working-directory: frontend
+        working-directory: test
     steps:
       - uses: actions/checkout@v3
         name: Checkout
