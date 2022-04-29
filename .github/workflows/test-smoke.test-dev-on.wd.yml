@@ -5,7 +5,7 @@ on:
 env: 
   OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
-  OPENSHIFT_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE }}
+  RUNNER_DEPLOYMENT_NAMESPACE: ${{ secrets.RUNNER_DEPLOYMENT_NAMESPACE }}
   GITHUB_REPO: ${{ github.event.repository.name }}
   ORGANIZATION: bcgov
   GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
           # set the necessary env vars
           # create a random runner id, etc
           # note: export used for these vars for envsubst to pick up later on
-          export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} GITHUB_REPO=${{ env.GITHUB_REPO }} ORGANIZATION=${{ env.ORGANIZATION }} GITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+          export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ env.RUNNER_DEPLOYMENT_NAMESPACE }} GITHUB_REPO=${{ env.GITHUB_REPO }} ORGANIZATION=${{ env.ORGANIZATION }} GITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
           # set output of runner name
           echo ::set-output name=runner_name::"$RUNNER_ID"
           DEPLOYMENT_CONFIG_FILE=os-deployment.yaml
@@ -38,7 +38,7 @@ jobs:
           envsubst < os-deployment-gh-runner.yaml > $DEPLOYMENT_CONFIG_FILE
           # Login to OpenShift and select project
           oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
-          oc project ${{ env.OPENSHIFT_NAMESPACE }}
+          oc project ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
           # Deploy runner
           oc apply -f $DEPLOYMENT_CONFIG_FILE
   SmokeTest:
@@ -76,7 +76,7 @@ jobs:
         run: |
           set -eux
           oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
-          oc project ${{ env.OPENSHIFT_NAMESPACE }}
+          oc project ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
           oc delete deployment ${{ needs.DeployRunner.outputs.runner_name }}
 
 
