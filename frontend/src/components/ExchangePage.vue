@@ -7,11 +7,11 @@
           <v-expansion-panel-content>
             <v-list dense>
               <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item>
+                <v-list-item v-on:click="getActiveMessages()">
                   <v-list-item-content>Active Messages</v-list-item-content>
                   <v-list-item-avatar>{{ totalRequests }}</v-list-item-avatar>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item v-on:click="getCompletedMessages()">
                   <v-list-item-content>Completed Messages</v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -135,9 +135,8 @@
           <v-select
               id="status-text-field"
               v-model="headerSearchParams.secureExchangeStatusCode"
-              :items="statuses"
-              item-text='label'
-              item-value='secureExchangeStatusCode'
+              :items="getSecureExchangeStatusCodes()"
+              :disabled="!isActiveMessagesTabEnabled"
               class="header-text"
               outlined
               dense
@@ -198,6 +197,7 @@ export default {
         currentSortDir: true
       },
       requests: [],
+      isActiveMessagesTabEnabled: true,
     };
   },
   computed: {
@@ -234,13 +234,15 @@ export default {
   },
   created() {
     this.$store.dispatch('edx/getCodes');
-    this.headerSearchParams.secureExchangeStatusCode=['NEW','INPROG'];
+    this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
   },
   methods: {
-    getCompletedRequests() {
-      this.headerSearchParams.secureExchangeStatusCode=['COMPLETE'];
+    getCompletedMessages() {
+      this.headerSearchParams.secureExchangeStatusCode = ['COMPLETE'];
+      this.isActiveMessagesTabEnabled = false;
       this.getRequests();
+
     },
     getRequests() {
       this.loadingTable = true;
@@ -260,12 +262,34 @@ export default {
         }
       }).then(response => {
         this.requests = response.data.content;
-        this.totalRequests = response.data.totalElements;
+        if(this.isActiveMessagesTabEnabled){
+          this.totalRequests = response.data.totalElements;
+        }
       }).catch(error => {
-        console.log(error);
+        //to do add the alert framework for error or success
+        console.error(error);
       }).finally(() => {
         this.loadingTable = false;
       });
+    },
+    getActiveMessages() {
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+      this.isActiveMessagesTabEnabled = true;
+      this.getRequests();
+    },
+    getSecureExchangeStatusCodes(){
+      const statusCodeComboBox = [];
+      const item1 = {
+        value: 'NEW',
+        text: 'New',
+      };
+      const item2 = {
+        value: 'INPROG',
+        text: 'In Progress',
+      };
+      statusCodeComboBox.push(item1);
+      statusCodeComboBox.push(item2);
+      return statusCodeComboBox;
     },
   },
   watch: {
