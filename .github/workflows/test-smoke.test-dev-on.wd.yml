@@ -76,7 +76,7 @@ jobs:
         with:
           oc: 4
 
-      - name: Deploy runner
+      - name: Destroy runner
         run: |
           set -eux
           oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
