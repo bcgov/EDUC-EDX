@@ -9,6 +9,14 @@ describe('Header.vue', () => {
   let wrapper;
   let store;
 
+  const breakpoint = {
+    init: jest.fn(),
+    framework: {},
+    smAndDown: true,
+  };
+  const vuetify = new Vuetify();
+  vuetify.framework.breakpoint = breakpoint;
+
   beforeEach(() => {
     Vue.use(Vuetify);
     Vue.use(Vuex);
@@ -19,6 +27,7 @@ describe('Header.vue', () => {
 
     wrapper = shallowMount(Header, {
       Vue: Vue,
+      vuetify,
       store
     });
   });

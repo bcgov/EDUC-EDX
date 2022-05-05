@@ -24,7 +24,7 @@
 
   <v-container fluid v-else class="full-height">
 <v-row class="pb-6">
-  <v-col cols="8" >
+  <v-col cols="12" md="8">
     <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
                      :tableData="exchangeData"></DashboardTable>
     <v-container v-else-if="isLoadingExchange" class="full-height" fluid>
