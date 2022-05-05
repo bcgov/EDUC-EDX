@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       runner_name: ${{ steps.deploy_runner.outputs.runner_name }}
-      runner_tags: ${{ steps.deploy_runner.outputs.runner_tags }}
     steps:
       - name: Install oc
         uses: redhat-actions/openshift-tools-installer@v1
@@ -26,12 +25,13 @@ jobs:
         id: deploy_runner
         run: |
           set -eux
-          # testing
-          echo ::set-output name=runner_tags::"self-hosted"
           # set the necessary env vars
           # create a random runner id, etc
           # note: export used for these vars for envsubst to pick up later on
           export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ env.RUNNER_DEPLOYMENT_NAMESPACE }} GITHUB_REPO=${{ env.GITHUB_REPO }} ORGANIZATION=${{ env.ORGANIZATION }} GITHUB_ACCESS_TOKEN=${{ env.GITHUB_ACCESS_TOKEN }}
+          # exporting runner id to the labels below. One test = one runner.
+          # add more labels if you like in csv format (label1,label2,label3,etc.)
+          export LABELS=$RUNNER_ID
           # set output of runner name
           echo ::set-output name=runner_name::"$RUNNER_ID"
           DEPLOYMENT_CONFIG_FILE=os-deployment.yaml
@@ -45,7 +45,7 @@ jobs:
           # Deploy runner
           oc apply -f $DEPLOYMENT_CONFIG_FILE
   SmokeTest:
-    runs-on: ${{ needs.DeployRunner.outputs.runner_tags }}
+    runs-on: ${{ needs.DeployRunner.outputs.runner_name }}
     environment: dev
     needs: [DeployRunner]
     defaults:
