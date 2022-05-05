@@ -15,6 +15,7 @@ import Login from '@/components/Login.vue';
 import BackendSessionExpired from '@/components/BackendSessionExpired';
 import {PAGE_TITLES} from '@/utils/constants';
 import ExchangePage from './components/ExchangePage';
+import MessageDisplay from './components/MessageDisplay';
 import RouterView from './components/RouterView';
 
 Vue.prototype.moment = moment;
@@ -88,6 +89,17 @@ const router = new VueRouter({
             role: '*'
           }
         },
+        {
+          path: 'exchange/:secureExchangeID',
+          name: 'viewExchange',
+          component: MessageDisplay,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.VIEW_EXCHANGE,
+            requiresAuth: true,
+            role: '*'
+          }
+        }
         /*{
           path: 'newExchange',
           name: 'newExchange',

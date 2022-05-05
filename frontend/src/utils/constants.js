@@ -30,10 +30,9 @@ export const ApiRoutes = Object.freeze({
   }
 });
 
-export const PAGE_TITLES = Object.freeze(
-  {
-    DASHBOARD: 'Dashboard',
-    EXCHANGE: 'Secure Exchange Inbox',
-    NEW_EXCHANGE: 'New Message'
-  });
-
+export const PAGE_TITLES = Object.freeze({
+  DASHBOARD: 'Dashboard',
+  EXCHANGE: 'Secure Exchange Inbox',
+  VIEW_EXCHANGE: 'View Message',
+  NEW_EXCHANGE: 'New Message'
+});

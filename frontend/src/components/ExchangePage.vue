@@ -146,7 +146,7 @@
           </v-select>
         </template>
         <template v-slot:item="{ item, index }">
-          <tr
+          <tr v-on:click="clickViewMessageDetails(item)"
               :key="index"
               :class="[{'unread': item.isReadByExchangeContact === 'N'}, 'tableRow']">
             <td>{{ item.sequenceNumber }}</td>
@@ -167,7 +167,7 @@
 
 import ApiService from '../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-
+import router from '../router';
 import PrimaryButton from './util/PrimaryButton';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
@@ -241,6 +241,9 @@ export default {
     getCompletedRequests() {
       this.headerSearchParams.secureExchangeStatusCode=['COMPLETE'];
       this.getRequests();
+    },
+    clickViewMessageDetails(message) {
+      router.push({ name: 'viewExchange', params: {secureExchangeID: message.secureExchangeID}});
     },
     getRequests() {
       this.loadingTable = true;
