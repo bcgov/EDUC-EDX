@@ -9,7 +9,6 @@ env:
   GITHUB_REPO: ${{ github.event.repository.name }}
   ORGANIZATION: bcgov
   GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-  RUNNER_TAGS: self-hosted
 
 jobs:
   DeployRunner:
@@ -26,6 +25,8 @@ jobs:
         id: deploy_runner
         run: |
           set -eux
+          # testing
+          echo ::set-output name=runner_tags::"self-hosted"
           # set the necessary env vars
           # create a random runner id, etc
           # note: export used for these vars for envsubst to pick up later on
@@ -43,7 +44,7 @@ jobs:
           # Deploy runner
           oc apply -f $DEPLOYMENT_CONFIG_FILE
   SmokeTest:
-    runs-on: ${{ env.RUNNER_TAGS }}
+    runs-on: ${{ needs.DeployRunner.outputs.runner_tags }}
     environment: dev
     needs: [DeployRunner]
     defaults:
