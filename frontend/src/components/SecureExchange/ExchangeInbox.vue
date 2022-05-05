@@ -164,15 +164,15 @@
 
 <script>
 
-import ApiService from '../common/apiService';
+import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 
-import PrimaryButton from './util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 
 export default {
-  name: 'ExchangePage',
+  name: 'ExchangeInbox',
   components: {
     PrimaryButton,
   },
