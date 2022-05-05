@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       runner_name: ${{ steps.deploy_runner.outputs.runner_name }}
+      runner_tags: ${{ steps.deploy_runner.outputs.runner_tags }}
     steps:
       - name: Install oc
         uses: redhat-actions/openshift-tools-installer@v1
