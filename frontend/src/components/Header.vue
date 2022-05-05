@@ -1,5 +1,6 @@
 <template>
-  <v-system-bar app absolute color="rgb(0, 51, 102)" height="56rem" class="sysBar pl-10 pr-10">
+  <v-system-bar app absolute color="rgb(0, 51, 102)" height="56rem" class="sysBar"
+                :class="{'pl-2': $vuetify.breakpoint.smAndDown, 'pl-10': $vuetify.breakpoint.mdAndUp, 'pr-2': $vuetify.breakpoint.smAndDown, 'pr-10': $vuetify.breakpoint.mdAndUp} ">
     <!-- Navbar content -->
     <a tabindex="-1" href="/">
       <img
@@ -11,7 +12,7 @@
       >
     </a>
     <a tabindex="-1" href="/">
-      <v-toolbar-title><h3 style="color:white">{{ appTitle }}</h3></v-toolbar-title>
+      <v-toolbar-title><h3 class="mainTitle" style="color:white">{{ appTitle }}</h3></v-toolbar-title>
     </a>
 
 
@@ -97,5 +98,19 @@ a {
 .top-down{
   padding-top: 20px;
   height: 80%;
+}
+
+@media screen and (max-width: 801px){
+  .logo {
+    width: 100px;
+  }
+
+  .mainTitle {
+    font-size: 1.0rem;
+  }
+
+  .display-name{
+    display: none;
+  }
 }
 </style>
