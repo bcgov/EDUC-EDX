@@ -120,10 +120,10 @@
 
 <script>
 import {mapState} from 'vuex';
-import PrimaryButton from './util/PrimaryButton';
-import TertiaryButton from './util/TertiaryButton';
-import DocumentUpload from './common/DocumentUpload';
-import ApiService from '../common/apiService';
+import PrimaryButton from '../util/PrimaryButton';
+import TertiaryButton from '../util/TertiaryButton';
+import DocumentUpload from '../common/DocumentUpload';
+import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 
 export default {
