@@ -168,7 +168,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 
 import PrimaryButton from '../util/PrimaryButton';
-import router from '../router';
+import router from '../../router';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 
