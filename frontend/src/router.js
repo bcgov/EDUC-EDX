@@ -14,6 +14,8 @@ import store from './store/index';
 import Login from '@/components/Login.vue';
 import BackendSessionExpired from '@/components/BackendSessionExpired';
 import {PAGE_TITLES} from '@/utils/constants';
+import ExchangePage from './components/ExchangePage';
+import MessageDisplay from './components/MessageDisplay';
 import ExchangePage from './components/SecureExchange/ExchangeInbox';
 import RouterView from './components/RouterView';
 
@@ -88,6 +90,17 @@ const router = new VueRouter({
             role: '*'
           }
         },
+        {
+          path: 'exchange/:secureExchangeID',
+          name: 'viewExchange',
+          component: MessageDisplay,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.VIEW_EXCHANGE,
+            requiresAuth: true,
+            role: '*'
+          }
+        }
         /*{
           path: 'newExchange',
           name: 'newExchange',
