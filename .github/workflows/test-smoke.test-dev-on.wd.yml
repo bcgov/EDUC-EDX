@@ -9,6 +9,7 @@ env:
   GITHUB_REPO: ${{ github.event.repository.name }}
   ORGANIZATION: bcgov
   GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+  RUNNER_TAGS: self-hosted
 
 jobs:
   DeployRunner:
@@ -42,7 +43,7 @@ jobs:
           # Deploy runner
           oc apply -f $DEPLOYMENT_CONFIG_FILE
   SmokeTest:
-    runs-on: self-hosted
+    runs-on: ${{ env.RUNNER_TAGS }}
     environment: dev
     needs: [DeployRunner]
     defaults:
