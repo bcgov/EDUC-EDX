@@ -1,14 +1,14 @@
 <template>
   <v-card  :color="colour" class="mt-2" height="100%">
     <v-row class="pt-4 px-8">
-      <v-col class="pa-0" cols="2">
+      <v-col class="pa-0" cols="12" md="2">
         <v-card-title class="pa-0">
           <h3>
             <v-row no-gutters class="dashboard-title mr-4">{{ title }}</v-row>
           </h3>
         </v-card-title>
       </v-col>
-      <v-col v-for="(row, index) in tableData" :key="index" class="py-0" cols="3">
+      <v-col v-for="(row, index) in tableData" :key="index" class="py-0" cols="12" md="2">
         <v-row class="pa-0">
           <h3>{{ row.title }}</h3>
         </v-row>
@@ -23,7 +23,7 @@
       </v-col>
     </v-row>
     <v-row class="pt-4 px-8">
-      <v-col cols="2"></v-col>
+      <v-col cols="2" class="hidden-sm-and-down"></v-col>
       <v-col
         v-for="(row, index) in tableData" :key="index" class="pt-4 py-0 px-0" cols="3">
         <router-link :to="row.button.route">

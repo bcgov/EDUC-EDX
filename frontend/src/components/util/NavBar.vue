@@ -7,7 +7,7 @@
           app
           color="#E9EBEF"
           :style="`margin-top: ${$vuetify.application.top + $vuetify.application.bar}px`"
-          width="15%"
+          :width="{'70%': $vuetify.breakpoint.smAndDown, '15%': $vuetify.breakpoint.mdAndUp}"
           temporary>
     <v-list>
       <div v-for="(item) in items.filter(obj => obj.authorized)" v-bind:key="item.title">
@@ -153,5 +153,11 @@ export default {
 
   .nav-title {
     font-size: 1.4rem;
+  }
+
+  @media screen and (max-width: 801px){
+    .nav-title {
+      font-size: 1.1rem;
+    }
   }
 </style>
