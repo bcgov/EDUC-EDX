@@ -8,15 +8,15 @@ inputs:
   runner-is-name:
     description: The name of the imagestream to be created
     required: false
-    default: gh-runner-ubuntu-18
+    default: "gh-runner-ubuntu-18"
   image-tags:
     description: Any tag for the image
     required: false
-    default: latest
+    default: "latest"
   registry-path:
     description: The path to the runner image.
     required: false
-    default: ghcr.io/bcgov/gh-runner:latest
+    default: "ghcr.io/bcgov/gh-runner:latest"
   openshift-token:
     description: An access token to Openshift
     required: true
@@ -26,10 +26,10 @@ inputs:
   github-repo:
     description: The repository that this runner will connect to
     required: true
-  orgainization:
+  organization:
     description: The organization that owns the repo
     required: false
-    default: bcgov
+    default: "bcgov"
   gh-access-token:
     description: A Github personal access token with admin rights on the repo
     required: true
@@ -51,7 +51,7 @@ runs:
         # set the necessary env vars
         # create a random runner id, etc
         # note: export used for these vars for envsubst to pick up later on
-        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployment-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
+        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployemnt-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
         # exporting runner id to the labels below. One test = one runner.
         # add more labels if you like in csv format (label1,label2,label3,etc.)
         export LABELS=$RUNNER_ID
