@@ -1,0 +1,34 @@
+name: teardown-os-runner
+author: Chris Ditcher
+description: Removes a Github runner from the Openshift environment (if it exists)
+inputs:
+  runner-deployment-namespace:
+    description: The Openshift namespace the runner will be deployed to (usually tools)
+    required: true
+  runner-deployment-name:
+    description: The name of the runner deployment
+    required: true
+  openshift-token:
+    description: An access token to Openshift
+    required: true
+  openshift-server:
+    description: The url to the Openshift instance
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Destroy runner
+      run: |
+        set -eux
+        oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
+        oc project ${{ inputs.runner-deployment-namespace }}
+        dep=$(oc get deployment ${{ inputs.runner-deployment-name }})
+        if [ -z "$dep" ]
+        then
+           echo "Runner does not exist. Doing nothing."
+        else
+          echo "Deleting runner deployment..."
+          oc delete deployment ${{ inputs.runner-deployment-name }}
+        fi
+
+      shell: bash

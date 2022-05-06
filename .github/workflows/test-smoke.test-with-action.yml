@@ -55,16 +55,15 @@ jobs:
     if: ${{ always() }}
     needs: [DeployRunner, SmokeTest]
     steps:
-      - name: Install oc
-        uses: redhat-actions/openshift-tools-installer@v1
+      - uses: actions/checkout@v3
+      - uses: redhat-actions/openshift-tools-installer@v1
         with:
           oc: 4
-
-      - name: Destroy runner
-        run: |
-          set -eux
-          oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
-          oc project ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
-          oc delete deployment ${{ needs.DeployRunner.outputs.runner_name }}
+      - uses: ./.github/actions/teardown-os-runner
+        with:
+          runner-deployment-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
+          runner-deployment-name: ${{ needs.DeployRunner.outputs.runner_name }}
+          openshift-token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift-server: ${{ env.OPENSHIFT_SERVER }}
 
 
