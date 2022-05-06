@@ -34,14 +34,12 @@ inputs:
     description: A Github personal access token with admin rights on the repo
     required: true
 outputs:
-  runner_name: ${{ steps.deploy_runner.outputs.runner_name }}
+  runner_name:
+    description: The name of the runner that is created.
+    value: ${{ steps.deploy_runner.outputs.runner_name }}
 runs:
   using: "composite"
   steps:
-    - name: Install oc
-      uses: redhat-actions/openshift-tools-installer@v1
-      with:
-        oc: 4
     - name: Deploy runner
       id: deploy_runner
       env:
@@ -73,3 +71,4 @@ runs:
         oc tag ${{ inputs.registry-is-path }} ${{ inputs.runner-is-name }}:${{ inputs.image-tags }}
         # Deploy runner
         oc apply -f $DEPLOYMENT_CONFIG_FILE
+      shell: bash
