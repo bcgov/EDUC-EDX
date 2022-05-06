@@ -23,6 +23,10 @@ jobs:
 
       - name: Deploy runner
         id: deploy_runner
+        env:
+          RUNNER_IS_NAME: gh-runner-ubuntu-18
+          IMAGE_TAGS: latest
+          REGISTRY_PATH: ghcr.io/bcgov/gh-runner:latest
         run: |
           set -eux
           # set the necessary env vars
@@ -42,6 +46,10 @@ jobs:
           # Login to OpenShift and select project
           oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
           oc project ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
+          # Create imagestream if it doesn't already exist
+          oc create imagestream ${{ env.RUNNER_IS_NAME }} 2> /dev/null || true && echo "Runner image stream in place"
+          # Tag it
+          oc tag ${{ env.REGISTRY_PATH }} ${{ env.RUNNER_IS_NAME }}:${{ env.IMAGE_TAGS }}
           # Deploy runner
           oc apply -f $DEPLOYMENT_CONFIG_FILE
   SmokeTest:
