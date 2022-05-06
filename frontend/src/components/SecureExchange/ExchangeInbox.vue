@@ -3,19 +3,7 @@
     <v-row class="mr-3 ml-3">
       <v-col>
         <v-row class='d-flex justify-lg-end pb-2'>
-          <v-col class='d-flex justify-lg-start'>
-            <H2>School Inbox</H2>
-          </v-col>
           <v-col class='d-flex justify-lg-end'>
-            <PrimaryButton
-              :large-icon=true
-              icon="mdi-account-check-outline"
-              id="newMessageBtn"
-              text="Claim"
-              to="newExchange"
-              class="mr-2"
-              :disabled=true
-            ></PrimaryButton>
             <PrimaryButton
               :large-icon=true
               icon="mdi-plus"
@@ -30,6 +18,7 @@
             <v-data-table
               :items-per-page.sync="pageSize"
               :page.sync="pageNumber"
+              :headers="headers"
               :footer-props="{
                       'items-per-page-options': itemsPerPageOptions
                     }"
@@ -37,43 +26,79 @@
               :loading="loadingTable"
               :server-items-length="totalRequests"
               class="elevation-1"
+              hide-default-header
             >
-              <template v-slot:item="{ item, index }">
-                <v-row class="ml-2">
-                  <v-col cols="11">
-                    <v-row>
-                      <v-col cols="12">
-                        <span>{{ item.subject.length > 40 ? item.subject.substring(0, 40) + '...' : item.subject }}</span>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12">
-                        <span>{{ item.contactIdentifier }}</span>
-                      </v-col>
-                    </v-row>
+
+              <template v-slot:item.secureExchangeStatusCode="{ item }">
+                <v-row class="mb-n4">
+                  <v-col cols="12">
+                    <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
+                    <span>{{ item.secureExchangeStatusCode }}</span>
                   </v-col>
-                  <v-col cols="1">
-                    <v-row class="mb-n3">
-                      <v-col cols="12">
-                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
-                        <span>{{ item.secureExchangeStatusCode }}</span>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mb-n3">
-                      <v-col cols="12">
-                        <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>
-                        <span>{{ item.reviewer }}</span>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mb-n3">
-                      <v-col cols="12">
-                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
-                        <span>{{ item.createDate }}</span>
-                      </v-col>
-                    </v-row>
+                </v-row>
+                <v-row class="mb-n4">
+                  <v-col cols="12">
+                    <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>
+                    <span>{{ item.reviewer }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
+                    <span>{{ item.createDate }}</span>
                   </v-col>
                 </v-row>
               </template>
+
+              <template v-slot:item.subject="{ item }">
+                <v-row>
+                  <v-col cols="12">
+                    <span>{{ item.subject.length > 35 ? item.subject.substring(0, 35) + '...' : item.subject }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <span>{{ item.contactIdentifier }}</span>
+                  </v-col>
+                </v-row>
+              </template>
+
+<!--              <template v-slot:item="{ item, index }">-->
+<!--                <v-row class="ml-2">-->
+<!--                  <v-col cols="11">-->
+<!--                    <v-row>-->
+<!--                      <v-col cols="12">-->
+<!--                        <span>{{ item.subject.length > 40 ? item.subject.substring(0, 40) + '...' : item.subject }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row>-->
+<!--                      <v-col cols="12">-->
+<!--                        <span>{{ item.contactIdentifier }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                  </v-col>-->
+<!--                  <v-col cols="1">-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>-->
+<!--                        <span>{{ item.secureExchangeStatusCode }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>-->
+<!--                        <span>{{ item.reviewer }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>-->
+<!--                        <span>{{ item.createDate }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                  </v-col>-->
+<!--                </v-row>-->
+<!--              </template>-->
               <template v-slot:no-data>There are no messages.</template>
 
             </v-data-table>
@@ -99,6 +124,20 @@ export default {
   },
   data() {
     return {
+      headers: [
+        {
+          text: 'Details',
+          align: 'start',
+          sortable: false,
+          value: 'subject',
+        },
+        {
+          text: 'Status',
+          align: 'end',
+          sortable: false,
+          value: 'secureExchangeStatusCode',
+        }
+      ],
       items: [
         {
           color: 'red lighten-2',
@@ -140,36 +179,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('edx', ['statuses']),
-    headers() {
-      return [
-        {
-          text: 'Id',
-          value: 'sequenceNumber',
-          sortable: false
-        },
-        {
-          text: 'Contact',
-          value: 'contactIdentifier',
-          sortable: false
-        },
-        {
-          text: 'Subject',
-          value: 'subject',
-          sortable: false
-        },
-        {
-          text: 'Request Date',
-          value: 'createDate',
-          sortable: false
-        },
-        {
-          text: 'Status',
-          value: 'secureExchangeStatusCode',
-          sortable: false
-        }
-      ];
-    }
+    ...mapState('edx', ['statuses'])
   },
   created() {
     this.$store.dispatch('edx/getCodes');

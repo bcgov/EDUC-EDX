@@ -15,7 +15,7 @@
            v-on="on"
     >
       <v-icon class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
-      <span class="ml-1" :class="hover ? 'text-decoration-underline': ''">{{ text }}</span>
+      <span class="ml-1">{{ text }}</span>
     </v-btn>
   </v-hover>
 </template>
