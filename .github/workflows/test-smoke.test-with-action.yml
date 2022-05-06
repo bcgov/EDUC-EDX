@@ -1,4 +1,4 @@
-name: Smoke Test
+name: Smoke Test with Acttion
 on:
   workflow_dispatch:
 
