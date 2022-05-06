@@ -1,174 +1,119 @@
 <template>
-  <v-row>
-    <v-col cols='2'>
-      <v-expansion-panels :value="0">
-        <v-expansion-panel>
-          <v-expansion-panel-header> Secure Inbox</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-list dense>
-              <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item v-on:click="getActiveMessages()">
-                  <v-list-item-content>Active Messages</v-list-item-content>
-                  <v-list-item-avatar>{{ totalRequests }}</v-list-item-avatar>
-                </v-list-item>
-                <v-list-item v-on:click="getCompletedMessages()">
-                  <v-list-item-content>Completed Messages</v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-col>
-    <v-col>
-      <v-row class='d-flex justify-lg-end pb-2'>
-        <PrimaryButton
-            id="newMessageBtn"
-            text="New Message"
-            to="newExchange"
-        ></PrimaryButton>
-      </v-row>
-      <v-data-table
-          :headers="headers"
-          :items-per-page.sync="pageSize"
-          :page.sync="pageNumber"
-          :footer-props="{
-              'items-per-page-options': itemsPerPageOptions
-            }"
-          :items="requests"
-          :loading="loadingTable"
-          :server-items-length="totalRequests"
-      >
-        <template v-slot:header.sequenceNumber="{ header }">
-          <th
-              id="sequence-number-header"
-          >
-            {{ header.text }}
-          </th>
-          <v-text-field
-              id="sequence-number-text-field"
-              v-model="headerSearchParams.sequenceNumber"
-              class="header-text"
-              outlined
-              dense
-              clearable
-          ></v-text-field>
-        </template>
-        <template v-slot:header.contactIdentifier="{ header }">
-          <th
-              id="contact-header"
-          >
-            {{ header.text }}
-          </th>
-          <v-text-field
-              id="contact-text-field"
-              v-model="headerSearchParams.contact"
-              item-text="contactIdentifierName"
-              item-value="ministryOwnershipTeamID"
-              class="header-text"
-              outlined
-              dense
-              clearable
-          ></v-text-field>
-        </template>
-        <template v-slot:header.subject="{ header }">
-          <th
-              id="subject-header"
-          >
-            {{ header.text }}
-          </th>
-          <v-text-field
-              id="subject-text-field"
-              v-model="headerSearchParams.subject"
-              class="header-text"
-              outlined
-              dense
-              clearable
-          ></v-text-field>
-        </template>
-        <template v-slot:header.createDate="{ header }">
-          <th
-              id="create-date-header"
-          >
-            {{ header.text }}
-          </th>
-          <v-menu
-              ref="dateMenu"
-              v-model="dateMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                  id="date-picker-text-field"
-                  :value="headerSearchParams.createDate? headerSearchParams.createDate.join(): ''"
-                  outlined
-                  dense
-                  readonly
-                  v-on="on"
-                  @click:clear="headerSearchParams.createDate = []"
-                  clearable
-                  class="header-text"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-                id="date-picker"
-                v-model="headerSearchParams.createDate"
-                no-title
-                range
+  <v-container fluid>
+    <v-row class="mr-3 ml-3">
+      <v-col>
+        <v-row class='d-flex justify-lg-end pb-2'>
+          <v-col class='d-flex justify-lg-end'>
+            <PrimaryButton
+              :large-icon=true
+              icon="mdi-plus"
+              id="newMessageBtn"
+              text="New Message"
+              to="newExchange"
+            ></PrimaryButton>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              :items-per-page.sync="pageSize"
+              :page.sync="pageNumber"
+              :headers="headers"
+              :footer-props="{
+                      'items-per-page-options': itemsPerPageOptions
+                    }"
+              :items="requests"
+              :loading="loadingTable"
+              :server-items-length="totalRequests"
+              class="elevation-1"
+              hide-default-header
             >
-              <v-spacer></v-spacer>
-              <PrimaryButton id="date-picker-ok-button" text="OK"
-                             @click.native="dateMenu=false"></PrimaryButton>
-            </v-date-picker>
-          </v-menu>
-        </template>
-        <template v-slot:header.secureExchangeStatusCode="{ header }">
-          <th
-              id="status-header"
-          >
-            {{ header.text }}
-          </th>
-          <v-select
-              id="status-text-field"
-              v-model="headerSearchParams.secureExchangeStatusCode"
-              :items="getSecureExchangeStatusCodes()"
-              :disabled="!isActiveMessagesTabEnabled"
-              class="header-text"
-              outlined
-              dense
-              clearable
-          >
-          </v-select>
-        </template>
-        <template v-slot:item="{ item, index }">
-          <tr v-on:click="clickViewMessageDetails(item)"
-              :key="index"
-              :class="[{'unread': item.isReadByExchangeContact === 'N'}, 'tableRow']">
-            <td>{{ item.sequenceNumber }}</td>
-            <td>{{ item.contactIdentifierName }}</td>
-            <td>{{ item.subject }}</td>
-            <td>{{ item.createDate }}</td>
-            <td>{{ item.secureExchangeStatusCode }}</td>
-          </tr>
-        </template>
-        <template v-slot:no-data>There are no messages.</template>
 
-      </v-data-table>
-    </v-col>
-  </v-row>
+              <template v-slot:item.secureExchangeStatusCode="{ item }">
+                <v-row class="mb-n4">
+                  <v-col cols="12">
+                    <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
+                    <span>{{ item.secureExchangeStatusCode }}</span>
+                  </v-col>
+                </v-row>
+                <v-row class="mb-n4">
+                  <v-col cols="12">
+                    <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>
+                    <span>{{ item.reviewer }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
+                    <span>{{ item.createDate }}</span>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-slot:item.subject="{ item }">
+                <v-row>
+                  <v-col cols="12">
+                    <span>{{ item.subject.length > 35 ? item.subject.substring(0, 35) + '...' : item.subject }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <span>{{ item.contactIdentifier }}</span>
+                  </v-col>
+                </v-row>
+              </template>
+
+<!--              <template v-slot:item="{ item, index }">-->
+<!--                <v-row class="ml-2">-->
+<!--                  <v-col cols="11">-->
+<!--                    <v-row>-->
+<!--                      <v-col cols="12">-->
+<!--                        <span>{{ item.subject.length > 40 ? item.subject.substring(0, 40) + '...' : item.subject }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row>-->
+<!--                      <v-col cols="12">-->
+<!--                        <span>{{ item.contactIdentifier }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                  </v-col>-->
+<!--                  <v-col cols="1">-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>-->
+<!--                        <span>{{ item.secureExchangeStatusCode }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>-->
+<!--                        <span>{{ item.reviewer }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                    <v-row class="mb-n3">-->
+<!--                      <v-col cols="12">-->
+<!--                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>-->
+<!--                        <span>{{ item.createDate }}</span>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                  </v-col>-->
+<!--                </v-row>-->
+<!--              </template>-->
+              <template v-slot:no-data>There are no messages.</template>
+
+            </v-data-table>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-
 import PrimaryButton from '../util/PrimaryButton';
-import router from '../../router';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 
@@ -179,11 +124,43 @@ export default {
   },
   data() {
     return {
+      headers: [
+        {
+          text: 'Details',
+          align: 'start',
+          sortable: false,
+          value: 'subject',
+        },
+        {
+          text: 'Status',
+          align: 'end',
+          sortable: false,
+          value: 'secureExchangeStatusCode',
+        }
+      ],
+      items: [
+        {
+          color: 'red lighten-2',
+          icon: 'mdi-star',
+        },
+        {
+          color: 'purple darken-1',
+          icon: 'mdi-book-variant',
+        },
+        {
+          color: 'green lighten-1',
+          icon: 'mdi-airballoon',
+        },
+        {
+          color: 'indigo',
+          icon: 'mdi-buffer',
+        }
+      ],
       selectedItem: 0,
       pageNumber: 1,
       pageSize: 25,
       totalRequests: 0,
-      itemsPerPageOptions: [10, 15, 25, 50, 100],
+      itemsPerPageOptions: [10],
       loadingTable: false,
       dateMenu: false,
       headerSearchParams: {
@@ -202,36 +179,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('edx', ['statuses']),
-    headers() {
-      return [
-        {
-          text: 'Id',
-          value: 'sequenceNumber',
-          sortable: false
-        },
-        {
-          text: 'Contact',
-          value: 'contactIdentifier',
-          sortable: false
-        },
-        {
-          text: 'Subject',
-          value: 'subject',
-          sortable: false
-        },
-        {
-          text: 'Request Date',
-          value: 'createDate',
-          sortable: false
-        },
-        {
-          text: 'Status',
-          value: 'secureExchangeStatusCode',
-          sortable: false
-        }
-      ];
-    }
+    ...mapState('edx', ['statuses'])
   },
   created() {
     this.$store.dispatch('edx/getCodes');
@@ -245,9 +193,6 @@ export default {
       this.getRequests();
 
     },
-    clickViewMessageDetails(message) {
-      router.push({ name: 'viewExchange', params: {secureExchangeID: message.secureExchangeID}});
-    },
     getRequests() {
       this.loadingTable = true;
       this.requests = [];
@@ -255,7 +200,6 @@ export default {
         isReadByExchangeContact: 'ASC',
         createDate: 'ASC'
       };
-
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {
         params: {
@@ -273,6 +217,7 @@ export default {
         //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
+        console.log(JSON.stringify(this.requests));
         this.loadingTable = false;
       });
     },
@@ -315,6 +260,10 @@ export default {
 
 .unread {
   font-weight: bold;
+}
+
+.v-data-table >>> .v-data-table__wrapper {
+  overflow-x: hidden;
 }
 
 </style>

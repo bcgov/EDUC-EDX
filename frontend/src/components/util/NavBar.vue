@@ -7,7 +7,7 @@
           app
           color="#E9EBEF"
           :style="`margin-top: ${$vuetify.application.top + $vuetify.application.bar}px`"
-          :width="{'70%': $vuetify.breakpoint.smAndDown, '15%': $vuetify.breakpoint.mdAndUp}"
+          :width="navWidth"
           temporary>
     <v-list>
       <div v-for="(item) in items.filter(obj => obj.authorized)" v-bind:key="item.title">
@@ -99,6 +99,16 @@ export default {
   },
   computed: {
     ...mapState('auth', ['isAuthenticated']),
+    navWidth () {
+      switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        return '50%';
+      case 'sm':
+        return '50%';
+      default:
+        return '15%';
+      }
+    }
   },
   methods: {
     setActive(item) {

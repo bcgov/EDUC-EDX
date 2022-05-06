@@ -24,6 +24,7 @@
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "7.3.4",
     "@fortawesome/fontawesome-free": "5.11.2",
+    "@mdi/font": "^4.9.95",
     "@js-joda/core": "^2.0.0",
     "axios": "^0.21.2",
     "core-js": "^2.6.12",
