@@ -14,7 +14,8 @@ jobs:
   DeployRunner:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/deploy-os-runner
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/deploy-os-runner
         with:
           runner-deployemnt-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
           openshift-token: ${{ env.OPENSHIFT_TOKEN }}
