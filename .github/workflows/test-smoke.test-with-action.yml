@@ -20,7 +20,7 @@ jobs:
           oc: 4
       - uses: ./.github/actions/deploy-os-runner
         with:
-          runner-deployemnt-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
+          runner-deployment-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
           openshift-token: ${{ env.OPENSHIFT_TOKEN }}
           openshift-server: ${{ env.OPENSHIFT_SERVER }}
           github-repo: ${{ env.GITHUB_REPO }}

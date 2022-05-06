@@ -2,7 +2,7 @@ name: deploy-os-runner
 author: Chris Ditcher
 description: Deploys a self-hosted runner with a unique id for running workflows inside Openshift environment
 inputs:
-  runner-deployemnt-namespace:
+  runner-deployment-namespace:
     description: The Openshift namespace the runner will be deployed to (usually tools)
     required: true
   runner-is-name:
@@ -51,7 +51,7 @@ runs:
         # set the necessary env vars
         # create a random runner id, etc
         # note: export used for these vars for envsubst to pick up later on
-        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployemnt-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
+        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployment-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
         # exporting runner id to the labels below. One test = one runner.
         # add more labels if you like in csv format (label1,label2,label3,etc.)
         export LABELS=$RUNNER_ID
