@@ -9,6 +9,7 @@
                :color="bannerColor"
                sticky
                dense
+               height="20rem"
     ><div><h3 class="envBanner">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
     <ModalIdle v-if="isAuthenticated"/>
     <router-view/>
@@ -73,6 +74,10 @@ export default {
 </script>
 
 <style>
+.envBanner {
+  font-size: 0.8rem;
+}
+
 .v-application {
   font-family: 'BCSans', Verdana, Arial, sans-serif !important;
 }
@@ -177,12 +182,6 @@ h1 {
 
   h1 {
     font-size: 1.2rem;
-  }
-}
-
-@media screen and (max-width: 801px){
-  .envBanner {
-    font-size: 1.1rem;
   }
 }
 
