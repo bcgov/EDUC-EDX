@@ -13,12 +13,15 @@ env:
 jobs:
   DeployRunner:
     runs-on: ubuntu-latest
+    outputs:
+      runner_name: ${{ steps.deploy_runner.outputs.runner_name }}
     steps:
       - uses: actions/checkout@v3
       - uses: redhat-actions/openshift-tools-installer@v1
         with:
           oc: 4
       - uses: ./.github/actions/deploy-os-runner
+        id: deploy_runner
         with:
           runner-deployment-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
           openshift-token: ${{ env.OPENSHIFT_TOKEN }}
