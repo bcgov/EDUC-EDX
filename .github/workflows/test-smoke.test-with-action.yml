@@ -1,0 +1,63 @@
+name: Smoke Test
+on:
+  workflow_dispatch:
+
+env: 
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
+  RUNNER_DEPLOYMENT_NAMESPACE: ${{ secrets.RUNNER_DEPLOYMENT_NAMESPACE }}
+  GITHUB_REPO: ${{ github.event.repository.name }}
+  ORGANIZATION: bcgov
+  GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+jobs:
+  DeployRunner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-os-runner
+        with:
+          runner-deployemnt-namespace: ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
+          openshift-token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift-server: ${{ env.OPENSHIFT_SERVER }}
+          github-repo: ${{ env.GITHUB_REPO }}
+          gh-access-token: ${{ env.GITHUB_ACCESS_TOKEN }}
+  SmokeTest:
+    runs-on: ${{ needs.DeployRunner.outputs.runner_name }}
+    environment: dev
+    needs: [DeployRunner]
+    defaults:
+      run:
+        working-directory: test
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - run: npm install
+      - run: npm run smoke-test
+        if: ${{ always() }}
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          EDX_API_BASE_URL: ${{ secrets.EDX_API_BASE_URL }}
+          API_HTML_STATUS_CLASS_THRESHOLD: 399
+          TOKEN_NAMESPACE: ${{ secrets.TOKEN_NAMESPACE }}
+          TOKEN_ENVIRONMENT: ${{ secrets.TOKEN_ENVIRONMENT }}
+          TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
+          TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
+          TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
+  TearDown:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [DeployRunner, SmokeTest]
+    steps:
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
+
+      - name: Destroy runner
+        run: |
+          set -eux
+          oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
+          oc project ${{ env.RUNNER_DEPLOYMENT_NAMESPACE }}
+          oc delete deployment ${{ needs.DeployRunner.outputs.runner_name }}
+
+
