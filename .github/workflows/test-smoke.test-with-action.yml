@@ -11,6 +11,7 @@ env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
 jobs:
+  # deploy a self-hosted runner on OS
   DeployRunner:
     runs-on: ubuntu-latest
     outputs:
@@ -28,6 +29,8 @@ jobs:
           openshift-server: ${{ env.OPENSHIFT_SERVER }}
           github-repo: ${{ env.GITHUB_REPO }}
           gh-access-token: ${{ env.GITHUB_ACCESS_TOKEN }}
+
+  # run test on the runner
   SmokeTest:
     runs-on: ${{ needs.DeployRunner.outputs.runner_name }}
     environment: dev
@@ -50,6 +53,8 @@ jobs:
           TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
           TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
           TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
+
+  # now burn it all down!!
   TearDown:
     runs-on: ubuntu-latest
     if: ${{ always() }}
