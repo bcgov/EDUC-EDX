@@ -66,9 +66,9 @@ runs:
         oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
         oc project ${{ inputs.runner-deployment-namespace }}
         # Create imagestream if it doesn't already exist
-        oc create imagestream ${{ inputs.registry-is-path }} 2> /dev/null || true && echo "Runner image stream in place"
+        oc create imagestream ${{ inputs.registry-path }} 2> /dev/null || true && echo "Runner image stream in place"
         # Tag it
-        oc tag ${{ inputs.registry-is-path }} ${{ inputs.runner-is-name }}:${{ inputs.image-tags }}
+        oc tag ${{ inputs.registry-path }} ${{ inputs.runner-is-name }}:${{ inputs.image-tags }}
         # Deploy runner
         oc apply -f $DEPLOYMENT_CONFIG_FILE
       shell: bash
