@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row class="mr-3 ml-3">
+    <v-row :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
       <v-col>
         <v-row class='d-flex justify-lg-end pb-2'>
           <v-col class='d-flex justify-lg-end'>
