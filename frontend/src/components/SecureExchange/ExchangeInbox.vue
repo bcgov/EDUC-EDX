@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row class="mr-3 ml-3">
+    <v-row :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
       <v-col>
         <v-row class='d-flex justify-lg-end pb-2'>
           <v-col class='d-flex justify-lg-end'>
@@ -13,6 +13,42 @@
             ></PrimaryButton>
           </v-col>
         </v-row>
+        <v-expansion-panels>
+          <v-expansion-panel style="background: #dddddd8a">
+            <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
+              <v-radio-group
+                @click.native.stop
+                v-model="statusFilter"
+                row
+                class="pt-0 pb-0 mt-0 mb-0"
+              >
+                <v-radio class="mt-2"
+                  label="Active Only"
+                  value="statusFilterActive"
+                ></v-radio>
+                <v-radio class="mt-2"
+                  label="All"
+                  value="statusFilterAll"
+                ></v-radio>
+              </v-radio-group>
+              <template v-slot:actions>
+                <v-btn id="filterid"
+                       title="filter"
+                       color="black"
+                       outlined
+                       class="mt-0 pt-0"
+
+                >
+                  <v-icon color="black" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
+                  <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-1">More Filters</span>
+                </v-btn>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
         <v-row>
           <v-col>
             <v-data-table
@@ -27,78 +63,40 @@
               :server-items-length="totalRequests"
               class="elevation-1"
               hide-default-header
+              mobile-breakpoint="0"
             >
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
-                <v-row class="mb-n4">
-                  <v-col cols="12">
-                    <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
-                    <span>{{ item.secureExchangeStatusCode }}</span>
-                  </v-col>
-                </v-row>
-                <v-row class="mb-n4">
-                  <v-col cols="12">
-                    <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>
-                    <span>{{ item.reviewer }}</span>
-                  </v-col>
-                </v-row>
                 <v-row>
-                  <v-col cols="12">
-                    <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
-                    <span>{{ item.createDate }}</span>
+                  <v-col cols="6" md="10" class="pb-0 pt-0">
+                    <v-row class="mb-n4">
+                      <v-col cols="12" class="pb-2 pt-2 pr-0">
+                        <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" class="pb-1 pr-0">
+                        <span style="color: gray">{{ getLatestComment(item) }}</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="6" md="2" style="text-align: end" class="pb-0 pt-0">
+                    <v-row class="mb-n4">
+                      <v-col cols="12" class="pb-1">
+                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
+                        <span>{{ item.secureExchangeStatusCode }}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" class="pb-2">
+                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
+                        <span>{{ item.createDate }}</span>
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
               </template>
 
-              <template v-slot:item.subject="{ item }">
-                <v-row>
-                  <v-col cols="12">
-                    <span>{{ item.subject.length > 35 ? item.subject.substring(0, 35) + '...' : item.subject }}</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <span>{{ item.contactIdentifier }}</span>
-                  </v-col>
-                </v-row>
-              </template>
-
-<!--              <template v-slot:item="{ item, index }">-->
-<!--                <v-row class="ml-2">-->
-<!--                  <v-col cols="11">-->
-<!--                    <v-row>-->
-<!--                      <v-col cols="12">-->
-<!--                        <span>{{ item.subject.length > 40 ? item.subject.substring(0, 40) + '...' : item.subject }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                    <v-row>-->
-<!--                      <v-col cols="12">-->
-<!--                        <span>{{ item.contactIdentifier }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                  </v-col>-->
-<!--                  <v-col cols="1">-->
-<!--                    <v-row class="mb-n3">-->
-<!--                      <v-col cols="12">-->
-<!--                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>-->
-<!--                        <span>{{ item.secureExchangeStatusCode }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                    <v-row class="mb-n3">-->
-<!--                      <v-col cols="12">-->
-<!--                        <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>-->
-<!--                        <span>{{ item.reviewer }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                    <v-row class="mb-n3">-->
-<!--                      <v-col cols="12">-->
-<!--                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>-->
-<!--                        <span>{{ item.createDate }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                  </v-col>-->
-<!--                </v-row>-->
-<!--              </template>-->
               <template v-slot:no-data>There are no messages.</template>
 
             </v-data-table>
@@ -126,14 +124,8 @@ export default {
     return {
       headers: [
         {
-          text: 'Details',
-          align: 'start',
-          sortable: false,
-          value: 'subject',
-        },
-        {
           text: 'Status',
-          align: 'end',
+          align: 'start',
           sortable: false,
           value: 'secureExchangeStatusCode',
         }
@@ -187,6 +179,47 @@ export default {
     this.getRequests();
   },
   methods: {
+    getSubject(subject){
+      if(subject.length > 12){
+        switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm':
+          return this.getContentString(subject, 12);
+        case 'md':
+          return this.getContentString(subject, 40);
+        case 'lg':
+          return this.getContentString(subject, 100);
+        default:
+          return this.getContentString(subject, 150);
+        }
+      }
+      return subject;
+    },
+    getContentString(content, length){
+      if(content.length > length) {
+        return content.substring(0, length) + '...';
+      }
+      return content;
+    },
+    getLatestComment(item){
+      var content = item.commentsList.reduce((a, b) => (a.createDate > b.createDate ? a : b)).content;
+      if(content.length > 25){
+        switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm':
+          return this.getContentString(content, 25);
+        case 'md':
+          return this.getContentString(content, 100);
+        case 'lg':
+          return this.getContentString(content, 130);
+        case 'xl':
+          return this.getContentString(content, 220);
+        default:
+          return content;
+        }
+      }
+      return content;
+    },
     getCompletedMessages() {
       this.headerSearchParams.secureExchangeStatusCode = ['COMPLETE'];
       this.isActiveMessagesTabEnabled = false;
@@ -217,7 +250,6 @@ export default {
         //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
-        console.log(JSON.stringify(this.requests));
         this.loadingTable = false;
       });
     },
@@ -265,5 +297,13 @@ export default {
 .v-data-table >>> .v-data-table__wrapper {
   overflow-x: hidden;
 }
+
+@media screen and (max-width: 801px){
+  .subjectHeading {
+    font-size: medium;
+  }
+}
+
+
 
 </style>
