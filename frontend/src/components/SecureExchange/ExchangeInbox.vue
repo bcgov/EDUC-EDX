@@ -13,8 +13,8 @@
             ></PrimaryButton>
           </v-col>
         </v-row>
-        <v-expansion-panels>
-          <v-expansion-panel style="background: #dddddd8a">
+        <v-expansion-panels flat style="border-radius: 6px">
+          <v-expansion-panel style="background: #ebedef">
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                 @click.native.stop
