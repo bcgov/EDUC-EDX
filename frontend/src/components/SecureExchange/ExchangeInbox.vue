@@ -15,13 +15,28 @@
         </v-row>
         <v-expansion-panels>
           <v-expansion-panel style="background: #dddddd8a">
-            <v-expansion-panel-header disable-icon-rotate>
-              Item
+            <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
+              <v-radio-group
+                @click.native.stop
+                v-model="statusFilter"
+                row
+                class="pt-0 pb-0 mt-0 mb-0"
+              >
+                <v-radio class="mt-2"
+                  label="Active Only"
+                  value="statusFilterActive"
+                ></v-radio>
+                <v-radio class="mt-2"
+                  label="All"
+                  value="statusFilterAll"
+                ></v-radio>
+              </v-radio-group>
               <template v-slot:actions>
                 <v-btn id="filterid"
                        title="filter"
                        color="black"
                        outlined
+                       class="mt-0 pt-0"
 
                 >
                   <v-icon color="black" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
@@ -72,12 +87,6 @@
                         <span>{{ item.secureExchangeStatusCode }}</span>
                       </v-col>
                     </v-row>
-<!--                    <v-row class="mb-n4">-->
-<!--                      <v-col cols="12">-->
-<!--                        <v-icon class="pb-1" color="black" right dark>mdi-account-outline</v-icon>-->
-<!--                        <span>{{ item.reviewer }}</span>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
                     <v-row>
                       <v-col cols="12" class="pb-2">
                         <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
@@ -105,7 +114,6 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
-// import {getLocalDateFromString} from '@/utils/common';
 
 export default {
   name: 'ExchangeInbox',
@@ -242,7 +250,6 @@ export default {
         //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
-        console.log(JSON.stringify(this.requests));
         this.loadingTable = false;
       });
     },
