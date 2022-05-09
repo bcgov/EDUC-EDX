@@ -57,13 +57,13 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-16 pr-8">
+  <v-app-bar app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.breakpoint.mdAndUp}">
     <v-app-bar-nav-icon id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
-      <p class="ma-0 pl-4 pr-2">Menu</p>
+      <p class="ma-0 pl-4 pr-2 hidden-sm-and-down">Menu</p>
     </v-app-bar-nav-icon>
-    <v-toolbar-title class="ml-4 nav-title">{{ title }}</v-toolbar-title>
+    <v-toolbar-title class="nav-title" :class="{'ml-4': $vuetify.breakpoint.mdAndUp, 'pl-1': $vuetify.breakpoint.smAndDown}">{{ title }}</v-toolbar-title>
     <v-spacer></v-spacer>
   </v-app-bar>
 </div>
