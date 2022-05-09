@@ -15,15 +15,11 @@ For end-to-end testing, we are using testcafe, a node.js based front-end testing
 The tests require certain environment variables to be set:
 
 ```
-TEST_ADMIN_USERNAME={An administrator username for logging in}
-TEST_ADMIN_PASSWORD={An administrator password}
 BASE_URL={example: dev.educationdataexchange.gov.bc.ca/}
 EDX_API_BASE_URL={example: https://edx-api-d4cdde-dev.apps.silver.devops.gov.bc.ca/}
 API_HTML_STATUS_CLASS_THRESHOLD=399
 
 # API TOKEN PROPERTIES
-TOKEN_NAMESPACE={Openshift Namespace}
-TOKEN_ENVIRONMENT={dev | test | prod} #Note: This will be redundant as we should use github environmental secrets
 TOKEN_CLIENT_ID={keycloak client id}
 TOKEN_CLIENT_SECRET={keycloak client secret}
 ```
@@ -84,7 +80,16 @@ and creating TestCafe page models in the page_models directory to support your t
 Next, add your test to the scripts block in the package.json file. If your test is part of a test suite, add it to the test suite in the
 test_suites directory first. You should be able to call your test by issuing the following command: `npm run [your script name]`
 
-If you need to add environment variables, put them in your .env file, then add additional structure by adding to /tests/config/index.js and /tests/config/constants.js.
+### Environment Variables
 
-TODO: Finish this
+If you need to add environment variables, put them in your .env file, then make them accessible to your test by adding to `/tests/config/index.js` and `/tests/config/constants.js`.
+Since these tests will also be run on the Github side and Openshift, you will need to ensure that these environment variables are accessible 
+to:
+1. The Github action that will launch your test
+- If your environment variable contains sensitive information, you need to put this into a [Github secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
+- See [this workflow](https://raw.githubusercontent.com/bcgov/EDUC-EDX/master/.github/workflows/test-smoke.test-dev-on.wd.yml) for how to use secrets in a Github workflow
+2. The runner that will be deployed on Openshift
+- Add environment variables to the Github job or action that will run on the container using the [env directive](https://docs.github.com/en/actions/learn-github-actions/environment-variables). TODO: Use config map on deployment instead?
+
+
 
