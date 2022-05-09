@@ -1,0 +1,74 @@
+name: deploy-os-runner
+author: Chris Ditcher
+description: Deploys a self-hosted runner with a unique id for running workflows inside Openshift environment
+inputs:
+  runner-deployment-namespace:
+    description: The Openshift namespace the runner will be deployed to (usually tools)
+    required: true
+  runner-is-name:
+    description: The name of the imagestream to be created
+    required: false
+    default: "gh-runner-ubuntu-18"
+  image-tags:
+    description: Any tag for the image
+    required: false
+    default: "latest"
+  registry-path:
+    description: The path to the runner image.
+    required: false
+    default: "ghcr.io/bcgov/gh-runner:latest"
+  openshift-token:
+    description: An access token to Openshift
+    required: true
+  openshift-server:
+    description: The url to the Openshift instance
+    required: true
+  github-repo:
+    description: The repository that this runner will connect to
+    required: true
+  organization:
+    description: The organization that owns the repo
+    required: false
+    default: "bcgov"
+  gh-access-token:
+    description: A Github personal access token with admin rights on the repo
+    required: true
+outputs:
+  runner_name:
+    description: The name of the runner that is created.
+    value: ${{ steps.deploy_runner.outputs.runner_name }}
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy runner
+      id: deploy_runner
+      env:
+        RUNNER_IS_NAME: gh-runner-ubuntu-18
+        IMAGE_TAGS: latest
+        REGISTRY_PATH: ghcr.io/bcgov/gh-runner:latest
+      run: |
+        set -eux
+        # set the necessary env vars
+        # create a random runner id, etc
+        # note: export used for these vars for envsubst to pick up later on
+        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployment-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
+        # exporting runner id to the labels below. One test = one runner.
+        # add more labels if you like in csv format (label1,label2,label3,etc.)
+        export LABELS=$RUNNER_ID
+        # set output of runner name
+        echo ::set-output name=runner_name::"$RUNNER_ID"
+        DEPLOYMENT_CONFIG_FILE=os-deployment.yaml
+        # get config
+        wget https://raw.githubusercontent.com/bcgov/EDUC-INFRA-COMMON/master/github-self-hosted-runner/os-deployment-gh-runner.yaml
+        # replace vars
+        envsubst < os-deployment-gh-runner.yaml > $DEPLOYMENT_CONFIG_FILE
+        # Login to OpenShift and select project
+        oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
+        oc project ${{ inputs.runner-deployment-namespace }}
+        # Create imagestream if it doesn't already exist
+        oc create imagestream ${{ inputs.registry-path }} 2> /dev/null || true && echo "Runner image stream in place"
+        # Tag it
+        oc tag ${{ inputs.registry-path }} ${{ inputs.runner-is-name }}:${{ inputs.image-tags }}
+        # Deploy runner
+        oc apply -f $DEPLOYMENT_CONFIG_FILE
+      shell: bash
