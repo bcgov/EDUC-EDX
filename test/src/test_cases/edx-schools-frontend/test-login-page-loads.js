@@ -12,7 +12,7 @@ fixture `edx-login`
         const getMinistryTeams = await getAllMinistryTeams(data.access_token);
         log.info("Setup complete");
     }).catch((error => {
-        log.error(error)
+        log.error(error);
         throw new Error("Setup failed")
     }))})
     .after(async ctx => {
