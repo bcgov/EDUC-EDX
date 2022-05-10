@@ -251,10 +251,10 @@ const createSearchParamObject = (key, value) => {
 
   if (key === 'createDate') {
     value.forEach((date, index) => {
-      value[index] = date + 'T00:00:01';
+      value[index] = date + 'T00:00:00';
     });
     if (value.length === 1) {
-      value.push(LocalDateTime.now().toString());
+      value.push(LocalDateTime.parse(value[0]).plusHours(23).plusMinutes(59).plusSeconds(59));
     }
     value = value.join(',');
     operation = FILTER_OPERATION.BETWEEN;

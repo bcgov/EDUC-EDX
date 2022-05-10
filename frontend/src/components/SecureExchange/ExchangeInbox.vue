@@ -26,10 +26,12 @@
                 <v-radio class="mt-2"
                   label="Active Only"
                   value="statusFilterActive"
+                  @click.native="statusFilterActiveClicked"
                 ></v-radio>
                 <v-radio class="mt-2"
                   label="All"
                   value="statusFilterAll"
+                  @click.native="statusFilterAllClicked"
                 ></v-radio>
               </v-radio-group>
               <template v-slot:actions>
@@ -100,7 +102,7 @@
                     <template v-slot:item="{ item }">
                       <v-row>
                         <v-col cols="12" class="pr-0">
-                          <v-icon :color="getStatusColor(item)">
+                          <v-icon :color="getStatusColor(item.label)">
                             mdi-circle-medium
                           </v-icon>
                           <span class="body-2">{{ item.label }}</span>
@@ -114,7 +116,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -154,7 +156,7 @@
                   <v-col cols="6" md="2" style="text-align: end" class="pb-0 pt-0">
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-1">
-                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
+                        <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>mdi-circle-medium</v-icon>
                         <span>{{ item.secureExchangeStatusCode }}</span>
                       </v-col>
                     </v-row>
@@ -237,7 +239,7 @@ export default {
       return this.statuses;
     },
     searchEnabled(){
-      return this.subjectFilter !== '' || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
     },
   },
   created() {
@@ -246,30 +248,56 @@ export default {
     this.getRequests();
   },
   methods: {
-    clearSearch(){
+    setFilterStatusAll(){
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG','COMPLETE'];
+    },
+    setFilterStatusActive(){
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+    },
+    statusFilterActiveClicked(){
+      this.setFilterStatusActive();
+      this.getRequests();
+    },
+    statusFilterAllClicked(){
+      this.setFilterStatusAll();
+      this.getRequests();
+    },
+    clearSearch(runSearch = true){
       this.subjectFilter = '';
       this.messageDate = null;
       this.messageDateFilter = null;
       this.statusSelectFilter = '';
+      if(runSearch){
+        this.setFilterStatusAll();
+        this.getRequests();
+      }
     },
     onExpansionPanelClick(event) {
       if(event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
         this.filterText = 'More Filters';
         this.statusRadioGroupEnabled = true;
+        this.statusRadioGroup = 'statusFilterActive';
+        this.setFilterStatusActive();
+        this.clearSearch(false);
+        this.getRequests();
       } else {
+        this.setFilterStatusAll();
+        this.statusRadioGroup = 'statusFilterAll';
         this.filterText = 'Less Filters';
         this.statusRadioGroupEnabled = false;
+        this.clearSearch();
       }
+
     },
     saveMessageDate(date) {
       this.$refs.messageDateFilter.save(date);
     },
     getStatusColor(status){
-      if(status.secureExchangeStatusCode === 'NEW') {
+      if(status === 'New') {
         return 'blue';
-      } else if(status.secureExchangeStatusCode === 'INPROG') {
+      } else if(status === 'In Progress') {
         return 'yellow darken-2';
-      } else if(status.secureExchangeStatusCode === 'COMPLETE') {
+      } else if(status === 'Complete') {
         return 'green';
       }
     },
@@ -326,6 +354,13 @@ export default {
         isReadByExchangeContact: 'ASC',
         createDate: 'ASC'
       };
+
+      this.headerSearchParams.subject = this.subjectFilter;
+      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
+
+      if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
+        this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
+      }
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {
         params: {
