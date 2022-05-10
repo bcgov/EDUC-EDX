@@ -26,10 +26,12 @@
                 <v-radio class="mt-2"
                   label="Active Only"
                   value="statusFilterActive"
+                  @click.native="statusFilterActiveClicked"
                 ></v-radio>
                 <v-radio class="mt-2"
                   label="All"
                   value="statusFilterAll"
+                  @click.native="statusFilterAllClicked"
                 ></v-radio>
               </v-radio-group>
               <template v-slot:actions>
@@ -100,7 +102,7 @@
                     <template v-slot:item="{ item }">
                       <v-row>
                         <v-col cols="12" class="pr-0">
-                          <v-icon :color="getStatusColor(item)">
+                          <v-icon :color="getStatusColor(item.label)">
                             mdi-circle-medium
                           </v-icon>
                           <span class="body-2">{{ item.label }}</span>
@@ -114,7 +116,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -139,7 +141,7 @@
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
                 <v-row>
-                  <v-col cols="6" md="10" class="pb-0 pt-0">
+                  <v-col cols="7" md="10" class="pb-0 pt-0">
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-2 pt-2 pr-0">
                         <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
@@ -147,21 +149,26 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-1 pr-0">
+                        <span style="color: black">{{ getMinistryTeamName(item.ministryOwnershipTeamID) }} - {{ item.createDate }}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" class="pt-0 pb-1 pr-0">
                         <span style="color: gray">{{ getLatestComment(item) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="6" md="2" style="text-align: end" class="pb-0 pt-0">
+                  <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-1">
-                        <v-icon class="pb-1" :color="item.secureExchangeStatusCode === 'In Progress' ? 'yellow darken-2' : 'blue'" right dark>mdi-circle-medium</v-icon>
+                        <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>mdi-circle-medium</v-icon>
                         <span>{{ item.secureExchangeStatusCode }}</span>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-2">
-                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
-                        <span>{{ item.createDate }}</span>
+                        <v-icon class="pb-1 pr-1" color="black" right dark>mdi-key-outline</v-icon>
+                        <span>{{ item.sequenceNumber }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -233,52 +240,83 @@ export default {
   },
   computed: {
     ...mapState('edx', ['statuses']),
+    ...mapState('edx', ['ministryTeams']),
     secureExchangeStatusCodes(){
       return this.statuses;
     },
     searchEnabled(){
-      return this.subjectFilter !== '' || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
     },
   },
   created() {
     this.$store.dispatch('edx/getCodes');
+    this.$store.dispatch('edx/getMinistryTeams');
     this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
   },
   methods: {
-    clearSearch(){
+    getMinistryTeamName(ministryOwnershipTeamId){
+      return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
+    },
+    setFilterStatusAll(){
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG','COMPLETE'];
+    },
+    setFilterStatusActive(){
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+    },
+    statusFilterActiveClicked(){
+      this.setFilterStatusActive();
+      this.getRequests();
+    },
+    statusFilterAllClicked(){
+      this.setFilterStatusAll();
+      this.getRequests();
+    },
+    clearSearch(runSearch = true){
       this.subjectFilter = '';
       this.messageDate = null;
       this.messageDateFilter = null;
       this.statusSelectFilter = '';
+      if(runSearch){
+        this.setFilterStatusAll();
+        this.getRequests();
+      }
     },
     onExpansionPanelClick(event) {
       if(event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
         this.filterText = 'More Filters';
         this.statusRadioGroupEnabled = true;
+        this.statusRadioGroup = 'statusFilterActive';
+        this.setFilterStatusActive();
+        this.clearSearch(false);
+        this.getRequests();
       } else {
+        this.setFilterStatusAll();
+        this.statusRadioGroup = 'statusFilterAll';
         this.filterText = 'Less Filters';
         this.statusRadioGroupEnabled = false;
+        this.clearSearch();
       }
+
     },
     saveMessageDate(date) {
       this.$refs.messageDateFilter.save(date);
     },
     getStatusColor(status){
-      if(status.secureExchangeStatusCode === 'NEW') {
+      if(status === 'New') {
         return 'blue';
-      } else if(status.secureExchangeStatusCode === 'INPROG') {
+      } else if(status === 'In Progress') {
         return 'yellow darken-2';
-      } else if(status.secureExchangeStatusCode === 'COMPLETE') {
+      } else if(status === 'Complete') {
         return 'green';
       }
     },
     getSubject(subject){
-      if(subject.length > 12){
+      if(subject.length > 16){
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
-          return this.getContentString(subject, 12);
+          return this.getContentString(subject, 16);
         case 'md':
           return this.getContentString(subject, 40);
         case 'lg':
@@ -326,6 +364,13 @@ export default {
         isReadByExchangeContact: 'ASC',
         createDate: 'ASC'
       };
+
+      this.headerSearchParams.subject = this.subjectFilter;
+      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
+
+      if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
+        this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
+      }
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {
         params: {
