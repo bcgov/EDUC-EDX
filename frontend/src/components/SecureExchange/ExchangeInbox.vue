@@ -141,7 +141,7 @@
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
                 <v-row>
-                  <v-col cols="6" md="10" class="pb-0 pt-0">
+                  <v-col cols="7" md="10" class="pb-0 pt-0">
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-2 pt-2 pr-0">
                         <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
@@ -149,11 +149,16 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-1 pr-0">
+                        <span style="color: black">{{ getMinistryTeamName(item.ministryOwnershipTeamID) }} - {{ item.createDate }}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" class="pt-0 pb-1 pr-0">
                         <span style="color: gray">{{ getLatestComment(item) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="6" md="2" style="text-align: end" class="pb-0 pt-0">
+                  <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-1">
                         <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>mdi-circle-medium</v-icon>
@@ -162,8 +167,8 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-2">
-                        <v-icon class="pb-1" color="black" right dark>mdi-clock-outline</v-icon>
-                        <span>{{ item.createDate }}</span>
+                        <v-icon class="pb-1 pr-1" color="black" right dark>mdi-key-outline</v-icon>
+                        <span>{{ item.sequenceNumber }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -235,6 +240,7 @@ export default {
   },
   computed: {
     ...mapState('edx', ['statuses']),
+    ...mapState('edx', ['ministryTeams']),
     secureExchangeStatusCodes(){
       return this.statuses;
     },
@@ -244,10 +250,14 @@ export default {
   },
   created() {
     this.$store.dispatch('edx/getCodes');
+    this.$store.dispatch('edx/getMinistryTeams');
     this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
   },
   methods: {
+    getMinistryTeamName(ministryOwnershipTeamId){
+      return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
+    },
     setFilterStatusAll(){
       this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG','COMPLETE'];
     },
@@ -302,11 +312,11 @@ export default {
       }
     },
     getSubject(subject){
-      if(subject.length > 12){
+      if(subject.length > 16){
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
-          return this.getContentString(subject, 12);
+          return this.getContentString(subject, 16);
         case 'md':
           return this.getContentString(subject, 40);
         case 'lg':
