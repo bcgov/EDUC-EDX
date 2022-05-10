@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
-    <v-row :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
-      <v-col>
-        <v-row class='d-flex justify-lg-end pb-2'>
-          <v-col class='d-flex justify-lg-end'>
+    <v-row class="pt-0" :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
+      <v-col class="pt-0">
+        <v-row class='d-flex justify-end pb-2'>
+          <v-col class='d-flex justify-end'>
             <PrimaryButton
               :large-icon=true
               icon="mdi-plus"
@@ -14,11 +14,12 @@
           </v-col>
         </v-row>
         <v-expansion-panels flat style="border-radius: 6px">
-          <v-expansion-panel style="background: #ebedef">
+          <v-expansion-panel @click="onExpansionPanelClick" style="background: #ebedef">
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                 @click.native.stop
-                v-model="statusFilter"
+                v-model="statusRadioGroup"
+                :disabled="!statusRadioGroupEnabled"
                 row
                 class="pt-0 pb-0 mt-0 mb-0"
               >
@@ -37,15 +38,85 @@
                        color="black"
                        outlined
                        class="mt-0 pt-0"
-
                 >
                   <v-icon color="black" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
-                  <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-1">More Filters</span>
+                  <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-1">{{ filterText }}</span>
                 </v-btn>
               </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    class="pt-0 mt-0"
+                    v-model="subjectFilter"
+                    label="Subject"
+                    prepend-inner-icon="mdi-book-open-variant"
+                    clearable
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
+                  <v-menu
+                    ref="messageDateFilter"
+                    v-model="messageDateFilter"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        class="pt-0 mt-0"
+                        v-model="messageDate"
+                        label="Message Date"
+                        prepend-inner-icon="mdi-calendar"
+                        clearable
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="messageDate"
+                      :active-picker.sync="activeMessageDatePicker"
+                      :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                      min="2022-01-01"
+                      @change="saveMessageDate"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    v-model="statusSelectFilter"
+                    :items="secureExchangeStatusCodes"
+                    item-text="label"
+                    class="pt-0 mt-0"
+                    item-value="secureExchangeStatusCode"
+                    prepend-inner-icon="mdi-alert-circle-outline"
+                    label="Status"
+                    single-line
+                    clearable
+                  >
+                    <template v-slot:item="{ item }">
+                      <v-row>
+                        <v-col cols="12" class="pr-0">
+                          <v-icon :color="getStatusColor(item)">
+                            mdi-circle-medium
+                          </v-icon>
+                          <span class="body-2">{{ item.label }}</span>
+                        </v-col>
+                      </v-row>
+                    </template>
+                  </v-select>
+                </v-col>
+              </v-row>
+              <v-row no-gutters class="justify-end mt-n2">
+                <v-col cols="12" class="d-flex justify-end">
+                  <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
+                                 text="Clear"></PrimaryButton>
+                  <PrimaryButton :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -122,30 +193,20 @@ export default {
   },
   data() {
     return {
+      statusSelectFilter: null,
+      statusRadioGroup: 'statusFilterActive',
+      statusRadioGroupEnabled: true,
+      messageDateFilter: false,
+      activeMessageDatePicker: null,
+      messageDate: null,
+      subjectFilter: '',
+      filterText: 'More Filters',
       headers: [
         {
           text: 'Status',
           align: 'start',
           sortable: false,
           value: 'secureExchangeStatusCode',
-        }
-      ],
-      items: [
-        {
-          color: 'red lighten-2',
-          icon: 'mdi-star',
-        },
-        {
-          color: 'purple darken-1',
-          icon: 'mdi-book-variant',
-        },
-        {
-          color: 'green lighten-1',
-          icon: 'mdi-airballoon',
-        },
-        {
-          color: 'indigo',
-          icon: 'mdi-buffer',
         }
       ],
       selectedItem: 0,
@@ -171,7 +232,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('edx', ['statuses'])
+    ...mapState('edx', ['statuses']),
+    secureExchangeStatusCodes(){
+      return this.statuses;
+    },
+    searchEnabled(){
+      return this.subjectFilter !== '' || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+    },
   },
   created() {
     this.$store.dispatch('edx/getCodes');
@@ -179,6 +246,33 @@ export default {
     this.getRequests();
   },
   methods: {
+    clearSearch(){
+      this.subjectFilter = '';
+      this.messageDate = null;
+      this.messageDateFilter = null;
+      this.statusSelectFilter = '';
+    },
+    onExpansionPanelClick(event) {
+      if(event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
+        this.filterText = 'More Filters';
+        this.statusRadioGroupEnabled = true;
+      } else {
+        this.filterText = 'Less Filters';
+        this.statusRadioGroupEnabled = false;
+      }
+    },
+    saveMessageDate(date) {
+      this.$refs.messageDateFilter.save(date);
+    },
+    getStatusColor(status){
+      if(status.secureExchangeStatusCode === 'NEW') {
+        return 'blue';
+      } else if(status.secureExchangeStatusCode === 'INPROG') {
+        return 'yellow darken-2';
+      } else if(status.secureExchangeStatusCode === 'COMPLETE') {
+        return 'green';
+      }
+    },
     getSubject(subject){
       if(subject.length > 12){
         switch (this.$vuetify.breakpoint.name) {
@@ -224,7 +318,6 @@ export default {
       this.headerSearchParams.secureExchangeStatusCode = ['COMPLETE'];
       this.isActiveMessagesTabEnabled = false;
       this.getRequests();
-
     },
     getRequests() {
       this.loadingTable = true;
@@ -257,21 +350,7 @@ export default {
       this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
       this.isActiveMessagesTabEnabled = true;
       this.getRequests();
-    },
-    getSecureExchangeStatusCodes(){
-      const statusCodeComboBox = [];
-      const item1 = {
-        value: 'NEW',
-        text: 'New',
-      };
-      const item2 = {
-        value: 'INPROG',
-        text: 'In Progress',
-      };
-      statusCodeComboBox.push(item1);
-      statusCodeComboBox.push(item2);
-      return statusCodeComboBox;
-    },
+    }
   },
   watch: {
     pageSize() {
