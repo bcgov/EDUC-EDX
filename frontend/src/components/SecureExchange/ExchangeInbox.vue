@@ -156,7 +156,7 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-1 pr-0">
-                        <span style="color: black">{{ getMinistryTeamName(item.ministryOwnershipTeamID) }} - {{ item.createDate }}</span>
+                        <span class="ministryLine">{{ getMinistryTeamName(item.ministryOwnershipTeamID) }} - {{ item.createDate }}</span>
                       </v-col>
                     </v-row>
                     <v-row>
@@ -169,13 +169,13 @@
                     <v-row class="mb-n4">
                       <v-col cols="12" class="pb-1">
                         <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>mdi-circle-medium</v-icon>
-                        <span>{{ item.secureExchangeStatusCode }}</span>
+                        <span class="statusCodeLabel">{{ item.secureExchangeStatusCode }}</span>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-2">
                         <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>mdi-pound</v-icon>
-                        <span>{{ item.sequenceNumber }}</span>
+                        <span class="statusCodeLabel">{{ item.sequenceNumber }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -327,9 +327,9 @@ export default {
         case 'md':
           return this.getContentString(subject, 40);
         case 'lg':
-          return this.getContentString(subject, 100);
+          return this.getContentString(subject, 75);
         default:
-          return this.getContentString(subject, 150);
+          return this.getContentString(subject, 120);
         }
       }
       return subject;
@@ -440,10 +440,30 @@ export default {
 .activeRadio {
   color: #003366;
 }
+.subjectHeading{
+  font-size: x-large;
+}
+
+.statusCodeLabel{
+  font-size: large;
+}
+
+.ministryLine{
+  color: black;
+  font-size: large;
+}
 
 @media screen and (max-width: 801px){
   .subjectHeading {
-    font-size: medium;
+    font-size: larger;
+  }
+
+  .statusCodeLabel{
+    font-size: inherit;
+  }
+
+  .ministryLine{
+    font-size: inherit;
   }
 }
 
