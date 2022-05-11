@@ -18,30 +18,37 @@
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                 @click.native.stop
+                color="#003366"
                 v-model="statusRadioGroup"
                 :disabled="!statusRadioGroupEnabled"
                 row
                 class="pt-0 pb-0 mt-0 mb-0"
               >
-                <v-radio class="mt-2"
+                <v-radio class="mt-2 radio-blue-text"
                   label="Active Only"
+                  color="#003366"
                   value="statusFilterActive"
                   @click.native="statusFilterActiveClicked"
-                ></v-radio>
-                <v-radio class="mt-2"
+                ><template v-slot:label>
+                  <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">Active Only</span>
+                </template></v-radio>
+                <v-radio class="mt-2 radio-blue-text"
                   label="All"
+                  color="#003366"
                   value="statusFilterAll"
                   @click.native="statusFilterAllClicked"
-                ></v-radio>
+                ><template v-slot:label>
+                  <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">All</span>
+                </template></v-radio>
               </v-radio-group>
               <template v-slot:actions>
                 <v-btn id="filterid"
                        title="filter"
-                       color="black"
+                       color="#003366"
                        outlined
-                       class="mt-0 pt-0"
+                       class="mt-0 pt-0 filterButton"
                 >
-                  <v-icon color="black" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
+                  <v-icon color="#003366" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
                   <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-1">{{ filterText }}</span>
                 </v-btn>
               </template>
@@ -167,7 +174,7 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pb-2">
-                        <v-icon class="pb-1 pr-1" color="black" right dark>mdi-key-outline</v-icon>
+                        <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>mdi-pound</v-icon>
                         <span>{{ item.sequenceNumber }}</span>
                       </v-col>
                     </v-row>
@@ -420,6 +427,18 @@ export default {
 
 .v-data-table >>> .v-data-table__wrapper {
   overflow-x: hidden;
+}
+
+.filterButton.v-btn--outlined {
+  border: thin solid #ebedef;
+}
+
+.v-radio >>> .v-icon {
+  color: #003366;
+}
+
+.activeRadio {
+  color: #003366;
 }
 
 @media screen and (max-width: 801px){
