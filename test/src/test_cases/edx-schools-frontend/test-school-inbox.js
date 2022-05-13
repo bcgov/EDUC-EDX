@@ -2,9 +2,11 @@
  * Tests to run against the school inbox page
  */
 import { base_url } from '../../config/constants';
-import {getToken} from "../../helpers/oauth-utils";
+import { getToken } from "../../helpers/oauth-utils";
 import {getAllMinistryTeams} from "../../services/edx-api-service";
 import log from "npmlog";
+import SecureExchange from "../../model/SecureExchange";
+import SecureExchangeComment from "../../model/SecureExchangeComment";
 
 let token = '';
 
@@ -15,9 +17,15 @@ fixture `school-inbox`
             token = data.access_token;
         }).catch((error => {
             log.error(error);
-            throw new Error("Failed to retrieve token")
+            throw new Error("Failed to retrieve token");
         }));
-        log.info("Setting up data");
+        let secureExchange = new SecureExchange();
+        let comment = new SecureExchangeComment();
+        comment.content = 'My first comment';
+        secureExchange.addComment(comment);
+
+        log.info(JSON.stringify(secureExchange));
+
     })
     .after(async ctx => {
         // TODO: remove pre-loaded messages
