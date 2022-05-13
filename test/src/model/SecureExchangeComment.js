@@ -7,7 +7,11 @@ class SecureExchangeComment {
         this.staffUserIdentifier = null;
         this.commentUserName = null;
         this.content = null;
-        this.commentTimeStamp = null;
+        this.commentTimestamp = null;
+        this.createUser = null;
+        this.updateUser = null;
+        this.createDate = null;
+        this.updateDate = null;
     }
 
 }

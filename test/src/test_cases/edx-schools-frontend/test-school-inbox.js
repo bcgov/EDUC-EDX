@@ -3,33 +3,35 @@
  */
 import { base_url } from '../../config/constants';
 import { getToken } from "../../helpers/oauth-utils";
-import {getAllMinistryTeams} from "../../services/edx-api-service";
+import { createSecureExchange } from "../../services/edx-api-service";
+import { deleteSecureExchange } from "../../services/edx-api-service";
 import log from "npmlog";
 import SecureExchange from "../../model/SecureExchange";
 import SecureExchangeComment from "../../model/SecureExchangeComment";
 
 let token = '';
+let testExchange = createTestExchange();
 
 fixture `school-inbox`
     .page(base_url)
     .before(tkn => {
         getToken().then(async (data) => {
             token = data.access_token;
+            log.info(JSON.stringify(testExchange));
+            const exchange = await createSecureExchange(token, JSON.stringify(testExchange), '');
+            testExchange.secureExchangeID = exchange.secureExchangeID;
         }).catch((error => {
             log.error(error);
             throw new Error("Failed to retrieve token");
         }));
-        let secureExchange = new SecureExchange();
-        let comment = new SecureExchangeComment();
-        comment.content = 'My first comment';
-        secureExchange.addComment(comment);
-
-        log.info(JSON.stringify(secureExchange));
-
     })
     .after(async ctx => {
-        // TODO: remove pre-loaded messages
+        await deleteSecureExchange(token, testExchange.secureExchangeID);
     log.info("Performing tear-down operation");
+});
+
+test('sanity-test', async t => {
+    log.info("Testexchange created with id: " + testExchange.secureExchangeId);
 });
 
 /**
@@ -102,3 +104,30 @@ test('clear-filters', async t => {
     log.info("clearing filters.");
 });
 
+/**
+ * ****************
+ * Helper methods *
+ * ****************
+ */
+
+function createTestExchange() {
+    const USERNAME = 'AUTOTEST';
+    let secureExchange = new SecureExchange();
+    let comment = new SecureExchangeComment();
+    secureExchange.contactIdentifier = '00899178';
+    secureExchange.ministryOwnershipTeamID = '62b226c9-76a3-4e4a-8463-5d5ebe605cdb';
+    secureExchange.secureExchangeContactTypeCode = 'SCHOOL'
+    secureExchange.createUser = USERNAME;
+    secureExchange.updateUser = USERNAME;
+    secureExchange.secureExchangeStatusCode = 'NEW';
+    secureExchange.reviewer = 'CDITCHER';
+    secureExchange.subject = 'Created by test automation';
+    secureExchange.isReadByMinistry = 'N';
+    secureExchange.isReadByExchangeContact = 'N';
+    comment.commentUserName = USERNAME;
+    comment.content = 'This was created using an automation test';
+    comment.createUser = USERNAME;
+    comment.updateUser = USERNAME;
+    secureExchange.addComment(comment);
+    return secureExchange;
+}

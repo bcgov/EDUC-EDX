@@ -1,7 +1,7 @@
 const restUtils = require("../helpers/rest-utils");
 const constants = require('../config/constants');
 
-const EXCHANGE_ENDPOINT = '${constants.edx_api_base_url}api/v1/edx/exchange';
+const EXCHANGE_ENDPOINT = `${constants.edx_api_base_url}api/v1/edx/exchange`;
 
 /**
  * Exposes methods for communication with edx-api end-points
@@ -16,8 +16,8 @@ const edxApiService = {
      * @param params
      * @returns {Promise<*>}
      */
-    async createSecureExchange(token, secureExchange, params) {
-        const responseBody = await restUtils.postData(token, EXCHANGE_ENDPOINT, secureExchange, params);
+    async createSecureExchange(token, secureExchange) {
+        const responseBody = await restUtils.postData(token, EXCHANGE_ENDPOINT, secureExchange, '');
         return responseBody;
     },
 
@@ -27,7 +27,7 @@ const edxApiService = {
 
     async deleteSecureExchange(token, secureExchangeID) {
         const url = EXCHANGE_ENDPOINT+'/'+secureExchangeID;
-        const responseBody = await restUtils.postData(token, url, '');
+        const responseBody = await restUtils.deleteData(token, url, '');
         return responseBody;
     },
 

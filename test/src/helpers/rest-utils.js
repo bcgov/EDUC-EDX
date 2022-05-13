@@ -124,11 +124,13 @@ function setToken(params, token) {
     if (params) {
         params.headers = {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
         };
     } else {
         params = {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         };
     }

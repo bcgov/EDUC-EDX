@@ -5,7 +5,7 @@ class SecureExchange {
         this.updateUser = null;
         this.createDate = null;
         this.updateDate = null;
-        this.secureExchangeId = null;
+        this.secureExchangeID = null;
         this.contactIdentifier = null;
         this.ministryOwnershipTeamID = null;
         this.secureExchangeContactTypeCode = null;
@@ -23,11 +23,6 @@ class SecureExchange {
         this.commentsList.push(comment);
     }
 
-    removeComment(commentId) {
-        if(this.commentsList.filter(c => c.secureExchangeCommentID === commentId).length > 0){
-            this.commentsList = this.commentsList.filter(c => c.secureExchangeCommentID === commentId);
-        }
-    }
 }
 
 export default SecureExchange;
