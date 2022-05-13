@@ -17,12 +17,10 @@ fixture `school-inbox`
     .before(tkn => {
         getToken().then(async (data) => {
             token = data.access_token;
-            log.info(JSON.stringify(testExchange));
-            const exchange = await createSecureExchange(token, JSON.stringify(testExchange), '');
+            const exchange = await createSecureExchange(token, JSON.stringify(testExchange));
             testExchange.secureExchangeID = exchange.secureExchangeID;
         }).catch((error => {
-            log.error(error);
-            throw new Error("Failed to retrieve token");
+            throw new Error("Failure during test setup: " + error);
         }));
     })
     .after(async ctx => {
@@ -31,7 +29,7 @@ fixture `school-inbox`
 });
 
 test('sanity-test', async t => {
-    log.info("Testexchange created with id: " + testExchange.secureExchangeId);
+    log.info("Testexchange created with id: " + testExchange.secureExchangeID);
 });
 
 /**
