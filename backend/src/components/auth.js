@@ -7,6 +7,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const qs = require('querystring');
 const utils = require('./utils');
 const HttpStatus = require('http-status-codes');
+const safeStringify = require('fast-safe-stringify');
 const {ApiError} = require('./error');
 const {pick} = require('lodash');
 
@@ -61,7 +62,6 @@ const auth = {
     } catch (error) {
       log.error('renew', error.message);
       result = error.response && error.response.data;
-      //window.location.redirect = config.get('server:frontend') + '/api/auth/logout';
     }
 
     return result;
@@ -116,13 +116,13 @@ const auth = {
     return uiToken;
   },
 
-  async getApiCredentials(clientId, clientSecret) {
+  async getApiCredentials() {
     try {
       const discovery = await utils.getOidcDiscovery();
       const response = await axios.post(discovery.token_endpoint,
         qs.stringify({
-          client_id: clientId,
-          client_secret: clientSecret,
+          client_id: config.get('oidc:clientId'),
+          client_secret: config.get('oidc:clientSecret'),
           grant_type: 'client_credentials',
           scope: discovery.scopes_supported
         }), {
@@ -134,7 +134,7 @@ const auth = {
         }
       );
 
-      log.verbose('getApiCredentials Res', utils.prettyStringify(response.data));
+      log.verbose('getApiCredentials Res', safeStringify(response.data));
 
       let result = {};
       result.accessToken = response.data.access_token;

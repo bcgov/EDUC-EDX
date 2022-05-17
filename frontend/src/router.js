@@ -16,6 +16,7 @@ import BackendSessionExpired from '@/components/BackendSessionExpired';
 import {PAGE_TITLES} from '@/utils/constants';
 import MessageDisplay from './components/SecureExchange/MessageDisplay';
 import ExchangePage from './components/SecureExchange/ExchangeInbox';
+import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
 
 Vue.prototype.moment = moment;
@@ -99,17 +100,17 @@ const router = new VueRouter({
             requiresAuth: true,
             role: '*'
           }
-        }
-        /*{
+        },
+        {
           path: 'newExchange',
           name: 'newExchange',
           component: NewMessagePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_EXCHANGE,
             requiresAuth: true,
-            role: 'EXCHANGE_ROLE'
+            role: '*'
           }
-        }*/
+        }
       ]
     },
 

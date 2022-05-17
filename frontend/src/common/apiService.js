@@ -121,6 +121,8 @@ export default {
   },
   getExchangeStatuses: getCodes(`${ApiRoutes.edx.STATUSES_URL}`),
   getMinistryTeamCodes: getCodes(`${ApiRoutes.edx.MINISTRY_TEAM_URL}`),
+  getMincodeSchoolNames: getCodes(`${ApiRoutes.school.BASE_URL}`),
+  getEdxMincodes: getCodes(`${ApiRoutes.edx.USERS_URL}/user-schools/mincodes`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

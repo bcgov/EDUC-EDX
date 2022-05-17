@@ -23,6 +23,7 @@ const apiRouter = express.Router();
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const edxRouter = require('./routes/edx');
+const schoolRouter = require('./routes/schools');
 const configRouter = require('./routes/config');
 const promMid = require('express-prometheus-middleware');
 const messageSubscriber = require('./messaging/message-subscriber');
@@ -154,6 +155,7 @@ app.use(/(\/api)?/, apiRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/user', userRouter);
 apiRouter.use('/edx', edxRouter);
+apiRouter.use('/schools', schoolRouter);
 apiRouter.use('/config',configRouter);
 
 //Handle 500 error
@@ -172,6 +174,5 @@ app.use((_req, res) => {
 // Prevent unhandled errors from crashing application
 process.on('unhandledRejection', err => {
   log.error('Unhandled Rejection at:', err?.stack || err);
-  // res.redirect(config.get('server:frontend') + '/error?message=unhandled_rejection');
 });
 module.exports = app;
