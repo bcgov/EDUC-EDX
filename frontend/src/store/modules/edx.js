@@ -6,6 +6,7 @@ export default {
   state: () => ({
     statuses: [],
     ministryTeams: [],
+    exchangeMincodes: [],
     exchange: null,
   }),
   getters: {
@@ -21,6 +22,9 @@ export default {
     setExchange: (state, exchange) => {
       state.exchange = exchange;
     },
+    setExchangeMincodes(state, payload) {
+      state.exchangeMincodes = payload;
+    },
     setMinistryTeams: (state, ministryTeams) => {
       state.ministryTeams = ministryTeams;
     },
@@ -34,12 +38,26 @@ export default {
         }
       }
     },
-    async getCodes({commit, state}) {
+    async getExchangeStatusCodes({commit, state}) {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
         if (state.statuses.length === 0) {
           ApiService.getExchangeStatuses().then(response => {
             commit('setStatuses', response.data);
           });
+        }
+      }
+    },
+    async getExchangeMincodes({ commit, state}) {
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
+        if(state.exchangeMincodes.length === 0) {
+          const query = {
+            params: {
+              permissionName : 'SECURE_EXCHANGE',
+            }
+          };
+
+          const response = await ApiService.getEdxMincodes(query);
+          commit('setExchangeMincodes', response.data);
         }
       }
     },
