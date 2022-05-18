@@ -1,7 +1,8 @@
 /**
  * Tests to run against the school inbox page
  */
-import { base_url } from '../../config/constants';
+import { base_url, test_exchange_object } from '../../config/constants';
+import { Role } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
 import { deleteSecureExchange } from "../../services/edx-api-service";
@@ -12,15 +13,15 @@ import SecureExchangeComment from "../../model/SecureExchangeComment";
 import Inbox from "../../page_models/inbox";
 
 const studentAdmin = require('../../auth/Roles');
+const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 let token = '';
 let testExchange = createTestExchange();
 
 fixture `school-inbox`
-    .page(base_url + '/inbox')
     .before(async t => {
         // data provisioning
-        getToken().then(async (data) => {
+       getToken().then(async (data) => {
             token = data.access_token;
             const exchange = await createSecureExchange(token, JSON.stringify(testExchange));
             testExchange.secureExchangeID = exchange.secureExchangeID;
@@ -33,86 +34,34 @@ fixture `school-inbox`
         log.info("Performing tear-down operation");
     })
     .beforeEach(async t => {
+        // log in as studentAdmin
         await t.useRole(studentAdmin);
+    }).afterEach(async t => {
+        // logout
+        await t.useRole(Role.anonymous());
     });
 
 /**
  * login
  */
-test('login', async t => {
-    await t.expect(inbox.navTitle.innerText).contains('Inbox');
+test('testPage', async t => {
+    // navigate to /inbox, expect title
+    await t.navigateTo(base_url + '/inbox')
+          .expect(inbox.navTitle.innerText).contains('Inbox');
+    // click filtersToggle
+    await inbox.clickFiltersToggle();
+    // type in a subject
+    await inbox.inputSubject(testExchangeSubject);
+    //.useRole(Role.anonymous());
+
 });
 
-/**
- * navigate to inbox
- * test('click-view-inbox', async t => {
-    log.info("Going to inbox.");
-});
- */
+/**test('clickNewMessage', async t => {
+    await t.navigateTo(base_url + '/inbox');
+    await inbox.clickNewMessageButton();
+});**/
 
 
-/**
- * view 'Active Only'
- * test('view-active-only', async t => {
-    log.info("Viewing Active Only.");
-});
- */
-
-
-/**
- * view 'All'
- * test('view-all', async t => {
-    log.info("Viewing All.");
-});
- */
-
-
-/**
- * toggle filters
- * test('toggle-filters', async t => {
-    log.info("toggling filters.");
-});
- */
-
-
-/**
- * filter by subject
- * test('filter-by-subject', async t => {
-    log.info("filtering by subject.");
-});
- */
-
-
-/**
- * filter by message date
- * test('filter-by-date', async t => {
-    log.info("filtering messages by date.");
-});
- */
-
-
-/**
- * filter by status
- * test('filter-by-status', async t => {
-    log.info("filtering by status.");
-});
- */
-
-
-/**
- * mixed filtering
- * test('mixed-filtering', async t => {
-    log.info("testing mixed filtering.");
-});
- */
-
-
-/**
- * clear filters
- * test('clear-filters', async t => {
-    log.info("clearing filters.");
-});
- */
 
 
 /**
@@ -125,16 +74,16 @@ function createTestExchange() {
     const USERNAME = 'AUTOTEST';
     let secureExchange = new SecureExchange();
     let comment = new SecureExchangeComment();
-    secureExchange.contactIdentifier = '00899178';
-    secureExchange.ministryOwnershipTeamID = '62b226c9-76a3-4e4a-8463-5d5ebe605cdb';
+    secureExchange.contactIdentifier = test_exchange_object.contactIdentifier;
+    secureExchange.ministryOwnershipTeamID = test_exchange_object.ministryOwnershipTeamID;
     secureExchange.secureExchangeContactTypeCode = 'SCHOOL'
     secureExchange.createUser = USERNAME;
     secureExchange.updateUser = USERNAME;
     secureExchange.secureExchangeStatusCode = 'NEW';
     secureExchange.reviewer = 'CDITCHER';
-    secureExchange.subject = 'Created by test automation';
-    secureExchange.isReadByMinistry = 'N';
-    secureExchange.isReadByExchangeContact = 'N';
+    secureExchange.subject = testExchangeSubject;
+    secureExchange.isReadByMinistry = 'false';
+    secureExchange.isReadByExchangeContact = 'false';
     comment.commentUserName = USERNAME;
     comment.content = 'This was created using an automation test';
     comment.createUser = USERNAME;
