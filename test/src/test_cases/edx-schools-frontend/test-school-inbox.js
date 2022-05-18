@@ -28,10 +28,6 @@ fixture `school-inbox`
     log.info("Performing tear-down operation");
 });
 
-test('sanity-test', async t => {
-    log.info("Testexchange created with id: " + testExchange.secureExchangeID);
-});
-
 /**
  * login
  */
