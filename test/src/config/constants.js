@@ -19,3 +19,11 @@ module.exports.token_endpoint = config.get('token:token_endpoint');
 
 // URLS
 module.exports.edx_api_url = module.exports.base_url + config.get('url:edx_api_url');
+
+// PAGE Titles
+module.exports.page_titles = Object.freeze({
+    DASHBOARD: 'Dashboard',
+    EXCHANGE: 'Secure Exchange Inbox',
+    VIEW_EXCHANGE: 'View Message',
+    NEW_EXCHANGE: 'New Message'
+});
