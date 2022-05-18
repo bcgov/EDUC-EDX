@@ -63,7 +63,7 @@
       <v-icon v-else>$close</v-icon>
       <p class="ma-0 pl-4 pr-2 hidden-sm-and-down">Menu</p>
     </v-app-bar-nav-icon>
-    <v-toolbar-title class="nav-title" :class="{'ml-4': $vuetify.breakpoint.mdAndUp, 'pl-1': $vuetify.breakpoint.smAndDown}">{{ title }}</v-toolbar-title>
+    <v-toolbar-title id="navTitle" class="nav-title" :class="{'ml-4': $vuetify.breakpoint.mdAndUp, 'pl-1': $vuetify.breakpoint.smAndDown}">{{ title }}</v-toolbar-title>
     <v-spacer></v-spacer>
   </v-app-bar>
 </div>
