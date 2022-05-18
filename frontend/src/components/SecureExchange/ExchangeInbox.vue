@@ -58,6 +58,7 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     class="pt-0 mt-0"
+                    id="subjectInput"
                     v-model="subjectFilter"
                     label="Subject"
                     prepend-inner-icon="mdi-book-open-variant"
