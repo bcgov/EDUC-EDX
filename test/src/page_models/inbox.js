@@ -10,6 +10,8 @@ class Inbox {
         this.newMessageButton = Selector('#newMessageBtn');
         this.filtersToggle = Selector('#filtersToggle');
         this.subjectInput = Selector('#subjectInput');
+        this.searchButton = Selector('#searchButton');
+        this.clearSearchButton = Selector('#search-clear');
     }
 
     async clickNewMessageButton(){
@@ -22,6 +24,14 @@ class Inbox {
 
     async inputSubject(text){
         await t.typeText(this.subjectInput, text);
+    }
+
+    async clickSearchButton(){
+        await t.click(this.searchButton);
+    }
+
+    async clickClearSearchButton(){
+        await t.click(this.clearSearchButton);
     }
 
 }

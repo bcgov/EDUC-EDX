@@ -52,8 +52,9 @@ test('testPage', async t => {
     await inbox.clickFiltersToggle();
     // type in a subject
     await inbox.inputSubject(testExchangeSubject);
-    //.useRole(Role.anonymous());
-
+    // search
+    await inbox.clickClearSearchButton();
+    await t.expect(Selector('.subjectHeading').textContent).contains(testExchangeSubject);
 });
 
 /**test('clickNewMessage', async t => {

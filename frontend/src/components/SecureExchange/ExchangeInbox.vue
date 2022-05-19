@@ -124,7 +124,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
