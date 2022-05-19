@@ -39,3 +39,4 @@ jobs:
     - run: npm run test:unit
       env:
         NODE_ENV: 'test'
+        VUE_APP_TITLE: 'Education Data Exchange'
