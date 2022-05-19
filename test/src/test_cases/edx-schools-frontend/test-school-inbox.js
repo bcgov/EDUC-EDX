@@ -2,7 +2,7 @@
  * Tests to run against the school inbox page
  */
 import { base_url, test_exchange_object } from '../../config/constants';
-import { Role } from 'testcafe';
+import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
 import { deleteSecureExchange } from "../../services/edx-api-service";
@@ -36,6 +36,7 @@ fixture `school-inbox`
     .beforeEach(async t => {
         // log in as studentAdmin
         await t.useRole(studentAdmin);
+        await t.maximizeWindow();
     }).afterEach(async t => {
         // logout
         await t.useRole(Role.anonymous());
@@ -53,8 +54,9 @@ test('testPage', async t => {
     // type in a subject
     await inbox.inputSubject(testExchangeSubject);
     // search
-    await inbox.clickClearSearchButton();
-    await t.expect(Selector('.subjectHeading').textContent).contains(testExchangeSubject);
+    await inbox.clickSearchButton();
+    // check that our exchange is found by subject heading
+    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
 });
 
 /**test('clickNewMessage', async t => {

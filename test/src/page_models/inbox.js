@@ -8,7 +8,7 @@ class Inbox {
     constructor() {
         this.navTitle = Selector('#navTitle');
         this.newMessageButton = Selector('#newMessageBtn');
-        this.filtersToggle = Selector('#filtersToggle');
+        this.filtersToggle = Selector('#filterid');
         this.subjectInput = Selector('#subjectInput');
         this.searchButton = Selector('#searchButton');
         this.clearSearchButton = Selector('#search-clear');
