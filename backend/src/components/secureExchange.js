@@ -20,7 +20,6 @@ const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('./constants');
 
 
-
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
   if (!userInfo) {
@@ -224,6 +223,36 @@ async function getExchanges(req, res) {
 
 }
 
+async function activateSchoolUser(req, res) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  const payload = {
+    digitalId: req.session.digitalIdentityData.digitalID,
+    ...req.body
+  };
+  try {
+    const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e);
+    log.error(e, 'activateSchoolUser', 'Error getting activated user');
+    const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
+    return errorResponse(res,msg);
+  }
+}
+function mapEdxUserActivationErrorMessage(message){
+  const msg =message || 'INTERNAL SERVER ERROR';
+  if(msg.includes('EdxActivationCode was not found for parameters')){
+    return 'Incorrect activation details have been entered. Please try again.';
+  }else if(msg.includes('This Activation Code has expired')){
+    return 'Your activation code has expired. Please contact your administrator for a new activation code.';
+  }
+  return msg;
+}
 /**
  * Returns an array of search criteria objects to query EDX API
  *
@@ -273,5 +302,6 @@ module.exports = {
   downloadFile,
   uploadFile,
   uploadFileWithoutRequest,
-  getExchanges
+  getExchanges,
+  activateSchoolUser
 };

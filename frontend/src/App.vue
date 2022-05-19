@@ -2,7 +2,8 @@
   <v-app id="app">
     <MsieBanner v-if="isIE"/>
     <Header/>
-    <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
+    <SnackBar></SnackBar>
+    <NavBar v-if="pageTitle " :title="pageTitle"/>
     <v-main fluid class="align-start">
     <v-app-bar v-if="bannerColor !== ''"
                style="color:white;"
@@ -27,6 +28,7 @@ import ModalIdle from './components/ModalIdle';
 import MsieBanner from './components/MsieBanner';
 import StaticConfig from './common/staticConfig';
 import NavBar from '@/components/util/NavBar';
+import SnackBar from '@/components/util/SnackBar';
 
 export default {
   name: 'app',
@@ -36,6 +38,7 @@ export default {
     ModalIdle,
     MsieBanner,
     NavBar,
+    SnackBar
   },
   metaInfo: {
     meta: StaticConfig.VUE_APP_META_DATA

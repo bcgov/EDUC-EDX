@@ -182,7 +182,14 @@ async function postData(token, data, url, correlationID) {
   } catch (e) {
     log.error('postData Error', e.response ? e.response.status : e.message);
     const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-    throw new ApiError(status, {message: 'API Post error'}, e);
+    let responseData;
+    if (e?.response?.data) {
+      responseData = e.response.data;
+    } else {
+      responseData = {message: `API POST error, on ${url}`};
+    }
+    throw new ApiError(status, responseData, e);
+
   }
 }
 
