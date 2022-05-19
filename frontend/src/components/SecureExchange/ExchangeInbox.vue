@@ -14,7 +14,7 @@
           </v-col>
         </v-row>
         <v-expansion-panels flat style="border-radius: 6px">
-          <v-expansion-panel @click="onExpansionPanelClick" style="background: #ebedef">
+          <v-expansion-panel id="filtersToggle" @click="onExpansionPanelClick" style="background: #ebedef">
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                 @click.native.stop
@@ -58,6 +58,7 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     class="pt-0 mt-0"
+                    id="subjectInput"
                     v-model="subjectFilter"
                     label="Subject"
                     prepend-inner-icon="mdi-book-open-variant"
@@ -123,7 +124,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>

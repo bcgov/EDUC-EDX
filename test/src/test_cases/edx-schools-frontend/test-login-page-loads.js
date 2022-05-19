@@ -13,7 +13,7 @@ fixture `edx-login`
         log.info("Setup complete");
     }).catch((error => {
         log.error(error);
-        throw new Error("Setup failed")
+        throw new Error("Setup failed");
     }))})
     .after(async ctx => {
         log.info("Performing tear-down operation");

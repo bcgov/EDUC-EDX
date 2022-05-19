@@ -2,10 +2,10 @@
  * REST utilities for interacting with RESTFUL apis
  * @type {{}}
  */
-
 const log = require('npmlog');
 const axios = require('axios');
 const lodash = require('lodash');
+
 
 const restService = {
 
@@ -28,7 +28,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'getData', 'Error during GET on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Get error' }, e);
+            throw new Error('API GET Error: status=' + status );
         }
     },
 
@@ -53,7 +53,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'postData', 'Error during POST on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Post error' }, e);
+            throw new Error('API POST Error: status=' + status );
         }
     },
 
@@ -78,7 +78,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'putData', 'Error during PUT on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Put error' }, e);
+            throw new Error('API PUT Error: status=' + status );
         }
     },
 
@@ -100,7 +100,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'deleteData', 'Error during DELETE on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API DELETE error' }, e);
+            throw new Error('API DELETE Error: status=' + status );;
         }
     }
 }
@@ -124,11 +124,13 @@ function setToken(params, token) {
     if (params) {
         params.headers = {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
         };
     } else {
         params = {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         };
     }

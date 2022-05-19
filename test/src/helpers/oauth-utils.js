@@ -14,5 +14,5 @@ const oauthUtils = {
         const response = await axios.post(tokenData.token_endpoint, data, params);
         return response.data;
     }
-}
+};
 module.exports = oauthUtils;
