@@ -37,6 +37,7 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
 }
 
 addOIDCRouterGet('oidcBceid', '/callback_bceid', config.get('server:frontend'));
+addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
 
 //a prettier way to handle errors
 router.get('/error', (_req, res) => {
@@ -50,6 +51,7 @@ function addBaseRouterGet(strategyName, callbackURI) {
 }
 
 addBaseRouterGet('oidcBceid', '/login_bceid');
+addBaseRouterGet('oidcBceidActivateUser', '/login_bceid_activate_user');
 
 
 //removes tokens and destroys session

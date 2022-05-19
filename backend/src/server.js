@@ -2,7 +2,6 @@
 
 const config = require('./config/index');
 const http = require('http');
-//const fs = require('fs')
 const log = require('./components/logger');
 const localDateTime = require('@js-joda/core').LocalDateTime;
 //Add timestamp to log
@@ -18,17 +17,14 @@ const app = require('./app');
  */
 const port = normalizePort(config.get('server:port'));
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-// const options = {
-//   key: fs.readFileSync('/etc/tls-certs/tls.key'),
-//   cert: fs.readFileSync('/etc/tls-certs/tls.crt')
-// };
-
 const server = http.createServer(app);
 const NATS = require('./messaging/message-subscriber');
+const cacheService = require('./components/cache-service');
+cacheService.loadAllSchoolsToMap().then(() => {
+  log.info('loaded school data to memory');
+}).catch((e) => {
+  log.error('error loading schools during boot .', e);
+});
 require('./schedulers/saga-check-scheduler');
 /**
  * Listen on provided port, on all network interfaces.
@@ -72,11 +68,9 @@ function onError(error) {
   switch (error.code) {
   case 'EACCES':
     log.error(bind + ' requires elevated privileges');
-    //process.exit(1);
     break;
   case 'EADDRINUSE':
     log.error(bind + ' is already in use');
-    //process.exit(1);
     break;
   default:
     throw error;

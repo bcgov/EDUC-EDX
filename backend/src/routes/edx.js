@@ -20,21 +20,21 @@ router.get('/', (_req, res) => {
 });
 
 router.get('/document-type-codes', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:apiEndpoint') + '/document-types')
+  (req, res) => forwardGetReq(req, res, config.get('edx:rootURL') + '/document-types')
 );
 
 router.get('/file-requirements', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:apiEndpoint') + '/file-requirements')
+  (req, res) => forwardGetReq(req, res, config.get('edx:rootURL') + '/file-requirements')
 );
 
 router.post('/exchanges/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, uploadFile]);
 
 router.get('/exchanges/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
-  (req, res) => forwardGetReq(req, res, `${config.get('edx:apiEndpoint')}/${req.params.id}/documents`)
+  (req, res) => forwardGetReq(req, res, `${config.get('edx:rootURL')}/${req.params.id}/documents`)
 );
 
 router.get('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
-  (req, res) => forwardGetReq(req, res, `${config.get('edx:apiEndpoint')}/${req.params.id}/documents/${req.params.documentId}`)
+  (req, res) => forwardGetReq(req, res, `${config.get('edx:rootURL')}/${req.params.id}/documents/${req.params.documentId}`)
 );
 // special case this does not use frontend axios, so need to refresh here to handle expired jwt.
 router.get('/exchanges/:id/documents/:documentId/download/:fileName', auth.refreshJWT, isValidBackendToken, [verifyRequest, downloadFile]);
@@ -44,5 +44,8 @@ router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
 router.get('/exchange/statuses', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:exchangeStatusesURL', CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS));
 router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', CACHE_KEYS.EDX_MINISTRY_TEAMS));
+router.get('/users/user-schools/mincodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
+  (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools/mincodes`)
+);
 
 module.exports = router;

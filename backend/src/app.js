@@ -23,6 +23,7 @@ const apiRouter = express.Router();
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const edxRouter = require('./routes/edx');
+const schoolRouter = require('./routes/schools');
 const configRouter = require('./routes/config');
 const promMid = require('express-prometheus-middleware');
 const messageSubscriber = require('./messaging/message-subscriber');
@@ -114,7 +115,7 @@ function addLoginPassportUse(discovery, strategyName, callbackURI, kc_idp_hint) 
 utils.getOidcDiscovery().then(discovery => {
   //OIDC Strategy is used for authorization
   addLoginPassportUse(discovery, 'oidcBceid', config.get('server:frontend') + '/api/auth/callback_bceid', 'keycloak_bcdevexchange_bceid');
-
+  addLoginPassportUse(discovery, 'oidcBceidActivateUser', config.get('server:frontend') + '/api/auth/callback_activate_user', 'keycloak_bcdevexchange_bceid');
   //JWT strategy is used for authorization
   passport.use('jwt', new JWTStrategy({
     algorithms: ['RS256'],
@@ -154,6 +155,7 @@ app.use(/(\/api)?/, apiRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/user', userRouter);
 apiRouter.use('/edx', edxRouter);
+apiRouter.use('/schools', schoolRouter);
 apiRouter.use('/config',configRouter);
 
 //Handle 500 error
@@ -172,6 +174,5 @@ app.use((_req, res) => {
 // Prevent unhandled errors from crashing application
 process.on('unhandledRejection', err => {
   log.error('Unhandled Rejection at:', err?.stack || err);
-  // res.redirect(config.get('server:frontend') + '/error?message=unhandled_rejection');
 });
 module.exports = app;

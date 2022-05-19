@@ -20,13 +20,17 @@ export const AuthRoutes = Object.freeze(object);
 export const ApiRoutes = Object.freeze({
   USER: baseRoot + '/user',
   CONFIG: baseRoot + '/config',
+  school: {
+    BASE_URL: baseRoot + '/schools'
+  },
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
     EXCHANGE_URL:edxRoot + '/exchange',
     DOCUMENT_TYPE_CODES: edxRoot + '/document-type-codes',
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
     STATUSES_URL: edxRoot + '/exchange/statuses',
-    MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams'
+    MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams',
+    USERS_URL: edxRoot + '/users'
   }
 });
 

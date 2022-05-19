@@ -52,6 +52,9 @@ nconf.defaults({
   digitalID: {
     apiEndpoint: process.env.DIGITALID_API_ENDPOINT,
   },
+  school: {
+    apiEndpoint: process.env.SCHOOL_API_ENDPOINT,
+  },
   student: {
     apiEndpoint: process.env.STUDENT_API_ENDPOINT,
   },

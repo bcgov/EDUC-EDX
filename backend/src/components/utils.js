@@ -79,8 +79,12 @@ async function forwardGetReq(req, res, url) {
       });
     }
 
+    const params = {
+      params: req.query
+    };
+
     log.info('forwardGetReq Url', url);
-    const data = await getData(accessToken, url, req.session?.correlationID);
+    const data = await getDataWithParams(accessToken, url, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('forwardGetReq Error', e.stack);

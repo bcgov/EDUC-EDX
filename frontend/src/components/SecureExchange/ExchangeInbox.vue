@@ -226,9 +226,9 @@ export default {
       ],
       selectedItem: 0,
       pageNumber: 1,
-      pageSize: 25,
+      pageSize: 15,
       totalRequests: 0,
-      itemsPerPageOptions: [10],
+      itemsPerPageOptions: [15],
       loadingTable: false,
       dateMenu: false,
       headerSearchParams: {
@@ -257,7 +257,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('edx/getCodes');
+    this.$store.dispatch('edx/getExchangeStatusCodes');
     this.$store.dispatch('edx/getMinistryTeams');
     this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
