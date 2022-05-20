@@ -2,7 +2,7 @@
 
 const passport = require('passport');
 const express = require('express');
-const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges } = require('../components/secureExchange');
+const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange} = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
@@ -41,6 +41,7 @@ router.get('/exchanges/:id/documents/:documentId/download/:fileName', auth.refre
 
 router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, deleteDocument]);
 
+router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
 router.get('/exchange/statuses', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:exchangeStatusesURL', CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS));
 router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', CACHE_KEYS.EDX_MINISTRY_TEAMS));

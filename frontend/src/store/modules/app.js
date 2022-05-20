@@ -5,7 +5,10 @@ export default {
   state: {
     pageTitle: null,
     mincodeSchoolNames: new Map(),
-    districtCodes: new Set()
+    districtCodes: new Set(),
+    alertNotificationText: '',
+    alertNotificationQueue: [],
+    alertNotification: false
   },
   getters: {
     mincodeSchoolNamesObjectSorted: state => Object.values(Object.fromEntries(state.mincodeSchoolNames)).map(v => v.toUpperCase()).sort(),
@@ -21,6 +24,18 @@ export default {
         state.districtCodes.add(element.mincode?.substring(0, 3));
       });
     },
+    setAlertNotificationText: (state, alertNotificationText) => {
+      state.alertNotificationText = alertNotificationText;
+    },
+    setAlertNotification: (state, alertNotification) => {
+      state.alertNotification = alertNotification;
+    },
+    addAlertNotification(state, text) {
+      state.alertNotificationQueue.push(text);
+      if (!state.alertNotification) {
+        state.alertNotification = true;
+      }
+    }
   },
   actions: {
     async getMincodeSchoolNames({ commit, state}) {
