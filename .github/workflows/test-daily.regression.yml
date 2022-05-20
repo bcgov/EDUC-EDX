@@ -23,5 +23,7 @@ jobs:
           TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
           TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
           TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
+          TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
 
 
