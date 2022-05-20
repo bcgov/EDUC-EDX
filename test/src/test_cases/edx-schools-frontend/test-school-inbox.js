@@ -23,8 +23,8 @@ fixture `school-inbox`
         // data provisioning
        getToken().then(async (data) => {
             token = data.access_token;
-            const exchange = await createSecureExchange(token, JSON.stringify(testExchange));
-            testExchange.secureExchangeID = exchange.secureExchangeID;
+            testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
+            //testExchange.secureExchangeID = exchange.secureExchangeID;
         }).catch((error => {
             log.error("Failure during test setup: " + error);
         }));
@@ -48,7 +48,7 @@ fixture `school-inbox`
 test('testPage', async t => {
     // navigate to /inbox, expect title
     await t.navigateTo(base_url + '/inbox')
-          .expect(inbox.navTitle.innerText).contains('Inbox');
+           .expect(inbox.navTitle.innerText).contains('Inbox');
     // click filtersToggle
     await inbox.clickFiltersToggle();
     // type in a subject
