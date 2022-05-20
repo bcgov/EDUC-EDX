@@ -2,6 +2,7 @@
   <v-app id="app">
     <MsieBanner v-if="isIE"/>
     <Header/>
+    <SnackBar></SnackBar>
     <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
     <v-main fluid class="align-start">
     <v-app-bar v-if="bannerColor !== ''"
@@ -26,6 +27,7 @@ import Footer from './components/Footer';
 import ModalIdle from './components/ModalIdle';
 import MsieBanner from './components/MsieBanner';
 import StaticConfig from './common/staticConfig';
+import SnackBar from '@/components/util/SnackBar';
 import NavBar from '@/components/util/NavBar';
 
 export default {
@@ -35,6 +37,7 @@ export default {
     Footer,
     ModalIdle,
     MsieBanner,
+    SnackBar,
     NavBar,
   },
   metaInfo: {

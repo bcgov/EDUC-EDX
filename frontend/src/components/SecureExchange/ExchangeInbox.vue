@@ -9,7 +9,7 @@
               icon="mdi-plus"
               id="newMessageBtn"
               text="New Message"
-              to="newExchange"
+              @click.native="newMessageSheet = !newMessageSheet"
             ></PrimaryButton>
           </v-col>
         </v-row>
@@ -190,6 +190,28 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-bottom-sheet
+      v-model="newMessageSheet"
+      inset
+      no-click-animation
+      scrollable
+      persistent
+      width="30%"
+    >
+      <v-card
+        v-if="newMessageSheet"
+        class="information-window-v-card">
+        <v-card-title class="sheetHeader pt-1 pb-1">New Message</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <NewMessagePage
+            @secure-exchange:messageSent="messageSent"
+            @secure-exchange:cancelMessage="newMessageSheet = false"
+          >
+          </NewMessagePage>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -198,6 +220,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
+import NewMessagePage from './NewMessagePage';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 
@@ -205,9 +228,11 @@ export default {
   name: 'ExchangeInbox',
   components: {
     PrimaryButton,
+    NewMessagePage
   },
   data() {
     return {
+      newMessageSheet: false,
       statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
@@ -263,6 +288,10 @@ export default {
     this.getRequests();
   },
   methods: {
+    messageSent(){
+      this.newMessageSheet = !this.newMessageSheet;
+      this.getRequests();
+    },
     getMinistryTeamName(ministryOwnershipTeamId){
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
     },
@@ -417,6 +446,13 @@ export default {
 </script>
 
 <style scoped>
+
+.sheetHeader{
+  background-color: #003366;
+  color: white;
+  font-size: medium !important;
+  font-weight: bolder !important;
+}
 
 .tableRow {
   cursor: pointer;

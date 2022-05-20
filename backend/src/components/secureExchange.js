@@ -170,6 +170,7 @@ async function getExchangesPaginated(req) {
   if (req.query.searchParams) {
     criteria = buildSearchParams(req.query.searchParams);
   }
+  //This needs to change when we have school selection
   criteria.push(getCriteria('contactIdentifier', req.session.userMinCodes[0], FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   const params = {
@@ -182,6 +183,35 @@ async function getExchangesPaginated(req) {
   };
 
   return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+}
+
+async function createExchange(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const edxUserInfo = req.session.edxUserData[0];
+    const message = req.body;
+    const payload = {
+      contactIdentifier: req.session.userMinCodes[0],
+      secureExchangeContactTypeCode: 'SCHOOL',
+      ministryOwnershipTeamID: message.ministryOwnershipTeamID,
+      subject: message.subject,
+      secureExchangeStatusCode: 'NEW',
+      isReadByMinistry: false,
+      isReadByExchangeContact: true,
+      commentsList: [
+        {
+          commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
+          content: message.content
+        }
+      ]
+    };
+
+    const result = await postData(token, payload, config.get('edx:exchangeURL'), null);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'createExchange', 'Error occurred while attempting to create a new exchange.');
+    return errorResponse(res);
+  }
 }
 
 async function getExchanges(req, res) {
@@ -273,5 +303,6 @@ module.exports = {
   downloadFile,
   uploadFile,
   uploadFileWithoutRequest,
+  createExchange,
   getExchanges
 };
