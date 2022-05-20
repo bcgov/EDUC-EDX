@@ -39,7 +39,6 @@ export default {
   },
   actions: {
     async getMincodeSchoolNames({ commit, state}) {
-      console.log('Calling this');
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
         if(state.mincodeSchoolNames.size === 0) {
           const response = await ApiService.getMincodeSchoolNames();

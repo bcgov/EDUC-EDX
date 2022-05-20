@@ -74,18 +74,18 @@ export default {
         alertType = '';
       }
       switch(alertType.toLowerCase()) {
-        case(ALERT_NOTIFICATION_TYPES.ERROR):
-          this.colour = ALERT_NOTIFICATION_TYPES.ERROR;
-          break;
-        case(ALERT_NOTIFICATION_TYPES.WARN):
-          this.colour = ALERT_NOTIFICATION_TYPES.WARN;
-          break;
-        case(ALERT_NOTIFICATION_TYPES.SUCCESS):
-          this.colour = ALERT_NOTIFICATION_TYPES.SUCCESS;
-          break;
-        case(ALERT_NOTIFICATION_TYPES.INFO):
-        default:
-          this.colour = ALERT_NOTIFICATION_TYPES.INFO;
+      case(ALERT_NOTIFICATION_TYPES.ERROR):
+        this.colour = ALERT_NOTIFICATION_TYPES.ERROR;
+        break;
+      case(ALERT_NOTIFICATION_TYPES.WARN):
+        this.colour = ALERT_NOTIFICATION_TYPES.WARN;
+        break;
+      case(ALERT_NOTIFICATION_TYPES.SUCCESS):
+        this.colour = ALERT_NOTIFICATION_TYPES.SUCCESS;
+        break;
+      case(ALERT_NOTIFICATION_TYPES.INFO):
+      default:
+        this.colour = ALERT_NOTIFICATION_TYPES.INFO;
       }
     },
     setupSnackBar() {

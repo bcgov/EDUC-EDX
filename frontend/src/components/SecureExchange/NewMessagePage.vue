@@ -11,7 +11,7 @@
                     <v-card-text id="newMessageCardText" class="pb-0 pt-0">
                       <v-form ref="newMessageForm" v-model="isValidForm">
                         <v-text-field
-                          value="ABC"
+                          :value="getSchoolName()"
                           label="From"
                           class="pt-0"
                           readonly
@@ -27,7 +27,7 @@
                           :rules="requiredRules"
                         >
                           <template v-slot:selection="{ item }">
-                            <span> {{ item.text }} </span>
+                            <span> {{ item.teamName }} </span>
                           </template>
                         </v-autocomplete>
                         <v-text-field
@@ -93,10 +93,11 @@
 
 <script>
 import PrimaryButton from '@/components/util/PrimaryButton';
-import { mapState } from 'vuex';
+import {mapState} from 'vuex';
 import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
+
 import {
   ApiRoutes,
 } from '@/utils/constants';
@@ -121,19 +122,19 @@ export default {
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeMincodes']),
-    // schools() {
-    //   const schoolNames = Array.from(this.mincodeSchoolNames.entries()).filter(entry => this.exchangeMincodes.some(mincode => entry[0] === mincode));
-    //   return _.sortBy(schoolNames.map(school => ({ text: `${school[1]} (${school[0]})`, value: school[0]})), ['text']);
-    // },
+    ...mapState('edx', ['ministryTeams', 'exchangeMincodes'])
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
+    this.$store.dispatch('app/getMincodeSchoolNames');
   },
   methods: {
     navigateToList() {
       this.$emit('secure-exchange:cancelMessage');
+    },
+    getSchoolName() {
+      return this.mincodeSchoolNames.get(this.userInfo.mincode) + ' (' + this.userInfo.mincode + ')';
     },
     messageSent(){
       this.subject = '';
