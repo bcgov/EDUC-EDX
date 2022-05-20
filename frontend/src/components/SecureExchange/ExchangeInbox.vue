@@ -490,6 +490,10 @@ export default {
   font-size: large;
 }
 
+.v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
+  display: none;
+}
+
 @media screen and (max-width: 801px){
   .subjectHeading {
     font-size: larger;
