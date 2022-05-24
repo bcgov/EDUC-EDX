@@ -1,7 +1,8 @@
 <template>
-  <v-container fluid class="fill-height pa-0 mb-4">
+  <v-container fluid>
     <div style="width: 100%;" :overlay=false>
-      <v-row class="pt-0">
+      <v-row class="pt-0"
+             :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
         <v-col cols="12 pt-0">
           <v-progress-linear
               absolute
@@ -11,104 +12,89 @@
               :active="loading"
           ></v-progress-linear>
           <div v-if="!loading && secureExchange" style="width: 100%;" :overlay=false>
-
-            <v-row no-gutters
-                   class="pt-4 pb-4 px-2 px-sm-2 px-md-3 px-lg-3 px-xl-3 d-flex"
-            >
-              <PrimaryButton id="go-back-action"
-                             icon="mdi-arrow-left"
-                             to="/inbox"
-                             secondary
-              >
-                Return to Inbox
-              </PrimaryButton>
-              <v-spacer></v-spacer>
-              <div :class="['d-flex', 'align-center']">
-                <TertiaryButton id="update-status-action"
-                                text="IN PROGRESS"
-                                icon="mdi-chevron-down"
-                ></TertiaryButton>
-              </div>
+            <v-row style="border-bottom: 5px solid rgb(252, 186, 25) !important">
+              <v-col cols="7" md="10" class="pb-0 pt-0">
+                <v-row class="mb-n4">
+                  <v-col cols="12" class="pb-2 pt-2 pr-0">
+                    <h3 class="subjectHeading">{{ secureExchange.subject }}</h3>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="pb-1 pr-0">
+                    <span style="color: black">{{ secureExchange.ministryOwnershipTeamName }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="pt-0 pb-1 pr-0">
+                    <span style="color: black">{{ secureExchange.createDate }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
+                <v-row class="mb-n4">
+                  <v-col cols="12" class="pb-1">
+                    <v-icon class="pb-1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" right dark>
+                      mdi-circle-medium
+                    </v-icon>
+                    <span>{{ secureExchange.secureExchangeStatusCode }}</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="pb-2">
+                    <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
+                      mdi-pound
+                    </v-icon>
+                    <span>{{ secureExchange.sequenceNumber }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
             </v-row>
-            <v-row class="full-width">
-              <v-col cols='6'>
-                <v-row>
-                  <v-col>
-                    <v-card>
-                      <v-card-title>
-                        <div>{{ secureExchange.subject }}</div>
-                        <v-spacer></v-spacer>
-                        <primary-button :disabled="secureExchangeStatusIsClosed()">Read/Unread</primary-button>
-                      </v-card-title>
-                      <v-card-text>{{ getContactName(secureExchange) }}</v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <v-card v-if="!secureExchangeStatusIsClosed()">
-                      <v-row :class="['pa-3']" no-gutters>
-                        <v-col>
-                          <v-form ref="newCommentForm" v-model="isValidForm">
-                            <v-textarea id="new-comment-textArea"
-                                        outlined
-                                        clearable
-                                        rows="5"
-                                        maxlength="4000"
-                                        dense
-                                        :rules="requiredRules"
-                                        hide-details="auto"
-                                        placeholder="sending comments not implemented yet"
-                                        :disabled="secureExchangeStatusIsClosed()"
-                            ></v-textarea>
-                          </v-form>
-                        </v-col>
-                      </v-row>
-                      <v-row :class="['pa-1', 'd-flex', 'justify-end']" no-gutters>
-                        <primary-button id="send-comment-button" :disabled="!isValidForm">
-                          Send Message
-                        </primary-button>
-                      </v-row>
-                    </v-card>
-                    <v-card v-else :class="['pa-3']">
-                      <strong>{{ secureExchange.subject }}</strong>
-                      <div>{{ getContactName(secureExchange) }}</div>
-                      <div>Secure Exchange cannot be edited because status is closed</div>
-                    </v-card>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <v-timeline v-if="secureExchange.commentsList.length > 0" >
-                      <div v-for="comment in secureExchange.commentsList"
-                           :key="comment.secureExchangeID">
-                        <v-timeline-item v-bind="timelineItemProps(comment)" small>
-                          <v-card>
-                            <v-card-title class="comment-title">
-                              <div>{{commentTitleGenerator(comment)}}</div>
-                              <v-spacer></v-spacer>
-                              <div>{{ dateTimeFormatter(comment.commentTimestamp) }}</div>
-                            </v-card-title>
-                            <v-card-text>{{ comment.content }}</v-card-text>
-                          </v-card>
-                        </v-timeline-item>
-                      </div>
-                    </v-timeline>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col cols="3">
-                <v-card>
-                  <v-card-title>Students</v-card-title>
-                  <v-card-text>Adding a student will allow the school to see the student's demographic details</v-card-text>
-                  <v-card-actions :class="['d-flex', 'align-start']">
-                    <v-text-field class="ma-0" solo label="Not functional yet" dense></v-text-field>
-                    <PrimaryButton>Add Student</PrimaryButton>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-              <v-col cols="3">
-                <DocumentUpload/>
+            <v-row>
+              <v-speed-dial v-if="isEditable()" v-model="editOptionsOpen" top left open-on-hover direction="right">
+                <template v-slot:activator>
+                  <v-btn class="mx-2" fab dark large color="#003366">
+                    <v-icon v-if="editOptionsOpen" dark large>mdi-close</v-icon>
+                    <v-icon v-else dark large>mdi-plus</v-icon>
+                  </v-btn>
+                </template>
+                <v-btn dark small color="green">
+                  <v-icon>mdi-email-outline</v-icon>
+                  <span class="ml-1">Message</span>
+                </v-btn>
+                <v-btn dark small color="indigo">
+                  <v-icon>mdi-paperclip</v-icon>
+                  <span class="ml-1">Document</span>
+                </v-btn>
+                <v-btn dark small color="rgb(252, 186, 25)">
+                  <v-icon>mdi-emoticon-happy-outline</v-icon>
+                  <span class="ml-1">Student</span>
+                </v-btn>
+              </v-speed-dial>
+              <v-spacer></v-spacer>
+              <v-btn class="mx-2" style="margin: 16px" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
+                <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
+                <v-icon v-else>mdi-email-open-outline</v-icon>
+                <span class="ml-1" v-if="secureExchange.isReadByExchangeContact">Unread</span>
+                <span class="ml-1" v-else>Read</span>
+              </v-btn>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-timeline v-if="secureExchange.activities.length > 0" dense>
+                  <div v-for="activity in secureExchange.activities"
+                       :key="activity.secureExchangeID">
+                    <v-timeline-item large :color="getActivityColour(activity)" :icon="getActivityIcon(activity)">
+                      <v-card>
+                        <v-card-title>
+                          <div>{{ activity.title }}</div>
+                          <v-spacer></v-spacer>
+                          <div>{{ activity.displayDate }}</div>
+                        </v-card-title>
+                        <v-card-text>{{ activity.content }}</v-card-text>
+                      </v-card>
+                    </v-timeline-item>
+                  </div>
+                </v-timeline>
               </v-col>
             </v-row>
           </div>
@@ -119,99 +105,92 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
-import PrimaryButton from '../util/PrimaryButton';
-import TertiaryButton from '../util/TertiaryButton';
-import DocumentUpload from '../common/DocumentUpload';
+
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 
 export default {
   name: 'MessageDisplay',
-  components: {
-    PrimaryButton,
-    TertiaryButton,
-    DocumentUpload,
-  },
+  components: {},
   props: {
     secureExchangeID: {
       type: String,
       required: true
-    },
+    }
   },
   data() {
     return {
       secureExchange: null,
       loading: true,
-      isValidForm: false,
-      isValidNoteForm: false,
+      editOptionsOpen: false,
     };
   },
-  computed: {
-    ...mapState('edx', ['ministryTeams']),
-    ...mapState('app', ['mincodeSchoolNames']),
-  },
+  computed: {},
   created() {
-    ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL+`/${this.secureExchangeID}`)
-      .then(response => {
-        this.secureExchange = response.data;
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+    this.setIsReadByExchangeContact(true);
+    this.getExchange();
   },
   methods: {
-    /*commentTitleGenerator: function(comment) {
-      let commentUser = '';
-
-      //if there is an edxUserID, comment is from a school otherwise the comment is from the ministry
-      if (comment.edxUserID) {
-        commentUser = this.getContactName(this.secureExchange);
-      } else {
-        commentUser = this.getMinistryTeamNameByID(this.secureExchange.ministryOwnershipTeamID);
+    getExchange() {
+      this.loading = true;
+      ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
+        .then(response => {
+          this.secureExchange = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    setIsReadByExchangeContact(isRead) {
+      let readStatus = isRead ? 'read' : 'unread';
+      ApiService.apiAxios.put(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/markAs/${readStatus}`)
+        .then(() => {
+          this.secureExchange.isReadByExchangeContact = isRead;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    isEditable() {
+      return this.secureExchange.secureExchangeStatusCode !== 'Complete';
+    },
+    getStatusColor(status) {
+      if (status === 'New') {
+        return 'blue';
       }
-
-      return commentUser;
+      if (status === 'In Progress') {
+        return 'yellow darken-2';
+      }
+      if (status === 'Complete') {
+        return 'green';
+      }
     },
-    secureExchangeStatusIsClosed: function () {
-      return this.secureExchange.secureExchangeStatusCode === Statuses.exchange.CLOSED;
+    getActivityColour(activity) {
+      return activity.actor === 'school' ? 'rgb(252, 186, 25)' : 'rgb(0, 51, 102)';
     },
-    timelineItemProps: function (comment) {
-      return {
-        left: !!comment.edxUser,
-        right: comment.edxUser,
-        color: comment.edxUser ? '#F2F2F2' : '#38598A'
-      };
-    }*/
+    getActivityIcon(activity) {
+      switch (activity.type) {
+      case 'message':
+        return 'mdi-email-outline';
+      default:
+        return '';
+      }
+    }
   }
 };
 </script>
 
-<style scoped>
-.pre-style {
-  white-space: pre-wrap; /* Since CSS 2.1 */
-  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-  white-space: -o-pre-wrap; /* Opera 7 */
-  word-wrap: break-word;
-  max-height: 10em;
-  overflow-y: auto;
+<style>
+.subjectHeading {
+  overflow-wrap: break-word;
 }
 
-pre {
-  font-family: inherit;
-  font-size: inherit;
+@media screen and (max-width: 801px) {
+  .subjectHeading {
+    font-size: medium;
+  }
 }
-
-.comment-title {
-  font-size: 1.023rem;
-}
-
-/*this makes the primary button not have a grey background when a to property is added.*/
-.theme--dark.v-btn--active::before {
-  opacity: 0;
-}
-
 </style>
