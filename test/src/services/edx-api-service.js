@@ -1,11 +1,35 @@
-const restUtils = require("../helpers/rest-utils")
-const constants = require('../config/constants')
+const restUtils = require("../helpers/rest-utils");
+const constants = require('../config/constants');
+
+const EXCHANGE_ENDPOINT = `${constants.edx_api_base_url}api/v1/edx/exchange`;
 
 /**
  * Exposes methods for communication with edx-api end-points
  * @type {{getAllMinistryTeams(*=): Promise<*>}}
  */
 const edxApiService = {
+
+    /**
+     *
+     * @param token
+     * @param secureExchange
+     * @param params
+     * @returns {Promise<*>}
+     */
+    async createSecureExchange(token, secureExchange) {
+        const responseBody = await restUtils.postData(token, EXCHANGE_ENDPOINT, secureExchange, '');
+        return responseBody;
+    },
+
+    async updateSecureExchange(token, secureExchange) {
+
+    },
+
+    async deleteSecureExchange(token, secureExchangeID) {
+        const url = EXCHANGE_ENDPOINT+'/'+secureExchangeID;
+        const responseBody = await restUtils.deleteData(token, url, '');
+        return responseBody;
+    },
 
     /**
      * Retrieves ministry teams from the following endpoint:

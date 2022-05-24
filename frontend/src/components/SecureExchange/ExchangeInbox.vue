@@ -9,12 +9,12 @@
               icon="mdi-plus"
               id="newMessageBtn"
               text="New Message"
-              to="newExchange"
+              @click.native="newMessageSheet = !newMessageSheet"
             ></PrimaryButton>
           </v-col>
         </v-row>
         <v-expansion-panels flat style="border-radius: 6px">
-          <v-expansion-panel @click="onExpansionPanelClick" style="background: #ebedef">
+          <v-expansion-panel id="filtersToggle" @click="onExpansionPanelClick" style="background: #ebedef">
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                 @click.native.stop
@@ -58,6 +58,7 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     class="pt-0 mt-0"
+                    id="subjectInput"
                     v-model="subjectFilter"
                     label="Subject"
                     prepend-inner-icon="mdi-book-open-variant"
@@ -123,7 +124,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -189,6 +190,28 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-bottom-sheet
+      v-model="newMessageSheet"
+      inset
+      no-click-animation
+      scrollable
+      persistent
+      width="30%"
+    >
+      <v-card
+        v-if="newMessageSheet"
+        class="information-window-v-card">
+        <v-card-title class="sheetHeader pt-1 pb-1">New Message</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <NewMessagePage
+            @secure-exchange:messageSent="messageSent"
+            @secure-exchange:cancelMessage="newMessageSheet = false"
+          >
+          </NewMessagePage>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -197,6 +220,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
+import NewMessagePage from './NewMessagePage';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 
@@ -204,9 +228,11 @@ export default {
   name: 'ExchangeInbox',
   components: {
     PrimaryButton,
+    NewMessagePage
   },
   data() {
     return {
+      newMessageSheet: false,
       statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
@@ -225,9 +251,9 @@ export default {
       ],
       selectedItem: 0,
       pageNumber: 1,
-      pageSize: 25,
+      pageSize: 15,
       totalRequests: 0,
-      itemsPerPageOptions: [10],
+      itemsPerPageOptions: [15],
       loadingTable: false,
       dateMenu: false,
       headerSearchParams: {
@@ -256,12 +282,16 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('edx/getCodes');
+    this.$store.dispatch('edx/getExchangeStatusCodes');
     this.$store.dispatch('edx/getMinistryTeams');
     this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
   },
   methods: {
+    messageSent(){
+      this.newMessageSheet = !this.newMessageSheet;
+      this.getRequests();
+    },
     getMinistryTeamName(ministryOwnershipTeamId){
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
     },
@@ -417,6 +447,13 @@ export default {
 
 <style scoped>
 
+.sheetHeader{
+  background-color: #003366;
+  color: white;
+  font-size: medium !important;
+  font-weight: bolder !important;
+}
+
 .tableRow {
   cursor: pointer;
 }
@@ -451,6 +488,10 @@ export default {
 .ministryLine{
   color: black;
   font-size: large;
+}
+
+.v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
+  display: none;
 }
 
 @media screen and (max-width: 801px){

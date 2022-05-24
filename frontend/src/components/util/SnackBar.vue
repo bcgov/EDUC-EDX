@@ -121,8 +121,8 @@ export default {
 </script>
 
 <style>
-  .snackbar {
-    padding: 0 !important;
-  }
+.snackbar {
+  padding: 0 !important;
+}
 </style>
 

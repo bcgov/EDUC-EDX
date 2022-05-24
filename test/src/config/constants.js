@@ -10,6 +10,11 @@ module.exports.credentials = Object.freeze({
     }
   });
 
+module.exports.test_exchange_object = Object.freeze({
+    ministryOwnershipTeamID: config.get('testExchangeObject:ministryOwnershipTeamID'),
+    contactIdentifier: config.get('testExchangeObject:contactIdentifier')
+});
+
 //Token related config
 //module.exports.token_namespace = config.get('token:token_namespace');
 //module.exports.token_environment = config.get('token:token_environment');
@@ -19,3 +24,11 @@ module.exports.token_endpoint = config.get('token:token_endpoint');
 
 // URLS
 module.exports.edx_api_url = module.exports.base_url + config.get('url:edx_api_url');
+
+// PAGE Titles
+module.exports.page_titles = Object.freeze({
+    DASHBOARD: 'Dashboard',
+    EXCHANGE: 'Secure Exchange Inbox',
+    VIEW_EXCHANGE: 'View Message',
+    NEW_EXCHANGE: 'New Message'
+});

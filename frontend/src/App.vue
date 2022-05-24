@@ -3,7 +3,7 @@
     <MsieBanner v-if="isIE"/>
     <Header/>
     <SnackBar></SnackBar>
-    <NavBar v-if="pageTitle " :title="pageTitle"/>
+    <NavBar v-if="pageTitle" :title="pageTitle"/>
     <v-main fluid class="align-start">
     <v-app-bar v-if="bannerColor !== ''"
                style="color:white;"
@@ -27,8 +27,8 @@ import Footer from './components/Footer';
 import ModalIdle from './components/ModalIdle';
 import MsieBanner from './components/MsieBanner';
 import StaticConfig from './common/staticConfig';
-import NavBar from '@/components/util/NavBar';
 import SnackBar from '@/components/util/SnackBar';
+import NavBar from '@/components/util/NavBar';
 
 export default {
   name: 'app',
@@ -37,8 +37,8 @@ export default {
     Footer,
     ModalIdle,
     MsieBanner,
+    SnackBar,
     NavBar,
-    SnackBar
   },
   metaInfo: {
     meta: StaticConfig.VUE_APP_META_DATA

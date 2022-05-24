@@ -2,10 +2,10 @@
  * REST utilities for interacting with RESTFUL apis
  * @type {{}}
  */
-
 const log = require('npmlog');
 const axios = require('axios');
 const lodash = require('lodash');
+
 
 const restService = {
 
@@ -19,7 +19,7 @@ const restService = {
     async getData(token, url, params) {
         try {
             params = setToken(params, token);
-            log.info('get Data Url', url);
+            //log.info('get Data Url', url);
             const response = await axios.get(url, params);
             log.info('get Data Status', response.status);
             log.info('get Data StatusText', response.statusText);
@@ -28,7 +28,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'getData', 'Error during GET on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Get error' }, e);
+            throw new Error('API GET Error: status=' + status );
         }
     },
 
@@ -43,17 +43,17 @@ const restService = {
     async postData(token, url, data, params) {
         try {
             params = setToken(params, token);
-            log.info('post Data Url', url);
-            log.verbose('post Data Req', minify(data));
+            //log.info('post Data Url', url);
+            //log.verbose('post Data Req', minify(data));
             const response = await axios.post(url, data, params);
             log.info('post Data Status', response.status);
             log.info('post Data StatusText', response.statusText);
-            log.verbose('post Data Res', response.data);
+            //log.verbose('post Data Res', response.data);
             return response.data;
         } catch (e) {
             logApiError(e, 'postData', 'Error during POST on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Post error' }, e);
+            throw new Error('API POST Error: status=' + status );
         }
     },
 
@@ -68,17 +68,17 @@ const restService = {
     async putData(token, url, data, params) {
         try {
             params = setToken(params, token);
-            log.info('put Data Url', url);
-            log.verbose('put Data Req', data);
+            //log.info('put Data Url', url);
+            //log.verbose('put Data Req', data);
             const response = await axios.put(url, data, params);
             log.info('put Data Status', response.status);
             log.info('put Data StatusText', response.statusText);
-            log.verbose('put Data Res', response.data);
+            //log.verbose('put Data Res', response.data);
             return response.data;
         } catch (e) {
             logApiError(e, 'putData', 'Error during PUT on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API Put error' }, e);
+            throw new Error('API PUT Error: status=' + status );
         }
     },
 
@@ -92,7 +92,7 @@ const restService = {
     async deleteData(token, url, params) {
         try {
             params = setToken(params, token);
-            log.info('Delete Data Url', url);
+            //log.info('Delete Data Url', url);
             const response = await axios.delete(url, params);
             log.info('delete Data Status', response.status);
             log.info('delete Data StatusText', response.statusText);
@@ -100,7 +100,7 @@ const restService = {
         } catch (e) {
             logApiError(e, 'deleteData', 'Error during DELETE on ' + url);
             const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
-            throw new ApiError(status, { message: 'API DELETE error' }, e);
+            throw new Error('API DELETE Error: status=' + status );;
         }
     }
 }
@@ -124,11 +124,13 @@ function setToken(params, token) {
     if (params) {
         params.headers = {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
         };
     } else {
         params = {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         };
     }

@@ -12,6 +12,7 @@ junit.xml
 test-report.xml
 screenshots
 local.*
+.env
 .env.development
 # Editor directories and files
 .idea
