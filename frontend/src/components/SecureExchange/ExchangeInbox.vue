@@ -304,7 +304,6 @@ export default {
       return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
     },
     ministryContactName() {
-      console.log(JSON.stringify(this.ministryTeams));
       return this.ministryTeams;
     },
   },
@@ -342,6 +341,7 @@ export default {
       this.messageDateFilter = null;
       this.statusSelectFilter = '';
       this.contactNameFilter = '';
+      this.messageIDFilter ='';
       if(runSearch){
         this.setFilterStatusAll();
         this.getRequests();
