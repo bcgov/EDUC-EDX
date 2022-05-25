@@ -280,6 +280,15 @@ export default {
     searchEnabled(){
       return (this.subjectFilter !== '' && this.subjectFilter !== null) || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
     },
+    getSheetWidth(){
+      switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+      case 'sm':
+        return 60;
+      default:
+        return 30;
+      }
+    },
   },
   created() {
     this.$store.dispatch('edx/getExchangeStatusCodes');
@@ -303,11 +312,16 @@ export default {
     },
     statusFilterActiveClicked(){
       this.setFilterStatusActive();
+      this.resetPageNumber();
       this.getRequests();
     },
     statusFilterAllClicked(){
       this.setFilterStatusAll();
+      this.resetPageNumber();
       this.getRequests();
+    },
+    resetPageNumber(){
+      this.pageNumber = 1;
     },
     clearSearch(runSearch = true){
       this.subjectFilter = '';
