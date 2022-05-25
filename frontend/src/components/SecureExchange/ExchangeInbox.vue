@@ -119,6 +119,27 @@
                     </template>
                   </v-select>
                 </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    class="pt-0 mt-0"
+                    v-model="contactNameFilter"
+                    label="Contact Name"
+                    item-text="teamName"
+                    item-value="ministryOwnershipTeamId"
+                    :items="ministryContactName"
+                    prepend-inner-icon="mdi-book-open-variant"
+                    clearable
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4" class="pt-0">
+                  <v-text-field
+                      class="pt-0 mt-0 pl-9 pr-9"
+                      v-model="messageIDFilter"
+                      label="Message ID"
+                      prepend-inner-icon="mdi-pound"
+                      clearable
+                  ></v-text-field>
+                </v-col>
               </v-row>
               <v-row no-gutters class="justify-end mt-n2">
                 <v-col cols="12" class="d-flex justify-end">
@@ -241,6 +262,8 @@ export default {
       messageDate: null,
       subjectFilter: '',
       filterText: 'More Filters',
+      contactNameFilter: '',
+      messageIDFilter:'',
       headers: [
         {
           text: 'Status',
@@ -278,7 +301,10 @@ export default {
       return this.statuses;
     },
     searchEnabled(){
-      return (this.subjectFilter !== '' && this.subjectFilter !== null) || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+    },
+    ministryContactName() {
+      return this.ministryTeams;
     },
     getSheetWidth(){
       switch (this.$vuetify.breakpoint.name) {
@@ -328,6 +354,8 @@ export default {
       this.messageDate = null;
       this.messageDateFilter = null;
       this.statusSelectFilter = '';
+      this.contactNameFilter = '';
+      this.messageIDFilter ='';
       if(runSearch){
         this.setFilterStatusAll();
         this.getRequests();
@@ -418,7 +446,8 @@ export default {
 
       this.headerSearchParams.subject = this.subjectFilter;
       this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-
+      this.headerSearchParams.contactIdentifier = this.contactNameFilter;
+      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
         this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
       }
