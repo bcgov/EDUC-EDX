@@ -139,7 +139,6 @@ export default {
       this.$emit('secure-exchange:cancelMessage');
     },
     getSchoolName() {
-      console.log(this.ministryTeams);
       return this.mincodeSchoolNames.get(this.userInfo.mincode) + ' (' + this.userInfo.mincode + ')';
     },
     messageSent(){
