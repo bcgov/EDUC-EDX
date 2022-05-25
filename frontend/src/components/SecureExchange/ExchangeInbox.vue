@@ -119,7 +119,7 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="4" class="pt-0">
                   <v-select
                     class="pt-0 mt-0"
                     v-model="contactNameFilter"
@@ -217,7 +217,6 @@
       no-click-animation
       scrollable
       persistent
-      width="30%"
     >
       <v-card
         v-if="newMessageSheet"
@@ -285,10 +284,6 @@ export default {
         subject: '',
         createDate: [],
         secureExchangeStatusCode: ''
-      },
-      headerSortParams: {
-        currentSort: 'createDate',
-        currentSortDir: true
       },
       requests: [],
       isActiveMessagesTabEnabled: true,
@@ -440,8 +435,7 @@ export default {
       this.loadingTable = true;
       this.requests = [];
       const sort = {
-        isReadByExchangeContact: 'ASC',
-        createDate: 'ASC'
+        createDate: 'DESC'
       };
 
       this.headerSearchParams.subject = this.subjectFilter;
@@ -533,6 +527,10 @@ export default {
   font-size: large;
 }
 
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
+}
+
 .v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
   display: none;
 }
@@ -551,6 +549,11 @@ export default {
   }
 }
 
+@media screen and (max-width: 950px){
+  .v-dialog__content /deep/ .v-bottom-sheet {
+    width: 60% !important;
+  }
+}
 
 
 </style>

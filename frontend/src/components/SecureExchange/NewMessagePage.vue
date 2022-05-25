@@ -16,20 +16,25 @@
                           class="pt-0"
                           readonly
                         ></v-text-field>
-                        <v-autocomplete
+                        <v-select
                           id='schoolNameTxtField'
-                          label="To"
-                          class="pt-0"
                           v-model="assignedMinistryTeam"
-                          item-text="teamName"
-                          item-value="ministryOwnershipTeamId"
                           :items="this.ministryTeams"
                           :rules="requiredRules"
+                          item-text="teamName"
+                          class="pt-0"
+                          item-value="ministryOwnershipTeamId"
+                          label="To"
                         >
-                          <template v-slot:selection="{ item }">
-                            <span> {{ item.teamName }} </span>
+                          <template v-slot:item="{ item }">
+                            <v-row>
+                              <v-col cols="12" class="pr-0">
+                                <div class="body-2" style="color: black;font-weight: bolder">{{ item.teamName }}</div>
+                                <div class="body-2" style="color: black;">{{ item.description }}</div>
+                              </v-col>
+                            </v-row>
                           </template>
-                        </v-autocomplete>
+                        </v-select>
                         <v-text-field
                           v-model="subject"
                           id='subjectTxtField'
@@ -134,6 +139,7 @@ export default {
       this.$emit('secure-exchange:cancelMessage');
     },
     getSchoolName() {
+      console.log(this.ministryTeams);
       return this.mincodeSchoolNames.get(this.userInfo.mincode) + ' (' + this.userInfo.mincode + ')';
     },
     messageSent(){
