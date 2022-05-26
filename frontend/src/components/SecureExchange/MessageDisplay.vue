@@ -12,7 +12,7 @@
               :active="loading"
           ></v-progress-linear>
           <div v-if="!loading && secureExchange" style="width: 100%;" :overlay=false>
-            <v-row style="border-bottom: 5px solid rgb(252, 186, 25) !important">
+            <v-row class="secureExchangeHeader" style="border-bottom: 5px solid rgb(252, 186, 25) !important">
               <v-col cols="7" md="10" class="pb-0 pt-0">
                 <v-row class="mb-n4">
                   <v-col cols="12" class="pb-2 pt-2 pr-0">
@@ -21,12 +21,12 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="pb-1 pr-0">
-                    <span style="color: black">{{ secureExchange.ministryOwnershipTeamName }}</span>
+                    <span class="ministryOwnershipTeamName" style="color: black">{{ secureExchange.ministryOwnershipTeamName }}</span>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="pt-0 pb-1 pr-0">
-                    <span style="color: black">{{ secureExchange.createDate }}</span>
+                    <span class="createDate" style="color: black">{{ secureExchange.createDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -36,7 +36,7 @@
                     <v-icon class="pb-1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" right dark>
                       mdi-circle-medium
                     </v-icon>
-                    <span>{{ secureExchange.secureExchangeStatusCode }}</span>
+                    <span class="secureExchangeStatusCode">{{ secureExchange.secureExchangeStatusCode }}</span>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -44,38 +44,40 @@
                     <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
                       mdi-pound
                     </v-icon>
-                    <span>{{ secureExchange.sequenceNumber }}</span>
+                    <span class="sequenceNumber">{{ secureExchange.sequenceNumber }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
             <v-row>
-              <v-speed-dial v-if="isEditable()" v-model="editOptionsOpen" top left open-on-hover direction="right">
+              <v-speed-dial id="editOptionsMenu" v-if="isEditable()" v-model="editOptionsOpen" top left direction="right">
                 <template v-slot:activator>
                   <v-btn class="mx-2" fab dark large color="#003366">
                     <v-icon v-if="editOptionsOpen" dark large>mdi-close</v-icon>
                     <v-icon v-else dark large>mdi-plus</v-icon>
                   </v-btn>
                 </template>
-                <v-btn dark small color="green">
-                  <v-icon>mdi-email-outline</v-icon>
-                  <span class="ml-1">Message</span>
-                </v-btn>
-                <v-btn dark small color="indigo">
-                  <v-icon>mdi-paperclip</v-icon>
-                  <span class="ml-1">Document</span>
-                </v-btn>
-                <v-btn dark small color="rgb(252, 186, 25)">
-                  <v-icon>mdi-emoticon-happy-outline</v-icon>
-                  <span class="ml-1">Student</span>
-                </v-btn>
+                <v-card>
+                  <v-btn dark small color="green">
+                    <v-icon>mdi-email-outline</v-icon>
+                    <span class="ml-1">Message</span>
+                  </v-btn>
+                  <v-btn dark small color="indigo">
+                    <v-icon>mdi-paperclip</v-icon>
+                    <span class="ml-1">Document</span>
+                  </v-btn>
+                  <v-btn dark small color="rgb(252, 186, 25)">
+                    <v-icon>mdi-emoticon-happy-outline</v-icon>
+                    <span class="ml-1">Student</span>
+                  </v-btn>
+                </v-card>
               </v-speed-dial>
               <v-spacer></v-spacer>
-              <v-btn class="mx-2" style="margin: 16px" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
+              <v-btn id="markAsButton" class="mx-2" style="margin: 16px" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
                 <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                 <v-icon v-else>mdi-email-open-outline</v-icon>
-                <span class="ml-1" v-if="secureExchange.isReadByExchangeContact">Unread</span>
-                <span class="ml-1" v-else>Read</span>
+                <span class="ml-1 markAsSpan" v-if="secureExchange.isReadByExchangeContact">Unread</span>
+                <span class="ml-1 markAsSpan" v-else>Read</span>
               </v-btn>
             </v-row>
             <v-row>
@@ -86,11 +88,11 @@
                     <v-timeline-item large :color="getActivityColour(activity)" :icon="getActivityIcon(activity)">
                       <v-card>
                         <v-card-title>
-                          <div>{{ activity.title }}</div>
+                          <div class="activityTitle">{{ activity.title }}</div>
                           <v-spacer></v-spacer>
-                          <div>{{ activity.displayDate }}</div>
+                          <div class="activityDisplayDate">{{ activity.displayDate }}</div>
                         </v-card-title>
-                        <v-card-text>{{ activity.content }}</v-card-text>
+                        <v-card-text class="activityContent">{{ activity.content }}</v-card-text>
                       </v-card>
                     </v-timeline-item>
                   </div>
@@ -175,6 +177,10 @@ export default {
       switch (activity.type) {
       case 'message':
         return 'mdi-email-outline';
+      case 'document':
+        return 'md-paperclip';
+      case 'student':
+        return 'mdi-emoticon-happy-outline';
       default:
         return '';
       }
