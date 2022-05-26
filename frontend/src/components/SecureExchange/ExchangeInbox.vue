@@ -119,6 +119,27 @@
                     </template>
                   </v-select>
                 </v-col>
+                <v-col cols="12" md="4" class="pt-0">
+                  <v-select
+                    class="pt-0 mt-0"
+                    v-model="contactNameFilter"
+                    label="Contact Name"
+                    item-text="teamName"
+                    item-value="ministryOwnershipTeamId"
+                    :items="ministryContactName"
+                    prepend-inner-icon="mdi-book-open-variant"
+                    clearable
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4" class="pt-0">
+                  <v-text-field
+                      class="pt-0 mt-0 pl-9 pr-9"
+                      v-model="messageIDFilter"
+                      label="Message ID"
+                      prepend-inner-icon="mdi-pound"
+                      clearable
+                  ></v-text-field>
+                </v-col>
               </v-row>
               <v-row no-gutters class="justify-end mt-n2">
                 <v-col cols="12" class="d-flex justify-end">
@@ -196,7 +217,6 @@
       no-click-animation
       scrollable
       persistent
-      width="30%"
     >
       <v-card
         v-if="newMessageSheet"
@@ -241,6 +261,8 @@ export default {
       messageDate: null,
       subjectFilter: '',
       filterText: 'More Filters',
+      contactNameFilter: '',
+      messageIDFilter:'',
       headers: [
         {
           text: 'Status',
@@ -263,10 +285,6 @@ export default {
         createDate: [],
         secureExchangeStatusCode: ''
       },
-      headerSortParams: {
-        currentSort: 'createDate',
-        currentSortDir: true
-      },
       requests: [],
       isActiveMessagesTabEnabled: true,
     };
@@ -278,7 +296,19 @@ export default {
       return this.statuses;
     },
     searchEnabled(){
-      return (this.subjectFilter !== '' && this.subjectFilter !== null) || this.messageDate !== null || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+    },
+    ministryContactName() {
+      return this.ministryTeams;
+    },
+    getSheetWidth(){
+      switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+      case 'sm':
+        return 60;
+      default:
+        return 30;
+      }
     },
   },
   created() {
@@ -303,17 +333,24 @@ export default {
     },
     statusFilterActiveClicked(){
       this.setFilterStatusActive();
+      this.resetPageNumber();
       this.getRequests();
     },
     statusFilterAllClicked(){
       this.setFilterStatusAll();
+      this.resetPageNumber();
       this.getRequests();
+    },
+    resetPageNumber(){
+      this.pageNumber = 1;
     },
     clearSearch(runSearch = true){
       this.subjectFilter = '';
       this.messageDate = null;
       this.messageDateFilter = null;
       this.statusSelectFilter = '';
+      this.contactNameFilter = '';
+      this.messageIDFilter ='';
       if(runSearch){
         this.setFilterStatusAll();
         this.getRequests();
@@ -398,13 +435,13 @@ export default {
       this.loadingTable = true;
       this.requests = [];
       const sort = {
-        isReadByExchangeContact: 'ASC',
-        createDate: 'ASC'
+        createDate: 'DESC'
       };
 
       this.headerSearchParams.subject = this.subjectFilter;
       this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-
+      this.headerSearchParams.contactIdentifier = this.contactNameFilter;
+      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
         this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
       }
@@ -490,6 +527,10 @@ export default {
   font-size: large;
 }
 
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
+}
+
 .v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
   display: none;
 }
@@ -508,6 +549,11 @@ export default {
   }
 }
 
+@media screen and (max-width: 950px){
+  .v-dialog__content /deep/ .v-bottom-sheet {
+    width: 60% !important;
+  }
+}
 
 
 </style>
