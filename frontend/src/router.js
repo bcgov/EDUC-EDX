@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import Home from '@/components/Home.vue';
 import Logout from './components/Logout';
+import UserActivationLinkError from './components/UserActivationLinkError';
 import SessionExpired from './components/SessionExpired';
 import ErrorPage from '@/components/ErrorPage.vue';
 import LoginError from '@/components/LoginError.vue';
@@ -58,6 +59,11 @@ const router = new VueRouter({
       path: '/login-error',
       name: 'login-error',
       component: LoginError
+    },
+    {
+      path: '/activation-error',
+      name: 'activation-error',
+      component: UserActivationLinkError
     },
     {
       path: '/login',

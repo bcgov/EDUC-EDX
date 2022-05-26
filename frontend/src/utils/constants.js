@@ -31,7 +31,8 @@ export const ApiRoutes = Object.freeze({
     STATUSES_URL: edxRoot + '/exchange/statuses',
     MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams',
     USERS_URL: edxRoot + '/users',
-    USER_ACTIVATION:edxRoot+'/user-activation'
+    USER_ACTIVATION:edxRoot+'/user-activation',
+    UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url'
   }
 });
 

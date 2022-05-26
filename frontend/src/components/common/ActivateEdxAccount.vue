@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-form ref="edxUserActivationForm" v-model="isValidForm">
+    <v-form :disabled="isEdxUserActivationFormDisabled" ref="edxUserActivationForm" v-model="isValidForm">
 
       <v-row class="pt-2">
         <v-col cols="2"></v-col>
@@ -109,6 +109,8 @@ export default {
       mincodeRules: [v => (!v || this.validateMincode(v)) || 'Invalid mincode'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
+      validationCode: null,
+      isEdxUserActivationFormDisabled: false
     };
   },
   computed: {},
@@ -121,25 +123,25 @@ export default {
         mincode: this.mincode,
         personalActivationCode: this.personalActivationCode,
         primaryEdxCode: this.primaryEdxCode,
-
+        validationCode: this.validationCode,
       };
       ApiService.apiAxios.post(ApiRoutes.edx.USER_ACTIVATION, body)
-        .then(() =>{
+        .then(() => {
           this.setSuccessAlert('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
-          setTimeout(() =>  this.$router.push('/'), 3000);
+          setTimeout(() => this.$router.push('/'), 3000);
 
         })
         .catch(error => {
-          //to do add the alert framework for error or success
-          console.error(error);
+          if (error?.response?.status === 429) {
+            this.setFailureAlert(error?.response?.data?.message);
+            this.isEdxUserActivationFormDisabled = true;
+          }
           if (error?.response?.data?.message) {
             this.setFailureAlert(error?.response?.data?.message);
           } else {
             this.setFailureAlert('User Activation failed. Please try again.');
           }
         });
-
-
     }
   },
   watch: {}
