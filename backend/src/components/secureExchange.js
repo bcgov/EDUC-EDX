@@ -371,6 +371,11 @@ const createSearchParamObject = (key, value) => {
     value = value.join(',');
     operation = FILTER_OPERATION.IN;
   }
+
+  if (key === 'ministryOwnershipTeamID') {
+    valueType = VALUE_TYPE.UUID;
+    operation = FILTER_OPERATION.EQUAL;
+  }
   return {key, value, operation, valueType};
 };
 
