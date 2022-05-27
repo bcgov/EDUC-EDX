@@ -371,12 +371,14 @@ export default {
         this.statusRadioGroup = 'statusFilterActive';
         this.setFilterStatusActive();
         this.clearSearch(false);
+        this.resetPageNumber();
         this.getRequests();
       } else {
         this.setFilterStatusAll();
         this.statusRadioGroup = 'statusFilterAll';
         this.filterText = 'Less Filters';
         this.statusRadioGroupEnabled = false;
+        this.resetPageNumber();
         this.clearSearch();
       }
 
