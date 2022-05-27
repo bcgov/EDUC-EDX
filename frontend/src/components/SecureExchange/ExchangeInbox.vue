@@ -38,7 +38,7 @@
                          label="All"
                          color="#003366"
                          value="statusFilterAll"
-                         @click.native="statusFilterAllClicked"
+                         @click.native="filterRequests"
                 >
                   <template v-slot:label>
                     <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">All</span>
@@ -149,7 +149,7 @@
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton @click.native="getRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
+                  <PrimaryButton @click.native="filterRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -173,12 +173,11 @@
             >
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
-                <router-link :to="{name: 'viewExchange', params: {secureExchangeID: item.secureExchangeID}}">
-                  <v-row>
+                  <v-row @click="openExchange(item.secureExchangeID)" style="cursor: pointer;">
                     <v-col cols="7" md="10" class="pb-0 pt-0">
                       <v-row class="mb-n4">
                         <v-col cols="12" class="pb-2 pt-2 pr-0">
-                          <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
+                          <h3 class="subjectHeading" :style="{color: item.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.subject) }}</h3>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -213,7 +212,6 @@
                       </v-row>
                     </v-col>
                   </v-row>
-                </router-link>
               </template>
 
               <template v-slot:no-data>There are no messages.</template>
@@ -330,6 +328,9 @@ export default {
     this.getRequests();
   },
   methods: {
+    openExchange(secureExchangeID){
+      this.$router.push({name: 'viewExchange', params: {secureExchangeID: secureExchangeID}});
+    },
     messageSent(){
       this.newMessageSheet = !this.newMessageSheet;
       this.getRequests();
@@ -345,11 +346,6 @@ export default {
     },
     statusFilterActiveClicked() {
       this.setFilterStatusActive();
-      this.resetPageNumber();
-      this.getRequests();
-    },
-    statusFilterAllClicked() {
-      this.setFilterStatusAll();
       this.resetPageNumber();
       this.getRequests();
     },
@@ -443,6 +439,11 @@ export default {
       this.isActiveMessagesTabEnabled = false;
       this.getRequests();
     },
+    filterRequests(){
+      this.setFilterStatusAll();
+      this.resetPageNumber();
+      this.getRequests();
+    },
     getRequests() {
       this.loadingTable = true;
       this.requests = [];
@@ -452,7 +453,7 @@ export default {
 
       this.headerSearchParams.subject = this.subjectFilter;
       this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-      this.headerSearchParams.contactIdentifier = this.contactNameFilter;
+      this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
         this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
