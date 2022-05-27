@@ -73,7 +73,7 @@
                 </v-card>
               </v-speed-dial>
               <v-spacer></v-spacer>
-              <v-btn id="markAsButton" class="mx-2 ma-4" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
+              <v-btn id="markAsButton" class="ma-4" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
                 <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                 <v-icon v-else>mdi-email-open-outline</v-icon>
                 <span class="ml-1 markAsSpan" v-if="secureExchange.isReadByExchangeContact">Unread</span>
