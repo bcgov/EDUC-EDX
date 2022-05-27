@@ -17,29 +17,33 @@
           <v-expansion-panel id="filtersToggle" @click="onExpansionPanelClick" style="background: #ebedef">
             <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
-                @click.native.stop
-                color="#003366"
-                v-model="statusRadioGroup"
-                :disabled="!statusRadioGroupEnabled"
-                row
-                class="pt-0 pb-0 mt-0 mb-0"
+                  @click.native.stop
+                  color="#003366"
+                  v-model="statusRadioGroup"
+                  :disabled="!statusRadioGroupEnabled"
+                  row
+                  class="pt-0 pb-0 mt-0 mb-0"
               >
                 <v-radio class="mt-2 radio-blue-text"
-                  label="Active Only"
-                  color="#003366"
-                  value="statusFilterActive"
-                  @click.native="statusFilterActiveClicked"
-                ><template v-slot:label>
-                  <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">Active Only</span>
-                </template></v-radio>
+                         label="Active Only"
+                         color="#003366"
+                         value="statusFilterActive"
+                         @click.native="statusFilterActiveClicked"
+                >
+                  <template v-slot:label>
+                    <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">Active Only</span>
+                  </template>
+                </v-radio>
                 <v-radio class="mt-2 radio-blue-text"
-                  label="All"
-                  color="#003366"
-                  value="statusFilterAll"
-                  @click.native="statusFilterAllClicked"
-                ><template v-slot:label>
-                  <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">All</span>
-                </template></v-radio>
+                         label="All"
+                         color="#003366"
+                         value="statusFilterAll"
+                         @click.native="statusFilterAllClicked"
+                >
+                  <template v-slot:label>
+                    <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">All</span>
+                  </template>
+                </v-radio>
               </v-radio-group>
               <template v-slot:actions>
                 <v-btn id="filterid"
@@ -67,45 +71,45 @@
                 </v-col>
                 <v-col cols="12" md="4" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
                   <v-menu
-                    ref="messageDateFilter"
-                    v-model="messageDateFilter"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto"
+                      ref="messageDateFilter"
+                      v-model="messageDateFilter"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        class="pt-0 mt-0"
-                        v-model="messageDate"
-                        label="Message Date"
-                        prepend-inner-icon="mdi-calendar"
-                        clearable
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
+                          class="pt-0 mt-0"
+                          v-model="messageDate"
+                          label="Message Date"
+                          prepend-inner-icon="mdi-calendar"
+                          clearable
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-model="messageDate"
-                      :active-picker.sync="activeMessageDatePicker"
-                      :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-                      min="2022-01-01"
-                      @change="saveMessageDate"
+                        v-model="messageDate"
+                        :active-picker.sync="activeMessageDatePicker"
+                        :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                        min="2022-01-01"
+                        @change="saveMessageDate"
                     ></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-select
-                    v-model="statusSelectFilter"
-                    :items="secureExchangeStatusCodes"
-                    item-text="label"
-                    class="pt-0 mt-0"
-                    item-value="secureExchangeStatusCode"
-                    prepend-inner-icon="mdi-alert-circle-outline"
-                    label="Status"
-                    single-line
-                    clearable
+                      v-model="statusSelectFilter"
+                      :items="secureExchangeStatusCodes"
+                      item-text="label"
+                      class="pt-0 mt-0"
+                      item-value="secureExchangeStatusCode"
+                      prepend-inner-icon="mdi-alert-circle-outline"
+                      label="Status"
+                      single-line
+                      clearable
                   >
                     <template v-slot:item="{ item }">
                       <v-row>
@@ -154,54 +158,62 @@
         <v-row>
           <v-col>
             <v-data-table
-              :items-per-page.sync="pageSize"
-              :page.sync="pageNumber"
-              :headers="headers"
-              :footer-props="{
+                :items-per-page.sync="pageSize"
+                :page.sync="pageNumber"
+                :headers="headers"
+                :footer-props="{
                       'items-per-page-options': itemsPerPageOptions
                     }"
-              :items="requests"
-              :loading="loadingTable"
-              :server-items-length="totalRequests"
-              class="elevation-1"
-              hide-default-header
-              mobile-breakpoint="0"
+                :items="requests"
+                :loading="loadingTable"
+                :server-items-length="totalRequests"
+                class="elevation-1"
+                hide-default-header
+                mobile-breakpoint="0"
             >
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
-                <v-row>
-                  <v-col cols="7" md="10" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
-                      <v-col cols="12" class="pb-2 pt-2 pr-0">
-                        <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" class="pb-1 pr-0">
-                        <span class="ministryLine">{{ getMinistryTeamName(item.ministryOwnershipTeamID) }} - {{ item.createDate }}</span>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" class="pt-0 pb-1 pr-0">
-                        <span style="color: gray">{{ getLatestComment(item) }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
-                      <v-col cols="12" class="pb-1">
-                        <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>mdi-circle-medium</v-icon>
-                        <span class="statusCodeLabel">{{ item.secureExchangeStatusCode }}</span>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" class="pb-2">
-                        <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>mdi-pound</v-icon>
-                        <span class="statusCodeLabel">{{ item.sequenceNumber }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+                <router-link :to="{name: 'viewExchange', params: {secureExchangeID: item.secureExchangeID}}">
+                  <v-row>
+                    <v-col cols="7" md="10" class="pb-0 pt-0">
+                      <v-row class="mb-n4">
+                        <v-col cols="12" class="pb-2 pt-2 pr-0">
+                          <h3 class="subjectHeading">{{ getSubject(item.subject) }}</h3>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="pb-1 pr-0">
+                          <span style="color: black">{{
+                              getMinistryTeamName(item.ministryOwnershipTeamID)
+                            }} - {{ item.createDate }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="pt-0 pb-1 pr-0">
+                          <span style="color: gray">{{ getLatestComment(item) }}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
+                      <v-row class="mb-n4">
+                        <v-col cols="12" class="pb-1">
+                          <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>
+                            mdi-circle-medium
+                          </v-icon>
+                          <span>{{ item.secureExchangeStatusCode }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="pb-2">
+                          <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
+                            mdi-pound
+                          </v-icon>
+                          <span>{{ item.sequenceNumber }}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </router-link>
               </template>
 
               <template v-slot:no-data>There are no messages.</template>
@@ -292,7 +304,7 @@ export default {
   computed: {
     ...mapState('edx', ['statuses']),
     ...mapState('edx', ['ministryTeams']),
-    secureExchangeStatusCodes(){
+    secureExchangeStatusCodes() {
       return this.statuses;
     },
     searchEnabled(){
@@ -325,18 +337,18 @@ export default {
     getMinistryTeamName(ministryOwnershipTeamId){
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
     },
-    setFilterStatusAll(){
-      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG','COMPLETE'];
+    setFilterStatusAll() {
+      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG', 'COMPLETE'];
     },
-    setFilterStatusActive(){
+    setFilterStatusActive() {
       this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     },
-    statusFilterActiveClicked(){
+    statusFilterActiveClicked() {
       this.setFilterStatusActive();
       this.resetPageNumber();
       this.getRequests();
     },
-    statusFilterAllClicked(){
+    statusFilterAllClicked() {
       this.setFilterStatusAll();
       this.resetPageNumber();
       this.getRequests();
@@ -357,7 +369,7 @@ export default {
       }
     },
     onExpansionPanelClick(event) {
-      if(event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
+      if (event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
         this.filterText = 'More Filters';
         this.statusRadioGroupEnabled = true;
         this.statusRadioGroup = 'statusFilterActive';
@@ -376,17 +388,17 @@ export default {
     saveMessageDate(date) {
       this.$refs.messageDateFilter.save(date);
     },
-    getStatusColor(status){
-      if(status === 'New') {
+    getStatusColor(status) {
+      if (status === 'New') {
         return 'blue';
-      } else if(status === 'In Progress') {
+      } else if (status === 'In Progress') {
         return 'yellow darken-2';
-      } else if(status === 'Complete') {
+      } else if (status === 'Complete') {
         return 'green';
       }
     },
-    getSubject(subject){
-      if(subject.length > 16){
+    getSubject(subject) {
+      if (subject.length > 16) {
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
@@ -394,22 +406,22 @@ export default {
         case 'md':
           return this.getContentString(subject, 40);
         case 'lg':
-          return this.getContentString(subject, 75);
+          return this.getContentString(subject, 100);
         default:
-          return this.getContentString(subject, 120);
+          return this.getContentString(subject, 150);
         }
       }
       return subject;
     },
-    getContentString(content, length){
-      if(content.length > length) {
+    getContentString(content, length) {
+      if (content.length > length) {
         return content.substring(0, length) + '...';
       }
       return content;
     },
-    getLatestComment(item){
+    getLatestComment(item) {
       var content = item.commentsList.reduce((a, b) => (a.createDate > b.createDate ? a : b)).content;
-      if(content.length > 25){
+      if (content.length > 25) {
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
@@ -455,7 +467,7 @@ export default {
         }
       }).then(response => {
         this.requests = response.data.content;
-        if(this.isActiveMessagesTabEnabled){
+        if (this.isActiveMessagesTabEnabled) {
           this.totalRequests = response.data.totalElements;
         }
       }).catch(error => {
@@ -514,18 +526,6 @@ export default {
 .activeRadio {
   color: #003366;
 }
-.subjectHeading{
-  font-size: x-large;
-}
-
-.statusCodeLabel{
-  font-size: large;
-}
-
-.ministryLine{
-  color: black;
-  font-size: large;
-}
 
 .v-dialog__content >>> .v-bottom-sheet {
   width: 30% !important;
@@ -537,15 +537,7 @@ export default {
 
 @media screen and (max-width: 801px){
   .subjectHeading {
-    font-size: larger;
-  }
-
-  .statusCodeLabel{
-    font-size: inherit;
-  }
-
-  .ministryLine{
-    font-size: inherit;
+    font-size: medium;
   }
 }
 
