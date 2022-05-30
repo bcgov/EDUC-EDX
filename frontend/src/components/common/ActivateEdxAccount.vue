@@ -40,6 +40,7 @@
               <v-text-field
                   v-model="mincode"
                   :rules="mincodeRules"
+                  :counter="8"
                   hint="Please enter the mincode of the school you want to register for"
                   label="Mincode"
               ></v-text-field>

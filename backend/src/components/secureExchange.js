@@ -395,6 +395,8 @@ async function verifyActivateUserLink(req, res) {
   } catch (e) {
     let msg = 'Error Occurred please retry with the link provided in the email';
     if(e.status === 400){
+      msg = 'Invalid link clicked. Please click the link provided in your email';
+    }else if (e.status === 410){
       msg = 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
     }
     log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
