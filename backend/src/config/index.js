@@ -80,7 +80,9 @@ nconf.defaults({
     exchangeURL: process.env.EDX_API_ENDPOINT + '/exchange',
     exchangeStatusesURL: process.env.EDX_API_ENDPOINT + '/exchange/statuses',
     ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/users/ministry-teams',
-    edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users'
+    edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users',
+    userActivationURL:process.env.EDX_API_ENDPOINT+ '/users/activation',
+    updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'users/activation-code/url'
   }
 });
 module.exports = nconf;

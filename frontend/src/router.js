@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import Home from '@/components/Home.vue';
 import Logout from './components/Logout';
+import UserActivationLinkError from './components/UserActivationLinkError';
 import SessionExpired from './components/SessionExpired';
 import ErrorPage from '@/components/ErrorPage.vue';
 import LoginError from '@/components/LoginError.vue';
@@ -18,6 +19,7 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay';
 import ExchangePage from './components/SecureExchange/ExchangeInbox';
 import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
+import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
 
 Vue.prototype.moment = moment;
 
@@ -59,9 +61,23 @@ const router = new VueRouter({
       component: LoginError
     },
     {
+      path: '/activation-error',
+      name: 'activation-error',
+      component: UserActivationLinkError
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/user-activation',
+      name: 'User Activation',
+      component: ActivateEdxAccount,
+      meta: {
+        pageTitle: PAGE_TITLES.ACTIVATE_USER,
+        requiresAuth: true
+      },
     },
     {
       path: '*',

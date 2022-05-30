@@ -19,6 +19,7 @@ const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
 const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('./constants');
+const { getApiCredentials } = require('./auth');
 const cacheService = require('./cache-service');
 
 function verifyRequest(req, res, next) {
@@ -253,7 +254,6 @@ async function getExchanges(req, res) {
     });
 
 }
-
 async function getExchange(req, res) {
   const accessToken = getAccessToken(req);
   if (!accessToken) {
@@ -331,6 +331,78 @@ async function markAs(req, res) {
     return errorResponse(res);
   }
 }
+
+async function activateSchoolUser(req, res) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  const numberOfRetries = req.session[`${req.body.validationCode}`];
+  if (numberOfRetries && numberOfRetries >= 5) {
+    return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.',HttpStatus.TOO_MANY_REQUESTS);
+  }
+  const payload = {
+    digitalId: req.session.digitalIdentityData.digitalID,
+    ...req.body
+  };
+  try {
+    const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
+    req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
+    return res.status(200).json(response);
+  } catch (e) {
+    const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
+    log.error(e, 'activateSchoolUser', 'Error getting activated user');
+    if(e?.status>399 && e?.status<410){
+      if (numberOfRetries && numberOfRetries<=4) {
+        req.session[`${req.body.validationCode}`] = numberOfRetries + 1;
+      }else {
+        req.session[`${req.body.validationCode}`] = 1;
+      }
+    }
+    return errorResponse(res, msg);
+  }
+}
+
+function mapEdxUserActivationErrorMessage(message) {
+  const msg = message || 'INTERNAL SERVER ERROR';
+  if (msg.includes('EdxActivationCode was not found for parameters')) {
+    return 'Incorrect activation details have been entered. Please try again.';
+  } else if (msg.includes('This Activation Code has expired')) {
+    return 'Your activation code has expired. Please contact your administrator for a new activation code.';
+  }else if (msg.includes('This User Activation Link has expired')) {
+    return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
+  }
+  return msg;
+}
+
+
+
+async function verifyActivateUserLink(req, res) {
+  const baseUrl = config.get('server:frontend');
+
+  if(! req.query.validationCode) {
+    return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
+  }
+  const payload = {
+    validationCode: req.query.validationCode
+  };
+  try {
+    let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
+    await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
+    return res.redirect(baseUrl + '/api/auth/login_bceid_activate_user');
+  } catch (e) {
+    let msg = 'Error Occurred please retry with the link provided in the email';
+    if(e.status === 400){
+      msg = 'Invalid link clicked. Please click the link provided in your email';
+    }else if (e.status === 410){
+      msg = 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
+    }
+    log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
+    return res.redirect(baseUrl + `/activation-error?errorMessage= ${msg}`);
+  }
+}
 /**
  * Returns an array of search criteria objects to query EDX API
  *
@@ -388,5 +460,7 @@ module.exports = {
   createExchange,
   getExchanges,
   getExchange,
-  markAs
+  markAs,
+  activateSchoolUser,
+  verifyActivateUserLink
 };

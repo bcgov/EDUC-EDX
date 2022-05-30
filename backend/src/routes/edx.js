@@ -2,7 +2,8 @@
 
 const passport = require('passport');
 const express = require('express');
-const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, getExchange, createExchange, markAs } = require('../components/secureExchange');
+const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,
+  verifyActivateUserLink} = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
@@ -41,6 +42,7 @@ router.get('/exchanges/:id/documents/:documentId/download/:fileName', auth.refre
 
 router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, deleteDocument]);
 
+router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
 router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange/:secureExchangeID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchange);
@@ -50,5 +52,6 @@ router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false
 router.get('/users/user-schools/mincodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
   (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools/mincodes`)
 );
-
+router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, activateSchoolUser);
+router.get('/activate-user-verification', verifyActivateUserLink);
 module.exports = router;

@@ -30,7 +30,9 @@ export const ApiRoutes = Object.freeze({
     FILE_REQUIREMENTS: edxRoot + '/file-requirements',
     STATUSES_URL: edxRoot + '/exchange/statuses',
     MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams',
-    USERS_URL: edxRoot + '/users'
+    USERS_URL: edxRoot + '/users',
+    USER_ACTIVATION:edxRoot+'/user-activation',
+    UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url'
   }
 });
 
@@ -38,5 +40,6 @@ export const PAGE_TITLES = Object.freeze({
   DASHBOARD: 'Dashboard',
   EXCHANGE: 'Secure Exchange Inbox',
   VIEW_EXCHANGE: 'View Message',
-  NEW_EXCHANGE: 'New Message'
+  NEW_EXCHANGE: 'New Message',
+  ACTIVATE_USER:'Activate User'
 });
