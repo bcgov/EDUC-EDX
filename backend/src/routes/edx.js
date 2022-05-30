@@ -3,7 +3,7 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,
-  verifyValidationCode, verifyActivateUserLink} = require('../components/secureExchange');
+  verifyActivateUserLink} = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
