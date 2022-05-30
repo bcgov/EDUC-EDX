@@ -85,7 +85,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="justify-end">
+          <v-row class="justify-end pr-16 customSubmit" >
             <v-col cols="12"
                    sm="6">
               <PrimaryButton
@@ -172,6 +172,9 @@ export default {
 <style scoped>
 .header-text {
   font-size: x-large;
+}
+.customSubmit{
+  margin-right: 10rem !important;
 }
 
 </style>
