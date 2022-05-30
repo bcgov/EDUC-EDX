@@ -28,9 +28,11 @@
                         >
                           <template v-slot:item="{ item }">
                             <v-row>
+
+
                               <v-col cols="12" class="pr-0">
                                 <div class="body-2" style="color: black;font-weight: bolder">{{ item.teamName }}</div>
-                                <div class="body-2" style="color: black;">{{ item.description }}</div>
+                                <div class="body-2" style="color: black;" :style="{'max-width': $vuetify.breakpoint.smAndDown ? '30em' : '36em'}">{{ item.description }}</div>
                               </v-col>
                             </v-row>
                           </template>
