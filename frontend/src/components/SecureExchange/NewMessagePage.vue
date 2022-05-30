@@ -114,6 +114,12 @@ export default {
     PrimaryButton,
     ConfirmationDialog,
   },
+  props: {
+    mincodeSchoolNames: {
+      type: Map,
+      required: true
+    },
+  },
   data() {
     return {
       newMessage: '',
@@ -125,14 +131,12 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('auth', ['userInfo']),
     ...mapState('edx', ['ministryTeams', 'exchangeMincodes'])
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getMincodeSchoolNames');
   },
   methods: {
     navigateToList() {

@@ -1,15 +1,14 @@
 /**
  * Tests to run against the school inbox page
  */
-import { base_url, test_exchange_object } from '../../config/constants';
+import { base_url } from '../../config/constants';
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
 import { deleteSecureExchange } from "../../services/edx-api-service";
+import { createTestExchange } from "../../helpers/secure-exchange-utils";
 
 import log from "npmlog";
-import SecureExchange from "../../model/SecureExchange";
-import SecureExchangeComment from "../../model/SecureExchangeComment";
 import Inbox from "../../page_models/inbox";
 
 const studentAdmin = require('../../auth/Roles');
@@ -63,34 +62,3 @@ test('testPage', async t => {
     await t.navigateTo(base_url + '/inbox');
     await inbox.clickNewMessageButton();
 });**/
-
-
-
-
-/**
- * ****************
- * Helper methods *
- * ****************
- */
-
-function createTestExchange() {
-    const USERNAME = 'AUTOTEST';
-    let secureExchange = new SecureExchange();
-    let comment = new SecureExchangeComment();
-    secureExchange.contactIdentifier = test_exchange_object.contactIdentifier;
-    secureExchange.ministryOwnershipTeamID = test_exchange_object.ministryOwnershipTeamID;
-    secureExchange.secureExchangeContactTypeCode = 'SCHOOL'
-    secureExchange.createUser = USERNAME;
-    secureExchange.updateUser = USERNAME;
-    secureExchange.secureExchangeStatusCode = 'NEW';
-    secureExchange.reviewer = 'CDITCHER';
-    secureExchange.subject = testExchangeSubject;
-    secureExchange.isReadByMinistry = 'false';
-    secureExchange.isReadByExchangeContact = 'false';
-    comment.commentUserName = USERNAME;
-    comment.content = 'This was created using an automation test';
-    comment.createUser = USERNAME;
-    comment.updateUser = USERNAME;
-    secureExchange.addComment(comment);
-    return secureExchange;
-}
