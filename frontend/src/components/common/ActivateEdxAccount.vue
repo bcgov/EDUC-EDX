@@ -10,6 +10,16 @@
               <span class="header-text"><strong>Activate EDX Account</strong></span>
             </div>
           </v-row>
+                      <v-snackbar
+                v-model="showActivationSnackBar"
+                elevation="24"
+                top
+                centered
+                color="error"
+                transition="slide-y-transition"
+                >
+              {{activationErrorMessage}}
+            </v-snackbar>
           <v-row>
             <div>
               <v-card color="#CED6E2">
@@ -33,6 +43,7 @@
             </div>
           </v-row>
           <v-row>
+
             <v-col
                 cols="12"
                 sm="6"
@@ -81,7 +92,7 @@
                   :large-icon=true
                   id="edxUserActivationSubmitBtn"
                   text="Submit"
-                  :disabled="!isValidForm ||isEdxUserActivationFormDisabled "
+                  :disabled="!isValidForm || isEdxUserActivationFormDisabled "
                   @click.native="activateEdxUser"
               ></PrimaryButton>
             </v-col>
@@ -97,6 +108,7 @@ import PrimaryButton from '../util/PrimaryButton';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import alertMixin from '@/mixins/alertMixin';
+import {mapMutations} from 'vuex';
 
 export default {
   name: 'ActivateEdxAccount.vue',
@@ -105,17 +117,21 @@ export default {
   data() {
     return {
       mincode: null,
+      activationErrorMessage:null,
       personalActivationCode: null,
       primaryEdxCode: null,
       mincodeRules: [v => (!v || this.validateMincode(v)) || 'Invalid mincode'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
       validationCode: null,
-      isEdxUserActivationFormDisabled: false
+      isEdxUserActivationFormDisabled: false,
+      showActivationSnackBar:false
     };
   },
-  computed: {},
+  computed: {
+  },
   methods: {
+    ...mapMutations('app', ['removeAlertNotification']),
     validateMincode(v) {
       return !(v.length !== 8 || isNaN(v));
     },
@@ -133,14 +149,18 @@ export default {
 
         })
         .catch(error => {
+          this.showActivationSnackBar=false;
           if (error?.response?.status === 429) {
-            this.setFailureAlert(error?.response?.data?.message);
+            this.showActivationSnackBar=true;
+            this.activationErrorMessage = error?.response?.data?.message;
             this.isEdxUserActivationFormDisabled = true;
           }
-          if (error?.response?.data?.message) {
-            this.setFailureAlert(error?.response?.data?.message);
+          if (error?.response?.data?.message){
+            this.showActivationSnackBar=true;
+            this.activationErrorMessage = error?.response?.data?.message;
           } else {
-            this.setFailureAlert('User Activation failed. Please try again.');
+            this.showActivationSnackBar=true;
+            this.activationErrorMessage = 'User Activation failed. Please try again.';
           }
         });
     }
