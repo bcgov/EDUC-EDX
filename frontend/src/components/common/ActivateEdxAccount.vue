@@ -5,9 +5,9 @@
       <v-row class="pt-2 d-flex justify-center">
         <v-col cols="9" md="4">
           <v-row>
-            <div>
+            <v-col>
               <span class="header-text"><strong>Activate EDX Account</strong></span>
-            </div>
+            </v-col>
           </v-row>
                       <v-snackbar
                 v-model="showActivationSnackBar"
