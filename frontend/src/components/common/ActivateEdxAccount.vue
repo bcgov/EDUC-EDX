@@ -81,7 +81,7 @@
                   :large-icon=true
                   id="edxUserActivationSubmitBtn"
                   text="Submit"
-                  :disabled="!isValidForm"
+                  :disabled="!isValidForm ||isEdxUserActivationFormDisabled "
                   @click.native="activateEdxUser"
               ></PrimaryButton>
             </v-col>
