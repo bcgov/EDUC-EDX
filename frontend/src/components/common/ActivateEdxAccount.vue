@@ -2,9 +2,8 @@
   <v-container fluid>
     <v-form :disabled="isEdxUserActivationFormDisabled" ref="edxUserActivationForm" v-model="isValidForm">
 
-      <v-row class="pt-2">
-        <v-col cols="2"></v-col>
-        <v-col cols="8">
+      <v-row class="pt-2 d-flex justify-center">
+        <v-col cols="9" md="4">
           <v-row>
             <div>
               <span class="header-text"><strong>Activate EDX Account</strong></span>
@@ -21,7 +20,7 @@
               {{activationErrorMessage}}
             </v-snackbar>
           <v-row>
-            <div>
+            <v-col cols="12">
               <v-card color="#CED6E2">
                 <v-card-text class="black--text">
                   <v-icon>
@@ -39,18 +38,13 @@
                   Your <strong>Personal Activation Code</strong> from your EDX invite email
                 </v-card-text>
               </v-card>
-
-            </div>
+            </v-col>
           </v-row>
-          <v-row>
-
-            <v-col
-                cols="12"
-                sm="6"
-            >
+          <v-row class="d-flex justify-center">
+            <v-col cols="5">
               <v-text-field
                   v-model="mincode"
-                  :rules="mincodeRules"
+                  :rules="mincodeRules && requiredRules"
                   :counter="8"
                   hint="Please enter the mincode of the school you want to register for"
                   label="Mincode"
@@ -58,11 +52,8 @@
             </v-col>
 
           </v-row>
-          <v-row>
-            <v-col
-                cols="12"
-                sm="6"
-            >
+          <v-row class="d-flex justify-center">
+            <v-col cols="5">
               <v-text-field
                   :rules="requiredRules"
                   v-model="primaryEdxCode"
@@ -72,11 +63,8 @@
               </v-text-field>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col
-                cols="12"
-                sm="6"
-            >
+          <v-row class="d-flex justify-center">
+            <v-col cols="5">
               <v-text-field
                   :rules="requiredRules"
                   v-model="personalActivationCode"
@@ -85,9 +73,8 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="justify-end pr-16 customSubmit" >
-            <v-col cols="12"
-                   sm="6">
+          <v-row>
+            <v-col cols="12" class="d-flex justify-center">
               <PrimaryButton
                   :large-icon=true
                   id="edxUserActivationSubmitBtn"
@@ -173,8 +160,4 @@ export default {
 .header-text {
   font-size: x-large;
 }
-.customSubmit{
-  margin-right: 10rem !important;
-}
-
 </style>
