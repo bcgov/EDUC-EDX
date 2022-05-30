@@ -235,6 +235,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <NewMessagePage
+            :mincodeSchoolNames="mincodeSchoolNames"
             @secure-exchange:messageSent="messageSent"
             @secure-exchange:cancelMessage="newMessageSheet = false"
           >
@@ -300,6 +301,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('edx', ['statuses']),
     ...mapState('edx', ['ministryTeams']),
     secureExchangeStatusCodes() {
@@ -324,6 +326,7 @@ export default {
   created() {
     this.$store.dispatch('edx/getExchangeStatusCodes');
     this.$store.dispatch('edx/getMinistryTeams');
+    this.$store.dispatch('app/getMincodeSchoolNames');
     this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
     this.getRequests();
   },
