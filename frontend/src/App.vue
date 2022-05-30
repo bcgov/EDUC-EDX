@@ -3,7 +3,7 @@
     <MsieBanner v-if="isIE"/>
     <Header/>
     <SnackBar></SnackBar>
-    <NavBar v-if="pageTitle" :title="pageTitle"/>
+    <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
     <v-main fluid class="align-start">
     <v-app-bar v-if="bannerColor !== ''"
                style="color:white;"
