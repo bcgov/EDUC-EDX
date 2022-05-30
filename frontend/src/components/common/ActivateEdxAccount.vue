@@ -5,7 +5,7 @@
       <v-row class="pt-2 d-flex justify-center">
         <v-col cols="9" md="4">
           <v-row>
-            <v-col>
+            <v-col class="pb-0">
               <span class="header-text"><strong>Activate EDX Account</strong></span>
             </v-col>
           </v-row>
