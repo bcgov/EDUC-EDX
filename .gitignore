@@ -21,3 +21,5 @@ endpoint-proxy.sh
 *.ntvs*
 *.njsproj
 *.sln
+*.dcignore
+*.iml
