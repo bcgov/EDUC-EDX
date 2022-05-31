@@ -373,6 +373,8 @@ function mapEdxUserActivationErrorMessage(message) {
     return 'Your activation code has expired. Please contact your administrator for a new activation code.';
   }else if (msg.includes('This User Activation Link has expired')) {
     return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
+  }else if (msg.includes('This user is already associated to the school')) {
+    return 'This user account is already associated to the mincode';
   }
   return msg;
 }
