@@ -45,7 +45,6 @@
               <v-text-field
                   v-model="mincode"
                   :rules="mincodeRules && requiredRules"
-                  :counter="8"
                   hint="Please enter the mincode of the school you want to register for"
                   label="Mincode"
               ></v-text-field>
@@ -95,7 +94,6 @@ import PrimaryButton from '../util/PrimaryButton';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import alertMixin from '@/mixins/alertMixin';
-import {mapMutations} from 'vuex';
 
 export default {
   name: 'ActivateEdxAccount.vue',
@@ -118,7 +116,6 @@ export default {
   computed: {
   },
   methods: {
-    ...mapMutations('app', ['removeAlertNotification']),
     validateMincode(v) {
       return !(v.length !== 8 || isNaN(v));
     },
