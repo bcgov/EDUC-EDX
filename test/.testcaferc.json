@@ -1,6 +1,7 @@
 {
     "_comment": "browsers should accept: edge -private, firefox -private-window, chrome -incognito",
     "browsers": ["chrome:headless --incognito --no-sandbox --disable-dev-shm-usage", "edge:headless"],
+    "browserInitTimeout": 360000,
     "reporter": "list",
     "quarantineMode": false,
     "developmentMode": true,
