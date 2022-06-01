@@ -102,6 +102,7 @@
                 <v-col cols="12" md="4">
                   <v-select
                       v-model="statusSelectFilter"
+                      id="statusSelector"
                       :items="secureExchangeStatusCodes"
                       item-text="label"
                       class="pt-0 mt-0"
