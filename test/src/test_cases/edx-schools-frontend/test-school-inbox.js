@@ -60,6 +60,8 @@ test('testPage', async t => {
     await inbox.selectStatus('New');
     // search again
     await inbox.clickSearchButton();
+    // check exists
+    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
 });
 
 /**test('clickNewMessage', async t => {

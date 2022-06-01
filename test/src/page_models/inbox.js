@@ -11,6 +11,7 @@ class Inbox {
         this.filtersToggle = Selector('#filterid');
         this.subjectInput = Selector('#subjectInput');
         this.statusSelector = Selector('#statusSelector').parent('div[role="button"]');
+        this.statusBox = Selector('div[role="listbox"]');
         this.searchButton = Selector('#searchButton');
         this.clearSearchButton = Selector('#search-clear');
         this.nextPageButton = Selector('button[aria-label="Next page"]');
@@ -32,7 +33,8 @@ class Inbox {
 
     async selectStatus(status){
         await t.click(this.statusSelector).wait(100);
-        await t.click(Selector('span').withExactText(status).parent('div.row'));
+        await t.expect(this.statusBox().exists).ok();
+        await t.click(this.statusBox.find('span').withExactText(status).parent('div.row'));
     }
 
     async clickSearchButton(){
