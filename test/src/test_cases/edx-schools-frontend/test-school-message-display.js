@@ -52,7 +52,8 @@ test('test-school-message-display', async t => {
     //IE: the button reading Unread signifies that the secure exchange will be marked as unread when the button is clicked.
     await t.expect(messageDisplay.markAsSpan.innerText).eql('Unread');
     testExchange.isReadByExchangeContact = true;
-    await t.click(messageDisplay.markAsButton).expect(messageDisplay.markAsSpan.innerText).eql('Read');
+    await t.click(messageDisplay.markAsButton);
+    await t.expect(messageDisplay.markAsSpan.innerText).eql('Read');
     await t.click(messageDisplay.markAsButton);
     await t.expect(messageDisplay.markAsSpan.innerText).eql('Unread');
 
