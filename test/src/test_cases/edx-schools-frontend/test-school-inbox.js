@@ -56,6 +56,10 @@ test('testPage', async t => {
     await inbox.clickSearchButton();
     // check that our exchange is found by subject heading
     await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
+    // select status
+    await inbox.selectStatus('New');
+    // search again
+    await inbox.clickSearchButton();
 });
 
 /**test('clickNewMessage', async t => {
