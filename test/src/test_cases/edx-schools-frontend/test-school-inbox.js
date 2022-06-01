@@ -52,16 +52,16 @@ test('testPage', async t => {
     await inbox.clickFiltersToggle();
     // type in a subject
     await inbox.inputSubject(testExchangeSubject);
+    // check name
+    await inbox.selectContactName('PEN Team');
+    // select status
+    await inbox.selectStatus('New');
     // search
     await inbox.clickSearchButton();
     // check that our exchange is found by subject heading
     await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
-    // select status
-    await inbox.selectStatus('New');
-    // search again
-    await inbox.clickSearchButton();
-    // check exists
-    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
+
+
 });
 
 /**test('clickNewMessage', async t => {
