@@ -2,7 +2,7 @@
   <div
     @mouseover="pause = true"
     @mouseleave="pause = false">
-    <v-snackbar
+    <v-snackbar id="mainSnackBar"
       v-model="showSnackBar"
       :timeout="timeout"
       elevation="24"

@@ -383,7 +383,6 @@ function mapEdxUserActivationErrorMessage(message) {
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
-
   if(! req.query.validationCode) {
     return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
   }
