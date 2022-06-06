@@ -41,5 +41,6 @@ export const PAGE_TITLES = Object.freeze({
   EXCHANGE: 'Secure Exchange Inbox',
   VIEW_EXCHANGE: 'View Message',
   NEW_EXCHANGE: 'New Message',
-  ACTIVATE_USER:'Activate User'
+  ACTIVATE_USER:'Activate User',
+  EXCHANGE_USERS: 'Exchange Users'
 });
