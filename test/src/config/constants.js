@@ -7,6 +7,10 @@ module.exports.credentials = Object.freeze({
     adminCredentials: {
       username: config.get('adminCredential:user'),
       password: config.get('adminCredential:pass')
+    },
+    activateUserCredentials:{
+        username: config.get('activateUserCredentials:user'),
+        password: config.get('activateUserCredentials:pass')
     }
   });
 
