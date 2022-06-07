@@ -5,6 +5,8 @@ import EdxActivationCode from '../model/EdxActivationCode';
 const date = require('date-and-time');
 const {test_exchange_object} = require('../config/constants');
 
+
+
 const secureExchangeUtils = {
   createTestExchange() {
     let secureExchange = new SecureExchange();
@@ -26,38 +28,22 @@ const secureExchangeUtils = {
     secureExchange.addComment(comment);
     return secureExchange;
   },
-  createEdxPersonalActivationCode(roles) {
+  getActivationCode(activationCode, isPrimary, roles) {
     const edxActivationCode = new EdxActivationCode();
-    edxActivationCode.email='test@test.com';
-    edxActivationCode.activationCode='QWERTY';
-    edxActivationCode.firstName='firstname';
-    edxActivationCode.lastName='lastname';
-    edxActivationCode.isPrimary ='false';
-    edxActivationCode.isUrlClicked='false';
-    edxActivationCode.mincode='00899178';
+    edxActivationCode.activationCode = activationCode;
+    edxActivationCode.email = 'test@test.com';
+    edxActivationCode.firstName = 'UserActivationFirstName';
+    edxActivationCode.lastName = 'UserActivationLastName';
+    edxActivationCode.isPrimary = isPrimary;
+    edxActivationCode.isUrlClicked = 'false';
+    edxActivationCode.mincode = '00899178';
     const now = new Date();
-    edxActivationCode.expiryDate=date.addDays(now,1).toJSON().substring(0,19); //get only first 19 to avoid adding millisecond at the end.
+    edxActivationCode.expiryDate = date.addDays(now, 1).toJSON().substring(0, 19); //get only first 19 to avoid adding millisecond at the end.
     const activationRole = new EdxActivationRole();
     activationRole.edxRoleId=roles[0].edxRoleID;
     edxActivationCode.addActivationRole(activationRole);
     return edxActivationCode;
-  },
-  createEdxPrimaryActivationCode(roles) {
-    const edxActivationCode = new EdxActivationCode();
-    edxActivationCode.activationCode='ASDFASDF';
-    edxActivationCode.email='test@test.com';
-    edxActivationCode.firstName='firstname';
-    edxActivationCode.lastName='lastname';
-    edxActivationCode.isPrimary='true';
-    edxActivationCode.isUrlClicked='false';
-    edxActivationCode.mincode='00899178';
-    const now = new Date();
-    edxActivationCode.expiryDate=date.addDays(now,1).toJSON().substring(0,19); //get only first 19 to avoid adding millisecond at the end.
-    const activationRole = new EdxActivationRole();
-    activationRole.edxRoleId=roles[0].edxRoleID;
-    edxActivationCode.addActivationRole(activationRole);
-    return edxActivationCode;
-  },
+  }
 };
 
 module.exports = secureExchangeUtils;

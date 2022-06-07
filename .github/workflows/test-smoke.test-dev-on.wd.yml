@@ -53,6 +53,11 @@ jobs:
           TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
           TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
           TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
+          TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.TEST_EDX_ACTIVATE_USER_USERNAME }}
+          TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.TEST_EDX_ACTIVATE_USER_PWD }}
+
 
   # now burn it all down!!
   TearDown:

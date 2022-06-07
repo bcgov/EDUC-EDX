@@ -6,7 +6,6 @@ dotenv.config();
 
 //switch to local if running locally
 const env = process.env.NODE_ENV;
-//const env = 'local'
 
 nconf.argv()
   .env()
@@ -20,6 +19,10 @@ nconf.defaults({
     adminCredential: {
         user: process.env.TEST_ADMIN_USERNAME,
         pass: process.env.TEST_ADMIN_PASSWORD
+    },
+    activateUserCredentials:{
+        user: process.env.TEST_EDX_ACTIVATE_USER_USERNAME,
+        pass: process.env.TEST_EDX_ACTIVATE_USER_PWD
     },
     testExchangeObject: {
         ministryOwnershipTeamID: process.env.MINISTRY_OWNERSHIP_TEAM_ID,
