@@ -19,12 +19,15 @@ const port = normalizePort(config.get('server:port'));
 app.set('port', port);
 const server = http.createServer(app);
 const NATS = require('./messaging/message-subscriber');
-const cacheService = require('./components/cache-service');
-cacheService.loadAllSchoolsToMap().then(() => {
-  log.info('loaded school data to memory');
-}).catch((e) => {
-  log.error('error loading schools during boot .', e);
-});
+if(process.env.NODE_ENV !== 'test'){
+  const cacheService = require('./components/cache-service');
+  cacheService.loadAllSchoolsToMap().then(() => {
+    log.info('loaded school data to memory');
+  }).catch((e) => {
+    log.error('error loading schools during boot .', e);
+  });
+}
+
 require('./schedulers/saga-check-scheduler');
 /**
  * Listen on provided port, on all network interfaces.
