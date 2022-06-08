@@ -60,9 +60,10 @@ fixture`edx-user-activate-success-scenario`
   })
   .after(async ctx => {
     const data = await getToken();
+    await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
     await deleteActivationCode(data.access_token, ctx.acCode1);
     await deleteActivationCode(data.access_token, ctx.acCode2);
-    await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
+
   });
 
 
