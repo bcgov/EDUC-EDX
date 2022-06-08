@@ -41,7 +41,7 @@ async function submitDetailsOnUserActivationForm(t, mincode, primaryActivationCo
     .click(userActivationPage.submitUserActivationButton());
 }
 
-fixture`edx-user-activate-success-scenario`
+/*fixture`edx-user-activate-success-scenario`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     await createFixtureSetupForEdxUserActivation(ctx);
@@ -63,8 +63,7 @@ test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t =>
   await t.wait(5000)
     .expect(getLocation()).contains(base_url);
   log.info('User could activate account successfully');
-});
-/*
+});*/
 
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
@@ -153,4 +152,3 @@ test('when_url_visited_incorrect_activation_details_input_submit_clicked_five_ti
   await t.expect(userActivationPage.submitUserActivationButton().hasAttribute('disabled')).ok();
 });
 
-*/
