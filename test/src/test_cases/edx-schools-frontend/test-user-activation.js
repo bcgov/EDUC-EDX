@@ -24,7 +24,7 @@ async function login(t) {
 async function createFixtureSetupForEdxUserActivation(ctx) {
   try {
     const data = await getToken();
-    log.info('Token -- ',jsonwebtoken.decode(data.access_token));
+    log.info('Token -- ',jsonwebtoken.decode(data.access_token).scope);
     ctx.activationUrl = await createUserActivationUrl(data.access_token);
 
     ctx.acCode1 = ctx.activationUrl[1].edxActivationCodeId;
@@ -48,7 +48,7 @@ fixture`edx-user-activate-success-scenario`
   })
   .after(async ctx => {
     const data = await getToken();
-    log.info('Token -- ',jsonwebtoken.decode(data.access_token));
+    log.info('Token -- ',jsonwebtoken.decode(data.access_token).scope);
     await deleteActivationCode(data.access_token, ctx.acCode1);
     await deleteActivationCode(data.access_token, ctx.acCode2);
     await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
