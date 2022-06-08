@@ -69,6 +69,7 @@ fixture`edx-user-activate-success-scenario`
 test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t => {
   const getLocation = await login(t);
   await submitDetailsOnUserActivationForm(t, '00899178', t.fixtureCtx.primaryCode, t.fixtureCtx.personalCode);
+  await t.wait(5000)
   const text = await Selector('#mainSnackBar').innerText;
   await t.expect(text).contains('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
   await t.wait(5000)
@@ -77,6 +78,7 @@ test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t =>
 });
 
 
+/*
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
@@ -171,4 +173,5 @@ test('when_url_visited_incorrect_activation_details_input_submit_clicked_five_ti
   await t.expect(userActivationPage.primaryActivationCodeInput().hasAttribute('disabled')).ok();
   await t.expect(userActivationPage.submitUserActivationButton().hasAttribute('disabled')).ok();
 });
+*/
 
