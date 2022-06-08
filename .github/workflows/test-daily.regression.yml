@@ -37,15 +37,15 @@ jobs:
           TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
           TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.TEST_EDX_ACTIVATE_USER_USERNAME }}
           TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.TEST_EDX_ACTIVATE_USER_PWD }}
-      - name: Rocket.Chat Notification
-        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
-        if: always()
-        with:
-          type: ${{ job.status }}
-          job_name: 'Regression'
-          mention: 'here'
-          mention_if: 'failure'
-          channel: '#pen-automation-notifications'
-          url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
+      #- name: Rocket.Chat Notification
+        #uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
+        #if: always()
+        #with:
+          #type: ${{ job.status }}
+          #job_name: 'Regression'
+          #mention: 'here'
+          #mention_if: 'failure'
+          #channel: '#pen-automation-notifications'
+          #url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
 
 
