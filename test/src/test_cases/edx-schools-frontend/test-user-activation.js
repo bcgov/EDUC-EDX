@@ -51,34 +51,6 @@ async function submitDetailsOnUserActivationForm(t, mincode, primaryActivationCo
     .click(userActivationPage.submitUserActivationButton());
 }
 
-fixture`edx-user-activate-success-scenario`
-  .beforeEach(t => t.maximizeWindow())
-  .before(async ctx => {
-    const codes= await generateCode();
-    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
-
-  })
-  .after(async ctx => {
-    const data = await getToken();
-    await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
-    await deleteActivationCode(data.access_token, ctx.acCode1);
-    await deleteActivationCode(data.access_token, ctx.acCode2);
-
-  });
-
-
-test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t => {
-  const getLocation = await login(t);
-  await submitDetailsOnUserActivationForm(t, '00899178', t.fixtureCtx.primaryCode, t.fixtureCtx.personalCode);
-  await t.wait(5000)
-  const text = await Selector('#mainSnackBar').innerText;
-  await t.expect(text).contains('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
-  await t.wait(5000)
-    .expect(getLocation()).contains(base_url);
-  log.info('User could activate account successfully');
-});
-
-
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
@@ -102,6 +74,7 @@ test('when_url_visited_incorrect_activation_details_input_error_is_shown_to_user
 });
 
 fixture`edx-user-activate-error-scenario-activation-url-visited-twice`
+  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     const codes= await generateCode();
     await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
@@ -121,6 +94,7 @@ test('when_url_visited_twice_user_gets_error_link_expired', async t => {
 });
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
+  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
   const codes= await generateCode();
     await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
@@ -140,6 +114,7 @@ test('when_url_visited_incorrect_activation_details_input_error_is_shown_to_user
 });
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input-five-times-submit-click`
+  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
   const codes= await generateCode();
     await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
