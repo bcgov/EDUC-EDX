@@ -75,7 +75,7 @@ test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t =>
 
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
-
+  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     const codes= await generateCode();
     await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
