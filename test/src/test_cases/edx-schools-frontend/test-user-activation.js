@@ -79,7 +79,6 @@ test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t =>
 });
 
 
-/*
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
@@ -174,5 +173,4 @@ test('when_url_visited_incorrect_activation_details_input_submit_clicked_five_ti
   await t.expect(userActivationPage.primaryActivationCodeInput().hasAttribute('disabled')).ok();
   await t.expect(userActivationPage.submitUserActivationButton().hasAttribute('disabled')).ok();
 });
-*/
 
