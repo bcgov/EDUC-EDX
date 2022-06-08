@@ -1,7 +1,7 @@
 const restUtils = require('../helpers/rest-utils');
 const constants = require('../config/constants');
 import {getActivationCode} from '../helpers/secure-exchange-utils';
-
+const log = require('npmlog');
 const EXCHANGE_ENDPOINT = `${constants.edx_api_base_url}api/v1/edx/exchange`;
 
 async function getAllEdxUserRoles(token) {
@@ -90,6 +90,7 @@ const edxApiService = {
   },
   async deleteEdxUser(token, firstName, lastName) {
     const edxUser = await getEdxUserFromFirstNameLastName(token, firstName, lastName);
+    log.info('edxUser found ::', edxUser);
     const endpoint = 'api/v1/edx/users';
     const url = `${constants.edx_api_base_url}${endpoint}/${edxUser.edxUserID}`;
     await restUtils.deleteData(token, url);
