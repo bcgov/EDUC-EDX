@@ -9,7 +9,8 @@ createTestCafe('localhost', 1337, 1338)
         const runner = testcafe.createRunner();
         return runner
             // list multiple test files
-            .src([
+            .src(["src/test_cases/edx-schools-frontend/test-school-inbox.js",
+            "src/test_cases/edx-schools-frontend/test-school-message-display.js",
               "src/test_cases/edx-schools-frontend/test-user-activation.js"])
             .run();
     })
