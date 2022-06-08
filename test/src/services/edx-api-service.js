@@ -10,12 +10,12 @@ async function getAllEdxUserRoles(token) {
   return restUtils.getData(token, url);
 }
 
-async function createEdxActivationCodes(token) {
+async function createEdxActivationCodes(token,primaryCode,personalCode) {
   const endpoint = 'api/v1/edx/users/activation-code';
   const url = `${constants.edx_api_base_url}${endpoint}`;
   const roles = await getAllEdxUserRoles(token);
-  const edxActivationPersonalCode = getActivationCode('QWERTY', 'false', roles);
-  const edxActivationPrimaryCode = getActivationCode('ASDFASDF', 'true', roles);
+  const edxActivationPersonalCode = getActivationCode(personalCode, 'false', roles);
+  const edxActivationPrimaryCode = getActivationCode(primaryCode, 'true', roles);
   const res1 = await restUtils.postData(token, url, edxActivationPersonalCode);
   const res2 = await restUtils.postData(token, url, edxActivationPrimaryCode);
   return [res1, res2];
@@ -76,9 +76,9 @@ const edxApiService = {
    */
 
 
-  async createUserActivationUrl(token) {
+  async createUserActivationUrl(token,primaryCode,personalCode) {
     const endpoint = 'api/edx/activate-user-verification?validationCode=';
-    const activationCodes = await createEdxActivationCodes(token);
+    const activationCodes = await createEdxActivationCodes(token,primaryCode,personalCode);
     const activationUrl = `${constants.base_url}${endpoint}${activationCodes[0].validationCode}`;
     return [activationUrl, activationCodes[0], activationCodes[1]];
   },
