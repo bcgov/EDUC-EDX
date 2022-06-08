@@ -77,7 +77,7 @@ const edxApiService = {
 
 
   async createUserActivationUrl(token,primaryCode,personalCode) {
-    const endpoint = 'api/edx/activate-user-verification?validationCode=';
+    const endpoint = '/api/edx/activate-user-verification?validationCode=';
     const activationCodes = await createEdxActivationCodes(token,primaryCode,personalCode);
     const activationUrl = `${constants.base_url}${endpoint}${activationCodes[0].validationCode}`;
     return [activationUrl, activationCodes[0], activationCodes[1]];

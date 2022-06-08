@@ -14,7 +14,7 @@ const userActivationPage = new UserActivation();
 
 async function generateCode(){
   return  generator.generateMultiple(2,{
-    length: faker.random.number({ 'min': 7, 'max': 7 }),
+    length: faker.datatype.number({ 'min': 7, 'max': 7 }),
     numbers: true,
     uppercase: true,
     });
@@ -37,6 +37,8 @@ async function createFixtureSetupForEdxUserActivation(ctx,primaryCode,personalCo
     ctx.activationUrl = await createUserActivationUrl(data.access_token,primaryCode,personalCode);
     ctx.acCode1 = ctx.activationUrl[1].edxActivationCodeId;
     ctx.acCode2 = ctx.activationUrl[2].edxActivationCodeId;
+    ctx.primaryCode= primaryCode;
+    ctx.personalCode= personalCode;
   } catch (e) {
     console.error(e);
   }
@@ -49,14 +51,15 @@ async function submitDetailsOnUserActivationForm(t, mincode, primaryActivationCo
     .click(userActivationPage.submitUserActivationButton());
 }
 
-/*fixture`edx-user-activate-success-scenario`
+fixture`edx-user-activate-success-scenario`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
-    await createFixtureSetupForEdxUserActivation(ctx);
+    const codes= await generateCode();
+    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
+
   })
   .after(async ctx => {
     const data = await getToken();
-    log.info('Token -- ',jsonwebtoken.decode(data.access_token).scope);
     await deleteActivationCode(data.access_token, ctx.acCode1);
     await deleteActivationCode(data.access_token, ctx.acCode2);
     await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
@@ -65,13 +68,13 @@ async function submitDetailsOnUserActivationForm(t, mincode, primaryActivationCo
 
 test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t => {
   const getLocation = await login(t);
-  await submitDetailsOnUserActivationForm(t, '00899178', 'QWERTY', 'ASDFASDF');
+  await submitDetailsOnUserActivationForm(t, '00899178', t.fixtureCtx.primaryCode, t.fixtureCtx.personalCode);
   const text = await Selector('#mainSnackBar').innerText;
   await t.expect(text).contains('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
   await t.wait(5000)
     .expect(getLocation()).contains(base_url);
   log.info('User could activate account successfully');
-});*/
+});
 
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
@@ -89,16 +92,17 @@ fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
 test('when_url_visited_incorrect_activation_details_input_error_is_shown_to_user', async t => {
   await login(t);
   log.info('User could login successfully!');
-  await submitDetailsOnUserActivationForm(t, '00899178', 'XXXYYYYY', 'ASDFASDF');
+  const randomCodes= await generateCode();
+  await submitDetailsOnUserActivationForm(t, '00899178', randomCodes[0], randomCodes[1]);
   await t.wait(500);
   const text = await userActivationPage.activationSnackBar().innerText;
   await t.expect(text).contains('Incorrect activation details have been entered. Please try again.');
 });
 
-/*fixture`edx-user-activate-error-scenario-activation-url-visited-twice`
+fixture`edx-user-activate-error-scenario-activation-url-visited-twice`
   .before(async ctx => {
     const codes= await generateCode();
-    await createFixtureSetupForEdxUserActivation(ctx);
+    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
   })
   .after(async ctx => {
     const data = await getToken();
@@ -116,7 +120,8 @@ test('when_url_visited_twice_user_gets_error_link_expired', async t => {
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
   .before(async ctx => {
-    await createFixtureSetupForEdxUserActivation(ctx);
+  const codes= await generateCode();
+    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
   })
   .after(async ctx => {
     const data = await getToken();
@@ -126,14 +131,16 @@ fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
 
 test('when_url_visited_incorrect_activation_details_input_error_is_shown_to_user', async t => {
   await login(t);
-  await submitDetailsOnUserActivationForm(t, '00899178', 'XXXYYYYY', 'ASDFASDF');
+  const randomCodes= await generateCode();
+  await submitDetailsOnUserActivationForm(t, '00899178', randomCodes[0], randomCodes[1]);
   const text = await userActivationPage.activationSnackBar().innerText;
   await t.expect(text).contains('Incorrect activation details have been entered. Please try again.');
 });
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input-five-times-submit-click`
   .before(async ctx => {
-    await createFixtureSetupForEdxUserActivation(ctx);
+  const codes= await generateCode();
+    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
   })
   .after(async ctx => {
     const data = await getToken();
@@ -143,8 +150,9 @@ fixture`edx-user-activate-error-scenario-incorrect-activation-details-input-five
 
 test('when_url_visited_incorrect_activation_details_input_submit_clicked_five_times_error_is_shown_to_user', async t => {
   await login(t);
+  const randomCodes= await generateCode();
   await t.expect(userActivationPage.submitUserActivationButton().hasAttribute('disabled')).ok();
-  await submitDetailsOnUserActivationForm(t, '00899178', 'XXXYYYYY', 'ASDFASDF');
+  await submitDetailsOnUserActivationForm(t, '00899178', randomCodes[0], randomCodes[1]);
   await t.click(userActivationPage.submitUserActivationButton());
   await t.wait(500);
   await t.click(userActivationPage.submitUserActivationButton());
@@ -162,5 +170,5 @@ test('when_url_visited_incorrect_activation_details_input_submit_clicked_five_ti
   await t.expect(userActivationPage.personalActivationCodeInput().hasAttribute('disabled')).ok();
   await t.expect(userActivationPage.primaryActivationCodeInput().hasAttribute('disabled')).ok();
   await t.expect(userActivationPage.submitUserActivationButton().hasAttribute('disabled')).ok();
-});*/
+});
 
