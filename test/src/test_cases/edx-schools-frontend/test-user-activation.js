@@ -2,7 +2,7 @@ import {base_url, credentials} from '../../config/constants';
 import {ClientFunction, Selector} from 'testcafe';
 import LoginPage from '../../page_models/login-page';
 import UserActivation from '../../page_models/user-activation';
-
+const jsonwebtoken = require('jsonwebtoken');
 const log = require('npmlog');
 const {getToken} = require('../../helpers/oauth-utils');
 const {createUserActivationUrl, deleteActivationCode, deleteEdxUser} = require('../../services/edx-api-service');
@@ -24,7 +24,9 @@ async function login(t) {
 async function createFixtureSetupForEdxUserActivation(ctx) {
   try {
     const data = await getToken();
+    log.info('Token -- ',jsonwebtoken.decode(data.access_token));
     ctx.activationUrl = await createUserActivationUrl(data.access_token);
+
     ctx.acCode1 = ctx.activationUrl[1].edxActivationCodeId;
     ctx.acCode2 = ctx.activationUrl[2].edxActivationCodeId;
   } catch (e) {
@@ -46,6 +48,7 @@ fixture`edx-user-activate-success-scenario`
   })
   .after(async ctx => {
     const data = await getToken();
+    log.info('Token -- ',jsonwebtoken.decode(data.access_token));
     await deleteActivationCode(data.access_token, ctx.acCode1);
     await deleteActivationCode(data.access_token, ctx.acCode2);
     await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
