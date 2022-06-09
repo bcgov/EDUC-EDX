@@ -11,7 +11,7 @@ createTestCafe('localhost', 1337, 1338)
             // list multiple test files
             .src(["src/test_cases/edx-schools-frontend/test-school-inbox.js",
             "src/test_cases/edx-schools-frontend/test-school-message-display.js",
-              "src/test_cases/edx-schools-frontend/test-user-activation.js"])
+              "src/test_cases/edx-user-activation/"])
             .run();
     })
     .then(failedCount => {

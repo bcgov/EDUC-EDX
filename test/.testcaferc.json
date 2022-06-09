@@ -13,6 +13,7 @@
     "retryTestPages": true,
     "hostname": "localhost",
     "pageLoadTimeout": 20000,
+    "pageRequestTimeout": 60000,
     "selectorTimeout": 20000,
     "disableMultipleWindows": true,
     "clientScripts": [
