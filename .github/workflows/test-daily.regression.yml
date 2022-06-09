@@ -6,7 +6,7 @@ on:
 
 jobs:
   Regression:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: dev
     defaults:
       run:
