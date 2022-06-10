@@ -95,12 +95,12 @@ export default {
       },
       {
         title: PAGE_TITLES.ADMINISTRATION,
-        authorized: this.isAuthenticated,
+        authorized: this.STAFF_ADMINISTRATION_ADMIN,
         items: [
           {
-            title: 'Access Management',
+            title: 'User Management',
             link: 'exchangeAccess',
-            authorized: this.isAuthenticated
+            authorized: this.STAFF_ADMINISTRATION_ADMIN
           }
         ],
       }

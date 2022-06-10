@@ -18,6 +18,7 @@ class Inbox {
         this.nextPageButton = Selector('button[aria-label="Next page"]');
         this.previousPageButton = Selector('button[aria-label="Previous page"]');
         this.paginationIndication = Selector('div.v-data-footer__pagination');
+        this.messageDateFilter = Selector('#messageDateTextField')
     }
 
     async clickNewMessageButton(){

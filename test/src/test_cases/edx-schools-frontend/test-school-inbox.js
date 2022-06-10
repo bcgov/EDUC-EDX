@@ -23,6 +23,7 @@ fixture `school-inbox`
        getToken().then(async (data) => {
             token = data.access_token;
             testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
+            log.info("Secure exchange created with id: " + testExchange.secureExchangeID);
             //testExchange.secureExchangeID = exchange.secureExchangeID;
         }).catch((error => {
             log.error("Failure during test setup: " + error);
