@@ -71,7 +71,7 @@
 
 <script>
 import {PAGE_TITLES} from '@/utils/constants';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 export default {
   name: 'navBar',
   props: {
@@ -108,6 +108,7 @@ export default {
   },
   computed: {
     ...mapState('auth', ['isAuthenticated']),
+    ...mapGetters('auth', ['STAFF_ADMINISTRATION_ADMIN']),
     navWidth () {
       switch (this.$vuetify.breakpoint.name) {
       case 'xs':

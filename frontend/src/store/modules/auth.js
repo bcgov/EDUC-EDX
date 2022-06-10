@@ -60,7 +60,7 @@ export default {
     loginError: state => state.loginError,
     error: state => state.error,
     isLoading: state => state.isLoading,
-    STAFF_ADMINISTRATION_ADMIN: state => state.isAuthenticated //gives access to admin section of navigation menu
+    STAFF_ADMINISTRATION_ADMIN: state => state.isValidStaffAdministrationAdmin //gives access to admin section of navigation menu
   },
   mutations: {
     //sets Json web token and determines whether user is authenticated
