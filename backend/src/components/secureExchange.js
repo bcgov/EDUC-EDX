@@ -286,7 +286,7 @@ async function getExchange(req, res) {
         activity['timestamp'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']) : '';
         activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
         activity['title'] =  comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
-        activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd')) : 'Unknown Date';
+        activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
         activity['content'] = comment['content'];
         activity['secureExchangeID'] = comment['secureExchangeID'];
         dataResponse['activities'].push(activity);
@@ -383,7 +383,6 @@ function mapEdxUserActivationErrorMessage(message) {
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
-
   if(! req.query.validationCode) {
     return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
   }

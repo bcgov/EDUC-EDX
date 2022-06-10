@@ -9,7 +9,7 @@
               <span class="header-text"><strong>Activate EDX Account</strong></span>
             </v-col>
           </v-row>
-                      <v-snackbar
+                      <v-snackbar id="activationSnackBar"
                 v-model="showActivationSnackBar"
                 elevation="24"
                 top
@@ -42,7 +42,7 @@
           </v-row>
           <v-row class="d-flex justify-center">
             <v-col cols="5">
-              <v-text-field
+              <v-text-field id="mincodeTextField"
                   v-model="mincode"
                   :rules="mincodeRules && requiredRules"
                   hint="Please enter the mincode of the school you want to register for"
@@ -54,6 +54,7 @@
           <v-row class="d-flex justify-center">
             <v-col cols="5">
               <v-text-field
+                  id="primaryEdxCodeTextField"
                   :rules="requiredRules"
                   v-model="primaryEdxCode"
                   hint="Please enter the code obtained from your school administrator"
@@ -65,6 +66,7 @@
           <v-row class="d-flex justify-center">
             <v-col cols="5">
               <v-text-field
+                  id="personalActivationCodeTextField"
                   :rules="requiredRules"
                   v-model="personalActivationCode"
                   label="Personal Activation Code"

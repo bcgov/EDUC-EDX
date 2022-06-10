@@ -30,8 +30,10 @@
     "date-and-time": "^0.14.2",
     "dotenv": "^8.2.0",
     "faker": "^5.5.3",
+    "generate-password": "^1.7.0",
     "nconf": "^0.10.0",
     "npmlog": "^4.1.2",
-    "testcafe": "^1.18.5"
+    "testcafe": "^1.19.0",
+    "jsonwebtoken": "^8.5.1"
   }
 }

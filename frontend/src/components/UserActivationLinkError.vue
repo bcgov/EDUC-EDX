@@ -13,7 +13,7 @@
                     <v-card-title class="gov-header">
                       <h4 id="error_text" style="color:red;">User Activation Link Error</h4>
                     </v-card-title>
-                    <v-card-text id="error_message">
+                    <v-card-text id="user_activation_error_message">
                       <span style="color: black; font-weight: bold">{{errorMessage}}</span>
                     </v-card-text>
                   </v-card>

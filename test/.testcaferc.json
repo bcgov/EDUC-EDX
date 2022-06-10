@@ -1,6 +1,6 @@
 {
     "_comment": "browsers should accept: edge -private, firefox -private-window, chrome -incognito",
-    "browsers": ["chrome"],
+    "browsers": ["chrome:headless --incognito --no-sandbox --disable-dev-shm-usage"],
     "browserInitTimeout": 360000,
     "reporter": "list",
     "quarantineMode": false,
@@ -13,6 +13,7 @@
     "retryTestPages": true,
     "hostname": "localhost",
     "pageLoadTimeout": 20000,
+    "pageRequestTimeout": 60000,
     "selectorTimeout": 20000,
     "disableMultipleWindows": true,
     "clientScripts": [
