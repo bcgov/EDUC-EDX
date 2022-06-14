@@ -95,12 +95,12 @@ export default {
       },
       {
         title: PAGE_TITLES.ADMINISTRATION,
-        authorized: this.STAFF_ADMINISTRATION_ADMIN,
+        authorized: this.isAuthenticated,
         items: [
           {
             title: 'User Management',
             link: 'exchangeAccess',
-            authorized: this.STAFF_ADMINISTRATION_ADMIN
+            authorized: this.isAuthenticated
           }
         ],
       }
@@ -108,7 +108,6 @@ export default {
   },
   computed: {
     ...mapState('auth', ['isAuthenticated']),
-    ...mapGetters('auth', ['STAFF_ADMINISTRATION_ADMIN']),
     navWidth () {
       switch (this.$vuetify.breakpoint.name) {
       case 'xs':

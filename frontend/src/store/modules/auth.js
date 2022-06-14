@@ -50,7 +50,6 @@ export default {
     isLoading: true,
     loginError: false,
     jwtToken: localStorage.getItem('jwtToken'),
-    isValidStaffAdministrationAdmin: localStorage.getItem('isValidStaffAdministrationAdmin') !== null
   },
   getters: {
     acronyms: state => state.acronyms,
@@ -60,7 +59,6 @@ export default {
     loginError: state => state.loginError,
     error: state => state.error,
     isLoading: state => state.isLoading,
-    STAFF_ADMINISTRATION_ADMIN: state => state.isValidStaffAdministrationAdmin //gives access to admin section of navigation menu
   },
   mutations: {
     //sets Json web token and determines whether user is authenticated
