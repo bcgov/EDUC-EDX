@@ -141,6 +141,7 @@
                 </v-col>
                 <v-col cols="12" md="4" class="pt-0">
                   <v-text-field
+                      id="messageIdInput"
                       class="pt-0 mt-0 pl-9 pr-9"
                       v-model="messageIDFilter"
                       label="Message ID"
