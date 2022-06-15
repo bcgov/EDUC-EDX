@@ -14,6 +14,7 @@ const userActivationPage = new UserActivation();
 
 const log = require('npmlog');
 const EXCHANGE_ENDPOINT = `${constants.edx_api_base_url}api/v1/edx/exchange`;
+const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
 
 
 async function getAllEdxUserRoles(token) {
@@ -53,6 +54,10 @@ async function getEdxUserFromFirstNameLastName(token, firstName, lastName) {
  * @type {{getAllMinistryTeams(*=): Promise<*>}}
  */
 const edxApiService = {
+
+  async findAllPaginated(token, params){
+    return restUtils.getData(token, EXCHANGE_ENDPOINT_PAGINATED, params);
+  },
 
   /**
    *
