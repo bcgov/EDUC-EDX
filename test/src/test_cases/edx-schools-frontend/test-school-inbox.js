@@ -11,7 +11,6 @@ import { createTestExchange } from "../../helpers/secure-exchange-utils";
 
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
-import {isEmpty, omitBy} from "lodash";
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
@@ -35,15 +34,6 @@ fixture `school-inbox`
     .after(async ctx => {
         // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
-        // let response = await findMessagesBySubject(testExchangeSubject);
-        // if(response != null){
-        //     for(let i = 0; i<response.content.length; i++){
-        //         await deleteSecureExchange(token, response.content[i].secureExchangeID);
-        //         log.info("Removing message by subject: " + testExchangeSubject);
-        //     }
-        // } else {
-        //     log.error("Teardown could not retrieve any produced messages!");
-        // }
         await deleteMessagesBySubject(testExchangeSubject);
     })
     .beforeEach(async t => {
