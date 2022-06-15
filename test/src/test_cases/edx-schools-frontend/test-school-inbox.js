@@ -34,20 +34,20 @@ fixture `school-inbox`
         //await deleteSecureExchange(token, testExchange.secureExchangeID);
         // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
-        let params = {
-                params: {
-                    searchCriteriaList: '[{"key": "subject", "value": "' + testExchangeSubject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
-            }
-        }
-        let response = await findAllPaginated(token, params);
+        // let params = {
+        //         params: {
+        //             searchCriteriaList: '[{"key": "subject", "value": "' + testExchangeSubject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
+        //     }
+        // }
+        let response = await findMessagesBySubject(testExchangeSubject);
         //log.info("RESPONSE: " + JSON.stringify(response, null, 4));
         if(response != null){
             for(let i = 0; i<response.content.length; i++){
                 await deleteSecureExchange(token, response.content[i].secureExchangeID);
-                log.info("Removing test automation message");
+                log.info("Removing message by subject: " + testExchangeSubject);
             }
         } else {
-            log.error("Teardown could not retrieve any produced artifacts!");
+            log.error("Teardown could not retrieve any produced messages!");
         }
     })
     .beforeEach(async t => {
@@ -90,10 +90,36 @@ test('testPage', async t => {
     await inbox.clickSearchButton();
     // check that our exchange is found by subject heading
     await confirmMessage(t);
+    // create a new message
+    await inbox.clickNewMessageButton();
+    // create new message
+    await inbox.inputSubjectTextField(testExchangeSubject);
+    await inbox.inputNewMessage('This is a super awesome message.');
+    await inbox.inputSchoolNameTextField('PEN Team');
+    await inbox.clickNewMessagePostButton();
+    // make sure there are now two messages
+    let messageResponse = await findMessagesBySubject(testExchangeSubject);
+    await t.expect(messageResponse.content.length).eql(2, 'Message created');
 });
 
 async function confirmMessage(t) {
     await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
+}
+
+/**
+ * Returns a response object containing any
+ * messages by subject
+ * @param subject
+ * @returns {Promise<*>}
+ */
+async function findMessagesBySubject(subject){
+    let params = {
+        params: {
+            searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
+        }
+    }
+    let response = await findAllPaginated(token, params);
+    return response;
 }
 
 /**test('clickNewMessage', async t => {

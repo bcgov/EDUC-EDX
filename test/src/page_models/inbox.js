@@ -23,6 +23,21 @@ class Inbox {
         const now = new Date();
         this.messageDateNumber = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText(now.getDate().toString());
         this.messageIdInput = Selector('#messageIdInput');
+        this.schoolNameTextField = Selector('#schoolNameTxtField');
+        this.subjectTextField = Selector('#subjectTxtField');
+        this.newMessageTextArea = Selector('#newMessageTextArea');
+        this.newMessagePostBtn = Selector('#newMessagePostBtn');
+        this.cancelMessage = Selector('#cancelMessage');
+    }
+
+    async clickNewMessagePostButton() {
+        await t.click(this.newMessagePostBtn());
+        log.info("New message Post button clicked");
+    }
+
+    async clickCancelSubmitButton(){
+        await t.click(this.cancelMessage());
+        log.info("Cancel message button clicked");
     }
 
     async clickNewMessageButton(){
@@ -44,6 +59,21 @@ class Inbox {
     async inputSubject(text){
         await t.typeText(this.subjectInput, text);
         log.info("Input subject");
+    }
+
+    async inputSchoolNameTextField(text){
+        await t.typeText(this.schoolNameTextField, text);
+        log.info("School name input");
+    }
+
+    async inputSubjectTextField(text){
+        await t.typeText(this.subjectTextField, text);
+        log.info("Subject input");
+    }
+
+    async inputNewMessage(text){
+        await t.typeText(this.newMessageTextArea, text);
+        log.info("Message input");
     }
 
     async inputMessageId(text){
