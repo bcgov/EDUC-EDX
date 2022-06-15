@@ -22,25 +22,18 @@ let testExchange = createTestExchange();
 fixture `school-inbox`
     .before(async t => {
         // data provisioning
+        // add a message via api
        getToken().then(async (data) => {
             token = data.access_token;
             testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
-            //testExchange.secureExchangeID = exchange.secureExchangeID;
         }).catch((error => {
             log.error("Failure during test setup: " + error);
         }));
     })
     .after(async ctx => {
-        //await deleteSecureExchange(token, testExchange.secureExchangeID);
         // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
-        // let params = {
-        //         params: {
-        //             searchCriteriaList: '[{"key": "subject", "value": "' + testExchangeSubject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
-        //     }
-        // }
         let response = await findMessagesBySubject(testExchangeSubject);
-        //log.info("RESPONSE: " + JSON.stringify(response, null, 4));
         if(response != null){
             for(let i = 0; i<response.content.length; i++){
                 await deleteSecureExchange(token, response.content[i].secureExchangeID);
@@ -59,9 +52,6 @@ fixture `school-inbox`
         await t.useRole(Role.anonymous());
     });
 
-/**
- * login
- */
 test('testPage', async t => {
     // navigate to /inbox, expect title
     await t.navigateTo(base_url + 'inbox')
@@ -100,6 +90,7 @@ test('testPage', async t => {
     // make sure there are now two messages
     let messageResponse = await findMessagesBySubject(testExchangeSubject);
     await t.expect(messageResponse.content.length).eql(2, 'Message created');
+    log.info("Message created.");
 });
 
 async function confirmMessage(t) {
@@ -121,8 +112,3 @@ async function findMessagesBySubject(subject){
     let response = await findAllPaginated(token, params);
     return response;
 }
-
-/**test('clickNewMessage', async t => {
-    await t.navigateTo(base_url + '/inbox');
-    await inbox.clickNewMessageButton();
-});**/
