@@ -21,10 +21,12 @@ let testExchange = createTestExchange();
 
 fixture `school-inbox`
     .before(async t => {
-        // data provisioning
-        // add a message via api
        getToken().then(async (data) => {
             token = data.access_token;
+            // make sure there are no artifact messages from previous runs
+            await deleteMessagesBySubject(testExchangeSubject);
+            // data provisioning
+            // add a message via api
             testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
         }).catch((error => {
             log.error("Failure during test setup: " + error);
@@ -33,15 +35,16 @@ fixture `school-inbox`
     .after(async ctx => {
         // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
-        let response = await findMessagesBySubject(testExchangeSubject);
-        if(response != null){
-            for(let i = 0; i<response.content.length; i++){
-                await deleteSecureExchange(token, response.content[i].secureExchangeID);
-                log.info("Removing message by subject: " + testExchangeSubject);
-            }
-        } else {
-            log.error("Teardown could not retrieve any produced messages!");
-        }
+        // let response = await findMessagesBySubject(testExchangeSubject);
+        // if(response != null){
+        //     for(let i = 0; i<response.content.length; i++){
+        //         await deleteSecureExchange(token, response.content[i].secureExchangeID);
+        //         log.info("Removing message by subject: " + testExchangeSubject);
+        //     }
+        // } else {
+        //     log.error("Teardown could not retrieve any produced messages!");
+        // }
+        await deleteMessagesBySubject(testExchangeSubject);
     })
     .beforeEach(async t => {
         // log in as studentAdmin
@@ -111,4 +114,20 @@ async function findMessagesBySubject(subject){
     }
     let response = await findAllPaginated(token, params);
     return response;
+}
+
+/**
+ * Given a subject, will delete messages from the api
+ * which contain that subject
+ * @param subject
+ * @returns {Promise<void>}
+ */
+async function deleteMessagesBySubject(subject){
+    let response = await findMessagesBySubject(subject);
+    if(response != null) {
+        for (let i = 0; i < response.content.length; i++) {
+            await deleteSecureExchange(token, response.content[i].secureExchangeID);
+            log.info("Removing message by subject: " + subject);
+        }
+    }
 }
