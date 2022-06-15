@@ -47,7 +47,7 @@ fixture `school-inbox`
 
 test('testPage', async t => {
     // navigate to /inbox, expect title
-    await t.navigateTo(base_url + 'inbox')
+    await t.navigateTo(base_url + '/inbox')
            .expect(inbox.navTitle.innerText).contains('Inbox');
     // click filtersToggle
     await inbox.clickFiltersToggle();
