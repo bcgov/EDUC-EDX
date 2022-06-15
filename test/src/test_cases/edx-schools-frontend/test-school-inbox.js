@@ -6,10 +6,12 @@ import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
 import { deleteSecureExchange } from "../../services/edx-api-service";
+import { findAllPaginated } from "../../services/edx-api-service";
 import { createTestExchange } from "../../helpers/secure-exchange-utils";
 
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
+import {isEmpty, omitBy} from "lodash";
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
@@ -29,8 +31,24 @@ fixture `school-inbox`
         }));
     })
     .after(async ctx => {
-        await deleteSecureExchange(token, testExchange.secureExchangeID);
+        //await deleteSecureExchange(token, testExchange.secureExchangeID);
+        // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
+        let params = {
+                params: {
+                    searchCriteriaList: '[{"key": "subject", "value": "' + testExchangeSubject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
+            }
+        }
+        let response = await findAllPaginated(token, params);
+        //log.info("RESPONSE: " + JSON.stringify(response, null, 4));
+        if(response != null){
+            for(let i = 0; i<response.content.length; i++){
+                await deleteSecureExchange(token, response.content[i].secureExchangeID);
+                log.info("Removing test automation message");
+            }
+        } else {
+            log.error("Teardown could not retrieve any produced artifacts!");
+        }
     })
     .beforeEach(async t => {
         // log in as studentAdmin
@@ -59,10 +77,24 @@ test('testPage', async t => {
     // search
     await inbox.clickSearchButton();
     // check that our exchange is found by subject heading
-    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
-
-
+    await confirmMessage(t);
+    // select the date
+    await inbox.selectMessageDate();
+    // search again
+    await inbox.clickSearchButton();
+    // check that our exchange is found by subject heading
+    await confirmMessage(t);
+    // check message id
+    await inbox.inputMessageId(testExchange.sequenceNumber);
+    // search again
+    await inbox.clickSearchButton();
+    // check that our exchange is found by subject heading
+    await confirmMessage(t);
 });
+
+async function confirmMessage(t) {
+    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
+}
 
 /**test('clickNewMessage', async t => {
     await t.navigateTo(base_url + '/inbox');
