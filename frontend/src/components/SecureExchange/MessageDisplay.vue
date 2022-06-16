@@ -157,17 +157,13 @@ export default {
         });
     },
     isEditable() {
-      return this.secureExchange.secureExchangeStatusCode !== 'Complete';
+      return this.secureExchange.secureExchangeStatusCode !== 'Closed';
     },
     getStatusColor(status) {
-      if (status === 'New') {
-        return 'blue';
-      }
-      if (status === 'In Progress') {
-        return 'yellow darken-2';
-      }
-      if (status === 'Complete') {
+      if (status === 'Open') {
         return 'green';
+      } else if (status === 'Closed') {
+        return 'black';
       }
     },
     getActivityColour(activity) {
