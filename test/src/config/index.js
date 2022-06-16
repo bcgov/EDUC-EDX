@@ -5,8 +5,7 @@ const path = require('path');
 dotenv.config();
 
 //switch to local if running locally
-const env = process.env.NODE_ENV;
-//const env = 'local'
+const env = process.env.NODE_ENV || 'local';
 
 nconf.argv()
   .env()

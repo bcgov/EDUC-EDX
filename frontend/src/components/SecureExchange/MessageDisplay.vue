@@ -73,11 +73,10 @@
                 </v-card>
               </v-speed-dial>
               <v-spacer></v-spacer>
-              <v-btn id="markAsButton" class="ma-4" v-on:click="setIsReadByExchangeContact(!secureExchange.isReadByExchangeContact)">
+              <v-btn id="markAsButton" :loading="loadingReadStatus" class="ma-4" v-on:click="clickMarkAsButton">
                 <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                 <v-icon v-else>mdi-email-open-outline</v-icon>
-                <span class="ml-1 markAsSpan" v-if="secureExchange.isReadByExchangeContact">Unread</span>
-                <span class="ml-1 markAsSpan" v-else>Read</span>
+                <span class="ml-1 markAsSpan">Mark As {{ secureExchange.isReadByExchangeContact ? 'Unread' : 'Read' }}</span>
               </v-btn>
             </v-row>
             <v-row>
@@ -125,6 +124,7 @@ export default {
       secureExchange: null,
       loading: true,
       editOptionsOpen: false,
+      loadingReadStatus: false
     };
   },
   computed: {},
@@ -147,6 +147,7 @@ export default {
         });
     },
     setIsReadByExchangeContact(isRead) {
+      this.loadingReadStatus = true;
       let readStatus = isRead ? 'read' : 'unread';
       ApiService.apiAxios.put(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/markAs/${readStatus}`)
         .then(() => {
@@ -154,7 +155,13 @@ export default {
         })
         .catch(error => {
           console.log(error);
+        }).finally(() => {
+          this.loadingReadStatus=false;
         });
+    },
+    clickMarkAsButton() {
+      this.setIsReadByExchangeContact(false);
+      this.$router.push({name: 'inbox'});
     },
     isEditable() {
       return this.secureExchange.secureExchangeStatusCode !== 'Closed';
