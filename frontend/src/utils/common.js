@@ -2,6 +2,7 @@
 
 import {getDateFormatter} from '@/utils/format';
 import {LocalDate} from '@js-joda/core';
+import {isPlainObject} from "lodash";
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
@@ -11,5 +12,17 @@ export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
     console.error(`Error is ${e}`);
   }
 };
+
+export function setEmptyInputParams(params, ...excludedParams) {
+  Object.keys(params).forEach(key => {
+    if (!excludedParams.includes(key)) {
+      if (isPlainObject(params[key])) {
+        setEmptyInputParams(params[key], ...excludedParams);
+      } else {
+        params[key] = null;
+      }
+    }
+  });
+}
 
 

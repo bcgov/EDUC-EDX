@@ -14,6 +14,7 @@
       <v-col cols="12" md="4">
         <v-text-field id="name-text-field" label="name" v-model="searchFilter.name" clearable></v-text-field>
       </v-col>
+      <!-- roles -->
       <v-col cols="12" md="4">
         <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label" item-value="roleName" label="role"></v-select>
       </v-col>
@@ -40,7 +41,7 @@
 import ApiService from '../../common/apiService';
 import {setEmptyInputParams} from '@/utils/common';
 import {isNotEmptyInputParams} from '@/utils/validation';
-import {Routes} from '@/utils/constants';
+import {ApiRoutes} from '@/utils/constants';
 import {mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
@@ -79,7 +80,7 @@ export default {
   methods: {
     getUsersData() {
       const payload = {params: {mincode: this.mincode}};
-      ApiService.apiAxios.get(Routes.edx.EXCHANGE_ACCESS_URL, payload)
+      ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload)
         .then(response => {
           this.users = response.data;
           this.filteredUsers = response.data;

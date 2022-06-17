@@ -61,6 +61,15 @@ export default {
         }
       }
     },
+    async getExchangeRoles({ commit, state}) {
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
+        if (state.roles.length === 0) {
+          ApiService.getEdxRoles().then(response => {
+            commit('setRoles', response.data);
+          });
+        }
+      }
+    },
   },
   modules: {
     document,
