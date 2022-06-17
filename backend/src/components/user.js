@@ -105,5 +105,6 @@ async function getServerSideCodes(accessToken, correlationID) {
 }
 
 module.exports = {
-  getUserInfo
+  getUserInfo,
+  getEdxUserMinCodeByDigitalId
 };
