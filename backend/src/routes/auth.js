@@ -6,10 +6,13 @@ const express = require('express');
 const auth = require('../components/auth');
 const log = require('../components/logger');
 const {v4: uuidv4} = require('uuid');
+const {getSessionUser} = require('../components/utils');
+
 const {
   body,
   validationResult
 } = require('express-validator');
+const user= require('../components/user');
 const router = express.Router();
 
 
@@ -36,9 +39,29 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
   );
 }
 
-addOIDCRouterGet('oidcBceid', '/callback_bceid', config.get('server:frontend'));
+//addOIDCRouterGet('oidcBceid', '/callback_bceid', config.get('server:frontend'));
 addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
 
+router.get('/callback_bceid',
+  passport.authenticate('oidcBceid', {
+    failureRedirect: 'error'
+  }),
+  (req, res) => {
+    const userInfo = getSessionUser(req);
+    const accessToken = userInfo.jwt;
+    const digitalID = userInfo._json.digitalIdentityID;
+    const correlationID = req.session?.correlationID;
+    user.getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
+      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
+      req.session.edxUserData = edxUserMinCodeData;
+      if(req.session.userMinCodes.length === 1){
+        req.session.activeInstituteIdentifier = req.session.userMinCodes[0];
+        req.session.activeInstituteType = 'SCHOOL';
+        res.redirect(config.get('server:frontend'));
+      }
+    });
+  }
+);
 //a prettier way to handle errors
 router.get('/error', (_req, res) => {
   res.redirect(config.get('server:frontend') + '/login-error');
