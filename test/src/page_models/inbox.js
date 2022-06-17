@@ -95,6 +95,7 @@ class Inbox {
 
     async clickSearchButton(){
         await t.click(this.searchButton);
+        log.info("Search button clicked");
     }
 
     async clickClearSearchButton(){

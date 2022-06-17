@@ -196,7 +196,7 @@ async function createExchange(req, res) {
       secureExchangeContactTypeCode: 'SCHOOL',
       ministryOwnershipTeamID: message.ministryOwnershipTeamID,
       subject: message.subject,
-      secureExchangeStatusCode: 'NEW',
+      secureExchangeStatusCode: 'OPEN',
       isReadByMinistry: false,
       isReadByExchangeContact: true,
       commentsList: [

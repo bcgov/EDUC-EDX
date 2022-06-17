@@ -139,10 +139,10 @@
                     clearable
                   ></v-select>
                 </v-col>
-                <v-col cols="12" md="4" class="pt-0">
+                <v-col cols="12" md="4" class="pt-0" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
                   <v-text-field
                       id="messageIdInput"
-                      class="pt-0 mt-0 pl-9 pr-9"
+                      class="pt-0 mt-0"
                       v-model="messageIDFilter"
                       label="Message ID"
                       prepend-inner-icon="mdi-pound"
@@ -187,7 +187,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12" class="pb-1 pr-0">
-                          <span style="color: black">{{
+                          <span class="ministryLine" style="color: black">{{
                               getMinistryTeamName(item.ministryOwnershipTeamID)
                             }} - {{ item.createDate }}</span>
                         </v-col>
@@ -204,7 +204,7 @@
                           <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>
                             mdi-circle-medium
                           </v-icon>
-                          <span>{{ item.secureExchangeStatusCode }}</span>
+                          <span class="statusCodeLabel">{{ item.secureExchangeStatusCode }}</span>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -212,7 +212,7 @@
                           <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
                             mdi-pound
                           </v-icon>
-                          <span>{{ item.sequenceNumber }}</span>
+                          <span class="statusCodeLabel">{{ item.sequenceNumber }}</span>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -332,7 +332,7 @@ export default {
     this.$store.dispatch('edx/getExchangeStatusCodes');
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('app/getMincodeSchoolNames');
-    this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+    this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
     this.getRequests();
   },
   methods: {
@@ -347,10 +347,10 @@ export default {
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
     },
     setFilterStatusAll() {
-      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG', 'COMPLETE'];
+      this.headerSearchParams.secureExchangeStatusCode = ['OPEN', 'CLOSED'];
     },
     setFilterStatusActive() {
-      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+      this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
     },
     statusFilterActiveClicked() {
       this.setFilterStatusActive();
@@ -395,12 +395,10 @@ export default {
       this.$refs.messageDateFilter.save(date);
     },
     getStatusColor(status) {
-      if (status === 'New') {
-        return 'blue';
-      } else if (status === 'In Progress') {
-        return 'yellow darken-2';
-      } else if (status === 'Complete') {
+      if (status === 'Open') {
         return 'green';
+      } else if (status === 'Closed') {
+        return 'black';
       }
     },
     getSubject(subject) {
@@ -445,7 +443,7 @@ export default {
       return content;
     },
     getCompletedMessages() {
-      this.headerSearchParams.secureExchangeStatusCode = ['COMPLETE'];
+      this.headerSearchParams.secureExchangeStatusCode = ['CLOSED'];
       this.isActiveMessagesTabEnabled = false;
       this.getRequests();
     },
@@ -489,7 +487,7 @@ export default {
       });
     },
     getActiveMessages() {
-      this.headerSearchParams.secureExchangeStatusCode = ['NEW', 'INPROG'];
+      this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
       this.isActiveMessagesTabEnabled = true;
       this.getRequests();
     }
@@ -538,6 +536,20 @@ export default {
   color: #003366;
 }
 
+.subjectHeading {
+  font-size: x-large;
+  cursor: pointer;
+}
+
+.ministryLine {
+  color: black;
+  font-size: large;
+}
+
+.statusCodeLabel {
+  font-size: large;
+}
+
 .v-dialog__content >>> .v-bottom-sheet {
   width: 30% !important;
 }
@@ -550,8 +562,15 @@ export default {
   .subjectHeading {
     font-size: medium;
   }
-}
 
+  .statusCodeLabel{
+    font-size: inherit;
+  }
+
+  .ministryLine{
+    font-size: inherit;
+  }
+}
 @media screen and (max-width: 950px){
   .v-dialog__content /deep/ .v-bottom-sheet {
     width: 60% !important;

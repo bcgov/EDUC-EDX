@@ -6,6 +6,7 @@ const log = require('./components/logger');
 const morgan = require('morgan');
 const session = require('express-session');
 const express = require('express');
+const atob = require('atob');
 const passport = require('passport');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -17,7 +18,7 @@ dotenv.config();
 
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const OidcStrategy = require('passport-openidconnect-kc-idp').Strategy;
+const OidcStrategy = require('passport-openidconnect-keycloak-idp').Strategy;
 const noCache = require('nocache');
 const apiRouter = express.Router();
 const authRouter = require('./routes/auth');
@@ -97,7 +98,7 @@ function addLoginPassportUse(discovery, strategyName, callbackURI, kc_idp_hint) 
     callbackURL: callbackURI,
     scope: discovery.scopes_supported,
     kc_idp_hint: kc_idp_hint
-  }, (_issuer, _sub, profile, accessToken, refreshToken, done) => {
+  }, (_issuer, profile, _context, _idToken, accessToken, refreshToken, done) => {
     if ((typeof (accessToken) === 'undefined') || (accessToken === null) ||
       (typeof (refreshToken) === 'undefined') || (refreshToken === null)) {
       return done('No access token', null);
@@ -106,10 +107,19 @@ function addLoginPassportUse(discovery, strategyName, callbackURI, kc_idp_hint) 
     //set access and refresh tokens
     profile.jwtFrontend = auth.generateUiToken();
     profile.jwt = accessToken;
+    profile._json = parseJwt(accessToken);
     profile.refreshToken = refreshToken;
     return done(null, profile);
   }));
 }
+
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
 
 //initialize our authentication strategy
 utils.getOidcDiscovery().then(discovery => {
