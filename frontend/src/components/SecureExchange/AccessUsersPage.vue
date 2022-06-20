@@ -42,7 +42,7 @@ import ApiService from '../../common/apiService';
 import {setEmptyInputParams} from '@/utils/common';
 import {isNotEmptyInputParams} from '@/utils/validation';
 import {ApiRoutes} from '@/utils/constants';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
 
@@ -72,6 +72,7 @@ export default {
   },
   created() {
     this.getUsersData();
+    console.log('USER INFO: ' + JSON.stringify(this.userInfo, null, 3));
   },
   methods: {
     getUsersData() {
@@ -109,7 +110,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('edx', ['roles'])
+    ...mapState('edx', ['roles']),
+    ...mapGetters('auth', ['userInfo'])
   }
 };
 </script>
