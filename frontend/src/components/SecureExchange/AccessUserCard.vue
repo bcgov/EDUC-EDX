@@ -9,7 +9,7 @@
                 <strong>{{`${user.firstName} ${user.lastName}`}}</strong>
                 <span>{{user.email}}</span>
               </div>
-              <PrimaryButton :id="`user-edit-button-${user.firstName}-${user.lastName}`" secondary icon="mdi-pencil">Edit</PrimaryButton>
+              <PrimaryButton :id="`user-edit-button-${user.firstName}-${user.lastName}`" text="Edit" secondary icon="mdi-pencil"></PrimaryButton>
             </v-col>
           </v-row>
         </v-card-title>

@@ -19,8 +19,8 @@
         <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label" item-value="roleName" label="role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
-        <PrimaryButton id="user-search-button" text="Search" secondary @click.native="clearButtonClick"/>
-        <PrimaryButton id="user-clear-button" text="Clear" class="ml-2" @click.native="searchButtonClick" :disabled="searchEnabled()"/>
+        <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
+        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick" :disabled="searchEnabled()"/>
       </v-col>
     </v-row>
     <!--    user info -->
@@ -85,10 +85,10 @@ export default {
           this.filteredUsers = response.data;
         });
     },
-    getSchoolName() {
-      const schoolName = this.mincodeSchoolNames.get(this.mincode);
-      return `${schoolName} (${this.mincode})`;
-    },
+    // getSchoolName() {
+    //   const schoolName = this.mincodeSchoolNames.get(this.mincode);
+    //   return `${schoolName} (${this.mincode})`;
+    // },
     clearButtonClick() {
       setEmptyInputParams(this.searchFilter);
       this.searchButtonClick();
