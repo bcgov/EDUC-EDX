@@ -84,8 +84,6 @@ const router = new VueRouter({
       path: '/access',
       name: 'exchangeAccess',
       component: AccessUsersPage,
-      //TODO: Add active mincode from session here
-      props: { mincode: '00899178' },
       meta: {
         pageTitle: PAGE_TITLES.EXCHANGE_USERS,
         requiresAuth: true,

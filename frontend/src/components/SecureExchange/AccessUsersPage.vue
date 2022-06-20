@@ -49,14 +49,9 @@ import AccessUserCard from './AccessUserCard';
 export default {
   name: 'AccessUsersPage',
   components: {PrimaryButton, AccessUserCard},
-  props: {
-    mincode: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
+      mincode: '',
       users: [],
       filteredUsers: [],
       searchFilter: {
@@ -71,8 +66,10 @@ export default {
     }
   },
   created() {
+    if(this.mincode === '') {
+      this.mincode = this.userInfo.activeInstituteIdentifier;
+    }
     this.getUsersData();
-    console.log('USER INFO: ' + JSON.stringify(this.userInfo, null, 3));
   },
   methods: {
     getUsersData() {
