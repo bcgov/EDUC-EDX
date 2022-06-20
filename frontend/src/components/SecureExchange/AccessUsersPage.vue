@@ -23,7 +23,7 @@
         <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick" :disabled="searchEnabled()"/>
       </v-col>
     </v-row>
-    <!--    user info -->
+    <!--  user info -->
     <div v-if="filteredUsers.length">
       <div v-for="user in filteredUsers" :key="user.digitalID">
         <AccessUserCard type="school" :roles="user.edxUserSchools[0].edxUserSchoolRoles" :user="user"></AccessUserCard>

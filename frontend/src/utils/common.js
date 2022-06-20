@@ -2,7 +2,7 @@
 
 import {getDateFormatter} from '@/utils/format';
 import {LocalDate} from '@js-joda/core';
-import {isPlainObject} from "lodash";
+import {isPlainObject} from 'lodash';
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
