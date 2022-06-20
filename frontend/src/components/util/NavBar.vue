@@ -71,7 +71,7 @@
 
 <script>
 import {PAGE_TITLES} from '@/utils/constants';
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 export default {
   name: 'navBar',
   props: {

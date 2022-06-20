@@ -8,6 +8,7 @@ export default {
     ministryTeams: [],
     exchangeMincodes: [],
     exchange: null,
+    roles: []
   }),
   getters: {
     statuses: state => state.statuses,
@@ -24,6 +25,9 @@ export default {
     },
     setExchangeMincodes(state, payload) {
       state.exchangeMincodes = payload;
+    },
+    setRoles(state, payload){
+      state.roles = payload;
     },
     setMinistryTeams: (state, ministryTeams) => {
       state.ministryTeams = ministryTeams;

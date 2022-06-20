@@ -84,6 +84,7 @@ const router = new VueRouter({
       path: '/access',
       name: 'exchangeAccess',
       component: AccessUsersPage,
+      props: { mincode: '97170' },
       meta: {
         pageTitle: PAGE_TITLES.EXCHANGE_USERS,
         requiresAuth: true,

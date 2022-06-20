@@ -52,7 +52,7 @@ export default {
   props: {
     mincode: {
       type: String,
-      required: true
+      required: true,
     },
   },
   data() {
@@ -66,10 +66,9 @@ export default {
     };
   },
   beforeMount() {
-    if (this.mincodeSchoolNames.size === 0) {
-      this.$store.dispatch('app/getCodes');
-    }
-
+    // if (this.mincodeSchoolNames.size === 0) {
+    //   this.$store.dispatch('app/getCodes');
+    // }
     if (this.roles.length === 0) {
       this.$store.dispatch('edx/getExchangeRoles');
     }
