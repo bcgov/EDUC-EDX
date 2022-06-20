@@ -22,7 +22,7 @@ fixture `school-inbox`
     .before(async t => {
        getToken().then(async (data) => {
             token = data.access_token;
-            // make sure there are no artifact messages from previous runs
+            // make sure there are no artifact messages from previous runs 
             await deleteMessagesBySubject(testExchangeSubject);
             // data provisioning
             // add a message via api

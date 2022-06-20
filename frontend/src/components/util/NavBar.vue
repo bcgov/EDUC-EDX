@@ -92,9 +92,18 @@ export default {
         title: PAGE_TITLES.DASHBOARD,
         link: 'home',
         authorized: this.isAuthenticated
+      },
+      {
+        title: PAGE_TITLES.ADMINISTRATION,
+        authorized: this.isAuthenticated,
+        items: [
+          {
+            title: 'User Management',
+            link: 'exchangeAccess',
+            authorized: this.isAuthenticated
+          }
+        ],
       }
-
-
     ];
   },
   computed: {
