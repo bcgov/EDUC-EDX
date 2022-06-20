@@ -66,9 +66,6 @@ export default {
     };
   },
   beforeMount() {
-    // if (this.mincodeSchoolNames.size === 0) {
-    //   this.$store.dispatch('app/getCodes');
-    // }
     if (this.roles.length === 0) {
       this.$store.dispatch('edx/getExchangeRoles');
     }
@@ -85,10 +82,6 @@ export default {
           this.filteredUsers = response.data;
         });
     },
-    // getSchoolName() {
-    //   const schoolName = this.mincodeSchoolNames.get(this.mincode);
-    //   return `${schoolName} (${this.mincode})`;
-    // },
     clearButtonClick() {
       setEmptyInputParams(this.searchFilter);
       this.searchButtonClick();
@@ -116,7 +109,6 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('edx', ['roles'])
   }
 };
