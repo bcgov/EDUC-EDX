@@ -8,6 +8,7 @@
               class="elevation-1"
               hide-default-header
               mobile-breakpoint="0"
+              :loading="isTableLoading"
           >
           <template v-slot:item="{ item }">
             <v-row style="cursor: pointer;">
@@ -36,31 +37,35 @@ export default {
   },
   data() {
     return {
-
+      isTableLoading: true
     };
   },
   computed: {
-    ...mapState('auth', ['userInfo']),
     ...mapState('app', ['mincodeSchoolNames']),
+    ...mapState('auth', ['userInfo']),
     ...mapState('edx', ['ministryTeams']),
     activeMincodes(){
       return this.userInfo?.userMinCodes || [];
-    },
-    getMincodeSchoolNames(){
-      return this.mincodeSchoolNames || [];
     }
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getMincodeSchoolNames');
     this.$store.dispatch('auth/getUserInfo');
-    console.log('Created');
-
   },
   methods: {
+    loadMincodeSchools(){
+      if(this.mincodeSchoolNames.size === 0){
+        this.$store.dispatch('app/getMincodeSchoolNames').finally((_res) => {
+          this.isTableLoading = false;
+        });
+      }else{
+        this.isTableLoading = false;
+      }
+    },
     getSchoolName(mincode) {
-      return this.getMincodeSchoolNames().get(mincode);
+      this.loadMincodeSchools();
+      return this.mincodeSchoolNames.get(mincode);
     },
     setFilterStatusActive() {
       this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
