@@ -45,7 +45,7 @@ jobs:
         oc: 4
 
     - uses: actions/checkout@v2
-    - name: Deploy
+    - name: Send Messages to Schools
       run: |
         set -eux
         # Login to OpenShift and select project
