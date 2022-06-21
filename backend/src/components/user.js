@@ -61,7 +61,7 @@ async function getUserInfo(req, res) {
     if (req && req.session) {
       req.session.digitalIdentityData = digitalIdData;
       req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-      req.session.userMinCodes = edxUserMinCodeData?.flatMap(user=> user.edxUserSchools?.flatMap(el=>el.mincode)); //this is list of mincodes associated to the user
+      //req.session.userMinCodes = edxUserMinCodeData?.flatMap(user=> user.edxUserSchools?.flatMap(el=>el.mincode)); //this is list of mincodes associated to the user
       req.session.edxUserData = edxUserMinCodeData;
     } else {
       throw new ServiceError('userInfo error: session does not exist');
@@ -70,7 +70,6 @@ async function getUserInfo(req, res) {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       identityTypeLabel: identityType.label,
-      userMinCodes:req.session.userMinCodes,
     };
 
     return res.status(HttpStatus.OK).json(resData);

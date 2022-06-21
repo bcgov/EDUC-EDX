@@ -62,6 +62,7 @@ router.get('/callback_bceid',
       else if (req.session.userMinCodes.length > 1){
         // TODO document why this block is empty
         res.redirect(config.get('server:frontend') + '/institute-selection');
+
       }
     });
   }

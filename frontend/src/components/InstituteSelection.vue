@@ -4,18 +4,27 @@
     <v-row>
       <v-col>
         <v-data-table
+              :items-per-page.sync="pageSize"
+              :page.sync="pageNumber"
+              :headers="headers"
               :items="activeMincodes"
+              :loading="isTableLoading"
               class="elevation-1"
               hide-default-header
               mobile-breakpoint="0"
-              :loading="isTableLoading"
+
           >
           <template v-slot:item="{ item }">
             <v-row style="cursor: pointer;">
               <v-col cols="7" md="10" class="pb-0 pt-0">
                 <v-row class="mb-n4">
                   <v-col cols="12" class="pb-2 pt-2 pr-0">
-                    <h3 class="subjectHeading" :style="{color: 'School Name' ? 'black': '#1f7cef'}">{{getSchoolName(item) + item}}</h3>
+                    <h3 class="subjectHeading" :style="{color: 'School Name' ? 'black': '#1f7cef'}">{{getSchoolName(item)}}</h3>
+                  </v-col>
+                </v-row>
+                <v-row class="mb-n4">
+                  <v-col cols="12" class="pb-1 pr-0">
+                    <h3 class="ministryLine" :style="{color: 'School Name' ? 'grey': '#1f7cef'}">{{item}}</h3>
                   </v-col>
                 </v-row>
               </v-col>
@@ -56,7 +65,7 @@ export default {
   methods: {
     loadMincodeSchools(){
       if(this.mincodeSchoolNames.size === 0){
-        this.$store.dispatch('app/getMincodeSchoolNames').finally((_res) => {
+        this.$store.dispatch('app/getMincodeSchoolNames').finally(() => {
           this.isTableLoading = false;
         });
       }else{
@@ -119,14 +128,77 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .top-banner{
-    background-color: aliceblue;
-    background-size: cover;
-    align-items: center;
-    display: flex;
+.sheetHeader{
+  background-color: #003366;
+  color: white;
+  font-size: medium !important;
+  font-weight: bolder !important;
+}
+
+.tableRow {
+  cursor: pointer;
+}
+
+.unread {
+  font-weight: bold;
+}
+
+.v-data-table >>> .v-data-table__wrapper {
+  overflow-x: hidden;
+}
+
+.filterButton.v-btn--outlined {
+  border: thin solid #ebedef;
+}
+
+.v-radio >>> .v-icon {
+  color: #003366;
+}
+
+.activeRadio {
+  color: #003366;
+}
+
+.subjectHeading {
+  font-size: x-large;
+  cursor: pointer;
+}
+
+.ministryLine {
+  color: black;
+  font-size: large;
+}
+
+.statusCodeLabel {
+  font-size: large;
+}
+
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
+}
+
+.v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
+  display: none;
+}
+
+  @media screen and (max-width: 801px){
+    .subjectHeading {
+      font-size: medium;
+    }
+
+    .statusCodeLabel{
+      font-size: inherit;
+    }
+
+    .ministryLine{
+      font-size: inherit;
+    }
   }
-  .full-height{
-    height: 100%;
+  @media screen and (max-width: 950px){
+    .v-dialog__content /deep/ .v-bottom-sheet {
+      width: 60% !important;
+    }
   }
+
 </style>
 
