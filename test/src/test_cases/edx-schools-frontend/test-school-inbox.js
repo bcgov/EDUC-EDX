@@ -56,7 +56,7 @@ test('testPage', async t => {
     // check name
     await inbox.selectContactName('PEN Team');
     // select status
-    await inbox.selectStatus('New');
+    await inbox.selectStatus('Open');
     // search
     await inbox.clickSearchButton();
     // check that our exchange is found by subject heading
