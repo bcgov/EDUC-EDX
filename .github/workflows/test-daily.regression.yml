@@ -20,8 +20,6 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           EDX_API_BASE_URL: ${{ secrets.EDX_API_BASE_URL }}
           API_HTML_STATUS_CLASS_THRESHOLD: 399
-          MINISTRY_OWNERSHIP_TEAM_ID: ${{ secrets.AT_MINISTRY_OWNERSHIP_TEAM_ID }}
-          CONTACT_IDENTIFIER: ${{ secrets.AT_CONTACT_IDENTIFIER }}
           TOKEN_CLIENT_ID: ${{ secrets.AT_TOKEN_CLIENT_ID }}
           TOKEN_CLIENT_SECRET: ${{ secrets.AT_TOKEN_CLIENT_SECRET }}
           TOKEN_ENDPOINT: ${{ secrets.SOAM_TOKEN_URL }}
