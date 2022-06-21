@@ -33,6 +33,7 @@ async function getUserInfo(req, res) {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       mincode: req.session.userMinCodes[0],
+      userMinCodes:req.session.userMinCodes,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel
@@ -69,6 +70,7 @@ async function getUserInfo(req, res) {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       identityTypeLabel: identityType.label,
+      userMinCodes:req.session.userMinCodes,
     };
 
     return res.status(HttpStatus.OK).json(resData);

@@ -9,7 +9,7 @@
     "serve_linux2": "export NODE_ENV=local2 && nodemon ./src/server.js",
     "settest": "set NODE_ENV='test'",
     "setlocal": "set NODE_ENV='local'",
-    "servecmd": "nodemon ./src/server.js",
+    "servecmd": "nodemon --inspect ./src/server.js",
     "start": "node --max-old-space-size=150 ./src/server.js",
     "lint": "node_modules/.bin/eslint . --no-fix --ignore-pattern 'node_modules' --ext .js",
     "lint:fix": "node_modules/.bin/eslint . --fix --ignore-pattern 'node_modules' --ext .js",
