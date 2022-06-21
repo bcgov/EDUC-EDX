@@ -365,6 +365,37 @@ async function activateSchoolUser(req, res) {
   }
 }
 
+async function getEdxUsers(req, res) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+
+  try {
+    let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
+    let filteredResponse = [];
+
+    //if we search by mincode strip out other school and district information for the frontend
+    if(req.query.mincode) {
+      filteredResponse = response.map(user => {
+        return {
+          ...user,
+          edxUserDistricts: [],
+          edxUserSchools: user.edxUserSchools.filter(school => school.mincode === req.query.mincode)
+        };
+      });
+    }
+
+    return res.status(HttpStatus.OK).json(filteredResponse);
+  }
+  catch (e) {
+    log.error(e, 'getEdxUsers', 'Error getting EDX users');
+    return errorResponse(res);
+  }
+}
+
 function mapEdxUserActivationErrorMessage(message) {
   const msg = message || 'INTERNAL SERVER ERROR';
   if (msg.includes('EdxActivationCode was not found for parameters')) {
@@ -378,8 +409,6 @@ function mapEdxUserActivationErrorMessage(message) {
   }
   return msg;
 }
-
-
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
@@ -463,5 +492,6 @@ module.exports = {
   getExchange,
   markAs,
   activateSchoolUser,
-  verifyActivateUserLink
+  verifyActivateUserLink,
+  getEdxUsers
 };
