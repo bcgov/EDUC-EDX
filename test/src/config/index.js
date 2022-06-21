@@ -26,15 +26,7 @@ nconf.defaults({
     },
     testExchangeObject: {
         ministryOwnershipTeamID: process.env.MINISTRY_OWNERSHIP_TEAM_ID,
-        contactIdentifier: process.env.CONTACT_IDENTIFIER,
-        secureExchangeContactTypeCode: process.env.SECURE_EXCHANGE_CONTACT_TYPE_CODE,
-        userName: process.env.USER_NAME,
-        secureExchangeStatusCode: process.env.SECURE_EXCHANGE_STATUS_CODE,
-        reviewer: process.env.REVIEWER,
-        subject: process.env.SUBJECT,
-        isReadByMinistry: process.env.IS_READ_BY_MINISTRY,
-        isReadByExchangeContact: process.env.IS_READ_BY_EXCHANGE_CONTACT,
-        commentContent: process.env.COMMENT_CONTENT
+        contactIdentifier: process.env.CONTACT_IDENTIFIER
     },
     test: {
         api_html_status_threshold: process.env.API_HTML_STATUS_CLASS_THRESHOLD
