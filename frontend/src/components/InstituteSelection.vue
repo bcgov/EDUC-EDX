@@ -36,29 +36,31 @@ export default {
   },
   data() {
     return {
-      activeMincodes: []
+
     };
   },
-  mounted() {
-    if (this.userInfo?.userMinCodes) {
-      return this.activeMincodes = this.userInfo.userMinCodes;
-    }
-  },
   computed: {
+    ...mapState('auth', ['userInfo']),
     ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('edx', ['ministryTeams']),
-    ...mapState('auth', ['userInfo']),
+    activeMincodes(){
+      return this.userInfo?.userMinCodes || [];
+    },
+    getMincodeSchoolNames(){
+      return this.mincodeSchoolNames || [];
+    }
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('app/getMincodeSchoolNames');
     this.$store.dispatch('auth/getUserInfo');
-    console.log('test'+  this.userInfo );
+    console.log('Created');
+
   },
   methods: {
     getSchoolName(mincode) {
-      return this.mincodeSchoolNames.get(mincode);
+      return this.getMincodeSchoolNames().get(mincode);
     },
     setFilterStatusActive() {
       this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
