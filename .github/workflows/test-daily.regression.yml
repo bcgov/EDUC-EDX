@@ -20,32 +20,15 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           EDX_API_BASE_URL: ${{ secrets.EDX_API_BASE_URL }}
           API_HTML_STATUS_CLASS_THRESHOLD: 399
-          MINISTRY_OWNERSHIP_TEAM_ID: ${{ secrets.MINISTRY_OWNERSHIP_TEAM_ID }}
-          CONTACT_IDENTIFIER: ${{ secrets.CONTACT_IDENTIFIER }}
-          SECURE_EXCHANGE_CONTACT_TYPE_CODE: ${{ secrets.SECURE_EXCHANGE_CONTACT_TYPE_CODE }}
-          USER_NAME: ${{ secrets.USER_NAME }}
-          SECURE_EXCHANGE_STATUS_CODE: ${{ secrets.SECURE_EXCHANGE_STATUS_CODE }}
-          REVIEWER: ${{ secrets.REVIEWER }}
-          SUBJECT: ${{ secrets.SUBJECT }}
-          IS_READ_BY_MINISTRY: ${{ secrets.IS_READ_BY_MINISTRY }}
-          IS_READ_BY_EXCHANGE_CONTACT: ${{ secrets.IS_READ_BY_EXCHANGE_CONTACT }}
-          COMMENT_CONTENT: ${{ secrets.COMMENT_CONTENT }}
-          TOKEN_CLIENT_ID: ${{ secrets.TOKEN_CLIENT_ID }}
-          TOKEN_CLIENT_SECRET: ${{ secrets.TOKEN_CLIENT_SECRET }}
-          TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
-          TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
-          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-          TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.TEST_EDX_ACTIVATE_USER_USERNAME }}
-          TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.TEST_EDX_ACTIVATE_USER_PWD }}
-      #- name: Rocket.Chat Notification
-        #uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
-        #if: always()
-        #with:
-          #type: ${{ job.status }}
-          #job_name: 'Regression'
-          #mention: 'here'
-          #mention_if: 'failure'
-          #channel: '#pen-automation-notifications'
-          #url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
+          MINISTRY_OWNERSHIP_TEAM_ID: ${{ secrets.AT_MINISTRY_OWNERSHIP_TEAM_ID }}
+          CONTACT_IDENTIFIER: ${{ secrets.AT_CONTACT_IDENTIFIER }}
+          TOKEN_CLIENT_ID: ${{ secrets.AT_TOKEN_CLIENT_ID }}
+          TOKEN_CLIENT_SECRET: ${{ secrets.AT_TOKEN_CLIENT_SECRET }}
+          TOKEN_ENDPOINT: ${{ secrets.SOAM_TOKEN_URL }}
+          TEST_ADMIN_USERNAME: ${{ secrets.AT_EDX_ADMIN_USERNAME }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.AT_EDX_ADMIN_PASSWORD }}
+          TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.AT_EDX_ACTIVATE_USER_USERNAME }}
+          TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.AT_EDX_ACTIVATE_USER_PWD }}
+
 
 
