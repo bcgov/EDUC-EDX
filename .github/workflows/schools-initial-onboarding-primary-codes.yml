@@ -51,7 +51,7 @@ jobs:
         # Login to OpenShift and select project
         oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
         oc project ${{ env.OPENSHIFT_NAMESPACE }}
-        TOKEN=$(curl -d "client_id=${{ env.SOAM_CLIENT_ID }}" -d "client_secret=${{ env.SOAM_CLIENT_SECRET }} -d "grant_type=client_credentials" "${{ env.SOAM_TOKEN_URL }}" | jq -r '.access_token')
+        TOKEN=$(curl -d "client_id=${{ env.SOAM_CLIENT_ID }}" -d "client_secret=${{ env.SOAM_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.SOAM_TOKEN_URL }}" | jq -r '.access_token')
         
         #SCHOOLS=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools" \
         #  -H "Content-Type: application/json" \
