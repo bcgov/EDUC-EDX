@@ -71,6 +71,7 @@
                 </v-col>
                 <v-col cols="12" md="4" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
                   <v-menu
+                      id="messageDate"
                       ref="messageDateFilter"
                       v-model="messageDateFilter"
                       :close-on-content-click="false"

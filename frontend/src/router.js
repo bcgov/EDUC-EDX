@@ -20,6 +20,7 @@ import ExchangePage from './components/SecureExchange/ExchangeInbox';
 import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
 import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
+import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 
 Vue.prototype.moment = moment;
 
@@ -78,6 +79,16 @@ const router = new VueRouter({
         pageTitle: PAGE_TITLES.ACTIVATE_USER,
         requiresAuth: true
       },
+    },
+    {
+      path: '/access',
+      name: 'exchangeAccess',
+      component: AccessUsersPage,
+      meta: {
+        pageTitle: PAGE_TITLES.EXCHANGE_USERS,
+        requiresAuth: true,
+        role: 'EXCHANGE_ACCESS_ROLE'
+      }
     },
     {
       path: '*',

@@ -58,7 +58,7 @@ export default {
     userInfo: state => state.userInfo,
     loginError: state => state.loginError,
     error: state => state.error,
-    isLoading: state => state.isLoading
+    isLoading: state => state.isLoading,
   },
   mutations: {
     //sets Json web token and determines whether user is authenticated

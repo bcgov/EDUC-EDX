@@ -37,9 +37,11 @@ export const ApiRoutes = Object.freeze({
 });
 
 export const PAGE_TITLES = Object.freeze({
+  ADMINISTRATION: 'Administration',
   DASHBOARD: 'Dashboard',
   EXCHANGE: 'Secure Exchange Inbox',
   VIEW_EXCHANGE: 'View Message',
   NEW_EXCHANGE: 'New Message',
-  ACTIVATE_USER:'Activate User'
+  ACTIVATE_USER:'Activate User',
+  EXCHANGE_USERS: 'Exchange Users'
 });
