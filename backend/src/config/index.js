@@ -82,7 +82,8 @@ nconf.defaults({
     ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/users/ministry-teams',
     edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users',
     userActivationURL:process.env.EDX_API_ENDPOINT+ '/users/activation',
-    updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url'
+    updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url',
+    schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+'/school-user-activation-invite-saga'
   }
 });
 module.exports = nconf;

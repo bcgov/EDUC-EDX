@@ -395,6 +395,26 @@ async function getEdxUsers(req, res) {
     return errorResponse(res);
   }
 }
+async function schoolUserActivationInvite(req,res){
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  const payload = {
+    ...req.body
+  };
+  try {
+    const response = await postData(token, payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
+    req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
+    return res.status(200).json(response);
+  } catch (e) {
+    log.error(e, 'schoolUserActivationInvite', 'Error occurred while sending user activation invite');
+    return errorResponse(res);
+  }
+
+}
 
 function mapEdxUserActivationErrorMessage(message) {
   const msg = message || 'INTERNAL SERVER ERROR';
@@ -493,5 +513,6 @@ module.exports = {
   markAs,
   activateSchoolUser,
   verifyActivateUserLink,
-  getEdxUsers
+  getEdxUsers,
+  schoolUserActivationInvite
 };

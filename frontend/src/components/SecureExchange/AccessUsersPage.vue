@@ -5,8 +5,10 @@
       </v-col>
       <v-col class="text-right">
         <PrimaryButton icon="mdi-plus"
-         id="new-user-button"
-         text="New User"/>
+                       :large-icon=true
+                       id="new-user-button"
+                       text="New User"
+                       @click.native="newUserInviteSheet = !newUserInviteSheet"/>
       </v-col>
     </v-row>
     <!--    search filter -->
@@ -16,11 +18,13 @@
       </v-col>
       <!-- roles -->
       <v-col cols="12" md="4">
-        <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label" item-value="roleName" label="role"></v-select>
+        <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label"
+                  item-value="roleName" label="role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
         <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick" :disabled="searchEnabled()"/>
+        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
+                       :disabled="searchEnabled()"/>
       </v-col>
     </v-row>
     <!--  user info -->
@@ -32,6 +36,29 @@
     <div v-else>
       No users found
     </div>
+
+    <v-bottom-sheet
+        v-model="newUserInviteSheet"
+        inset
+        no-click-animation
+        scrollable
+        persistent
+    >
+      <v-card
+          v-if="newUserInviteSheet"
+          class="information-window-v-card">
+        <v-card-title class="sheetHeader pt-1 pb-1">New User</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <NewUserPage
+              :userRoles="roles"
+              @access-user:messageSent="messageSent"
+              @access-user:cancelMessage="newUserInviteSheet = false"
+          >
+          </NewUserPage>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 
 </template>
@@ -45,18 +72,22 @@ import {ApiRoutes} from '@/utils/constants';
 import {mapGetters, mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
+import NewUserPage from '@/components/SecureExchange/NewUserPage';
 
 export default {
   name: 'AccessUsersPage',
-  components: {PrimaryButton, AccessUserCard},
+  components: {NewUserPage, PrimaryButton, AccessUserCard},
   data() {
+
     return {
+      newUserInviteSheet: false,
       mincode: '',
       users: [],
       filteredUsers: [],
+      roleMap:undefined,
       searchFilter: {
         name: '',
-        roleName: '',
+        roleName: ''
       }
     };
   },
@@ -66,7 +97,8 @@ export default {
     }
   },
   created() {
-    if(this.mincode === '') {
+    this.$store.dispatch('app/getMincodeSchoolNames');
+    if (this.mincode === '') {
       this.mincode = this.userInfo.activeInstituteIdentifier;
     }
     this.getUsersData();
@@ -104,9 +136,14 @@ export default {
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
-    }
+    },
+    messageSent() {
+      this.newUserInviteSheet = !this.newUserInviteSheet;
+
+    },
   },
   computed: {
+    ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('edx', ['roles']),
     ...mapGetters('auth', ['userInfo'])
   }
@@ -114,6 +151,13 @@ export default {
 </script>
 
 <style scoped>
+.sheetHeader{
+  background-color: #003366;
+  color: white;
+  font-size: medium !important;
+  font-weight: bolder !important;
+}
+
 .divider {
   border-color: #FCBA19;
   border-width: medium;
@@ -123,8 +167,12 @@ export default {
   border-radius: 5px;
   background-color: #F2F2F2;
 }
+
 .card-hint {
   color: #000 !important;
   font-size: 1rem;
+}
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
 }
 </style>
