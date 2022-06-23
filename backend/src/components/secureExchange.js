@@ -217,7 +217,6 @@ async function createExchange(req, res) {
 
 async function instituteSelection(req, res) {
   if (req.session.userMinCodes.includes(req.body.params.mincode)) {
-    console.log('success');
     req.session.activeInstituteIdentifier = req.body.params.mincode;
     req.session.activeInstituteType = 'SCHOOL';
     return res.status(200).json('OK');
