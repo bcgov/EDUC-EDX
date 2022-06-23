@@ -21,6 +21,8 @@ import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
 import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
 import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
+import InstituteSelection from '@/components/InstituteSelection.vue';
+
 
 Vue.prototype.moment = moment;
 
@@ -60,6 +62,16 @@ const router = new VueRouter({
       path: '/login-error',
       name: 'login-error',
       component: LoginError
+    },
+    {
+      path: '/institute-selection',
+      name: 'institute-selection',
+      component: InstituteSelection,
+      meta: {
+        pageTitle: PAGE_TITLES.SELECTION,
+        requiresAuth: true,
+        role: '*'
+      }
     },
     {
       path: '/activation-error',

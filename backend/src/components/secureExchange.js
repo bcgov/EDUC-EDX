@@ -215,6 +215,19 @@ async function createExchange(req, res) {
   }
 }
 
+async function instituteSelection(req, res) {
+  if (req.session.userMinCodes.includes(req.body.params.mincode)) {
+    req.session.activeInstituteIdentifier = req.body.params.mincode;
+    req.session.activeInstituteType = 'SCHOOL';
+    return res.status(200).json('OK');
+  }
+  else {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No session data'
+    });
+  }
+}
+
 async function getExchanges(req, res) {
   const token = getAccessToken(req);
   if (!token && req.session.userMinCodes) {
@@ -493,5 +506,6 @@ module.exports = {
   markAs,
   activateSchoolUser,
   verifyActivateUserLink,
+  instituteSelection,
   getEdxUsers
 };
