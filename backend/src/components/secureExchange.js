@@ -217,7 +217,6 @@ async function createExchange(req, res) {
 
 async function instituteSelection(req, res) {
   const userInfo = req.body.params.mincode;
-  console.log('Harry :-'+ userInfo);
   if (req.session.userMinCodes.includes(req.body.params.mincode)) {
     console.log('success');
     req.session.activeInstituteIdentifier = req.body.params.mincode;
@@ -229,7 +228,6 @@ async function instituteSelection(req, res) {
       message: 'No session data'
     });
   }
-
 }
 
 async function getExchanges(req, res) {

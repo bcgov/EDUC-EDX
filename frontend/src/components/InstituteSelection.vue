@@ -84,7 +84,6 @@ export default {
   },
   methods: {
     selectInstitution(mincode){
-      console.log('Harry selects this mincode: ' + mincode);
       const payload = {params: {mincode: mincode}};
       ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
         .then(()=> {
