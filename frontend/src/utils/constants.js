@@ -31,6 +31,7 @@ export const ApiRoutes = Object.freeze({
     STATUSES_URL: edxRoot + '/exchange/statuses',
     MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams',
     USERS_URL: edxRoot + '/users',
+    INSTITUTE_SELECTION_URL: edxRoot + '/institute-selection',
     USER_ACTIVATION:edxRoot+'/user-activation',
     UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url'
   }
@@ -43,5 +44,6 @@ export const PAGE_TITLES = Object.freeze({
   VIEW_EXCHANGE: 'View Message',
   NEW_EXCHANGE: 'New Message',
   ACTIVATE_USER:'Activate User',
-  EXCHANGE_USERS: 'Exchange Users'
+  EXCHANGE_USERS: 'Exchange Users',
+  SELECTION:'Institute Selection'
 });

@@ -2,7 +2,8 @@
 <template>
   <v-container fluid class="full-height">
     <v-row>
-      <v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="6">
         <v-data-table
           :items="activeMincodes"
           class="elevation-1"
@@ -16,13 +17,13 @@
             <v-row @click="selectInstitution(item.mincode)" style="cursor: pointer;">
               <v-col cols="7" md="10">
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="7" md="10">
                     <h3 class="subjectHeading" :style="{color: 'School Name' ? 'black': '#1f7cef'}">{{getSchoolName(item.mincode)}}</h3>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12">
-                    <h3 class="subjectHeading" :style="{color: 'School Name' ? 'black': '#1f7cef'}">{{item.mincode}}</h3>
+                  <v-col cols="7" md="10">
+                    <h3 class="subjectHeading" :style="{color: 'School Name' ? 'grey': '#1f7cef'}">{{item.mincode}}</h3>
                   </v-col>
                 </v-row>
               </v-col>
@@ -30,6 +31,7 @@
           </template>
         </v-data-table>
       </v-col>
+      <v-spacer></v-spacer>
     </v-row>
 
   </v-container>
@@ -38,6 +40,9 @@
 <script>
 
 import {mapState} from 'vuex';
+import ApiService from '../common/apiService';
+import {ApiRoutes} from '@/utils/constants';
+
 export default {
   name: 'InstituteSelection',
   components: {
@@ -51,6 +56,7 @@ export default {
           align: 'start',
           sortable: false,
           value: 'mincode',
+          width: '200px',
         }
       ],
     };
@@ -60,11 +66,11 @@ export default {
     ...mapState('auth', ['userInfo']),
     ...mapState('edx', ['ministryTeams']),
     activeMincodes(){
-      if(this.userInfo){
-        var json = this.userInfo.userMinCodes.map(function (value, key) {
+      if(this.userInfo?.userMinCodes){
+        var json = this.userInfo.userMinCodes.map(function (value) {
           return {
-            "mincode": value
-          }
+            'mincode': value
+          };
         });
         return json;
       }
@@ -79,6 +85,11 @@ export default {
   methods: {
     selectInstitution(mincode){
       console.log('Harry selects this mincode: ' + mincode);
+      const payload = {params: {mincode: mincode}};
+      ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
+        .then(()=> {
+          this.$router.push({name: 'home'});
+        });
     },
     loadMincodeSchools(){
       if(this.mincodeSchoolNames.size === 0){
@@ -152,7 +163,7 @@ export default {
   display: flex;
 }
 .full-height{
-  height: 100%;
+  height: 50%;
 }
 </style>
 
