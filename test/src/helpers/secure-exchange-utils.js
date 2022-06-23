@@ -9,22 +9,23 @@ const {test_exchange_object} = require('../config/constants');
 
 const secureExchangeUtils = {
   createTestExchange() {
+    const userName = "EDX";
     let secureExchange = new SecureExchange();
     let comment = new SecureExchangeComment();
-    secureExchange.contactIdentifier = test_exchange_object.contactIdentifier;
-    secureExchange.ministryOwnershipTeamID = test_exchange_object.ministryOwnershipTeamID;
-    secureExchange.secureExchangeContactTypeCode = test_exchange_object.secureExchangeContactTypeCode;
-    secureExchange.createUser = test_exchange_object.userName;
-    secureExchange.updateUser = test_exchange_object.userName;
-    secureExchange.secureExchangeStatusCode = test_exchange_object.secureExchangeStatusCode;
-    secureExchange.reviewer = test_exchange_object.reviewer;
-    secureExchange.subject = test_exchange_object.subject;
-    secureExchange.isReadByMinistry = test_exchange_object.isReadByMinistry;
-    secureExchange.isReadByExchangeContact = test_exchange_object.isReadByExchangeContact;
-    comment.commentUserName = test_exchange_object.userName;
-    comment.content = test_exchange_object.commentContent;
-    comment.createUser = test_exchange_object.userName;
-    comment.updateUser = test_exchange_object.userName;
+    secureExchange.contactIdentifier = "00899178";
+    secureExchange.ministryOwnershipTeamID = "e062f7f6-ed68-4a1b-a6d1-9a3eab82b6fd";
+    secureExchange.secureExchangeContactTypeCode = "SCHOOL";
+    secureExchange.createUser = userName;
+    secureExchange.updateUser = userName;
+    secureExchange.secureExchangeStatusCode = "OPEN";
+    secureExchange.reviewer = "";
+    secureExchange.subject = "Created by test automation";
+    secureExchange.isReadByMinistry = false;
+    secureExchange.isReadByExchangeContact = false;
+    comment.commentUserName = userName;
+    comment.content = "This was created using an automation test.";
+    comment.createUser = userName;
+    comment.updateUser = userName;
     secureExchange.addComment(comment);
     return secureExchange;
   },

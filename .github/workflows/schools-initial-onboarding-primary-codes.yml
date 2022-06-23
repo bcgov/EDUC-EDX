@@ -1,0 +1,73 @@
+name: Schools - Primary Code Onboarding
+
+env:
+  # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
+  # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
+  # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
+  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+  # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
+  OPENSHIFT_NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-dev
+
+  SOAM_CLIENT_ID: ${{ secrets.SOAM_CLIENT_ID }}
+  SOAM_CLIENT_SECRET: ${{ secrets.SOAM_CLIENT_SECRET }}
+  SOAM_TOKEN_URL: ${{ secrets.SOAM_TOKEN_URL }}
+
+  SCHOOL_SERVICE_URL: ${{ secrets.SCHOOL_SERVICE_URL }}
+  EDX_SERVICE_URL: ${{ secrets.EDX_SERVICE_URL }}
+
+  CHES_CLIENT_ID: ${{ secrets.CHES_CLIENT_ID }}
+  CHES_CLIENT_SECRET: ${{ secrets.CHES_CLIENT_SECRET }}
+  CHES_TOKEN_URL: ${{ secrets.CHES_TOKEN_URL }}
+  CHES_EMAIL_URL: ${{ secrets.CHES_EMAIL_URL }}
+on:
+  # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+  workflow_dispatch:
+
+jobs:
+  openshift-ci-cd:
+    name: Send out initial onboarding primary codes for schools
+    # ubuntu-20.04 can also be used.
+    runs-on: ubuntu-18.04
+    environment: dev
+
+    outputs:
+      ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
+      SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Install oc
+      uses: redhat-actions/openshift-tools-installer@v1
+      with:
+        oc: 4
+
+    - uses: actions/checkout@v2
+    - name: Send Messages to Schools
+      run: |
+        set -eux
+        # Login to OpenShift and select project
+        oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
+        oc project ${{ env.OPENSHIFT_NAMESPACE }}
+        TOKEN=$(curl -d "client_id=${{ env.SOAM_CLIENT_ID }}" -d "client_secret=${{ env.SOAM_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.SOAM_TOKEN_URL }}" | jq -r '.access_token')
+        
+        #SCHOOLS=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools" \
+        #  -H "Content-Type: application/json" \
+        #  -H "Authorization: Bearer $TOKEN" | jq -r '(.[] | .distNo + .schlNo)')
+        
+        SCHOOLS='04997170'
+        
+        for k in $SCHOOLS; do
+          COORDINATOR=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools/$k/pen-coordinator" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $TOKEN");
+          NAME=$(echo $COORDINATOR | jq -r '.penCoordinatorName')
+          EMAIL=$(echo $COORDINATOR | jq -r '.penCoordinatorEmail')
+          CHES_TOKEN=$(curl -d "client_id=${{ env.CHES_CLIENT_ID }}" -d "client_secret=${{ env.CHES_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.CHES_TOKEN_URL }}" | jq -r '.access_token')
+          curl -sX POST "${{ env.CHES_EMAIL_URL }}" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $CHES_TOKEN" \
+          -d "{\"bodyType\": \"html\", \"body\": \"<h1>Hello $NAME,<br><br>Welcome to Common Services</h1><p>Sent by <a href='https://bcgov.github.io/common-hosted-email-service/'>CHES</a></p>\", \"encoding\": \"utf-8\", \"from\": \"edx-noreply@gov.bc.ca\", \"priority\": \"normal\", \"subject\": \"Testing email message\", \"to\": [\"$EMAIL\"]}"
+        done

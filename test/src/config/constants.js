@@ -14,19 +14,6 @@ module.exports.credentials = Object.freeze({
     }
   });
 
-module.exports.test_exchange_object = Object.freeze({
-    ministryOwnershipTeamID: config.get('testExchangeObject:ministryOwnershipTeamID'),
-    contactIdentifier: config.get('testExchangeObject:contactIdentifier'),
-    secureExchangeContactTypeCode: config.get('testExchangeObject:secureExchangeContactTypeCode'),
-    userName: config.get('testExchangeObject:userName'),
-    secureExchangeStatusCode: config.get('testExchangeObject:secureExchangeStatusCode'),
-    reviewer: config.get('testExchangeObject:reviewer'),
-    subject: config.get('testExchangeObject:subject'),
-    isReadByMinistry: config.get('testExchangeObject:isReadByMinistry'),
-    isReadByExchangeContact: config.get('testExchangeObject:isReadByExchangeContact'),
-    commentContent: config.get('testExchangeObject:commentContent')
-});
-
 //Token related config
 //module.exports.token_namespace = config.get('token:token_namespace');
 //module.exports.token_environment = config.get('token:token_environment');
