@@ -7,7 +7,7 @@ env:
   OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
-  OPENSHIFT_NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-test
+  OPENSHIFT_NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-prod
 
   SPLUNK_TOKEN: ${{ secrets.SPLUNK_TOKEN }}
 
@@ -33,7 +33,7 @@ env:
   NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}
   NAMESPACE_TOOLS: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-tools
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
-  TARGET_ENV: "test"
+  TARGET_ENV: "prod"
   MIN_REPLICAS: "2"
   MAX_REPLICAS: "2"
   MIN_CPU: "50m"
@@ -49,10 +49,10 @@ on:
 
 jobs:
   openshift-ci-cd:
-    name: Build and deploy to TEST
+    name: Build and deploy to PROD
     # ubuntu-20.04 can also be used.
     runs-on: ubuntu-18.04
-    environment: test
+    environment: prod
 
     outputs:
       ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
@@ -121,8 +121,8 @@ jobs:
         oc rollout cancel dc/${{ env.IMAGE_NAME }} 2> /dev/null \
         || true && echo "No rollout in progress"
         
-        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }}
-        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }}
+        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-prod/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }}
+        oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-prod/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }}
         
         # Process and apply deployment template
         oc process -f tools/openshift/backend.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ steps.get-latest-tag.outputs.tag }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }}\
