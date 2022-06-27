@@ -11,54 +11,40 @@
                     <v-col class="pb-0">
                       <v-card-text id="newUserCardText" class="pb-0 pt-0">
                         <v-form ref="newUserForm" v-model="isValidForm">
-                          <v-row class="d-flex justify-left">
-                            <v-col cols="7">
                               <v-text-field id="newUserFirstName"
                                             label="First Name"
                                             v-model="firstName"
+                                            class="pt-0"
                               ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row class="d-flex justify-left">
-                            <v-col cols="7">
                               <v-text-field id="newUserLastName"
                                             label="Last Name"
                                             v-model="lastName"
                               ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row class="d-flex justify-left">
-                            <v-col cols="7">
                               <v-text-field id="newUserEmail"
                                             label="Email"
                                             v-model="email"
+                                            class="pt-0"
                               ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row class="d-flex justify-left">
-                            <v-col cols="7">
                               <v-text-field id="newUserSchool"
                                             label="School"
                                             v-model="schoolNameMincode"
-                                            disabled="true"
+                                            :disabled=true
+                                            class="pt-0"
                               ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row class="d-flex justify-left">
-                            <v-col cols="7">
                               <v-select
                                   :items="userRoles"
                                   item-value='edxRoleID'
-                                  item-text='roleName'
+                                  item-text='label'
+                                  item-disabled="disabled"
                                   v-model='edxActivationRoleIds'
                                   :menu-props="{ maxHeight: '400' }"
                                   label="Roles"
                                   multiple
-                                  hint="Pick the roles to be assigned to the new user"
+                                  :hint="rolesHint"
                                   persistent-hint
+                                  class="pt-0"
+                                  @input="disableRoles"
                               ></v-select>
-                            </v-col>
-                          </v-row>
 
                         </v-form>
                       </v-card-text>
@@ -68,13 +54,13 @@
               </v-col>
             </v-row>
 
+            <v-row class="py-4 justify-end">
+              <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
+                             @click.native="navigateToList"></PrimaryButton>
+              <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm" :loading="processing"
+                             @click.native="sendNewUserInvite"></PrimaryButton>
+            </v-row>
           </v-col>
-        </v-row>
-        <v-row class="py-4 justify-end">
-          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
-                         @click.native="navigateToList"></PrimaryButton>
-          <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm" :loading="processing"
-                         @click.native="sendNewUserInvite"></PrimaryButton>
         </v-row>
       </v-col>
     </v-row>
@@ -118,7 +104,10 @@ export default {
       mincode:'',
       requiredRules: [v => !!v?.trim() || 'Required'],
       isValidForm: false,
-      processing: false
+      processing: false,
+      edxAdminUserId:'',
+      rolesHint:'Pick the roles to be assigned to the new user',
+
     };
   },
   computed: {
@@ -140,13 +129,46 @@ export default {
     navigateToList() {
       this.$emit('access-user:cancelMessage');
     },
-
+    disableRoles() {
+      if(this.edxAdminUserId === ''){
+        for (const element of this.userRoles) {
+          if (element.roleName === 'EDX_ADMIN') {
+            this.edxAdminUserId = element.edxRoleID;
+            break;
+          }
+        }
+      }
+      let newRoles=[];
+      if (this.edxActivationRoleIds.includes(this.edxAdminUserId)) {
+        newRoles = this.userRoles.map(el=> {
+          el.disabled = el.edxRoleID !== this.edxAdminUserId;
+          if(el.disabled){
+            el.selected = false;
+          }
+          return el;
+        });
+        this.edxActivationRoleIds.length=0;
+        this.edxActivationRoleIds.push(this.edxAdminUserId);
+        this.rolesHint='EDX School Admin users will be set up with all EDX school roles';
+      }else{
+        newRoles = this.userRoles.map(el=> {
+          el.disabled =false;
+          return el;
+        });
+        this.rolesHint='Pick the roles to be assigned to the new user';
+      }
+      this.$emit('access-user:updateRoles', newRoles);
+    },
     messageSent() {
       this.requiredRules = [v => !!v?.trim() || 'Required'];
       this.$emit('access-user:messageSent');
     },
     sendNewUserInvite() {
       this.processing = true;
+      if(this.edxActivationRoleIds.includes(this.edxAdminUserId)){
+        this.edxActivationRoleIds=[];
+        this.edxActivationRoleIds = this.userRoles.map(el => el.edxRoleID);
+      }
       const payload = {
         schoolName: this.schoolName,
         firstName: this.firstName,

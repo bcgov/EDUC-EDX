@@ -53,7 +53,8 @@
           <NewUserPage
               :userRoles="roles"
               @access-user:messageSent="messageSent"
-              @access-user:cancelMessage="newUserInviteSheet = false"
+              @access-user:updateRoles="updateUserRoles"
+              @access-user:cancelMessage="closeNewUserModal"
           >
           </NewUserPage>
         </v-card-text>
@@ -88,12 +89,12 @@ export default {
       searchFilter: {
         name: '',
         roleName: ''
-      }
+      },
     };
   },
-  beforeMount() {
+  async beforeMount() {
     if (this.roles.length === 0) {
-      this.$store.dispatch('edx/getExchangeRoles');
+      await this.$store.dispatch('edx/getExchangeRoles');
     }
   },
   created() {
@@ -139,12 +140,19 @@ export default {
     },
     messageSent() {
       this.newUserInviteSheet = !this.newUserInviteSheet;
-
     },
+    updateUserRoles(newValue){
+      this.$store.commit('edx/setRoles', newValue);
+    },
+    closeNewUserModal(){
+      this.$store.commit('edx/setRoles', JSON.parse(JSON.stringify(this.rolesCopy)));
+      this.newUserInviteSheet = false; // close the modal window.
+    }
+
   },
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),
-    ...mapState('edx', ['roles']),
+    ...mapState('edx', ['roles','rolesCopy']),
     ...mapGetters('auth', ['userInfo'])
   }
 };

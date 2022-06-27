@@ -527,5 +527,6 @@ module.exports = {
   activateSchoolUser,
   verifyActivateUserLink,
   instituteSelection,
-  getEdxUsers
+  getEdxUsers,
+  schoolUserActivationInvite
 };
