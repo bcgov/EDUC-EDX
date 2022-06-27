@@ -59,6 +59,11 @@ router.get('/callback_bceid',
         req.session.activeInstituteType = 'SCHOOL';
         res.redirect(config.get('server:frontend'));
       }
+      else if (req.session.userMinCodes.length > 1){
+        // TODO document why this block is empty
+        res.redirect(config.get('server:frontend') + '/institute-selection');
+
+      }
     });
   }
 );

@@ -81,6 +81,7 @@ nconf.defaults({
     exchangeStatusesURL: process.env.EDX_API_ENDPOINT + '/exchange/statuses',
     ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/users/ministry-teams',
     edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users',
+    edxActiveInstitution: process.env.EDX_API_ENDPOINT+ '/institute-selection',
     userActivationURL:process.env.EDX_API_ENDPOINT+ '/users/activation',
     updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url',
     schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+'/school-user-activation-invite-saga'

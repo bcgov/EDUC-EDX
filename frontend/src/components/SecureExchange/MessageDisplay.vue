@@ -73,7 +73,7 @@
                 </v-card>
               </v-speed-dial>
               <v-spacer></v-spacer>
-              <v-btn id="markAsButton" :loading="loadingReadStatus" class="ma-4" v-on:click="clickMarkAsButton">
+              <v-btn :disabled="!isEditable()" id="markAsButton" :loading="loadingReadStatus" class="ma-4" v-on:click="clickMarkAsButton">
                 <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                 <v-icon v-else>mdi-email-open-outline</v-icon>
                 <span class="ml-1 markAsSpan">Mark As {{ secureExchange.isReadByExchangeContact ? 'Unread' : 'Read' }}</span>
@@ -170,7 +170,7 @@ export default {
       if (status === 'Open') {
         return 'green';
       } else if (status === 'Closed') {
-        return 'black';
+        return 'red';
       }
     },
     getActivityColour(activity) {
