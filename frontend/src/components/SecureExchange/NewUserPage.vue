@@ -1,6 +1,8 @@
 <template>
   <v-container fluid class="full-height px-0 pt-0">
+    <v-form ref="newUserForm" v-model="isValidForm">
     <v-row class="d-flex justify-center">
+
       <v-col class="pt-0" cols="11">
         <v-row>
           <v-col class="pr-0 pb-0">
@@ -10,26 +12,30 @@
                   <v-row>
                     <v-col class="pb-0">
                       <v-card-text id="newUserCardText" class="pb-0 pt-0">
-                        <v-form ref="newUserForm" v-model="isValidForm">
+
                               <v-text-field id="newUserFirstName"
                                             label="First Name"
                                             v-model="firstName"
                                             class="pt-0"
+                                            :rules="requiredRules"
                               ></v-text-field>
                               <v-text-field id="newUserLastName"
                                             label="Last Name"
                                             v-model="lastName"
+                                            :rules="requiredRules"
                               ></v-text-field>
                               <v-text-field id="newUserEmail"
                                             label="Email"
                                             v-model="email"
                                             class="pt-0"
+                                            :rules="requiredRules"
                               ></v-text-field>
                               <v-text-field id="newUserSchool"
                                             label="School"
                                             v-model="schoolNameMincode"
                                             :disabled=true
                                             class="pt-0"
+                                            :rules="requiredRules"
                               ></v-text-field>
                               <v-select
                                   :items="userRoles"
@@ -44,9 +50,11 @@
                                   persistent-hint
                                   class="pt-0"
                                   @input="disableRoles"
+                                  required
+                                  :rules="requireRoleRules"
                               ></v-select>
 
-                        </v-form>
+
                       </v-card-text>
                     </v-col>
                   </v-row>
@@ -63,9 +71,11 @@
           </v-col>
         </v-row>
       </v-col>
+
     </v-row>
 
     <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
+    </v-form>
   </v-container>
 </template>
 
@@ -102,7 +112,8 @@ export default {
       schoolName:'',
       edxActivationRoleIds:[],
       mincode:'',
-      requiredRules: [v => !!v?.trim() || 'Required'],
+      requiredRules: [v => !!v || 'Required'],
+      requireRoleRules:[(v) =>  v.length>0 || 'Role Selection is required'],
       isValidForm: false,
       processing: false,
       edxAdminUserId:'',
