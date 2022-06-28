@@ -7,7 +7,7 @@ class EdxActivationRole{
     this.createDate = null;
     this.updateDate = null;
     this.edxActivationRoleId = null;
-    this.edxRoleId = null;
+    this.edxRoleCode = null;
     this.edxActivationCodeId = null;
 
   }

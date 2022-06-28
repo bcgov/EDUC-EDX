@@ -41,7 +41,7 @@ const secureExchangeUtils = {
     const now = new Date();
     edxActivationCode.expiryDate = date.addDays(now, 1).toJSON().substring(0, 19); //get only first 19 to avoid adding millisecond at the end.
     const activationRole = new EdxActivationRole();
-    activationRole.edxRoleId=roles[0].edxRoleID;
+    activationRole.edxRoleCode=roles[0].edxRoleCode;
     edxActivationCode.addActivationRole(activationRole);
     return edxActivationCode;
   }

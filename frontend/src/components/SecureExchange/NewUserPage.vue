@@ -39,11 +39,12 @@
                                         :rules="requiredRules"
                           ></v-text-field>
                           <v-select
+                              id="newSchoolUserRolesSelect"
                               :items="userRoles"
-                              item-value='edxRoleID'
+                              item-value='edxRoleCode'
                               item-text='label'
                               item-disabled="disabled"
-                              v-model='edxActivationRoleIds'
+                              v-model='edxActivationRoleCodes'
                               :menu-props="{ maxHeight: '400' }"
                               label="Roles"
                               multiple
@@ -108,13 +109,13 @@ export default {
       email: '',
       schoolNameMincode: '',
       schoolName: '',
-      edxActivationRoleIds: [],
+      edxActivationRoleCodes: [],
       mincode: '',
       requiredRules: [v => !!v || 'Required'],
       requireRoleRules: [(v) => v.length > 0 || 'Role Selection is required'],
       isValidForm: false,
       processing: false,
-      edxAdminUserId: '',
+      edxAdminUserCode: '',
       rolesHint: 'Pick the roles to be assigned to the new user',
       emailHint: 'Valid Email Required'
     };
@@ -144,25 +145,25 @@ export default {
       this.$emit('access-user:cancelMessage');
     },
     disableRoles() {
-      if (this.edxAdminUserId === '') {
+      if (this.edxAdminUserCode === '') {
         for (const element of this.userRoles) {
           if (element.roleName === 'EDX_ADMIN') {
-            this.edxAdminUserId = element.edxRoleID;
+            this.edxAdminUserCode = element.edxRoleCode;
             break;
           }
         }
       }
       let newRoles = [];
-      if (this.edxActivationRoleIds.includes(this.edxAdminUserId)) {
+      if (this.edxActivationRoleCodes.includes(this.edxAdminUserCode)) {
         newRoles = this.userRoles.map(el => {
-          el.disabled = el.edxRoleID !== this.edxAdminUserId;
+          el.disabled = el.edxRoleCode !== this.edxAdminUserCode;
           if (el.disabled) {
             el.selected = false;
           }
           return el;
         });
-        this.edxActivationRoleIds.length = 0;
-        this.edxActivationRoleIds.push(this.edxAdminUserId);
+        this.edxActivationRoleCodes.length = 0;
+        this.edxActivationRoleCodes.push(this.edxAdminUserCode);
         this.rolesHint = 'EDX School Admin users will be set up with all EDX school roles';
       } else {
         newRoles = this.userRoles.map(el => {
@@ -179,9 +180,9 @@ export default {
     },
     sendNewUserInvite() {
       this.processing = true;
-      if (this.edxActivationRoleIds.includes(this.edxAdminUserId)) {
-        this.edxActivationRoleIds = [];
-        this.edxActivationRoleIds = this.userRoles.map(el => el.edxRoleID);
+      if (this.edxActivationRoleCodes.includes(this.edxAdminUserCode)) {
+        this.edxActivationRoleCodes = [];
+        this.edxActivationRoleCodes = this.userRoles.map(el => el.edxRoleCode);
       }
       const payload = {
         schoolName: this.schoolName,
@@ -189,7 +190,7 @@ export default {
         lastName: this.lastName,
         email: this.email,
         mincode: this.mincode,
-        edxActivationRoleIds: this.edxActivationRoleIds,
+        edxActivationRoleCodes: this.edxActivationRoleCodes,
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].NEW_SCHOOL_USER_ACTIVATION_INVITE}`, payload)
         .then(() => {
