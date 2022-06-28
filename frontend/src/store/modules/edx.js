@@ -61,7 +61,7 @@ export default {
         if(state.exchangeMincodes.length === 0) {
           const query = {
             params: {
-              permissionName : 'SECURE_EXCHANGE',
+              permissionCode : 'SECURE_EXCHANGE',
             }
           };
 
