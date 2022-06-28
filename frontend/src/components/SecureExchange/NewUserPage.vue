@@ -131,7 +131,6 @@ export default {
       this.mincode = this.userInfo.activeInstituteIdentifier;
     }
     if(!this.schoolNameMincode){
-      console.log('mincodeSchoolNames->',this.mincodeSchoolNames);
       this.schoolName = this.mincodeSchoolNames.get(this.mincode);
       this.schoolNameMincode = this.schoolName+' ('+this.mincode+')';
     }
