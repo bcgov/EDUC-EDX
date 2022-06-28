@@ -1,80 +1,77 @@
 <template>
   <v-container fluid class="full-height px-0 pt-0">
     <v-form ref="newUserForm" v-model="isValidForm">
-    <v-row class="d-flex justify-center">
+      <v-row class="d-flex justify-center">
 
-      <v-col class="pt-0" cols="11">
-        <v-row>
-          <v-col class="pr-0 pb-0">
-            <v-row>
-              <v-col>
-                <v-card id="newUserCard" flat outlined>
-                  <v-row>
-                    <v-col class="pb-0">
-                      <v-card-text id="newUserCardText" class="pb-0 pt-0">
+        <v-col class="pt-0" cols="11">
+          <v-row>
+            <v-col class="pr-0 pb-0">
+              <v-row>
+                <v-col>
+                  <v-card id="newUserCard" flat outlined>
+                    <v-row>
+                      <v-col class="pb-0">
+                        <v-card-text id="newUserCardText" class="pb-0 pt-0">
 
-                              <v-text-field id="newUserFirstName"
-                                            label="First Name"
-                                            v-model="firstName"
-                                            class="pt-0"
-                                            :rules="requiredRules"
-                              ></v-text-field>
-                              <v-text-field id="newUserLastName"
-                                            label="Last Name"
-                                            v-model="lastName"
-                                            :rules="requiredRules"
-                              ></v-text-field>
-                              <v-text-field id="newUserEmail"
-                                            label="Email"
-                                            v-model="email"
-                                            class="pt-0"
-                                            :rules="requiredRules"
-                              ></v-text-field>
-                              <v-text-field id="newUserSchool"
-                                            label="School"
-                                            v-model="schoolNameMincode"
-                                            :disabled=true
-                                            class="pt-0"
-                                            :rules="requiredRules"
-                              ></v-text-field>
-                              <v-select
-                                  :items="userRoles"
-                                  item-value='edxRoleID'
-                                  item-text='label'
-                                  item-disabled="disabled"
-                                  v-model='edxActivationRoleIds'
-                                  :menu-props="{ maxHeight: '400' }"
-                                  label="Roles"
-                                  multiple
-                                  :hint="rolesHint"
-                                  persistent-hint
-                                  class="pt-0"
-                                  @input="disableRoles"
-                                  required
-                                  :rules="requireRoleRules"
-                              ></v-select>
-
-
-                      </v-card-text>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </v-row>
-
-            <v-row class="py-4 justify-end">
-              <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
-                             @click.native="navigateToList"></PrimaryButton>
-              <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm" :loading="processing"
-                             @click.native="sendNewUserInvite"></PrimaryButton>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-col>
-
-    </v-row>
-
-    <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
+                          <v-text-field id="newUserFirstName"
+                                        label="First Name"
+                                        v-model="firstName"
+                                        class="pt-0"
+                                        :rules="requiredRules"
+                          ></v-text-field>
+                          <v-text-field id="newUserLastName"
+                                        label="Last Name"
+                                        v-model="lastName"
+                                        :rules="requiredRules"
+                          ></v-text-field>
+                          <v-text-field id="newUserEmail"
+                                        label="Email"
+                                        v-model="email"
+                                        class="pt-0"
+                                        :rules="emailRules"
+                                        :hint="emailHint"
+                          ></v-text-field>
+                          <v-text-field id="newUserSchool"
+                                        label="School"
+                                        v-model="schoolNameMincode"
+                                        :disabled=true
+                                        class="pt-0"
+                                        :rules="requiredRules"
+                          ></v-text-field>
+                          <v-select
+                              :items="userRoles"
+                              item-value='edxRoleID'
+                              item-text='label'
+                              item-disabled="disabled"
+                              v-model='edxActivationRoleIds'
+                              :menu-props="{ maxHeight: '400' }"
+                              label="Roles"
+                              multiple
+                              :hint="rolesHint"
+                              persistent-hint
+                              class="pt-0"
+                              @input="disableRoles"
+                              required
+                              :rules="requireRoleRules"
+                          ></v-select>
+                        </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row class="py-4 justify-end">
+                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
+                               @click.native="navigateToList"></PrimaryButton>
+                <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm"
+                               :loading="processing"
+                               @click.native="sendNewUserInvite"></PrimaryButton>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
     </v-form>
   </v-container>
 </template>
@@ -88,7 +85,7 @@ import ApiService from '@/common/apiService';
 import {
   ApiRoutes,
 } from '@/utils/constants';
-import {mapGetters,mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 
 export default {
   name: 'newUserPage',
@@ -104,35 +101,42 @@ export default {
     },
   },
   data() {
+
     return {
-      firstName:'',
-      lastName:'',
-      email:'',
-      schoolNameMincode:'',
-      schoolName:'',
-      edxActivationRoleIds:[],
-      mincode:'',
+      firstName: '',
+      lastName: '',
+      email: '',
+      schoolNameMincode: '',
+      schoolName: '',
+      edxActivationRoleIds: [],
+      mincode: '',
       requiredRules: [v => !!v || 'Required'],
-      requireRoleRules:[(v) =>  v.length>0 || 'Role Selection is required'],
+      requireRoleRules: [(v) => v.length > 0 || 'Role Selection is required'],
       isValidForm: false,
       processing: false,
-      edxAdminUserId:'',
-      rolesHint:'Pick the roles to be assigned to the new user',
-
+      edxAdminUserId: '',
+      rolesHint: 'Pick the roles to be assigned to the new user',
+      emailHint: 'Valid Email Required'
     };
   },
   computed: {
     ...mapGetters('auth', ['userInfo']),
     ...mapState('app', ['mincodeSchoolNames']),
+    emailRules() {
+      return [
+        v => !!v || this.emailHint,
+        v => /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || this.emailHint,
+      ];
+    }
 
   },
   created() {
     if (this.mincode === '') {
       this.mincode = this.userInfo.activeInstituteIdentifier;
     }
-    if(!this.schoolNameMincode){
+    if (!this.schoolNameMincode) {
       this.schoolName = this.mincodeSchoolNames.get(this.mincode);
-      this.schoolNameMincode = this.schoolName+' ('+this.mincode+')';
+      this.schoolNameMincode = this.schoolName + ' (' + this.mincode + ')';
     }
   },
   methods: {
@@ -140,7 +144,7 @@ export default {
       this.$emit('access-user:cancelMessage');
     },
     disableRoles() {
-      if(this.edxAdminUserId === ''){
+      if (this.edxAdminUserId === '') {
         for (const element of this.userRoles) {
           if (element.roleName === 'EDX_ADMIN') {
             this.edxAdminUserId = element.edxRoleID;
@@ -148,24 +152,24 @@ export default {
           }
         }
       }
-      let newRoles=[];
+      let newRoles = [];
       if (this.edxActivationRoleIds.includes(this.edxAdminUserId)) {
-        newRoles = this.userRoles.map(el=> {
+        newRoles = this.userRoles.map(el => {
           el.disabled = el.edxRoleID !== this.edxAdminUserId;
-          if(el.disabled){
+          if (el.disabled) {
             el.selected = false;
           }
           return el;
         });
-        this.edxActivationRoleIds.length=0;
+        this.edxActivationRoleIds.length = 0;
         this.edxActivationRoleIds.push(this.edxAdminUserId);
-        this.rolesHint='EDX School Admin users will be set up with all EDX school roles';
-      }else{
-        newRoles = this.userRoles.map(el=> {
-          el.disabled =false;
+        this.rolesHint = 'EDX School Admin users will be set up with all EDX school roles';
+      } else {
+        newRoles = this.userRoles.map(el => {
+          el.disabled = false;
           return el;
         });
-        this.rolesHint='Pick the roles to be assigned to the new user';
+        this.rolesHint = 'Pick the roles to be assigned to the new user';
       }
       this.$emit('access-user:updateRoles', newRoles);
     },
@@ -175,17 +179,17 @@ export default {
     },
     sendNewUserInvite() {
       this.processing = true;
-      if(this.edxActivationRoleIds.includes(this.edxAdminUserId)){
-        this.edxActivationRoleIds=[];
+      if (this.edxActivationRoleIds.includes(this.edxAdminUserId)) {
+        this.edxActivationRoleIds = [];
         this.edxActivationRoleIds = this.userRoles.map(el => el.edxRoleID);
       }
       const payload = {
         schoolName: this.schoolName,
         firstName: this.firstName,
-        lastName:this.lastName,
-        email:this.email,
-        mincode:this.mincode,
-        edxActivationRoleIds:this.edxActivationRoleIds,
+        lastName: this.lastName,
+        email: this.email,
+        mincode: this.mincode,
+        edxActivationRoleIds: this.edxActivationRoleIds,
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].NEW_SCHOOL_USER_ACTIVATION_INVITE}`, payload)
         .then(() => {
