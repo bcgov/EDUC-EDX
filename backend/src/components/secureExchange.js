@@ -420,7 +420,6 @@ async function schoolUserActivationInvite(req,res){
   };
   try {
     const response = await postData(token, payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
-    req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
     return res.status(200).json(response);
   } catch (e) {
     log.error(e, 'schoolUserActivationInvite', 'Error occurred while sending user activation invite');
