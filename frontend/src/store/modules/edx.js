@@ -8,7 +8,8 @@ export default {
     ministryTeams: [],
     exchangeMincodes: [],
     exchange: null,
-    roles: []
+    roles: [],
+    rolesCopy: [],
   }),
   getters: {
     statuses: state => state.statuses,
@@ -27,8 +28,12 @@ export default {
       state.exchangeMincodes = payload;
     },
     setRoles(state, payload){
-      state.roles = payload;
+      state.roles = JSON.parse(JSON.stringify(payload));
     },
+    setRolesCopy(state, payload){
+      state.rolesCopy = JSON.parse(JSON.stringify(payload));
+    },
+
     setMinistryTeams: (state, ministryTeams) => {
       state.ministryTeams = ministryTeams;
     },
@@ -68,9 +73,9 @@ export default {
     async getExchangeRoles({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
         if (state.roles.length === 0) {
-          ApiService.getEdxRoles().then(response => {
-            commit('setRoles', response.data);
-          });
+          const response = await ApiService.getEdxRoles();
+          commit('setRoles', response.data);
+          commit('setRolesCopy', response.data);
         }
       }
     },

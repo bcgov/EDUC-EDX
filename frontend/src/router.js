@@ -22,6 +22,7 @@ import RouterView from './components/RouterView';
 import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
 import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
+import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 
 
 Vue.prototype.moment = moment;
@@ -146,6 +147,16 @@ const router = new VueRouter({
           component: NewMessagePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_EXCHANGE,
+            requiresAuth: true,
+            role: '*'
+          }
+        },
+        {
+          path: 'newUserInvite',
+          name: 'newUserInvite',
+          component: NewUserInvitePage,
+          meta: {
+            pageTitle: PAGE_TITLES.NEW_USER_INVITE,
             requiresAuth: true,
             role: '*'
           }
