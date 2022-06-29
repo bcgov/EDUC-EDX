@@ -333,7 +333,7 @@ export default {
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('app/getMincodeSchoolNames');
     this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
-    this.getRequests();
+    this.getExchanges();
   },
   methods: {
     openExchange(secureExchangeID){
@@ -341,7 +341,7 @@ export default {
     },
     messageSent(){
       this.newMessageSheet = !this.newMessageSheet;
-      this.getRequests();
+      this.getExchanges();
     },
     getMinistryTeamName(ministryOwnershipTeamId){
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
@@ -355,7 +355,7 @@ export default {
     statusFilterActiveClicked() {
       this.setFilterStatusActive();
       this.resetPageNumber();
-      this.getRequests();
+      this.getExchanges();
     },
     resetPageNumber(){
       this.pageNumber = 1;
@@ -369,7 +369,7 @@ export default {
       this.messageIDFilter ='';
       if(runSearch){
         this.setFilterStatusAll();
-        this.getRequests();
+        this.getExchanges();
       }
     },
     onExpansionPanelClick(event) {
@@ -380,7 +380,7 @@ export default {
         this.setFilterStatusActive();
         this.clearSearch(false);
         this.resetPageNumber();
-        this.getRequests();
+        this.getExchanges();
       } else {
         this.setFilterStatusAll();
         this.statusRadioGroup = 'statusFilterAll';
@@ -445,14 +445,14 @@ export default {
     getCompletedMessages() {
       this.headerSearchParams.secureExchangeStatusCode = ['CLOSED'];
       this.isActiveMessagesTabEnabled = false;
-      this.getRequests();
+      this.getExchanges();
     },
     filterRequests(){
       this.setFilterStatusAll();
       this.resetPageNumber();
-      this.getRequests();
+      this.getExchanges();
     },
-    getRequests() {
+    getExchanges() {
       this.loadingTable = true;
       this.requests = [];
       const sort = {
@@ -489,15 +489,15 @@ export default {
     getActiveMessages() {
       this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
       this.isActiveMessagesTabEnabled = true;
-      this.getRequests();
+      this.getExchanges();
     }
   },
   watch: {
     pageSize() {
-      this.getRequests();
+      this.getExchanges();
     },
     pageNumber() {
-      this.getRequests();
+      this.getExchanges();
     }
   }
 };
