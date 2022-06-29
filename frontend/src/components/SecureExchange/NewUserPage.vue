@@ -17,15 +17,18 @@
                                         label="First Name"
                                         v-model="firstName"
                                         class="pt-0"
+                                        maxlength="255"
                                         :rules="requiredRules"
                           ></v-text-field>
                           <v-text-field id="newUserLastName"
                                         label="Last Name"
+                                        maxlength="255"
                                         v-model="lastName"
                                         :rules="requiredRules"
                           ></v-text-field>
                           <v-text-field id="newUserEmail"
                                         label="Email"
+                                        maxlength="255"
                                         v-model="email"
                                         class="pt-0"
                                         :rules="emailRules"
@@ -179,10 +182,10 @@ export default {
       this.$emit('access-user:messageSent');
     },
     sendNewUserInvite() {
+      let selectedRoleCodes = [];
       this.processing = true;
       if (this.edxActivationRoleCodes.includes(this.edxAdminUserCode)) {
-        this.edxActivationRoleCodes = [];
-        this.edxActivationRoleCodes = this.userRoles.map(el => el.edxRoleCode);
+        selectedRoleCodes = this.userRoles.map(el => el.edxRoleCode);
       }
       const payload = {
         schoolName: this.schoolName,
@@ -190,7 +193,7 @@ export default {
         lastName: this.lastName,
         email: this.email,
         mincode: this.mincode,
-        edxActivationRoleCodes: this.edxActivationRoleCodes,
+        edxActivationRoleCodes: selectedRoleCodes.length === 0 ? this.edxActivationRoleCodes : selectedRoleCodes,
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].NEW_SCHOOL_USER_ACTIVATION_INVITE}`, payload)
         .then(() => {
