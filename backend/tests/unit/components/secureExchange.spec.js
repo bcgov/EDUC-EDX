@@ -87,7 +87,8 @@ describe('verifyRequest', () => {
 describe('getExchanges', () => {
   const session = {
     correlationID,
-    userMinCodes: ['00618200']
+    userMinCodes: ['00618200'],
+    activeInstituteIdentifier : '00618200'
   };
   let req;
   let res;
