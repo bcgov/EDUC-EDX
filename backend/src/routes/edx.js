@@ -2,7 +2,7 @@
 
 const passport = require('passport');
 const express = require('express');
-const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,verifyActivateUserLink,instituteSelection,schoolUserActivationInvite,getEdxUsers} = require('../components/secureExchange');
+const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,verifyActivateUserLink,instituteSelection,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles} = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
@@ -54,6 +54,7 @@ router.get('/users/user-schools/mincodes', passport.authenticate('jwt', {session
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, activateSchoolUser);
 router.get('/activate-user-verification', verifyActivateUserLink);
 router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));
+router.post('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateEdxUserRoles);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users`));
 router.post('/institute-selection', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, instituteSelection);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getEdxUsers);

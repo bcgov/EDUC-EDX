@@ -345,6 +345,52 @@ async function markAs(req, res) {
   }
 }
 
+async function updateEdxUserRoles(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID);
+
+    console.log('PARAMS ' + JSON.stringify(req.body.params));
+
+    let selectedUserSchool = response.edxUserSchools.filter(school => school.mincode === req.body.params.mincode);
+
+    let rolesToBeRemoved = [];
+
+    //Determine roles to be removed
+    selectedUserSchool[0].edxUserSchoolRoles.forEach(function(userSchoolRole) {
+      if(!req.body.params.selectedRoles.filter(value  => userSchoolRole.edxRoleCode === value).length > 0){
+        rolesToBeRemoved.push(userSchoolRole.edxRoleCode);
+      }
+    });
+
+    selectedUserSchool[0].edxUserSchoolRoles = selectedUserSchool[0].edxUserSchoolRoles.filter(value  =>  !rolesToBeRemoved.includes(value.edxRoleCode));
+
+    //Roles to be added
+    req.body.params.selectedRoles.forEach(function(role) {
+      if(!selectedUserSchool[0].edxUserSchoolRoles.filter(value  => role === value.edxRoleCode).length > 0){
+        let newRole = {};
+        newRole.edxUserSchoolID = selectedUserSchool[0].edxUserSchoolID;
+        newRole.edxRoleCode = role;
+        selectedUserSchool[0].edxUserSchoolRoles.push(newRole);
+      }
+    });
+
+    selectedUserSchool[0].updateDate = null;
+    selectedUserSchool[0].createDate = null;
+
+    const payload = {
+      ...selectedUserSchool[0]
+    };
+
+    const result = await putData(token, payload, config.get('edx:edxUsersURL') + '/' + selectedUserSchool[0].edxUserID + '/school', req.session.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'updateEdxUserRoles', 'Error occurred while attempting to update user roles.');
+    return errorResponse(res);
+  }
+}
+
+
 async function activateSchoolUser(req, res) {
   const token = getAccessToken(req);
   if (!token) {
@@ -408,6 +454,7 @@ async function getEdxUsers(req, res) {
     return errorResponse(res);
   }
 }
+
 async function schoolUserActivationInvite(req,res){
   const token = getAccessToken(req);
   if (!token) {
@@ -527,5 +574,6 @@ module.exports = {
   verifyActivateUserLink,
   instituteSelection,
   getEdxUsers,
-  schoolUserActivationInvite
+  schoolUserActivationInvite,
+  updateEdxUserRoles
 };

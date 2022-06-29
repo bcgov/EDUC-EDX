@@ -11,15 +11,13 @@
                        @click.native="newUserInviteSheet = !newUserInviteSheet"/>
       </v-col>
     </v-row>
-    <!--    search filter -->
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
       <v-col cols="12" md="4">
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
       </v-col>
-      <!-- roles -->
       <v-col cols="12" md="4">
         <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label"
-                  item-value="roleName" label="Role"></v-select>
+                  item-value="edxRoleCode" label="Role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
         <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
@@ -28,14 +26,17 @@
       </v-col>
     </v-row>
     <!--  user info -->
-    <div v-if="filteredUsers.length">
-      <div v-for="user in filteredUsers" :key="user.digitalID">
-        <AccessUserCard type="school" :roles="user.edxUserSchools[0].edxUserSchoolRoles" :user="user"></AccessUserCard>
-      </div>
-    </div>
-    <div v-else>
-      No users found
-    </div>
+    <Spinner v-if="loadingUsers"/>
+    <v-row no-gutters v-else-if="filteredUsers.length">
+      <v-col cols="12" v-for="user in filteredUsers" :key="user.digitalID">
+        <AccessUserCard @refresh="getUsersData" type="school" :mincode="mincode" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
+      </v-col>
+    </v-row>
+    <v-row  v-else>
+      <v-col class="d-flex justify-center">
+        No users found
+      </v-col>
+    </v-row>
 
     <v-bottom-sheet
         v-model="newUserInviteSheet"
@@ -75,16 +76,17 @@ import {mapGetters, mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
 import NewUserPage from '@/components/SecureExchange/NewUserPage';
+import Spinner from '@/components/common/Spinner';
 
 export default {
   name: 'AccessUsersPage',
-  components: {NewUserPage, PrimaryButton, AccessUserCard},
+  components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner},
   data() {
-
     return {
       newUserInviteSheet: false,
       mincode: '',
       users: [],
+      loadingUsers: true,
       filteredUsers: [],
       roleMap:undefined,
       searchFilter: {
@@ -99,20 +101,36 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('app/getMincodeSchoolNames');
-    if (this.mincode === '') {
+    this.$store.dispatch('auth/getUserInfo').then(() => {
       this.mincode = this.userInfo.activeInstituteIdentifier;
-    }
-    this.getUsersData();
+      this.getUsersData();
+    });
+    this.$store.dispatch('app/getMincodeSchoolNames');
   },
   methods: {
+    sortUserData(users){
+      return users.sort((a, b) => {
+        if (a.firstName > b.firstName) {
+          return 1;
+        } else if (a.firstName < b.firstName) {
+          return -1;
+        }
+        return 0;
+      } );
+    },
     getUsersData() {
+      this.loadingUsers = true;
       const payload = {params: {mincode: this.mincode}};
       ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload)
         .then(response => {
-          this.users = response.data;
-          this.filteredUsers = response.data;
+          this.filteredUsers = this.sortUserData(response.data);
+          this.users = this.filteredUsers;
+        }).finally(() => {
+          this.loadingUsers = false;
         });
+    },
+    getCurrentUserSchoolRoles(user) {
+      return user.edxUserSchools.filter(userSchool => userSchool.mincode === this.mincode)[0].edxUserSchoolRoles;
     },
     clearButtonClick() {
       setEmptyInputParams(this.searchFilter);
@@ -132,7 +150,7 @@ export default {
     },
     roleFilter(user, roleName) {
       if (roleName) {
-        return user.edxUserSchools[0].edxUserSchoolRoles.some(role => role.edxRole.roleName === roleName);
+        return user.edxUserSchools[0].edxUserSchoolRoles.some(role => role.edxRoleCode === roleName);
       }
       return true;
     },
@@ -154,7 +172,7 @@ export default {
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),
     ...mapState('edx', ['roles','rolesCopy']),
-    ...mapGetters('auth', ['userInfo'])
+    ...mapGetters('auth', ['userInfo']),
   }
 };
 </script>
@@ -173,6 +191,10 @@ export default {
 }
 
 .searchBox {
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: 0;
+  margin-right: 0;
   border-radius: 5px;
   background-color: #F2F2F2;
 }
