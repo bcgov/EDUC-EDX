@@ -164,15 +164,15 @@ function getCriteria(key, value, operation, valueType) {
 }
 
 async function getExchangesPaginated(req) {
-  if (!req.session.userMinCodes) {//this implementation has to change when registration part is added.
-    return Promise.reject('getExchangesPaginated error: User Mincodes does not exist in session');
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
   }
   let criteria = [];
   if (req.query.searchParams) {
     criteria = buildSearchParams(req.query.searchParams);
   }
   //This needs to change when we have school selection
-  criteria.push(getCriteria('contactIdentifier', req.session.userMinCodes[0], FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  criteria.push(getCriteria('contactIdentifier', req.session.activeInstituteIdentifier, FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   const params = {
     params: {
@@ -192,7 +192,7 @@ async function createExchange(req, res) {
     const edxUserInfo = req.session.edxUserData[0];
     const message = req.body;
     const payload = {
-      contactIdentifier: req.session.userMinCodes[0],
+      contactIdentifier: req.session.activeInstituteIdentifier,
       secureExchangeContactTypeCode: 'SCHOOL',
       ministryOwnershipTeamID: message.ministryOwnershipTeamID,
       subject: message.subject,
