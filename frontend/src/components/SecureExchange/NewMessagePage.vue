@@ -145,7 +145,7 @@ export default {
       this.$emit('secure-exchange:cancelMessage');
     },
     getSchoolName() {
-      return this.mincodeSchoolNames.get(this.userInfo.mincode) + ' (' + this.userInfo.mincode + ')';
+      return this.mincodeSchoolNames.get(this.userInfo.activeInstituteIdentifier) + ' (' + this.userInfo.activeInstituteIdentifier + ')';
     },
     messageSent(){
       this.subject = '';

@@ -169,17 +169,19 @@ const router = new VueRouter({
 
 router.beforeEach((to, _from, next) => {
   // this section is to set page title in vue store
-  if (to && to.meta) {
-    store.commit('app/setPageTitle',to.meta.pageTitle);
-  } else {
-    store.commit('app/setPageTitle','');
-  }
-  if (to.meta.requiresAuth && authStore.state.isAuthenticated) {
+  if (to.meta.requiresAuth) {
     store.dispatch('auth/getJwtToken').then(() => {
       if (!authStore.state.isAuthenticated) {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
+          if (to && to.meta) {
+            if(authStore.state.userInfo.activeInstituteTitle){
+              store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
+            }else{
+              store.commit('app/setPageTitle',to.meta.pageTitle);
+            }
+          }
           next();
         }).catch(() => {
           next('error');
@@ -190,6 +192,11 @@ router.beforeEach((to, _from, next) => {
     });
   }
   else{
+    if (to && to.meta) {
+      store.commit('app/setPageTitle',to.meta.pageTitle);
+    } else {
+      store.commit('app/setPageTitle','');
+    }
     next();
   }
 });

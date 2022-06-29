@@ -5,6 +5,7 @@ const {ServiceError} = require('./error');
 const HttpStatus = require('http-status-codes');
 const lodash = require('lodash');
 const log = require('./logger');
+const cacheService = require('./cache-service');
 let codes = null;
 
 async function getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationID) {
@@ -28,14 +29,19 @@ async function getUserInfo(req, res) {
       message: 'No session data'
     });
   }
+  let school;
+  if(req.session.activeInstituteIdentifier){
+    school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
+  }
+
   if (req.session.digitalIdentityData && req.session.userMinCodes) {
     let resData = {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
-      mincode: req.session.userMinCodes[0],
-      userMinCodes:req.session.userMinCodes,
+      userMinCodes: req.session.userMinCodes,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
+      activeInstituteTitle: school?.schoolName,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel
     };
     return res.status(HttpStatus.OK).json(resData);
@@ -61,7 +67,6 @@ async function getUserInfo(req, res) {
     if (req && req.session) {
       req.session.digitalIdentityData = digitalIdData;
       req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-      //req.session.userMinCodes = edxUserMinCodeData?.flatMap(user=> user.edxUserSchools?.flatMap(el=>el.mincode)); //this is list of mincodes associated to the user
       req.session.edxUserData = edxUserMinCodeData;
     } else {
       throw new ServiceError('userInfo error: session does not exist');
@@ -69,6 +74,10 @@ async function getUserInfo(req, res) {
     let resData = {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
+      userMinCodes: req.session.userMinCodes,
+      activeInstituteIdentifier: req.session.activeInstituteIdentifier,
+      activeInstituteType: req.session.activeInstituteType,
+      activeInstituteTitle: school?.schoolName,
       identityTypeLabel: identityType.label,
     };
 
