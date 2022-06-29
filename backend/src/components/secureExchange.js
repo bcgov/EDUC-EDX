@@ -201,6 +201,7 @@ async function createExchange(req, res) {
       isReadByExchangeContact: true,
       commentsList: [
         {
+          edxUserID: edxUserInfo.edxUserID,
           commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
           content: message.content
         }
