@@ -10,7 +10,7 @@
                 <span>{{user.email}}</span>
               </div>
               <div v-if="!editState">
-                <PrimaryButton :id="`user-edit-button-${user.firstName}-${user.lastName}`" text="Edit" icon="mdi-pencil" :on="{click: clickEditButton}"></PrimaryButton>
+                <PrimaryButton :id="`user-edit-button-${user.firstName}-${user.lastName}`" secondary text="Edit" icon="mdi-pencil" :on="{click: clickEditButton}"></PrimaryButton>
               </div>
               <!-- we are in edit state below show save and cancel options-->
               <div v-else>
