@@ -176,7 +176,7 @@ router.beforeEach((to, _from, next) => {
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
           if (to && to.meta) {
-            if(authStore.state.userInfo.activeInstituteTitle){
+            if(authStore.state.userInfo.activeInstituteTitle && to.meta.pageTitle !== PAGE_TITLES.SELECTION){
               store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
             }else{
               store.commit('app/setPageTitle',to.meta.pageTitle);
