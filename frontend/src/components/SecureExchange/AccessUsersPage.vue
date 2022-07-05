@@ -27,8 +27,8 @@
     </v-row>
     <!--  user info -->
     <Spinner v-if="loadingUsers"/>
-    <v-row no-gutters v-else-if="filteredUsers.length">
-      <v-col cols="12" v-for="user in filteredUsers" :key="user.digitalID">
+    <v-row v-else-if="filteredUsers.length">
+      <v-col cols="4" v-for="user in filteredUsers" :key="user.digitalID">
         <AccessUserCard @refresh="getUsersData" type="school" :mincode="mincode" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
       </v-col>
     </v-row>
