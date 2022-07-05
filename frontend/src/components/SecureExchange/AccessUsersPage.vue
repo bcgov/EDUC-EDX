@@ -99,13 +99,15 @@ export default {
     if (this.roles.length === 0) {
       await this.$store.dispatch('edx/getExchangeRoles');
     }
+    if(this.mincodeSchoolNames.size === 0) {
+      await this.$store.dispatch('app/getMincodeSchoolNames');
+    }
   },
   created() {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.mincode = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
     });
-    this.$store.dispatch('app/getMincodeSchoolNames');
   },
   methods: {
     sortUserData(users){
