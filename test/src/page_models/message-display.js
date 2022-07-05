@@ -9,6 +9,10 @@ class MessageDisplay {
         this.secureExchangeStatusCode = Selector('.secureExchangeHeader span.secureExchangeStatusCode');
         this.sequenceNumber = Selector('.secureExchangeHeader span.sequenceNumber');
         this.editOptionsMenu = Selector('#editOptionsMenu');
+        this.editOptionsMenuButton = Selector('#editOptionsMenuBtn');
+        this.newMessageButton = Selector('#newMessageToConvBtn');
+        this.newMessageTextArea = Selector ('#newMessageToConvTextArea');
+        this.sendMessageButton = Selector('#newMessagePostBtn');
         this.markAsButton = Selector('#markAsButton');
         this.markAsSpan = this.markAsButton.find('span.markAsSpan');
         this.lastActivity = Selector('.v-timeline:last-child');

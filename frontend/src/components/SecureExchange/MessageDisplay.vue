@@ -21,7 +21,8 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="pb-1 pr-0">
-                    <span class="ministryOwnershipTeamName" style="color: black">{{ secureExchange.ministryOwnershipTeamName }}</span>
+                    <span class="ministryOwnershipTeamName"
+                          style="color: black">{{ secureExchange.ministryOwnershipTeamName }}</span>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -50,15 +51,16 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-speed-dial id="editOptionsMenu" v-if="isEditable()" v-model="editOptionsOpen" top left direction="right">
+              <v-speed-dial id="editOptionsMenu" v-if="isEditable()" v-model="editOptionsOpen" top left
+                            direction="right">
                 <template v-slot:activator>
-                  <v-btn class="mx-2" fab dark large color="#003366">
+                  <v-btn id="editOptionsMenuBtn" class="mx-2" fab dark large color="#003366">
                     <v-icon v-if="editOptionsOpen" dark large>mdi-close</v-icon>
                     <v-icon v-else dark large>mdi-plus</v-icon>
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-btn dark small color="green">
+                  <v-btn id="newMessageToConvBtn" dark small color="green" @click="displayMessageField">
                     <v-icon>mdi-email-outline</v-icon>
                     <span class="ml-1">Message</span>
                   </v-btn>
@@ -73,17 +75,40 @@
                 </v-card>
               </v-speed-dial>
               <v-spacer></v-spacer>
-              <v-btn :disabled="!isEditable()" id="markAsButton" :loading="loadingReadStatus" class="ma-4" v-on:click="clickMarkAsButton">
+              <v-btn :disabled="!isEditable()" id="markAsButton" :loading="loadingReadStatus" class="ma-4"
+                     v-on:click="clickMarkAsButton">
                 <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                 <v-icon v-else>mdi-email-open-outline</v-icon>
-                <span class="ml-1 markAsSpan">Mark As {{ secureExchange.isReadByExchangeContact ? 'Unread' : 'Read' }}</span>
+                <span class="ml-1 markAsSpan">Mark As {{
+                    secureExchange.isReadByExchangeContact ? 'Unread' : 'Read'
+                  }}</span>
               </v-btn>
+            </v-row>
+            <v-row v-if="isNewMessageDisplayed">
+              <v-card-text id="newMessageCardText" class="pb-0 pt-5">
+                <v-textarea id="newMessageToConvTextArea"
+                            outlined
+                            solo
+                            label="New Message..."
+                            auto-grow
+                            v-model="newMessage"
+                            rows="8"
+                            maxlength="4000"
+                            class="pt-0"
+                            ref="newMessageToConvTextArea"
+                >
+                </v-textarea>
+              </v-card-text>
+              <v-row class="py-4 justify-end pt-0 pr-8">
+                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" @click.native="hideNewMessageField"></PrimaryButton>
+                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="processing" @click.native="sendNewExchangeComment"></PrimaryButton>
+              </v-row>
             </v-row>
             <v-row>
               <v-col>
                 <v-timeline v-if="secureExchange.activities.length > 0" dense>
                   <div v-for="activity in secureExchange.activities"
-                       :key="activity.secureExchangeID">
+                       :key="activity.secureExchangeCommentID">
                     <v-timeline-item large :color="getActivityColour(activity)" :icon="getActivityIcon(activity)">
                       <v-card>
                         <v-card-title>
@@ -109,10 +134,13 @@
 
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
+import PrimaryButton from '@/components/util/PrimaryButton';
+import alertMixin from '@/mixins/alertMixin';
 
 export default {
   name: 'MessageDisplay',
-  components: {},
+  mixins: [alertMixin],
+  components: {PrimaryButton},
   props: {
     secureExchangeID: {
       type: String,
@@ -122,9 +150,15 @@ export default {
   data() {
     return {
       secureExchange: null,
+      assignedMinistryTeam: null,
+      subject: '',
       loading: true,
       editOptionsOpen: false,
-      loadingReadStatus: false
+      loadingReadStatus: false,
+      isNewMessageDisplayed: false,
+      newMessageBtnDisplayed:false,
+      processing: false,
+      newMessage:''
     };
   },
   computed: {},
@@ -133,6 +167,12 @@ export default {
     this.getExchange();
   },
   methods: {
+    displayMessageField() {
+      this.isNewMessageDisplayed = true;
+    },
+    hideNewMessageField(){
+      this.isNewMessageDisplayed=false;
+    },
     getExchange() {
       this.loading = true;
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
@@ -156,7 +196,7 @@ export default {
         .catch(error => {
           console.log(error);
         }).finally(() => {
-          this.loadingReadStatus=false;
+          this.loadingReadStatus = false;
         });
     },
     clickMarkAsButton() {
@@ -187,7 +227,34 @@ export default {
       default:
         return '';
       }
-    }
+    },
+    messageSent(){
+      this.subject = '';
+      this.assignedMinistryTeam = null;
+      this.newMessage = '';
+    },
+    sendNewExchangeComment() {
+      this.processing = true;
+      const payload = {
+        content: this.newMessage,
+      };
+      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/comments`, payload)
+        .then(() => {
+          this.setSuccessAlert('Success! The message has been sent.');
+          this.messageSent();
+          this.getExchange();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while sending message. Please try again later.');
+
+        })
+        .finally(() => {
+          this.processing = false;
+          this.isNewMessageDisplayed=false;
+
+        });
+    },
   }
 };
 </script>
