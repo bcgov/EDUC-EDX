@@ -606,5 +606,6 @@ module.exports = {
   getEdxUsers,
   schoolUserActivationInvite,
   updateEdxUserRoles,
-  createSecureExchangeComment
+  createSecureExchangeComment,
+  setSessionInstituteIdentifiers
 };
