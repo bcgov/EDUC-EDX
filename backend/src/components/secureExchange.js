@@ -303,6 +303,7 @@ async function getExchange(req, res) {
         activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
         activity['content'] = comment['content'];
         activity['secureExchangeID'] = comment['secureExchangeID'];
+        activity['secureExchangeCommentID'] = comment['secureExchangeCommentID'];
         dataResponse['activities'].push(activity);
       });
       dataResponse['activities'].sort((activity1, activity2) => { return activity2.timestamp.compareTo(activity1.timestamp); });
@@ -331,7 +332,7 @@ async function markAs(req, res) {
   try {
     const currentExchange = await getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`);
     if (currentExchange.isReadByExchangeContact === isReadByExchangeContact) {
-      return res.status(HttpStatus.NOT_MODIFIED).json({
+      return res.status(HttpStatus.OK).json({
         message: `The status is already marked as ${readStatus}.`
       });
     }
@@ -476,6 +477,26 @@ async function schoolUserActivationInvite(req,res){
 
 }
 
+async function createSecureExchangeComment(req,res){
+  try {
+    const token = getAccessToken(req);
+    const edxUserInfo = req.session.edxUserData[0];
+    const message = req.body;
+    const payload = {
+      secureExchangeID: req.params.secureExchangeID,
+      edxUserID: edxUserInfo.edxUserID,
+      commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
+      content: message.content,
+      commentTimestamp: LocalDateTime.now().toJSON(),
+    };
+
+    const result = await postData(token, payload, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}` + '/comments', req.session.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'createExchangeComment', 'Error occurred while attempting to create a new exchange comment.');
+    return errorResponse(res);
+  }
+}
 function mapEdxUserActivationErrorMessage(message) {
   const msg = message || 'INTERNAL SERVER ERROR';
   if (msg.includes('EdxActivationCode was not found for parameters')) {
@@ -576,5 +597,6 @@ module.exports = {
   instituteSelection,
   getEdxUsers,
   schoolUserActivationInvite,
-  updateEdxUserRoles
+  updateEdxUserRoles,
+  createSecureExchangeComment
 };
