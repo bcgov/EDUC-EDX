@@ -189,7 +189,7 @@ async function getExchangesPaginated(req) {
 async function createExchange(req, res) {
   try {
     const token = getAccessToken(req);
-    const edxUserInfo = req.session.edxUserData[0];
+    const edxUserInfo = req.session.edxUserData;
     const message = req.body;
     const payload = {
       contactIdentifier: req.session.activeInstituteIdentifier,
