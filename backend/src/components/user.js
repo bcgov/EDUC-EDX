@@ -8,7 +8,7 @@ const log = require('./logger');
 const cacheService = require('./cache-service');
 let codes = null;
 
-async function getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationID) {
+async function getEdxUserByDigitalId(accessToken, digitalID, correlationID) {
   try {
     const params = {
       params: {
@@ -17,7 +17,7 @@ async function getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationI
     };
     return await getDataWithParams(accessToken, config.get('edx:edxUsersURL'), params, correlationID);
   } catch (e) {
-    throw new ServiceError('getEdxUserMinCodeByDigitalId error', e);
+    throw new ServiceError('getEdxUserByDigitalId error', e);
   }
 }
 
@@ -42,7 +42,8 @@ async function getUserInfo(req, res) {
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
-      identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel
+      identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
+      activeInstitutePermissions: req.session.activeInstitutePermissions
     };
     return res.status(HttpStatus.OK).json(resData);
   }
@@ -53,7 +54,7 @@ async function getUserInfo(req, res) {
   return Promise.all([
     getDigitalIdData(accessToken, digitalID, correlationID),
     getServerSideCodes(accessToken, correlationID),
-    getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationID),
+    getEdxUserByDigitalId(accessToken, digitalID, correlationID),
   ]).then(async ([digitalIdData, codesData, edxUserMinCodeData]) => {
 
     const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
@@ -67,7 +68,11 @@ async function getUserInfo(req, res) {
     if (req && req.session) {
       req.session.digitalIdentityData = digitalIdData;
       req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-      req.session.edxUserData = edxUserMinCodeData;
+      if(Array.isArray(edxUserMinCodeData)){
+        req.session.edxUserData = edxUserMinCodeData[0];
+      }else{
+        req.session.edxUserData = edxUserMinCodeData;
+      }
     } else {
       throw new ServiceError('userInfo error: session does not exist');
     }
@@ -79,6 +84,7 @@ async function getUserInfo(req, res) {
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
       identityTypeLabel: identityType.label,
+      activeInstitutePermissions: req.session.activeInstitutePermissions
     };
 
     return res.status(HttpStatus.OK).json(resData);
@@ -118,5 +124,5 @@ async function getServerSideCodes(accessToken, correlationID) {
 
 module.exports = {
   getUserInfo,
-  getEdxUserMinCodeByDigitalId
+  getEdxUserByDigitalId
 };

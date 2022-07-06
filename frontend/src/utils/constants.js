@@ -48,5 +48,6 @@ export const PAGE_TITLES = Object.freeze({
   ACTIVATE_USER:'Activate User',
   EXCHANGE_USERS: 'Exchange Users',
   SELECTION:'Institute Selection',
+  LOGIN:'Login',
   NEW_USER_INVITE:'New User'
 });

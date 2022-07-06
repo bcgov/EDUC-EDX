@@ -57,7 +57,7 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.breakpoint.mdAndUp}">
+  <v-app-bar v-if="hasAnyItems" app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.breakpoint.mdAndUp}">
     <v-app-bar-nav-icon id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
@@ -72,6 +72,7 @@
 <script>
 import {PAGE_TITLES} from '@/utils/constants';
 import { mapState } from 'vuex';
+import {PERMISSION} from '@/utils/constants/Permission';
 export default {
   name: 'navBar',
   props: {
@@ -83,31 +84,13 @@ export default {
   data() {
     return {
       drawer: null,
-      items: []
+      items: [],
+      hasAnyItems: false
     };
-  },
-  mounted() {
-    this.items = [
-      {
-        title: PAGE_TITLES.DASHBOARD,
-        link: 'home',
-        authorized: this.isAuthenticated
-      },
-      {
-        title: PAGE_TITLES.ADMINISTRATION,
-        authorized: this.isAuthenticated,
-        items: [
-          {
-            title: 'User Management',
-            link: 'exchangeAccess',
-            authorized: this.isAuthenticated
-          }
-        ],
-      }
-    ];
   },
   computed: {
     ...mapState('auth', ['isAuthenticated']),
+    ...mapState('auth', ['userInfo']),
     navWidth () {
       switch (this.$vuetify.breakpoint.name) {
       case 'xs':
@@ -119,7 +102,36 @@ export default {
       }
     }
   },
+  watch:{
+    userInfo() {
+      this.refreshUserPermissions();
+    }
+  },
   methods: {
+    refreshUserPermissions(){
+      this.items = [
+        {
+          title: PAGE_TITLES.DASHBOARD,
+          link: 'home',
+          authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
+        },
+        {
+          title: PAGE_TITLES.ADMINISTRATION,
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_ADMIN),
+          items: [
+            {
+              title: 'User Management',
+              link: 'exchangeAccess',
+              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_ADMIN)
+            }
+          ],
+        }
+      ];
+      this.hasAnyItems = this.items.filter(obj => obj.authorized).length > 0;
+    },
+    hasRequiredPermission(permission){
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0;
+    },
     setActive(item) {
       let index = this.items.findIndex(obj => obj.title === item.title);
       if(item.active) {

@@ -7,6 +7,7 @@ const auth = require('../components/auth');
 const log = require('../components/logger');
 const {v4: uuidv4} = require('uuid');
 const {getSessionUser} = require('../components/utils');
+const {setSessionInstituteIdentifiers} = require('../components/secureExchange');
 
 const {
   body,
@@ -39,7 +40,6 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
   );
 }
 
-//addOIDCRouterGet('oidcBceid', '/callback_bceid', config.get('server:frontend'));
 addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
 
 router.get('/callback_bceid',
@@ -51,18 +51,19 @@ router.get('/callback_bceid',
     const accessToken = userInfo.jwt;
     const digitalID = userInfo._json.digitalIdentityID;
     const correlationID = req.session?.correlationID;
-    user.getEdxUserMinCodeByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
+    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
       req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
-      req.session.edxUserData = edxUserMinCodeData;
+      if(Array.isArray(edxUserMinCodeData)){
+        req.session.edxUserData = edxUserMinCodeData[0];
+      }else{
+        req.session.edxUserData = edxUserMinCodeData;
+      }
       if(req.session.userMinCodes.length === 1){
-        req.session.activeInstituteIdentifier = req.session.userMinCodes[0];
-        req.session.activeInstituteType = 'SCHOOL';
+        setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
         res.redirect(config.get('server:frontend'));
       }
       else if (req.session.userMinCodes.length > 1){
-        // TODO document why this block is empty
         res.redirect(config.get('server:frontend') + '/institute-selection');
-
       }
     });
   }

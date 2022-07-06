@@ -10,6 +10,7 @@ import UserActivationLinkError from './components/UserActivationLinkError';
 import SessionExpired from './components/SessionExpired';
 import ErrorPage from '@/components/ErrorPage.vue';
 import LoginError from '@/components/LoginError.vue';
+import Unauthorized from '@/components/common/Unauthorized.vue';
 import authStore from './store/modules/auth';
 import store from './store/index';
 import Login from '@/components/Login.vue';
@@ -55,6 +56,14 @@ const router = new VueRouter({
       component: Logout
     },
     {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: Unauthorized,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
       path: '/session-expired',
       name: 'session-expired',
       component: SessionExpired
@@ -70,8 +79,7 @@ const router = new VueRouter({
       component: InstituteSelection,
       meta: {
         pageTitle: PAGE_TITLES.SELECTION,
-        requiresAuth: true,
-        role: '*'
+        requiresAuth: true
       }
     },
     {
@@ -82,7 +90,11 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: {
+        pageTitle: PAGE_TITLES.LOGIN,
+        requiresAuth: false
+      }
     },
     {
       path: '/user-activation',
@@ -100,7 +112,7 @@ const router = new VueRouter({
       meta: {
         pageTitle: PAGE_TITLES.EXCHANGE_USERS,
         requiresAuth: true,
-        role: 'EXCHANGE_ACCESS_ROLE'
+        permission: 'EDX_USER_ADMIN'
       }
     },
     {
@@ -127,7 +139,7 @@ const router = new VueRouter({
           meta: {
             pageTitle: PAGE_TITLES.EXCHANGE,
             requiresAuth: true,
-            role: '*'
+            permission: 'SECURE_EXCHANGE'
           }
         },
         {
@@ -138,7 +150,7 @@ const router = new VueRouter({
           meta: {
             pageTitle: PAGE_TITLES.VIEW_EXCHANGE,
             requiresAuth: true,
-            role: '*'
+            permission: 'SECURE_EXCHANGE'
           }
         },
         {
@@ -148,7 +160,7 @@ const router = new VueRouter({
           meta: {
             pageTitle: PAGE_TITLES.NEW_EXCHANGE,
             requiresAuth: true,
-            role: '*'
+            permission: 'SECURE_EXCHANGE'
           }
         },
         {
@@ -158,7 +170,7 @@ const router = new VueRouter({
           meta: {
             pageTitle: PAGE_TITLES.NEW_USER_INVITE,
             requiresAuth: true,
-            role: '*'
+            permission: 'SECURE_EXCHANGE'
           }
         }
       ]
@@ -175,6 +187,10 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
+          if (to.meta.permission && authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1) {
+            next('/unauthorized');
+          }
+
           if (to && to.meta) {
             if(authStore.state.userInfo.activeInstituteTitle && to.meta.pageTitle !== PAGE_TITLES.SELECTION){
               store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
@@ -188,10 +204,17 @@ router.beforeEach((to, _from, next) => {
         });
       }
     }).catch(() => {
-      next('/token-expired');
+      if (!authStore.state.userInfo) {
+        next('/login');
+      }else{
+        next('/token-expired');
+      }
     });
   }
   else{
+    if (!authStore.state.userInfo) {
+      next();
+    }
     if (to && to.meta) {
       store.commit('app/setPageTitle',to.meta.pageTitle);
     } else {
