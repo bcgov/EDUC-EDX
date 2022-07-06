@@ -22,9 +22,14 @@ const NATS = require('./messaging/message-subscriber');
 if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to stop GitHub Actions test from hanging.
   const cacheService = require('./components/cache-service');
   cacheService.loadAllSchoolsToMap().then(() => {
-    log.info('loaded school data to memory');
+    log.info('Loaded school data to memory');
   }).catch((e) => {
-    log.error('error loading schools during boot .', e);
+    log.error('Error loading schools during boot .', e);
+  });
+  cacheService.loadAllRolePermissionsToMap().then(() => {
+    log.info('Loaded roles and permissions data to memory');
+  }).catch((e) => {
+    log.error('Error loading roles during boot .', e);
   });
 }
 

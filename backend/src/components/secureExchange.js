@@ -218,8 +218,7 @@ async function createExchange(req, res) {
 
 async function instituteSelection(req, res) {
   if (req.session.userMinCodes.includes(req.body.params.mincode)) {
-    req.session.activeInstituteIdentifier = req.body.params.mincode;
-    req.session.activeInstituteType = 'SCHOOL';
+    setSessionInstituteIdentifiers(req, req.body.params.mincode, 'SCHOOL' );
     return res.status(200).json('OK');
   }
   else {
@@ -352,8 +351,6 @@ async function updateEdxUserRoles(req, res) {
     const token = getAccessToken(req);
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID);
 
-    console.log('PARAMS ' + JSON.stringify(req.body.params));
-
     let selectedUserSchool = response.edxUserSchools.filter(school => school.mincode === req.body.params.mincode);
 
     let rolesToBeRemoved = [];
@@ -391,7 +388,6 @@ async function updateEdxUserRoles(req, res) {
     return errorResponse(res);
   }
 }
-
 
 async function activateSchoolUser(req, res) {
   const token = getAccessToken(req);
@@ -581,6 +577,18 @@ const createSearchParamObject = (key, value) => {
   }
   return {key, value, operation, valueType};
 };
+
+function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+  req.session.activeInstituteIdentifier = activeInstituteIdentifier;
+  req.session.activeInstituteType = activeInstituteType;
+
+  let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.mincode === activeInstituteIdentifier);
+  let permissionsArray = [];
+  selectedUserSchool[0].edxUserSchoolRoles.forEach(function(role){
+    permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
+  });
+  req.session.activeInstitutePermissions = permissionsArray;
+}
 
 module.exports = {
   verifyRequest,
