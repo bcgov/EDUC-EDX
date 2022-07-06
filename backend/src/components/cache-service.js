@@ -43,7 +43,6 @@ const cacheService = {
     return mincodeSchoolMap.get(mincode);
   },
   getPermissionsForRole(role) {
-    console.log('Map is ' + [...rolePermissionsMap.entries()]);
     return rolePermissionsMap.get(role);
   },
   async loadAllRolePermissionsToMap() {
