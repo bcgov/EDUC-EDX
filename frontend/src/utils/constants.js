@@ -42,11 +42,11 @@ export const ApiRoutes = Object.freeze({
 export const PAGE_TITLES = Object.freeze({
   ADMINISTRATION: 'Administration',
   DASHBOARD: 'Dashboard',
-  EXCHANGE: 'Secure Exchange Inbox',
-  VIEW_EXCHANGE: 'View Message',
+  EXCHANGE: 'Secure Messaging Inbox',
+  VIEW_EXCHANGE: 'Secure Message',
   NEW_EXCHANGE: 'New Message',
   ACTIVATE_USER:'Activate User',
-  EXCHANGE_USERS: 'Exchange Users',
+  EXCHANGE_USERS: 'User Management',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
   NEW_USER_INVITE:'New User'

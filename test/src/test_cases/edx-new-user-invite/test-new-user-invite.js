@@ -24,7 +24,7 @@ fixture`new-user-invite`
 test('test-school-user-activation-invite', async t => {
 
   await t.navigateTo(base_url + '/access');
-  await t.expect(accessUsersPage.navTitle.innerText).contains('Exchange Users');
+  await t.expect(accessUsersPage.navTitle.innerText).contains('User Management');
   await t.click(accessUsersPage.newUserBtn);
   await t.expect(accessUsersPage.vCardTitle.innerText).contains('New User');
 

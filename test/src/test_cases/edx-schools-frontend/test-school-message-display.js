@@ -39,7 +39,7 @@ test('test-school-message-display', async t => {
   //Verify header information.
   log.info('verifying header information');
   await t.navigateTo(base_url + '/exchange/' + testExchange.secureExchangeID);
-  await t.expect(messageDisplay.navTitle.innerText).contains('View Message');
+  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Message');
   await t.expect(messageDisplay.subjectHeading.innerText).eql(testExchange.subject);
   await t.expect((await messageDisplay.ministryOwnershipTeamName.innerText).length > 0).ok();
   await t.expect((await messageDisplay.createDate.innerText).length > 0).ok();
@@ -62,14 +62,14 @@ test('test-school-message-display', async t => {
   await t.expect(messageDisplay.markAsSpan.innerText).eql('Mark As Unread');
   await t.click(messageDisplay.markAsButton);
   //once we mark message as unread, we should go back to the inbox page.
-  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Exchange Inbox');
+  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Messaging Inbox');
 });
 
 test('test-school-message-display-new-message', async t => {
   //Verify header information.
   log.info('verifying header information');
   await t.navigateTo(base_url + '/exchange/' + testExchange.secureExchangeID);
-  await t.expect(messageDisplay.navTitle.innerText).contains('View Message');
+  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Message');
   await t.click(messageDisplay.editOptionsMenuButton);
   await t.click(messageDisplay.newMessageButton);
   await t.click(messageDisplay.newMessageTextArea).typeText(messageDisplay.newMessageTextArea(), 'Message To Test', {timeout: 20000});
