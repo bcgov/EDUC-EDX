@@ -11,8 +11,8 @@
               color="blue"
               :active="loading"
           ></v-progress-linear>
-          <div v-if="!loading && secureExchange" style="width: 100%;" :overlay=false>
-            <v-row class="secureExchangeHeader" style="border-bottom: 5px solid rgb(252, 186, 25) !important">
+          <div v-if="!loading && secureExchange" :overlay=false>
+            <v-row class="secureExchangeHeader">
               <v-col cols="7" md="10" class="pb-0 pt-0">
                 <v-row class="mb-n4">
                   <v-col cols="12" class="pb-2 pt-2 pr-0">
@@ -50,9 +50,9 @@
                 </v-row>
               </v-col>
             </v-row>
+            <v-divider class="divider"></v-divider>
             <v-row>
-              <v-speed-dial id="editOptionsMenu" v-if="isEditable()" v-model="editOptionsOpen" top left
-                            direction="right">
+              <v-speed-dial id="editOptionsMenu" v-if="isEditable()" v-model="editOptionsOpen" top left direction="right">
                 <template v-slot:activator>
                   <v-btn id="editOptionsMenuBtn" class="mx-2" fab dark large color="#003366">
                     <v-icon v-if="editOptionsOpen" dark large>mdi-close</v-icon>
@@ -74,15 +74,16 @@
                   </v-btn>
                 </v-card>
               </v-speed-dial>
-              <v-spacer></v-spacer>
-              <v-btn :disabled="!isEditable()" id="markAsButton" :loading="loadingReadStatus" class="ma-4"
-                     v-on:click="clickMarkAsButton">
-                <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
-                <v-icon v-else>mdi-email-open-outline</v-icon>
-                <span class="ml-1 markAsSpan">Mark As {{
-                    secureExchange.isReadByExchangeContact ? 'Unread' : 'Read'
-                  }}</span>
-              </v-btn>
+              <v-col class="d-flex justify-end">
+                <v-btn :disabled="!isEditable()" id="markAsButton" :loading="loadingReadStatus" class="my-4"
+                       v-on:click="clickMarkAsButton">
+                  <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
+                  <v-icon v-else>mdi-email-open-outline</v-icon>
+                  <span class="ml-1 markAsSpan">Mark As {{
+                      secureExchange.isReadByExchangeContact ? 'Unread' : 'Read'
+                    }}</span>
+                </v-btn>
+              </v-col>
             </v-row>
             <v-row v-if="isNewMessageDisplayed">
               <v-card-text id="newMessageCardText" class="pb-0 pt-5">
@@ -259,7 +260,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .subjectHeading {
   overflow-wrap: break-word;
 }
@@ -268,5 +269,10 @@ export default {
   .subjectHeading {
     font-size: medium;
   }
+}
+
+.divider {
+  border-color: #FCBA19;
+  border-width: medium;
 }
 </style>
