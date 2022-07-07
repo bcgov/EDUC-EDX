@@ -79,9 +79,7 @@
                        v-on:click="clickMarkAsButton">
                   <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                   <v-icon v-else>mdi-email-open-outline</v-icon>
-                  <span class="ml-1 markAsSpan">Mark As {{
-                      secureExchange.isReadByExchangeContact ? 'Unread' : 'Read'
-                    }}</span>
+                  <span class="ml-1 markAsSpan">Mark As {{ secureExchange.isReadByExchangeContact ? 'Unread' : 'Read' }}</span>
                 </v-btn>
               </v-col>
             </v-row>
@@ -151,15 +149,12 @@ export default {
   data() {
     return {
       secureExchange: null,
-      assignedMinistryTeam: null,
-      subject: '',
       loading: true,
       editOptionsOpen: false,
       loadingReadStatus: false,
       isNewMessageDisplayed: false,
-      newMessageBtnDisplayed:false,
       processing: false,
-      newMessage:''
+      newMessage: ''
     };
   },
   computed: {},
@@ -172,7 +167,8 @@ export default {
       this.isNewMessageDisplayed = true;
     },
     hideNewMessageField(){
-      this.isNewMessageDisplayed=false;
+      this.isNewMessageDisplayed = false;
+      this.resetNewMessageForm();
     },
     getExchange() {
       this.loading = true;
@@ -229,9 +225,7 @@ export default {
         return '';
       }
     },
-    messageSent(){
-      this.subject = '';
-      this.assignedMinistryTeam = null;
+    resetNewMessageForm() {
       this.newMessage = '';
     },
     sendNewExchangeComment() {
@@ -242,18 +236,16 @@ export default {
       ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/comments`, payload)
         .then(() => {
           this.setSuccessAlert('Success! The message has been sent.');
-          this.messageSent();
           this.getExchange();
         })
         .catch(error => {
           console.error(error);
           this.setFailureAlert('An error occurred while sending message. Please try again later.');
-
         })
         .finally(() => {
           this.processing = false;
-          this.isNewMessageDisplayed=false;
-
+          this.isNewMessageDisplayed = false;
+          this.resetNewMessageForm();
         });
     },
   }
