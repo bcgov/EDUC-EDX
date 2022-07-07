@@ -179,10 +179,10 @@
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
                   <v-row @click="openExchange(item.secureExchangeID)" style="cursor: pointer;">
-                    <v-col cols="7" md="10" class="pb-0 pt-0">
+                    <v-col cols="8" xl="11" class="pb-0 pt-0">
                       <v-row class="mb-n4">
                         <v-col cols="12" class="pb-2 pt-2 pr-0">
-                          <h3 class="subjectHeading" :style="{color: item.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.subject) }}</h3>
+                          <span class="subjectHeading" :style="{color: item.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item) }}</span>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -192,23 +192,14 @@
                             }} - {{ item.createDate }}</span>
                         </v-col>
                       </v-row>
-                      <v-row>
-                        <v-col cols="12" class="pt-0 pb-1 pr-0">
-                          <span style="color: gray">{{ getLatestComment(item) }}</span>
-                        </v-col>
-                      </v-row>
                     </v-col>
-                    <v-col cols="5" md="2" style="text-align: end" class="pb-0 pt-0">
-                      <v-row class="mb-n4">
-                        <v-col cols="12" class="pb-1">
+                    <v-col cols="4" xl="1" style="text-align: end" class="pb-0 pt-0">
+                      <v-row>
+                        <v-col class="pb-1">
                           <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>
                             mdi-circle-medium
                           </v-icon>
                           <span class="statusCodeLabel">{{ item.secureExchangeStatusCode }}</span>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" class="pb-2">
                           <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
                             mdi-pound
                           </v-icon>
@@ -537,13 +528,14 @@ export default {
 }
 
 .subjectHeading {
-  font-size: x-large;
+  font-size: large;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .ministryLine {
   color: black;
-  font-size: large;
+  font-size: medium;
 }
 
 .statusCodeLabel {
