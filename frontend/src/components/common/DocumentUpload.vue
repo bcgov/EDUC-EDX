@@ -1,5 +1,6 @@
 <template>
   <v-card class="document-upload">
+    <v-card-title><h3>Document Upload</h3></v-card-title>
     <v-form
       ref="form"
       v-model="validForm"
@@ -40,24 +41,6 @@
       </v-alert>
       <v-card-actions>
         <v-spacer></v-spacer>
-<!--        <v-btn-->
-<!--          color="#003366"-->
-<!--          class="white&#45;&#45;text"-->
-<!--          id="upload_form"-->
-<!--          @click="submitRequest"-->
-<!--          :disabled="!dataReady"-->
-<!--          :loading="active"-->
-<!--          :key="buttonKey"-->
-<!--        >-->
-<!--          Attach-->
-<!--        </v-btn>-->
-<!--        <v-btn-->
-<!--          color="#003366"-->
-<!--          class="white&#45;&#45;text"-->
-<!--          @click="closeForm"-->
-<!--        >-->
-<!--          Close-->
-<!--        </v-btn>-->
         <PrimaryButton id="cancelMessage" secondary text="Cancel"
                        @click.native="closeForm"></PrimaryButton>
         <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"

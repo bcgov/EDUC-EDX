@@ -70,14 +70,14 @@
                       <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">{{document.fileName}}</v-chip>
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row v-if="shouldShowOptions">
                     <v-col class="d-flex justify-end mr-3 pt-0">
                       <v-btn id="attachFileID"
                              title="Attach File"
                              color="#1A5A96"
                              outlined
                              class="addButton pl-0 pr-2"
-                             @click="expandAttachFile = !expandAttachFile"
+                             @click="showAttachFilePanel"
                       >
                         <v-icon color="#1A5A96" class="mr-0" right dark>mdi-paperclip</v-icon>
                         <span class="ml-1">Attach File</span>
@@ -105,7 +105,7 @@
                       >
                         <DocumentUpload
                             v-show="expandAttachFile"
-                            @close:form="() => expandAttachFile = false"
+                            @close:form="showOptions"
                             @upload="uploadDocument"
                         ></DocumentUpload>
                       </v-expand-transition>
@@ -161,7 +161,9 @@ export default {
       requiredRules: [v => !!v?.trim() || 'Required'],
       isValidForm: false,
       processing: false,
-      expandAttachFile: false
+      expandAttachFile: false,
+      expandAddStudent: false,
+      shouldShowOptions: true,
     };
   },
   computed: {
@@ -219,6 +221,16 @@ export default {
     },
     clearSecureExchangeDocuments() {
       this.$store.commit('edx/setSecureExchangeDocuments', []);
+    },
+    showOptions() {
+      this.expandAttachFile = false;
+      this.expandAddStudent = false;
+      this.shouldShowOptions = true;
+    },
+    showAttachFilePanel() {
+      this.expandAttachFile = true;
+      this.expandAddStudent = false;
+      this.shouldShowOptions = false;
     }
   }
 };
