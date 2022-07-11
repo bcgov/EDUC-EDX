@@ -1,44 +1,46 @@
 <template>
   <v-card class="document-upload">
     <v-card-title><h3>Document Upload</h3></v-card-title>
-    <v-form
-      ref="form"
-      v-model="validForm"
-    >
-      <v-select
-          color="#003366"
-          v-model="documentTypeCode"
-          required
-          :rules="requiredRules"
-          outlined
-          :eager="eager"
-          :items="documentTypes"
-          label="Document Type"
-      ></v-select>
-      <v-file-input
-        color="#003366"
-        :accept="fileAccept"
-        :disabled="hasReadOnlyRoleAccess()"
-        :rules="fileRules"
-        placeholder="Select your file"
-        hint="JPEG, PNG, and PDF files supported"
-        :error-messages="fileInputError"
-        @change="selectFile"
-        @click="$event.target.value=''"
-      ></v-file-input>
-      <!--^^^ @click event to solve issue when adding 2 files with the same name back to back-->
-      <!--https://stackoverflow.com/questions/54124977/vuejs-input-file-selection-event-not-firing-upon-selecting-the-same-file-->
+    <v-card-text>
+      <v-form
+          ref="form"
+          v-model="validForm"
+      >
+        <v-select
+            color="#003366"
+            v-model="documentTypeCode"
+            required
+            :rules="requiredRules"
+            outlined
+            :eager="eager"
+            :items="documentTypes"
+            label="Document Type"
+        ></v-select>
+        <v-file-input
+            color="#003366"
+            :accept="fileAccept"
+            :disabled="hasReadOnlyRoleAccess()"
+            :rules="fileRules"
+            placeholder="Select your file"
+            hint="JPEG, PNG, and PDF files supported"
+            :error-messages="fileInputError"
+            @change="selectFile"
+            @click="$event.target.value=''"
+        ></v-file-input>
+        <!--^^^ @click event to solve issue when adding 2 files with the same name back to back-->
+        <!--https://stackoverflow.com/questions/54124977/vuejs-input-file-selection-event-not-firing-upon-selecting-the-same-file-->
       </v-form>
       <v-alert
-        dense
-        outlined
-        dismissible
-        v-model="alert"
-        :class="alertType"
-        class="mb-3"
+          dense
+          outlined
+          dismissible
+          v-model="alert"
+          :class="alertType"
+          class="mb-3"
       >
-         {{ alertMessage }}
+        {{ alertMessage }}
       </v-alert>
+    </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <PrimaryButton id="cancelMessage" secondary text="Cancel"
