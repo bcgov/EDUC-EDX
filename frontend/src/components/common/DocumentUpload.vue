@@ -1,21 +1,33 @@
 <template>
   <v-card class="document-upload">
-
     <v-card-title><h3>Document Upload</h3></v-card-title>
     <v-form
       ref="form"
       v-model="validForm"
     >
+      <v-select
+          color="#003366"
+          v-model="documentTypeCode"
+          required
+          :rules="requiredRules"
+          outlined
+          :eager="eager"
+          :items="documentTypes"
+          label="Document Type"
+      ></v-select>
       <v-file-input
         color="#003366"
         :accept="fileAccept"
         :disabled="hasReadOnlyRoleAccess()"
+        :rules="fileRules"
         placeholder="Select your file"
+        hint="JPEG, PNG, and PDF files supported"
         :error-messages="fileInputError"
         @change="selectFile"
+        @click="$event.target.value=''"
       ></v-file-input>
-
-
+      <!--^^^ @click event to solve issue when adding 2 files with the same name back to back-->
+      <!--https://stackoverflow.com/questions/54124977/vuejs-input-file-selection-event-not-firing-upon-selecting-the-same-file-->
       </v-form>
       <v-alert
         dense
@@ -29,24 +41,10 @@
       </v-alert>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="#003366"
-          class="white--text"
-          id="upload_form"
-          @click="submitRequest"
-          :disabled="!dataReady"
-          :loading="active"
-          :key="buttonKey"
-        >
-          Upload
-        </v-btn>
-        <v-btn
-          color="#003366"
-          class="white--text"
-          @click="closeForm"
-        >
-          Close
-        </v-btn>
+        <PrimaryButton id="cancelMessage" secondary text="Cancel"
+                       @click.native="closeForm"></PrimaryButton>
+        <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"
+                       text="Upload" width="7rem" @click.native="submitRequest"></PrimaryButton>
       </v-card-actions>
 
 
@@ -54,10 +52,14 @@
 </template>
 
 <script>
-import {getFileExtensionWithDot, getFileNameWithMaxNameLength} from '@/utils/file';
-import {mapGetters} from 'vuex';
+import {getFileNameWithMaxNameLength, humanFileSize} from '@/utils/file';
+import { mapGetters } from 'vuex';
+import {sortBy} from 'lodash';
+import ApiService from '../../common/apiService';
+import PrimaryButton from '../util/PrimaryButton';
 
 export default {
+  components: {PrimaryButton},
   props: {
     eager: {
       type: Boolean,
@@ -66,8 +68,10 @@ export default {
   },
   data() {
     return {
-      fileAccept: 'xls, xlsx',
+      fileAccept: '.pdf,.png,.jpg',
       requiredRules: [v => !!v || 'Required'],
+      fileRules: [],
+      filesAccept: '',
       validForm: true,
       fileInputError: [],
       documentTypeCode: null,
@@ -87,15 +91,28 @@ export default {
       this.buttonKey += 1;
     },
   },
+  created() {
+    this.$store.dispatch('edx/getSecureExchangeDocumentTypes');
+
+    this.getFileRules().catch(e => {
+      console.log(e);
+      this.setErrorAlert('Error obtaining file requirements occurred. You can upload files later.');
+    });
+  }
+  ,
   computed: {
-    ...mapGetters('auth', ['NOMINAL_ROLL_READ_ONLY_ROLE']),
+    ...mapGetters('edx',['secureExchangeDocumentTypes']),
     dataReady () {
       return this.validForm && this.file;
     },
+    documentTypes() {
+      return sortBy(this.secureExchangeDocumentTypes, ['displayOrder'])
+        .map(code => ({text: code.label, value: code.secureExchangeDocumentTypeCode}));
+    }
   },
   methods: {
     hasReadOnlyRoleAccess() {
-      return this.NOMINAL_ROLL_READ_ONLY_ROLE === true;
+      return false;
     },
     closeForm() {
       this.resetForm();
@@ -104,8 +121,11 @@ export default {
     resetForm() {
       this.$refs.form.reset();
       this.fileInputError = [];
+      this.file = null;
       this.alert = false;
       this.active = false;
+      this.alertMessage = null;
+      this.documentTypeCode = null;
     },
     setSuccessAlert() {
       this.alertMessage = 'File upload successful.';
@@ -156,13 +176,35 @@ export default {
     async uploadFile(env) {
       let document = {
         fileName: getFileNameWithMaxNameLength(this.file.name),
-        fileExtension: getFileExtensionWithDot(this.file.name),
+        fileExtension: this.file.type,
         fileSize: this.file.size,
+        documentTypeCode: this.documentTypeCode,
         documentData: btoa(env.target.result)
       };
       this.$emit('upload', document);
       this.resetForm();
       this.$emit('close:form');
+    },
+    makefileFormatList(extensions) {
+      extensions = extensions.map(v => v.split(new RegExp('/'))[1]).filter(v => v).map(v => v.toUpperCase());
+      if(extensions.length <= 2) {
+        return extensions.join(' and ');
+      } else {
+        const lastTwo = extensions.splice(-2, 2).join(', and ');
+        extensions.push(lastTwo);
+        return extensions.join(', ');
+      }
+    },
+    async getFileRules() {
+      const response = await ApiService.getFileRequirements();
+      const fileRequirements = response.data;
+      const maxSize = fileRequirements.maxSize;
+      this.fileRules = [
+        value => !value || value.size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`,
+        value => !value || fileRequirements.extensions.includes(value.type) || `File formats should be ${this.fileFormats}.`,
+      ];
+      this.fileAccept = fileRequirements.extensions.join();
+      this.fileFormats = this.makefileFormatList(fileRequirements.extensions);
     },
   },
 };

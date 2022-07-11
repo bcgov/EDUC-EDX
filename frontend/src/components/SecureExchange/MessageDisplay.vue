@@ -218,7 +218,7 @@ export default {
       case 'message':
         return 'mdi-email-outline';
       case 'document':
-        return 'md-paperclip';
+        return 'mdi-paperclip';
       case 'student':
         return 'mdi-emoticon-happy-outline';
       default:
