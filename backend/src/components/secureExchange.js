@@ -191,6 +191,11 @@ async function createExchange(req, res) {
     const token = getAccessToken(req);
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
+
+    const documentPayload = message.secureExchangeDocuments.map(document => {
+      return {...document, edxUserID: edxUserInfo.edxUserID};
+    });
+
     const payload = {
       contactIdentifier: req.session.activeInstituteIdentifier,
       secureExchangeContactTypeCode: 'SCHOOL',
@@ -205,10 +210,12 @@ async function createExchange(req, res) {
           commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
           content: message.content
         }
-      ]
+      ],
+      documentList: documentPayload
     };
 
     const result = await postData(token, payload, config.get('edx:exchangeURL'), null);
+
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'createExchange', 'Error occurred while attempting to create a new exchange.');
@@ -305,6 +312,20 @@ async function getExchange(req, res) {
         activity['secureExchangeCommentID'] = comment['secureExchangeCommentID'];
         dataResponse['activities'].push(activity);
       });
+
+      if (dataResponse['documentList']) {
+        dataResponse['documentList'].forEach((document) => {
+          let activity = {};
+          activity['type'] = 'document';
+          activity['timestamp'] = document['createDate'] ? LocalDateTime.parse(document['createDate']) : '';
+          activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
+          activity['title'] =  document.documentTypeCode;
+          activity['content'] = document.fileName;
+          activity['displayDate'] = document['createDate'] ? LocalDateTime.parse(document['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
+          activity['documentID'] = document['documentID'];
+          dataResponse['activities'].push(activity);
+        });
+      }
       dataResponse['activities'].sort((activity1, activity2) => { return activity2.timestamp.compareTo(activity1.timestamp); });
       return res.status(HttpStatus.OK).json(dataResponse);
     }).catch(e => {

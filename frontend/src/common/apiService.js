@@ -62,7 +62,7 @@ export default {
 
   async getDocumentTypeCodes() {
     try{
-      return await apiAxios.get(ApiRoutes.edx.DOCUMENT_TYPE_CODES);
+      return await apiAxios.get(ApiRoutes.edx.DOCUMENT_TYPES_URL);
     } catch(e) {
       console.log(`Failed to get from Nodejs getDocumentTypeCodes API - ${e}`);
       throw e;
@@ -71,7 +71,7 @@ export default {
 
   async getFileRequirements() {
     try{
-      return await apiAxios.get(ApiRoutes.edx.FILE_REQUIREMENTS);
+      return await apiAxios.get(ApiRoutes.edx.FILE_REQUIREMENTS_URL);
     } catch(e) {
       console.log(`Failed to get from Nodejs getFileRequirements API - ${e}`);
       throw e;
@@ -124,6 +124,7 @@ export default {
   getMincodeSchoolNames: getCodes(`${ApiRoutes.school.BASE_URL}`),
   getEdxMincodes: getCodes(`${ApiRoutes.edx.USERS_URL}/user-schools/mincodes`),
   getEdxRoles: getCodes(`${ApiRoutes.edx.USERS_URL}/roles`),
+  getSecureExchangeDocumentTypes: getCodes(`${ApiRoutes.edx.DOCUMENT_TYPES_URL}`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

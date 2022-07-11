@@ -21,27 +21,27 @@ router.get('/', (_req, res) => {
   });
 });
 
-router.get('/document-type-codes', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:rootURL') + '/document-types')
+router.get('/document-types', passport.authenticate('jwt', {session: false}), isValidBackendToken,
+  (req, res) => forwardGetReq(req, res, config.get('edx:exchangeURL') + '/document-types')
 );
 
 router.get('/file-requirements', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:rootURL') + '/file-requirements')
+  (req, res) => forwardGetReq(req, res, config.get('edx:exchangeURL') + '/file-requirements')
 );
 
-router.post('/exchanges/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, uploadFile]);
+router.post('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, uploadFile]);
 
-router.get('/exchanges/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
-  (req, res) => forwardGetReq(req, res, `${config.get('edx:rootURL')}/${req.params.id}/documents`)
+router.get('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
+  (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`)
 );
 
-router.get('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
-  (req, res) => forwardGetReq(req, res, `${config.get('edx:rootURL')}/${req.params.id}/documents/${req.params.documentId}`)
+router.get('/exchange/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
+  (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents/${req.params.documentId}`)
 );
 // special case this does not use frontend axios, so need to refresh here to handle expired jwt.
-router.get('/exchanges/:id/documents/:documentId/download/:fileName', auth.refreshJWT, isValidBackendToken, [verifyRequest, downloadFile]);
+router.get('/exchange/:id/documents/:documentId/download/:fileName', auth.refreshJWT, isValidBackendToken, [verifyRequest, downloadFile]);
 
-router.delete('/exchanges/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, deleteDocument]);
+router.delete('/exchange/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, deleteDocument]);
 
 router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);

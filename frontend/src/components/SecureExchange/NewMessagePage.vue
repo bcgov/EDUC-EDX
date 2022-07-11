@@ -4,87 +4,117 @@
       <v-col class="pt-0" cols="11">
         <v-row>
           <v-col class="pr-0 pb-0">
-            <v-row><v-col>
-              <v-card id="newMessageCard" flat outlined>
-                <v-row>
-                  <v-col class="pb-0">
-                    <v-card-text id="newMessageCardText" class="pb-0 pt-0">
-                      <v-form ref="newMessageForm" v-model="isValidForm">
-                        <v-text-field
-                          :value="getSchoolName()"
-                          label="From"
-                          class="pt-0"
-                          readonly
-                        ></v-text-field>
-                        <v-select
-                          id='schoolNameTxtField'
-                          v-model="assignedMinistryTeam"
-                          :items="this.ministryTeams"
-                          :rules="requiredRules"
-                          item-text="teamName"
-                          class="pt-0"
-                          item-value="ministryOwnershipTeamId"
-                          label="To"
-                        >
-                          <template v-slot:item="{ item }">
-                            <v-row>
-
-
-                              <v-col cols="12" class="pr-0">
-                                <div class="body-2" style="color: black;font-weight: bolder">{{ item.teamName }}</div>
-                                <div class="body-2" style="color: black;" :style="{'max-width': $vuetify.breakpoint.smAndDown ? '30em' : '36em'}">{{ item.description }}</div>
-                              </v-col>
-                            </v-row>
-                          </template>
-                        </v-select>
-                        <v-text-field
-                          v-model="subject"
-                          id='subjectTxtField'
-                          label="Subject"
-                          :rules="requiredRules"
-                          maxlength="255"
-                          class="pt-0"
-                        ></v-text-field>
-                        <v-textarea
-                          id="newMessageTextArea"
-                          v-model="newMessage"
-                          :rules="requiredRules"
-                          rows="8"
-                          label="Message"
-                          no-resize
-                          maxlength="4000"
-                          class="pt-0"
-                          ref="newMessageTextArea">
-                        </v-textarea>
-                      </v-form>
-                    </v-card-text>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="d-flex justify-end mr-3 pt-0">
-                    <v-btn id="attachFileID"
-                           title="Attach File"
-                           color="#1A5A96"
-                           outlined
-                           class="addButton pl-0 pr-2"
-                    >
-                      <v-icon color="#1A5A96" class="mr-0" right dark>mdi-paperclip</v-icon>
-                      <span class="ml-1">Attach File</span>
-                    </v-btn>
-                    <v-btn id="addStudentID"
-                           title="Add Student"
-                           color="#1A5A96"
-                           outlined
-                           class="addButton pl-0 pr-2"
-                    >
-                      <v-icon color="#1A5A96" class="mr-0" right dark>mdi-account-multiple-plus-outline</v-icon>
-                      <span class="ml-1">Add Student</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-col></v-row>
-
+            <v-row>
+              <v-col>
+                <v-card id="newMessageCard" flat outlined>
+                  <v-row>
+                    <v-col class="pb-0">
+                      <v-card-text id="newMessageCardText" class="pb-0 pt-0">
+                        <v-form ref="newMessageForm" v-model="isValidForm">
+                          <v-text-field
+                              :value="getSchoolName()"
+                              label="From"
+                              class="pt-0"
+                              readonly
+                          ></v-text-field>
+                          <v-select
+                              id='schoolNameTxtField'
+                              v-model="assignedMinistryTeam"
+                              :items="this.ministryTeams"
+                              :rules="requiredRules"
+                              item-text="teamName"
+                              class="pt-0"
+                              item-value="ministryOwnershipTeamId"
+                              label="To"
+                          >
+                            <template v-slot:item="{ item }">
+                              <v-row>
+                                <v-col cols="12" class="pr-0">
+                                  <div class="body-2" style="color: black;font-weight: bolder">
+                                    {{ item.teamName }}
+                                  </div>
+                                  <div class="body-2" style="color: black;"
+                                       :style="{'max-width': $vuetify.breakpoint.smAndDown ? '30em' : '36em'}">
+                                    {{ item.description }}
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </template>
+                          </v-select>
+                          <v-text-field
+                              v-model="subject"
+                              id='subjectTxtField'
+                              label="Subject"
+                              :rules="requiredRules"
+                              maxlength="255"
+                              class="pt-0"
+                          ></v-text-field>
+                          <v-textarea
+                              id="newMessageTextArea"
+                              v-model="newMessage"
+                              :rules="requiredRules"
+                              rows="8"
+                              label="Message"
+                              no-resize
+                              maxlength="4000"
+                              class="pt-0"
+                              ref="newMessageTextArea">
+                          </v-textarea>
+                        </v-form>
+                      </v-card-text>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col>
+                      <v-icon v-if="secureExchangeDocuments.length > 0" >mdi-paperclip</v-icon>
+                      <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">{{document.fileName}}</v-chip>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex justify-end mr-3 pt-0">
+                      <v-btn id="attachFileID"
+                             title="Attach File"
+                             color="#1A5A96"
+                             outlined
+                             class="addButton pl-0 pr-2"
+                             @click="expandAttachFile = !expandAttachFile"
+                      >
+                        <v-icon color="#1A5A96" class="mr-0" right dark>mdi-paperclip</v-icon>
+                        <span class="ml-1">Attach File</span>
+                      </v-btn>
+                      <v-btn id="addStudentID"
+                             title="Add Student"
+                             color="#1A5A96"
+                             outlined
+                             class="addButton pl-0 pr-2"
+                      >
+                        <v-icon color="#1A5A96" class="mr-0" right dark>
+                          mdi-account-multiple-plus-outline
+                        </v-icon>
+                        <span class="ml-1">Add Student</span>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                  <!--pop out for attaching files-->
+                  <v-row no-gutters>
+                    <v-col>
+                      <v-expand-transition
+                          max-width="30rem"
+                          max-height="50rem"
+                          xl="2" lg="2" md="2" xs="2" sm="2"
+                      >
+                        <DocumentUpload
+                            v-show="expandAttachFile"
+                            @close:form="() => expandAttachFile = false"
+                            @upload="uploadDocument"
+                        ></DocumentUpload>
+                      </v-expand-transition>
+                    </v-col>
+                  </v-row>
+                  <!--end pop out for attaching files-->
+                </v-card>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
         <v-row class="py-4 justify-end">
@@ -93,13 +123,13 @@
         </v-row>
       </v-col>
     </v-row>
-
     <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
   </v-container>
 </template>
 
 <script>
 import PrimaryButton from '@/components/util/PrimaryButton';
+import DocumentUpload from '@/components/common/DocumentUpload';
 import {mapState} from 'vuex';
 import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 import alertMixin from '@/mixins/alertMixin';
@@ -115,6 +145,7 @@ export default {
   components: {
     PrimaryButton,
     ConfirmationDialog,
+    DocumentUpload
   },
   props: {
     mincodeSchoolNames: {
@@ -129,16 +160,19 @@ export default {
       subject: '',
       requiredRules: [v => !!v?.trim() || 'Required'],
       isValidForm: false,
-      processing: false
+      processing: false,
+      expandAttachFile: false
     };
   },
   computed: {
     ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeMincodes'])
+    ...mapState('edx', ['ministryTeams', 'exchangeMincodes', 'secureExchangeDocuments'])
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
+    //ensure uploaded messages are cleared out
+    this.clearSecureExchangeDocuments();
   },
   methods: {
     navigateToList() {
@@ -153,6 +187,7 @@ export default {
       this.newMessage = '';
       this.requiredRules = [v => !!v?.trim() || 'Required'];
       this.$emit('secure-exchange:messageSent');
+      this.clearSecureExchangeDocuments();
     },
     sendNewMessage() {
       this.processing = true;
@@ -160,6 +195,7 @@ export default {
         ministryOwnershipTeamID: this.assignedMinistryTeam,
         subject: this.subject,
         content: this.newMessage,
+        secureExchangeDocuments: this.secureExchangeDocuments,
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].EXCHANGE_URL}`, payload)
         .then(() => {
@@ -174,6 +210,16 @@ export default {
           this.processing = false;
         });
     },
+    async uploadDocument(document) {
+      this.$store.commit('edx/setSecureExchangeDocuments', [...this.secureExchangeDocuments, document]);
+    },
+    removeDocumentByIndex(index) {
+      //since we don't have a unique UUID to identify the document to remove, we will use the index
+      this.$store.commit('edx/deleteSecureExchangeDocumentByIndex', index);
+    },
+    clearSecureExchangeDocuments() {
+      this.$store.commit('edx/setSecureExchangeDocuments', []);
+    }
   }
 };
 </script>
