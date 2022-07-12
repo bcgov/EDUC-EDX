@@ -39,7 +39,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
 }
 
 require('./schedulers/saga-check-scheduler');
-require('./schedulers/cache-service-scheduler');
+// require('./schedulers/cache-service-scheduler');
 /**
  * Listen on provided port, on all network interfaces.
  */
