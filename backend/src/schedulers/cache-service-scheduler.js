@@ -7,9 +7,11 @@ try {
   const reloadCache = new CronJob('0 15 0 * * *', async () => {
     log.debug('Starting reload cache');
     try {
-      await cacheService.loadAllSchoolsToMap();
-      await cacheService.loadAllRolePermissionsToMap();
-      await cacheService.loadAllDocumentTypeCodesToMap();
+      if(process.env.NODE_ENV !== 'test') {  //do not cache for test environment to stop GitHub Actions test from hanging.
+        await cacheService.loadAllSchoolsToMap();
+        await cacheService.loadAllRolePermissionsToMap();
+        await cacheService.loadAllDocumentTypeCodesToMap();
+      }
     } catch (e) {
       log.error(e);
     }
