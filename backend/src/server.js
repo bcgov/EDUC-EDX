@@ -31,9 +31,15 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   }).catch((e) => {
     log.error('Error loading roles during boot .', e);
   });
+  cacheService.loadAllDocumentTypeCodesToMap().then(() => {
+    log.info('Loaded document type codes to memory');
+  }).catch((e) => {
+    log.error('Error loading document type codes during boot .', e);
+  });
 }
 
 require('./schedulers/saga-check-scheduler');
+require('./schedulers/cache-service-scheduler');
 /**
  * Listen on provided port, on all network interfaces.
  */

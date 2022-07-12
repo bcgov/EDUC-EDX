@@ -57,7 +57,6 @@
 import {getFileNameWithMaxNameLength, humanFileSize} from '@/utils/file';
 import { mapGetters } from 'vuex';
 import {sortBy} from 'lodash';
-import ApiService from '../../common/apiService';
 import PrimaryButton from '../util/PrimaryButton';
 
 export default {
@@ -93,8 +92,9 @@ export default {
       this.buttonKey += 1;
     },
   },
-  created() {
-    this.$store.dispatch('edx/getSecureExchangeDocumentTypes');
+  async created() {
+    await this.$store.dispatch('edx/getSecureExchangeDocumentTypes');
+    await this.$store.dispatch('edx/getFileRequirements');
 
     this.getFileRules().catch(e => {
       console.log(e);
@@ -103,7 +103,7 @@ export default {
   }
   ,
   computed: {
-    ...mapGetters('edx',['secureExchangeDocumentTypes']),
+    ...mapGetters('edx',['secureExchangeDocumentTypes', 'fileRequirements']),
     dataReady () {
       return this.validForm && this.file;
     },
@@ -198,15 +198,13 @@ export default {
       }
     },
     async getFileRules() {
-      const response = await ApiService.getFileRequirements();
-      const fileRequirements = response.data;
-      const maxSize = fileRequirements.maxSize;
+      const maxSize = this.fileRequirements.maxSize;
       this.fileRules = [
         value => !value || value.size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`,
-        value => !value || fileRequirements.extensions.includes(value.type) || `File formats should be ${this.fileFormats}.`,
+        value => !value || this.fileRequirements.extensions.includes(value.type) || `File formats should be ${this.fileFormats}.`,
       ];
-      this.fileAccept = fileRequirements.extensions.join();
-      this.fileFormats = this.makefileFormatList(fileRequirements.extensions);
+      this.fileAccept = this.fileRequirements.extensions.join();
+      this.fileFormats = this.makefileFormatList(this.fileRequirements.extensions);
     },
   },
 };

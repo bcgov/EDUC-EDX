@@ -21,13 +21,9 @@ router.get('/', (_req, res) => {
   });
 });
 
-router.get('/document-types', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:exchangeURL') + '/document-types')
-);
+router.get('/document-types', passport.authenticate('jwt', {session: false}), isValidBackendToken, getCodes('edx:exchangeURL', CACHE_KEYS.EDX_SECURE_EXCHANGE_DOCUMENT_TYPES, '/document-types'));
 
-router.get('/file-requirements', passport.authenticate('jwt', {session: false}), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res, config.get('edx:exchangeURL') + '/file-requirements')
-);
+router.get('/file-requirements', passport.authenticate('jwt', {session: false}), isValidBackendToken, getCodes('edx:exchangeURL', CACHE_KEYS.EDX_SECURE_EXChANGE_FILE_REQUIREMENTS, '/file-requirements'));
 
 router.post('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, uploadFile]);
 

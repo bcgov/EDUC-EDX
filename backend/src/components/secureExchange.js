@@ -319,7 +319,7 @@ async function getExchange(req, res) {
           activity['type'] = 'document';
           activity['timestamp'] = document['createDate'] ? LocalDateTime.parse(document['createDate']) : '';
           activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
-          activity['title'] =  document.documentTypeCode;
+          activity['title'] = cacheService.getDocumentTypeCodeLabelByCode(document.documentTypeCode)?.label;
           activity['content'] = document.fileName;
           activity['displayDate'] = document['createDate'] ? LocalDateTime.parse(document['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
           activity['documentID'] = document['documentID'];

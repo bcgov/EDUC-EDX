@@ -12,6 +12,7 @@ export default {
     rolesCopy: [],
     secureExchangeDocumentTypes: [],
     secureExchangeDocuments: [],
+    fileRequirements: [],
   }),
   getters: {
     statuses: state => state.statuses,
@@ -19,7 +20,8 @@ export default {
     secureExchangeID: state => state.exchange.secureExchangeID,
     ministryTeams: state => state.ministryTeams,
     secureExchangeDocumentTypes: state => state.secureExchangeDocumentTypes,
-    secureExchangeDocuments: state => state.secureExchangeDocuments
+    secureExchangeDocuments: state => state.secureExchangeDocuments,
+    fileRequirements: state => state.fileRequirements,
   },
   mutations: {
     setStatuses: (state, statuses) => {
@@ -51,6 +53,9 @@ export default {
         state.secureExchangeDocuments.splice(index, 1);
       }
     },
+    setFileRequirements(state, payload) {
+      state.fileRequirements = payload;
+    }
   },
   actions: {
     async getMinistryTeams({commit, state}) {
@@ -98,6 +103,14 @@ export default {
         if (state.secureExchangeDocumentTypes.length === 0) {
           const response = await ApiService.getSecureExchangeDocumentTypes();
           commit('setSecureExchangeDocumentTypes', response.data);
+        }
+      }
+    },
+    async getFileRequirements({ commit, state}) {
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
+        if(state.fileRequirements.length === 0) {
+          const response = await ApiService.getFileRequirements();
+          commit('setFileRequirements', response.data);
         }
       }
     },

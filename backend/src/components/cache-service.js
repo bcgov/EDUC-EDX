@@ -8,6 +8,8 @@ const retry = require('async-retry');
 let mincodeSchoolMap = new Map();
 let mincodeSchools = [];
 let rolePermissionsMap = new Map();
+let documentTypeCodesMap = new Map();
+let documentTypeCodes = [];
 
 const cacheService = {
 
@@ -62,6 +64,39 @@ const cacheService = {
       retries: 50
     });
   },
+  async loadAllDocumentTypeCodesToMap() {
+    log.debug('Loading all document type codes during start up');
+    await retry(async () => {
+      // if anything throws, we retry
+      const data = await getApiCredentials(); // get the tokens first to make api calls.
+      const documentTypeCodesList = await getData(data.accessToken, `${config.get('edx:exchangeURL')}/document-types`);
+      documentTypeCodes = []; // reset the value.
+      documentTypeCodesMap.clear();// reset the value.
+      if (documentTypeCodesList && documentTypeCodesList.length > 0) {
+        for (const documentTypeCode of documentTypeCodesList) {
+          const docTypeCode = {
+            secureExchangeDocumentTypeCode: documentTypeCode.secureExchangeDocumentTypeCode,
+            label: documentTypeCode.label,
+            description: documentTypeCode.description,
+            effectiveDate: documentTypeCode.effectiveDate,
+            expiryDate: documentTypeCode.expiryDate,
+          };
+          documentTypeCodesMap.set(documentTypeCode.secureExchangeDocumentTypeCode, docTypeCode);
+          documentTypeCodes.push(docTypeCode);
+        }
+      }
+      log.info(`Loaded ${documentTypeCodesMap.size} document type codes.`);
+    }, {
+      retries: 50
+    });
+
+  },
+  getAllDocumentTypeCodesJSON() {
+    return documentTypeCodes;
+  },
+  getDocumentTypeCodeLabelByCode(code) {
+    return documentTypeCodesMap.get(code);
+  }
 };
 
 module.exports = cacheService;
