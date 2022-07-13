@@ -345,12 +345,6 @@ export default {
   overflow-wrap: break-word;
 }
 
-.document-upload{
-  padding: 1.1rem;
-  max-width: 50rem;
-  min-width: 10rem;
-}
-
 .activityDisplayDate{
   font-size: medium;
 }
@@ -369,8 +363,8 @@ export default {
 
 @media screen and (max-width: 1200px) {
   .containerSetup{
-    padding-right: 10em !important;
-    padding-left: 10em !important;
+    padding-right: 4em !important;
+    padding-left: 4em !important;
   }
 }
 
