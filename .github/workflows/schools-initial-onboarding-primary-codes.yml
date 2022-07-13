@@ -53,21 +53,83 @@ jobs:
         oc project ${{ env.OPENSHIFT_NAMESPACE }}
         TOKEN=$(curl -d "client_id=${{ env.SOAM_CLIENT_ID }}" -d "client_secret=${{ env.SOAM_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.SOAM_TOKEN_URL }}" | jq -r '.access_token')
         
-        #SCHOOLS=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools" \
-        #  -H "Content-Type: application/json" \
-        #  -H "Authorization: Bearer $TOKEN" | jq -r '(.[] | .distNo + .schlNo)')
-        
-        SCHOOLS='04997170'
-        
-        for k in $SCHOOLS; do
-          COORDINATOR=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools/$k/pen-coordinator" \
+        SCHOOLS=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools" \
           -H "Content-Type: application/json" \
-          -H "Authorization: Bearer $TOKEN");
-          NAME=$(echo $COORDINATOR | jq -r '.penCoordinatorName')
-          EMAIL=$(echo $COORDINATOR | jq -r '.penCoordinatorEmail')
-          CHES_TOKEN=$(curl -d "client_id=${{ env.CHES_CLIENT_ID }}" -d "client_secret=${{ env.CHES_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.CHES_TOKEN_URL }}" | jq -r '.access_token')
-          curl -sX POST "${{ env.CHES_EMAIL_URL }}" \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer $CHES_TOKEN" \
-          -d "{\"bodyType\": \"html\", \"body\": \"<h1>Hello $NAME,<br><br>Welcome to Common Services</h1><p>Sent by <a href='https://bcgov.github.io/common-hosted-email-service/'>CHES</a></p>\", \"encoding\": \"utf-8\", \"from\": \"edx-noreply@gov.bc.ca\", \"priority\": \"normal\", \"subject\": \"Testing email message\", \"to\": [\"$EMAIL\"]}"
+          -H "Authorization: Bearer $TOKEN")
+
+        echo "$SCHOOLS" | jq -c '.[]' | while read CUR_SCHOOL; do
+            SCHOOL_STATUS=$(echo $CUR_SCHOOL | jq -r '.schoolStatusCode')
+            SCHOOL_MINCODE=$(echo $CUR_SCHOOL | jq -r '(.distNo + .schlNo)')
+            
+            if [[ "$SCHOOL_STATUS" == "O" ]]
+            then
+              SCHOOL_NAME=$(echo $CUR_SCHOOL | jq -r '.schoolName')
+              COORDINATOR=$(curl -sX GET "${{ env.SCHOOL_SERVICE_URL }}/api/v1/schools/$SCHOOL_MINCODE/pen-coordinator" \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer $TOKEN");
+              
+              NAME=$(echo $COORDINATOR | jq -r '.penCoordinatorName')
+              EMAIL=$(echo $COORDINATOR | jq -r '.penCoordinatorEmail')
+              
+              ACTIVATION_CODE=$(curl -sX POST "https://edx-api-d4cdde-dev.apps.silver.devops.gov.bc.ca/api/v1/edx/users/activation-code/primary/$SCHOOL_MINCODE" \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer $TOKEN" \
+                -d "{\"createUser\": \"ONBOARD\",  \"updateUser\": \"ONBOARD\", \"mincode\": \"$SCHOOL_MINCODE\"}" | jq -r '.activationCode')
+            
+              CHES_TOKEN=$(curl -d "client_id=${{ env.CHES_CLIENT_ID }}" -d "client_secret=${{ env.CHES_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.CHES_TOKEN_URL }}" | jq -r '.access_token')
+              
+              curl -sX POST "${{ env.CHES_EMAIL_URL }}" \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer $CHES_TOKEN" \
+                -d "{\"bodyType\": \"html\", \"body\": \"<p>Hi $NAME,<br><br>Here is the <b>Primary Access Code</b> for the <b>Education Data Exchange (EDX)</b> for:<br><br> $SCHOOL_MINCODE - $SCHOOL_NAME: <b>$ACTIVATION_CODE</b></p><p>Please record the code and keep it safe, as it will be required for EDX account activation for each user at your school.</p><p>Regards,</p><p>The Ministry of Education and Child Care's EDX Team</p>\", \"encoding\": \"utf-8\", \"from\": \"noreply-edx@gov.bc.ca\", \"priority\": \"normal\", \"subject\": \"Primary Access Code for Education Data Exchange\", \"to\": [\"$EMAIL\"]}"
+                    
+              break
+          fi
+        
         done
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+  echo "$SCHOOLS" | jq -c '.[]' | while read CUR_SCHOOL; do
+  SCHOOL_STATUS=$(echo $CUR_SCHOOL | jq -r '.schoolStatusCode')
+  SCHOOL_MINCODE=$(echo $CUR_SCHOOL | jq -r '(.distNo + .schlNo)')
+  
+  if [[ "$SCHOOL_STATUS" == "O" ]]
+  then
+  SCHOOL_NAME=$(echo $CUR_SCHOOL | jq -r '.schoolName')
+  COORDINATOR=$(curl -sX GET "https://school-api-75e61b-dev.apps.silver.devops.gov.bc.ca/api/v1/schools/$SCHOOL_MINCODE/pen-coordinator" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $TOKEN");
+  
+  NAME=$(echo $COORDINATOR | jq -r '.penCoordinatorName')
+  EMAIL=$(echo $COORDINATOR | jq -r '.penCoordinatorEmail')
+  
+  ACTIVATION_CODE=$(curl -sX POST "https://edx-api-d4cdde-dev.apps.silver.devops.gov.bc.ca/api/v1/edx/users/activation-code/primary/$SCHOOL_MINCODE" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $TOKEN" \
+-d "{\"createUser\": \"ONBOARD\",  \"updateUser\": \"ONBOARD\", \"mincode\": \"$SCHOOL_MINCODE\"}" | jq -r '.activationCode')
+
+  CHES_TOKEN=$(curl -d "client_id=PEN_RETRIEVAL_SERVICE_CLIENT" -d "client_secret=d30804bd-265f-4c5e-8cb1-5bf8432b7c47" -d "grant_type=client_credentials" "https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token" | jq -r '.access_token')
+  
+  curl -sX POST "https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1/email" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $CHES_TOKEN" \
+-d "{\"bodyType\": \"html\", \"body\": \"<p>Hi $NAME,<br><br>Here is the <b>Primary Access Code</b> for the <b>Education Data Exchange (EDX)</b> for:<br><br> $SCHOOL_MINCODE - $SCHOOL_NAME: <b>$ACTIVATION_CODE</b></p><p>Please record the code and keep it safe, as it will be required for EDX account activation for each user at your school.</p><p>Regards,</p><p>The Ministry of Education and Child Care's EDX Team</p>\", \"encoding\": \"utf-8\", \"from\": \"noreply-edx@gov.bc.ca\", \"priority\": \"normal\", \"subject\": \"Primary Access Code for Education Data Exchange\", \"to\": [\"$EMAIL\"]}"
+
+  break
+  fi
+  
+  done
