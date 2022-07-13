@@ -62,6 +62,5 @@ jobs:
               echo Email sent to $SCHOOL_MINCODE - $SCHOOL_NAME 
 
               break
-          fi
 
         done
