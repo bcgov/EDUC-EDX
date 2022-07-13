@@ -57,8 +57,17 @@ async function uploadFile(req, res) {
       });
     }
 
-    const endpoint = config.get('secureExchange:apiEndpoint');
+    const endpoint = config.get('edx:exchangeURL');
     const url = `${endpoint}/${req.params.id}/documents`;
+
+    const edxUserInfo = req.session.edxUserData;
+    if (!edxUserInfo) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No EDX User Info token'
+      });
+    }
+
+    req.body.edxUserID = edxUserInfo.edxUserID;
 
     const data = await postData(accessToken, req.body, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
@@ -79,7 +88,7 @@ async function uploadFileWithoutRequest(req, res) {
       });
     }
 
-    const endpoint = config.get('secureExchange:apiEndpoint');
+    const endpoint = config.get('edx:exchangeURL');
     const url = `${endpoint}/documents`;
 
     const data = await postData(accessToken, req.body, url, req.session?.correlationID);
@@ -95,10 +104,10 @@ async function uploadFileWithoutRequest(req, res) {
   }
 }
 
-async function getDocument(token, secureExchangeID, documentID, includeDocData = 'Y') {
+async function getDocument(token, secureExchangeID, documentID) {
   try {
-    const endpoint = config.get('secureExchange:apiEndpoint');
-    return await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}?includeDocData=${includeDocData}`);
+    const endpoint = config.get('edx:exchangeURL');
+    return await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}`);
   } catch (e) {
     throw new ServiceError('getDocument error', e);
   }
@@ -113,7 +122,7 @@ async function deleteDocument(req, res) {
       });
     }
 
-    let resData = await getDocument(accessToken, req.params.id, req.params.documentId, 'N');
+    let resData = await getDocument(accessToken, req.params.id, req.params.documentId);
 
     if (!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
       req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
@@ -122,7 +131,7 @@ async function deleteDocument(req, res) {
       });
     }
 
-    const endpoint = config.get('secureExchange:apiEndpoint');
+    const endpoint = config.get('edx:exchangeURL');
     const url = `${endpoint}/${req.params.id}/documents/${req.params.documentId}`;
     await deleteData(accessToken, url);
     return res.status(HttpStatus.OK).json();
@@ -144,7 +153,7 @@ async function downloadFile(req, res) {
       });
     }
 
-    let resData = await getDocument(accessToken, req.params.id, req.params.documentId, 'Y');
+    let resData = await getDocument(accessToken, req.params.id, req.params.documentId);
 
     res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
     res.setHeader('Content-type', resData.fileExtension);
@@ -303,6 +312,7 @@ async function getExchange(req, res) {
       dataResponse['commentsList'].forEach((comment) => {
         let activity = {};
         activity['type'] = 'message';
+        activity['isSchool'] = comment.edxUserID ? true : false;
         activity['timestamp'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']) : '';
         activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
         activity['title'] =  comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
@@ -317,16 +327,21 @@ async function getExchange(req, res) {
         dataResponse['documentList'].forEach((document) => {
           let activity = {};
           activity['type'] = 'document';
+          activity['isSchool'] = document.edxUserID ? true : false;
           activity['timestamp'] = document['createDate'] ? LocalDateTime.parse(document['createDate']) : '';
           activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
-          activity['title'] = cacheService.getDocumentTypeCodeLabelByCode(document.documentTypeCode)?.label;
-          activity['content'] = document.fileName;
+          activity['title'] = document.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          activity['fileName'] =  document.fileName;
+          activity['documentType'] = cacheService.getDocumentTypeCodeLabelByCode(document.documentTypeCode);
           activity['displayDate'] = document['createDate'] ? LocalDateTime.parse(document['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
           activity['documentID'] = document['documentID'];
           dataResponse['activities'].push(activity);
         });
       }
       dataResponse['activities'].sort((activity1, activity2) => { return activity2.timestamp.compareTo(activity1.timestamp); });
+
+      req.session.secureExchange = dataResponse;
+
       return res.status(HttpStatus.OK).json(dataResponse);
     }).catch(e => {
       log.error(e, 'getExchange', 'Error getting a secure exchange message.');

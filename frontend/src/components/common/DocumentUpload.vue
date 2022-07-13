@@ -1,6 +1,6 @@
 <template>
   <v-card class="document-upload">
-    <v-card-title><h3>Document Upload</h3></v-card-title>
+    <v-card-title class="pb-8"><h3>Document Upload</h3></v-card-title>
     <v-card-text>
       <v-form
           ref="form"
@@ -12,12 +12,14 @@
             required
             :rules="requiredRules"
             outlined
+            class="pb-0 mb-0"
             :eager="eager"
             :items="documentTypes"
             label="Document Type"
         ></v-select>
         <v-file-input
             color="#003366"
+            class="pt-0"
             :accept="fileAccept"
             :disabled="hasReadOnlyRoleAccess()"
             :rules="fileRules"
@@ -226,6 +228,10 @@ p{
 }
 ul{
   width: 100%;
+}
+
+.v-input >>> .v-input__slot{
+  padding-top: 0;
 }
 
 .v-input{
