@@ -24,6 +24,9 @@ describe('uploadFile', () => {
   const session = {
     secureExchange: {
       secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
+    },
+    edxUserData: {
+      edxUserID: '67590460-efe3-4e84-9f9a-9acffda79612'
     }
   };
   const uploadFile = exchange.uploadFile;
@@ -51,7 +54,7 @@ describe('uploadFile', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalledWith(postRes);
-    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents`, correlationID);
+    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('edx:exchangeURL')}/${params.id}/documents`, correlationID);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -101,7 +104,6 @@ describe('getDocument', () => {
   const spy = jest.spyOn(utils, 'getData');
   const requestID = 'requestID';
   const documentID = 'documentID';
-  const includeDocData = 'Y';
   const token = 'token';
 
   afterEach(() => {
@@ -111,16 +113,16 @@ describe('getDocument', () => {
   it('should return document data', async () => {
     utils.getData.mockResolvedValue(documentData);
 
-    const result = await exchange.__get__('getDocument')(token, requestID, documentID, includeDocData);
+    const result = await exchange.__get__('getDocument')(token, requestID, documentID);
 
     expect(result).toEqual(documentData);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${requestID}/documents/${documentID}?includeDocData=${includeDocData}`);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${requestID}/documents/${documentID}`);
   });
 
   it('should throw ServiceError if getData is failed', async () => {
     utils.getData.mockRejectedValue(new Error('error'));
 
-    expect(exchange.__get__('getDocument')(token, requestID, documentID, includeDocData)).rejects.toThrowError(ServiceError);
+    expect(exchange.__get__('getDocument')(token, requestID, documentID)).rejects.toThrowError(ServiceError);
   });
 });
 
@@ -164,8 +166,8 @@ describe('deleteDocument', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=N`);
-    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
+    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -260,7 +262,7 @@ describe('downloadFile', () => {
     expect(res.data.raw.toString()).toEqual('test data');
     expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'attachment; filename=' + document.fileName);
     expect(res.setHeader).toHaveBeenNthCalledWith(2, 'Content-type', document.fileExtension);
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}?includeDocData=Y`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
