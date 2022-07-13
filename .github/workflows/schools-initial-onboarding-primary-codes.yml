@@ -58,9 +58,5 @@ jobs:
           -H "Authorization: Bearer $TOKEN")
 
         echo "$SCHOOLS" | jq -c '.[]' | while read CUR_SCHOOL; do
-         
-              echo Email sent to $SCHOOL_MINCODE - $SCHOOL_NAME 
-
-              break
-
+              echo Email sent to ABC 
         done
