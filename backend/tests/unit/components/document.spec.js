@@ -24,6 +24,9 @@ describe('uploadFile', () => {
   const session = {
     secureExchange: {
       secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
+    },
+    edxUserData: {
+      edxUserID: '67590460-efe3-4e84-9f9a-9acffda79612'
     }
   };
   const uploadFile = exchange.uploadFile;
@@ -259,7 +262,7 @@ describe('downloadFile', () => {
     expect(res.data.raw.toString()).toEqual('test data');
     expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'attachment; filename=' + document.fileName);
     expect(res.setHeader).toHaveBeenNthCalledWith(2, 'Content-type', document.fileExtension);
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
