@@ -51,7 +51,7 @@ describe('uploadFile', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalledWith(postRes);
-    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents`, correlationID);
+    expect(spy).toHaveBeenCalledWith('token', document, `${config.get('edx:exchangeURL')}/${params.id}/documents`, correlationID);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -113,7 +113,7 @@ describe('getDocument', () => {
     const result = await exchange.__get__('getDocument')(token, requestID, documentID);
 
     expect(result).toEqual(documentData);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${requestID}/documents/${documentID}`);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${requestID}/documents/${documentID}`);
   });
 
   it('should throw ServiceError if getData is failed', async () => {
@@ -163,8 +163,8 @@ describe('deleteDocument', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
-    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('secureExchange:apiEndpoint')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
+    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
