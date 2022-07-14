@@ -68,7 +68,7 @@
                   </v-btn>
                   <v-btn small @click="displayAttachmentPanel">
                     <v-icon color="#003366">mdi-paperclip</v-icon>
-                    <span style="color: #003366" class="ml-1">Document</span>
+                    <span style="color: #003366" class="ml-1">Attachment</span>
                   </v-btn>
                   <v-btn small>
                     <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
@@ -80,14 +80,14 @@
                 <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" v-on:click="clickMarkAsButton" :loading="loadingReadStatus">
                   <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                   <v-icon v-else>mdi-email-open-outline</v-icon>
-                  <span class="ml-1 markAsSpan">{{`Mark As ${secureExchange.isReadByExchangeContact ? 'Unread' : 'Read'}` }}</span>
+                  <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
                 </v-btn>
                 <v-btn id="claimAsButton" class="my-4 mx-2">
                   <v-icon>{{ secureExchange.reviewer ? 'mdi-account-off-outline' : 'mdi-account-check-outline' }}</v-icon>
-                  <span class="ml-1">{{ secureExchange.reviewer ? 'Unclaim' : 'Claim' }}</span>
+                  <span class="ml-1">{{ secureExchange.reviewer ? 'UNCLAIM' : 'CLAIM' }}</span>
                 </v-btn>
                 <v-btn id="changeStatusButton" class="my-4">
-                  <span>Close</span>
+                  <span>CLOSE</span>
                 </v-btn>
               </v-col>
             </v-row>
