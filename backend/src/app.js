@@ -25,6 +25,7 @@ const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const edxRouter = require('./routes/edx');
 const schoolRouter = require('./routes/schools');
+const studentRouter = require('./routes/student');
 const configRouter = require('./routes/config');
 const promMid = require('express-prometheus-middleware');
 const messageSubscriber = require('./messaging/message-subscriber');
@@ -167,6 +168,8 @@ apiRouter.use('/user', userRouter);
 apiRouter.use('/edx', edxRouter);
 apiRouter.use('/schools', schoolRouter);
 apiRouter.use('/config',configRouter);
+apiRouter.use('/student', studentRouter);
+
 
 //Handle 500 error
 app.use((err, _req, res, next) => {

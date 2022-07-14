@@ -65,9 +65,19 @@
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
+                    <v-col v-if="secureExchangeDocuments.length > 0" class="d-flex px-0">
+                      <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
+                        <v-avatar left>
+                          <v-icon>mdi-paperclip</v-icon>
+                        </v-avatar>
+                        {{document.fileName}}</v-chip>
+                    </v-col>
                     <v-col>
-                      <v-icon v-if="secureExchangeDocuments.length > 0" >mdi-paperclip</v-icon>
-                      <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">{{document.fileName}}</v-chip>
+                      <v-chip :class="['ma-1']" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
+                        <v-avatar left>
+                          <v-icon>mdi-account-circle</v-icon>
+                        </v-avatar>
+                        {{secureExchangeStudent.pen}}</v-chip>
                     </v-col>
                   </v-row>
                   <v-row v-if="shouldShowOptions">
@@ -87,6 +97,7 @@
                              color="#1A5A96"
                              outlined
                              class="addButton pl-0 pr-2"
+                             @click="showAddStudentPanel"
                       >
                         <v-icon color="#1A5A96" class="mr-0" right dark>
                           mdi-account-multiple-plus-outline
@@ -109,6 +120,16 @@
                             @upload="uploadDocument"
                         ></DocumentUpload>
                       </v-expand-transition>
+                      <v-expand-transition>
+                        <AddStudent
+                            v-show="expandAddStudent"
+                            @close:form="showOptions"
+                            @addStudent="addSecureExchangeStudent"
+                         :mincode="userInfo.activeInstituteIdentifier"
+                         :addtionalStudentAddWarning="addtionalStudentAddWarningMessage"
+                        >
+                        </AddStudent>
+                      </v-expand-transition>
                     </v-col>
                   </v-row>
                   <!--end pop out for attaching files-->
@@ -117,9 +138,9 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row class="py-4 justify-end">
-          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" @click.native="navigateToList"></PrimaryButton>
-          <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!isValidForm" :loading="processing" @click.native="sendNewMessage"></PrimaryButton>
+        <v-row class="py-4 justify-end pr-3">
+          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" @click.native="navigateToList"></PrimaryButton>
+          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" @click.native="sendNewMessage"></PrimaryButton>
         </v-row>
       </v-col>
     </v-row>
@@ -138,11 +159,13 @@ import ApiService from '@/common/apiService';
 import {
   ApiRoutes,
 } from '@/utils/constants';
+import AddStudent from '@/components/AddStudent';
 
 export default {
   name: 'NewMessagePage',
   mixins: [alertMixin],
   components: {
+    AddStudent,
     PrimaryButton,
     ConfirmationDialog,
     DocumentUpload
@@ -164,17 +187,20 @@ export default {
       expandAttachFile: false,
       expandAddStudent: false,
       shouldShowOptions: true,
+      addtionalStudentAddWarningMessage:''
     };
   },
   computed: {
     ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeMincodes', 'secureExchangeDocuments'])
+    ...mapState('edx', ['ministryTeams', 'exchangeMincodes', 'secureExchangeDocuments','secureExchangeStudents'])
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
     //ensure uploaded messages are cleared out
     this.clearSecureExchangeDocuments();
+    //ensure selected students are cleared out
+    this.clearSecureExchangeStudents();
   },
   methods: {
     navigateToList() {
@@ -190,14 +216,18 @@ export default {
       this.requiredRules = [v => !!v?.trim() || 'Required'];
       this.$emit('secure-exchange:messageSent');
       this.clearSecureExchangeDocuments();
+      this.clearSecureExchangeStudents();
+      this.addtionalStudentAddWarningMessage='';
     },
     sendNewMessage() {
       this.processing = true;
+      this.addtionalStudentAddWarningMessage='';
       const payload = {
         ministryOwnershipTeamID: this.assignedMinistryTeam,
         subject: this.subject,
         content: this.newMessage,
         secureExchangeDocuments: this.secureExchangeDocuments,
+        secureExchangeStudents: this.secureExchangeStudents
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].EXCHANGE_URL}`, payload)
         .then(() => {
@@ -215,12 +245,26 @@ export default {
     async uploadDocument(document) {
       this.$store.commit('edx/setSecureExchangeDocuments', [...this.secureExchangeDocuments, document]);
     },
+    async addSecureExchangeStudent(secureExchangeStudent) {
+      const found =this.secureExchangeStudents.some(el =>el.studentID === secureExchangeStudent.studentID);
+      if(!found){
+        this.$store.commit('edx/setSecureExchangeStudents', [...this.secureExchangeStudents, secureExchangeStudent]);
+      }
+
+    },
     removeDocumentByIndex(index) {
       //since we don't have a unique UUID to identify the document to remove, we will use the index
       this.$store.commit('edx/deleteSecureExchangeDocumentByIndex', index);
     },
+    removeSecureExchangeStudentByID(secureExchangeStudent) {
+      //since we don't have a unique UUID to identify the document to remove, we will use the index
+      this.$store.commit('edx/deleteSecureExchangeStudentsByID', secureExchangeStudent);
+    },
     clearSecureExchangeDocuments() {
       this.$store.commit('edx/setSecureExchangeDocuments', []);
+    },
+    clearSecureExchangeStudents() {
+      this.$store.commit('edx/setSecureExchangeStudents', []);
     },
     showOptions() {
       this.expandAttachFile = false;
@@ -231,16 +275,19 @@ export default {
       this.expandAttachFile = true;
       this.expandAddStudent = false;
       this.shouldShowOptions = false;
+    },
+    showAddStudentPanel() {
+      if(this.secureExchangeStudents.length>0){
+        this.addtionalStudentAddWarningMessage='Addtional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message. ';
+      }
+      this.expandAttachFile = false;
+      this.expandAddStudent = true;
+      this.shouldShowOptions = false;
     }
   }
 };
 </script>
 
 <style scoped>
-.addButton.v-btn--outlined {
-  border: thin solid #FFFFFF;
-  text-transform: none;
-  font-weight: bolder;
-}
 
 </style>
