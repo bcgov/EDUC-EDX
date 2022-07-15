@@ -41,7 +41,8 @@ const router = new VueRouter({
       component: Home,
       meta: {
         pageTitle: PAGE_TITLES.DASHBOARD,
-        requiresAuth: true
+        requiresAuth: true,
+        permission: 'SECURE_EXCHANGE'
       },
 
     },
@@ -187,11 +188,9 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1) {
+          if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
-          }
-
-          if (to && to.meta) {
+          }else if (to && to.meta) {
             if(authStore.state.userInfo.activeInstituteTitle && to.meta.pageTitle !== PAGE_TITLES.SELECTION){
               store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
             }else{

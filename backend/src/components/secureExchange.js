@@ -21,6 +21,7 @@ const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('./constants');
 const { getApiCredentials } = require('./auth');
 const cacheService = require('./cache-service');
+const user= require('../components/user');
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
@@ -443,7 +444,7 @@ async function activateSchoolUser(req, res) {
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
     req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
-    return res.status(200).json(response);
+    getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
@@ -614,6 +615,32 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
+function setMincodesAndRedirect(req, res){
+  if(req.session.userMinCodes.length === 1){
+    setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
+    res.redirect(config.get('server:frontend'));
+  }
+  else if (req.session.userMinCodes.length > 1){
+    res.redirect(config.get('server:frontend') + '/institute-selection');
+  }
+}
+
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID){
+  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
+    if(edxUserMinCodeData){
+      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
+      if(Array.isArray(edxUserMinCodeData)){
+        req.session.edxUserData = edxUserMinCodeData[0];
+      }else{
+        req.session.edxUserData = edxUserMinCodeData;
+      }
+      setMincodesAndRedirect(req,res);
+    }else{
+      res.redirect(config.get('server:frontend') + '/unauthorized');
+    }
+  });
+}
+
 function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
@@ -643,5 +670,6 @@ module.exports = {
   schoolUserActivationInvite,
   updateEdxUserRoles,
   createSecureExchangeComment,
-  setSessionInstituteIdentifiers
+  setSessionInstituteIdentifiers,
+  getAndSetupEDXUserAndRedirect
 };

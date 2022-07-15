@@ -77,10 +77,11 @@
           <v-row>
             <v-col cols="12" class="d-flex justify-center">
               <PrimaryButton
+                  :loading="submissionInProgress"
                   :large-icon=true
                   id="edxUserActivationSubmitBtn"
                   text="Submit"
-                  :disabled="!isValidForm || isEdxUserActivationFormDisabled "
+                  :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
                   @click.native="activateEdxUser"
               ></PrimaryButton>
             </v-col>
@@ -111,6 +112,7 @@ export default {
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
       validationCode: null,
+      submissionInProgress: false,
       isEdxUserActivationFormDisabled: false,
       showActivationSnackBar:false
     };
@@ -122,6 +124,7 @@ export default {
       return !(v.length !== 8 || isNaN(v));
     },
     activateEdxUser() {
+      this.submissionInProgress = true;
       const body = {
         mincode: this.mincode,
         personalActivationCode: this.personalActivationCode,
@@ -130,9 +133,8 @@ export default {
       };
       ApiService.apiAxios.post(ApiRoutes.edx.USER_ACTIVATION, body)
         .then(() => {
-          this.setSuccessAlert('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
-          setTimeout(() => this.$router.push('/'), 3000);
-
+          this.setSuccessAlert('User Activation Completed Successfully. Redirecting to your Dashboard...');
+          setTimeout(() => this.$router.push('/'), 1000);
         })
         .catch(error => {
           this.showActivationSnackBar=false;
@@ -148,6 +150,7 @@ export default {
             this.showActivationSnackBar=true;
             this.activationErrorMessage = 'User Activation failed. Please try again.';
           }
+          this.submissionInProgress = false;
         });
     }
   },

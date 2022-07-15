@@ -34,7 +34,7 @@ async function getUserInfo(req, res) {
     school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
   }
 
-  if (req.session.digitalIdentityData && req.session.userMinCodes) {
+  if (req.session.digitalIdentityData && req.session.userMinCodes && req.session.userMinCodes.length > 0) {
     let resData = {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
@@ -56,7 +56,6 @@ async function getUserInfo(req, res) {
     getServerSideCodes(accessToken, correlationID),
     getEdxUserByDigitalId(accessToken, digitalID, correlationID),
   ]).then(async ([digitalIdData, codesData, edxUserMinCodeData]) => {
-
     const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
     if (!identityType) {
       log.error('getIdentityType Error identityTypeCode', digitalIdData.identityTypeCode);
@@ -76,6 +75,9 @@ async function getUserInfo(req, res) {
     } else {
       throw new ServiceError('userInfo error: session does not exist');
     }
+
+    school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
+
     let resData = {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,

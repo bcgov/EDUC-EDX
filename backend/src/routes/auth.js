@@ -7,13 +7,12 @@ const auth = require('../components/auth');
 const log = require('../components/logger');
 const {v4: uuidv4} = require('uuid');
 const {getSessionUser} = require('../components/utils');
-const {setSessionInstituteIdentifiers} = require('../components/secureExchange');
+const {getAndSetupEDXUserAndRedirect} = require('../components/secureExchange');
 
 const {
   body,
   validationResult
 } = require('express-validator');
-const user= require('../components/user');
 const router = express.Router();
 
 
@@ -51,21 +50,7 @@ router.get('/callback_bceid',
     const accessToken = userInfo.jwt;
     const digitalID = userInfo._json.digitalIdentityID;
     const correlationID = req.session?.correlationID;
-    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
-      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
-      if(Array.isArray(edxUserMinCodeData)){
-        req.session.edxUserData = edxUserMinCodeData[0];
-      }else{
-        req.session.edxUserData = edxUserMinCodeData;
-      }
-      if(req.session.userMinCodes.length === 1){
-        setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
-        res.redirect(config.get('server:frontend'));
-      }
-      else if (req.session.userMinCodes.length > 1){
-        res.redirect(config.get('server:frontend') + '/institute-selection');
-      }
-    });
+    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID);
   }
 );
 //a prettier way to handle errors
