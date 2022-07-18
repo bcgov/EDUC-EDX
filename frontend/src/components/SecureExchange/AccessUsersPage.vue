@@ -1,16 +1,5 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-      </v-col>
-      <v-col class="text-right">
-        <PrimaryButton icon="mdi-plus"
-                       :large-icon=true
-                       id="new-user-button"
-                       text="New User"
-                       @click.native="newUserInviteSheet = !newUserInviteSheet"/>
-      </v-col>
-    </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
       <v-col cols="12" md="4">
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
@@ -28,8 +17,28 @@
     <!--  user info -->
     <Spinner v-if="loadingUsers"/>
     <v-row v-else-if="filteredUsers.length">
-      <v-col md="4" cols="6" v-for="user in filteredUsers" :key="user.digitalID">
+      <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
         <AccessUserCard @refresh="getUsersData" type="school" :mincode="mincode" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
+      </v-col>
+      <v-col xl="4" cols="6" >
+        <v-row>
+          <v-col style="height: 204px">
+            <v-card height="100%">
+              <v-card-title>
+                <v-row no-gutters>
+                  <v-col class="d-flex justify-center mt-12">
+                    <PrimaryButton icon="mdi-plus"
+                                   :large-icon=true
+                                   id="new-user-button"
+                                   secondary
+                                   text="Add New User"
+                                   @click.native="newUserInviteSheet = !newUserInviteSheet"/>
+                  </v-col>
+                </v-row>
+              </v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row  v-else>
@@ -208,4 +217,11 @@ export default {
 .v-dialog__content >>> .v-bottom-sheet {
   width: 30% !important;
 }
+
+@media screen and (max-width: 950px){
+  .v-dialog__content /deep/ .v-bottom-sheet {
+    width: 60% !important;
+  }
+}
+
 </style>

@@ -12,11 +12,11 @@
         ></v-progress-circular>
       </v-col>
     </v-row>
-    <div style="width: 100%;" :overlay=false>
+    <div style="width: 100%;">
       <v-row class="pt-0"
              :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
         <v-col cols="12 pt-0">
-          <div v-if="!loading && secureExchange" :overlay=false>
+          <div v-if="!loading && secureExchange">
             <v-row>
               <v-col class="pb-0 pt-0 d-flex justify-start">
                 <v-row>
@@ -68,7 +68,7 @@
                   </v-btn>
                   <v-btn small @click="displayAttachmentPanel">
                     <v-icon color="#003366">mdi-paperclip</v-icon>
-                    <span style="color: #003366" class="ml-1">Document</span>
+                    <span style="color: #003366" class="ml-1">Attachment</span>
                   </v-btn>
                   <v-btn small>
                     <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
@@ -80,14 +80,14 @@
                 <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" v-on:click="clickMarkAsButton" :loading="loadingReadStatus">
                   <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                   <v-icon v-else>mdi-email-open-outline</v-icon>
-                  <span class="ml-1 markAsSpan">{{`Mark As ${secureExchange.isReadByMinistry ? 'Unread' : 'Read'}` }}</span>
+                  <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
                 </v-btn>
                 <v-btn id="claimAsButton" class="my-4 mx-2">
                   <v-icon>{{ secureExchange.reviewer ? 'mdi-account-off-outline' : 'mdi-account-check-outline' }}</v-icon>
-                  <span class="ml-1">{{ secureExchange.reviewer ? 'Unclaim' : 'Claim' }}</span>
+                  <span class="ml-1">{{ secureExchange.reviewer ? 'UNCLAIM' : 'CLAIM' }}</span>
                 </v-btn>
                 <v-btn id="changeStatusButton" class="my-4">
-                  <span>Close</span>
+                  <span>CLOSE</span>
                 </v-btn>
               </v-col>
             </v-row>
@@ -199,7 +199,7 @@ export default {
   },
   computed: {},
   created() {
-    this.getExchange(true);
+    this.getExchange();
     this.setIsReadByExchangeContact(true);
   },
   methods: {
@@ -242,16 +242,11 @@ export default {
       this.isNewAttachmentDisplayed = false;
       this.shouldDisplaySpeedDial = true;
     },
-    getExchange(initialLoad = false) {
+    getExchange() {
       this.loading = true;
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
         .then(response => {
-          //Always set secure exchange as read by ministry if this is the first load
-          if (initialLoad && !response.data.isReadByMinistry) {
-            this.toggleIsReadByMinistry();
-          } else {
-            this.secureExchange = response.data;
-          }
+          this.secureExchange = response.data;
         })
         .catch(error => {
           console.log(error);
