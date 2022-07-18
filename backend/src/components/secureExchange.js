@@ -622,8 +622,7 @@ function setMincodesAndRedirect(req, res, activatedMincode){
   }else if (activatedMincode){
     setSessionInstituteIdentifiers(req, activatedMincode, 'SCHOOL');
     res.redirect(config.get('server:frontend'));
-  }
-  else if (req.session.userMinCodes.length > 1){
+  }else if (req.session.userMinCodes.length > 1){
     res.redirect(config.get('server:frontend') + '/institute-selection');
   }
 }
