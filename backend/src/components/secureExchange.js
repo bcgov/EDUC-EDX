@@ -444,7 +444,7 @@ async function activateSchoolUser(req, res) {
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
     req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
-    getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
+    getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID, req.body.mincode);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
@@ -473,11 +473,11 @@ async function getEdxUsers(req, res) {
 
     //if we search by mincode strip out other school and district information for the frontend
     if(req.query.mincode) {
-      filteredResponse = response.map(user => {
+      filteredResponse = response.map(schoolUser => {
         return {
-          ...user,
+          ...schoolUser,
           edxUserDistricts: [],
-          edxUserSchools: user.edxUserSchools.filter(school => school.mincode === req.query.mincode)
+          edxUserSchools: schoolUser.edxUserSchools.filter(school => school.mincode === req.query.mincode)
         };
       });
     }
@@ -615,9 +615,12 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
-function setMincodesAndRedirect(req, res){
+function setMincodesAndRedirect(req, res, activatedMincode){
   if(req.session.userMinCodes.length === 1){
     setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
+    res.redirect(config.get('server:frontend'));
+  }else if (activatedMincode){
+    setSessionInstituteIdentifiers(req, activatedMincode, 'SCHOOL');
     res.redirect(config.get('server:frontend'));
   }
   else if (req.session.userMinCodes.length > 1){
@@ -625,7 +628,7 @@ function setMincodesAndRedirect(req, res){
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID){
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, activatedMincode){
   user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
     if(edxUserMinCodeData){
       req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
@@ -634,7 +637,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
       }else{
         req.session.edxUserData = edxUserMinCodeData;
       }
-      setMincodesAndRedirect(req,res);
+      setMincodesAndRedirect(req,res,activatedMincode);
     }else{
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
