@@ -13,6 +13,7 @@ export default {
     secureExchangeDocumentTypes: [],
     secureExchangeDocuments: [],
     fileRequirements: [],
+    secureExchangeStudents:[]
   }),
   getters: {
     statuses: state => state.statuses,
@@ -22,6 +23,7 @@ export default {
     secureExchangeDocumentTypes: state => state.secureExchangeDocumentTypes,
     secureExchangeDocuments: state => state.secureExchangeDocuments,
     fileRequirements: state => state.fileRequirements,
+    secureExchangeStudents: state => state.secureExchangeStudents,
   },
   mutations: {
     setStatuses: (state, statuses) => {
@@ -55,6 +57,12 @@ export default {
     },
     setFileRequirements(state, payload) {
       state.fileRequirements = payload;
+    },
+    setSecureExchangeStudents(state,payload){
+      state.secureExchangeStudents= payload;
+    },
+    deleteSecureExchangeStudentsByID(state, payload) {
+      state.secureExchangeStudents = state.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
     }
   },
   actions: {

@@ -1,6 +1,7 @@
 const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
+const studentRequestRoot = baseRoot + '/student';
 
 let object;
 
@@ -36,7 +37,11 @@ export const ApiRoutes = Object.freeze({
     USER_ACTIVATION:edxRoot+'/user-activation',
     UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url',
     NEW_SCHOOL_USER_ACTIVATION_INVITE:edxRoot+'/school-user-activation-invite'
-  }
+  },
+  studentRequest: {
+    ROOT_ENDPOINT: studentRequestRoot,
+    SEARCH_URL: studentRequestRoot + '/',
+  },
 });
 
 export const PAGE_TITLES = Object.freeze({
