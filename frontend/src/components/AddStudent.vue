@@ -68,7 +68,7 @@ export default {
       type: String,
       required: true
     },
-    addtionalStudentAddWarning:{
+    additionalStudentAddWarning:{
       type: String,
       required: false,
       default: ''
@@ -103,7 +103,7 @@ export default {
     },
     alert(newVal){
       if(!newVal){
-        this.addtionalStudentAddWarning = '';
+        this.additionalStudentAddWarning = '';
       }
     },
     penNumber(newVal) {

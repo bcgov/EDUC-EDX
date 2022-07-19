@@ -125,7 +125,7 @@
                             @close:form="showOptions"
                             @addStudent="addSecureExchangeStudent"
                          :mincode="userInfo.activeInstituteIdentifier"
-                         :addtionalStudentAddWarning="addtionalStudentAddWarningMessage"
+                         :additionalStudentAddWarning="additionalStudentAddWarningMessage"
                         >
                         </AddStudent>
                       </v-expand-transition>
@@ -186,7 +186,7 @@ export default {
       expandAttachFile: false,
       expandAddStudent: false,
       shouldShowOptions: true,
-      addtionalStudentAddWarningMessage:''
+      additionalStudentAddWarningMessage:''
     };
   },
   computed: {
@@ -216,11 +216,11 @@ export default {
       this.$emit('secure-exchange:messageSent');
       this.clearSecureExchangeDocuments();
       this.clearSecureExchangeStudents();
-      this.addtionalStudentAddWarningMessage='';
+      this.additionalStudentAddWarningMessage='';
     },
     sendNewMessage() {
       this.processing = true;
-      this.addtionalStudentAddWarningMessage='';
+      this.additionalStudentAddWarningMessage='';
       const payload = {
         ministryOwnershipTeamID: this.assignedMinistryTeam,
         subject: this.subject,
@@ -256,7 +256,6 @@ export default {
       this.$store.commit('edx/deleteSecureExchangeDocumentByIndex', index);
     },
     removeSecureExchangeStudentByID(secureExchangeStudent) {
-      //since we don't have a unique UUID to identify the document to remove, we will use the index
       this.$store.commit('edx/deleteSecureExchangeStudentsByID', secureExchangeStudent);
     },
     clearSecureExchangeDocuments() {
@@ -277,7 +276,7 @@ export default {
     },
     showAddStudentPanel() {
       if(this.secureExchangeStudents.length>0){
-        this.addtionalStudentAddWarningMessage='Addtional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message. ';
+        this.additionalStudentAddWarningMessage='Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message. ';
       }
       this.expandAttachFile = false;
       this.expandAddStudent = true;
