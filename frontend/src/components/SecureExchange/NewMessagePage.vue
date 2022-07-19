@@ -95,7 +95,7 @@
                              title="Add Student"
                              color="#1A5A96"
                              outlined
-                             class="addButton pl-0 pr-2"
+                             class="addButton pl-0 pr-2 ml-1"
                              @click="showAddStudentPanel"
                       >
                         <v-icon color="#1A5A96" class="mr-0" right dark>
