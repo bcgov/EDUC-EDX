@@ -98,7 +98,7 @@ export default {
   watch: {
     addtionalStudentAddWarning(newVal){
       if(newVal){
-        this.setWarningAlert(newVal);
+        this.setInfoAlert(newVal);
       }
     },
     alert(newVal){
@@ -125,7 +125,7 @@ export default {
       this.alertType = 'bootstrap-error';
       this.alert = true;
     },
-    setWarningAlert(alertMessage) {
+    setInfoAlert(alertMessage) {
       this.alertMessage = alertMessage;
       this.alertType = 'bootstrap-info';
       this.alert = true;
