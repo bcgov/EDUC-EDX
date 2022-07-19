@@ -65,7 +65,7 @@
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
-                    <v-col v-if="secureExchangeDocuments.length > 0 || secureExchangeStudents.length>0" class="d-flex px-0">
+                    <v-col v-if="secureExchangeDocuments.length > 0 || secureExchangeStudents.length>0" class="d-flex px-0 pb-2">
                       <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
                         <v-avatar left>
                           <v-icon>mdi-paperclip</v-icon>
