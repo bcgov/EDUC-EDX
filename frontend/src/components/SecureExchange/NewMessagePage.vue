@@ -65,20 +65,19 @@
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
-                    <v-col v-if="secureExchangeDocuments.length > 0" class="d-flex px-0">
+                    <v-col v-if="secureExchangeDocuments.length > 0 || secureExchangeStudents.length>0" class="d-flex px-0">
                       <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
                         <v-avatar left>
                           <v-icon>mdi-paperclip</v-icon>
                         </v-avatar>
                         {{document.fileName}}</v-chip>
-                    </v-col>
-                    <v-col>
                       <v-chip :class="['ma-1']" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
                         <v-avatar left>
                           <v-icon>mdi-account-circle</v-icon>
                         </v-avatar>
                         {{secureExchangeStudent.pen}}</v-chip>
                     </v-col>
+
                   </v-row>
                   <v-row v-if="shouldShowOptions">
                     <v-col class="d-flex justify-end mr-3 pt-0">

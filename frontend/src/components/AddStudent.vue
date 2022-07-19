@@ -31,7 +31,7 @@
     <v-row no-gutters v-if="showStudentDetails">
       <v-icon x-large v-if="showStudentDetails" class="pr-2">mdi-account-box-outline</v-icon>
       <div v-if="showStudentDetailsForMinistryStaff" :class="['d-flex', 'flex-column']">
-      <span class="pt-2 pl-0" >Student details will be available for ministry staff. </span>
+      <span class="pt-2 pl-0 pb-2" >Student details will be available for ministry staff. </span>
       </div>
         <div v-if="showStudentDetails" :class="['d-flex', 'flex-column']">
           <strong>{{ this.student['studentName'] }}</strong>
