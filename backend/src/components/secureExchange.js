@@ -289,6 +289,7 @@ async function getExchanges(req, res) {
     });
 
 }
+
 async function getExchange(req, res) {
   const accessToken = getAccessToken(req);
   if (!accessToken) {
@@ -299,7 +300,7 @@ async function getExchange(req, res) {
   return Promise.all([
     getCodeTable(accessToken, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(accessToken, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getData(accessToken, config.get('edx:exchangeURL')+`/${req.params.secureExchangeID}`)
+    getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
@@ -312,7 +313,7 @@ async function getExchange(req, res) {
         dataResponse['ministryOwnershipTeamName'] = tempMinTeam?.teamName ? tempMinTeam.teamName : dataResponse['ministryOwnershipTeamName'];
       }
       dataResponse['createDate'] = dataResponse['createDate'] ? LocalDateTime.parse(dataResponse['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd')) : 'Unknown Date';
-      dataResponse['commentsList'] =  dataResponse['commentsList'] ?  dataResponse['commentsList'] : [];
+      dataResponse['commentsList'] = dataResponse['commentsList'] ? dataResponse['commentsList'] : [];
       let school = cacheService.getSchoolNameJSONByMincode(dataResponse['contactIdentifier']);
       dataResponse['activities'] = [];
       dataResponse['commentsList'].forEach((comment) => {
@@ -321,7 +322,7 @@ async function getExchange(req, res) {
         activity['isSchool'] = comment.edxUserID ? true : false;
         activity['timestamp'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']) : '';
         activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
-        activity['title'] =  comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+        activity['title'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
         activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
         activity['content'] = comment['content'];
         activity['secureExchangeID'] = comment['secureExchangeID'];
@@ -400,17 +401,17 @@ async function updateEdxUserRoles(req, res) {
     let rolesToBeRemoved = [];
 
     //Determine roles to be removed
-    selectedUserSchool[0].edxUserSchoolRoles.forEach(function(userSchoolRole) {
-      if(!req.body.params.selectedRoles.filter(value  => userSchoolRole.edxRoleCode === value).length > 0){
+    selectedUserSchool[0].edxUserSchoolRoles.forEach(function (userSchoolRole) {
+      if (!req.body.params.selectedRoles.filter(value => userSchoolRole.edxRoleCode === value).length > 0) {
         rolesToBeRemoved.push(userSchoolRole.edxRoleCode);
       }
     });
 
-    selectedUserSchool[0].edxUserSchoolRoles = selectedUserSchool[0].edxUserSchoolRoles.filter(value  =>  !rolesToBeRemoved.includes(value.edxRoleCode));
+    selectedUserSchool[0].edxUserSchoolRoles = selectedUserSchool[0].edxUserSchoolRoles.filter(value => !rolesToBeRemoved.includes(value.edxRoleCode));
 
     //Roles to be added
-    req.body.params.selectedRoles.forEach(function(role) {
-      if(!selectedUserSchool[0].edxUserSchoolRoles.filter(value  => role === value.edxRoleCode).length > 0){
+    req.body.params.selectedRoles.forEach(function (role) {
+      if (!selectedUserSchool[0].edxUserSchoolRoles.filter(value => role === value.edxRoleCode).length > 0) {
         let newRole = {};
         newRole.edxUserSchoolID = selectedUserSchool[0].edxUserSchoolID;
         newRole.edxRoleCode = role;
@@ -442,7 +443,7 @@ async function activateSchoolUser(req, res) {
   }
   const numberOfRetries = req.session[`${req.body.validationCode}`];
   if (numberOfRetries && numberOfRetries >= 5) {
-    return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.',HttpStatus.TOO_MANY_REQUESTS);
+    return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
   }
   const payload = {
     digitalId: req.session.digitalIdentityData.digitalID,
@@ -455,10 +456,10 @@ async function activateSchoolUser(req, res) {
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
-    if(e?.status>399 && e?.status<410){
-      if (numberOfRetries && numberOfRetries<=4) {
+    if (e?.status > 399 && e?.status < 410) {
+      if (numberOfRetries && numberOfRetries <= 4) {
         req.session[`${req.body.validationCode}`] = numberOfRetries + 1;
-      }else {
+      } else {
         req.session[`${req.body.validationCode}`] = 1;
       }
     }
@@ -479,7 +480,7 @@ async function getEdxUsers(req, res) {
     let filteredResponse = [];
 
     //if we search by mincode strip out other school and district information for the frontend
-    if(req.query.mincode) {
+    if (req.query.mincode) {
       filteredResponse = response.map(schoolUser => {
         return {
           ...schoolUser,
@@ -496,7 +497,7 @@ async function getEdxUsers(req, res) {
   }
 }
 
-async function schoolUserActivationInvite(req,res){
+async function schoolUserActivationInvite(req, res) {
   const token = getAccessToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -516,7 +517,7 @@ async function schoolUserActivationInvite(req,res){
 
 }
 
-async function createSecureExchangeComment(req,res){
+async function createSecureExchangeComment(req, res) {
   try {
     const token = getAccessToken(req);
     const edxUserInfo = req.session.edxUserData;
@@ -536,15 +537,16 @@ async function createSecureExchangeComment(req,res){
     return errorResponse(res);
   }
 }
+
 function mapEdxUserActivationErrorMessage(message) {
   const msg = message || 'INTERNAL SERVER ERROR';
   if (msg.includes('EdxActivationCode was not found for parameters')) {
     return 'Incorrect activation details have been entered. Please try again.';
   } else if (msg.includes('This Activation Code has expired')) {
     return 'Your activation code has expired. Please contact your administrator for a new activation code.';
-  }else if (msg.includes('This User Activation Link has expired')) {
+  } else if (msg.includes('This User Activation Link has expired')) {
     return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
-  }else if (msg.includes('This user is already associated to the school')) {
+  } else if (msg.includes('This user is already associated to the school')) {
     return 'This user account is already associated to the mincode';
   }
   return msg;
@@ -552,7 +554,7 @@ function mapEdxUserActivationErrorMessage(message) {
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
-  if(! req.query.validationCode) {
+  if (!req.query.validationCode) {
     return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
   }
   const payload = {
@@ -564,15 +566,16 @@ async function verifyActivateUserLink(req, res) {
     return res.redirect(baseUrl + '/api/auth/login_bceid_activate_user');
   } catch (e) {
     let msg = 'Error Occurred please retry with the link provided in the email';
-    if(e.status === 400){
+    if (e.status === 400) {
       msg = 'Invalid link clicked. Please click the link provided in your email';
-    }else if (e.status === 410){
+    } else if (e.status === 410) {
       msg = 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
     }
     log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
     return res.redirect(baseUrl + `/activation-error?errorMessage= ${msg}`);
   }
 }
+
 /**
  * Returns an array of search criteria objects to query EDX API
  *
@@ -621,29 +624,29 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
-function setMincodesAndRedirect(req, res, activatedMincode){
-  if(req.session.userMinCodes.length === 1){
+function setMincodesAndRedirect(req, res, activatedMincode) {
+  if (req.session.userMinCodes.length === 1) {
     setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
     res.redirect(config.get('server:frontend'));
-  }else if (activatedMincode){
+  } else if (activatedMincode) {
     setSessionInstituteIdentifiers(req, activatedMincode, 'SCHOOL');
     res.redirect(config.get('server:frontend'));
-  }else if (req.session.userMinCodes.length > 1){
+  } else if (req.session.userMinCodes.length > 1) {
     res.redirect(config.get('server:frontend') + '/institute-selection');
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, activatedMincode){
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, activatedMincode) {
   user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
-    if(edxUserMinCodeData){
-      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el=>el.mincode); //this is list of mincodes associated to the user
-      if(Array.isArray(edxUserMinCodeData)){
+    if (edxUserMinCodeData) {
+      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el => el.mincode); //this is list of mincodes associated to the user
+      if (Array.isArray(edxUserMinCodeData)) {
         req.session.edxUserData = edxUserMinCodeData[0];
-      }else{
+      } else {
         req.session.edxUserData = edxUserMinCodeData;
       }
-      setMincodesAndRedirect(req,res,activatedMincode);
-    }else{
+      setMincodesAndRedirect(req, res, activatedMincode);
+    } else {
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
   });
@@ -655,7 +658,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
 
   let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.mincode === activeInstituteIdentifier);
   let permissionsArray = [];
-  selectedUserSchool[0].edxUserSchoolRoles.forEach(function(role){
+  selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
     permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
   });
   req.session.activeInstitutePermissions = permissionsArray;
