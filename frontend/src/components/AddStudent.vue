@@ -21,7 +21,8 @@
                       v-model="penNumber"
                       placeholder="Enter a Student's PEN"
                       :rules="penRules"
-                      counter="9">
+                      counter="9"
+                      id="studentPenTextField">
         </v-text-field>
         <PrimaryButton width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
                        :loading="isSearchingStudent"
@@ -43,7 +44,7 @@
     <v-row class="justify-end pr-2 pt-2" >
       <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1"
                      @click.native="closeForm"></PrimaryButton>
-      <PrimaryButton :disabled="!studentExist" id="addStudentBtn"
+      <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
                      text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
     </v-row>
   </v-card>
@@ -96,7 +97,7 @@ export default {
     }
   },
   watch: {
-    addtionalStudentAddWarning(newVal){
+    additionalStudentAddWarning(newVal){
       if(newVal){
         this.setInfoAlert(newVal);
       }
