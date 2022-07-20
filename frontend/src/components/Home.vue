@@ -3,9 +3,9 @@
   <v-container fluid class="full-height" v-if="!isAuthenticated && !isLoading">
     <!-- login article -->
     <article name="login-banner">
-        <v-row align="center" justify="center" style="margin-right: 0;margin-left: 0">
-          <Login></Login>
-        </v-row>
+      <v-row align="center" justify="center" style="margin-right: 0;margin-left: 0">
+        <Login></Login>
+      </v-row>
     </article>
   </v-container>
 
@@ -13,34 +13,34 @@
     <article id="progress-display-container" class="top-banner full-height">
       <v-row align="center" justify="center">
         <v-progress-circular
-                :size="60"
-                :width="7"
-                color="primary"
-                indeterminate
+            :size="60"
+            :width="7"
+            color="primary"
+            indeterminate
         ></v-progress-circular>
       </v-row>
     </article>
   </v-container>
 
-  <v-container fluid v-else class="full-height">
-<v-row class="pb-6">
-  <v-col cols="12" md="8">
-    <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
-                     :tableData="exchangeData"></DashboardTable>
-    <v-container v-else-if="isLoadingExchange" class="full-height" fluid>
-      <article class="top-banner full-height">
-        <v-row align="center" justify="center">
-          <v-progress-circular
-              :size="70"
-              :width="7"
-              color="primary"
-              indeterminate
-          ></v-progress-circular>
-        </v-row>
-      </article>
-    </v-container>
-  </v-col>
-</v-row>
+  <v-container fluid v-else class="tile-size margin-initial">
+    <v-row class="pb-6 tile-size">
+      <v-col cols="2" md="5" class="tile-size">
+        <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
+                         :tableData="exchangeData"></DashboardTable>
+        <v-container v-else-if="isLoadingExchange" class="tile-size" fluid>
+          <article class="top-banner full-height">
+            <v-row align="center" justify="center">
+              <v-progress-circular
+                  :size="70"
+                  :width="7"
+                  color="primary"
+                  indeterminate
+              ></v-progress-circular>
+            </v-row>
+          </article>
+        </v-container>
+      </v-col>
+    </v-row>
 
   </v-container>
 </template>
@@ -80,14 +80,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .top-banner{
-    background-color: aliceblue;
-    background-size: cover;
-    align-items: center;
-    display: flex;
-  }
-  .full-height{
-    height: 100%;
-  }
+.top-banner{
+  background-color: aliceblue;
+  background-size: cover;
+  align-items: center;
+  display: flex;
+}
+.tile-size{
+  height: 150px;
+  width: 995px;
+}
+.margin-initial {
+  margin: initial;
+}
 </style>
 

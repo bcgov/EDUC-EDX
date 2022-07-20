@@ -3,7 +3,7 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,verifyActivateUserLink,instituteSelection,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles,
-  createSecureExchangeComment
+  createSecureExchangeComment,getExchangesCount
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
@@ -42,6 +42,7 @@ router.delete('/exchange/:id/documents/:documentId', passport.authenticate('jwt'
 router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
 router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
+router.get('/exchange/count', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchangesCount);
 router.get('/exchange/:secureExchangeID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchange);
 router.post('/exchange/:secureExchangeID/comments', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createSecureExchangeComment);
 router.put('/exchange/:secureExchangeID/markAs/:readStatus', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, markAs);
