@@ -1,3 +1,4 @@
+//revert comment remove me after
 'use strict';
 const config = require('../config/index');
 const log = require('../components/logger');
