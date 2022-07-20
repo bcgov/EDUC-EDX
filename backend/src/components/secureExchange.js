@@ -200,7 +200,7 @@ async function getExchangesCountPaginated(req) {
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
   }
-  const criteria = req.query.searchParam;
+
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
