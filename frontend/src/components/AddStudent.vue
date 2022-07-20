@@ -21,8 +21,16 @@
                       v-model="penNumber"
                       placeholder="Enter a Student's PEN"
                       :rules="penRules"
+<<<<<<< HEAD
+<<<<<<< HEAD
                       counter="9"
                       id="studentPenTextField">
+=======
+                      counter="9">
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
+=======
+                      counter="9">
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
         </v-text-field>
         <PrimaryButton width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
                        :loading="isSearchingStudent"
@@ -44,7 +52,15 @@
     <v-row class="justify-end pr-2 pt-2" >
       <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1"
                      @click.native="closeForm"></PrimaryButton>
+<<<<<<< HEAD
+<<<<<<< HEAD
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
+=======
+      <PrimaryButton :disabled="!studentExist" id="addStudentBtn"
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
+=======
+      <PrimaryButton :disabled="!studentExist" id="addStudentBtn"
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
                      text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
     </v-row>
   </v-card>
@@ -97,7 +113,15 @@ export default {
     }
   },
   watch: {
+<<<<<<< HEAD
+<<<<<<< HEAD
     additionalStudentAddWarning(newVal){
+=======
+    addtionalStudentAddWarning(newVal){
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
+=======
+    addtionalStudentAddWarning(newVal){
+>>>>>>> parent of 9bc4782... EDX-78: SCH - See Summary of Secure Messages
       if(newVal){
         this.setInfoAlert(newVal);
       }

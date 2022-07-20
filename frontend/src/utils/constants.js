@@ -27,7 +27,6 @@ export const ApiRoutes = Object.freeze({
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
     EXCHANGE_URL:edxRoot + '/exchange',
-    EXCHANGE_COUNT_URL:edxRoot + '/exchange/count',
     DOCUMENT_TYPES_URL: edxRoot + '/document-types',
     FILE_REQUIREMENTS_URL: edxRoot + '/file-requirements',
     STATUSES_URL: edxRoot + '/exchange/statuses',
