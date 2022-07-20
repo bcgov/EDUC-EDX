@@ -287,5 +287,9 @@ export default {
 </script>
 
 <style scoped>
-
+.addButton.v-btn--outlined {
+  border: thin solid #FFFFFF;
+  text-transform: none;
+  font-weight: bolder;
+}
 </style>
