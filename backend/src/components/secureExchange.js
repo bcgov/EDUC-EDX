@@ -270,6 +270,7 @@ async function clearActiveSession(req) {
   req.session.activeInstituteIdentifier = '';
   req.session.activeInstituteType = '';
   req.session.activeInstitutePermissions= '';
+  req.session.activeInstituteTitle= '';
 }
 
 async function getExchanges(req, res) {
