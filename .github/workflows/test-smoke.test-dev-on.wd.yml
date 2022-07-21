@@ -57,6 +57,7 @@ jobs:
           TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
           TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.TEST_EDX_ACTIVATE_USER_USERNAME }}
           TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.TEST_EDX_ACTIVATE_USER_PWD }}
+          PEN_LIST: ${{secrets.AT_PEN_LIST}}
 
 
   # now burn it all down!!

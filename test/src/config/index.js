@@ -33,6 +33,9 @@ nconf.defaults({
         token_client_id: process.env.TOKEN_CLIENT_ID,
         token_client_secret: process.env.TOKEN_CLIENT_SECRET,
         token_endpoint: process.env.TOKEN_ENDPOINT
+    },
+    student:{
+        penList: process.env.PEN_LIST
     }
 });
 
