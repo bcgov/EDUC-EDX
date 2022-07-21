@@ -1,4 +1,5 @@
-import { Selector, ClientFunction, t } from 'testcafe';
+import { Selector, t } from 'testcafe';
+import { findAllPaginated } from "../services/edx-api-service";
 import log from "npmlog";
 
 /**
@@ -28,6 +29,15 @@ class Inbox {
         this.newMessageTextArea = Selector('#newMessageTextArea');
         this.newMessagePostBtn = Selector('#newMessagePostBtn');
         this.cancelMessage = Selector('#cancelMessage');
+
+        this.addStudentButton= Selector('#addStudentID');
+        this.studentPenTextField = Selector ('#studentPenTextField');
+        this.searchPenButton = Selector ('#searchPenBtn');
+        this.addStudentToNewMessageButton = Selector('#addStudentToNewMessageBtn');
+        this.addStudentAlert=Selector('#addStudentAlert');
+        this.newMessageStudentChip = Selector('#studentChip');
+        this.newMessageDocumentChip = Selector('#documentChip');
+        this.cancelAddStudentButton = Selector('#cancelAddStudentBtn');
     }
 
     async clickNewMessagePostButton() {
@@ -38,6 +48,11 @@ class Inbox {
     async clickCancelSubmitButton(){
         await t.click(this.cancelMessage());
         log.info("Cancel message button clicked");
+    }
+
+    async clickCancelAddStudentButton(){
+        await t.click(this.cancelAddStudentButton());
+        log.info("Cancel Add Student button clicked");
     }
 
     async clickNewMessageButton(){
@@ -113,6 +128,97 @@ class Inbox {
         log.info("Previous page selected");
     }
 
+    async createANewMessage(testExchangeSubject) {
+        await this.clickNewMessageButton();
+        // create new message
+        await this.inputSubjectTextField(testExchangeSubject);
+        await this.inputNewMessage('This is a super awesome message.');
+        await this.inputSchoolNameTextField('PEN Team');
+        log.info("New Message Details input");
+    }
 
+    async clickOnAddStudentButtonInNewMessage(){
+        await t.expect(this.addStudentButton.visible).ok().click(this.addStudentButton);
+        log.info("Add Student Button Clicked");
+    }
+    async addStudentPenToSearchInNewMessage(pen) {
+        await t.click(this.studentPenTextField);
+        await t.typeText(this.studentPenTextField,pen);
+        log.info("Pen details input in Add Student");
+    }
+    async checkSearchPenButtonIsDisabled(){
+       const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
+        await t.expect(button.hasAttribute('disabled')).ok();
+    }
+
+    async checkSearchPenButtonIsEnabled(){
+        const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
+        await t.expect(button.hasAttribute('disabled')).notOk();
+    }
+
+    async checkAddStudentButtonIsDisabled(){
+        const button = this.addStudentToNewMessageButton.with({visibilityCheck: true}).withExactText('Add');
+        await t.expect(button.hasAttribute('disabled')).ok();
+    }
+    async checkAddStudentButtonIsEnabled(){
+        const button = this.addStudentToNewMessageButton.with({visibilityCheck: true}).withExactText('Add');
+        await t.expect(button.hasAttribute('disabled')).notOk();
+    }
+    async clickPenSearchButton(){
+        await t.click(this.searchPenButton());
+        log.info("Pen Search Button Clicked");
+    }
+    async clearPenSearchText(){
+        await t
+          .selectText(this.studentPenTextField)
+          .pressKey('delete');
+        log.info("Pen Details cleared from Search field");
+    }
+
+    async clickAddStudentButton(){
+        await t.click(this.addStudentToNewMessageButton);
+        log.info("Add Student To New Message Button clicked");
+    }
+
+    async assertAlertMessageAtAddStudent(message){
+        await t.expect(this.addStudentAlert.innerText).contains(message);
+
+    }
+
+    async studentAddedToNewMessageWithPen(pen){
+        await t.expect(this.newMessageStudentChip.innerText).contains(pen);
+        log.info("Student details added to the New Message");
+    }
+
+    /**
+     * Returns a response object containing any
+     * messages by subject
+     * @param subject
+     * @returns {Promise<*>}
+     */
+    async findMessagesBySubject(subject){
+        let params = {
+            params: {
+                searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
+            }
+        }
+        return  findAllPaginated(token, params);
+    }
+
+    /**
+     * Given a subject, will delete messages from the api
+     * which contain that subject
+     * @param subject
+     * @returns {Promise<void>}
+     */
+    async deleteMessagesBySubject(subject){
+        let response = await findMessagesBySubject(subject);
+        if(response != null) {
+            for (const element of response.content) {
+                await deleteSecureExchange(token, element.secureExchangeID);
+                log.info("Removing message by subject: " + subject);
+            }
+        }
+    }
 }
 export default Inbox;
