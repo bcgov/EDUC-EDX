@@ -23,32 +23,7 @@
         </v-card-title>
         <v-row class="mr-4"><span> {{exchangeCount}} messages, {{unreadExchangeCount}} unread</span></v-row>
       </v-col>
-      <!--      <v-col v-for="(row, index) in tableData" :key="index" class="py-0" cols="12" md="2">
-              <v-row class="pa-0">
-                <h3>{{ row.title }}</h3>
-              </v-row>
-              <v-row v-for="(col, idx) in omit(row, 'title')" :key="idx" class="pt-2 listCol">
-                <div v-if="idx === 'heldReview' && col.data > 0">
-                  <router-link to="heldRequestBatch">
-                    <strong>{{ col.data }} {{ col.name }}</strong>
-                  </router-link>
-                </div>
-                <div v-else-if="!row.error">{{ col.data }} {{ col.name }}</div>
-              </v-row>
-            </v-col> -->
     </v-row>
-
-
-
-
-
-
-
-
-
-
-
-
   </v-card>
 </template>
 <script>

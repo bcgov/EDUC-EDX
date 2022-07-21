@@ -22,7 +22,7 @@
     </article>
   </v-container>
 
-  <v-container fluid v-else class="tile-size margin-initial">
+  <v-container fluid v-else class="card-size margin-initial">
     <v-row class="pb-6 tile-size">
       <v-col cols="2" md="5" class="tile-size">
         <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
@@ -87,8 +87,12 @@ export default {
   display: flex;
 }
 .tile-size{
-  height: 150px;
-  width: 995px;
+  height: 100%;
+  width: 100%;
+}
+.card-size{
+  height: 12em;
+  width: 62em;
 }
 .margin-initial {
   margin: initial;

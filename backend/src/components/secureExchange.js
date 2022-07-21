@@ -205,7 +205,7 @@ async function getExchangesCountPaginated(req) {
       pageNumber: req.query.pageNumber,
       pageSize: req.query.pageSize,
       sort: '',
-      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"00899178","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
+      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"'+req.session.activeInstituteIdentifier+'","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
     }
   };
 
