@@ -2,7 +2,6 @@
  * Tests to run against the school inbox page
  */
 import {base_url} from '../../config/constants';
-
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
@@ -86,7 +85,6 @@ test('testPage', async t => {
     await t.expect(messageResponse.content.length).eql(2, 'Message created');
     log.info("Message created.");
 });
-
 
 async function confirmMessage(t) {
     await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
