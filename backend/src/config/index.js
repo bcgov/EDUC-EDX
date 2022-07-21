@@ -82,7 +82,6 @@ nconf.defaults({
     ministryTeamURL : process.env.EDX_API_ENDPOINT+ '/users/ministry-teams',
     edxUsersURL: process.env.EDX_API_ENDPOINT+ '/users',
     edxRolePermissionsURL: process.env.EDX_API_ENDPOINT+ '/users/roles',
-    clearActiveUserSession: process.env.EDX_API_ENDPOINT+ '/users/clearActiveUserSession',
     edxActiveInstitution: process.env.EDX_API_ENDPOINT+ '/institute-selection',
     userActivationURL:process.env.EDX_API_ENDPOINT+ '/users/activation',
     updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url',

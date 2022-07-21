@@ -7,7 +7,6 @@ let object;
 
 object = {
   LOGIN: authRoot + '/login',
-  DASHBOARD: '/',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
   LOGOUT: authRoot + '/logout',
   SESSION_EXPIRED: authRoot + '/logout?sessionExpired=true',
@@ -15,7 +14,6 @@ object = {
   REFRESH: authRoot + '/refresh',
   TOKEN: authRoot + '/token',
   SESSION_REMAINING_TIME: authRoot + '/user-session-remaining-time',
-  INSTITUTE_SELECTION: '/institute-selection',
 };
 //Authentication endpoints
 export const AuthRoutes = Object.freeze(object);
