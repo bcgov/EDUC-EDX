@@ -150,11 +150,13 @@ class Inbox {
 
   async checkSearchPenButtonIsDisabled() {
     const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
+    await t.wait(5000);
     await t.expect(button.hasAttribute('disabled')).ok();
   }
 
   async checkSearchPenButtonIsEnabled() {
     const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
+    await t.wait(5000);
     await t.expect(button.hasAttribute('disabled')).notOk();
   }
 
