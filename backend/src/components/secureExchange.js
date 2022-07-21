@@ -250,6 +250,12 @@ async function instituteSelection(req, res) {
   }
 }
 
+async function clearActiveSession(req) {
+  req.session.activeInstituteIdentifier = '';
+  req.session.activeInstituteType = '';
+  req.session.activeInstitutePermissions= '';
+}
+
 async function getExchanges(req, res) {
   const token = getAccessToken(req);
   if (!token && req.session.userMinCodes) {
@@ -664,6 +670,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
+
 module.exports = {
   verifyRequest,
   deleteDocument,
@@ -681,6 +688,7 @@ module.exports = {
   schoolUserActivationInvite,
   updateEdxUserRoles,
   createSecureExchangeComment,
+  clearActiveSession,
   setSessionInstituteIdentifiers,
   getAndSetupEDXUserAndRedirect
 };
