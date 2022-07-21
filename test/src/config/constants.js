@@ -14,6 +14,7 @@ module.exports.credentials = Object.freeze({
     }
   });
 
+module.exports.student_penList = config.get('student:penList');
 //Token related config
 //module.exports.token_namespace = config.get('token:token_namespace');
 //module.exports.token_environment = config.get('token:token_environment');

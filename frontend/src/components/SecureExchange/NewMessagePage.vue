@@ -66,12 +66,12 @@
                   </v-row>
                   <v-row no-gutters>
                     <v-col v-if="secureExchangeDocuments.length > 0 || secureExchangeStudents.length>0" class="d-flex px-0 pb-2">
-                      <v-chip :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
+                      <v-chip id="documentChip" :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
                         <v-avatar left>
                           <v-icon>mdi-paperclip</v-icon>
                         </v-avatar>
                         {{document.fileName}}</v-chip>
-                      <v-chip :class="['ma-1']" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
+                      <v-chip id="studentChip" :class="['ma-1']" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
                         <v-avatar left>
                           <v-icon>mdi-account-circle</v-icon>
                         </v-avatar>
@@ -126,6 +126,7 @@
                             @addStudent="addSecureExchangeStudent"
                          :mincode="userInfo.activeInstituteIdentifier"
                          :additionalStudentAddWarning="additionalStudentAddWarningMessage"
+                            @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
                         >
                         </AddStudent>
                       </v-expand-transition>
@@ -192,6 +193,7 @@ export default {
   computed: {
     ...mapState('auth', ['userInfo']),
     ...mapState('edx', ['ministryTeams', 'exchangeMincodes', 'secureExchangeDocuments','secureExchangeStudents'])
+
   },
   created() {
     this.$store.dispatch('edx/getExchangeMincodes');
@@ -202,6 +204,9 @@ export default {
     this.clearSecureExchangeStudents();
   },
   methods: {
+    updateAdditionalStudentAddWarning(newValue){
+      this.additionalStudentAddWarningMessage = newValue;
+    },
     navigateToList() {
       this.$emit('secure-exchange:cancelMessage');
     },
@@ -275,7 +280,7 @@ export default {
       this.shouldShowOptions = false;
     },
     showAddStudentPanel() {
-      if(this.secureExchangeStudents.length>0){
+      if(this.secureExchangeStudents.length > 0){
         this.additionalStudentAddWarningMessage='Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message. ';
       }
       this.expandAttachFile = false;

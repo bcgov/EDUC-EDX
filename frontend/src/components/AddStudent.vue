@@ -2,6 +2,7 @@
   <v-card class="add-student">
 
     <v-alert
+        id="addStudentAlert"
         dense
         outlined
         dismissible
@@ -21,6 +22,7 @@
                       v-model="penNumber"
                       placeholder="Enter a Student's PEN"
                       :rules="penRules"
+                      maxlength="9"
                       counter="9"
                       id="studentPenTextField">
         </v-text-field>
@@ -42,7 +44,7 @@
         </div>
     </v-row>
     <v-row class="justify-end pr-2 pt-2" >
-      <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1"
+      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-1"
                      @click.native="closeForm"></PrimaryButton>
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
                      text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
@@ -104,8 +106,9 @@ export default {
     },
     alert(newVal){
       if(!newVal){
-        this.additionalStudentAddWarning = '';
+        this.$emit('updateAdditionalStudentAddWarning','');
       }
+
     },
     penNumber(newVal) {
       if (!(isValidPEN(newVal))) {
