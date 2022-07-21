@@ -81,6 +81,7 @@ export default {
     }
   },
   created() {
+    ApiService.apiAxios.get(ApiRoutes.edx.CLEAR_ACTIVE_USER_SESSION).then(() => {this.users = this.filteredUsers;});
     this.$store.dispatch('edx/getExchangeMincodes');
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('auth/getUserInfo');
