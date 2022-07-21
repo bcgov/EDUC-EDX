@@ -28,8 +28,11 @@
           </v-chip>
         </template>
         <v-list dark color="#003366">
-          <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.LOGIN'>
+          <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.DASHBOARD'>
             <v-list-item-title>Home</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="hasSeveralMincodes()" :id="switch_dashboard_button" :href='authRoutes.INSTITUTE_SELECTION'>
+            <v-list-item-title>Switch Dashboard</v-list-item-title>
           </v-list-item>
           <v-list-item style="min-height: 4vh" id="logout_button" :href='authRoutes.LOGOUT'>
             <v-list-item-title>Logout</v-list-item-title>
@@ -47,13 +50,14 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import {AuthRoutes} from '@/utils/constants';
+import {AuthRoutes , ApiRoutes} from '@/utils/constants';
 
 export default {
   data() {
     return {
       appTitle: process.env.VUE_APP_TITLE,
-      authRoutes: AuthRoutes
+      authRoutes: AuthRoutes,
+      apiRoutes: ApiRoutes
     };
   },
   computed: {
@@ -62,6 +66,15 @@ export default {
       return this.userInfo;
     }
   },
+  methods: {
+    hasSeveralMincodes() {
+      if(this.userInfo?.userMinCodes.length >1){
+        return true;
+      }
+      else return false;
+    }
+
+  }
 };
 </script>
 <style>
@@ -89,9 +102,7 @@ a {
   color: #fff;
   background: none;
 }
-.secondary_color {
-  background-color: var(--v-secondary-base);
-}
+
 .v-input__slot{
   padding-top: 10px
 }
