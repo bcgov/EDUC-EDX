@@ -1,4 +1,5 @@
-import { Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
+import log from 'npmlog';
 
 class MessageDisplay {
     constructor() {
@@ -19,6 +20,24 @@ class MessageDisplay {
         this.activityTitle = this.lastActivity.find('div.activityTitle');
         this.activityDisplayDate = this.lastActivity.find('div.activityDisplayDate');
         this.activityContent = this.lastActivity.find('div.activityContent');
+        this.addAttachmentMenuButton = Selector('#addAttachmentConvButton');
+    }
+
+    async clickEditOptionsMenuButton() {
+        await t.click(this.editOptionsMenuButton);
+        log.info('Edit options menu button clicked');
+    }
+
+    async clickAddAttachmentMenuButton() {
+        await t.click(this.addAttachmentMenuButton);
+        log.info('Add attachment menu option button clicked');
+    }
+
+    async verifyTimelineAttachmentByText(text) {
+        await t.expect(Selector('.v-card__text')
+        .withExactText(text).count)
+        .eql(1, {timeout: 60000});
+        log.info(`Exchange message with text - ${text} - found`);
     }
 }
 

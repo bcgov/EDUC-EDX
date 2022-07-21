@@ -8,6 +8,7 @@
       >
         <v-select
             color="#003366"
+            id="uploadDocumentTypeCodeSelect"
             v-model="documentTypeCode"
             required
             :rules="requiredRules"
@@ -20,6 +21,7 @@
         <v-file-input
             color="#003366"
             class="pt-0"
+            id="selectFileInput"
             :accept="fileAccept"
             :disabled="hasReadOnlyRoleAccess()"
             :rules="fileRules"
@@ -45,7 +47,7 @@
     </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <PrimaryButton id="cancelMessage" secondary text="Cancel"
+        <PrimaryButton id="cancelUploadButton" secondary text="Cancel"
                        @click.native="closeForm"></PrimaryButton>
         <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"
                        text="Upload" width="7rem" @click.native="submitRequest"></PrimaryButton>

@@ -66,11 +66,11 @@
                     <v-icon color="#003366">mdi-email-outline</v-icon>
                     <span style="color: #003366" class="ml-1">Message</span>
                   </v-btn>
-                  <v-btn small @click="displayAttachmentPanel">
+                  <v-btn id="addAttachmentConvButton" small @click="displayAttachmentPanel">
                     <v-icon color="#003366">mdi-paperclip</v-icon>
                     <span style="color: #003366" class="ml-1">Attachment</span>
                   </v-btn>
-                  <v-btn small>
+                  <v-btn id="addStudentConvButton" small>
                     <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
                     <span style="color: #003366" class="ml-1">Student</span>
                   </v-btn>
