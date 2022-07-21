@@ -14,21 +14,21 @@ const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 let token = '';
 
-fixture `school-inbox-new-message`
-  .before(async  => {
+fixture`school-inbox-new-message`
+  .before(async => {
     getToken().then(async (data) => {
       token = data.access_token;
       // make sure there are no artifact messages from previous runs
-      await inbox.deleteMessagesBySubject(testExchangeSubject,token);
+      await inbox.deleteMessagesBySubject(testExchangeSubject, token);
     }).catch((error => {
-      log.error("Failure during test setup: " + error);
+      log.error('Failure during test setup: ' + error);
     }));
   })
   .after(async ctx => {
     // find all test automation artifacts produced and remove them
-    log.info("Performing tear-down operation");
-    const data = await getToken()
-    await inbox.deleteMessagesBySubject(testExchangeSubject,data.access_token);
+    log.info('Performing tear-down operation');
+    const data = await getToken();
+    await inbox.deleteMessagesBySubject(testExchangeSubject, data.access_token);
   })
   .beforeEach(async t => {
     // log in as studentAdmin
@@ -43,7 +43,7 @@ test('test-send-new-message-with-students', async t => {
   // navigate to /inbox, expect title
   await t.navigateTo(base_url + '/inbox');
   await inbox.createANewMessage(testExchangeSubject);
-  const penArr= student_penList.split(',');
+  const penArr = student_penList;
   //test invalid pen number input
   await inbox.clickOnAddStudentButtonInNewMessage();
   await inbox.addStudentPenToSearchInNewMessage('123456789');
