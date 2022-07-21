@@ -120,4 +120,4 @@ async function deleteMessagesBySubject(subject){
             log.info("Removing message by subject: " + subject);
         }
     }
-}
+ }
