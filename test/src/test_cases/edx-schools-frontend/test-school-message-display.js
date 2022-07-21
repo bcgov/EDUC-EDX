@@ -5,8 +5,15 @@ import {createTestExchange} from '../../helpers/secure-exchange-utils';
 import log from 'npmlog';
 import {base_url} from '../../config/constants';
 import MessageDisplay from '../../page_models/message-display';
+import Dashboard from '../../page_models/dashboard';
+import Inbox from '../../page_models/inbox';
+import DocumentUploadPage from '../../page_models/common/documentUploadPage';
 
 const studentAdmin = require('../../auth/Roles');
+
+const dashboard = new Dashboard();
+const inbox = new Inbox();
+const documentUpload = new DocumentUploadPage();
 
 let messageDisplay = new MessageDisplay();
 let token = '';
@@ -76,4 +83,30 @@ test('test-school-message-display-new-message', async t => {
   await t.click(messageDisplay.sendMessageButton);
   await t.expect(Selector('#mainSnackBar').innerText).contains('Success! The message has been sent.');
 
+});
+
+test('test-attach-document-to-existing-message', async t => {
+  await t.navigateTo(base_url);
+  await dashboard.clickSchoolInboxCard();
+
+  //find the message
+  await inbox.clickFiltersToggle();
+  await inbox.inputSubject('Created by test automation');
+  await inbox.selectContactName('PEN Team');
+  await inbox.selectStatus('Open');
+  await inbox.clickSearchButton();
+  await inbox.clickNthTableRow(0);
+
+  //message detail
+  await messageDisplay.clickEditOptionsMenuButton();
+  await messageDisplay.clickAddAttachmentMenuButton();
+
+  //add attachment
+  await documentUpload.clickDocumentTypeSelect();
+  await documentUpload.selectDocumentTypeByName('Canadian Citizenship Card')
+  await documentUpload.uploadDocument('../../uploads/BC.jpg');
+  await documentUpload.clickUploadButton();
+
+  //verify message detail
+  await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
 });

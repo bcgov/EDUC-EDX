@@ -74,11 +74,7 @@ test('testPage', async t => {
     // check that our exchange is found by subject heading
     await confirmMessage(t);
     // create a new message
-    await inbox.clickNewMessageButton();
-    // create new message
-    await inbox.inputSubjectTextField(testExchangeSubject);
-    await inbox.inputNewMessage('This is a super awesome message.');
-    await inbox.inputSchoolNameTextField('PEN Team');
+    await inbox.createANewMessage(testExchangeSubject);
     await inbox.clickNewMessagePostButton();
     // make sure there are now two messages
     let messageResponse = await findMessagesBySubject(testExchangeSubject);
@@ -87,7 +83,7 @@ test('testPage', async t => {
 });
 
 async function confirmMessage(t) {
-    await t.expect(Selector('h3.subjectHeading').textContent).contains(testExchangeSubject);
+    await t.expect(Selector('span.subjectHeading').textContent).contains(testExchangeSubject);
 }
 
 /**

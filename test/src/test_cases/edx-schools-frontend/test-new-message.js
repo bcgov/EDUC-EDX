@@ -8,10 +8,16 @@ import {getToken} from '../../helpers/oauth-utils';
 
 import log from 'npmlog';
 import Inbox from '../../page_models/inbox';
+import Dashboard from "../../page_models/dashboard";
+import DocumentUploadPage  from "../../page_models/common/documentUploadPage";
+import MessageDisplay from "../../page_models/message-display";
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
+const dashboard = new Dashboard();
+const documentUpload = new DocumentUploadPage();
+const messageDisplay = new MessageDisplay();
 let token = '';
 
 fixture`school-inbox-new-message`
@@ -80,6 +86,32 @@ test('test-send-new-message-with-students', async t => {
 
   await inbox.clickNewMessagePostButton();
   log.info('Message created.');
+});
+
+test('test-send-new-message-with-attachment', async t => {
+  await t.navigateTo(base_url);
+  await dashboard.clickSchoolInboxCard();
+
+  await inbox.createANewMessage(testExchangeSubject);
+  await inbox.clickAttachFileButton();
+
+  //attach document
+  await documentUpload.clickDocumentTypeSelect();
+  await documentUpload.selectDocumentTypeByName('Canadian Citizenship Card')
+  await documentUpload.uploadDocument('../../uploads/BC.jpg');
+  await documentUpload.clickUploadButton();
+  await inbox.clickNewMessagePostButton();
+
+  //find the message
+  await inbox.clickFiltersToggle();
+  await inbox.inputSubject('Created by test automation');
+  await inbox.selectContactName('PEN Team');
+  await inbox.selectStatus('Open');
+  await inbox.clickSearchButton();
+  await inbox.clickNthTableRow(0);
+
+  //verify message detail
+  await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
 });
 
 

@@ -24,7 +24,7 @@ class Inbox {
     const now = new Date();
     this.messageDateNumber = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText(now.getDate().toString());
     this.messageIdInput = Selector('#messageIdInput');
-    this.schoolNameTextField = Selector('#schoolNameTxtField');
+    this.schoolNameTextField = Selector('#schoolNameTxtField').parent('div[role="button"]');
     this.subjectTextField = Selector('#subjectTxtField');
     this.newMessageTextArea = Selector('#newMessageTextArea');
     this.newMessagePostBtn = Selector('#newMessagePostBtn');
@@ -38,6 +38,8 @@ class Inbox {
     this.newMessageStudentChip = Selector('#studentChip');
     this.newMessageDocumentChip = Selector('#documentChip');
     this.cancelAddStudentButton = Selector('#cancelAddStudentBtn');
+
+    this.attachFileButton = Selector('#attachFileID')
   }
 
   async clickNewMessagePostButton() {
@@ -76,9 +78,12 @@ class Inbox {
     log.info('Input subject');
   }
 
-  async inputSchoolNameTextField(text) {
-    await t.typeText(this.schoolNameTextField, text);
-    log.info('School name input');
+  async clickAndSelectTeamNameFieldByText(name) {
+    await t.click(this.schoolNameTextField).wait(100);
+    log.info('Select team option clicked');
+    await t.expect(this.selectionBox.exists).ok();
+    await t.click(this.selectionBox.find('div.row').withText(name));
+    log.info(`Clicked team name option ${name}`);
   }
 
   async inputSubjectTextField(text) {
@@ -128,12 +133,17 @@ class Inbox {
     log.info('Previous page selected');
   }
 
+  async clickNthTableRow(index) {
+    await t.click((Selector('tr')).nth(index))
+    log.info(`row ${index} was clicked`)
+  }
+
   async createANewMessage(testExchangeSubject) {
     await this.clickNewMessageButton();
     // create new message
     await this.inputSubjectTextField(testExchangeSubject);
     await this.inputNewMessage('This is a super awesome message.');
-    await this.inputSchoolNameTextField('PEN Team');
+    await this.clickAndSelectTeamNameFieldByText('PEN Team');
     log.info('New Message Details input');
   }
 
@@ -197,6 +207,11 @@ class Inbox {
   async studentAddedToNewMessageWithPen(pen) {
     await t.expect(this.newMessageStudentChip.innerText).contains(pen);
     log.info('Student details added to the New Message');
+  }
+
+  async clickAttachFileButton() {
+    await t.click(this.attachFileButton());
+    log.info("attach file button clicked");
   }
 
   /**

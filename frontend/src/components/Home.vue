@@ -26,7 +26,7 @@
     <v-row class="pb-6 tile-size">
       <v-col cols="2" md="5" class="tile-size">
         <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
-                         :tableData="exchangeData"></DashboardTable>
+                         :tableData="exchangeData" id="schoolInboxCard"></DashboardTable>
         <v-container v-else-if="isLoadingExchange" class="tile-size" fluid>
           <article class="top-banner full-height">
             <v-row align="center" justify="center">
