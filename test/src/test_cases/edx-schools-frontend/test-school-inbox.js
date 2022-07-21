@@ -1,7 +1,7 @@
 /**
  * Tests to run against the school inbox page
  */
-import {base_url} from '../../config/constants';
+import { base_url } from '../../config/constants';
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import { createSecureExchange } from "../../services/edx-api-service";
