@@ -1,5 +1,5 @@
 import { Selector, t } from 'testcafe';
-import { findAllPaginated } from "../services/edx-api-service";
+import { findAllPaginated,deleteSecureExchange } from "../services/edx-api-service";
 import log from "npmlog";
 
 /**
@@ -194,25 +194,28 @@ class Inbox {
      * Returns a response object containing any
      * messages by subject
      * @param subject
+     * @param token
      * @returns {Promise<*>}
      */
-    async findMessagesBySubject(subject){
+    async findMessagesBySubject(subject,token){
         let params = {
             params: {
                 searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
             }
         }
-        return  findAllPaginated(token, params);
+        return await findAllPaginated(token, params);
+
     }
 
     /**
      * Given a subject, will delete messages from the api
      * which contain that subject
      * @param subject
+     * @param token
      * @returns {Promise<void>}
      */
-    async deleteMessagesBySubject(subject){
-        let response = await findMessagesBySubject(subject);
+    async deleteMessagesBySubject(subject,token){
+        let response = await this.findMessagesBySubject(subject,token);
         if(response != null) {
             for (const element of response.content) {
                 await deleteSecureExchange(token, element.secureExchangeID);
