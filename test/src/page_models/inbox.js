@@ -149,23 +149,25 @@ class Inbox {
   }
 
   async checkSearchPenButtonIsDisabled() {
+    await t.expect(this.searchPenButton.visible).ok();
     const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
-    await t.wait(5000);
     await t.expect(button.hasAttribute('disabled')).ok();
   }
 
   async checkSearchPenButtonIsEnabled() {
+    await t.expect(this.searchPenButton.visible).ok();
     const button = this.searchPenButton.with({visibilityCheck: true}).withExactText('Search');
-    await t.wait(5000);
     await t.expect(button.hasAttribute('disabled')).notOk();
   }
 
   async checkAddStudentButtonIsDisabled() {
+    await t.expect(this.addStudentToNewMessageButton.visible).ok();
     const button = this.addStudentToNewMessageButton.with({visibilityCheck: true}).withExactText('Add');
     await t.expect(button.hasAttribute('disabled')).ok();
   }
 
   async checkAddStudentButtonIsEnabled() {
+    await t.expect(this.addStudentToNewMessageButton.visible).ok();
     const button = this.addStudentToNewMessageButton.with({visibilityCheck: true}).withExactText('Add');
     await t.expect(button.hasAttribute('disabled')).notOk();
   }
