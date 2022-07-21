@@ -14,10 +14,9 @@ const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 let token = '';
-let testExchange = createTestExchange();
 
-fixture `school-inbox`
-  .before(async t => {
+fixture `school-inbox-new-message`
+  .before(async  => {
     getToken().then(async (data) => {
       token = data.access_token;
       // make sure there are no artifact messages from previous runs
@@ -81,7 +80,7 @@ test('test-send-new-message-with-students', async t => {
 
   await inbox.clickNewMessagePostButton();
   let messageResponse = await inbox.findMessagesBySubject(testExchangeSubject);
-  await t.expect(messageResponse.content.length).eql(3, 'Message created');
+  await t.expect(messageResponse.content.length).eql(1, 'Message created');
   log.info('Message created.');
 });
 
