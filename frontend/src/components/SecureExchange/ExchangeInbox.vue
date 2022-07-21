@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-row class="pt-0" :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
+  <v-container class="containerSetup" fluid>
+    <v-row class="pt-0">
       <v-col class="pt-0">
         <v-row class='d-flex justify-end pb-2'>
           <v-col class='d-flex justify-end'>
@@ -179,7 +179,7 @@
 
               <template v-slot:item.secureExchangeStatusCode="{ item }">
                   <v-row @click="openExchange(item.secureExchangeID)" style="cursor: pointer;">
-                    <v-col cols="8" xl="11" class="pb-0 pt-0">
+                    <v-col cols="8" lg="7" xl="9" class="pb-0 pt-0">
                       <v-row class="mb-n4">
                         <v-col cols="12" class="pb-2 pt-2 pr-0">
                           <span class="subjectHeading" :style="{color: item.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item) }}</span>
@@ -193,7 +193,7 @@
                         </v-col>
                       </v-row>
                     </v-col>
-                    <v-col cols="4" xl="1" style="text-align: end" class="pb-0 pt-0">
+                    <v-col cols="4" lg="5" xl="3" style="text-align: end" class="pb-0 pt-0">
                       <v-row>
                         <v-col class="pb-1">
                           <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>
@@ -397,13 +397,13 @@ export default {
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
-          return this.getContentString(subject, 16);
+          return this.getContentString(subject, 15);
         case 'md':
-          return this.getContentString(subject, 40);
+          return this.getContentString(subject, 20);
         case 'lg':
-          return this.getContentString(subject, 100);
+          return this.getContentString(subject, 30);
         default:
-          return this.getContentString(subject, 150);
+          return this.getContentString(subject, 40);
         }
       }
       return subject;
@@ -420,13 +420,12 @@ export default {
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm':
-          return this.getContentString(content, 25);
+          return this.getContentString(content, 30);
         case 'md':
-          return this.getContentString(content, 100);
+          return this.getContentString(content, 40);
         case 'lg':
-          return this.getContentString(content, 130);
         case 'xl':
-          return this.getContentString(content, 220);
+          return this.getContentString(content, 60);
         default:
           return content;
         }
@@ -569,5 +568,23 @@ export default {
   }
 }
 
+.containerSetup{
+  padding-right: 32em !important;
+  padding-left: 32em !important;
+}
+
+@media screen and (max-width: 1950px) {
+  .containerSetup{
+    padding-right: 20em !important;
+    padding-left: 20em !important;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .containerSetup{
+    padding-right: 4em !important;
+    padding-left: 4em !important;
+  }
+}
 
 </style>

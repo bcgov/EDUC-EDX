@@ -196,6 +196,22 @@ async function getExchangesPaginated(req) {
   return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
 }
 
+async function getExchangesCountPaginated(req) {
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
+  }
+  const params = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: '',
+      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"'+req.session.activeInstituteIdentifier+'","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
+    }
+  };
+
+  return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+}
+
 async function createExchange(req, res) {
   try {
     const token = getAccessToken(req);
@@ -248,6 +264,12 @@ async function instituteSelection(req, res) {
       message: 'No session data'
     });
   }
+}
+
+async function clearActiveSession(req) {
+  req.session.activeInstituteIdentifier = '';
+  req.session.activeInstituteType = '';
+  req.session.activeInstitutePermissions= '';
 }
 
 async function getExchanges(req, res) {
@@ -356,6 +378,40 @@ async function getExchange(req, res) {
       log.error(e, 'getExchange', 'Error getting a secure exchange message.');
       return errorResponse(res);
     });
+}
+
+async function getExchangesCount(req, res) {
+  const token = getAccessToken(req);
+  if (!token && req.session.userMinCodes) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  return Promise.all([
+    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getExchangesCountPaginated(req)
+  ])
+    .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
+      let urExchangeCount = 0;
+      let exchangeCount = 0;
+      if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
+        dataResponse['content'].forEach((element) => {
+          if (!element['isReadByMinistry']) {
+            urExchangeCount++;
+          }
+          exchangeCount++;
+        });
+      }
+      return res.status(200).json({
+        exchangeCount: exchangeCount,
+        unreadExchangeCount: urExchangeCount,
+      });
+    }).catch(e => {
+      log.error(e, 'getExchanges', 'Error getting paginated list of secure exchanges.');
+      return errorResponse(res);
+    });
+
 }
 
 async function markAs(req, res) {
@@ -664,6 +720,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
+
 module.exports = {
   verifyRequest,
   deleteDocument,
@@ -681,6 +738,9 @@ module.exports = {
   schoolUserActivationInvite,
   updateEdxUserRoles,
   createSecureExchangeComment,
+  clearActiveSession,
   setSessionInstituteIdentifiers,
-  getAndSetupEDXUserAndRedirect
+  getAndSetupEDXUserAndRedirect,
+  getExchangesCount,
+  getExchangesCountPaginated
 };

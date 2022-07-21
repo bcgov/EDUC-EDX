@@ -7,6 +7,7 @@ let object;
 
 object = {
   LOGIN: authRoot + '/login',
+  DASHBOARD: '/',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
   LOGOUT: authRoot + '/logout',
   SESSION_EXPIRED: authRoot + '/logout?sessionExpired=true',
@@ -14,6 +15,7 @@ object = {
   REFRESH: authRoot + '/refresh',
   TOKEN: authRoot + '/token',
   SESSION_REMAINING_TIME: authRoot + '/user-session-remaining-time',
+  INSTITUTE_SELECTION: '/institute-selection',
 };
 //Authentication endpoints
 export const AuthRoutes = Object.freeze(object);
@@ -27,6 +29,7 @@ export const ApiRoutes = Object.freeze({
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
     EXCHANGE_URL:edxRoot + '/exchange',
+    EXCHANGE_COUNT_URL:edxRoot + '/exchange/count',
     DOCUMENT_TYPES_URL: edxRoot + '/document-types',
     FILE_REQUIREMENTS_URL: edxRoot + '/file-requirements',
     STATUSES_URL: edxRoot + '/exchange/statuses',
