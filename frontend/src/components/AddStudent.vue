@@ -57,7 +57,7 @@ import ApiService from '@/common/apiService';
 import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from './util/PrimaryButton';
 import {isValidPEN} from '@/utils/validation';
-import {ApiRoutes} from '@/utils/constants';
+import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
 
 export default {
   components: {PrimaryButton},
@@ -151,7 +151,7 @@ export default {
           if (error?.response?.data?.message) {
             this.setErrorAlert(error?.response?.data?.message);
           } else {
-            this.setErrorAlert('PEN must be a valid PEN associated with a student at the Ministry of Education and Childcare');
+            this.setErrorAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
           }
         }).finally(() => {
           this.isSearchingStudent = false;

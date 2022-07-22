@@ -2,7 +2,7 @@
 # EDUC-EDX
 This project contains the frontend for education data exchange. 
 
-# Ministry of Education EDX
+# Ministry of Education and Child Care EDX
 The EDX application consists of a Vue.js frontend (UI and UX) and a Node.js backend (auth and session management). Currently early in the development process, so the front and backend are currently quite thin (only a single UI page).
 
 ## Before deployment
