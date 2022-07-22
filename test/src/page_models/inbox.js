@@ -200,7 +200,7 @@ class Inbox {
   }
 
   async assertAlertMessageAtAddStudent(message) {
-    await t.expect(this.addStudentAlert.innerText).contains(message);
+    await t.expect(this.addStudentAlert.innerText).contains(message, {timeout: 10000});
 
   }
 

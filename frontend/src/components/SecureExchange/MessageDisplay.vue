@@ -21,9 +21,9 @@
               <v-col class="pb-0 pt-0 d-flex justify-start">
                 <v-row>
                   <v-col cols="12" class="pb-2 pt-2 pr-0" style="text-align: left">
-                    <h2 class="subjectHeading">{{ secureExchange.subject }}</h2>
-                    <div class="ministryOwnershipTeamName">{{ secureExchange.ministryOwnershipTeamName }}</div>
-                    <div class="createDate" style="color: black">{{ secureExchange.createDate }}</div>
+                    <h2 id="messageDisplaySubjectHeading" class="subjectHeading">{{ secureExchange.subject }}</h2>
+                    <div id="messageDisplayMinistryOwnershipTeamName" class="ministryOwnershipTeamName">{{ secureExchange.ministryOwnershipTeamName }}</div>
+                    <div id="messageDisplayCreateDate" class="createDate" style="color: black">{{ secureExchange.createDate }}</div>
                   </v-col>
                 </v-row>
               </v-col>
@@ -36,7 +36,7 @@
                           <v-icon class="ml-n1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" dark>
                             mdi-circle-medium
                           </v-icon>
-                          <span class="ml-n1">{{ secureExchange.secureExchangeStatusCode }}</span>
+                          <span id="messageDisplayStatusCode" class="ml-n1">{{ secureExchange.secureExchangeStatusCode }}</span>
                         </v-col>
                       </v-row>
                       <v-row no-gutters>
@@ -44,7 +44,7 @@
                           <v-icon color="grey darken-3" size="medium" dark>
                             mdi-pound
                           </v-icon>
-                          <span>{{ secureExchange.sequenceNumber }}</span>
+                          <span id="messageDisplaySequenceNumber">{{ secureExchange.sequenceNumber }}</span>
                         </v-col>
                       </v-row>
                     </v-card>

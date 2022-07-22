@@ -47,7 +47,7 @@ test('test-school-message-display', async t => {
   log.info('verifying header information');
   await t.navigateTo(base_url + '/exchange/' + testExchange.secureExchangeID);
   await t.expect(messageDisplay.navTitle.innerText).contains('Secure Message');
-  await t.expect(messageDisplay.subjectHeading.innerText).eql(testExchange.subject);
+  await messageDisplay.verifySubjectHeadingByText(testExchange.subject);
   await t.expect((await messageDisplay.ministryOwnershipTeamName.innerText).length > 0).ok();
   await t.expect((await messageDisplay.createDate.innerText).length > 0).ok();
   await t.expect((await messageDisplay.secureExchangeStatusCode.innerText).toLowerCase()).eql(testExchange.secureExchangeStatusCode.toLowerCase());
@@ -66,7 +66,7 @@ test('test-school-message-display', async t => {
   log.info('verifying message display buttons');
   await t.expect(((testExchange.secureExchangeStatusCode === 'COMPLETE') && (messageDisplay.editOptionsMenu.exists))).notOk();
   await t.expect(((testExchange.secureExchangeStatusCode !== 'COMPLETE') && (messageDisplay.editOptionsMenu.exists))).ok();
-  await t.expect(messageDisplay.markAsSpan.innerText).eql('Mark As Unread');
+  await t.expect(messageDisplay.markAsSpan.innerText).eql('MARK AS UNREAD');
   await t.click(messageDisplay.markAsButton);
   //once we mark message as unread, we should go back to the inbox page.
   await t.expect(messageDisplay.navTitle.innerText).contains('Secure Messaging Inbox');
