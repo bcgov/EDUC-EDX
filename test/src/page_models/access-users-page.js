@@ -1,4 +1,5 @@
-import {Selector} from 'testcafe';
+import {t, Selector} from 'testcafe';
+import log from 'npmlog';
 
 class AccessUsersPage {
 
@@ -8,6 +9,16 @@ class AccessUsersPage {
     this.newUserVCard= Selector('#newUserInviteVCard');
     this.vCardTitle = Selector(('#newUserInviteVCardTitle'));
 
+  }
+
+  async clickNewUserButton() {
+    await t.click(this.newUserBtn);
+    log.info('New user button clicked')
+  }
+
+  async verifyUserByText(name) {
+    await t.expect(this.vCardTitle.innerText).contains(name);
+    log.info(`User found ${name}`);
   }
 
 }
