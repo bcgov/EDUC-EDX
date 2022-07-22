@@ -12,6 +12,7 @@ createTestCafe('localhost', 1337, 1338)
             .src(["src/test_cases/edx-schools-frontend/test-school-inbox.js",
             "src/test_cases/edx-schools-frontend/test-school-message-display.js","src/test_cases/edx-new-user-invite/","src/test_cases/edx-schools-frontend/test-new-message.js",
               "src/test_cases/edx-user-activation/"])
+            .run();
     })
     .then(failedCount => {
         log.info('Tests failed: ' + failedCount);
