@@ -59,3 +59,5 @@ export const PAGE_TITLES = Object.freeze({
   LOGIN:'Login',
   NEW_USER_INVITE:'New User'
 });
+
+export const MINISTRY_NAME = 'Ministry of Education and Child Care';
