@@ -12,7 +12,7 @@ fixture`edx-user-activate-success-scenario`
   })
   .after(async ctx => {
     const data = await getToken();
-    await deleteEdxUser(data.access_token, 'UserActivationFirstName', 'UserActivationLastName');
+    await deleteEdxUser(data.access_token, 'USERACTIVATIONFIRSTNAME', 'USERACTIVATIONLASTNAME');
     await deleteActivationCode(data.access_token, ctx.acCode1);
     await deleteActivationCode(data.access_token, ctx.acCode2);
 
@@ -24,7 +24,7 @@ test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t =>
   await submitDetailsOnUserActivationForm(t, '00899178', t.fixtureCtx.primaryCode, t.fixtureCtx.personalCode);
   await t.wait(5000)
   const text = await Selector('#mainSnackBar').innerText;
-  await t.expect(text).contains('User Activation Completed Successfully. You will be redirected to your Dashboard Shortly!');
+  await t.expect(text).contains('User Activation Completed Successfully. Redirecting to your Dashboard...');
   await t.wait(5000)
     .expect(getLocation()).contains(base_url);
   log.info('User could activate account successfully');

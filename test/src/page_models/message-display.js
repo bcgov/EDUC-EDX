@@ -4,11 +4,11 @@ import log from 'npmlog';
 class MessageDisplay {
     constructor() {
         this.navTitle = Selector('#navTitle');
-        this.subjectHeading = Selector('.secureExchangeHeader h3.subjectHeading');
-        this.ministryOwnershipTeamName = Selector('.secureExchangeHeader span.ministryOwnershipTeamName');
-        this.createDate = Selector('.secureExchangeHeader span.createDate');
-        this.secureExchangeStatusCode = Selector('.secureExchangeHeader span.secureExchangeStatusCode');
-        this.sequenceNumber = Selector('.secureExchangeHeader span.sequenceNumber');
+        this.subjectHeading = Selector('#messageDisplaySubjectHeading');
+        this.ministryOwnershipTeamName = Selector('#messageDisplayMinistryOwnershipTeamName');
+        this.createDate = Selector('#messageDisplayCreateDate');
+        this.secureExchangeStatusCode = Selector('#messageDisplayStatusCode');
+        this.sequenceNumber = Selector('#messageDisplaySequenceNumber');
         this.editOptionsMenu = Selector('#editOptionsMenu');
         this.editOptionsMenuButton = Selector('#editOptionsMenuBtn');
         this.newMessageButton = Selector('#newMessageToConvBtn');
@@ -38,6 +38,11 @@ class MessageDisplay {
         .withExactText(text).count)
         .eql(1, {timeout: 60000});
         log.info(`Exchange message with text - ${text} - found`);
+    }
+
+    async verifySubjectHeadingByText(text) {
+        await t.expect(this.subjectHeading.innerText).eql(text);
+        log.info(`${text} found in subject header`);
     }
 }
 

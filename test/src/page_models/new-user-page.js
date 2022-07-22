@@ -1,4 +1,5 @@
 import {Selector, t} from 'testcafe';
+import log from 'npmlog'
 
 class NewUserPage {
 
@@ -7,7 +8,7 @@ class NewUserPage {
     this.lastNameInput = Selector('#newUserLastName');
     this.emailInput = Selector('#newUserEmail');
     this.schoolNameMincodeInput = Selector('#newUserSchool');
-    this.rolesSelector = Selector('#newSchoolUserRolesSelect');
+    this.rolesSelector = Selector('#newSchoolUserRolesSelect').parent('div[role="button"]');
     this.rolesSelectorBox = Selector('div[role="listbox"]');
     this.inviteBtn=Selector('#newUserInvitePostBtn');
   }
