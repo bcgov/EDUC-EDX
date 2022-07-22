@@ -21,6 +21,8 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "vue-pdf-app": "^2.1.0",
+    "v-viewer": "^1.6.4",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "7.11.0",
     "@fortawesome/fontawesome-free": "5.11.2",

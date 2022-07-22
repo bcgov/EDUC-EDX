@@ -16,6 +16,10 @@
       <v-row class="pt-0"
              :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
         <v-col cols="12 pt-0">
+          <!-- TODO: UPDATE renderers -->
+          <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="secureExchange.secureExchangeID" :document-id="documentId"></PdfRenderer>
+          <ImageRenderer  :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="secureExchange.secureExchangeID" :image-id="imageId"></ImageRenderer>
+          <!-- END TODO -->
           <div v-if="!loading && secureExchange">
             <v-row>
               <v-col class="pb-0 pt-0 d-flex justify-start">
@@ -144,7 +148,11 @@
                         </v-card-title>
                         <v-row no-gutters>
                           <v-card-text class="mt-n2 pt-0 pb-0" :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}">
-                            <router-link :to="{ path: documentUrl(activity) }" target="_blank">{{ activity.fileName }}</router-link>
+<!--                            <router-link :to="{ path: documentUrl(activity) }" target="_blank">{{ activity.fileName }}</router-link>-->
+                            <a @click="showDocModal(activity)">
+                              {{ activity.fileName }}
+                            </a>
+<!--                            <a href="#">{{ activity.fileName }}</a>-->
                           </v-card-text>
                           <v-card-text v-if="activity.documentType.label !== 'Other'" class="pt-0 pb-3">{{ activity.documentType.label }}</v-card-text>
                         </v-row>
@@ -169,12 +177,14 @@ import PrimaryButton from '../util/PrimaryButton';
 import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
 import alertMixin from '@/mixins/alertMixin';
 import DocumentUpload from '@/components/common/DocumentUpload';
+import PdfRenderer from '@/components/common/PdfRenderer';
+import ImageRenderer from '@/components/common/ImageRenderer';
 
 
 export default {
   name: 'MessageDisplay',
   mixins: [alertMixin],
-  components: {DocumentUpload, PrimaryButton},
+  components: {DocumentUpload, PrimaryButton, ImageRenderer, PdfRenderer},
   props: {
     secureExchangeID: {
       type: String,
@@ -194,7 +204,11 @@ export default {
       newMessageBtnDisplayed:false,
       shouldDisplaySpeedDial: true,
       processing: false,
-      newMessage:''
+      newMessage:'',
+      pdfRenderDialog: false,
+      imageRendererDialog: false,
+      documentId: '',
+      imageId: ''
     };
   },
   computed: {},
@@ -217,6 +231,23 @@ export default {
         this.dialog = false;
         this.loading = false;
       }
+    },
+    showDocModal(document){
+      // TODO: FINISH
+      if (document?.fileExtension === 'application/pdf') {
+        this.documentId = document.documentID;
+        this.pdfRenderDialog = true;
+      }else {
+        this.imageId = document.documentID;
+        this.imageRendererDialog = true;
+      }
+    },
+    async closeDialog() {
+      this.documentId = '';
+      this.imageId = '';
+      this.pdfRenderDialog = false;
+      this.imageRendererDialog = false;
+      await this.$nextTick(); //need to wait so update can be made in parent and propagated back down to child component
     },
     documentUrl(document) {
       return `${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/documents/${document.documentID}/download/${document.fileName}`;
@@ -247,6 +278,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
         .then(response => {
           this.secureExchange = response.data;
+          console.log(JSON.stringify(response.data));
         })
         .catch(error => {
           console.log(error);
