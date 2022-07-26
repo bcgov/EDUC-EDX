@@ -398,7 +398,7 @@ async function getExchangesCount(req, res) {
       let exchangeCount = 0;
       if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
         dataResponse['content'].forEach((element) => {
-          if (!element['isReadByMinistry']) {
+          if (!element['isReadByExchangeContact']) {
             urExchangeCount++;
           }
           exchangeCount++;
