@@ -224,6 +224,7 @@ async function createExchange(req, res) {
     const studentPayload = message.secureExchangeStudents.map(student => {
       return {
         studentId: student.studentID,
+        edxUserID: edxUserInfo.edxUserID
       };
     });
 
