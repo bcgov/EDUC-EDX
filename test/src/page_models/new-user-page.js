@@ -20,6 +20,26 @@ class NewUserPage {
     await t.click(this.emailInput());
   }
 
+  async setFirstName(name){
+    await t.typeText(this.firstNameInput, name);
+    log.info('First name input');
+  }
+
+  async setLastName(name){
+    await t.typeText(this.lastNameInput, name);
+    log.info('Last name input');
+  }
+
+  async setEmail(email) {
+    await t.typeText(this.emailInput, email);
+    log.info('Email input')
+  }
+
+  async clickInviteBtn() {
+    await t.click(this.inviteBtn());
+    log.info('Invite button clicked');
+  }
+
 }
 
 export default NewUserPage;
