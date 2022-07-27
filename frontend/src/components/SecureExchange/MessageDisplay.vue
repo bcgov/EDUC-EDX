@@ -82,13 +82,6 @@
                   <v-icon v-else>mdi-email-open-outline</v-icon>
                   <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
                 </v-btn>
-                <v-btn id="claimAsButton" class="my-4 mx-2">
-                  <v-icon>{{ secureExchange.reviewer ? 'mdi-account-off-outline' : 'mdi-account-check-outline' }}</v-icon>
-                  <span class="ml-1">{{ secureExchange.reviewer ? 'UNCLAIM' : 'CLAIM' }}</span>
-                </v-btn>
-                <v-btn id="changeStatusButton" class="my-4">
-                  <span>CLOSE</span>
-                </v-btn>
               </v-col>
             </v-row>
             <v-row v-if="isNewMessageDisplayed">
