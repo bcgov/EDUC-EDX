@@ -17,8 +17,8 @@
              :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
         <v-col cols="12 pt-0">
           <!-- TODO: UPDATE renderers -->
-          <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="secureExchange.secureExchangeID" :document-id="documentId"></PdfRenderer>
-          <ImageRenderer  :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="secureExchange.secureExchangeID" :image-id="imageId"></ImageRenderer>
+          <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :document-id="this.documentId"></PdfRenderer>
+          <ImageRenderer  :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :image-id="this.imageId"></ImageRenderer>
           <!-- END TODO -->
           <div v-if="!loading && secureExchange">
             <v-row>
@@ -233,14 +233,20 @@ export default {
       }
     },
     showDocModal(document){
-      // TODO: FINISH
-      if (document?.fileExtension === 'application/pdf') {
+      if (this.isPdf(document)) {
         this.documentId = document.documentID;
         this.pdfRenderDialog = true;
       }else {
         this.imageId = document.documentID;
         this.imageRendererDialog = true;
       }
+    },
+    isPdf(document){
+      return (
+        'fileName' in document &&
+        typeof document.fileName === 'string' &&
+        document.fileName.toLowerCase().endsWith('.pdf')
+      );
     },
     async closeDialog() {
       this.documentId = '';
@@ -278,7 +284,6 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
         .then(response => {
           this.secureExchange = response.data;
-          console.log(JSON.stringify(response.data));
         })
         .catch(error => {
           console.log(error);

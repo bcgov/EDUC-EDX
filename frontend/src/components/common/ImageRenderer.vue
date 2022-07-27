@@ -81,7 +81,7 @@ export default {
       this.src = undefined;
       if (this.documentID?.length > 0) {
         ApiService.apiAxios.get(`${ApiRoutes.edx.EXCHANGE_URL}/${this.requestId}/documents/${this.imageId}`).then((response) => {
-          this.src = 'data:image/jpeg;base64,' + response.data;
+          this.src = 'data:image/jpeg;base64,' + response.data?.documentData;
           this.previewImgObject();
         }).catch(e => {
           console.error(e);

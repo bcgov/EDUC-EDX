@@ -143,7 +143,7 @@ export default {
       this.arrayBuffer = undefined;
       if (this.documentID?.length > 0) {
         ApiService.apiAxios.get(`${ApiRoutes.edx.EXCHANGE_URL}/${this.requestId}/documents/${this.documentID}`).then((response) => {
-          this.base64ToArrayBuffer(response.data);
+          this.base64ToArrayBuffer(response.data?.documentData);
         }).catch(e => {
           console.error(e);
           this.setFailureAlert('Could not load document. Please try again later.');
