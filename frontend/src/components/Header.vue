@@ -31,7 +31,7 @@
           <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.DASHBOARD'>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="hasSeveralMincodes()" :id="switch_dashboard_button" :href='authRoutes.INSTITUTE_SELECTION'>
+          <v-list-item v-if="hasSeveralMincodes()" id="switch_dashboard_button" :href='authRoutes.INSTITUTE_SELECTION'>
             <v-list-item-title>Switch Dashboard</v-list-item-title>
           </v-list-item>
           <v-list-item style="min-height: 4vh" id="logout_button" :href='authRoutes.LOGOUT'>
@@ -68,10 +68,7 @@ export default {
   },
   methods: {
     hasSeveralMincodes() {
-      if(this.userInfo?.userMinCodes.length >1){
-        return true;
-      }
-      else return false;
+      return this.userInfo?.userMinCodes.length > 1;
     }
 
   }
