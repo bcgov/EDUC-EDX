@@ -4,9 +4,11 @@ const log = require('../components/logger');
 const {getApiCredentials} = require('../components/auth');
 const {getData} = require('../components/utils');
 const retry = require('async-retry');
+const { generateMincodeSchool, isSchoolActive } = require('./schoolUtils');
 
 let mincodeSchoolMap = new Map();
 let mincodeSchools = [];
+let activeMincodeSchools = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -23,17 +25,16 @@ const cacheService = {
       mincodeSchoolMap.clear();// reset the value.
       if (schools && schools.length > 0) {
         for (const school of schools) {
-          const mincodeSchool = {
-            mincode: `${school.distNo}${school.schlNo}`,
-            schoolName: school.schoolName,
-            effectiveDate: school.dateOpened,
-            expiryDate: school.dateClosed,
-          };
-          mincodeSchoolMap.set(`${school.distNo}${school.schlNo}`, mincodeSchool);
+          const mincodeSchool = generateMincodeSchool(school);
+          mincodeSchoolMap.set(mincodeSchool.mincode, mincodeSchool);
           mincodeSchools.push(mincodeSchool);
+          if (isSchoolActive(mincodeSchool)) {
+            activeMincodeSchools.push(mincodeSchool);
+          }
         }
       }
       log.info(`Loaded ${mincodeSchoolMap.size} schools.`);
+      log.info(`Loaded ${activeMincodeSchools.length} active schools.`);
     }, {
       retries: 50
     });
@@ -43,6 +44,9 @@ const cacheService = {
   },
   getSchoolNameJSONByMincode(mincode) {
     return mincodeSchoolMap.get(mincode);
+  },
+  getAllActiveSchoolsJSON() {
+    return activeMincodeSchools;
   },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
