@@ -86,27 +86,74 @@ test('test-school-message-display-new-message', async t => {
 });
 
 test('test-attach-document-to-existing-message', async t => {
-  await t.navigateTo(base_url);
-  await dashboard.clickSchoolInboxCard();
+  await testMessageDisplayHelper(t);
+  await uploadDocument('Canadian Citizenship Card', '../../uploads/BC.jpg');
+  //verify message detail
+  await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
+});
 
-  //find the message
+test('test-attach-jpg-document-to-existing-message-displays', async t => {
+  await testMessageDisplayHelper(t);
+  await uploadDocument('Canadian Citizenship Card', '../../uploads/BC.jpg');
+  await messageDisplay.clickDocumentToDisplayByName('BC.jpg');
+  await messageDisplay.verifyImageCanvasDisplay();
+});
+
+test('test-attach-pdf-document-to-existing-message-displays', async t => {
+  await testMessageDisplayHelper(t);
+  await uploadDocument('Canadian Passport', '../../uploads/BC.pdf');
+  await messageDisplay.clickDocumentToDisplayByName('BC.pdf');
+  await messageDisplay.verifyPDFCanvasDisplay();
+});
+
+/**
+ * Helper method for opening test message
+ * @returns {Promise<void>}
+ */
+async function testMessageDisplayHelper(t){
+  await navigateToMessages(t);
+  await findMessageAndOpen('Created by test automation', 'PEN Team', 'Open');
+}
+
+/**
+ * Finds a message and opens it (if exists)
+ * @param subject
+ * @param contact
+ * @param status
+ * @returns {Promise<void>}
+ */
+async function findMessageAndOpen(subject, contact, status){
   await inbox.clickFiltersToggle();
-  await inbox.inputSubject('Created by test automation');
-  await inbox.selectContactName('PEN Team');
-  await inbox.selectStatus('Open');
+  await inbox.inputSubject(subject);
+  await inbox.selectContactName(contact);
+  await inbox.selectStatus(status);
   await inbox.clickSearchButton();
   await inbox.clickNthTableRow(0);
+}
 
+/**
+ * Navigates to message page from baseurl
+ * @returns {Promise<void>}
+ */
+async function navigateToMessages(t){
+  await t.navigateTo(base_url);
+  await dashboard.clickSchoolInboxCard();
+}
+
+/**
+ * Assumes you are in message display context
+ * @param documentType Drivers Licence, etc
+ * @param documentPath Path to upload file
+ * @returns {Promise<void>}
+ */
+async function uploadDocument(documentType, documentPath) {
   //message detail
   await messageDisplay.clickEditOptionsMenuButton();
   await messageDisplay.clickAddAttachmentMenuButton();
 
   //add attachment
   await documentUpload.clickDocumentTypeSelect();
-  await documentUpload.selectDocumentTypeByName('Canadian Citizenship Card')
-  await documentUpload.uploadDocument('../../uploads/BC.jpg');
+  await documentUpload.selectDocumentTypeByName(documentType)
+  await documentUpload.uploadDocument(documentPath);
   await documentUpload.clickUploadButton();
-
-  //verify message detail
-  await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
-});
+}

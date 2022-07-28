@@ -21,6 +21,8 @@ class MessageDisplay {
         this.activityDisplayDate = this.lastActivity.find('div.activityDisplayDate');
         this.activityContent = this.lastActivity.find('div.activityContent');
         this.addAttachmentMenuButton = Selector('#addAttachmentConvButton');
+        this.imageCanvas = Selector('img[src*="data:image"]').parent('div[class="viewer-canvas"]');
+        this.pdfCanvas = Selector('div.v-list-item__title').withText('Document Viewer');
     }
 
     async clickEditOptionsMenuButton() {
@@ -40,9 +42,24 @@ class MessageDisplay {
         log.info(`Exchange message with text - ${text} - found`);
     }
 
+    async clickDocumentToDisplayByName(text) {
+        await t.click(Selector('a').withText(text));
+        log.info(`Clicking document with title - ${text}`);
+    }
+
     async verifySubjectHeadingByText(text) {
         await t.expect(this.subjectHeading.innerText).eql(text);
         log.info(`${text} found in subject header`);
+    }
+
+    async verifyImageCanvasDisplay(){
+        await t.expect(this.imageCanvas.exists).ok();
+        log.info('Image canvas displayed');
+    }
+
+    async verifyPDFCanvasDisplay(){
+        await t.expect(this.pdfCanvas.exists).ok();
+        log.info('PDF canvas displayed');
     }
 }
 
