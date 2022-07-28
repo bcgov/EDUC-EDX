@@ -99,6 +99,13 @@ test('test-attach-jpg-document-to-existing-message-displays', async t => {
   await messageDisplay.verifyImageCanvasDisplay();
 });
 
+test('test-attach-pdf-document-to-existing-message-displays', async t => {
+  await testMessageDisplayHelper(t);
+  await uploadDocument('Canadian Passport', '../../uploads/BC.pdf');
+  await messageDisplay.clickDocumentToDisplayByName('BC.pdf');
+  await messageDisplay.verifyPDFCanvasDisplay();
+});
+
 /**
  * Helper method for opening test message
  * @returns {Promise<void>}
