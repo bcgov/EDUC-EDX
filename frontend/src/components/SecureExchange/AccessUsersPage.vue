@@ -22,7 +22,7 @@
       </v-col>
       <v-col xl="4" cols="6" >
         <v-row>
-          <v-col style="height: 204px">
+          <v-col style="height: 220px">
             <v-card height="100%">
               <v-card-title>
                 <v-row no-gutters>
