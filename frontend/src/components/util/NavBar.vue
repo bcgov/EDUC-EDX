@@ -103,8 +103,12 @@ export default {
     }
   },
   watch:{
-    userInfo() {
-      this.refreshUserPermissions();
+    userInfo: {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
