@@ -2,40 +2,62 @@
   <v-row>
     <v-col>
       <v-card>
-        <v-card-title>
+        <v-card-title class="pb-0">
           <v-row no-gutters>
             <v-col>
               <v-row no-gutters>
                 <v-col cols="6">
                   <strong>{{`${user.firstName} ${user.lastName}`}}</strong>
                 </v-col>
-                <v-col cols="6" v-if="!editState" class="d-flex justify-end">
+                <v-col cols="6" class="d-flex justify-end">
                   <v-btn :id="`user-edit-button-${user.firstName}-${user.lastName}`"
                          title="Edit"
-                         color="#003366"
-                         :width="getButtonWidth()"
-                         min-width="3em"
-                         outlined
+                         color="white"
+                         width="0.5em"
+                         min-width="0.5em"
+                         depressed
                          @click="clickEditButton"
                   >
-                    <v-icon class="ml-n1" :class="{'mr-1': $vuetify.breakpoint.mdAndUp}" color="#003366" :nudge-down="4" right dark>mdi-pencil</v-icon>
-                    <span v-if="$vuetify.breakpoint.mdAndUp" style="color: #003366" class="ml-1">Edit</span>
+                    <v-icon size="x-large" class="mr-2" color="#003366" :nudge-down="4" right dark>mdi-pencil</v-icon>
                   </v-btn>
                 </v-col>
-                <v-col class="d-flex justify-end" cols="6" v-if="editState">
-                  <PrimaryButton width="5em" :id="`user-cancel-button-${user.firstName}-${user.lastName}`" text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
-                  <PrimaryButton :id="`user-save-button-${user.firstName}-${user.lastName}`" text="Save" :on="{click: clickSaveButton}"></PrimaryButton>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="10" class="pt-1">
+                  <span>{{user.email}}</span>
+                </v-col>
+                <v-col cols="2" class="pt-1 d-flex justify-end">
+                  <v-btn :id="`user-remove-button-${user.firstName}-${user.lastName}`"
+                         title="Remove"
+                         color="white"
+                         width="0.5em"
+                         min-width="0.5em"
+                         depressed
+                         @click="clickDeleteButton"
+                  >
+                    <v-icon size="x-large" class="mr-2" color="#003366" :nudge-down="4" right dark>mdi-delete</v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col class="pt-1">
-                  <span>{{user.email}}</span>
+              <v-row no-gutters>
+                <v-col cols="10" class="pt-1">
+                </v-col>
+                <v-col cols="2" class="pt-1 d-flex justify-end">
+                  <v-btn :id="`user-relink-button-${user.firstName}-${user.lastName}`"
+                         title="Re-Link"
+                         color="white"
+                         width="0.5em"
+                         min-width="0.5em"
+                         depressed
+                  >
+                    <v-icon size="x-large" class="mr-2" color="#003366" :nudge-down="4" right dark>mdi-autorenew</v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
         </v-card-title>
-        <v-card-text>
+        <v-card-text :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]" >
           <v-chip-group v-if="!editState">
             <v-chip v-for="role in userRoles"
                     :key="role.edxRoleCode" disabled>
@@ -65,6 +87,31 @@
             </v-list-item>
           </v-list-item-group>
         </v-card-text>
+        <Transition name="bounce">
+          <v-card-text style="background-color: #e7ebf0;" v-if="deleteState">
+            <v-row no-gutters>
+              <v-col class="d-flex justify-center">
+                <span style="font-size: medium; font-weight: bold; color: black" >Are you sure you want to remove this users access for the school?</span>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-3 d-flex justify-end">
+                <PrimaryButton width="5em" :id="`user-cancel-button-${user.firstName}-${user.lastName}`" text="Cancel" class="mr-2" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
+                <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`" text="Remove" @click.native="clickRemoveButton(user)" ></PrimaryButton>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </Transition>
+        <Transition name="bounce">
+          <v-card-text class="pt-0" style="background-color: #e7ebf0;" v-if="editState">
+            <v-row no-gutters>
+              <v-col class="mt-3 d-flex justify-end">
+                <PrimaryButton width="5em" :id="`user-cancel-button-${user.firstName}-${user.lastName}`" text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
+                <PrimaryButton :id="`user-save-action-button-${user.firstName}-${user.lastName}`" text="Save" :on="{click: clickSaveButton}"></PrimaryButton>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </Transition>
       </v-card>
     </v-col>
   </v-row>
@@ -104,6 +151,7 @@ export default {
   data(){
     return {
       editState: false,
+      deleteState: false,
       selectedRoles: [],
       isSelectedAdmin: false
     };
@@ -145,7 +193,12 @@ export default {
     },
     clickEditButton() {
       this.editState = !this.editState;
+      this.deleteState = false;
       this.setUserRolesAsSelected();
+    },
+    clickDeleteButton() {
+      this.editState = false;
+      this.deleteState = !this.deleteState;
     },
     clickSaveButton() {
       const payload = {params:
@@ -160,6 +213,25 @@ export default {
           this.setSuccessAlert('User roles have been updated.');
         }).catch(error => {
           this.setFailureAlert('An error occurred while updating user roles. Please try again later.');
+          console.log(error);
+        }).finally(() => {
+          this.$emit('refresh');
+        });
+    },
+    clickRemoveButton(userToRemove) {
+      let userSchool = userToRemove.edxUserSchools.find(school => school.mincode === this.mincode);
+      const payload = {params:
+          {
+            userToRemove: userToRemove.edxUserID,
+            mincode: this.mincode,
+            userSchoolID: userSchool.edxUserSchoolID
+          }
+      };
+      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
+        .then(()=> {
+          this.setSuccessAlert('User has been removed.');
+        }).catch(error => {
+          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
           console.log(error);
         }).finally(() => {
           this.$emit('refresh');
@@ -187,3 +259,23 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.bounce-enter-active {
+  animation: bounce-in 0.2s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.1s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
