@@ -58,7 +58,7 @@
             </v-col>
           </v-row>
         </v-card-title>
-        <v-card-text :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]" >
+        <v-card-text class="pt-2"  :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]" >
           <v-chip-group v-if="!editState">
             <v-chip v-for="role in userRoles"
                     :key="role.edxRoleCode" disabled>
@@ -126,7 +126,7 @@
         <Transition name="bounce">
           <v-card-text class="pt-0" style="background-color: #e7ebf0;" v-if="editState">
             <v-row no-gutters>
-              <v-col class="mt-3 d-flex justify-end">
+              <v-col class="mt-0 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.firstName}-${user.lastName}`" text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-save-action-button-${user.firstName}-${user.lastName}`" text="Save" :on="{click: clickSaveButton}"></PrimaryButton>
               </v-col>
