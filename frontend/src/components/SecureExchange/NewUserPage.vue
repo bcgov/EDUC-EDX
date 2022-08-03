@@ -109,7 +109,6 @@ import ApiService from '@/common/apiService';
 import {
   ApiRoutes,
 } from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
 
 export default {
   name: 'newUserPage',
@@ -123,9 +122,16 @@ export default {
       type: Array,
       required: true
     },
+    mincodeSchoolNames: {
+      type: Map,
+      required: true
+    },
+    userInfo: {
+      type: Object,
+      required: true
+    },
   },
   data() {
-
     return {
       firstName: '',
       lastName: '',
@@ -144,8 +150,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['userInfo']),
-    ...mapState('app', ['mincodeSchoolNames']),
     emailRules() {
       return [
         v => !!v || this.emailHint,
@@ -160,6 +164,7 @@ export default {
     if (this.mincode === '') {
       this.mincode = this.userInfo.activeInstituteIdentifier;
     }
+
     if (!this.schoolNameMincode) {
       this.schoolName = this.mincodeSchoolNames.get(this.mincode);
       this.schoolNameMincode = this.schoolName + ' (' + this.mincode + ')';
