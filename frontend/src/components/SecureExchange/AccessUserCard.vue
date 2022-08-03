@@ -107,7 +107,12 @@
           <v-card-text style="background-color: #e7ebf0;" v-if="relinkState">
             <v-row no-gutters>
               <v-col class="d-flex justify-center">
-                <span style="font-size: medium; font-weight: bold; color: black" >Are you sure you want to re-link this user? An email will be sent to the address listed above with instructions for the user.</span>
+                <span style="font-size: medium; font-weight: bold; color: black">Re-linking an account will remove the current user and resend the activation code so that the user can set up EDX access with their new credential.</span>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="pt-3 d-flex justify-start">
+                <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
