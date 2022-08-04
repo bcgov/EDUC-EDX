@@ -353,7 +353,6 @@ async function getExchange(req, res) {
         activity['secureExchangeCommentID'] = comment['secureExchangeCommentID'];
         dataResponse['activities'].push(activity);
       });
-
       if (dataResponse['documentList']) {
         dataResponse['documentList'].forEach((document) => {
           let activity = {};
@@ -369,6 +368,18 @@ async function getExchange(req, res) {
           dataResponse['activities'].push(activity);
         });
       }
+      if (dataResponse['studentsList']) {
+        dataResponse['studentsList'].forEach((student) => {
+          let activity = {};
+          activity['type'] = 'student';
+          activity['timestamp'] = student['createDate'] ? LocalDateTime.parse(student['createDate']) : '';
+          activity['actor'] = student.edxUserID ? student.edxUserID : student.staffUserIdentifier;
+          activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          activity['displayDate'] = student['createDate'] ? LocalDateTime.parse(student['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
+          dataResponse['activities'].push(activity);
+        });
+      }
+
       dataResponse['activities'].sort((activity1, activity2) => {
         return activity2.timestamp.compareTo(activity1.timestamp);
       });
@@ -441,12 +452,28 @@ async function markAs(req, res) {
     currentExchange.isReadByExchangeContact = isReadByExchangeContact;
     currentExchange.createDate = null;
     currentExchange.updateDate = null;
-    const result = await putData(accessToken, currentExchange, `${config.get('edx:exchangeURL')}`);
+    const result = await putData(accessToken, currentExchange, config.get('edx:exchangeURL'));
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'markAs', 'Error with updating the read status of an exchange.');
     return errorResponse(res);
   }
+}
+
+async function createSecureExchangeStudent(req, res) {
+  const accessToken = getAccessToken(req);
+  if (!accessToken) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  console.log(req);
+  const secureExchangeStudent = {
+    secureExchangeID: req.params.secureExchangeID,
+  };
+  //const result = await postData(accessToken, secureExchangeStudent, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}/students`);
+  const result = {};
+  return res.status(HttpStatus.CREATED).json(result);
 }
 
 async function updateEdxUserRoles(req, res) {
@@ -754,6 +781,7 @@ module.exports = {
   getExchanges,
   getExchange,
   markAs,
+  createSecureExchangeStudent,
   activateSchoolUser,
   verifyActivateUserLink,
   instituteSelection,
