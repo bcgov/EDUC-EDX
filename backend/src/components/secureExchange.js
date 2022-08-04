@@ -748,6 +748,8 @@ function setMincodesAndRedirect(req, res, activatedMincode) {
     res.redirect(config.get('server:frontend'));
   } else if (req.session.userMinCodes.length > 1) {
     res.redirect(config.get('server:frontend') + '/institute-selection');
+  } else {
+    res.redirect(config.get('server:frontend') + '/unauthorized');
   }
 }
 
