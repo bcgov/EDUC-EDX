@@ -80,7 +80,7 @@ export default {
 
   async uploadFile(secureExchangeID, fileData){
     try{
-      return await apiAxios.post(`${ApiRoutes.edx.EXCHANGE}/${secureExchangeID}`, fileData);
+      return await apiAxios.post(`${ApiRoutes.edx.EXCHANGE}/${secureExchangeID}/documents`, fileData);
     } catch(e) {
       console.log(`Failed to post to Nodejs uploadFile API - ${e}`);
       throw e;
