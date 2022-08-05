@@ -37,6 +37,7 @@ export const ApiRoutes = Object.freeze({
     USERS_URL: edxRoot + '/users',
     EXCHANGE_ACCESS_ROLES_URL: edxRoot + '/users/roles',
     EXCHANGE_REMOVE_USER: edxRoot + '/users/remove',
+    EXCHANGE_RELINK_USER: edxRoot + '/users/relink',
     INSTITUTE_SELECTION_URL: edxRoot + '/institute-selection',
     USER_ACTIVATION:edxRoot+'/user-activation',
     UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url',

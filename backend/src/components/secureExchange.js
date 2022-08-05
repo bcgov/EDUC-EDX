@@ -270,8 +270,8 @@ async function instituteSelection(req, res) {
 async function clearActiveSession(req) {
   req.session.activeInstituteIdentifier = '';
   req.session.activeInstituteType = '';
-  req.session.activeInstitutePermissions= '';
-  req.session.activeInstituteTitle= '';
+  req.session.activeInstitutePermissions = '';
+  req.session.activeInstituteTitle = '';
 }
 
 async function getExchanges(req, res) {
@@ -635,7 +635,7 @@ async function removeUserSchoolAccess(req, res) {
     const token = getAccessToken(req);
 
     let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
-    if(req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission){
+    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         status: HttpStatus.UNAUTHORIZED,
         message: 'You are not authorized to access this page'
@@ -643,6 +643,42 @@ async function removeUserSchoolAccess(req, res) {
     }
 
     await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
+
+    return res.status(HttpStatus.OK).json('');
+  } catch (e) {
+    log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
+    return errorResponse(res);
+  }
+}
+
+async function relinkUserSchoolAccess(req, res) {
+  try {
+    const token = getAccessToken(req);
+
+    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'You are not authorized to access this page'
+      });
+    }
+
+    let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink);
+    let userSchool = edxUserDetails.edxUserSchools.find(school => school.mincode === req.body.params.mincode);
+    let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
+
+    const payload = {
+      mincode: req.body.params.mincode,
+      schoolName: cacheService.getSchoolNameJSONByMincode(req.body.params.mincode).schoolName,
+      edxActivationRoleCodes: activationRoles,
+      firstName: edxUserDetails.firstName,
+      lastName: edxUserDetails.lastName,
+      email: edxUserDetails.email,
+      edxUserID: req.body.params.userToRelink,
+      edxUserSchoolID: req.body.params.userSchoolID,
+    };
+
+    await postData(token, payload, config.get('edx:exchangeURL') + '/school-user-activation-relink-saga', req.session.correlationID);
 
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
@@ -767,6 +803,8 @@ function setMincodesAndRedirect(req, res, activatedMincode) {
     res.redirect(config.get('server:frontend'));
   } else if (req.session.userMinCodes.length > 1) {
     res.redirect(config.get('server:frontend') + '/institute-selection');
+  } else {
+    res.redirect(config.get('server:frontend') + '/unauthorized');
   }
 }
 
@@ -822,5 +860,6 @@ module.exports = {
   getAndSetupEDXUserAndRedirect,
   getExchangesCount,
   getExchangesCountPaginated,
-  removeUserSchoolAccess
+  removeUserSchoolAccess,
+  relinkUserSchoolAccess
 };

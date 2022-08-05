@@ -63,6 +63,8 @@
         <v-card-text>
           <NewUserPage
               :userRoles="roles"
+              :userInfo="userInfo"
+              :mincodeSchoolNames="mincodeSchoolNames"
               @access-user:messageSent="messageSent"
               @access-user:updateRoles="updateUserRoles"
               @access-user:cancelMessage="closeNewUserModal"
