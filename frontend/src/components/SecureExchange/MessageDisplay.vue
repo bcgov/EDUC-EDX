@@ -160,7 +160,62 @@
                           <v-spacer></v-spacer>
                           <div class="activityDisplayDate">{{ activity.displayDate }}</div>
                         </v-card-title>
-                        <v-card-text class="activityContent">{{ activity.content }}</v-card-text>
+                        <v-card-text class="">
+                          <v-row v-if="activity.studentPEN">
+                            <v-col class="pt-0" cols="3">
+                              <span>PEN: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9" >{{ activity.studentPEN }}</v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentLocalID">
+                            <v-col class="pt-0" cols="3">
+                              <span>Local ID: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentLocalID }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentSurname">
+                            <v-col class="pt-0" cols="3">
+                              <span>Surname: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentSurname }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentGiven">
+                            <v-col class="pt-0" cols="3">
+                              <span>Given Name: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentGiven }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentMiddle">
+                            <v-col class="pt-0" cols="3">
+                              <span>Middle Name: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentMiddle }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentDOB">
+                            <v-col class="pt-0" cols="3">
+                              <span>Birth Date: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentDOB }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentGender">
+                            <v-col class="pt-0" cols="3">
+                              <span>Gender: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentGender }}</span>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
                       </v-card>
                     </v-timeline-item>
                   </div>
@@ -298,6 +353,9 @@ export default {
       this.isNewStudentDisplayed = true;
       this.shouldDisplaySpeedDial = false;
       this.editOptionsOpen = false;
+      if (this.secureExchange.studentsList?.length > 0) {
+        this.updateAddStudentWarningMessage('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+      }
     },
     hideStudentPanel() {
       this.isNewStudentDisplayed = false;
@@ -322,7 +380,7 @@ export default {
     setIsReadByExchangeContact(isRead) {
       this.loadingReadStatus = true;
       let readStatus = isRead ? 'read' : 'unread';
-      ApiService.apiAxios.put(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/markAs/${readStatus}`)
+      ApiService.apiAxios.put(`${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/markAs/${readStatus}`)
         .then(() => {
           this.secureExchange.isReadByExchangeContact = isRead;
         })
@@ -397,6 +455,7 @@ export default {
     },
     sendNewSecureExchangeStudent(student) {
       this.processing = true;
+      this.loading = true;
       const payload = {
         studentID: student.studentID
       };
@@ -411,6 +470,7 @@ export default {
         })
         .finally(() => {
           this.processing = false;
+          this.loading = false;
           this.isNewStudentDisplayed = false;
         });
     }

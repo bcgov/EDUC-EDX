@@ -324,7 +324,7 @@ async function getExchange(req, res) {
   return Promise.all([
     getCodeTable(accessToken, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(accessToken, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`)
+    getData(accessToken, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
@@ -369,15 +369,26 @@ async function getExchange(req, res) {
         });
       }
       if (dataResponse['studentsList']) {
-        dataResponse['studentsList'].forEach((student) => {
+        for (const student of dataResponse['studentsList']) {
+          let studentDetail = await getData(accessToken, `${config.get('student:apiEndpoint')}/${student.studentId}`);
+          let includeDemographicDetails = studentDetail.mincode === school.mincode;
           let activity = {};
           activity['type'] = 'student';
+          activity['isSchool'] = student.edxUserID ? true : false;
+          activity['studentID'] = student.studentId;
+          activity['studentPEN'] = studentDetail.pen;
+          activity['studentLocalID'] = includeDemographicDetails ? studentDetail.localID : null;
+          activity['studentSurname'] = includeDemographicDetails ? studentDetail.legalLastName : null;
+          activity['studentGiven'] = includeDemographicDetails ? studentDetail.legalFirstName : null;
+          activity['studentMiddle'] = includeDemographicDetails ? studentDetail.legalMiddleNames : null;
+          activity['studentDOB'] = includeDemographicDetails ? studentDetail.dob : null;
+          activity['studentGender'] = includeDemographicDetails ? studentDetail.genderCode : null;
           activity['timestamp'] = student['createDate'] ? LocalDateTime.parse(student['createDate']) : '';
           activity['actor'] = student.edxUserID ? student.edxUserID : student.staffUserIdentifier;
           activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
           activity['displayDate'] = student['createDate'] ? LocalDateTime.parse(student['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
           dataResponse['activities'].push(activity);
-        });
+        }
       }
 
       dataResponse['activities'].sort((activity1, activity2) => {
@@ -463,17 +474,34 @@ async function markAs(req, res) {
 async function createSecureExchangeStudent(req, res) {
   const accessToken = getAccessToken(req);
   if (!accessToken) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
+    return errorResponse(res, 'No Access token.', HttpStatus.UNAUTHORIZED);
   }
-  console.log(req);
+  const edxUserInfo = req.session.edxUserData;
+  if (!edxUserInfo) {
+    return errorResponse(res, 'No EDX User Info token.', HttpStatus.UNAUTHORIZED);
+  }
+  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+    return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+  }
+  const exchangeURL = config.get('edx:exchangeURL');
   const secureExchangeStudent = {
-    secureExchangeID: req.params.secureExchangeID,
+    edxUserID: edxUserInfo.edxUserID,
+    studentId: req.body.studentID
   };
-  //const result = await postData(accessToken, secureExchangeStudent, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}/students`);
-  const result = {};
-  return res.status(HttpStatus.CREATED).json(result);
+  try {
+    const secureExchange = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}`);
+    if (!secureExchange) {
+      return errorResponse(res, 'The Secure Exchange, to which the Student was to be added, wasn\'t found.', HttpStatus.NOT_FOUND);
+    }
+    if (req.session.activeInstituteIdentifier !== secureExchange.contactIdentifier) {
+      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    }
+    const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`);
+    return res.status(HttpStatus.CREATED).json(result);
+  } catch (e) {
+    log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
+    return errorResponse(res);
+  }
 }
 
 async function updateEdxUserRoles(req, res) {
