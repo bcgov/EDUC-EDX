@@ -71,7 +71,7 @@
                           <v-icon>mdi-paperclip</v-icon>
                         </v-avatar>
                         {{document.fileName}}</v-chip>
-                      <v-chip id="studentChip" :class="['ma-1']" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
+                      <v-chip v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" :id="`studentChip-${secureExchangeStudent.studentID}`" :class="['studentChip', 'ma-1']" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
                         <v-avatar left>
                           <v-icon>mdi-account-circle</v-icon>
                         </v-avatar>

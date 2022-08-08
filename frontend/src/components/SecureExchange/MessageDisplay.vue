@@ -117,7 +117,7 @@
                 </DocumentUpload>
               </v-col>
             </v-row>
-            <v-row v-if="isNewStudentDisplayed">
+            <v-row v-if="isNewStudentDisplayed" id="addStudentDialog">
               <v-col class="d-flex justify-center">
                 <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :mincode="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
                 </AddStudent>
@@ -160,12 +160,12 @@
                           <v-spacer></v-spacer>
                           <div class="activityDisplayDate">{{ activity.displayDate }}</div>
                         </v-card-title>
-                        <v-card-text class="">
+                        <v-card-text>
                           <v-row v-if="activity.studentPEN">
                             <v-col class="pt-0" cols="3">
                               <span>PEN: </span>
                             </v-col>
-                            <v-col class="pt-0" cols="9" >{{ activity.studentPEN }}</v-col>
+                            <v-col class="studentPenRaw pt-0" cols="9" >{{ activity.studentPEN }}</v-col>
                           </v-row>
                           <v-row v-if="activity.studentLocalID">
                             <v-col class="pt-0" cols="3">
