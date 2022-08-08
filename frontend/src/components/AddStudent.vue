@@ -45,7 +45,7 @@
         </div>
     </v-row>
     <v-row class="justify-end pr-2 pt-2" >
-      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-1"
+      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-2"
                      @click.native="closeForm"></PrimaryButton>
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
                      text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
