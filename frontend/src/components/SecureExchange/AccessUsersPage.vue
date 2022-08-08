@@ -22,11 +22,11 @@
       </v-col>
       <v-col xl="4" cols="6" >
         <v-row>
-          <v-col style="height: 220px">
+          <v-col style="height: 180px">
             <v-card height="100%">
               <v-card-title>
                 <v-row no-gutters>
-                  <v-col class="d-flex justify-center mt-12">
+                  <v-col class="d-flex justify-center mt-10">
                     <PrimaryButton icon="mdi-plus"
                                    :large-icon=true
                                    id="new-user-button"
