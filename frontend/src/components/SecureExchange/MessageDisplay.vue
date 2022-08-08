@@ -72,7 +72,7 @@
                     <v-icon color="#003366">mdi-paperclip</v-icon>
                     <span style="color: #003366" class="ml-1">Attachment</span>
                   </v-btn>
-                  <v-btn id="addStudentConvButton" small>
+                  <v-btn id="addStudentConvButton" small @click="displayStudentPanel">
                     <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
                     <span style="color: #003366" class="ml-1">Student</span>
                   </v-btn>
@@ -117,6 +117,12 @@
                 </DocumentUpload>
               </v-col>
             </v-row>
+            <v-row v-if="isNewStudentDisplayed">
+              <v-col class="d-flex justify-center">
+                <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :mincode="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
+                </AddStudent>
+              </v-col>
+            </v-row>
             <v-row>
               <v-col>
                 <v-timeline v-if="secureExchange.activities.length > 0">
@@ -148,6 +154,69 @@
                           <v-card-text v-if="activity.documentType.label !== 'Other'" class="pt-0 pb-3">{{ activity.documentType.label }}</v-card-text>
                         </v-row>
                       </v-card>
+                      <v-card v-if="activity.type === 'student'">
+                        <v-card-title>
+                          <div class="activityTitle">{{ activity.title }}</div>
+                          <v-spacer></v-spacer>
+                          <div class="activityDisplayDate">{{ activity.displayDate }}</div>
+                        </v-card-title>
+                        <v-card-text class="">
+                          <v-row v-if="activity.studentPEN">
+                            <v-col class="pt-0" cols="3">
+                              <span>PEN: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9" >{{ activity.studentPEN }}</v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentLocalID">
+                            <v-col class="pt-0" cols="3">
+                              <span>Local ID: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentLocalID }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentSurname">
+                            <v-col class="pt-0" cols="3">
+                              <span>Surname: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentSurname }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentGiven">
+                            <v-col class="pt-0" cols="3">
+                              <span>Given Name: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentGiven }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentMiddle">
+                            <v-col class="pt-0" cols="3">
+                              <span>Middle Name: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentMiddle }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentDOB">
+                            <v-col class="pt-0" cols="3">
+                              <span>Birth Date: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentDOB }}</span>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="activity.studentGender">
+                            <v-col class="pt-0" cols="3">
+                              <span>Gender: </span>
+                            </v-col>
+                            <v-col class="pt-0" cols="9">
+                              <span>{{ activity.studentGender }}</span>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
                     </v-timeline-item>
                   </div>
                 </v-timeline>
@@ -168,14 +237,16 @@ import PrimaryButton from '../util/PrimaryButton';
 import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
 import alertMixin from '@/mixins/alertMixin';
 import DocumentUpload from '@/components/common/DocumentUpload';
+import AddStudent from '@/components/AddStudent';
 import PdfRenderer from '@/components/common/PdfRenderer';
 import ImageRenderer from '@/components/common/ImageRenderer';
+import {mapState} from 'vuex';
 
 
 export default {
   name: 'MessageDisplay',
   mixins: [alertMixin],
-  components: {DocumentUpload, PrimaryButton, ImageRenderer, PdfRenderer},
+  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer, PdfRenderer },
   props: {
     secureExchangeID: {
       type: String,
@@ -192,17 +263,21 @@ export default {
       subject: '',
       isNewMessageDisplayed: false,
       isNewAttachmentDisplayed: false,
-      newMessageBtnDisplayed:false,
+      isNewStudentDisplayed: false,
+      newMessageBtnDisplayed: false,
       shouldDisplaySpeedDial: true,
       processing: false,
-      newMessage:'',
+      newMessage: '',
       pdfRenderDialog: false,
       imageRendererDialog: false,
       documentId: '',
-      imageId: ''
+      imageId: '',
+      addStudentWarningMessage: ''
     };
   },
-  computed: {},
+  computed: {
+    ...mapState('auth', ['userInfo']),
+  },
   created() {
     this.getExchange();
     this.setIsReadByExchangeContact(true);
@@ -252,6 +327,7 @@ export default {
     displayMessageField() {
       this.isNewAttachmentDisplayed = false;
       this.isNewMessageDisplayed = true;
+      this.isNewStudentDisplayed = false;
       this.shouldDisplaySpeedDial = false;
       this.editOptionsOpen = false;
     },
@@ -263,12 +339,30 @@ export default {
     displayAttachmentPanel() {
       this.isNewMessageDisplayed = false;
       this.isNewAttachmentDisplayed = true;
+      this.isNewStudentDisplayed = false;
       this.shouldDisplaySpeedDial = false;
       this.editOptionsOpen = false;
     },
     hideAttachmentPanel(){
       this.isNewAttachmentDisplayed = false;
       this.shouldDisplaySpeedDial = true;
+    },
+    displayStudentPanel() {
+      this.isNewMessageDisplayed = false;
+      this.isNewAttachmentDisplayed = false;
+      this.isNewStudentDisplayed = true;
+      this.shouldDisplaySpeedDial = false;
+      this.editOptionsOpen = false;
+      if (this.secureExchange.studentsList?.length > 0) {
+        this.updateAddStudentWarningMessage('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+      }
+    },
+    hideStudentPanel() {
+      this.isNewStudentDisplayed = false;
+      this.shouldDisplaySpeedDial = true;
+    },
+    updateAddStudentWarningMessage(newValue) {
+      this.addStudentWarningMessage = newValue;
     },
     getExchange() {
       this.loading = true;
@@ -286,7 +380,7 @@ export default {
     setIsReadByExchangeContact(isRead) {
       this.loadingReadStatus = true;
       let readStatus = isRead ? 'read' : 'unread';
-      ApiService.apiAxios.put(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/markAs/${readStatus}`)
+      ApiService.apiAxios.put(`${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/markAs/${readStatus}`)
         .then(() => {
           this.secureExchange.isReadByExchangeContact = isRead;
         })
@@ -359,6 +453,27 @@ export default {
           this.resetNewMessageForm();
         });
     },
+    sendNewSecureExchangeStudent(student) {
+      this.processing = true;
+      this.loading = true;
+      const payload = {
+        studentID: student.studentID
+      };
+      ApiService.apiAxios.post(`${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/students`, payload)
+        .then(() => {
+          this.setSuccessAlert('Success! The student has been added to the Secure Exchange.');
+          this.getExchange();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while adding the student to the Secure Exchange. Please try again later.');
+        })
+        .finally(() => {
+          this.processing = false;
+          this.loading = false;
+          this.isNewStudentDisplayed = false;
+        });
+    }
   }
 };
 </script>

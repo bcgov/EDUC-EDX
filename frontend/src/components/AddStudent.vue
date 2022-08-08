@@ -99,10 +99,14 @@ export default {
     }
   },
   watch: {
-    additionalStudentAddWarning(newVal){
-      if(newVal){
-        this.setInfoAlert(newVal);
-      }
+    additionalStudentAddWarning: {
+      handler(newValue) {
+        if (!newValue) {
+          return;
+        }
+        this.setInfoAlert(newValue);
+      },
+      immediate: true
     },
     alert(newVal){
       if(!newVal){
