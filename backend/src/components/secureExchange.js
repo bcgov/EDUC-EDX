@@ -269,8 +269,8 @@ async function instituteSelection(req, res) {
 async function clearActiveSession(req) {
   req.session.activeInstituteIdentifier = '';
   req.session.activeInstituteType = '';
-  req.session.activeInstitutePermissions= '';
-  req.session.activeInstituteTitle= '';
+  req.session.activeInstitutePermissions = '';
+  req.session.activeInstituteTitle = '';
 }
 
 async function getExchanges(req, res) {
@@ -323,7 +323,7 @@ async function getExchange(req, res) {
   return Promise.all([
     getCodeTable(accessToken, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(accessToken, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`)
+    getData(accessToken, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
@@ -352,7 +352,6 @@ async function getExchange(req, res) {
         activity['secureExchangeCommentID'] = comment['secureExchangeCommentID'];
         dataResponse['activities'].push(activity);
       });
-
       if (dataResponse['documentList']) {
         dataResponse['documentList'].forEach((document) => {
           let activity = {};
@@ -368,6 +367,29 @@ async function getExchange(req, res) {
           dataResponse['activities'].push(activity);
         });
       }
+      if (dataResponse['studentsList']) {
+        for (const student of dataResponse['studentsList']) {
+          let studentDetail = await getData(accessToken, `${config.get('student:apiEndpoint')}/${student.studentId}`);
+          let includeDemographicDetails = studentDetail.mincode === school.mincode;
+          let activity = {};
+          activity['type'] = 'student';
+          activity['isSchool'] = student.edxUserID ? true : false;
+          activity['studentID'] = student.studentId;
+          activity['studentPEN'] = studentDetail.pen;
+          activity['studentLocalID'] = includeDemographicDetails ? studentDetail.localID : null;
+          activity['studentSurname'] = includeDemographicDetails ? studentDetail.legalLastName : null;
+          activity['studentGiven'] = includeDemographicDetails ? studentDetail.legalFirstName : null;
+          activity['studentMiddle'] = includeDemographicDetails ? studentDetail.legalMiddleNames : null;
+          activity['studentDOB'] = includeDemographicDetails ? studentDetail.dob : null;
+          activity['studentGender'] = includeDemographicDetails ? studentDetail.genderCode : null;
+          activity['timestamp'] = student['createDate'] ? LocalDateTime.parse(student['createDate']) : '';
+          activity['actor'] = student.edxUserID ? student.edxUserID : student.staffUserIdentifier;
+          activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          activity['displayDate'] = student['createDate'] ? LocalDateTime.parse(student['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
+          dataResponse['activities'].push(activity);
+        }
+      }
+
       dataResponse['activities'].sort((activity1, activity2) => {
         return activity2.timestamp.compareTo(activity1.timestamp);
       });
@@ -440,10 +462,43 @@ async function markAs(req, res) {
     currentExchange.isReadByExchangeContact = isReadByExchangeContact;
     currentExchange.createDate = null;
     currentExchange.updateDate = null;
-    const result = await putData(accessToken, currentExchange, `${config.get('edx:exchangeURL')}`);
+    const result = await putData(accessToken, currentExchange, config.get('edx:exchangeURL'));
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'markAs', 'Error with updating the read status of an exchange.');
+    return errorResponse(res);
+  }
+}
+
+async function createSecureExchangeStudent(req, res) {
+  const accessToken = getAccessToken(req);
+  if (!accessToken) {
+    return errorResponse(res, 'No Access token.', HttpStatus.UNAUTHORIZED);
+  }
+  const edxUserInfo = req.session.edxUserData;
+  if (!edxUserInfo) {
+    return errorResponse(res, 'No EDX User Info token.', HttpStatus.UNAUTHORIZED);
+  }
+  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+    return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+  }
+  const exchangeURL = config.get('edx:exchangeURL');
+  const secureExchangeStudent = {
+    edxUserID: edxUserInfo.edxUserID,
+    studentId: req.body.studentID
+  };
+  try {
+    const secureExchange = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}`);
+    if (!secureExchange) {
+      return errorResponse(res, 'The Secure Exchange, to which the Student was to be added, wasn\'t found.', HttpStatus.NOT_FOUND);
+    }
+    if (req.session.activeInstituteIdentifier !== secureExchange.contactIdentifier) {
+      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    }
+    const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`);
+    return res.status(HttpStatus.CREATED).json(result);
+  } catch (e) {
+    log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
     return errorResponse(res);
   }
 }
@@ -579,7 +634,7 @@ async function removeUserSchoolAccess(req, res) {
     const token = getAccessToken(req);
 
     let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
-    if(req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission){
+    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         status: HttpStatus.UNAUTHORIZED,
         message: 'You are not authorized to access this page'
@@ -587,6 +642,42 @@ async function removeUserSchoolAccess(req, res) {
     }
 
     await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
+
+    return res.status(HttpStatus.OK).json('');
+  } catch (e) {
+    log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
+    return errorResponse(res);
+  }
+}
+
+async function relinkUserSchoolAccess(req, res) {
+  try {
+    const token = getAccessToken(req);
+
+    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'You are not authorized to access this page'
+      });
+    }
+
+    let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink);
+    let userSchool = edxUserDetails.edxUserSchools.find(school => school.mincode === req.body.params.mincode);
+    let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
+
+    const payload = {
+      mincode: req.body.params.mincode,
+      schoolName: cacheService.getSchoolNameJSONByMincode(req.body.params.mincode).schoolName,
+      edxActivationRoleCodes: activationRoles,
+      firstName: edxUserDetails.firstName,
+      lastName: edxUserDetails.lastName,
+      email: edxUserDetails.email,
+      edxUserID: req.body.params.userToRelink,
+      edxUserSchoolID: req.body.params.userSchoolID,
+    };
+
+    await postData(token, payload, config.get('edx:exchangeURL') + '/school-user-activation-relink-saga', req.session.correlationID);
 
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
@@ -711,6 +802,8 @@ function setMincodesAndRedirect(req, res, activatedMincode) {
     res.redirect(config.get('server:frontend'));
   } else if (req.session.userMinCodes.length > 1) {
     res.redirect(config.get('server:frontend') + '/institute-selection');
+  } else {
+    res.redirect(config.get('server:frontend') + '/unauthorized');
   }
 }
 
@@ -753,6 +846,7 @@ module.exports = {
   getExchanges,
   getExchange,
   markAs,
+  createSecureExchangeStudent,
   activateSchoolUser,
   verifyActivateUserLink,
   instituteSelection,
@@ -765,5 +859,6 @@ module.exports = {
   getAndSetupEDXUserAndRedirect,
   getExchangesCount,
   getExchangesCountPaginated,
-  removeUserSchoolAccess
+  removeUserSchoolAccess,
+  relinkUserSchoolAccess
 };

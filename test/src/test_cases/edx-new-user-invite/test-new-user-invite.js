@@ -34,6 +34,7 @@ test('test-school-user-activation-invite', async t => {
   await menu.clickHamburgerMenu();
   await menu.clickAdministrationMenuOption();
   await menu.clickEDXAccessMenuLink();
+  await t.wait(3000);
   await navBar.verifyNavTitleByText('User Management');
   await accessUsersPage.clickNewUserButton();
   await accessUsersPage.verifyUserByText('New User');

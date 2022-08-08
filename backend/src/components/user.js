@@ -34,7 +34,7 @@ async function getUserInfo(req, res) {
     school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
   }
 
-  if (req.session.digitalIdentityData && req.session.userMinCodes && req.session.userMinCodes.length > 0) {
+  if (req.session.digitalIdentityData && req.session.userMinCodes && req.session.userMinCodes.length > 0 && req.session.edxUserData) {
     let resData = {
       displayName: userInfo._json.displayName,
       accountType: userInfo._json.accountType,
@@ -43,7 +43,8 @@ async function getUserInfo(req, res) {
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
-      activeInstitutePermissions: req.session.activeInstitutePermissions
+      activeInstitutePermissions: req.session.activeInstitutePermissions,
+      edxUserID: req.session.edxUserData.edxUserID
     };
     return res.status(HttpStatus.OK).json(resData);
   }

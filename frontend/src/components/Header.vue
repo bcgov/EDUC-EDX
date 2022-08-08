@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     hasSeveralMincodes() {
-      return this.userInfo?.userMinCodes.length > 1;
+      return this.userInfo?.userMinCodes?.length > 1;
     }
 
   }

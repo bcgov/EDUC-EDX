@@ -9,6 +9,7 @@
         v-model="alert"
         :class="alertType"
         class="mb-3"
+        max-width="21em"
     >
       {{ alertMessage }}
     </v-alert>
@@ -44,7 +45,7 @@
         </div>
     </v-row>
     <v-row class="justify-end pr-2 pt-2" >
-      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-1"
+      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-2"
                      @click.native="closeForm"></PrimaryButton>
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
                      text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
@@ -99,10 +100,14 @@ export default {
     }
   },
   watch: {
-    additionalStudentAddWarning(newVal){
-      if(newVal){
-        this.setInfoAlert(newVal);
-      }
+    additionalStudentAddWarning: {
+      handler(newValue) {
+        if (!newValue) {
+          return;
+        }
+        this.setInfoAlert(newValue);
+      },
+      immediate: true
     },
     alert(newVal){
       if(!newVal){

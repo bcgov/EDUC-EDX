@@ -31,6 +31,7 @@ Vue.prototype.moment = moment;
 Vue.use(VueRouter);
 Vue.use(VueMeta);
 // a comment for commit.
+const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -188,10 +189,12 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          if (to.meta.permission && authStore.state.userInfo?.userMinCodes?.length > 0 && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+            next('/institute-selection');
+          }else if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
-            if(authStore.state.userInfo.activeInstituteTitle && to.meta.pageTitle !== PAGE_TITLES.SELECTION){
+            if(authStore.state.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
               store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
             }else{
               store.commit('app/setPageTitle',to.meta.pageTitle);
