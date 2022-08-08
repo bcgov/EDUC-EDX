@@ -124,7 +124,8 @@ async function deleteDocument(req, res) {
     }
 
     let resData = await getDocument(accessToken, req.params.id, req.params.documentId);
-    if ( ! resData ||  req.session['secureExchange']['secureExchangeStatusCode'] === 'Closed') {
+    let secureExchangeData = await getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.id}`);
+    if ( ! resData ||  secureExchangeData['secureExchangeStatusCode'] === 'Closed') {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
       });
