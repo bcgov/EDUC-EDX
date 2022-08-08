@@ -9,7 +9,7 @@
                 <v-col cols="6">
                   <strong>{{`${user.firstName} ${user.lastName}`}}</strong>
                 </v-col>
-                <v-col cols="6" class="d-flex justify-end">
+                <v-col cols="6" class="d-flex justify-end" v-if="isNotSameEdxUser()">
                   <v-btn :id="`user-edit-button-${user.firstName}-${user.lastName}`"
                          title="Edit"
                          color="white"
@@ -26,7 +26,7 @@
                 <v-col cols="10" class="pt-1">
                   <span>{{user.email}}</span>
                 </v-col>
-                <v-col cols="2" class="pt-1 d-flex justify-end">
+                <v-col cols="2" class="pt-1 d-flex justify-end" v-if="isNotSameEdxUser()">
                   <v-btn :id="`user-remove-button-${user.firstName}-${user.lastName}`"
                          title="Remove"
                          color="white"
@@ -42,7 +42,7 @@
               <v-row no-gutters>
                 <v-col cols="10" class="pt-1">
                 </v-col>
-                <v-col cols="2" class="pt-1 d-flex justify-end">
+                <v-col cols="2" class="pt-1 d-flex justify-end" v-if="isNotSameEdxUser()">
                   <v-btn :id="`user-relink-button-${user.firstName}-${user.lastName}`"
                          title="Re-Link"
                          color="white"
@@ -142,7 +142,7 @@ import PrimaryButton from '@/components/util/PrimaryButton';
 import ApiService from '../../common/apiService';
 import alertMixin from '@/mixins/alertMixin';
 import {ApiRoutes} from '@/utils/constants';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 
 export default {
   name: 'AccessUserCard',
@@ -300,10 +300,14 @@ export default {
       });
 
       this.selectedRoles = [...mySelection];
-    }
+    },
+    isNotSameEdxUser() {
+      return this.userInfo.edxUserID !== this.user.edxUserID;
+    },
   },
   computed: {
-    ...mapState('edx', ['roles'])
+    ...mapState('edx', ['roles']),
+    ...mapGetters('auth', ['userInfo'])
   }
 };
 </script>
