@@ -188,7 +188,9 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          if (to.meta.permission && authStore.state.userInfo?.userMinCodes?.length > 0 && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+            next('/institute-selection');
+          }else if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
             if(authStore.state.userInfo.activeInstituteTitle && to.meta.pageTitle !== PAGE_TITLES.SELECTION){
