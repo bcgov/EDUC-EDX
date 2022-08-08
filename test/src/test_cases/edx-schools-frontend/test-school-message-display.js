@@ -3,17 +3,19 @@ import {getToken} from '../../helpers/oauth-utils';
 import {createSecureExchange, deleteSecureExchange} from '../../services/edx-api-service';
 import {createTestExchange} from '../../helpers/secure-exchange-utils';
 import log from 'npmlog';
-import {base_url} from '../../config/constants';
+import {base_url, student_penList} from '../../config/constants';
 import MessageDisplay from '../../page_models/message-display';
 import Dashboard from '../../page_models/dashboard';
 import Inbox from '../../page_models/inbox';
 import DocumentUploadPage from '../../page_models/common/documentUploadPage';
+import AddStudent from '../../page_models/common/addStudent';
 
 const studentAdmin = require('../../auth/Roles');
 
 const dashboard = new Dashboard();
 const inbox = new Inbox();
 const documentUpload = new DocumentUploadPage();
+const addStudent = new AddStudent();
 
 let messageDisplay = new MessageDisplay();
 let token = '';
@@ -104,6 +106,36 @@ test('test-attach-pdf-document-to-existing-message-displays', async t => {
   await uploadDocument('Canadian Passport', '../../uploads/BC.pdf');
   await messageDisplay.clickDocumentToDisplayByName('BC.pdf');
   await messageDisplay.verifyPDFCanvasDisplay();
+});
+
+test('test-school-message-display-add-student', async t => {
+  await testMessageDisplayHelper(t);
+  await messageDisplay.clickEditOptionsMenuButton();
+  await messageDisplay.clickAddStudentMenuButton();
+  await messageDisplay.verifyAddStudentDialogIsAvailable();
+
+  await addStudent.testInvalidPENInput('123456789');
+
+  await addStudent.clearPenSearchText();
+
+  await addStudent.testValidPENInput(student_penList[0]);
+  await addStudent.clickAddStudentButton();
+  await messageDisplay.verifyStudentAddedToMessageWithPEN(student_penList[0]);
+
+  await messageDisplay.clickEditOptionsMenuButton();
+  await messageDisplay.clickAddStudentMenuButton();
+  await messageDisplay.verifyAddStudentDialogIsAvailable();
+  await addStudent.assertAlertMessageAtAddStudent('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+  await addStudent.testValidPENInput(student_penList[1]);
+  await addStudent.clickAddStudentButton();
+  await messageDisplay.verifyStudentAddedToMessageWithPEN(student_penList[1]);
+
+  await messageDisplay.clickEditOptionsMenuButton();
+  await messageDisplay.clickAddStudentMenuButton();
+  await messageDisplay.verifyAddStudentDialogIsAvailable();
+  await addStudent.assertAlertMessageAtAddStudent('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+  await addStudent.testNonExistingPENInput(student_penList[2]);
+  await addStudent.clickCancelAddStudentButton();
 });
 
 /**
