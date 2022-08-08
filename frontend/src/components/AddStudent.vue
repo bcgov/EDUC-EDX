@@ -9,6 +9,7 @@
         v-model="alert"
         :class="alertType"
         class="mb-3"
+        max-width="21em"
     >
       {{ alertMessage }}
     </v-alert>
