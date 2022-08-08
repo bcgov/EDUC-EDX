@@ -512,6 +512,8 @@ export default {
         })
         .catch(error => {
           console.log(error);
+        });
+    },
     sendNewSecureExchangeStudent(student) {
       this.processing = true;
       this.loading = true;
