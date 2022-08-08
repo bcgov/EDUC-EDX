@@ -44,7 +44,7 @@ async function getUserInfo(req, res) {
       activeInstituteTitle: school?.schoolName,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
-      edxUserID: req.session?.edxUserData.edxUserID
+      edxUserID: req.session.edxUserData.edxUserID
     };
     return res.status(HttpStatus.OK).json(resData);
   }
