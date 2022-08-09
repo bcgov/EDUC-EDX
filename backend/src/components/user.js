@@ -36,7 +36,7 @@ async function getUserInfo(req, res) {
 
   if (req.session.digitalIdentityData && req.session.userMinCodes && req.session.userMinCodes.length > 0 && req.session.edxUserData) {
     let resData = {
-      displayName: userInfo._json.displayName,
+      displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
       accountType: userInfo._json.accountType,
       userMinCodes: req.session.userMinCodes,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
@@ -44,7 +44,7 @@ async function getUserInfo(req, res) {
       activeInstituteTitle: school?.schoolName,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
-      edxUserID: req.session.edxUserData.edxUserID
+      edxUserID: req.session.edxUserData?.edxUserID,
     };
     return res.status(HttpStatus.OK).json(resData);
   }
@@ -80,14 +80,16 @@ async function getUserInfo(req, res) {
     school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
 
     let resData = {
-      displayName: userInfo._json.displayName,
+      //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
+      displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       userMinCodes: req.session.userMinCodes,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
       identityTypeLabel: identityType.label,
-      activeInstitutePermissions: req.session.activeInstitutePermissions
+      activeInstitutePermissions: req.session.activeInstitutePermissions,
+      edxUserID: req.session.edxUserData?.edxUserID,
     };
 
     return res.status(HttpStatus.OK).json(resData);
