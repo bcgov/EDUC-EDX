@@ -105,6 +105,10 @@ describe('getUserInfo', () => {
       digitalIdentityID: digitalID,
       displayName: 'Firstname Lastname',
       accountType: 'BCEID',
+    },
+    edxUserData: {
+      firstName: 'Firstname',
+      lastName: 'Lastname'
     }
   };
 
@@ -133,7 +137,7 @@ describe('getUserInfo', () => {
 
   beforeEach(() => {
     utils.getSessionUser.mockReturnValue(sessionUser);
-    req = mockRequest();
+    req = mockRequest(null, sessionUser);
     res = mockResponse();
     rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
     rewireRequest.__Rewire__('getServerSideCodes', () => Promise.resolve(codes));
@@ -158,7 +162,7 @@ describe('getUserInfo', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalledWith({
-      displayName: sessionUser._json.displayName,
+      displayName: `${sessionUser.edxUserData?.firstName} ${sessionUser.edxUserData?.lastName}`,
       accountType: sessionUser._json.accountType,
       identityTypeLabel: lodash.find(codes.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]).label,
     });
