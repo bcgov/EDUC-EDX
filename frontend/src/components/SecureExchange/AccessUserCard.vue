@@ -20,7 +20,7 @@
                          small
                          class="mr-2"
                   >
-                    <v-icon size="x-large" color="#003366" right dark>mdi-pencil</v-icon>
+                    <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn :id="`user-remove-button-${user.firstName}-${user.lastName}`"
                          title="Remove"
@@ -32,7 +32,7 @@
                          small
                          class="mr-2"
                   >
-                    <v-icon size="x-large" color="#003366" right dark>mdi-delete</v-icon>
+                    <v-icon size="x-large" color="#003366" dark>mdi-delete</v-icon>
                   </v-btn>
                   <v-btn :id="`user-relink-button-${user.firstName}-${user.lastName}`"
                          title="Re-Link"
@@ -43,7 +43,7 @@
                          @click="clickRelinkButton"
                          small
                   >
-                    <v-icon size="x-large" color="#003366" right dark>mdi-autorenew</v-icon>
+                    <v-icon size="x-large" color="#003366" dark>mdi-backup-restore</v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
