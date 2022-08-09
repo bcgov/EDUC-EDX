@@ -80,7 +80,8 @@ async function getUserInfo(req, res) {
     school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
 
     let resData = {
-      displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
+      //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
+      displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       userMinCodes: req.session.userMinCodes,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
