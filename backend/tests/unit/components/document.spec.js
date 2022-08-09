@@ -6,7 +6,7 @@ const config = require('../../../src/config/index');
 jest.mock('../../../src/components/utils');
 const utils = require('../../../src/components/utils');
 jest.mock('../../../src/components/auth');
-
+const sampleDataJsonResponse = '{"createUser":"EDX","updateUser":"EDX","createDate":"2022-07-27T11:18:37","updateDate":"2022-08-08T15:04:36","secureExchangeID":"0a6188e0-823c-1a08-8182-40e1d40a0015","contactIdentifier":"03636084","ministryOwnershipTeamID":"9b4b71db-5093-4c3e-81ce-554972af3d48","secureExchangeContactTypeCode":"SCHOOL","secureExchangeStatusCode":"OPEN","reviewer":null,"subject":"Test Message","isReadByMinistry":true,"isReadByExchangeContact":true,"statusUpdateDate":"2022-07-27T11:18:37","sequenceNumber":"473","commentsList":[{"createUser":"EDX-API","updateUser":"EDX-API","createDate":"2022-07-27T11:18:37.961712","updateDate":"2022-07-27T11:18:37.961710","secureExchangeCommentID":null,"secureExchangeID":"0a6188e0-823c-1a08-8182-40e1d40a0015","edxUserID":"2a4f269c-3ff2-4c98-b626-85a4ae858367","staffUserIdentifier":null,"commentUserName":"Harshit Kohli","content":"Test Message","commentTimestamp":"2022-07-27T11:18:37.961707"}],"studentsList":[{"createUser":"EDX-API","updateUser":null,"createDate":"2022-07-27T11:18:37.961761","updateDate":null,"secureExchangeId":"0a6188e0-823c-1a08-8182-40e1d40a0015","secureExchangeStudentId":"0a6188e0-823c-1a08-8182-40e1d40a0017","staffUserIdentifier":null,"edxUserID":null,"studentId":"ac339d70-7649-1a2e-8176-4a16dee27e12"}],"documentList":[{"documentID":"0a613736-8265-13ec-8182-66536898003e","documentTypeCode":"OTHER","fileName":"PXL_20220729_042544023_exporte.jpg","fileExtension":"image/jpeg","fileSize":853606,"edxUserID":null,"staffUserIdentifier":"SALOWE","createDate":"2022-08-03T17:48:38"}]}';
 const exchange = require('../../../src/components/secureExchange');
 const { ServiceError } = require('../../../src/components/error');
 const { mockRequest, mockResponse } = require('../helpers');
@@ -178,17 +178,6 @@ describe('deleteDocument', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
   });
 
-  it('should return CONFLICT if no request in the session', async () => {
-    const session = {
-      secureExchange: null,
-    };
-    req = mockRequest(null, session, params);
-
-    await deleteDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
-  });
-
   it('should return CONFLICT if secureExchange is CLOSED', async () => {
     const session = {
       secureExchange: {
@@ -196,6 +185,7 @@ describe('deleteDocument', () => {
         statusUpdateDate: '2020-03-01T12:13:16'
       }
     };
+    utils.getData.mockResolvedValue(sampleDataJsonResponse);
     req = mockRequest(null, session, params);
 
     await deleteDocument(req, res);
@@ -203,19 +193,6 @@ describe('deleteDocument', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
   });
 
-  it('should return CONFLICT if document was uploaded before request was returned ', async () => {
-    const session = {
-      secureExchange: {
-        secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
-        statusUpdateDate: '2020-03-03T12:13:16'
-      }      
-    };
-    req = mockRequest(null, session, params);
-
-    await deleteDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
-  });
 
   it('should return INTERNAL_SERVER_ERROR if deleteData is failed', async () => {
     utils.deleteData.mockRejectedValue(new Error('test error'));
