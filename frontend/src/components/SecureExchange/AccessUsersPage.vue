@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col :class="['d-sm-flex', 'align-center']">
-        <div>Primary EDX Code - <span id="primaryEdxActivationCode"> {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : 'code not found' }} </span></div>
+        <div>Primary EDX Code - <span id="primaryEdxActivationCode"> {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : 'Code Not Found' }} </span></div>
       </v-col>
     </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
