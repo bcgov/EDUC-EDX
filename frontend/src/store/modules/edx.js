@@ -8,8 +8,8 @@ export default {
     ministryTeams: [],
     exchangeMincodes: [],
     exchange: null,
-    roles: [],
-    rolesCopy: [],
+    schoolRoles: [],
+    schoolRolesCopy: [],
     secureExchangeDocumentTypes: [],
     secureExchangeDocuments: [],
     fileRequirements: [],
@@ -35,11 +35,11 @@ export default {
     setExchangeMincodes(state, payload) {
       state.exchangeMincodes = payload;
     },
-    setRoles(state, payload){
-      state.roles = JSON.parse(JSON.stringify(payload));
+    setSchoolRoles(state, payload){
+      state.schoolRoles = JSON.parse(JSON.stringify(payload));
     },
-    setRolesCopy(state, payload){
-      state.rolesCopy = JSON.parse(JSON.stringify(payload));
+    setSchoolRolesCopy(state, payload){
+      state.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
     },
     setMinistryTeams: (state, ministryTeams) => {
       state.ministryTeams = ministryTeams;
@@ -97,12 +97,17 @@ export default {
         }
       }
     },
-    async getExchangeRoles({ commit, state}) {
+    async getSchoolExchangeRoles({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.roles.length === 0) {
-          const response = await ApiService.getEdxRoles();
-          commit('setRoles', response.data);
-          commit('setRolesCopy', response.data);
+        if (state.schoolRoles.length === 0) {
+          const params = {
+            params: {
+              instituteType:'SCHOOL'
+            }
+          };
+          const response = await ApiService.getEdxRoles(params);
+          commit('setSchoolRoles', response.data);
+          commit('setSchoolRolesCopy', response.data);
         }
       }
     },

@@ -176,11 +176,11 @@ export default {
     };
   },
   methods: {
-    isSelectedEDXAdmin(){
-      return this.selectedRoles.filter((role) => role === 'EDX_ADMIN').length > 0;
+    isSelectedEDXSchoolAdmin(){
+      return this.selectedRoles.filter((role) => role === 'EDX_SCHOOL_ADMIN').length > 0;
     },
     roleDisabled(role){
-      if(this.isSelectedEDXAdmin() && role.edxRoleCode !== 'EDX_ADMIN'){
+      if(this.isSelectedEDXSchoolAdmin() && role.edxRoleCode !== 'EDX_SCHOOL_ADMIN'){
         this.isSelectedAdmin = true;
         return true;
       }
@@ -200,8 +200,8 @@ export default {
     },
     disableRoles() {
       this.isSelectedAdmin = false;
-      if(this.isSelectedEDXAdmin()){
-        this.selectedRoles = this.selectedRoles.filter((role) => role === 'EDX_ADMIN');
+      if(this.isSelectedEDXSchoolAdmin()){
+        this.selectedRoles = this.selectedRoles.filter((role) => role === 'EDX_SCHOOL_ADMIN');
       }
     },
     getRoleLabel(curRole){
@@ -303,7 +303,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('edx', ['roles']),
+    ...mapState('edx', ['schoolRoles']),
     ...mapGetters('auth', ['userInfo'])
   }
 };
