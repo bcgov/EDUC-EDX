@@ -120,6 +120,11 @@ export default {
           authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
         },
         {
+          title: PAGE_TITLES.EXCHANGE,
+          link: 'inbox',
+          authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
+        },
+        {
           title: PAGE_TITLES.ADMINISTRATION,
           authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_ADMIN),
           items: [
