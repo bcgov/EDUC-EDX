@@ -86,7 +86,8 @@ nconf.defaults({
     edxActiveInstitution: process.env.EDX_API_ENDPOINT+ '/institute-selection',
     userActivationURL:process.env.EDX_API_ENDPOINT+ '/users/activation',
     updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url',
-    schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+ '/exchange'+'/school-user-activation-invite-saga'
+    schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+ '/exchange'+'/school-user-activation-invite-saga',
+    activationCodeUrl: process.env.EDX_API_ENDPOINT + '/users/activation-code'
   }
 });
 module.exports = nconf;

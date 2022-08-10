@@ -3,10 +3,7 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateSchoolUser,verifyActivateUserLink,instituteSelection,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles,
-  createSecureExchangeComment,clearActiveSession,getExchangesCount,
-  removeUserSchoolAccess,
-  relinkUserSchoolAccess,
-  createSecureExchangeStudent
+  createSecureExchangeComment,clearActiveSession,getExchangesCount, removeUserSchoolAccess, relinkUserSchoolAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
@@ -58,6 +55,7 @@ router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false
 router.get('/users/user-schools/mincodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
   (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools/mincodes`)
 );
+router.get('/users/activation-code/primary/:mincode', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, findPrimaryEdxActivationCode);
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, activateSchoolUser);
 router.get('/activate-user-verification', verifyActivateUserLink);
 router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));

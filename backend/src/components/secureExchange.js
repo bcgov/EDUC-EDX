@@ -835,6 +835,34 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
+async function findPrimaryEdxActivationCode(req, res) {
+  const token = getAccessToken(req);
+  if (!token && req.session.userMinCodes) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+  if (req.session.activeInstituteIdentifier !== req.params.mincode || !permission) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  }
+
+  try {
+    const data = await getData(token, config.get('edx:activationCodeUrl') + `/primary/${req.params.mincode}`);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e.status === 404) {
+      return res.status(HttpStatus.NOT_FOUND).json();
+    }
+    log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
+    return errorResponse(res);
+  }
+}
+
+
 
 module.exports = {
   verifyRequest,
@@ -860,5 +888,6 @@ module.exports = {
   getExchangesCount,
   getExchangesCountPaginated,
   removeUserSchoolAccess,
-  relinkUserSchoolAccess
+  relinkUserSchoolAccess,
+  findPrimaryEdxActivationCode
 };

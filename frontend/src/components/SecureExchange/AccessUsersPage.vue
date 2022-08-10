@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-row>
+      <v-col :class="['d-sm-flex', 'align-center']">
+        <div>Primary EDX Code - <span id="primaryEdxActivationCode"> {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : 'code not found' }} </span></div>
+      </v-col>
+    </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
       <v-col cols="12" md="4">
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
@@ -104,6 +109,7 @@ export default {
         name: '',
         roleName: ''
       },
+      primaryEdxActivationCode: null
     };
   },
   async beforeMount() {
@@ -118,7 +124,12 @@ export default {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.mincode = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
+
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        this.getPrimaryEdxActivationCodeSchool();
+      }
     });
+
   },
   methods: {
     sortUserData(users){
@@ -179,8 +190,16 @@ export default {
     closeNewUserModal(){
       this.$store.commit('edx/setRoles', JSON.parse(JSON.stringify(this.rolesCopy)));
       this.newUserInviteSheet = false; // close the modal window.
-    }
-
+    },
+    getPrimaryEdxActivationCodeSchool() {
+      ApiService.apiAxios.get(ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL + `/${this.mincode}`)
+        .then(response => {
+          this.primaryEdxActivationCode = response.data;
+        }).catch(e => {
+          this.primaryEdxActivationCode = null;
+          console.log(e);
+        });
+    },
   },
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),
