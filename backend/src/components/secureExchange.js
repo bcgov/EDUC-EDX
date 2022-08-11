@@ -394,6 +394,9 @@ async function getExchange(req, res) {
         return activity2.timestamp.compareTo(activity1.timestamp);
       });
 
+      //school users should not have access to notes list
+      delete dataResponse.noteList;
+
       req.session.secureExchange = dataResponse;
 
       return res.status(HttpStatus.OK).json(dataResponse);
