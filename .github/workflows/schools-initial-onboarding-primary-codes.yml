@@ -76,7 +76,7 @@ jobs:
           -H "Authorization: Bearer $TOKEN" \
           -d "{\"createUser\": \"ONBOARD\",  \"updateUser\": \"ONBOARD\", \"mincode\": \"$SCHOOL_MINCODE\"}" | jq -r '.activationCode')
           
-          CHES_TOKEN=$(curl -d "client_id=PEN_RETRIEVAL_SERVICE_CLIENT" -d "client_secret=d30804bd-265f-4c5e-8cb1-5bf8432b7c47" -d "grant_type=client_credentials" "${{ env.CHES_TOKEN_URL }}" | jq -r '.access_token')
+          CHES_TOKEN=$(curl -d "client_id=${{ env.CHES_CLIENT_ID }}" -d "client_secret=${{ env.CHES_CLIENT_SECRET }}" -d "grant_type=client_credentials" "${{ env.CHES_TOKEN_URL }}" | jq -r '.access_token')
           
           curl -sX POST "${{ env.CHES_EMAIL_URL }}" \
           -H "Content-Type: application/json" \
