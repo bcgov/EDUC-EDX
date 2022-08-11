@@ -513,6 +513,10 @@ async function removeSecureExchangeStudent(req, res){
       });
     }
 
+    if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    }
+
     const result = await deleteData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}/students/${req.params.studentID}`);
     return res.status(HttpStatus.OK).json(result);
 
