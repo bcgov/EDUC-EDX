@@ -375,6 +375,7 @@ async function getExchange(req, res) {
           activity['type'] = 'student';
           activity['isSchool'] = student.edxUserID ? true : false;
           activity['studentID'] = student.studentId;
+          activity['secureExchangeStudentId'] = student.secureExchangeStudentId;
           activity['studentPEN'] = studentDetail.pen;
           activity['studentLocalID'] = includeDemographicDetails ? studentDetail.localID : null;
           activity['studentSurname'] = includeDemographicDetails ? studentDetail.legalLastName : null;
@@ -499,6 +500,28 @@ async function createSecureExchangeStudent(req, res) {
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
     log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
+    return errorResponse(res);
+  }
+}
+
+async function removeSecureExchangeStudent(req, res){
+  try {
+    const accessToken = getAccessToken(req);
+    if (!accessToken) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
+
+    if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    }
+
+    const result = await deleteData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}/students/${req.params.studentID}`);
+    return res.status(HttpStatus.OK).json(result);
+
+  } catch (e) {
+    log.error(e, 'removeSecureExchangeStudent', 'Error occurred while attempting to remove a secure exchange student.');
     return errorResponse(res);
   }
 }
@@ -889,5 +912,6 @@ module.exports = {
   getExchangesCountPaginated,
   removeUserSchoolAccess,
   relinkUserSchoolAccess,
-  findPrimaryEdxActivationCode
+  findPrimaryEdxActivationCode,
+  removeSecureExchangeStudent
 };
