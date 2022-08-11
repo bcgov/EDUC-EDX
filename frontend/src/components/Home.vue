@@ -25,7 +25,7 @@
   <v-container fluid v-else class="card-size margin-initial">
     <v-row class="pb-6 tile-size">
       <v-col cols="2" md="5" class="tile-size">
-        <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" title="Secure Messaging" colour="#CED6E2"
+        <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" :title="PAGE_TITLES.EXCHANGE" colour="#CED6E2"
                          :tableData="exchangeData" id="schoolInboxCard"></DashboardTable>
         <v-container v-else-if="isLoadingExchange" class="tile-size" fluid>
           <article class="top-banner full-height">
@@ -49,6 +49,7 @@
 import Login from './Login';
 import { mapGetters } from 'vuex';
 import DashboardTable from '@/components/DashboardTable';
+import {PAGE_TITLES} from '@/utils/constants';
 export default {
   name: 'home',
   components: {
@@ -62,6 +63,7 @@ export default {
     return {
       exchangeData: [],
       isLoadingExchange: true,
+      PAGE_TITLES: PAGE_TITLES
     };
   },
   mounted()  {
