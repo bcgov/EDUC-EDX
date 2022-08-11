@@ -12,7 +12,6 @@ import { createTestExchange } from "../../helpers/secure-exchange-utils";
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
-import hamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
