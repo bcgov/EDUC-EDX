@@ -11,10 +11,13 @@ import { createTestExchange } from "../../helpers/secure-exchange-utils";
 
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
+import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
+import hamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
+const hamburgerMenu = new HamburgerMenuPage();
 let token = '';
 let testExchange = createTestExchange();
 
@@ -48,7 +51,7 @@ fixture `school-inbox`
 test('testPage', async t => {
     // navigate to /inbox, expect title
     await t.navigateTo(base_url + '/inbox')
-           .expect(inbox.navTitle.innerText).contains('Inbox');
+           .expect(inbox.navTitle.innerText).contains('Secure Messaging');
     // click filtersToggle
     await inbox.clickFiltersToggle();
     // type in a subject
@@ -80,6 +83,14 @@ test('testPage', async t => {
     let messageResponse = await findMessagesBySubject(testExchangeSubject);
     await t.expect(messageResponse.content.length).eql(2, 'Message created');
     log.info("Message created.");
+});
+
+test('test-navigation-to-school-inbox', async t => {
+    await t.navigateTo(base_url);
+    hamburgerMenu.clickHamburgerMenu();
+    hamburgerMenu.verifySecureMessagingMenuButtonIsAvailable();
+    hamburgerMenu.clickSecureMessagingMenuButton();
+    await t.expect(inbox.navTitle.innerText).contains('Secure Messaging');
 });
 
 async function confirmMessage(t) {
