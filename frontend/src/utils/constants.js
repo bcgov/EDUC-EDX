@@ -41,7 +41,8 @@ export const ApiRoutes = Object.freeze({
     INSTITUTE_SELECTION_URL: edxRoot + '/institute-selection',
     USER_ACTIVATION:edxRoot+'/user-activation',
     UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url',
-    NEW_SCHOOL_USER_ACTIVATION_INVITE:edxRoot+'/school-user-activation-invite'
+    NEW_SCHOOL_USER_ACTIVATION_INVITE:edxRoot+'/school-user-activation-invite',
+    PRIMARY_ACTIVATION_CODE_URL: edxRoot + '/users/activation-code/primary',
   },
   studentRequest: {
     ROOT_ENDPOINT: studentRequestRoot,
@@ -52,7 +53,7 @@ export const ApiRoutes = Object.freeze({
 export const PAGE_TITLES = Object.freeze({
   ADMINISTRATION: 'Administration',
   DASHBOARD: 'Dashboard',
-  EXCHANGE: 'Secure Messaging Inbox',
+  EXCHANGE: 'Secure Messaging',
   VIEW_EXCHANGE: 'Secure Message',
   NEW_EXCHANGE: 'New Message',
   ACTIVATE_USER:'Activate User',

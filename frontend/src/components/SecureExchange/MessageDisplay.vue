@@ -126,7 +126,7 @@
             <v-row>
               <v-col>
                 <v-timeline v-if="secureExchange.activities.length > 0">
-                  <div v-for="activity in secureExchange.activities"
+                  <div v-for="(activity,index) in secureExchange.activities"
                        :key="activity.secureExchangeCommentID">
                     <v-timeline-item :left="!activity.isSchool" icon-color="#003366" large color="white" :icon="getActivityIcon(activity)">
                       <v-card v-if="activity.type === 'message'">
@@ -152,7 +152,38 @@
 <!--                            <a href="#">{{ activity.fileName }}</a>-->
                           </v-card-text>
                           <v-card-text v-if="activity.documentType.label !== 'Other'" class="pt-0 pb-3">{{ activity.documentType.label }}</v-card-text>
+                          <v-btn class="ml-12 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveDoc(index)" v-show="isHideIndex === false || isHideIndex !== index" :disabled="!isEditable()">
+                            <v-icon>mdi-delete-forever-outline</v-icon>
+                          </v-btn>
                         </v-row>
+                        <v-expand-transition>
+                          <div v-show="isOpenDocIndex === index" class="greyBackground">
+                            <v-divider></v-divider>
+
+                            <v-card-text>
+                              <v-row no-gutters>
+                                <v-col class="d-flex justify-start">
+                                  <span style="font-size: medium; font-weight: bold; color: black">Removing the attachment will remove it for all users.</span>
+                                </v-col>
+                              </v-row>
+                              <v-row no-gutters>
+                                <v-col class="pt-3 d-flex justify-start">
+                                  <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to remove the attachment?</span>
+                                </v-col>
+                              </v-row>
+                            </v-card-text>
+                            <v-row no-gutters>
+                              <v-col class="d-flex justify-end">
+                              <v-btn class=""  outlined @click="closeDocIndex()">
+                                No
+                              </v-btn>
+                                <v-btn class="mx-2 mb-2"  dark color="#003366" @click="removeAttachment(activity.documentID)">
+                                  Yes
+                                </v-btn>
+                              </v-col>
+                            </v-row>
+                          </div>
+                        </v-expand-transition>
                       </v-card>
                       <v-card v-if="activity.type === 'student'">
                         <v-card-title>
@@ -216,6 +247,30 @@
                             </v-col>
                           </v-row>
                         </v-card-text>
+                        <v-row>
+                          <v-btn class="ml-12 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveStudent(index)" v-show="isHideIndex === false || isHideIndex !== index" :disabled="!isEditable()">
+                            <v-icon>mdi-delete-forever-outline</v-icon>
+                          </v-btn>
+                        </v-row>
+                        <v-expand-transition>
+                          <div v-show="isOpenStudentIndex === index" class="greyBackground">
+                            <v-divider></v-divider>
+                            <v-card-text>
+                              <p><strong>Removing the student will remove it for all users.</strong></p>
+                              <br/>
+                              <p><strong>Are you sure you want to remove the student?</strong></p>
+                              <br/>
+                            </v-card-text>
+                            <v-row no-gutters>
+                              <v-btn class="pl-0 pr-0 yesBtn" bottom right absolute dark color="#003366" @click="removeStudent(activity.secureExchangeStudentId)">
+                                Yes
+                              </v-btn>
+                              <v-btn class="ml-12 pl-0 pr-0" bottom right absolute @click="closeStudentIndex()">
+                                No
+                              </v-btn>
+                            </v-row>
+                          </div>
+                        </v-expand-transition>
                       </v-card>
                     </v-timeline-item>
                   </div>
@@ -267,7 +322,11 @@ export default {
       newMessageBtnDisplayed: false,
       shouldDisplaySpeedDial: true,
       processing: false,
-      newMessage: '',
+      newMessage:'',
+      isOpenDocIndex: false,
+      isOpenStudentIndex: false,
+      show: false,
+      isHideIndex: false,
       pdfRenderDialog: false,
       imageRendererDialog: false,
       documentId: '',
@@ -453,6 +512,72 @@ export default {
           this.resetNewMessageForm();
         });
     },
+    toggleRemoveDoc(index) {
+      this.isHideIndex = index;
+      if( this.isOpenDocIndex !== null ){
+        this.isOpenDocIndex = ( this.isOpenDocIndex === index ) ? null : index;
+      } else {
+        this.isOpenDocIndex = index;
+      }
+    },
+    closeDocIndex() {
+      this.isOpenDocIndex = false;
+      this.isHideIndex = false;
+    },
+    toggleRemoveStudent(index) {
+      this.isHideIndex = index;
+      if( this.isOpenStudentIndex !== null ){
+        this.isOpenStudentIndex = ( this.isOpenStudentIndex === index ) ? null : index;
+      } else {
+        this.isOpenStudentIndex = index;
+      }
+    },
+    closeStudentIndex() {
+      this.isOpenStudentIndex = false;
+      this.isHideIndex = false;
+    },
+    removeAttachment(documentID) {
+      this.processing = true;
+      this.loading = true;
+      ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/documents/${documentID}`)
+        .then((response) => {
+          this.getExchange();
+          if(response.status === 200){
+            this.setSuccessAlert('Success! The document has been removed.');
+          } else{
+            this.setSuccessAlert('Error! The document was not removed.');
+          }
+          this.closeDocIndex();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.processing = false;
+          this.loading = false;
+        });
+    },
+    removeStudent(studentID) {
+      this.processing = true;
+      this.loading = true;
+      ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/removeStudent/${studentID}`)
+        .then((response) => {
+          this.getExchange();
+          if(response.status === 200){
+            this.setSuccessAlert('Success! The student has been removed.');
+          } else{
+            this.setSuccessAlert('Error! The student was not removed.');
+          }
+          this.closeStudentIndex();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.processing = false;
+          this.loading = false;
+        });
+    },
     sendNewSecureExchangeStudent(student) {
       this.processing = true;
       this.loading = true;
@@ -515,5 +640,18 @@ export default {
 .divider {
   border-color: #FCBA19;
   border-width: medium;
+}
+.plainBtn {
+  background-color: white !important;
+  height: 2em !important;
+  min-width: 1em !important;
+  bottom: 0em;
+  right: 0em;
+}
+.greyBackground {
+  background-color: #f5f5f5;
+}
+.yesBtn {
+  margin-right: 6em;
 }
 </style>

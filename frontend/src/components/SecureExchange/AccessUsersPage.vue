@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-row>
+      <v-col :class="['d-sm-flex', 'align-center']">
+        <div>Primary EDX Code - <span id="primaryEdxActivationCode"> {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : 'Code Not Found' }} </span></div>
+      </v-col>
+    </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
       <v-col cols="12" md="4">
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
@@ -22,11 +27,11 @@
       </v-col>
       <v-col xl="4" cols="6" >
         <v-row>
-          <v-col style="height: 220px">
+          <v-col style="height: 180px">
             <v-card height="100%">
               <v-card-title>
                 <v-row no-gutters>
-                  <v-col class="d-flex justify-center mt-12">
+                  <v-col class="d-flex justify-center mt-10">
                     <PrimaryButton icon="mdi-plus"
                                    :large-icon=true
                                    id="new-user-button"
@@ -104,6 +109,7 @@ export default {
         name: '',
         roleName: ''
       },
+      primaryEdxActivationCode: null
     };
   },
   async beforeMount() {
@@ -118,7 +124,12 @@ export default {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.mincode = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
+
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        this.getPrimaryEdxActivationCodeSchool();
+      }
     });
+
   },
   methods: {
     sortUserData(users){
@@ -179,8 +190,16 @@ export default {
     closeNewUserModal(){
       this.$store.commit('edx/setSchoolRoles', JSON.parse(JSON.stringify(this.schoolRolesCopy)));
       this.newUserInviteSheet = false; // close the modal window.
-    }
-
+    },
+    getPrimaryEdxActivationCodeSchool() {
+      ApiService.apiAxios.get(ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL + `/${this.mincode}`)
+        .then(response => {
+          this.primaryEdxActivationCode = response.data;
+        }).catch(e => {
+          this.primaryEdxActivationCode = null;
+          console.log(e);
+        });
+    },
   },
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),

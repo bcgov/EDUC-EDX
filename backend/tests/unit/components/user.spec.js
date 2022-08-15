@@ -105,7 +105,12 @@ describe('getUserInfo', () => {
       digitalIdentityID: digitalID,
       displayName: 'Firstname Lastname',
       accountType: 'BCEID',
-    }
+    },
+  };
+
+  const edxUserData = {
+    firstName: 'Firstname',
+    lastName: 'Lastname'
   };
 
   const digitalIdData = {
@@ -137,12 +142,14 @@ describe('getUserInfo', () => {
     res = mockResponse();
     rewireRequest.__Rewire__('getDigitalIdData', () => Promise.resolve(digitalIdData));
     rewireRequest.__Rewire__('getServerSideCodes', () => Promise.resolve(codes));
+    rewireRequest.__Rewire__('getEdxUserByDigitalId', () => Promise.resolve(edxUserData));
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     rewireRequest.__ResetDependency__('getDigitalIdData');
     rewireRequest.__ResetDependency__('getServerSideCodes');
+    rewireRequest.__ResetDependency__('getEdxUserByDigitalId');
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -158,7 +165,7 @@ describe('getUserInfo', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalledWith({
-      displayName: sessionUser._json.displayName,
+      displayName: `${edxUserData.firstName} ${edxUserData.lastName}`,
       accountType: sessionUser._json.accountType,
       identityTypeLabel: lodash.find(codes.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]).label,
     });

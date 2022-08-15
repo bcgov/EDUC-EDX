@@ -124,9 +124,8 @@ async function deleteDocument(req, res) {
     }
 
     let resData = await getDocument(accessToken, req.params.id, req.params.documentId);
-
-    if (!req.session['secureExchange'] || resData.createDate <= req.session['secureExchange'].statusUpdateDate ||
-      req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
+    let secureExchangeData = await getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.id}`);
+    if ( ! resData ||  secureExchangeData['secureExchangeStatusCode'] === 'CLOSED') {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
       });
@@ -376,6 +375,7 @@ async function getExchange(req, res) {
           activity['type'] = 'student';
           activity['isSchool'] = student.edxUserID ? true : false;
           activity['studentID'] = student.studentId;
+          activity['secureExchangeStudentId'] = student.secureExchangeStudentId;
           activity['studentPEN'] = studentDetail.pen;
           activity['studentLocalID'] = includeDemographicDetails ? studentDetail.localID : null;
           activity['studentSurname'] = includeDemographicDetails ? studentDetail.legalLastName : null;
@@ -394,6 +394,9 @@ async function getExchange(req, res) {
       dataResponse['activities'].sort((activity1, activity2) => {
         return activity2.timestamp.compareTo(activity1.timestamp);
       });
+
+      //school users should not have access to notes list
+      delete dataResponse.noteList;
 
       req.session.secureExchange = dataResponse;
 
@@ -500,6 +503,28 @@ async function createSecureExchangeStudent(req, res) {
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
     log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
+    return errorResponse(res);
+  }
+}
+
+async function removeSecureExchangeStudent(req, res){
+  try {
+    const accessToken = getAccessToken(req);
+    if (!accessToken) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
+
+    if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    }
+
+    const result = await deleteData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}/students/${req.params.studentID}`);
+    return res.status(HttpStatus.OK).json(result);
+
+  } catch (e) {
+    log.error(e, 'removeSecureExchangeStudent', 'Error occurred while attempting to remove a secure exchange student.');
     return errorResponse(res);
   }
 }
@@ -674,7 +699,7 @@ async function relinkUserSchoolAccess(req, res) {
       firstName: edxUserDetails.firstName,
       lastName: edxUserDetails.lastName,
       email: edxUserDetails.email,
-      edxUserID: req.body.params.userToRelink,
+      edxUserId: req.body.params.userToRelink,
       edxUserSchoolID: req.body.params.userSchoolID,
     };
 
@@ -733,7 +758,7 @@ async function verifyActivateUserLink(req, res) {
   try {
     let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
     await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
-    return res.redirect(baseUrl + '/api/auth/login_bceid_activate_user');
+    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
   } catch (e) {
     let msg = 'Error Occurred please retry with the link provided in the email';
     if (e.status === 400) {
@@ -836,6 +861,34 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
+async function findPrimaryEdxActivationCode(req, res) {
+  const token = getAccessToken(req);
+  if (!token && req.session.userMinCodes) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+  if (req.session.activeInstituteIdentifier !== req.params.mincode || !permission) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  }
+
+  try {
+    const data = await getData(token, config.get('edx:activationCodeUrl') + `/primary/${req.params.mincode}`);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e.status === 404) {
+      return res.status(HttpStatus.NOT_FOUND).json();
+    }
+    log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
+    return errorResponse(res);
+  }
+}
+
+
 
 module.exports = {
   verifyRequest,
@@ -861,5 +914,7 @@ module.exports = {
   getExchangesCount,
   getExchangesCountPaginated,
   removeUserSchoolAccess,
-  relinkUserSchoolAccess
+  relinkUserSchoolAccess,
+  findPrimaryEdxActivationCode,
+  removeSecureExchangeStudent
 };
