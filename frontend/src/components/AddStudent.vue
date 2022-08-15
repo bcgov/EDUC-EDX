@@ -9,7 +9,6 @@
         v-model="alert"
         :class="alertType"
         class="mb-3"
-        max-width="21em"
     >
       {{ alertMessage }}
     </v-alert>
@@ -94,7 +93,6 @@ export default {
     };
   },
   computed: {
-
     enableSearchButton() {
       return !(isValidPEN(this.penNumber));
     }
@@ -121,12 +119,11 @@ export default {
         this.showStudentDetails=false;
         this.showStudentDetailsForMinistryStaff=false;
         this.studentExist=false;
-        this.alert = false;
+        if(this.alertType && this.alertType !== 'bootstrap-info'){
+          this.alert = false;
+        }
       }
     },
-
-
-
   },
   methods: {
     setErrorAlert(alertMessage) {
@@ -181,7 +178,6 @@ export default {
         this.student['studentDoB'] = data.doB;
         this.showStudentDetailsForMinistryStaff=false;
       }
-      console.info(this.student);
     },
     closeForm() {
       this.resetForm();
@@ -198,8 +194,7 @@ export default {
     addStudentToMessage() {
       let secureExchangeStudent = {
         studentID: this.student['studentID'],
-        pen: this.student['pen'],
-
+        pen: this.student['pen']
       };
       this.$emit('addStudent', secureExchangeStudent);
       this.resetForm();
@@ -230,5 +225,7 @@ ul {
 h3 {
   font-size: 1.2rem
 }
-
+.v-alert >>> .v-alert__content {
+  max-width: 28em;
+}
 </style>

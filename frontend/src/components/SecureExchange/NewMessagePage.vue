@@ -64,20 +64,21 @@
                       </v-card-text>
                     </v-col>
                   </v-row>
-                  <v-row no-gutters>
-                    <v-col v-if="secureExchangeDocuments.length > 0 || secureExchangeStudents.length>0" class="d-flex px-0 pb-2">
-                      <v-chip id="documentChip" :class="['ma-1']" v-for="(document, index) in secureExchangeDocuments" :key="index" close @click:close="removeDocumentByIndex(index)">
+                  <v-row class="ml-6" no-gutters>
+                    <v-col cols="4" v-for="(document, index) in secureExchangeDocuments" :key="index" class="d-flex px-0 pb-2">
+                      <v-chip id="documentChip" :class="['ma-1']"   close @click:close="removeDocumentByIndex(index)">
                         <v-avatar left>
                           <v-icon>mdi-paperclip</v-icon>
                         </v-avatar>
-                        {{document.fileName}}</v-chip>
-                      <v-chip v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" :id="`studentChip-${secureExchangeStudent.studentID}`" :class="['studentChip', 'ma-1']" close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
+                        {{abbreviateFileName(document.fileName)}}</v-chip>
+                    </v-col>
+                    <v-col cols="4" v-for="(secureExchangeStudent) in secureExchangeStudents" :key="secureExchangeStudent.studentID" class="d-flex px-0 pb-2">
+                      <v-chip id="studentChip" :class="['ma-1']"  close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
                         <v-avatar left>
                           <v-icon>mdi-account-circle</v-icon>
                         </v-avatar>
                         {{secureExchangeStudent.pen}}</v-chip>
                     </v-col>
-
                   </v-row>
                   <v-row v-if="shouldShowOptions">
                     <v-col class="d-flex justify-end mr-3 pt-0">
@@ -278,6 +279,12 @@ export default {
       this.expandAttachFile = true;
       this.expandAddStudent = false;
       this.shouldShowOptions = false;
+    },
+    abbreviateFileName(fileName){
+      if(fileName.length > 8){
+        return fileName.substring(0,8) + '...';
+      }
+      return fileName;
     },
     showAddStudentPanel() {
       if(this.secureExchangeStudents.length > 0){
