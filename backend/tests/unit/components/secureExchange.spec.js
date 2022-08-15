@@ -88,7 +88,8 @@ describe('getExchanges', () => {
   const session = {
     correlationID,
     userMinCodes: ['00618200'],
-    activeInstituteIdentifier : '00618200'
+    activeInstituteIdentifier : '00618200',
+    activeInstitutePermissions : ['SECURE_EXCHANGE']
   };
   let req;
   let res;
