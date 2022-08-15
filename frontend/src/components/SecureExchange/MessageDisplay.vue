@@ -119,7 +119,13 @@
             </v-row>
             <v-row v-if="isNewStudentDisplayed" id="addStudentDialog">
               <v-col class="d-flex justify-center">
-                <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :mincode="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
+                <AddStudent @addStudent="sendNewSecureExchangeStudent"
+                            @close:form="hideStudentPanel"
+                            :mincode="userInfo.activeInstituteIdentifier"
+                            :additionalStudentAddWarning="addStudentWarningMessage"
+                            @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage"
+                            :attachedStudents="generatePenListForAddStudent()"
+                >
                 </AddStudent>
               </v-col>
             </v-row>
@@ -434,6 +440,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.generatePenListForAddStudent();
         });
     },
     setIsReadByExchangeContact(isRead) {
@@ -598,6 +605,16 @@ export default {
           this.loading = false;
           this.isNewStudentDisplayed = false;
         });
+    },
+    generatePenListForAddStudent() {
+      //this method is used to generate the list of pen numbers for AddStudent to consume to prevent duplicate students from being added
+      //edx-382. Unfortunately, data massaging is needed to make this work when for the message display and message create paths.
+      return this.secureExchange?.activities
+        .filter((activity) => activity.type === 'student')
+        .map(
+          student => {
+            return {pen: student.studentPEN};
+          });
     }
   }
 };

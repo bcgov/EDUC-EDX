@@ -127,6 +127,7 @@
                          :mincode="userInfo.activeInstituteIdentifier"
                          :additionalStudentAddWarning="additionalStudentAddWarningMessage"
                             @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
+                            :attachedStudents="secureExchangeStudents"
                         >
                         </AddStudent>
                       </v-expand-transition>

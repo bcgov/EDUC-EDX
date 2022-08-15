@@ -59,7 +59,6 @@ import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from './util/PrimaryButton';
 import {isValidPEN} from '@/utils/validation';
 import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
-import {mapState} from 'vuex';
 
 export default {
   components: {PrimaryButton},
@@ -77,6 +76,11 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    attachedStudents: {
+      type: Array,
+      required: true,
+      default: () => []
     }
   },
   data() {
@@ -96,7 +100,6 @@ export default {
     };
   },
   computed: {
-    ...mapState('edx', ['secureExchangeStudents']),
     enableSearchButton() {
       return !(isValidPEN(this.penNumber)) || !this.duplicateStudentAdded(this.penNumber);
     }
@@ -207,7 +210,7 @@ export default {
       this.$emit('close:form');
     },
     duplicateStudentAdded(value) {
-      return !this.secureExchangeStudents.find(student => student.pen === value);
+      return !this.attachedStudents.find(student => student.pen === value);
     }
   },
 
