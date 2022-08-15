@@ -10,7 +10,7 @@
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
-        <v-select id="roleName-select-field" clearable :items="roles" v-model="searchFilter.roleName" item-text="label"
+        <v-select id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-text="label"
                   item-value="edxRoleCode" label="Role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
@@ -67,7 +67,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <NewUserPage
-              :userRoles="roles"
+              :userRoles="schoolRoles"
               :userInfo="userInfo"
               :mincodeSchoolNames="mincodeSchoolNames"
               @access-user:messageSent="messageSent"
@@ -113,8 +113,8 @@ export default {
     };
   },
   async beforeMount() {
-    if (this.roles.length === 0) {
-      await this.$store.dispatch('edx/getExchangeRoles');
+    if (this.schoolRoles.length === 0) {
+      await this.$store.dispatch('edx/getSchoolExchangeRoles');
     }
     if(this.mincodeSchoolNames.size === 0) {
       await this.$store.dispatch('app/getMincodeSchoolNames');
@@ -185,10 +185,10 @@ export default {
       this.newUserInviteSheet = !this.newUserInviteSheet;
     },
     updateUserRoles(newValue){
-      this.$store.commit('edx/setRoles', newValue);
+      this.$store.commit('edx/setSchoolRoles', newValue);
     },
     closeNewUserModal(){
-      this.$store.commit('edx/setRoles', JSON.parse(JSON.stringify(this.rolesCopy)));
+      this.$store.commit('edx/setSchoolRoles', JSON.parse(JSON.stringify(this.schoolRolesCopy)));
       this.newUserInviteSheet = false; // close the modal window.
     },
     getPrimaryEdxActivationCodeSchool() {
@@ -203,7 +203,7 @@ export default {
   },
   computed: {
     ...mapState('app', ['mincodeSchoolNames']),
-    ...mapState('edx', ['roles','rolesCopy']),
+    ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
     ...mapGetters('auth', ['userInfo']),
   }
 };
