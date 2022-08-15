@@ -659,7 +659,7 @@ async function removeUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
 
-    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
     if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         status: HttpStatus.UNAUTHORIZED,
@@ -680,7 +680,7 @@ async function relinkUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
 
-    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
     if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         status: HttpStatus.UNAUTHORIZED,
@@ -868,7 +868,7 @@ async function findPrimaryEdxActivationCode(req, res) {
       message: 'No access token'
     });
   }
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_ADMIN');
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
   if (req.session.activeInstituteIdentifier !== req.params.mincode || !permission) {
     return res.status(HttpStatus.FORBIDDEN).json({
       status: HttpStatus.FORBIDDEN,

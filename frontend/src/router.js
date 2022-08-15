@@ -114,7 +114,7 @@ const router = new VueRouter({
       meta: {
         pageTitle: PAGE_TITLES.EXCHANGE_USERS,
         requiresAuth: true,
-        permission: 'EDX_USER_ADMIN'
+        permission: 'EDX_USER_SCHOOL_ADMIN'
       }
     },
     {
