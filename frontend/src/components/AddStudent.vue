@@ -22,7 +22,7 @@
                       clearable
                       v-model="penNumber"
                       placeholder="Enter a Student's PEN"
-                      :rules="penRules"
+                      :rules="[penRules, duplicateStudentRule]"
                       maxlength="9"
                       counter="9"
                       id="studentPenTextField">
@@ -59,6 +59,7 @@ import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from './util/PrimaryButton';
 import {isValidPEN} from '@/utils/validation';
 import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
+import {mapState} from 'vuex';
 
 export default {
   components: {PrimaryButton},
@@ -85,7 +86,8 @@ export default {
       showStudentDetailsForMinistryStaff:false,
       penNumber: null,
       validForm: false,
-      penRules: [v => (!v || isValidPEN(v))],
+      penRules: v => (!v || isValidPEN(v) || this.duplicateStudentRule(v)),
+      duplicateStudentRule: v => this.duplicateStudentAdded(v) || 'Student already added.',
       studentExist: false,
       student: {},
       alert: false,
@@ -94,9 +96,9 @@ export default {
     };
   },
   computed: {
-
+    ...mapState('edx', ['secureExchangeStudents']),
     enableSearchButton() {
-      return !(isValidPEN(this.penNumber));
+      return !(isValidPEN(this.penNumber)) || !this.duplicateStudentAdded(this.penNumber);
     }
   },
   watch: {
@@ -113,7 +115,6 @@ export default {
       if(!newVal){
         this.$emit('updateAdditionalStudentAddWarning','');
       }
-
     },
     penNumber(newVal) {
       if (!(isValidPEN(newVal))) {
@@ -205,8 +206,10 @@ export default {
       this.resetForm();
       this.$emit('close:form');
     },
+    duplicateStudentAdded(value) {
+      return !this.secureExchangeStudents.find(student => student.pen === value);
+    }
   },
-
 
 };
 </script>
