@@ -280,6 +280,11 @@ async function getExchanges(req, res) {
       message: 'No access token'
     });
   }
+
+  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+    return errorResponse(res, 'You do not have permission to access this information', HttpStatus.FORBIDDEN);
+  }
+
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
@@ -303,6 +308,9 @@ async function getExchanges(req, res) {
           if (element['createDate']) {
             element['createDate'] = LocalDateTime.parse(element['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd'));
           }
+
+          //we need to remove references to notesList since the school/district should not have access to this information.
+          delete element.noteList;
         });
       }
       return res.status(200).json(dataResponse);
