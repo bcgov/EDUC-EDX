@@ -608,7 +608,7 @@ export default {
     },
     generatePenListForAddStudent() {
       //this method is used to generate the list of pen numbers for AddStudent to consume to prevent duplicate students from being added
-      //edx-382. Unfortunately, data massaging is needed to make this work when for the message display and message create paths.
+      //edx-382. Unfortunately, data massaging is needed to make this work when student info is different between message display and message create paths.
       return this.secureExchange?.activities
         .filter((activity) => activity.type === 'student')
         .map(
