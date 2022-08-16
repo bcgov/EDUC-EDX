@@ -597,7 +597,7 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert('An error occurred while adding the student to the Secure Exchange. Please try again later.');
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while adding the student to the Secure Exchange. Please try again later.');
         })
         .finally(() => {
           this.processing = false;

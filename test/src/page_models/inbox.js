@@ -30,7 +30,7 @@ class Inbox {
     this.newMessagePostBtn = Selector('#newMessagePostBtn');
     this.cancelMessage = Selector('#cancelMessage');
 
-    this.newMessageStudentChips = Selector('.studentChip');
+    this.newMessageStudentChips = Selector('.v-chip__content');
     this.addStudentButton = Selector('#addStudentID');
     this.newMessageDocumentChip = Selector('#documentChip');
     this.attachFileButton = Selector('#attachFileID')
