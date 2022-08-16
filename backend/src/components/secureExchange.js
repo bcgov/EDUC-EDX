@@ -510,7 +510,7 @@ async function createSecureExchangeStudent(req, res) {
 
     const attachedSecureExchangeStudents = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}/students`);
     if (attachedSecureExchangeStudents && attachedSecureExchangeStudents?.some((student) => student.studentId === req.body.studentID)) {
-      return errorResponse(res, 'Error adding Student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
+      return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
     const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`);
