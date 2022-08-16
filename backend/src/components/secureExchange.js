@@ -80,32 +80,8 @@ async function uploadFile(req, res) {
   }
 }
 
-async function uploadFileWithoutRequest(req, res) {
-  try {
-    const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
-
-    const endpoint = config.get('edx:exchangeURL');
-    const url = `${endpoint}/documents`;
-
-    const data = await postData(accessToken, req.body, url, req.session?.correlationID);
-
-    //save documentID to session
-    req.session['secureExchangeDocumentIDs'] = (req.session['secureExchangeDocumentIDs'] || []).concat(data.documentID);
-    return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
-    log.error('uploadFileWithoutRequest Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Upload secureExchange file error'
-    });
-  }
-}
-
 async function getDocument(token, secureExchangeID, documentID) {
+
   try {
     const endpoint = config.get('edx:exchangeURL');
     return await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}`);
@@ -173,6 +149,10 @@ function getCriteria(key, value, operation, valueType) {
 }
 
 async function getExchangesPaginated(req) {
+  const accessToken = getAccessToken(req);
+  if (!accessToken) {
+    return Promise.reject('getExchangesPaginated error: No access token');
+  }
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -192,10 +172,14 @@ async function getExchangesPaginated(req) {
     }
   };
 
-  return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+  return getDataWithParams(accessToken, config.get('edx:exchangeURL') + '/paginated', params);
 }
 
 async function getExchangesCountPaginated(req) {
+  const accessToken = getAccessToken(req);
+  if (!accessToken) {
+    return Promise.reject('getExchangesPaginated error: No access token');
+  }
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -208,12 +192,17 @@ async function getExchangesCountPaginated(req) {
     }
   };
 
-  return getDataWithParams(getAccessToken(req), config.get('edx:exchangeURL') + '/paginated', params);
+  return getDataWithParams(accessToken, config.get('edx:exchangeURL') + '/paginated', params);
 }
 
 async function createExchange(req, res) {
   try {
     const token = getAccessToken(req);
+    if (!token) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
 
@@ -256,6 +245,12 @@ async function createExchange(req, res) {
 }
 
 async function instituteSelection(req, res) {
+  const accessToken = getAccessToken(req);
+  if (!accessToken) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'No access token'
+    });
+  }
   if (req.session.userMinCodes.includes(req.body.params.mincode)) {
     setSessionInstituteIdentifiers(req, req.body.params.mincode, 'SCHOOL');
     return res.status(200).json('OK');
@@ -540,6 +535,11 @@ async function removeSecureExchangeStudent(req, res){
 async function updateEdxUserRoles(req, res) {
   try {
     const token = getAccessToken(req);
+    if (!token) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID);
 
     let selectedUserSchool = response.edxUserSchools.filter(school => school.mincode === req.body.params.mincode);
@@ -666,7 +666,11 @@ async function schoolUserActivationInvite(req, res) {
 async function removeUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
-
+    if (!token) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
     let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
     if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -687,7 +691,11 @@ async function removeUserSchoolAccess(req, res) {
 async function relinkUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
-
+    if (!token) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
     let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
     if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -723,6 +731,11 @@ async function relinkUserSchoolAccess(req, res) {
 async function createSecureExchangeComment(req, res) {
   try {
     const token = getAccessToken(req);
+    if (!token) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No access token'
+      });
+    }
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
     const payload = {
@@ -903,7 +916,6 @@ module.exports = {
   deleteDocument,
   downloadFile,
   uploadFile,
-  uploadFileWithoutRequest,
   createExchange,
   getExchanges,
   getExchange,
@@ -917,10 +929,8 @@ module.exports = {
   updateEdxUserRoles,
   createSecureExchangeComment,
   clearActiveSession,
-  setSessionInstituteIdentifiers,
   getAndSetupEDXUserAndRedirect,
   getExchangesCount,
-  getExchangesCountPaginated,
   removeUserSchoolAccess,
   relinkUserSchoolAccess,
   findPrimaryEdxActivationCode,
