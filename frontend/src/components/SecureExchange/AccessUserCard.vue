@@ -64,10 +64,11 @@
           </v-chip-group>
           <v-list-item-group
             v-model="selectedRoles"
+            @change="selectedRolesChanged"
             v-else
             multiple
           >
-            <v-list-item :disabled="roleDisabled(newrole)" @input="disableRoles" v-for="newrole in schoolRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
+            <v-list-item :disabled="roleDisabled(newrole)" v-for="newrole in schoolRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
               <template v-slot:default="{ active, }">
                 <v-list-item-action class="mt-0 mb-2 mr-3">
                   <v-checkbox
@@ -79,7 +80,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-                  <v-list-item-subtitle style="color: black; font-weight: bold" v-if="isSelectedAdmin && newrole.edxRoleCode === 'EDX_ADMIN'">EDX School Admin users will be set up with all EDX school roles</v-list-item-subtitle>
+                  <v-list-item-subtitle style="color: black; font-weight: bold" v-if="isEDXSchoolAdminSelected && newrole.edxRoleCode === edxSchoolAdminRole">EDX School Admin users will be set up with all EDX school roles</v-list-item-subtitle>
                 </v-list-item-content>
               </template>
             </v-list-item>
@@ -122,10 +123,15 @@
         </Transition>
         <Transition name="bounce">
           <v-card-text class="pt-0" style="background-color: #e7ebf0;" v-if="editState">
+            <v-row v-if="!minimumRolesSelected" no-gutters>
+              <v-col class="mt-0 d-flex justify-start">
+                <p>Please select at least one role for {{ user.firstName }}.</p>
+              </v-col>
+            </v-row>
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.firstName}-${user.lastName}`" text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
-                <PrimaryButton :id="`user-save-action-button-${user.firstName}-${user.lastName}`" text="Save" :on="{click: clickSaveButton}"></PrimaryButton>
+                <PrimaryButton :id="`user-save-action-button-${user.firstName}-${user.lastName}`" text="Save" :disabled="!minimumRolesSelected" :on="{click: clickSaveButton}"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -171,20 +177,25 @@ export default {
       editState: false,
       deleteState: false,
       relinkState: false,
-      selectedRoles: [],
-      isSelectedAdmin: false
+      edxSchoolAdminRole: 'EDX_SCHOOL_ADMIN',
+      selectedRoles: []
     };
   },
   methods: {
-    isSelectedEDXSchoolAdmin(){
-      return this.selectedRoles.filter((role) => role === 'EDX_SCHOOL_ADMIN').length > 0;
-    },
-    roleDisabled(role){
-      if(this.isSelectedEDXSchoolAdmin() && role.edxRoleCode !== 'EDX_SCHOOL_ADMIN'){
-        this.isSelectedAdmin = true;
+    roleDisabled(role) {
+      if (role.edxRoleCode === this.edxSchoolAdminRole) {
+        return false;
+      }
+      if (this.isEDXSchoolAdminSelected) {
         return true;
       }
-      return false;
+      return this.absoluteMinimumRolesSelected && this.selectedRoles.includes(role.edxRoleCode);
+    },
+    selectedRolesChanged() {
+      if (!this.isEDXSchoolAdminSelected) {
+        return;
+      }
+      this.selectedRoles = [this.edxSchoolAdminRole];
     },
     getButtonWidth() {
       switch (this.$vuetify.breakpoint.name) {
@@ -304,7 +315,16 @@ export default {
   },
   computed: {
     ...mapState('edx', ['schoolRoles']),
-    ...mapGetters('auth', ['userInfo'])
+    ...mapGetters('auth', ['userInfo']),
+    isEDXSchoolAdminSelected() {
+      return this.selectedRoles.includes(this.edxSchoolAdminRole);
+    },
+    absoluteMinimumRolesSelected() {
+      return this.selectedRoles.length === 1;
+    },
+    minimumRolesSelected() {
+      return this.selectedRoles.length > 0;
+    }
   }
 };
 </script>
