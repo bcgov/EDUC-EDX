@@ -53,7 +53,7 @@ export const ApiRoutes = Object.freeze({
 export const PAGE_TITLES = Object.freeze({
   ADMINISTRATION: 'Administration',
   DASHBOARD: 'Dashboard',
-  EXCHANGE: 'Secure Messaging',
+  EXCHANGE: 'Secure Messaging Inbox',
   VIEW_EXCHANGE: 'Secure Message',
   NEW_EXCHANGE: 'New Message',
   ACTIVATE_USER:'Activate User',
