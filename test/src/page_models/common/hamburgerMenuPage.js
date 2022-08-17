@@ -6,7 +6,7 @@ class StaffHamburgerMenuPage {
     constructor() {
 
         this.hamburgerMenuButton = Selector('#menuBtn');
-        this.secureMessagingMenuButton = Selector("#SecureMessagingMenuBtn");
+        this.secureMessagingInboxMenuButton = Selector("#SecureMessagingInboxMenuBtn");
         this.administrationMenuOption = Selector('#AdministrationMenuBtn');
         this.edxAccessMenuLink = Selector('#UserManagementMenuBtn');
     }
@@ -16,20 +16,20 @@ class StaffHamburgerMenuPage {
         log.info("Hamburger menu button is clicked");
     }
 
-    async verifySecureMessagingMenuButtonIsAvailable() {
-        await t.expect(this.secureMessagingMenuButton.exists).ok();
-        log.info("Verified Secure Messaging menu button exists.");
+    async verifySecureMessagingInboxMenuButtonIsAvailable() {
+        await t.expect(this.secureMessagingInboxMenuButton.exists).ok();
+        log.info("Verified Secure Messaging Inbox menu button exists.");
     }
 
 
-    async verifySecureMessagingMenuButtonIsNotAvailable() {
-        await t.expect(this.secureMessagingMenuButton.exists).notOk();
-        log.info("Verified Secure Messaging menu button does not exists.");
+    async verifySecureMessagingInboxMenuButtonIsNotAvailable() {
+        await t.expect(this.secureMessagingInboxMenuButton.exists).notOk();
+        log.info("Verified Secure Messaging Inbox menu button does not exists.");
     }
 
-    async clickSecureMessagingMenuButton() {
-        await t.click(this.secureMessagingMenuButton);
-        log.info('The Secure Messaging menu button has been clicked.');
+    async clickSecureMessagingInboxMenuButton() {
+        await t.click(this.secureMessagingInboxMenuButton);
+        log.info('The Secure Messaging Inbox menu button has been clicked.');
     }
 
     async clickAdministrationMenuOption(){

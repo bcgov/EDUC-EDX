@@ -50,7 +50,7 @@ fixture `school-inbox`
 test('testPage', async t => {
     // navigate to /inbox, expect title
     await t.navigateTo(base_url + '/inbox')
-           .expect(inbox.navTitle.innerText).contains('Secure Messaging');
+           .expect(inbox.navTitle.innerText).contains('Secure Messaging Inbox');
     // click filtersToggle
     await inbox.clickFiltersToggle();
     // type in a subject
@@ -87,9 +87,9 @@ test('testPage', async t => {
 test('test-navigation-to-school-inbox', async t => {
     await t.navigateTo(base_url);
     hamburgerMenu.clickHamburgerMenu();
-    hamburgerMenu.verifySecureMessagingMenuButtonIsAvailable();
-    hamburgerMenu.clickSecureMessagingMenuButton();
-    await t.expect(inbox.navTitle.innerText).contains('Secure Messaging');
+    hamburgerMenu.verifySecureMessagingInboxMenuButtonIsAvailable();
+    hamburgerMenu.clickSecureMessagingInboxMenuButton();
+    await t.expect(inbox.navTitle.innerText).contains('Secure Messaging Inbox');
 });
 
 async function confirmMessage(t) {
