@@ -329,6 +329,11 @@ async function getExchange(req, res) {
     getData(accessToken, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
+
+      if (dataResponse.secureExchangeContactTypeCode !== req.session.activeInstituteType || dataResponse.contactIdentifier !== req.session.activeInstituteIdentifier) {
+        return errorResponse(res, 'You do not have permission to access this secure exchange', HttpStatus.FORBIDDEN);
+      }
+
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
         let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === dataResponse['secureExchangeStatusCode']);
         dataResponse['secureExchangeStatusCode'] = tempStatus?.label ? tempStatus.label : dataResponse['secureExchangeStatusCode'];
@@ -461,6 +466,11 @@ async function markAs(req, res) {
   let isReadByExchangeContact = readStatus === 'read';
   try {
     const currentExchange = await getData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`);
+
+    if (currentExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || currentExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
+      return errorResponse(res, 'You do not have permission to mark this secure exchange', HttpStatus.FORBIDDEN);
+    }
+
     if (currentExchange.isReadByExchangeContact === isReadByExchangeContact) {
       return res.status(HttpStatus.OK).json({
         message: `The status is already marked as ${readStatus}.`
@@ -742,6 +752,12 @@ async function createSecureExchangeComment(req, res) {
         message: 'No access token'
       });
     }
+
+    const secureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`);
+    if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
+      return errorResponse(res, 'You do not have permission to add a comment to this secure exchange', HttpStatus.FORBIDDEN);
+    }
+
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
     const payload = {
