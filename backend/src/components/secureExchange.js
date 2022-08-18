@@ -637,6 +637,14 @@ async function getEdxUsers(req, res) {
     });
   }
 
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
+  if (req.session.activeInstituteIdentifier !== req.query.mincode || !permission) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  }
+
   try {
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
     let filteredResponse = [];

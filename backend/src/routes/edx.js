@@ -60,7 +60,6 @@ router.post('/user-activation', passport.authenticate('jwt', {session: false}, u
 router.get('/activate-user-verification', verifyActivateUserLink);
 router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));
 router.post('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateEdxUserRoles);
-router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users`));
 router.get('/users/clearActiveUserSession', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, clearActiveSession) ;
 router.post('/institute-selection', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, instituteSelection);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getEdxUsers);
