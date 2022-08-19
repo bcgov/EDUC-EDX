@@ -157,8 +157,9 @@ async function getExchangesPaginated(req) {
     return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
   }
   let criteria = [];
-  let parsedParams = JSON.parse(req.query.searchParams);
+  let parsedParams = '';
   if (req.query.searchParams) {
+    parsedParams = JSON.parse(req.query.searchParams);
     if(parsedParams.studentPEN){
       let studentDetail = await getData(accessToken, config.get('student:apiEndpoint') + '/?pen=' + parsedParams.studentPEN);
       if(studentDetail[0]){
@@ -168,8 +169,9 @@ async function getExchangesPaginated(req) {
         return '';
       }
     }
-    criteria = buildSearchParams(JSON.stringify(parsedParams));
   }
+  criteria = buildSearchParams(JSON.stringify(parsedParams));
+
   //This needs to change when we have school selection
   criteria.push(getCriteria('contactIdentifier', req.session.activeInstituteIdentifier, FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
   criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
