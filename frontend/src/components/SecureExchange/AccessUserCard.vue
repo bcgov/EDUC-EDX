@@ -186,10 +186,7 @@ export default {
       if (role.edxRoleCode === this.edxSchoolAdminRole) {
         return false;
       }
-      if (this.isEDXSchoolAdminSelected) {
-        return true;
-      }
-      return this.absoluteMinimumRolesSelected && this.selectedRoles.includes(role.edxRoleCode);
+      return this.isEDXSchoolAdminSelected;
     },
     selectedRolesChanged() {
       if (!this.isEDXSchoolAdminSelected) {
@@ -207,12 +204,6 @@ export default {
       case 'xl':
       default:
         return '7em';
-      }
-    },
-    disableRoles() {
-      this.isSelectedAdmin = false;
-      if(this.isSelectedEDXSchoolAdmin()){
-        this.selectedRoles = this.selectedRoles.filter((role) => role === 'EDX_SCHOOL_ADMIN');
       }
     },
     getRoleLabel(curRole){
@@ -318,9 +309,6 @@ export default {
     ...mapGetters('auth', ['userInfo']),
     isEDXSchoolAdminSelected() {
       return this.selectedRoles.includes(this.edxSchoolAdminRole);
-    },
-    absoluteMinimumRolesSelected() {
-      return this.selectedRoles.length === 1;
     },
     minimumRolesSelected() {
       return this.selectedRoles.length > 0;
