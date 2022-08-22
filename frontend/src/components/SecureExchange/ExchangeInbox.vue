@@ -150,6 +150,19 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12" md="4" class="pt-0">
+                  <v-text-field
+                      class="pt-0 mt-0"
+                      v-model="studentIDFilter"
+                      label="Student PEN"
+                      prepend-inner-icon="mdi-account"
+                      maxlength="9"
+                      counter="9"
+                      clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
               <v-row no-gutters class="justify-end mt-n2">
                 <v-col cols="12" class="d-flex justify-end">
                   <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
@@ -270,6 +283,7 @@ export default {
       filterText: 'More Filters',
       contactNameFilter: '',
       messageIDFilter:'',
+      studentIDFilter: '',
       headers: [
         {
           text: 'Status',
@@ -304,7 +318,7 @@ export default {
       return this.statuses;
     },
     searchEnabled(){
-      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || (this.studentIDFilter !== '' && this.studentIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
     },
     ministryContactName() {
       return this.ministryTeams;
@@ -358,6 +372,7 @@ export default {
       this.statusSelectFilter = '';
       this.contactNameFilter = '';
       this.messageIDFilter ='';
+      this.studentIDFilter = '';
       if(runSearch){
         this.setFilterStatusAll();
         this.getExchanges();
@@ -453,6 +468,7 @@ export default {
       this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
       this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
+      this.headerSearchParams.studentPEN = this.studentIDFilter;
       if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
         this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
       }
