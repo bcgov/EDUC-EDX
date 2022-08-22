@@ -246,7 +246,7 @@
                           </v-row>
                         </v-card-text>
                         <v-row>
-                          <v-btn class="ml-12 mr-1 mb-1 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveStudent(index)" v-show="isOpenStudentIndex !== index" :disabled="!isEditable()">
+                          <v-btn class="ml-12 mr-1 mb-2 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveStudent(index)" v-show="isOpenStudentIndex !== index" :disabled="!isEditable()">
                             <v-icon>mdi-delete-forever-outline</v-icon>
                           </v-btn>
                         </v-row>
@@ -518,7 +518,12 @@ export default {
           this.resetNewMessageForm();
         });
     },
+    closeAllIndexes(){
+      this.closeDocIndex();
+      this.closeStudentIndex();
+    },
     toggleRemoveDoc(index) {
+      this.closeAllIndexes();
       this.isHideIndex = index;
       if( this.isOpenDocIndex !== null ){
         this.isOpenDocIndex = ( this.isOpenDocIndex === index ) ? null : index;
@@ -531,6 +536,7 @@ export default {
       this.isHideIndex = false;
     },
     toggleRemoveStudent(index) {
+      this.closeAllIndexes();
       this.isHideIndex = index;
       if( this.isOpenStudentIndex !== null ){
         this.isOpenStudentIndex = ( this.isOpenStudentIndex === index ) ? null : index;
