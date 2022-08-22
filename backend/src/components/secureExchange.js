@@ -784,8 +784,12 @@ async function verifyActivateUserLink(req, res) {
   };
   try {
     let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
-    await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
-    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
+    const result = await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
+    if(result ==='SCHOOL'){
+      return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
+    }
+    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
+
   } catch (e) {
     let msg = 'Error Occurred please retry with the link provided in the email';
     if (e.status === 400) {

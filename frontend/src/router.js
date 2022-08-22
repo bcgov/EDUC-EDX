@@ -108,6 +108,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/district-user-activation',
+      name: 'District User Activation',
+      component: ActivateEdxAccount,
+      meta: {
+        pageTitle: PAGE_TITLES.ACTIVATE_USER,
+        requiresAuth: true
+      },
+    },
+    {
       path: '/access',
       name: 'exchangeAccess',
       component: AccessUsersPage,
