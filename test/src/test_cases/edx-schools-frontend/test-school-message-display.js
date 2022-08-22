@@ -71,7 +71,7 @@ test('test-school-message-display', async t => {
   await t.expect(messageDisplay.markAsSpan.innerText).eql('MARK AS UNREAD');
   await t.click(messageDisplay.markAsButton);
   //once we mark message as unread, we should go back to the inbox page.
-  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Messaging');
+  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Messaging Inbox');
 });
 
 test('test-school-message-display-new-message', async t => {
