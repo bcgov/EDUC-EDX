@@ -40,6 +40,7 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
 }
 
 addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
+addOIDCRouterGet('oidcBceidActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
 
 router.get('/callback_bceid',
   passport.authenticate('oidcBceid', {
@@ -66,6 +67,7 @@ function addBaseRouterGet(strategyName, callbackURI) {
 
 addBaseRouterGet('oidcBceid', '/login_bceid');
 addBaseRouterGet('oidcBceidActivateUser', '/login_bceid_activate_user');
+addBaseRouterGet('oidcBceidActivateDistrictUser', '/login_bceid_activate_district_user');
 
 
 //removes tokens and destroys session
@@ -81,6 +83,8 @@ router.get('/logout', async (req, res) => {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
   } else if (req.query && req.query.loginBceidActivateUser) {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
+  } else if (req.query && req.query.loginBceidActivateDistrictUser) {
+    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_district_user');
   } else {
     retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
   }
