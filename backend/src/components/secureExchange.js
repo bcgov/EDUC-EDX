@@ -890,7 +890,7 @@ async function findPrimaryEdxActivationCode(req, res) {
     });
   }
   let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-  if (req.session.activeInstituteIdentifier !== req.params.mincode || !permission) {
+  if (req.session.activeInstituteIdentifier !== req.params.instituteIdentifier || !permission) {
     return res.status(HttpStatus.FORBIDDEN).json({
       status: HttpStatus.FORBIDDEN,
       message: 'You do not have permission to access this information'
@@ -898,7 +898,7 @@ async function findPrimaryEdxActivationCode(req, res) {
   }
 
   try {
-    const data = await getData(token, config.get('edx:activationCodeUrl') + `/primary/${req.params.mincode}`, req.session?.correlationID);
+    const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 404) {
