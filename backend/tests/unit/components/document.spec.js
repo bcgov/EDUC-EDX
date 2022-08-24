@@ -105,6 +105,7 @@ describe('getDocument', () => {
   const requestID = 'requestID';
   const documentID = 'documentID';
   const token = 'token';
+  const correlationID = 'ABCD';
 
   afterEach(() => {
     spy.mockClear();
@@ -113,10 +114,10 @@ describe('getDocument', () => {
   it('should return document data', async () => {
     utils.getData.mockResolvedValue(documentData);
 
-    const result = await exchange.__get__('getDocument')(token, requestID, documentID);
+    const result = await exchange.__get__('getDocument')(token, requestID, documentID, correlationID);
 
     expect(result).toEqual(documentData);
-    expect(spy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${requestID}/documents/${documentID}`);
+    expect(spy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${requestID}/documents/${documentID}`, correlationID);
   });
 
   it('should throw ServiceError if getData is failed', async () => {
@@ -139,7 +140,8 @@ describe('deleteDocument', () => {
     secureExchange: {
       secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
       statusUpdateDate: '2020-03-01T12:13:16'
-    }
+    },
+    correlationID: 'ABCD'
   };
   const deleteDocument = exchange.deleteDocument;
 
@@ -166,8 +168,8 @@ describe('deleteDocument', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
-    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
+    expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
@@ -204,6 +206,9 @@ describe('deleteDocument', () => {
 });
 
 describe('downloadFile', () => {
+  const session = {
+    correlationID: 'ABCD'
+  };
   const document = {
     documentData: 'dGVzdCBkYXRh',
     fileName: 'test.jpg',
@@ -224,7 +229,7 @@ describe('downloadFile', () => {
   beforeEach(() => {
     utils.getAccessToken.mockReturnValue('token');
     utils.getData.mockResolvedValue(document);
-    req = mockRequest(null, null, params);
+    req = mockRequest(null, session, params);
     res = mockResponse();
   });
 
@@ -233,13 +238,13 @@ describe('downloadFile', () => {
   });
 
   it('should return OK and document data', async () => {
-    await downloadFile(req, res);
+    await downloadFile(req, res, correlationID);
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.data.raw.toString()).toEqual('test data');
     expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'attachment; filename=' + document.fileName);
     expect(res.setHeader).toHaveBeenNthCalledWith(2, 'Content-type', document.fileExtension);
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`);
+    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
   });
 
   it('should return UNAUTHORIZED if no session', async () => {
