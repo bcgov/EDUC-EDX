@@ -2,7 +2,16 @@
   <v-container>
     <v-row>
       <v-col :class="['d-sm-flex', 'align-center']">
-        <div>Primary EDX Code - <span id="primaryEdxActivationCode"> {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : 'Code Not Found' }} </span></div>
+        <v-chip
+          class="ma-2"
+          :color="getChipColor()"
+
+        >
+          <v-icon left>
+            mdi-shield-key-outline
+          </v-icon>Primary Activation Code:
+          {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
+        </v-chip>
       </v-col>
     </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
@@ -186,6 +195,12 @@ export default {
     },
     updateUserRoles(newValue){
       this.$store.commit('edx/setSchoolRoles', newValue);
+    },
+    getChipColor(){
+      if(this.primaryEdxActivationCode){
+        return 'success';
+      }
+      return 'secondary';
     },
     closeNewUserModal(){
       this.$store.commit('edx/setSchoolRoles', JSON.parse(JSON.stringify(this.schoolRolesCopy)));
