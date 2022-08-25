@@ -24,6 +24,7 @@ import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
 import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
+import ActivateEdxDistrictAccount from '@/components/common/ActivateEdxDistrictAccount';
 
 
 Vue.prototype.moment = moment;
@@ -110,7 +111,7 @@ const router = new VueRouter({
     {
       path: '/district-user-activation',
       name: 'District User Activation',
-      component: ActivateEdxAccount,
+      component: ActivateEdxDistrictAccount,
       meta: {
         pageTitle: PAGE_TITLES.ACTIVATE_USER,
         requiresAuth: true
