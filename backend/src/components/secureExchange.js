@@ -859,7 +859,7 @@ async function findPrimaryEdxActivationCode(req, res) {
   checkEDXUserAccess(req, res, 'SCHOOL', req.params.mincode);
 
   try {
-    const data = await getData(token, config.get('edx:activationCodeUrl') + `/primary/${req.params.mincode}`, req.session?.correlationID);
+    const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 404) {
