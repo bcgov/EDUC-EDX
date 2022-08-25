@@ -40,6 +40,7 @@ describe('uploadFile', () => {
   beforeEach(() => {
     utils.getAccessToken.mockReturnValue('token');
     utils.postData.mockResolvedValue(postRes);
+    utils.getData.mockResolvedValue(session.secureExchange);
     req = mockRequest(document, session, params);
     req.session.correlationID=correlationID;
     res = mockResponse();

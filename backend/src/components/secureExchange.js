@@ -42,11 +42,12 @@ function verifyRequest(req, res, next) {
   next();
 }
 
-
 async function uploadFile(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
+    let secureExchangeData = await getData(token, config.get('edx:exchangeURL') + `/${req.params.id}`, req.session?.correlationID);
+    checkSecureExchangeAccess(req, res, secureExchangeData);
 
     if (!req.session['secureExchange'] || req.session['secureExchange']['secureExchangeStatusCode'] === SecureExchangeStatuses.CLOSED) {
       return res.status(HttpStatus.CONFLICT).json({
@@ -92,6 +93,8 @@ async function deleteDocument(req, res) {
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
     let secureExchangeData = await getData(token, config.get('edx:exchangeURL') + `/${req.params.id}`, req.session?.correlationID);
+    checkSecureExchangeAccess(req, res, secureExchangeData);
+
     if ( ! resData ||  secureExchangeData['secureExchangeStatusCode'] === 'CLOSED') {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
@@ -135,11 +138,10 @@ function getCriteria(key, value, operation, valueType) {
   return {key, value, operation, valueType};
 }
 
-async function getExchangesPaginated(req) {
+async function getExchangesPaginated(req, res) {
   const accessToken = getAccessToken(req);
-  if (!accessToken) {
-    return Promise.reject('getExchangesPaginated error: No access token');
-  }
+  validateAccessToken(accessToken, res);
+
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -174,11 +176,11 @@ async function getExchangesPaginated(req) {
   return getDataWithParams(accessToken, config.get('edx:exchangeURL') + '/paginated', params, req.session?.correlationID);
 }
 
-async function getExchangesCountPaginated(req) {
+async function getExchangesCountPaginated(req, res) {
   const accessToken = getAccessToken(req);
-  if (!accessToken) {
-    return Promise.reject('getExchangesPaginated error: No access token');
-  }
+  validateAccessToken(accessToken, res);
+  checkSecureExchangePermission(req, res);
+
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -198,6 +200,8 @@ async function createExchange(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
+    checkSecureExchangePermission(req, res);
+
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
 
@@ -262,15 +266,12 @@ async function clearActiveSession(req) {
 async function getExchanges(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
-
-  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
-    return errorResponse(res, 'You do not have permission to access this information', HttpStatus.FORBIDDEN);
-  }
+  checkSecureExchangePermission(req, res);
 
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getExchangesPaginated(req)
+    getExchangesPaginated(req, res)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
@@ -306,16 +307,15 @@ async function getExchanges(req, res) {
 async function getExchange(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
+  checkSecureExchangePermission(req, res);
+
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
     getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`, req.session?.correlationID)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
-
-      if (dataResponse.secureExchangeContactTypeCode !== req.session.activeInstituteType || dataResponse.contactIdentifier !== req.session.activeInstituteIdentifier) {
-        return errorResponse(res, 'You do not have permission to access this secure exchange', HttpStatus.FORBIDDEN);
-      }
+      checkSecureExchangeAccess(req, res, dataResponse);
 
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
         let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === dataResponse['secureExchangeStatusCode']);
@@ -401,10 +401,11 @@ async function getExchange(req, res) {
 async function getExchangesCount(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token);
+  checkSecureExchangePermission(req, res);
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getExchangesCountPaginated(req)
+    getExchangesCountPaginated(req, res)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       let urExchangeCount = 0;
@@ -441,10 +442,8 @@ async function markAs(req, res) {
   let isReadByExchangeContact = readStatus === 'read';
   try {
     const currentExchange = await getData(token, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`, req.session?.correlationID);
-
-    if (currentExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || currentExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
-      return errorResponse(res, 'You do not have permission to mark this secure exchange', HttpStatus.FORBIDDEN);
-    }
+    checkSecureExchangeAccess(req, res, currentExchange);
+    checkSecureExchangePermission(req, res);
 
     if (currentExchange.isReadByExchangeContact === isReadByExchangeContact) {
       return res.status(HttpStatus.OK).json({
@@ -464,16 +463,14 @@ async function markAs(req, res) {
 
 async function createSecureExchangeStudent(req, res) {
   const accessToken = getAccessToken(req);
-  if (!accessToken) {
-    return errorResponse(res, 'No Access token.', HttpStatus.UNAUTHORIZED);
-  }
+  validateAccessToken(accessToken, res);
+  checkSecureExchangePermission(req, res);
+
   const edxUserInfo = req.session.edxUserData;
   if (!edxUserInfo) {
     return errorResponse(res, 'No EDX User Info token.', HttpStatus.UNAUTHORIZED);
   }
-  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
-    return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
-  }
+
   const exchangeURL = config.get('edx:exchangeURL');
   const secureExchangeStudent = {
     edxUserID: edxUserInfo.edxUserID,
@@ -481,12 +478,7 @@ async function createSecureExchangeStudent(req, res) {
   };
   try {
     const secureExchange = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}`, req.session?.correlationID);
-    if (!secureExchange) {
-      return errorResponse(res, 'The Secure Exchange, to which the Student was to be added, wasn\'t found.', HttpStatus.NOT_FOUND);
-    }
-    if (req.session.activeInstituteIdentifier !== secureExchange.contactIdentifier) {
-      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
-    }
+    checkSecureExchangeAccess(req, res, secureExchange);
 
     const attachedSecureExchangeStudents = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}/students`, req.session?.correlationID);
     if (attachedSecureExchangeStudents && attachedSecureExchangeStudents?.some((student) => student.studentId === req.body.studentID)) {
@@ -503,18 +495,14 @@ async function createSecureExchangeStudent(req, res) {
 
 async function removeSecureExchangeStudent(req, res){
   try {
-    const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
+    const token = getAccessToken(req);
+    validateAccessToken(token, res);
+    checkSecureExchangePermission(req, res);
 
-    if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
-      return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
-    }
+    const secureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`, req.session?.correlationID);
+    checkSecureExchangeAccess(req, res, secureExchange);
 
-    const result = await deleteData(accessToken, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}/students/${req.params.studentID}`, req.session?.correlationID);
+    const result = await deleteData(token, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}/students/${req.params.studentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
 
   } catch (e) {
@@ -526,11 +514,10 @@ async function removeSecureExchangeStudent(req, res){
 async function updateEdxUserRoles(req, res) {
   try {
     const token = getAccessToken(req);
-    if (!token) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
+    validateAccessToken(token, res);
+    checkEDXUserSchoolAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
+
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID, req.session?.correlationID);
 
     let selectedUserSchool = response.edxUserSchools.filter(school => school.mincode === req.body.params.mincode);
@@ -604,13 +591,8 @@ async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
 
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-  if (req.session.activeInstituteIdentifier !== req.query.mincode || !permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
-  }
+  checkEDXUserSchoolAdminPermission(req, res);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.query.mincode);
 
   try {
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
@@ -661,13 +643,8 @@ async function removeUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
-    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        status: HttpStatus.UNAUTHORIZED,
-        message: 'You are not authorized to access this page'
-      });
-    }
+    checkEDXUserSchoolAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
 
     await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
 
@@ -682,13 +659,8 @@ async function relinkUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
-    let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-    if (req.session.activeInstituteIdentifier !== req.body.params.mincode || !permission) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        status: HttpStatus.UNAUTHORIZED,
-        message: 'You are not authorized to access this page'
-      });
-    }
+    checkEDXUserSchoolAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
 
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
     let userSchool = edxUserDetails.edxUserSchools.find(school => school.mincode === req.body.params.mincode);
@@ -717,16 +689,10 @@ async function relinkUserSchoolAccess(req, res) {
 async function createSecureExchangeComment(req, res) {
   try {
     const token = getAccessToken(req);
-    if (!token) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
+    validateAccessToken(token, res);
 
     const secureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`, req.session?.correlationID);
-    if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
-      return errorResponse(res, 'You do not have permission to add a comment to this secure exchange', HttpStatus.FORBIDDEN);
-    }
+    checkSecureExchangeAccess(req, res, secureExchange);
 
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
@@ -889,13 +855,8 @@ async function findPrimaryEdxActivationCode(req, res) {
       message: 'No access token'
     });
   }
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-  if (req.session.activeInstituteIdentifier !== req.params.instituteIdentifier || !permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
-  }
+  checkEDXUserSchoolAdminPermission(req, res);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.params.mincode);
 
   try {
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
@@ -909,7 +870,36 @@ async function findPrimaryEdxActivationCode(req, res) {
   }
 }
 
+function checkEDXUserSchoolAdminPermission(req, res){
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
+  if (!permission) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  }
+}
 
+function checkEDXUserAccess(req, res, instituteType, instituteIdentifier){
+  if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have access this information'
+    });
+  }
+}
+
+function checkSecureExchangeAccess(req, res, secureExchange){
+  if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
+    return errorResponse(res, 'You do not have permission to this secure exchange', HttpStatus.FORBIDDEN);
+  }
+}
+
+function checkSecureExchangePermission(req, res){
+  if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
+    return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+  }
+}
 
 module.exports = {
   verifyRequest,
