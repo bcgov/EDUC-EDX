@@ -891,7 +891,7 @@ function checkEDXUserAccess(req, res, instituteType, instituteIdentifier){
 
 function checkSecureExchangeAccess(req, res, secureExchange){
   if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
-    return errorResponse(res, 'You do not have permission to add a comment to this secure exchange', HttpStatus.FORBIDDEN);
+    return errorResponse(res, 'You do not have permission to this secure exchange', HttpStatus.FORBIDDEN);
   }
 }
 
