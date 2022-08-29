@@ -80,7 +80,7 @@ const cacheService = {
     log.debug('loading all districts during start up');
     await retry(async () => {
       const data = await getApiCredentials();
-      const districtsResponse = await getData(data.accessToken, `${config.get('server:instituteAPIURL')}/district`);
+      const districtsResponse = await getData(data.accessToken, `${config.get('instituteAPIURL')}/district`);
       // reset the value.
       districts = [];
       districtsMap.clear();
