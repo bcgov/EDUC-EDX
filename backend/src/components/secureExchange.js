@@ -95,7 +95,7 @@ async function deleteDocument(req, res) {
     let secureExchangeData = await getData(token, config.get('edx:exchangeURL') + `/${req.params.id}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, secureExchangeData);
 
-    if ( ! resData ||  secureExchangeData['secureExchangeStatusCode'] === 'CLOSED') {
+    if (!resData || secureExchangeData['secureExchangeStatusCode'] === 'CLOSED') {
       return res.status(HttpStatus.CONFLICT).json({
         message: 'Delete secureExchange file not allowed'
       });
@@ -149,12 +149,12 @@ async function getExchangesPaginated(req, res) {
   let parsedParams = '';
   if (req.query.searchParams) {
     parsedParams = JSON.parse(req.query.searchParams);
-    if(parsedParams.studentPEN){
+    if (parsedParams.studentPEN) {
       let studentDetail = await getData(accessToken, config.get('student:apiEndpoint') + '/?pen=' + parsedParams.studentPEN);
-      if(studentDetail[0]){
+      if (studentDetail[0]) {
         parsedParams.studentId = studentDetail[0].studentID;
         delete parsedParams.studentPEN;
-      }else{
+      } else {
         return '';
       }
     }
@@ -189,7 +189,7 @@ async function getExchangesCountPaginated(req, res) {
       pageNumber: req.query.pageNumber,
       pageSize: req.query.pageSize,
       sort: '',
-      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"'+req.session.activeInstituteIdentifier+'","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
+      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"' + req.session.activeInstituteIdentifier + '","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
     }
   };
 
@@ -493,7 +493,7 @@ async function createSecureExchangeStudent(req, res) {
   }
 }
 
-async function removeSecureExchangeStudent(req, res){
+async function removeSecureExchangeStudent(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
@@ -558,7 +558,7 @@ async function updateEdxUserRoles(req, res) {
   }
 }
 
-async function activateSchoolUser(req, res) {
+async function activateEdxUser(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
   const numberOfRetries = req.session[`${req.body.validationCode}`];
@@ -567,8 +567,32 @@ async function activateSchoolUser(req, res) {
   }
   const payload = {
     digitalId: req.session.digitalIdentityData.digitalID,
-    ...req.body
+    personalActivationCode: req.body.personalActivationCode,
+    primaryEdxCode: req.body.primaryEdxCode,
+    validationCode: req.body.validationCode,
   };
+  let districtId;
+  let schoolId;
+  if (req.body.districtNumber) {
+    districtId = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
+    if (!districtId) {
+      incrementNumberOfRetriesCounter(req,numberOfRetries);
+      return errorResponse(res, 'Invalid District Number Entered.', HttpStatus.BAD_REQUEST);
+    }
+    payload.districtId = districtId;
+  }
+  else if (req.body.mincode) {
+    schoolId = cacheService.getSchoolIdByMincode(req.body.mincode);
+    if (!schoolId) {
+      incrementNumberOfRetriesCounter(req,numberOfRetries);
+      return errorResponse(res, 'Invalid mincode Entered.', HttpStatus.BAD_REQUEST);
+    }
+    payload.schoolId = schoolId;
+  }
+
+  if(!payload.schoolId && !payload.districtId){
+    return errorResponse(res, 'Either Mincode or District Number should be present', HttpStatus.BAD_REQUEST);
+  }
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
     req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
@@ -577,16 +601,19 @@ async function activateSchoolUser(req, res) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
     if (e?.status > 399 && e?.status < 410) {
-      if (numberOfRetries && numberOfRetries <= 4) {
-        req.session[`${req.body.validationCode}`] = numberOfRetries + 1;
-      } else {
-        req.session[`${req.body.validationCode}`] = 1;
-      }
+      incrementNumberOfRetriesCounter(req,numberOfRetries);
     }
     return errorResponse(res, msg);
   }
 }
 
+function incrementNumberOfRetriesCounter(req,numberOfRetries) {
+  if (numberOfRetries && numberOfRetries <= 4) {
+    req.session[`${req.body.validationCode}`] = numberOfRetries + 1;
+  } else {
+    req.session[`${req.body.validationCode}`] = 1;
+  }
+}
 async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
@@ -631,7 +658,7 @@ async function schoolUserActivationInvite(req, res) {
   }
 }
 
-function validateAccessToken(token, res){
+function validateAccessToken(token, res) {
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No access token'
@@ -737,7 +764,7 @@ async function verifyActivateUserLink(req, res) {
   try {
     let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
     const result = await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
-    if(result ==='SCHOOL'){
+    if (result === 'SCHOOL') {
       return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
     }
     return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
@@ -870,7 +897,7 @@ async function findPrimaryEdxActivationCode(req, res) {
   }
 }
 
-function checkEDXUserSchoolAdminPermission(req, res){
+function checkEDXUserSchoolAdminPermission(req, res) {
   let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
   if (!permission) {
     return res.status(HttpStatus.FORBIDDEN).json({
@@ -880,7 +907,7 @@ function checkEDXUserSchoolAdminPermission(req, res){
   }
 }
 
-function checkEDXUserAccess(req, res, instituteType, instituteIdentifier){
+function checkEDXUserAccess(req, res, instituteType, instituteIdentifier) {
   if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
     return res.status(HttpStatus.FORBIDDEN).json({
       status: HttpStatus.FORBIDDEN,
@@ -889,13 +916,13 @@ function checkEDXUserAccess(req, res, instituteType, instituteIdentifier){
   }
 }
 
-function checkSecureExchangeAccess(req, res, secureExchange){
+function checkSecureExchangeAccess(req, res, secureExchange) {
   if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
     return errorResponse(res, 'You do not have permission to this secure exchange', HttpStatus.FORBIDDEN);
   }
 }
 
-function checkSecureExchangePermission(req, res){
+function checkSecureExchangePermission(req, res) {
   if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
     return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
   }
@@ -911,7 +938,7 @@ module.exports = {
   getExchange,
   markAs,
   createSecureExchangeStudent,
-  activateSchoolUser,
+  activateEdxUser,
   verifyActivateUserLink,
   instituteSelection,
   getEdxUsers,

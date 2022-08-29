@@ -29,10 +29,10 @@
                   To activate your Edx user account, you will need to enter the following:
                   <br/>
                   <v-icon class="pl-12">mdi-circle-small</v-icon>
-                  Your district's <strong>Number</strong>
+                  Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{instituteIdentifierLabel}}</strong>
                   <br/>
                   <v-icon class="pl-12">mdi-circle-small</v-icon>
-                  Your <strong>District's Primary EDX Code</strong> obtained from your school administrator
+                  Your <strong>{{ instituteTypeLabel }}'s Primary EDX Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
                   <br/>
                   <v-icon class="pl-12">mdi-circle-small</v-icon>
                   Your <strong>Personal Activation Code</strong> from your EDX invite email
@@ -42,11 +42,11 @@
           </v-row>
           <v-row class="d-flex justify-center">
             <v-col cols="5">
-              <v-text-field id="districtNumberTextField"
-                  v-model="districtNumber"
-                  :rules="districtNumberRules && requiredRules"
-                  hint="Please enter the district number of the district you want to register for"
-                  label="District Number"
+              <v-text-field id="instituteIdentifierTextField"
+                  v-model="instituteSpecificCode"
+                  :rules="instituteSpecificCodeRules && requiredRules"
+                  :hint="createInstituteSpecificCodeHint"
+                  :label="createInstituteSpecificCodeLabel"
               ></v-text-field>
             </v-col>
 
@@ -57,8 +57,8 @@
                   id="primaryEdxCodeTextField"
                   :rules="requiredRules"
                   v-model="primaryEdxCode"
-                  hint="Please enter the code obtained from your district administrator"
-                  label="District's Primary EDX Code"
+                 :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
+                  :label="`${instituteTypeLabel}'s Primary EDX Code`"
               >
               </v-text-field>
             </v-col>
@@ -99,16 +99,31 @@ import {ApiRoutes} from '@/utils/constants';
 import alertMixin from '@/mixins/alertMixin';
 
 export default {
-  name: 'ActivateEdxDistrictAccount',
+  name: 'ActivateEdxUserAccount.vue',
   mixins: [alertMixin],
   components: {PrimaryButton},
+  props:{
+    instituteTypeLabel:{
+      type:String,
+      required:true
+    },
+    instituteTypeCode:{
+      type:String,
+      required:true
+    },
+    instituteIdentifierLabel:{
+      type:String,
+      required:true
+    },
+  },
   data() {
     return {
-      districtNumber: null,
+      instituteSpecificCode: null,
       activationErrorMessage:null,
       personalActivationCode: null,
       primaryEdxCode: null,
-      districtNumberRules: [v => (!v || this.validateDistrictNumber(v)) || 'Invalid districtNumber'],
+
+      instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid mincode'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
       validationCode: null,
@@ -118,19 +133,39 @@ export default {
     };
   },
   computed: {
+    createInstituteSpecificCodeHint() {
+      if(this.instituteTypeCode === 'SCHOOL') {
+        return 'Please enter the mincode of the school you want to register for';
+      }
+      return 'Please enter the district number of the district you want to register for';
+    },
+    createInstituteSpecificCodeLabel() {
+      if(this.instituteTypeCode === 'SCHOOL') {
+        return this.instituteIdentifierLabel;
+      }
+      return `${this.instituteTypeLabel} ${this.instituteIdentifierLabel}`;
+    }
   },
   methods: {
-    validateDistrictNumber(v) {
+    validateInstituteSpecificCode(v) {
+      if(this.instituteTypeCode === 'SCHOOL') {
+        return !(v.length !== 8 || isNaN(v));
+      }
       return !(v.length !== 3 || isNaN(v));
     },
     activateEdxUser() {
       this.submissionInProgress = true;
       const body = {
-        districtCode: this.districtNumber,
         personalActivationCode: this.personalActivationCode,
         primaryEdxCode: this.primaryEdxCode,
         validationCode: this.validationCode,
       };
+
+      if(this.instituteTypeCode === 'SCHOOL') {
+        body.mincode = this.instituteSpecificCode;
+      }else{
+        body.districtNumber = this.instituteSpecificCode;
+      }
       ApiService.apiAxios.post(ApiRoutes.edx.USER_ACTIVATION, body)
         .then(() => {
           this.setSuccessAlert('User Activation Completed Successfully. Redirecting to your Dashboard...');
@@ -154,7 +189,6 @@ export default {
         });
     }
   },
-  watch: {}
 };
 </script>
 

@@ -20,11 +20,10 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay';
 import ExchangePage from './components/SecureExchange/ExchangeInbox';
 import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
-import ActivateEdxAccount from '@/components/common/ActivateEdxAccount';
 import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
-import ActivateEdxDistrictAccount from '@/components/common/ActivateEdxDistrictAccount';
+import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
 
 
 Vue.prototype.moment = moment;
@@ -102,7 +101,12 @@ const router = new VueRouter({
     {
       path: '/user-activation',
       name: 'User Activation',
-      component: ActivateEdxAccount,
+      component: ActivateEdxUserAccount,
+      props: {
+        instituteTypeLabel: 'School',
+        instituteTypeCode: 'SCHOOL',
+        instituteIdentifierLabel: 'Mincode'
+      },
       meta: {
         pageTitle: PAGE_TITLES.ACTIVATE_USER,
         requiresAuth: true
@@ -111,7 +115,12 @@ const router = new VueRouter({
     {
       path: '/district-user-activation',
       name: 'District User Activation',
-      component: ActivateEdxDistrictAccount,
+      component: ActivateEdxUserAccount,
+      props: {
+        instituteTypeLabel: 'District',
+        instituteTypeCode: 'DISTRICT',
+        instituteIdentifierLabel: 'Number'
+      },
       meta: {
         pageTitle: PAGE_TITLES.ACTIVATE_USER,
         requiresAuth: true
