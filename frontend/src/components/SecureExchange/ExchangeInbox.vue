@@ -263,9 +263,11 @@ import PrimaryButton from '../util/PrimaryButton';
 import NewMessagePage from './NewMessagePage';
 import {mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
+import alertMixin from '@/mixins/alertMixin';
 
 export default {
   name: 'ExchangeInbox',
+  mixins: [alertMixin],
   components: {
     PrimaryButton,
     NewMessagePage
@@ -430,7 +432,7 @@ export default {
       return content;
     },
     getLatestComment(item) {
-      var content = item.commentsList.reduce((a, b) => (a.createDate > b.createDate ? a : b)).content;
+      let content = item.commentsList.reduce((a, b) => (a.createDate > b.createDate ? a : b)).content;
       if (content.length > 25) {
         switch (this.$vuetify.breakpoint.name) {
         case 'xs':
@@ -486,8 +488,8 @@ export default {
           this.totalRequests = response.data.totalElements;
         }
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
+        this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of Secure Exchanges. Please try again later.');
       }).finally(() => {
         this.loadingTable = false;
       });

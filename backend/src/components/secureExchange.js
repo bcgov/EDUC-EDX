@@ -751,7 +751,7 @@ function mapEdxUserActivationErrorMessage(message) {
   } else if (msg.includes('This User Activation Link has expired')) {
     return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
   } else if (msg.includes('This user is already associated to the school')) {
-    return 'This user account is already associated to the schoolId';
+    return 'This user account is already associated to the school';
   }
   return msg;
 }
@@ -892,11 +892,12 @@ async function findPrimaryEdxActivationCode(req, res) {
       message: 'No access token'
     });
   }
+  let instituteType = req.params.instituteType.toUpperCase();
   checkEDXUserSchoolAdminPermission(req, res);
-  checkEDXUserAccess(req, res, 'SCHOOL', req.params.schoolId);
+  checkEDXUserAccess(req, res, instituteType, req.params.instituteIdentifier);
 
   try {
-    const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
+    const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 404) {
