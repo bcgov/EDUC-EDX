@@ -103,7 +103,7 @@
               </v-card-text>
               <v-row class="py-4 justify-end pt-0 pr-16 mr-10">
                 <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" @click.native="hideNewMessageField"></PrimaryButton>
-                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="processing" @click.native="sendNewExchangeComment"></PrimaryButton>
+                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="loading" @click.native="sendNewExchangeComment"></PrimaryButton>
               </v-row>
             </v-row>
             <v-row v-if="isNewAttachmentDisplayed">
@@ -316,8 +316,8 @@ export default {
   },
   data() {
     return {
+      loadingCount: 0,
       secureExchange: null,
-      loading: true,
       loadingReadStatus: false,
       editOptionsOpen: false,
       assignedMinistryTeam: null,
@@ -327,7 +327,6 @@ export default {
       isNewStudentDisplayed: false,
       newMessageBtnDisplayed: false,
       shouldDisplaySpeedDial: true,
-      processing: false,
       newMessage:'',
       isOpenDocIndex: false,
       isOpenStudentIndex: false,
@@ -342,6 +341,9 @@ export default {
   },
   computed: {
     ...mapState('auth', ['userInfo']),
+    loading() {
+      return this.loadingCount !== 0;
+    }
   },
   created() {
     this.getExchange();
@@ -350,8 +352,8 @@ export default {
   methods: {
     async upload(document) {
       try {
+        this.loadingCount += 1;
         this.items = undefined;
-        this.loading = true;
         await ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_URL + '/' + this.secureExchangeID + '/documents', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
         this.getExchange();
@@ -359,8 +361,8 @@ export default {
         console.error(e);
         this.setFailureAlert(e.response?.data?.message || e.message);
       } finally {
+        this.loadingCount -= 1;
         this.dialog = false;
-        this.loading = false;
       }
     },
     showDocModal(document){
@@ -430,16 +432,17 @@ export default {
       this.addStudentWarningMessage = newValue;
     },
     getExchange() {
-      this.loading = true;
+      this.loadingCount += 1;
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
         .then(response => {
           this.secureExchange = response.data;
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while getting the details of the message. Please try again later.');
         })
         .finally(() => {
-          this.loading = false;
+          this.loadingCount -= 1;
         });
     },
     setIsReadByExchangeContact(isRead) {
@@ -450,7 +453,8 @@ export default {
           this.secureExchange.isReadByExchangeContact = isRead;
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to set the read state of the Secure Exchange. Please try again later.');
         }).finally(() => {
           this.loadingReadStatus = false;
         });
@@ -498,7 +502,7 @@ export default {
       this.newMessage = '';
     },
     sendNewExchangeComment() {
-      this.processing = true;
+      this.loadingCount += 1;
       const payload = {
         content: this.newMessage,
       };
@@ -510,10 +514,10 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert('An error occurred while sending message. Please try again later.');
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while sending message. Please try again later.');
         })
         .finally(() => {
-          this.processing = false;
+          this.loadingCount -= 1;
           this.isNewMessageDisplayed = false;
           this.resetNewMessageForm();
         });
@@ -549,50 +553,47 @@ export default {
       this.isHideIndex = false;
     },
     removeAttachment(documentID) {
-      this.processing = true;
-      this.loading = true;
+      this.loadingCount += 1;
       ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/documents/${documentID}`)
         .then((response) => {
           this.getExchange();
           if(response.status === 200){
             this.setSuccessAlert('Success! The document has been removed.');
           } else{
-            this.setSuccessAlert('Error! The document was not removed.');
+            this.setFailureAlert('Error! The document was not removed.');
           }
           this.closeDocIndex();
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the attachment from the Secure Exchange. Please try again later.');
         })
         .finally(() => {
-          this.processing = false;
-          this.loading = false;
+          this.loadingCount -= 1;
         });
     },
     removeStudent(studentID) {
-      this.processing = true;
-      this.loading = true;
+      this.loadingCount += 1;
       ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/removeStudent/${studentID}`)
         .then((response) => {
           this.getExchange();
           if(response.status === 200){
             this.setSuccessAlert('Success! The student has been removed.');
           } else{
-            this.setSuccessAlert('Error! The student was not removed.');
+            this.setFailureAlert('Error! The student was not removed.');
           }
           this.closeStudentIndex();
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the student from the Secure Exchange. Please try again later.');
         })
         .finally(() => {
-          this.processing = false;
-          this.loading = false;
+          this.loadingCount -= 1;
         });
     },
     sendNewSecureExchangeStudent(student) {
-      this.processing = true;
-      this.loading = true;
+      this.loadingCount += 1;
       const payload = {
         studentID: student.studentID
       };
@@ -606,8 +607,7 @@ export default {
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while adding the student to the Secure Exchange. Please try again later.');
         })
         .finally(() => {
-          this.processing = false;
-          this.loading = false;
+          this.loadingCount -= 1;
           this.isNewStudentDisplayed = false;
         });
     }
@@ -657,13 +657,10 @@ export default {
   background-color: white !important;
   height: 2em !important;
   min-width: 1em !important;
-  bottom: 0em;
-  right: 0em;
+  bottom: 0;
+  right: 0;
 }
 .greyBackground {
   background-color: #f5f5f5;
-}
-.yesBtn {
-  margin-right: 6em;
 }
 </style>
