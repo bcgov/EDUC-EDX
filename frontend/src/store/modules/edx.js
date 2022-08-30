@@ -111,6 +111,21 @@ export default {
         }
       }
     },
+    async getEdxDistrictRoles({ commit, state}) {
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
+        if (state.districtRoles.length === 0) {
+          const params = {
+            params: {
+              instituteType:'DISTRICT'
+            }
+          };
+          const response = await ApiService.getEdxRoles(params);
+          commit('setDistrictRoles', response.data);
+          commit('setDistrictRolesCopy', response.data);
+
+        }
+      }
+    },
     async getSecureExchangeDocumentTypes({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
         if (state.secureExchangeDocumentTypes.length === 0) {

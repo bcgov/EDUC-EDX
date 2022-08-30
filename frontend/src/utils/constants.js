@@ -2,6 +2,7 @@ const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
 const studentRequestRoot = baseRoot + '/student';
+const districtRequestRoot = baseRoot + '/institute/districts';
 
 let object;
 
@@ -26,6 +27,7 @@ export const ApiRoutes = Object.freeze({
   school: {
     BASE_URL: baseRoot + '/schools'
   },
+  DISTRICT_DATA_URL: districtRequestRoot,
   edx: {
     EXCHANGE: edxRoot + '/exchanges',
     EXCHANGE_URL:edxRoot + '/exchange',

@@ -5,6 +5,7 @@ export default {
   state: {
     pageTitle: null,
     mincodeSchoolNames: new Map(),
+    districts : new Map(),
     districtCodes: new Set(),
     alertNotificationText: '',
     alertNotificationQueue: [],
@@ -12,6 +13,7 @@ export default {
   },
   getters: {
     mincodeSchoolNamesObjectSorted: state => Object.values(Object.fromEntries(state.mincodeSchoolNames)).map(v => v.toUpperCase()).sort(),
+    districtsObjectSorted: state => Object.values(Object.fromEntries(state.districts)).map(v => v.toUpperCase()).sort(),
   },
   mutations: {
     setPageTitle: (state, pageTitle) => {
@@ -35,7 +37,13 @@ export default {
       if (!state.alertNotification) {
         state.alertNotification = true;
       }
-    }
+    },
+    setDistricts(state, districtList) {
+      state.districts = new Map();
+      districtList.forEach(element => {
+        state.districts.set(element.districtId, element);
+      });
+    },
   },
   actions: {
     async getMincodeSchoolNames({ commit, state}) {
@@ -43,6 +51,10 @@ export default {
         if(state.mincodeSchoolNames.size === 0) {
           const response = await ApiService.getMincodeSchoolNames();
           commit('setMincodeSchoolNameAndDistrictCodes', response.data);
+        }
+        if(state.districts.size === 0) {
+          const response = await ApiService.getDistricts();
+          commit('setDistricts', response.data);
         }
       }
     },
