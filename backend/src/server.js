@@ -24,7 +24,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   cacheService.loadAllSchoolsToMap().then(() => {
     log.info('Loaded school data to memory');
   }).catch((e) => {
-    log.error('Error loading schools during boot .', e);
+    log.error('Error loading schoolsMap during boot .', e);
   });
   cacheService.loadAllRolePermissionsToMap().then(() => {
     log.info('Loaded roles and permissions data to memory');
@@ -32,9 +32,9 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     log.error('Error loading roles during boot .', e);
   });
   cacheService.loadAllDistrictsToMap().then(() => {
-    log.info('Loaded districts data to memory');
+    log.info('Loaded districtsMap data to memory');
   }).catch((e) => {
-    log.error('Error loading districts data codes during boot .', e);
+    log.error('Error loading districtsMap data codes during boot .', e);
   });
   cacheService.loadAllDocumentTypeCodesToMap().then(() => {
     log.info('Loaded document type codes to memory');

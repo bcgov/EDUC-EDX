@@ -58,6 +58,7 @@ import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from './util/PrimaryButton';
 import {isValidPEN} from '@/utils/validation';
 import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
+import {mapState} from 'vuex';
 
 export default {
   components: {PrimaryButton},
@@ -67,7 +68,7 @@ export default {
       type: Boolean,
       default: false
     },
-    mincode: {
+    schoolId: {
       type: String,
       required: true
     },
@@ -93,6 +94,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('app', ['schoolsMap']),
     enableSearchButton() {
       return !(isValidPEN(this.penNumber));
     }
@@ -143,7 +145,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL, {
         params: {
           pen: this.penNumber,
-          mincode: this.mincode
+          mincode: this.schoolsMap.get(this.schoolId)?.mincode //this remains as we need to pass the mincode for checking
         }
       })
         .then(response => {

@@ -246,8 +246,11 @@ async function createExchange(req, res) {
 async function instituteSelection(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
-  if (req.session.userMinCodes.includes(req.body.params.mincode)) {
-    setSessionInstituteIdentifiers(req, req.body.params.mincode, 'SCHOOL');
+  if (req.session.userSchoolIds.includes(req.body.params.schoolId)) {
+    setSessionInstituteIdentifiers(req, req.body.params.schoolId, 'SCHOOL');
+    return res.status(200).json('OK');
+  }else if(req.session.userDistrictIds.includes(req.body.params.districtId)){
+    setSessionInstituteIdentifiers(req, req.body.params.districtId, 'DISTRICT');
     return res.status(200).json('OK');
   } else {
     return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -328,7 +331,7 @@ async function getExchange(req, res) {
       }
       dataResponse['createDate'] = dataResponse['createDate'] ? LocalDateTime.parse(dataResponse['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd')) : 'Unknown Date';
       dataResponse['commentsList'] = dataResponse['commentsList'] ? dataResponse['commentsList'] : [];
-      let school = cacheService.getSchoolNameJSONByMincode(dataResponse['contactIdentifier']);
+      let school = cacheService.getSchoolBySchoolId(dataResponse['contactIdentifier']);
       dataResponse['activities'] = [];
       dataResponse['commentsList'].forEach((comment) => {
         let activity = {};
@@ -516,11 +519,11 @@ async function updateEdxUserRoles(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
     checkEDXUserSchoolAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolId);
 
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID, req.session?.correlationID);
 
-    let selectedUserSchool = response.edxUserSchools.filter(school => school.mincode === req.body.params.mincode);
+    let selectedUserSchool = response.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolId);
 
     let rolesToBeRemoved = [];
 
@@ -581,11 +584,11 @@ async function activateEdxUser(req, res) {
     }
     payload.districtId = districtId;
   }
-  else if (req.body.mincode) {
+  else if (req.body.mincode) {//this remains as schoolId as user will input schoolId
     schoolId = cacheService.getSchoolIdByMincode(req.body.mincode);
     if (!schoolId) {
       incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Invalid mincode Entered.', HttpStatus.BAD_REQUEST);
+      return errorResponse(res, 'Invalid schoolId Entered.', HttpStatus.BAD_REQUEST);
     }
     payload.schoolId = schoolId;
   }
@@ -595,7 +598,7 @@ async function activateEdxUser(req, res) {
   }
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
-    req.session.userMinCodes = response.edxUserSchools?.map(el => el.mincode);
+    req.session.userSchoolIds = response.edxUserSchools?.map(el => el.schoolID);
     getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
@@ -619,19 +622,19 @@ async function getEdxUsers(req, res) {
   validateAccessToken(token, res);
 
   checkEDXUserSchoolAdminPermission(req, res);
-  checkEDXUserAccess(req, res, 'SCHOOL', req.query.mincode);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolId);
 
   try {
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
     let filteredResponse = [];
 
-    //if we search by mincode strip out other school and district information for the frontend
-    if (req.query.mincode) {
+    //if we search by schoolId strip out other school and district information for the frontend
+    if (req.query.schoolId) {
       filteredResponse = response.map(schoolUser => {
         return {
           ...schoolUser,
           edxUserDistricts: [],
-          edxUserSchools: schoolUser.edxUserSchools.filter(school => school.mincode === req.query.mincode)
+          edxUserSchools: schoolUser.edxUserSchools.filter(school => school.schoolID === req.query.schoolId)
         };
       });
     }
@@ -671,7 +674,7 @@ async function removeUserSchoolAccess(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
     checkEDXUserSchoolAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolId);
 
     await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
 
@@ -687,15 +690,15 @@ async function relinkUserSchoolAccess(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
     checkEDXUserSchoolAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.mincode);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolId);
 
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
-    let userSchool = edxUserDetails.edxUserSchools.find(school => school.mincode === req.body.params.mincode);
+    let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === req.body.params.schoolId);
     let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
 
     const payload = {
-      mincode: req.body.params.mincode,
-      schoolName: cacheService.getSchoolNameJSONByMincode(req.body.params.mincode).schoolName,
+      schoolId: req.body.params.schoolId,
+      schoolName: cacheService.getSchoolBySchoolId(req.body.params.schoolId)?.schoolName,
       edxActivationRoleCodes: activationRoles,
       firstName: edxUserDetails.firstName,
       lastName: edxUserDetails.lastName,
@@ -748,7 +751,7 @@ function mapEdxUserActivationErrorMessage(message) {
   } else if (msg.includes('This User Activation Link has expired')) {
     return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
   } else if (msg.includes('This user is already associated to the school')) {
-    return 'This user account is already associated to the mincode';
+    return 'This user account is already associated to the schoolId';
   }
   return msg;
 }
@@ -833,30 +836,31 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
-function setMincodesAndRedirect(req, res, activatedMincode) {
-  if (req.session.userMinCodes.length === 1) {
-    setSessionInstituteIdentifiers(req, req.session.userMinCodes[0], 'SCHOOL');
+function setInstituteTypeIdentifierAndRedirect(req, res) {
+  if (req.session.userSchoolIds?.length === 1 && req.session.userDistrictIds?.length === 0) {
+    setSessionInstituteIdentifiers(req, req.session.userSchoolIds[0], 'SCHOOL');
     res.redirect(config.get('server:frontend'));
-  } else if (activatedMincode) {
-    setSessionInstituteIdentifiers(req, activatedMincode, 'SCHOOL');
+  }else if (req.session.userSchoolIds?.length === 0 && req.session.userDistrictIds?.length === 1) {
+    setSessionInstituteIdentifiers(req, req.session.userDistrictIds[0], 'DISTRICT');
     res.redirect(config.get('server:frontend'));
-  } else if (req.session.userMinCodes.length > 1) {
+  } else if (req.session.userSchoolIds?.length > 1 || req.session.userDistrictIds?.length > 1) {
     res.redirect(config.get('server:frontend') + '/institute-selection');
   } else {
     res.redirect(config.get('server:frontend') + '/unauthorized');
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, activatedMincode) {
-  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserMinCodeData]) => {
-    if (edxUserMinCodeData) {
-      req.session.userMinCodes = edxUserMinCodeData.edxUserSchools?.flatMap(el => el.mincode); //this is list of mincodes associated to the user
-      if (Array.isArray(edxUserMinCodeData)) {
-        req.session.edxUserData = edxUserMinCodeData[0];
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
+  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
+    if (edxUserData) {
+      req.session.userSchoolIds = edxUserData.edxUserSchools?.flatMap(el => el.schoolID);//this is list of schoolIds associated to the user
+      req.session.userDistrictIds = edxUserData.edxUserDistricts?.flatMap(el => el.districtID);//this is list of districtIds associated to the user
+      if (Array.isArray(edxUserData)) {
+        req.session.edxUserData = edxUserData[0];
       } else {
-        req.session.edxUserData = edxUserMinCodeData;
+        req.session.edxUserData = edxUserData;
       }
-      setMincodesAndRedirect(req, res, activatedMincode);
+      setInstituteTypeIdentifierAndRedirect(req, res);
     } else {
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
@@ -866,24 +870,30 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
 function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
-
-  let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.mincode === activeInstituteIdentifier);
   let permissionsArray = [];
-  selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
-    permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-  });
+  if(activeInstituteType === 'SCHOOL'){
+    let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolId === activeInstituteIdentifier);
+    selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
+      permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
+    });
+  }else{
+    let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtId === activeInstituteIdentifier);
+    selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
+      permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
+    });
+  }
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
 async function findPrimaryEdxActivationCode(req, res) {
   const token = getAccessToken(req);
-  if (!token && req.session.userMinCodes) {
+  if (!token && req.session.userSchoolIds) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No access token'
     });
   }
   checkEDXUserSchoolAdminPermission(req, res);
-  checkEDXUserAccess(req, res, 'SCHOOL', req.params.mincode);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.params.schoolId);
 
   try {
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);

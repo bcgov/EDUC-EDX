@@ -6,7 +6,7 @@ export default {
   state: () => ({
     statuses: [],
     ministryTeams: [],
-    exchangeMincodes: [],
+    exchangeSchoolIds: [],
     exchange: null,
     schoolRoles: [],
     schoolRolesCopy: [],
@@ -32,8 +32,8 @@ export default {
     setExchange: (state, exchange) => {
       state.exchange = exchange;
     },
-    setExchangeMincodes(state, payload) {
-      state.exchangeMincodes = payload;
+    setExchangeSchoolIds(state, payload) {
+      state.exchangeSchoolIds = payload;
     },
     setSchoolRoles(state, payload){
       state.schoolRoles = JSON.parse(JSON.stringify(payload));
@@ -83,17 +83,17 @@ export default {
         }
       }
     },
-    async getExchangeMincodes({ commit, state}) {
+    async getExchangeSchoolIds({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if(state.exchangeMincodes.length === 0) {
+        if(state.exchangeSchoolIds.length === 0) {
           const query = {
             params: {
               permissionCode : 'SECURE_EXCHANGE',
             }
           };
 
-          const response = await ApiService.getEdxMincodes(query);
-          commit('setExchangeMincodes', response.data);
+          const response = await ApiService.getEdxExchangeSchoolIds(query);
+          commit('setExchangeSchoolIds', response.data);
         }
       }
     },

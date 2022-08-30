@@ -32,7 +32,7 @@
     <Spinner v-if="loadingUsers"/>
     <v-row v-else-if="filteredUsers.length">
       <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
-        <AccessUserCard @refresh="getUsersData" type="school" :mincode="mincode" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
+        <AccessUserCard @refresh="getUsersData" type="school" :schoolId="schoolId" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
       </v-col>
       <v-col xl="4" cols="6" >
         <v-row>
@@ -78,7 +78,7 @@
           <NewUserPage
               :userRoles="schoolRoles"
               :userInfo="userInfo"
-              :mincodeSchoolNames="mincodeSchoolNames"
+              :schools-map="schoolsMap"
               @access-user:messageSent="messageSent"
               @access-user:updateRoles="updateUserRoles"
               @access-user:cancelMessage="closeNewUserModal"
@@ -109,7 +109,7 @@ export default {
   data() {
     return {
       newUserInviteSheet: false,
-      mincode: '',
+      schoolId: '',
       users: [],
       loadingUsers: true,
       filteredUsers: [],
@@ -125,13 +125,13 @@ export default {
     if (this.schoolRoles.length === 0) {
       await this.$store.dispatch('edx/getSchoolExchangeRoles');
     }
-    if(this.mincodeSchoolNames.size === 0) {
-      await this.$store.dispatch('app/getMincodeSchoolNames');
+    if(this.schoolsMap.size === 0) {
+      await this.$store.dispatch('app/getInstitutesData');
     }
   },
   created() {
     this.$store.dispatch('auth/getUserInfo').then(() => {
-      this.mincode = this.userInfo.activeInstituteIdentifier;
+      this.schoolId = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
 
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
@@ -153,7 +153,7 @@ export default {
     },
     getUsersData() {
       this.loadingUsers = true;
-      const payload = {params: {mincode: this.mincode}};
+      const payload = {params: {schoolId: this.schoolId}};
       ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload)
         .then(response => {
           this.filteredUsers = this.sortUserData(response.data);
@@ -163,7 +163,7 @@ export default {
         });
     },
     getCurrentUserSchoolRoles(user) {
-      return user.edxUserSchools.filter(userSchool => userSchool.mincode === this.mincode)[0].edxUserSchoolRoles;
+      return user.edxUserSchools.filter(userSchool => userSchool.schoolId === this.schoolId)[0].edxUserSchoolRoles;
     },
     clearButtonClick() {
       setEmptyInputParams(this.searchFilter);
@@ -207,7 +207,7 @@ export default {
       this.newUserInviteSheet = false; // close the modal window.
     },
     getPrimaryEdxActivationCodeSchool() {
-      ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.mincode}`)
+      ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.schoolId}`)
         .then(response => {
           this.primaryEdxActivationCode = response.data;
         }).catch(e => {
@@ -217,7 +217,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('app', ['mincodeSchoolNames']),
+    ...mapState('app', ['schoolsMap']),
     ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
     ...mapGetters('auth', ['userInfo']),
   }

@@ -123,7 +123,7 @@ export default {
       personalActivationCode: null,
       primaryEdxCode: null,
 
-      instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid mincode'],
+      instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid schoolId'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
       validationCode: null,
@@ -135,7 +135,7 @@ export default {
   computed: {
     createInstituteSpecificCodeHint() {
       if(this.instituteTypeCode === 'SCHOOL') {
-        return 'Please enter the mincode of the school you want to register for';
+        return 'Please enter the schoolId of the school you want to register for';
       }
       return 'Please enter the district number of the district you want to register for';
     },

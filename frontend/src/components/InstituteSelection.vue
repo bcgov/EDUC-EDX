@@ -8,7 +8,7 @@
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
         <v-data-table
-          :items="activeMincodes"
+          :items="activeSchools"
           class="elevation-1"
           hide-default-header
           :headers="headers"
@@ -16,12 +16,12 @@
           hide-default-footer
           :loading="isTableLoading"
         >
-          <template v-slot:item.mincode="{ item }">
-            <v-row @click="selectInstitution(item.mincode)" style="cursor: pointer;">
+          <template v-slot:item.schoolId="{ item }">
+            <v-row @click="selectInstitution(item.schoolId)" style="cursor: pointer;">
               <v-col cols="7" md="10">
                 <v-row>
                   <v-col cols="7" md="10">
-                    <h3 style="color: black;">{{getSchoolName(item.mincode)}}</h3>
+                    <h3 style="color: black;">{{getSchoolName(item.schoolId)}}</h3>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -65,31 +65,33 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['mincodeSchoolNames']),
+    ...mapState('app', ['schoolsMap']),
     ...mapState('auth', ['userInfo']),
-    activeMincodes() {
-      if (!this.userInfo?.userMinCodes) {
+    activeSchools() {
+      const schoolsMap = this.schoolsMap;
+      if (!this.userInfo?.userSchoolIds) {
         return [];
       }
-      return this.userInfo.userMinCodes.map(function (value) {
+      return this.userInfo.userSchoolIds.map(function (value) {
         return {
-          'mincode': value
+          'mincode': schoolsMap.get(value)?.mincode,
+          'schoolId': value
         };
       });
     }
   },
   created() {
     this.isTableLoading = true;
-    this.$store.dispatch('app/getMincodeSchoolNames').finally(() => {
+    this.$store.dispatch('app/getInstitutesData').finally(() => {
       this.isTableLoading = false;
     });
   },
   methods: {
-    getSchoolName(mincode) {
-      return this.mincodeSchoolNames.get(mincode);
+    getSchoolName(schoolId) {
+      return this.schoolsMap.get(schoolId)?.schoolName;
     },
-    selectInstitution(mincode){
-      const payload = {params: {mincode: mincode}};
+    selectInstitution(schoolId){
+      const payload = {params: {schoolId: schoolId}};
       ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
         .then(()=> {
           this.$router.push({name: 'home'});

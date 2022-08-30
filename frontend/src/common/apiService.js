@@ -121,10 +121,11 @@ export default {
   },
   getExchangeStatuses: getCodes(`${ApiRoutes.edx.STATUSES_URL}`),
   getMinistryTeamCodes: getCodes(`${ApiRoutes.edx.MINISTRY_TEAM_URL}`),
-  getMincodeSchoolNames: getCodes(`${ApiRoutes.school.BASE_URL}`),
-  getEdxMincodes: getCodes(`${ApiRoutes.edx.USERS_URL}/user-schools/mincodes`),
+  getSchools: getCodes(`${ApiRoutes.SCHOOL_DATA_URL}`),
+  getEdxExchangeSchoolIds: getCodes(`${ApiRoutes.edx.USERS_URL}/user-schools`),
   getEdxRoles: getCodes(`${ApiRoutes.edx.USERS_URL}/roles`),
   getSecureExchangeDocumentTypes: getCodes(`${ApiRoutes.edx.DOCUMENT_TYPES_URL}`),
+  getDistricts: getCodes(`${ApiRoutes.DISTRICT_DATA_URL}`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

@@ -31,14 +31,14 @@ async function getUserInfo(req, res) {
   }
   let school;
   if(req.session.activeInstituteIdentifier){
-    school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
+    school = cacheService.getSchoolBySchoolId(req.session.activeInstituteIdentifier);
   }
 
-  if (req.session.digitalIdentityData && req.session.userMinCodes && req.session.userMinCodes.length > 0 && req.session.edxUserData) {
+  if (req.session.digitalIdentityData && req.session.userSchoolIds && req.session.userSchoolIds.length > 0 && req.session.edxUserData) {
     let resData = {
       displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
       accountType: userInfo._json.accountType,
-      userMinCodes: req.session.userMinCodes,
+      userSchoolIds: req.session.userSchoolIds,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
@@ -56,7 +56,7 @@ async function getUserInfo(req, res) {
     getDigitalIdData(accessToken, digitalID, correlationID),
     getServerSideCodes(accessToken, correlationID),
     getEdxUserByDigitalId(accessToken, digitalID, correlationID),
-  ]).then(async ([digitalIdData, codesData, edxUserMinCodeData]) => {
+  ]).then(async ([digitalIdData, codesData, edxUserData]) => {
     const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
     if (!identityType) {
       log.error('getIdentityType Error identityTypeCode', digitalIdData.identityTypeCode);
@@ -68,22 +68,22 @@ async function getUserInfo(req, res) {
     if (req && req.session) {
       req.session.digitalIdentityData = digitalIdData;
       req.session.digitalIdentityData.identityTypeLabel = identityType.label;
-      if(Array.isArray(edxUserMinCodeData)){
-        req.session.edxUserData = edxUserMinCodeData[0];
+      if(Array.isArray(edxUserData)){
+        req.session.edxUserData = edxUserData[0];
       }else{
-        req.session.edxUserData = edxUserMinCodeData;
+        req.session.edxUserData = edxUserData;
       }
     } else {
       throw new ServiceError('userInfo error: session does not exist');
     }
 
-    school = cacheService.getSchoolNameJSONByMincode(req.session.activeInstituteIdentifier);
+    school = cacheService.getSchoolBySchoolId(req.session.activeInstituteIdentifier);
 
     let resData = {
       //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
       displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
       accountType: userInfo._json.accountType,
-      userMinCodes: req.session.userMinCodes,
+      userSchoolIds: req.session.userSchoolIds,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
