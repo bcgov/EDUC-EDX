@@ -207,7 +207,7 @@ export default {
       this.newUserInviteSheet = false; // close the modal window.
     },
     getPrimaryEdxActivationCodeSchool() {
-      ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.mincode}`)
+      ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/school/${this.mincode}`)
         .then(response => {
           this.primaryEdxActivationCode = response.data;
         }).catch(e => {
