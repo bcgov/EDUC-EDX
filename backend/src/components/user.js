@@ -31,14 +31,14 @@ async function getUserInfo(req, res) {
   }
   let school;
   if(req.session.activeInstituteIdentifier){
-    school = cacheService.getSchoolBySchoolId(req.session.activeInstituteIdentifier);
+    school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
   }
 
-  if (req.session.digitalIdentityData && req.session.userSchoolIds && req.session.userSchoolIds.length > 0 && req.session.edxUserData) {
+  if (req.session.digitalIdentityData && req.session.userSchoolIDs && req.session.userSchoolIDs.length > 0 && req.session.edxUserData) {
     let resData = {
       displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
       accountType: userInfo._json.accountType,
-      userSchoolIds: req.session.userSchoolIds,
+      userSchoolIDs: req.session.userSchoolIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
@@ -77,13 +77,13 @@ async function getUserInfo(req, res) {
       throw new ServiceError('userInfo error: session does not exist');
     }
 
-    school = cacheService.getSchoolBySchoolId(req.session.activeInstituteIdentifier);
+    school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
 
     let resData = {
       //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
       displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
       accountType: userInfo._json.accountType,
-      userSchoolIds: req.session.userSchoolIds,
+      userSchoolIDs: req.session.userSchoolIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,

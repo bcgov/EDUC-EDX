@@ -9,5 +9,5 @@ router.get('/districts', passport.authenticate('jwt', {session: false}, undefine
 
 router.get('/schools', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getSchools);
 
-router.get('/districts/:districtId', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getDistrictByDistrictId);
+router.get('/districts/:districtID', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getDistrictByDistrictId);
 module.exports = router;

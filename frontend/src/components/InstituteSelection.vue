@@ -16,12 +16,12 @@
           hide-default-footer
           :loading="isTableLoading"
         >
-          <template v-slot:item.schoolId="{ item }">
-            <v-row @click="selectInstitution(item.schoolId)" style="cursor: pointer;">
+          <template v-slot:item.schoolID="{ item }">
+            <v-row @click="selectInstitution(item.schoolID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
                 <v-row>
                   <v-col cols="7" md="10">
-                    <h3 style="color: black;">{{getSchoolName(item.schoolId)}}</h3>
+                    <h3 style="color: black;">{{getSchoolName(item.schoolID)}}</h3>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -69,13 +69,13 @@ export default {
     ...mapState('auth', ['userInfo']),
     activeSchools() {
       const schoolsMap = this.schoolsMap;
-      if (!this.userInfo?.userSchoolIds) {
+      if (!this.userInfo?.userSchoolIDs) {
         return [];
       }
-      return this.userInfo.userSchoolIds.map(function (value) {
+      return this.userInfo.userSchoolIDs.map(function (value) {
         return {
           'mincode': schoolsMap.get(value)?.mincode,
-          'schoolId': value
+          'schoolID': value
         };
       });
     }
@@ -87,11 +87,11 @@ export default {
     });
   },
   methods: {
-    getSchoolName(schoolId) {
-      return this.schoolsMap.get(schoolId)?.schoolName;
+    getSchoolName(schoolID) {
+      return this.schoolsMap.get(schoolID)?.schoolName;
     },
-    selectInstitution(schoolId){
-      const payload = {params: {schoolId: schoolId}};
+    selectInstitution(schoolID){
+      const payload = {params: {schoolID: schoolID}};
       ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
         .then(()=> {
           this.$router.push({name: 'home'});

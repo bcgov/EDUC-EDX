@@ -125,7 +125,7 @@
                             v-show="expandAddStudent"
                             @close:form="showOptions"
                             @addStudent="addSecureExchangeStudent"
-                         :schoolId="userInfo.activeInstituteIdentifier"
+                         :schoolID="userInfo.activeInstituteIdentifier"
                          :additionalStudentAddWarning="additionalStudentAddWarningMessage"
                             @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
                         >

@@ -2,13 +2,13 @@
 const { logApiError, errorResponse} = require('./utils');
 const cacheService = require('./cache-service');
 
-async function getSchoolBySchoolId(req, res) {
+async function getSchoolBySchoolID(req, res) {
   try {
-    if (!req.query.schoolId) {
+    if (!req.query.schoolID) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
       return res.status(200).json(allActiveSchools ? allActiveSchools : []);
     }
-    let school = cacheService.getSchoolBySchoolId(req.query.schoolId);
+    let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
     if (!school) {
       return res.status(200).json();
     }
@@ -20,5 +20,5 @@ async function getSchoolBySchoolId(req, res) {
 }
 
 module.exports = {
-  getSchoolBySchoolId
+  getSchoolBySchoolID
 };

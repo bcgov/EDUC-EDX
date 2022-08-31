@@ -32,7 +32,7 @@
     <Spinner v-if="loadingUsers"/>
     <v-row v-else-if="filteredUsers.length">
       <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
-        <AccessUserCard @refresh="getUsersData" type="school" :schoolId="schoolId" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
+        <AccessUserCard @refresh="getUsersData" type="school" :schoolID="schoolID" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"></AccessUserCard>
       </v-col>
       <v-col xl="4" cols="6" >
         <v-row>
@@ -109,7 +109,7 @@ export default {
   data() {
     return {
       newUserInviteSheet: false,
-      schoolId: '',
+      schoolID: '',
       users: [],
       loadingUsers: true,
       filteredUsers: [],
@@ -131,7 +131,7 @@ export default {
   },
   created() {
     this.$store.dispatch('auth/getUserInfo').then(() => {
-      this.schoolId = this.userInfo.activeInstituteIdentifier;
+      this.schoolID = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
 
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
@@ -153,7 +153,7 @@ export default {
     },
     getUsersData() {
       this.loadingUsers = true;
-      const payload = {params: {schoolId: this.schoolId}};
+      const payload = {params: {schoolID: this.schoolID}};
       ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload)
         .then(response => {
           this.filteredUsers = this.sortUserData(response.data);
@@ -163,7 +163,7 @@ export default {
         });
     },
     getCurrentUserSchoolRoles(user) {
-      return user.edxUserSchools.filter(userSchool => userSchool.schoolId === this.schoolId)[0].edxUserSchoolRoles;
+      return user.edxUserSchools.filter(userSchool => userSchool.schoolID === this.schoolID)[0].edxUserSchoolRoles;
     },
     clearButtonClick() {
       setEmptyInputParams(this.searchFilter);

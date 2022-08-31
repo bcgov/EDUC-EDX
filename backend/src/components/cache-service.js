@@ -10,8 +10,8 @@ let schoolMap = new Map();
 let schools = [];
 let districts = [];
 let districtsMap = new Map();
-let districtsNumber_Id_Map = new Map();
-let mincode_school_id_Map = new Map();
+let districtsNumber_ID_Map = new Map();
+let mincode_school_ID_Map = new Map();
 let activeSchools = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
@@ -27,12 +27,12 @@ const cacheService = {
       const schoolsResponse = await getData(data.accessToken, `${config.get('instituteAPIURL')}/school`);
       schools = []; // reset the value.
       schoolMap.clear();// reset the value.
-      mincode_school_id_Map.clear();
+      mincode_school_ID_Map.clear();
       if (schoolsResponse && schoolsResponse.length > 0) {
         for (const school of schoolsResponse) {
           const schoolObject = generateSchoolObject(school);
-          schoolMap.set(schoolObject.schoolId, schoolObject);
-          mincode_school_id_Map.set(schoolObject.mincode, schoolObject.schoolId);
+          schoolMap.set(schoolObject.schoolID, schoolObject);
+          mincode_school_ID_Map.set(schoolObject.mincode, schoolObject.schoolID);
           schools.push(schoolObject);
           if (isSchoolActive(schoolObject)) {
             activeSchools.push(schoolObject);
@@ -48,8 +48,8 @@ const cacheService = {
   getAllSchoolsJSON() {
     return schools;
   },
-  getSchoolBySchoolId(schoolId) {
-    return schoolMap.get(schoolId);
+  getSchoolBySchoolID(schoolID) {
+    return schoolMap.get(schoolID);
   },
   getAllActiveSchoolsJSON() {
     return activeSchools;
@@ -84,18 +84,18 @@ const cacheService = {
       // reset the value.
       districts = [];
       districtsMap.clear();
-      districtsNumber_Id_Map.clear();
+      districtsNumber_ID_Map.clear();
       if (districtsResponse && districtsResponse.length > 0) {
         for (const district of districtsResponse) {
           const districtData = {
-            districtId: district.districtId,
+            districtID: district.districtId,
             districtNumber: district.districtNumber,
             name: district.displayName,
             districtRegionCode: district.districtRegionCode,
             districtStatusCode: district.districtStatusCode,
           };
           districtsMap.set(district.districtId, districtData);
-          districtsNumber_Id_Map.set(district.districtNumber, district.districtId);
+          districtsNumber_ID_Map.set(district.districtNumber, district.districtId);
           districts.push(districtData);
         }
       }
@@ -108,14 +108,14 @@ const cacheService = {
   getAllDistrictsJSON() {
     return districts;
   },
-  getDistrictJSONByDistrictId(districtId) {
-    return districtsMap.get(districtId);
+  getDistrictJSONByDistrictID(districtID) {
+    return districtsMap.get(districtID);
   },
   getDistrictIdByDistrictNumber(districtNumber) {
-    return districtsNumber_Id_Map.get(districtNumber);
+    return districtsNumber_ID_Map.get(districtNumber);
   },
   getSchoolIdByMincode(mincode) {
-    return mincode_school_id_Map.get(mincode);
+    return mincode_school_ID_Map.get(mincode);
   },
   async loadAllDocumentTypeCodesToMap() {
     log.debug('Loading all document type codes during start up');

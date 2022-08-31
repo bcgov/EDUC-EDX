@@ -119,7 +119,7 @@
             </v-row>
             <v-row v-if="isNewStudentDisplayed" id="addStudentDialog">
               <v-col class="d-flex justify-center">
-                <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :schoolId="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
+                <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :schoolID="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
                 </AddStudent>
               </v-col>
             </v-row>

@@ -21,7 +21,7 @@ export default {
     setSchools(state, schoolsResponse) {
       state.schoolsMap = new Map();
       schoolsResponse.forEach(element => {
-        state.schoolsMap.set(element.schoolId, element);
+        state.schoolsMap.set(element.schoolID, element);
       });
     },
     setAlertNotificationText: (state, alertNotificationText) => {

@@ -15,7 +15,7 @@ function getDistricts(_req, res) {
 function getDistrictByDistrictId(req, res) {
   try {
     const districtId = req.params.districtId;
-    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictId(districtId));
+    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictID(districtId));
   } catch (e) {
     logApiError(e, 'getDistrictByDistrictId', 'Error occurred while attempting to GET district by district Id.');
     return errorResponse(res);

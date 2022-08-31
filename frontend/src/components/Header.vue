@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     hasSeveralSchools() {
-      return this.userInfo?.userSchoolIds?.length > 1;
+      return this.userInfo?.userSchoolIDs?.length > 1;
     }
 
   }
