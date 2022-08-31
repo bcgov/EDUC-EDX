@@ -125,7 +125,7 @@
                             v-show="expandAddStudent"
                             @close:form="showOptions"
                             @addStudent="addSecureExchangeStudent"
-                         :mincode="userInfo.activeInstituteIdentifier"
+                         :schoolID="userInfo.activeInstituteIdentifier"
                          :additionalStudentAddWarning="additionalStudentAddWarningMessage"
                             @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
                         >
@@ -172,7 +172,7 @@ export default {
     DocumentUpload
   },
   props: {
-    mincodeSchoolNames: {
+    schoolsMap: {
       type: Map,
       required: true
     },
@@ -193,11 +193,11 @@ export default {
   },
   computed: {
     ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeMincodes', 'secureExchangeDocuments','secureExchangeStudents'])
+    ...mapState('edx', ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents'])
 
   },
   created() {
-    this.$store.dispatch('edx/getExchangeMincodes');
+    this.$store.dispatch('edx/getExchangeSchoolIds');
     this.$store.dispatch('edx/getMinistryTeams');
     //ensure uploaded messages are cleared out
     this.clearSecureExchangeDocuments();
@@ -212,7 +212,8 @@ export default {
       this.$emit('secure-exchange:cancelMessage');
     },
     getSchoolName() {
-      return this.mincodeSchoolNames.get(this.userInfo.activeInstituteIdentifier) + ' (' + this.userInfo.activeInstituteIdentifier + ')';
+      const school = this.schoolsMap.get(this.userInfo.activeInstituteIdentifier);
+      return school?.schoolName + ' (' + school?.mincode + ')';
     },
     messageSent(){
       this.subject = '';

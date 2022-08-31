@@ -123,7 +123,7 @@ export default {
       personalActivationCode: null,
       primaryEdxCode: null,
 
-      instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid mincode'],
+      instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid schoolID'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
       validationCode: null,

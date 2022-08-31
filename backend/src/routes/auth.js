@@ -51,7 +51,7 @@ router.get('/callback_bceid',
     const accessToken = userInfo.jwt;
     const digitalID = userInfo._json.digitalIdentityID;
     const correlationID = req.session?.correlationID;
-    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, null);
+    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID);
   }
 );
 //a prettier way to handle errors

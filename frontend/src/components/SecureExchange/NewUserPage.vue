@@ -122,7 +122,7 @@ export default {
       type: Array,
       required: true
     },
-    mincodeSchoolNames: {
+    schoolsMap: {
       type: Map,
       required: true
     },
@@ -139,7 +139,7 @@ export default {
       schoolNameMincode: '',
       schoolName: '',
       edxActivationRoleCodes: [],
-      mincode: '',
+      schoolID: '',
       requiredRules: [v => !!v || 'Required'],
       requireRoleRules: [(v) => v.length > 0 || 'Role Selection is required'],
       isValidForm: false,
@@ -161,13 +161,14 @@ export default {
     }
   },
   created() {
-    if (this.mincode === '') {
-      this.mincode = this.userInfo.activeInstituteIdentifier;
+    if (this.schoolID === '') {
+      this.schoolID = this.userInfo.activeInstituteIdentifier;
     }
 
     if (!this.schoolNameMincode) {
-      this.schoolName = this.mincodeSchoolNames.get(this.mincode);
-      this.schoolNameMincode = this.schoolName + ' (' + this.mincode + ')';
+      const school = this.schoolsMap.get(this.schoolID);
+      this.schoolName = school?.schoolName;
+      this.schoolNameMincode = this.schoolName + ' (' + school?.mincode + ')';
     }
   },
   methods: {
@@ -215,7 +216,7 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         email: this.email,
-        mincode: this.mincode,
+        schoolID: this.schoolID,
         edxActivationRoleCodes: this.edxActivationRoleCodes
       };
       ApiService.apiAxios.post(`${ApiRoutes['edx'].NEW_SCHOOL_USER_ACTIVATION_INVITE}`, payload)

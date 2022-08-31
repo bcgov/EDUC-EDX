@@ -4,26 +4,24 @@ export default {
   namespaced: true,
   state: {
     pageTitle: null,
-    mincodeSchoolNames: new Map(),
-    districts : new Map(),
-    districtCodes: new Set(),
+    schoolsMap: new Map(),
+    districtsMap : new Map(),
     alertNotificationText: '',
     alertNotificationQueue: [],
     alertNotification: false
   },
   getters: {
-    mincodeSchoolNamesObjectSorted: state => Object.values(Object.fromEntries(state.mincodeSchoolNames)).map(v => v.toUpperCase()).sort(),
-    districtsObjectSorted: state => Object.values(Object.fromEntries(state.districts)).map(v => v.toUpperCase()).sort(),
+    schoolsMapObjectSorted: state => Object.values(Object.fromEntries(state.schoolsMap)).map(v => v.toUpperCase()).sort(),
+    districtsMapObjectSorted: state => Object.values(Object.fromEntries(state.districtsMap)).map(v => v.toUpperCase()).sort(),
   },
   mutations: {
     setPageTitle: (state, pageTitle) => {
       state.pageTitle = pageTitle;
     },
-    setMincodeSchoolNameAndDistrictCodes(state, mincodeSchoolNameList) {
-      state.mincodeSchoolNames = new Map();
-      mincodeSchoolNameList.forEach(element => {
-        state.mincodeSchoolNames.set(element.mincode, element.schoolName);
-        state.districtCodes.add(element.mincode?.substring(0, 3));
+    setSchools(state, schoolsResponse) {
+      state.schoolsMap = new Map();
+      schoolsResponse.forEach(element => {
+        state.schoolsMap.set(element.schoolID, element);
       });
     },
     setAlertNotificationText: (state, alertNotificationText) => {
@@ -39,20 +37,20 @@ export default {
       }
     },
     setDistricts(state, districtList) {
-      state.districts = new Map();
+      state.districtsMap = new Map();
       districtList.forEach(element => {
-        state.districts.set(element.districtId, element);
+        state.districtsMap.set(element.districtId, element);
       });
     },
   },
   actions: {
-    async getMincodeSchoolNames({ commit, state}) {
+    async getInstitutesData({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
-        if(state.mincodeSchoolNames.size === 0) {
-          const response = await ApiService.getMincodeSchoolNames();
-          commit('setMincodeSchoolNameAndDistrictCodes', response.data);
+        if(state.schoolsMap.size === 0) {
+          const response = await ApiService.getSchools();
+          commit('setSchools', response.data);
         }
-        if(state.districts.size === 0) {
+        if(state.districtsMap.size === 0) {
           const response = await ApiService.getDistricts();
           commit('setDistricts', response.data);
         }

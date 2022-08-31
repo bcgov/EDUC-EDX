@@ -51,8 +51,8 @@ router.put('/exchange/:secureExchangeID/markAs/:readStatus', passport.authentica
 router.post('/users/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeUserSchoolAccess);
 router.post('/users/relink', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, relinkUserSchoolAccess);
 router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', CACHE_KEYS.EDX_MINISTRY_TEAMS));
-router.get('/users/user-schools/mincodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
-  (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools/mincodes`)
+router.get('/users/user-schools', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
+  (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools`)
 );
 router.get('/users/activation-code/primary/:instituteType/:instituteIdentifier', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, findPrimaryEdxActivationCode);
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, activateEdxUser);

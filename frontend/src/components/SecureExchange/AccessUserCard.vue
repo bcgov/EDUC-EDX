@@ -160,7 +160,7 @@ export default {
       type: Array,
       required: true
     },
-    mincode: {
+    schoolID: {
       type: String,
       required: true
     },
@@ -232,7 +232,7 @@ export default {
       const payload = {params:
           {
             edxUserID: this.user.edxUserID,
-            mincode: this.mincode,
+            schoolID: this.schoolID,
             selectedRoles: this.selectedRoles
           }
       };
@@ -247,11 +247,11 @@ export default {
         });
     },
     clickRemoveButton(userToRemove) {
-      let userSchool = userToRemove.edxUserSchools.find(school => school.mincode === this.mincode);
+      let userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.schoolID);
       const payload = {params:
           {
             userToRemove: userToRemove.edxUserID,
-            mincode: this.mincode,
+            schoolID: this.schoolID,
             userSchoolID: userSchool.edxUserSchoolID
           }
       };
@@ -266,11 +266,11 @@ export default {
         });
     },
     clickActionRelinkButton(userToRelink) {
-      let userSchool = userToRelink.edxUserSchools.find(school => school.mincode === this.mincode);
+      let userSchool = userToRelink.edxUserSchools.find(school => school.schoolID === this.schoolID);
       const payload = {params:
           {
             userToRelink: userToRelink.edxUserID,
-            mincode: this.mincode,
+            schoolID: this.schoolID,
             userSchoolID: userSchool.edxUserSchoolID
           }
       };

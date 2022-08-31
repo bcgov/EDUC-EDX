@@ -244,7 +244,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <NewMessagePage
-            :mincodeSchoolNames="mincodeSchoolNames"
+            :schools-map="schoolsMap"
             @secure-exchange:messageSent="messageSent"
             @secure-exchange:cancelMessage="newMessageSheet = false"
           >
@@ -313,7 +313,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['mincodeSchoolNames']),
+    ...mapState('app', ['schoolsMap']),
     ...mapState('edx', ['statuses']),
     ...mapState('edx', ['ministryTeams']),
     secureExchangeStatusCodes() {
@@ -338,7 +338,7 @@ export default {
   created() {
     this.$store.dispatch('edx/getExchangeStatusCodes');
     this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getMincodeSchoolNames');
+    this.$store.dispatch('app/getInstitutesData');
     this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
     this.getExchanges();
   },

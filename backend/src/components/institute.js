@@ -8,21 +8,30 @@ function getDistricts(_req, res) {
   try {
     return res.status(HttpStatus.OK).json(cacheService.getAllDistrictsJSON());
   } catch (e) {
-    logApiError(e, 'getDistricts', 'Error occurred while attempting to GET district entity.');
+    logApiError(e, 'getDistricts', 'Error occurred while attempting to GET all districtsMap.');
     return errorResponse(res);
   }
 }
 function getDistrictByDistrictId(req, res) {
   try {
     const districtId = req.params.districtId;
-    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictId(districtId));
+    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictID(districtId));
   } catch (e) {
-    logApiError(e, 'getSchoolByMincode', 'Error occurred while attempting to GET school entity.');
+    logApiError(e, 'getDistrictByDistrictId', 'Error occurred while attempting to GET district by district Id.');
+    return errorResponse(res);
+  }
+}
+function getSchools(_req, res) {
+  try {
+    return res.status(HttpStatus.OK).json(cacheService.getAllSchoolsJSON());
+  } catch (e) {
+    logApiError(e, 'getSchools', 'Error occurred while attempting to GET all schoolsMap.');
     return errorResponse(res);
   }
 }
 
 module.exports = {
   getDistricts,
-  getDistrictByDistrictId
+  getDistrictByDistrictId,
+  getSchools
 };

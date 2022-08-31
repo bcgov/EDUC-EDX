@@ -4,15 +4,15 @@ const log = require('../components/logger');
 const {getApiCredentials} = require('../components/auth');
 const {getData} = require('../components/utils');
 const retry = require('async-retry');
-const {generateMincodeSchool, isSchoolActive} = require('./schoolUtils');
+const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
 
-let mincodeSchoolMap = new Map();
-let mincodeSchools = [];
+let schoolMap = new Map();
+let schools = [];
 let districts = [];
 let districtsMap = new Map();
-let districtsNumber_Id_Map = new Map();
-let mincode_school_id_Map = new Map();
-let activeMincodeSchools = [];
+let districtsNumber_ID_Map = new Map();
+let mincode_school_ID_Map = new Map();
+let activeSchools = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -20,39 +20,39 @@ let documentTypeCodes = [];
 const cacheService = {
 
   async loadAllSchoolsToMap() {
-    log.debug('Loading all schools during start up');
+    log.debug('Loading all schoolsMap during start up');
     await retry(async () => {
       // if anything throws, we retry
       const data = await getApiCredentials(); // get the tokens first to make api calls.
-      const schools = await getData(data.accessToken, `${config.get('school:apiEndpoint')}`);
-      mincodeSchools = []; // reset the value.
-      mincodeSchoolMap.clear();// reset the value.
-      mincode_school_id_Map.clear();
-      if (schools && schools.length > 0) {
-        for (const school of schools) {
-          const mincodeSchool = generateMincodeSchool(school);
-          mincodeSchoolMap.set(mincodeSchool.mincode, mincodeSchool);
-          mincode_school_id_Map.set(mincodeSchool.mincode, mincodeSchool.schoolId);
-          mincodeSchools.push(mincodeSchool);
-          if (isSchoolActive(mincodeSchool)) {
-            activeMincodeSchools.push(mincodeSchool);
+      const schoolsResponse = await getData(data.accessToken, `${config.get('instituteAPIURL')}/school`);
+      schools = []; // reset the value.
+      schoolMap.clear();// reset the value.
+      mincode_school_ID_Map.clear();
+      if (schoolsResponse && schoolsResponse.length > 0) {
+        for (const school of schoolsResponse) {
+          const schoolObject = generateSchoolObject(school);
+          schoolMap.set(schoolObject.schoolID, schoolObject);
+          mincode_school_ID_Map.set(schoolObject.mincode, schoolObject.schoolID);
+          schools.push(schoolObject);
+          if (isSchoolActive(schoolObject)) {
+            activeSchools.push(schoolObject);
           }
         }
       }
-      log.info(`Loaded ${mincodeSchoolMap.size} schools.`);
-      log.info(`Loaded ${activeMincodeSchools.length} active schools.`);
+      log.info(`Loaded ${schoolMap.size} schools.`);
+      log.info(`Loaded ${activeSchools.length} active schools.`);
     }, {
       retries: 50
     });
   },
   getAllSchoolsJSON() {
-    return mincodeSchools;
+    return schools;
   },
-  getSchoolNameJSONByMincode(mincode) {
-    return mincodeSchoolMap.get(mincode);
+  getSchoolBySchoolID(schoolID) {
+    return schoolMap.get(schoolID);
   },
   getAllActiveSchoolsJSON() {
-    return activeMincodeSchools;
+    return activeSchools;
   },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
@@ -77,25 +77,25 @@ const cacheService = {
     });
   },
   async loadAllDistrictsToMap() {
-    log.debug('loading all districts during start up');
+    log.debug('loading all districtsMap during start up');
     await retry(async () => {
       const data = await getApiCredentials();
       const districtsResponse = await getData(data.accessToken, `${config.get('instituteAPIURL')}/district`);
       // reset the value.
       districts = [];
       districtsMap.clear();
-      districtsNumber_Id_Map.clear();
+      districtsNumber_ID_Map.clear();
       if (districtsResponse && districtsResponse.length > 0) {
         for (const district of districtsResponse) {
           const districtData = {
-            districtId: district.districtId,
+            districtID: district.districtId,
             districtNumber: district.districtNumber,
             name: district.displayName,
             districtRegionCode: district.districtRegionCode,
             districtStatusCode: district.districtStatusCode,
           };
           districtsMap.set(district.districtId, districtData);
-          districtsNumber_Id_Map.set(district.districtNumber, district.districtId);
+          districtsNumber_ID_Map.set(district.districtNumber, district.districtId);
           districts.push(districtData);
         }
       }
@@ -108,14 +108,14 @@ const cacheService = {
   getAllDistrictsJSON() {
     return districts;
   },
-  getDistrictJSONByDistrictId(districtId) {
-    return districtsMap.get(districtId);
+  getDistrictJSONByDistrictID(districtID) {
+    return districtsMap.get(districtID);
   },
   getDistrictIdByDistrictNumber(districtNumber) {
-    return districtsNumber_Id_Map.get(districtNumber);
+    return districtsNumber_ID_Map.get(districtNumber);
   },
   getSchoolIdByMincode(mincode) {
-    return mincode_school_id_Map.get(mincode);
+    return mincode_school_ID_Map.get(mincode);
   },
   async loadAllDocumentTypeCodesToMap() {
     log.debug('Loading all document type codes during start up');

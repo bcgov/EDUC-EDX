@@ -1,12 +1,13 @@
 'use strict';
 const { LocalDate, DateTimeFormatter } = require('@js-joda/core');
 
-function generateMincodeSchool(school) {
+function generateSchoolObject(school) {
   return {
-    mincode: `${school.distNo}${school.schlNo}`,
-    schoolName: school.schoolName,
-    effectiveDate: school.dateOpened,
-    expiryDate: school.dateClosed,
+    schoolID: school.schoolId,
+    mincode: school.mincode,
+    schoolName: school.displayName,
+    effectiveDate: school.openedDate,
+    expiryDate: school.closedDate,
   };
 }
 
@@ -18,6 +19,6 @@ function isSchoolActive(school) {
 }
 
 module.exports = {
-  generateMincodeSchool,
+  generateSchoolObject: generateSchoolObject,
   isSchoolActive
 };
