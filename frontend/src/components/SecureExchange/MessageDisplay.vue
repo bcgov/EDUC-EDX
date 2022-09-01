@@ -346,8 +346,9 @@ export default {
     }
   },
   created() {
-    this.getExchange();
-    this.setIsReadByExchangeContact(true);
+    this.getExchange().then(() => {
+      this.setIsReadByExchangeContact(true);
+    });
   },
   methods: {
     async upload(document) {
@@ -433,7 +434,7 @@ export default {
     },
     getExchange() {
       this.loadingCount += 1;
-      ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
+      return ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
         .then(response => {
           this.secureExchange = response.data;
         })
