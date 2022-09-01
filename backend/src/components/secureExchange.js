@@ -584,11 +584,11 @@ async function activateEdxUser(req, res) {
     }
     payload.districtId = districtId;
   }
-  else if (req.body.mincode) {//this remains as schoolID as user will input schoolID
+  else if (req.body.mincode) {//this remains as mincode as user will input mincode
     schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
     if (!schoolID) {
       incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Invalid schoolID Entered.', HttpStatus.BAD_REQUEST);
+      return errorResponse(res, 'Invalid mincode Entered.', HttpStatus.BAD_REQUEST);
     }
     payload.schoolID = schoolID;
   }
