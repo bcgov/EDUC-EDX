@@ -2,9 +2,14 @@
   <v-container class="containerSetup" fluid>
     <v-row class="pt-0">
       <v-col class="pt-0">
-        <v-row class='d-flex justify-end pb-2'>
+        <v-row class="pt-0">
+          <v-col class="mt-1 d-flex justify-start">
+            <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+            <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+          </v-col>
           <v-col class='d-flex justify-end'>
             <PrimaryButton
+              :iconLeft=true
               :large-icon=true
               icon="mdi-plus"
               id="newMessageBtn"
@@ -458,6 +463,9 @@ export default {
       this.setFilterStatusAll();
       this.resetPageNumber();
       this.getExchanges();
+    },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
     },
     getExchanges() {
       this.loadingTable = true;
