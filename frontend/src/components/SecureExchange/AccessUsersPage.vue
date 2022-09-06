@@ -1,9 +1,12 @@
 <template>
   <v-container>
     <v-row>
-      <v-col :class="['d-sm-flex', 'align-center']">
+      <v-col class="mt-1 d-flex justify-start">
+        <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
+        <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+      </v-col>
+      <v-col class="d-flex justify-end">
         <v-chip
-          class="ma-2"
           :color="getChipColor()"
 
         >
@@ -186,6 +189,9 @@ export default {
         return user.edxUserSchools[0].edxUserSchoolRoles.some(role => role.edxRoleCode === roleName);
       }
       return true;
+    },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);

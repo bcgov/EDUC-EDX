@@ -22,7 +22,7 @@
             <v-row>
               <v-col class="pb-0 pt-0 d-flex justify-start">
                 <v-row>
-                  <v-col cols="12" class="pb-2 pt-2 pr-0" style="text-align: left">
+                  <v-col cols="12" class="pb-0 pt-2 pr-0" style="text-align: left">
                     <h2 id="messageDisplaySubjectHeading" class="subjectHeading">{{ secureExchange.subject }}</h2>
                     <div id="messageDisplayMinistryOwnershipTeamName" class="ministryOwnershipTeamName">{{ secureExchange.ministryOwnershipTeamName }}</div>
                     <div id="messageDisplayCreateDate" class="createDate" style="color: black">{{ secureExchange.createDate }}</div>
@@ -31,10 +31,10 @@
               </v-col>
               <v-col class="pb-0 pt-0 d-flex justify-end">
                 <v-row>
-                  <v-col class="d-flex justify-end">
+                  <v-col class="pb-0 d-flex justify-end">
                     <v-card outlined color="transparent" class="mr-5">
                       <v-row>
-                        <v-col>
+                        <v-col class="pb-0">
                           <v-icon class="ml-n1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" dark>
                             mdi-circle-medium
                           </v-icon>
@@ -52,6 +52,19 @@
                     </v-card>
                   </v-col>
                 </v-row>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-3 d-flex justify-start">
+                <v-icon class="mt-2" small color="#1976d2">mdi-arrow-left</v-icon>
+                <a class="mt-5 ml-1" @click="backButtonClick">Return to Inbox</a>
+              </v-col>
+              <v-col class="d-flex justify-end">
+                <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" v-on:click="clickMarkAsButton" :loading="loadingReadStatus">
+                  <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
+                  <v-icon v-else>mdi-email-open-outline</v-icon>
+                  <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
+                </v-btn>
               </v-col>
             </v-row>
             <v-divider class="divider"></v-divider>
@@ -78,13 +91,6 @@
                   </v-btn>
                 </v-card>
               </v-speed-dial>
-              <v-col class="d-flex justify-end">
-                <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" v-on:click="clickMarkAsButton" :loading="loadingReadStatus">
-                  <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
-                  <v-icon v-else>mdi-email-open-outline</v-icon>
-                  <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
-                </v-btn>
-              </v-col>
             </v-row>
             <v-row v-if="isNewMessageDisplayed">
               <v-card-text id="newMessageCardText" class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10">
@@ -592,6 +598,9 @@ export default {
         .finally(() => {
           this.loadingCount -= 1;
         });
+    },
+    backButtonClick() {
+      this.$router.push({name: 'inbox'});
     },
     sendNewSecureExchangeStudent(student) {
       this.loadingCount += 1;
