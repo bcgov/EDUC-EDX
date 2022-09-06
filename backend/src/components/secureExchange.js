@@ -574,15 +574,15 @@ async function activateEdxUser(req, res) {
     primaryEdxCode: req.body.primaryEdxCode,
     validationCode: req.body.validationCode,
   };
-  let districtId;
+  let districtID;
   let schoolID;
   if (req.body.districtNumber) {
-    districtId = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
-    if (!districtId) {
+    districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
+    if (!districtID) {
       incrementNumberOfRetriesCounter(req,numberOfRetries);
       return errorResponse(res, 'Invalid District Number Entered.', HttpStatus.BAD_REQUEST);
     }
-    payload.districtId = districtId;
+    payload.districtID = districtID;
   }
   else if (req.body.mincode) {//this remains as mincode as user will input mincode
     schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
@@ -593,7 +593,7 @@ async function activateEdxUser(req, res) {
     payload.schoolID = schoolID;
   }
 
-  if(!payload.schoolID && !payload.districtId){
+  if(!payload.schoolID && !payload.districtID){
     return errorResponse(res, 'Either Mincode or District Number should be present', HttpStatus.BAD_REQUEST);
   }
   try {
