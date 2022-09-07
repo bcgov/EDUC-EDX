@@ -69,3 +69,5 @@ export const PAGE_TITLES = Object.freeze({
 
 
 export const MINISTRY_NAME = 'Ministry of Education and Child Care';
+
+export const EDX_SAGA_REQUEST_DELAY_MILLISECONDS = 1000;

@@ -263,7 +263,7 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import NewMessagePage from './NewMessagePage';
 import {mapState} from 'vuex';
@@ -353,7 +353,7 @@ export default {
     },
     messageSent(){
       this.newMessageSheet = !this.newMessageSheet;
-      this.getExchanges();
+      setTimeout(this.getExchanges, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
     },
     getMinistryTeamName(ministryOwnershipTeamId){
       return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
