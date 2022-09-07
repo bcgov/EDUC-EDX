@@ -580,7 +580,7 @@ async function activateEdxUser(req, res) {
     districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
     if (!districtID) {
       incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Invalid District Number Entered.', HttpStatus.BAD_REQUEST);
+      return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
     }
     payload.districtID = districtID;
   }
@@ -588,13 +588,14 @@ async function activateEdxUser(req, res) {
     schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
     if (!schoolID) {
       incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Invalid mincode Entered.', HttpStatus.BAD_REQUEST);
+      return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
     }
     payload.schoolID = schoolID;
   }
 
   if(!payload.schoolID && !payload.districtID){
-    return errorResponse(res, 'Either Mincode or District Number should be present', HttpStatus.BAD_REQUEST);
+    incrementNumberOfRetriesCounter(req,numberOfRetries);
+    return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
   }
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
