@@ -144,7 +144,7 @@
 import PrimaryButton from '@/components/util/PrimaryButton';
 import ApiService from '../../common/apiService';
 import alertMixin from '@/mixins/alertMixin';
-import {ApiRoutes} from '@/utils/constants';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
 import {mapGetters, mapState} from 'vuex';
 
 export default {
@@ -243,7 +243,7 @@ export default {
           this.setFailureAlert('An error occurred while updating user roles. Please try again later.');
           console.log(error);
         }).finally(() => {
-          this.$emit('refresh');
+          setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
         });
     },
     clickRemoveButton(userToRemove) {
