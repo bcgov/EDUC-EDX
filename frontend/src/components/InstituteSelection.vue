@@ -16,19 +16,11 @@
           hide-default-footer
           :loading="isTableLoading"
         >
-          <template v-slot:item.schoolID="{ item }">
+          <template v-slot:item.mincode="{ item }">
             <v-row @click="selectInstitution(item.schoolID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
-                <v-row>
-                  <v-col cols="7" md="10">
-                    <h3 style="color: black;">{{getSchoolName(item.schoolID)}}</h3>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="7" md="10">
-                    <h3 style="color: grey;">{{item.mincode}}</h3>
-                  </v-col>
-                </v-row>
+                <h3 class="mt-1 mb-1" style="color: black;">{{getSchoolName(item.schoolID)}}</h3>
+                <h3 style="color: grey;">{{item.mincode}}</h3>
               </v-col>
             </v-row>
           </template>
@@ -52,6 +44,7 @@ export default {
   },
   data() {
     return {
+      activeSchools: [],
       isTableLoading: true,
       headers: [
         {
@@ -67,23 +60,21 @@ export default {
   computed: {
     ...mapState('app', ['schoolsMap']),
     ...mapState('auth', ['userInfo']),
-    activeSchools() {
-      const schoolsMap = this.schoolsMap;
-      if (!this.userInfo?.userSchoolIDs) {
-        return [];
-      }
-      return this.userInfo.userSchoolIDs.map(function (value) {
-        return {
-          'mincode': schoolsMap.get(value)?.mincode,
-          'schoolID': value
-        };
-      });
-    }
   },
   created() {
     this.isTableLoading = true;
     this.$store.dispatch('app/getInstitutesData').finally(() => {
       this.isTableLoading = false;
+      const schoolsMap = this.schoolsMap;
+      if (!this.userInfo?.userSchoolIDs) {
+        return [];
+      }
+      this.activeSchools = this.userInfo.userSchoolIDs.map(function (value) {
+        return {
+          'mincode': schoolsMap.get(value)?.mincode,
+          'schoolID': value
+        };
+      });
     });
   },
   methods: {
