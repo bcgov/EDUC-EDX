@@ -7,20 +7,44 @@
         <v-row>
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
+        <v-row>
+          <v-col><h2>School Dashboard</h2></v-col>
+        </v-row>
         <v-data-table
           :items="activeSchools"
           class="elevation-1"
           hide-default-header
-          :headers="headers"
+          :headers="schoolHeaders"
           mobile-breakpoint="0"
           hide-default-footer
           :loading="isTableLoading"
         >
           <template v-slot:item.mincode="{ item }">
-            <v-row @click="selectInstitution(item.schoolID)" style="cursor: pointer;">
+            <v-row @click="selectSchool(item.schoolID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
                 <h3 class="mt-1 mb-1" style="color: black;">{{getSchoolName(item.schoolID)}}</h3>
                 <h3 style="color: grey;">{{item.mincode}}</h3>
+              </v-col>
+            </v-row>
+          </template>
+        </v-data-table>
+        <v-row>
+          <v-col><h2>District Dashboard</h2></v-col>
+        </v-row>
+        <v-data-table
+            :items="activeDistricts"
+            class="elevation-1"
+            hide-default-header
+            :headers="districtHeaders"
+            mobile-breakpoint="0"
+            hide-default-footer
+            :loading="isTableLoading"
+        >
+          <template v-slot:item.districtNumber="{ item }">
+            <v-row @click="selectDistrict(item.districtID)" style="cursor: pointer;">
+              <v-col cols="7" md="10">
+                <h3 class="mt-1 mb-1" style="color: black;">{{getDistrictName(item.districtID)}}</h3>
+                <h3 style="color: grey;">{{item.districtNumber}}</h3>
               </v-col>
             </v-row>
           </template>
@@ -45,8 +69,9 @@ export default {
   data() {
     return {
       activeSchools: [],
+      activeDistricts:[],
       isTableLoading: true,
-      headers: [
+      schoolHeaders: [
         {
           text: 'Mincode',
           align: 'start',
@@ -55,10 +80,19 @@ export default {
           width: '200px',
         }
       ],
+      districtHeaders: [
+        {
+          text: 'District Number',
+          align: 'start',
+          sortable: false,
+          value: 'districtNumber',
+          width: '200px',
+        }
+      ],
     };
   },
   computed: {
-    ...mapState('app', ['schoolsMap']),
+    ...mapState('app', ['schoolsMap','districtsMap']),
     ...mapState('auth', ['userInfo']),
   },
   created() {
@@ -66,13 +100,17 @@ export default {
     this.$store.dispatch('app/getInstitutesData').finally(() => {
       this.isTableLoading = false;
       const schoolsMap = this.schoolsMap;
-      if (!this.userInfo?.userSchoolIDs) {
-        return [];
-      }
-      this.activeSchools = this.userInfo.userSchoolIDs.map(function (value) {
+      this.activeSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
         return {
           'mincode': schoolsMap.get(value)?.mincode,
           'schoolID': value
+        };
+      });
+      const districtMap = this.districtsMap;
+      this.activeDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
+        return {
+          'districtNumber': districtMap.get(value)?.districtNumber,
+          'districtID': value
         };
       });
     });
@@ -81,8 +119,18 @@ export default {
     getSchoolName(schoolID) {
       return this.schoolsMap.get(schoolID)?.schoolName;
     },
-    selectInstitution(schoolID){
+    getDistrictName(districtID) {
+      return this.districtsMap.get(districtID)?.name;
+    },
+    selectSchool(schoolID){
       const payload = {params: {schoolID: schoolID}};
+      ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
+        .then(()=> {
+          this.$router.push({name: 'home'});
+        });
+    },
+    selectDistrict(districtID){
+      const payload = {params: {districtID: districtID}};
       ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
         .then(()=> {
           this.$router.push({name: 'home'});

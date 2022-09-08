@@ -21,6 +21,10 @@ async function getEdxUserByDigitalId(accessToken, digitalID, correlationID) {
   }
 }
 
+function isDistrictOrSchoolAlreadyInUserSession(req) {
+  return (req.session.userSchoolIDs && req.session.userSchoolIDs.length > 0) || (req.session.userDistrictIDs && req.session.userDistrictIDs.length > 0);
+}
+
 async function getUserInfo(req, res) {
   const userInfo = getSessionUser(req);
   const correlationID = req.session?.correlationID;
@@ -34,11 +38,12 @@ async function getUserInfo(req, res) {
     school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
   }
 
-  if (req.session.digitalIdentityData && req.session.userSchoolIDs && req.session.userSchoolIDs.length > 0 && req.session.edxUserData) {
+  if (req.session.digitalIdentityData && isDistrictOrSchoolAlreadyInUserSession(req) && req.session.edxUserData) {
     let resData = {
       displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
       accountType: userInfo._json.accountType,
       userSchoolIDs: req.session.userSchoolIDs,
+      userDistrictIDs:req.session.userDistrictIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,
@@ -84,6 +89,7 @@ async function getUserInfo(req, res) {
       displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
       accountType: userInfo._json.accountType,
       userSchoolIDs: req.session.userSchoolIDs,
+      userDistrictIDs: req.session.userDistrictIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: school?.schoolName,

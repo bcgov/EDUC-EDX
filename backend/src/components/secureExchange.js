@@ -600,6 +600,7 @@ async function activateEdxUser(req, res) {
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
+    req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
     getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
@@ -878,7 +879,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
       permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
     });
   }else{
-    let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtId === activeInstituteIdentifier);
+    let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
     selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
       permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
     });
