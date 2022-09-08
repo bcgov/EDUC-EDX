@@ -249,8 +249,8 @@ async function instituteSelection(req, res) {
   if (req.session.userSchoolIDs.includes(req.body.params.schoolID)) {
     setSessionInstituteIdentifiers(req, req.body.params.schoolID, 'SCHOOL');
     return res.status(200).json('OK');
-  }else if(req.session.userDistrictIDs.includes(req.body.params.districtId)){
-    setSessionInstituteIdentifiers(req, req.body.params.districtId, 'DISTRICT');
+  }else if(req.session.userDistrictIDs.includes(req.body.params.districtID)){
+    setSessionInstituteIdentifiers(req, req.body.params.districtID, 'DISTRICT');
     return res.status(200).json('OK');
   } else {
     return res.status(HttpStatus.UNAUTHORIZED).json({
