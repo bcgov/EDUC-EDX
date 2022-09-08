@@ -39,7 +39,7 @@ export default {
     setDistricts(state, districtList) {
       state.districtsMap = new Map();
       districtList.forEach(element => {
-        state.districtsMap.set(element.districtId, element);
+        state.districtsMap.set(element.districtID, element);
       });
     },
   },
