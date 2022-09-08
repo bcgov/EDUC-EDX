@@ -32,7 +32,7 @@
                   Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{instituteIdentifierLabel}}</strong>
                   <br/>
                   <v-icon class="pl-12">mdi-circle-small</v-icon>
-                  Your <strong>{{ instituteTypeLabel }}'s Primary EDX Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
+                  Your <strong>{{ instituteTypeLabel }}'s Primary Activation Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
                   <br/>
                   <v-icon class="pl-12">mdi-circle-small</v-icon>
                   Your <strong>Personal Activation Code</strong> from your EDX invite email
@@ -58,7 +58,7 @@
                   :rules="requiredRules"
                   v-model="primaryEdxCode"
                  :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
-                  :label="`${instituteTypeLabel}'s Primary EDX Code`"
+                  :label="`${instituteTypeLabel}'s Primary Activation Code`"
               >
               </v-text-field>
             </v-col>
