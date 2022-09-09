@@ -1,35 +1,12 @@
 'use strict';
 const { logApiError, errorResponse, getAccessToken, getDataWithParams} = require('./utils');
-//const { logApiError, errorResponse, getData, getAccessToken, getDataWithParams, getCodeTable} = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
-//const retry = require('async-retry');
-//const {getApiCredentials} = require('./auth');
 const config = require('../config');
-//const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
 const {FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
-//const {LocalDateTime} = require('@js-joda/core');
 const HttpStatus = require('http-status-codes');
-//const {CACHE_KEYS} = require('./constants');
 
 async function getSchoolBySchoolID(req, res) {
-  try {
-    if (!req.query.schoolID) {
-      let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
-      return res.status(200).json(allActiveSchools ? allActiveSchools : []);
-    }
-    let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
-    if (!school) {
-      return res.status(200).json();
-    }
-    return res.status(200).json(school);
-  } catch (e) {
-    logApiError(e, 'getSchoolBySchoolId', 'Error occurred while attempting to GET school entity.');
-    return errorResponse(res);
-  }
-}
-
-async function getSchoolLastUpdated(req, res) {
   try {
     if (!req.query.schoolID) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();

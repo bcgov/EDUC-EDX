@@ -39,7 +39,7 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      schoolCodeName: 'home',
+      name: 'home',
       component: Home,
       meta: {
         pageTitle: PAGE_TITLES.DASHBOARD,
