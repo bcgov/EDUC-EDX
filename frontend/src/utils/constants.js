@@ -1,6 +1,7 @@
 const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
+const schoolRoot = baseRoot + '/schools';
 const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
@@ -26,7 +27,10 @@ export const ApiRoutes = Object.freeze({
   USER: baseRoot + '/user',
   CONFIG: baseRoot + '/config',
   school: {
-    BASE_URL: baseRoot + '/schools'
+    BASE_URL: schoolRoot,
+    SCHOOLS_LAST_UPDATED_DATE: schoolRoot + '/lastUpdated',
+    ALL_DIS_SCHOOLS: schoolRoot + '/allSchools',
+    ALL_CACHE_SCHOOLS: schoolRoot + '/allCachedSchools',
   },
   DISTRICT_DATA_URL: districtRequestRoot,
   SCHOOL_DATA_URL: schoolRequestRoot,
@@ -64,7 +68,8 @@ export const PAGE_TITLES = Object.freeze({
   EXCHANGE_USERS: 'User Management',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
-  NEW_USER_INVITE:'New User'
+  NEW_USER_INVITE:'New User',
+  SCHOOLS:'Schools'
 });
 
 

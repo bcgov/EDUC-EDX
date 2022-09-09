@@ -24,6 +24,7 @@ import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
+import SchoolListPage from '@/components/school/SchoolList';
 
 
 Vue.prototype.moment = moment;
@@ -38,7 +39,7 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      schoolCodeName: 'home',
       component: Home,
       meta: {
         pageTitle: PAGE_TITLES.DASHBOARD,
@@ -49,17 +50,17 @@ const router = new VueRouter({
     },
     {
       path: '/error',
-      name: 'error',
+      schoolCodeName: 'error',
       component: ErrorPage
     },
     {
       path: '/logout',
-      name: 'logout',
+      schoolCodeName: 'logout',
       component: Logout
     },
     {
       path: '/unauthorized',
-      name: 'unauthorized',
+      schoolCodeName: 'unauthorized',
       component: Unauthorized,
       meta: {
         requiresAuth: false
@@ -67,17 +68,17 @@ const router = new VueRouter({
     },
     {
       path: '/session-expired',
-      name: 'session-expired',
+      schoolCodeName: 'session-expired',
       component: SessionExpired
     },
     {
       path: '/login-error',
-      name: 'login-error',
+      schoolCodeName: 'login-error',
       component: LoginError
     },
     {
       path: '/institute-selection',
-      name: 'institute-selection',
+      schoolCodeName: 'institute-selection',
       component: InstituteSelection,
       meta: {
         pageTitle: PAGE_TITLES.SELECTION,
@@ -86,12 +87,12 @@ const router = new VueRouter({
     },
     {
       path: '/activation-error',
-      name: 'activation-error',
+      schoolCodeName: 'activation-error',
       component: UserActivationLinkError
     },
     {
       path: '/login',
-      name: 'login',
+      schoolCodeName: 'login',
       component: Login,
       meta: {
         pageTitle: PAGE_TITLES.LOGIN,
@@ -128,7 +129,7 @@ const router = new VueRouter({
     },
     {
       path: '/access',
-      name: 'exchangeAccess',
+      schoolCodeName: 'exchangeAccess',
       component: AccessUsersPage,
       meta: {
         pageTitle: PAGE_TITLES.EXCHANGE_USERS,
@@ -138,7 +139,7 @@ const router = new VueRouter({
     },
     {
       path: '*',
-      name: 'notfound',
+      schoolCodeName: 'notfound',
       redirect: '/',
       meta: {
         requiresAuth: true
@@ -146,7 +147,7 @@ const router = new VueRouter({
     },
     {
       path: '/token-expired',
-      name: 'backend-session-expired',
+      schoolCodeName: 'backend-session-expired',
       component: BackendSessionExpired
     },
     {
@@ -155,7 +156,7 @@ const router = new VueRouter({
       children: [
         {
           path: 'inbox',
-          name: 'inbox',
+          schoolCodeName: 'inbox',
           component: ExchangePage,
           meta: {
             pageTitle: PAGE_TITLES.EXCHANGE,
@@ -176,7 +177,7 @@ const router = new VueRouter({
         },
         {
           path: 'newExchange',
-          name: 'newExchange',
+          schoolCodeName: 'newExchange',
           component: NewMessagePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_EXCHANGE,
@@ -186,10 +187,20 @@ const router = new VueRouter({
         },
         {
           path: 'newUserInvite',
-          name: 'newUserInvite',
+          schoolCodeName: 'newUserInvite',
           component: NewUserInvitePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_USER_INVITE,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          }
+        },
+        {
+          path: 'schools',
+          schoolCodeName: 'schools',
+          component: SchoolListPage,
+          meta: {
+            pageTitle: PAGE_TITLES.SCHOOLS,
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }
