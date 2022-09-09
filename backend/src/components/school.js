@@ -127,7 +127,6 @@ function validateAccessToken(token, res) {
 
 module.exports = {
   getSchoolBySchoolID,
-  getSchoolLastUpdated,
   getAllCachedSchools,
   getAllSchoolDetails
 };
