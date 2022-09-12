@@ -5,6 +5,7 @@ const {getApiCredentials} = require('../components/auth');
 const {getData} = require('../components/utils');
 const retry = require('async-retry');
 const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
+const {generateDistrictObject, isDistrictActive} = require('./districtUtils');
 
 let schoolMap = new Map();
 let schools = [];
@@ -13,6 +14,7 @@ let districtsMap = new Map();
 let districtsNumber_ID_Map = new Map();
 let mincode_school_ID_Map = new Map();
 let activeSchools = [];
+let activeDistricts = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -28,6 +30,7 @@ const cacheService = {
       schools = []; // reset the value.
       schoolMap.clear();// reset the value.
       mincode_school_ID_Map.clear();
+      activeSchools = [];
       if (schoolsResponse && schoolsResponse.length > 0) {
         for (const school of schoolsResponse) {
           const schoolObject = generateSchoolObject(school);
@@ -83,23 +86,22 @@ const cacheService = {
       const districtsResponse = await getData(data.accessToken, `${config.get('instituteAPIURL')}/district`);
       // reset the value.
       districts = [];
+      activeDistricts = [];
       districtsMap.clear();
       districtsNumber_ID_Map.clear();
       if (districtsResponse && districtsResponse.length > 0) {
         for (const district of districtsResponse) {
-          const districtData = {
-            districtID: district.districtId,
-            districtNumber: district.districtNumber,
-            name: district.displayName,
-            districtRegionCode: district.districtRegionCode,
-            districtStatusCode: district.districtStatusCode,
-          };
+          const districtData = generateDistrictObject(district);
           districtsMap.set(district.districtId, districtData);
           districtsNumber_ID_Map.set(district.districtNumber, district.districtId);
           districts.push(districtData);
+          if(isDistrictActive(districtData)){
+            activeDistricts.push(districtData);
+          }
         }
       }
       log.info(`loaded ${districtsMap.size} districts.`);
+      log.info(`loaded ${activeDistricts.length} active districts.`);
     }, {
       retries: 50
     });
@@ -107,6 +109,9 @@ const cacheService = {
   },
   getAllDistrictsJSON() {
     return districts;
+  },
+  getAllActiveDistrictsJSON(){
+    return activeDistricts;
   },
   getDistrictJSONByDistrictID(districtID) {
     return districtsMap.get(districtID);

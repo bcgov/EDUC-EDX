@@ -32,7 +32,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     log.error('Error loading roles during boot .', e);
   });
   cacheService.loadAllDistrictsToMap().then(() => {
-    log.info('Loaded districtsMap data to memory');
+    log.info('Loaded districts data to memory');
   }).catch((e) => {
     log.error('Error loading districtsMap data codes during boot .', e);
   });

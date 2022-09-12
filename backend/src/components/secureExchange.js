@@ -22,6 +22,8 @@ const {CACHE_KEYS} = require('./constants');
 const {getApiCredentials} = require('./auth');
 const cacheService = require('./cache-service');
 const user = require('../components/user');
+const {isSchoolActive} = require('./schoolUtils');
+const {isDistrictActive} = require('./districtUtils');
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
@@ -855,8 +857,12 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
 function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
   user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
     if (edxUserData) {
-      req.session.userSchoolIDs = edxUserData.edxUserSchools?.flatMap(el => el.schoolID);//this is list of schoolIDs associated to the user
-      req.session.userDistrictIDs = edxUserData.edxUserDistricts?.flatMap(el => el.districtID);//this is list of districtIDs associated to the user
+      req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el)=>{
+        return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
+      }).flatMap(el =>el.schoolID);//this is list of active schoolIDs associated to the user
+      req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el)=>{
+        return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
+      }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
       if (Array.isArray(edxUserData)) {
         req.session.edxUserData = edxUserData[0];
       } else {

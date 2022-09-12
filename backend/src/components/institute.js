@@ -4,9 +4,10 @@ const HttpStatus = require('http-status-codes');
 const cacheService = require('./cache-service');
 
 
-function getDistricts(_req, res) {
+function getDistricts(req, res) {
   try {
-    return res.status(HttpStatus.OK).json(cacheService.getAllDistrictsJSON());
+    const districts = req.query.active === '1' ? cacheService.getAllActiveDistrictsJSON() : cacheService.getAllDistrictsJSON();
+    return res.status(HttpStatus.OK).json(districts);
   } catch (e) {
     logApiError(e, 'getDistricts', 'Error occurred while attempting to GET all districtsMap.');
     return errorResponse(res);
@@ -14,16 +15,17 @@ function getDistricts(_req, res) {
 }
 function getDistrictByDistrictId(req, res) {
   try {
-    const districtId = req.params.districtId;
-    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictID(districtId));
+    const districtID = req.params.districtID;
+    return res.status(HttpStatus.OK).json(cacheService.getDistrictJSONByDistrictID(districtID));
   } catch (e) {
     logApiError(e, 'getDistrictByDistrictId', 'Error occurred while attempting to GET district by district Id.');
     return errorResponse(res);
   }
 }
-function getSchools(_req, res) {
+function getSchools(req, res) {
   try {
-    return res.status(HttpStatus.OK).json(cacheService.getAllSchoolsJSON());
+    let schools = req.query.active === '1' ? cacheService.getAllActiveSchoolsJSON() : cacheService.getAllSchoolsJSON();
+    return res.status(HttpStatus.OK).json(schools);
   } catch (e) {
     logApiError(e, 'getSchools', 'Error occurred while attempting to GET all schoolsMap.');
     return errorResponse(res);
