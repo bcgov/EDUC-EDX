@@ -217,7 +217,7 @@ async function createExchange(req, res) {
 
     const payload = {
       contactIdentifier: req.session.activeInstituteIdentifier,
-      secureExchangeContactTypeCode: 'SCHOOL',
+      secureExchangeContactTypeCode: req.session.activeInstituteType,
       ministryOwnershipTeamID: message.ministryOwnershipTeamID,
       subject: message.subject,
       secureExchangeStatusCode: 'OPEN',
