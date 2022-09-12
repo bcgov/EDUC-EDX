@@ -126,6 +126,8 @@ export default {
   getEdxRoles: getCodes(`${ApiRoutes.edx.USERS_URL}/roles`),
   getSecureExchangeDocumentTypes: getCodes(`${ApiRoutes.edx.DOCUMENT_TYPES_URL}`),
   getDistricts: getCodes(`${ApiRoutes.DISTRICT_DATA_URL}`),
+  getActiveSchools: getCodes(`${ApiRoutes.SCHOOL_DATA_URL}?active=true`),
+  getActiveDistricts: getCodes(`${ApiRoutes.DISTRICT_DATA_URL}?active=true`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

@@ -13,7 +13,7 @@
                       <h4 id="error_text" style="color:red;">Unauthorized Access</h4>
                     </v-card-title>
                     <v-card-text id="error_message">
-                      <span style="color: black; font-weight: bold">You do not have required roles to perform actions on this page.</span>
+                      <span style="color: black; font-weight: bold">You do not have access to EDX. Contact your school or district administrator to activate your access.</span>
                     </v-card-text>
                 </v-card>
                   </v-col>

@@ -7,11 +7,11 @@
         <v-row>
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="activeUserSchools.length>0">
           <v-col><h2>School Dashboard</h2></v-col>
         </v-row>
-        <v-data-table
-          :items="activeSchools"
+        <v-data-table v-if="activeUserSchools.length>0"
+          :items="activeUserSchools"
           class="elevation-1"
           hide-default-header
           :headers="schoolHeaders"
@@ -28,11 +28,11 @@
             </v-row>
           </template>
         </v-data-table>
-        <v-row>
+        <v-row v-if="activeUserDistricts.length>0">
           <v-col><h2>District Dashboard</h2></v-col>
         </v-row>
-        <v-data-table
-            :items="activeDistricts"
+        <v-data-table v-if="activeUserDistricts.length>0"
+            :items="activeUserDistricts"
             class="elevation-1"
             hide-default-header
             :headers="districtHeaders"
@@ -68,8 +68,8 @@ export default {
   },
   data() {
     return {
-      activeSchools: [],
-      activeDistricts:[],
+      activeUserSchools: [],
+      activeUserDistricts:[],
       isTableLoading: true,
       schoolHeaders: [
         {
@@ -92,22 +92,22 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['schoolsMap','districtsMap']),
+    ...mapState('app', ['activeSchoolsMap','activeDistrictsMap']),
     ...mapState('auth', ['userInfo']),
   },
   created() {
     this.isTableLoading = true;
     this.$store.dispatch('app/getInstitutesData').finally(() => {
       this.isTableLoading = false;
-      const schoolsMap = this.schoolsMap;
-      this.activeSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
+      const schoolsMap = this.activeSchoolsMap;
+      this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
         return {
           'mincode': schoolsMap.get(value)?.mincode,
           'schoolID': value
         };
       });
-      const districtMap = this.districtsMap;
-      this.activeDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
+      const districtMap = this.activeDistrictsMap;
+      this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
         return {
           'districtNumber': districtMap.get(value)?.districtNumber,
           'districtID': value
@@ -117,10 +117,10 @@ export default {
   },
   methods: {
     getSchoolName(schoolID) {
-      return this.schoolsMap.get(schoolID)?.schoolName;
+      return this.activeSchoolsMap.get(schoolID)?.schoolName;
     },
     getDistrictName(districtID) {
-      return this.districtsMap.get(districtID)?.name;
+      return this.activeDistrictsMap.get(districtID)?.name;
     },
     selectSchool(schoolID){
       const payload = {params: {schoolID: schoolID}};
