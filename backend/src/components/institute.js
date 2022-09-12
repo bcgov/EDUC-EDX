@@ -6,7 +6,7 @@ const cacheService = require('./cache-service');
 
 function getDistricts(req, res) {
   try {
-    const districts = req.query.active === '1' ? cacheService.getAllActiveDistrictsJSON() : cacheService.getAllDistrictsJSON();
+    const districts = req.query.active === 'true' ? cacheService.getAllActiveDistrictsJSON() : cacheService.getAllDistrictsJSON();
     return res.status(HttpStatus.OK).json(districts);
   } catch (e) {
     logApiError(e, 'getDistricts', 'Error occurred while attempting to GET all districtsMap.');
@@ -24,7 +24,7 @@ function getDistrictByDistrictId(req, res) {
 }
 function getSchools(req, res) {
   try {
-    let schools = req.query.active === '1' ? cacheService.getAllActiveSchoolsJSON() : cacheService.getAllSchoolsJSON();
+    let schools = req.query.active === 'true' ? cacheService.getAllActiveSchoolsJSON() : cacheService.getAllSchoolsJSON();
     return res.status(HttpStatus.OK).json(schools);
   } catch (e) {
     logApiError(e, 'getSchools', 'Error occurred while attempting to GET all schoolsMap.');
