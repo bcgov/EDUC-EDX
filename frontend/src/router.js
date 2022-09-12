@@ -24,6 +24,7 @@ import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
+import SchoolListPage from '@/components/school/SchoolList';
 
 
 Vue.prototype.moment = moment;
@@ -190,6 +191,16 @@ const router = new VueRouter({
           component: NewUserInvitePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_USER_INVITE,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          }
+        },
+        {
+          path: 'schools',
+          name: 'schools',
+          component: SchoolListPage,
+          meta: {
+            pageTitle: PAGE_TITLES.SCHOOLS,
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }
