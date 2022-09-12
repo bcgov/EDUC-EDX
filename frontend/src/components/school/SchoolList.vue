@@ -333,7 +333,7 @@ export default {
     },
     openSchool(schoolId){
       console.log('OPEN_SCHOOL_ID:= ' + schoolId);
-      this.$router.push({schoolCodeName: 'viewSchool', params: {schoolID: schoolId}});
+      this.$router.push({name: 'viewSchool', params: {schoolID: schoolId}});
     },
     resetPageNumber(){
       this.pageNumber = 1;
