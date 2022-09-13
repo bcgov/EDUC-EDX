@@ -116,7 +116,6 @@ export default {
   created() {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
-    this.getSchoolContactsLastUpdate();
   },
   methods: {
     omit(object, key) {
@@ -154,12 +153,12 @@ export default {
       //The school tile should only show if the userInfo.activeInstituteType == DISTRICT
       this.loadingTable = true;
       this.requests = [];
-
+/*
       this.headerSearchParams.subject = this.subjectFilter;
       this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
       this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
-      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
-      console.log(this.userInfo);
+      this.headerSearchParams.sequenceNumber = this.messageIDFilter;*/
+
       ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
 
         let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
@@ -180,7 +179,6 @@ export default {
       let lastUpdate = '';
 
       for (const contact of school.contacts){
-        console.log(contact);
         if(contact.updateDate !== null) {
           if (contact.updateDate > lastUpdate) {
             lastUpdate = contact.updateDate;
