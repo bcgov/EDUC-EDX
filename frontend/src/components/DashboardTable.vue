@@ -45,6 +45,25 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-card class="mt-0 mb-5" height="100%" width="100%" outlined rounded @click="redirectToSchoolContacts()">
+      <v-row class="px-4">
+        <v-col md="5">
+          <div>
+            <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+              mdi-account-multiple-outline
+            </v-icon>
+          </div>
+        </v-col>
+        <v-col class="mt-4">
+          <v-card-title class="pa-0">
+            <h4>
+              <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</v-row>
+            </h4>
+          </v-card-title>
+          <v-row class="mr-4"><span> Last updated {{schoolContactsLastUpdateDate}}</span></v-row>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 </template>
 <script>
@@ -77,6 +96,7 @@ export default {
       exchangeCount: '',
       unreadExchangeCount: '',
       schoolsLastUpdateDate: '',
+      schoolContactsLastUpdateDate: '',
       headerSearchParams: {
         sequenceNumber: '',
         contact: '',
@@ -134,20 +154,11 @@ export default {
       this.loadingTable = true;
       this.requests = [];
 
-      this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-      this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
-      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
-      console.log(this.userInfo);
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOLS_LAST_UPDATED_DATE, {
-        params: {
-          schoolID: this.userInfo.activeInstituteIdentifier,
-        }
-      }).then(response => {
-        let rawDate = response.data.lastUpdated === null ? response.data.effectiveDate : response.data.lastUpdated;
-        //const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
-        //this.schoolsLastUpdateDate = new Date(rawDate).toLocaleDateString('en-us', options);
+      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+
+        let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
         this.schoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
+        this.getSchoolContactsLastUpdate(response.data);
       }).catch(error => {
         //to do add the alert framework for error or success
         console.error(error);
@@ -157,6 +168,24 @@ export default {
     },
     redirectToSchools(){
       router.push('/schools');
+    },
+    getSchoolContactsLastUpdate(school){
+      this.schoolContactsLastUpdateDate = '';
+      let lastUpdate = '';
+
+      for (const contact of school.contacts){
+        if(contact.updateDate !== null) {
+          if (contact.updateDate > lastUpdate) {
+            lastUpdate = contact.updateDate;
+          }
+        } else {
+          lastUpdate = contact.effectiveDate;
+        }
+      }
+      this.schoolContactsLastUpdateDate = new Date(lastUpdate).toISOString().slice(0,10).replace(/-/g,'/');
+    },
+    redirectToSchoolContacts(){
+      router.push('/schoolContacts');
     }
   }
 };

@@ -31,6 +31,7 @@ export const ApiRoutes = Object.freeze({
     SCHOOLS_LAST_UPDATED_DATE: schoolRoot + '/lastUpdated',
     ALL_DIS_SCHOOLS: schoolRoot + '/allSchools',
     ALL_CACHE_SCHOOLS: schoolRoot + '/allCachedSchools',
+    SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
   },
   DISTRICT_DATA_URL: districtRequestRoot,
   SCHOOL_DATA_URL: schoolRequestRoot,
@@ -70,7 +71,8 @@ export const PAGE_TITLES = Object.freeze({
   SELECTION:'Institute Selection',
   LOGIN:'Login',
   NEW_USER_INVITE:'New User',
-  SCHOOLS:'Schools'
+  SCHOOLS:'Schools',
+  SCHOOL_CONTACTS:'School Contacts'
 });
 
 
