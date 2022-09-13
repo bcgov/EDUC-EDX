@@ -10,6 +10,8 @@ export default {
     exchange: null,
     schoolRoles: [],
     schoolRolesCopy: [],
+    districtRoles: [],
+    districtRolesCopy: [],
     secureExchangeDocumentTypes: [],
     secureExchangeDocuments: [],
     fileRequirements: [],
@@ -40,6 +42,12 @@ export default {
     },
     setSchoolRolesCopy(state, payload){
       state.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
+    },
+    setDistrictRoles(state, payload){
+      state.districtRoles = JSON.parse(JSON.stringify(payload));
+    },
+    setDistrictRolesCopy(state, payload){
+      state.districtRolesCopy = JSON.parse(JSON.stringify(payload));
     },
     setMinistryTeams: (state, ministryTeams) => {
       state.ministryTeams = ministryTeams;
@@ -111,7 +119,7 @@ export default {
         }
       }
     },
-    async getEdxDistrictRoles({ commit, state}) {
+    async getDistrictExchangeRoles({ commit, state}) {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
         if (state.districtRoles.length === 0) {
           const params = {

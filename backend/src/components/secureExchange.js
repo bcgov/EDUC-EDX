@@ -625,8 +625,13 @@ async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
 
-  checkEDXUserSchoolAdminPermission(req, res);
-  checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
+  if(req.query.schoolID){
+    checkEDXUserSchoolAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
+  }else{
+    checkEDXUserDistrictAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
+  }
 
   try {
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
@@ -639,6 +644,14 @@ async function getEdxUsers(req, res) {
           ...schoolUser,
           edxUserDistricts: [],
           edxUserSchools: schoolUser.edxUserSchools.filter(school => school.schoolID === req.query.schoolID)
+        };
+      });
+    }else if(req.query.districtID){
+      filteredResponse = response.map(districtUser => {
+        return {
+          ...districtUser,
+          edxUserDistricts: districtUser.edxUserDistricts.filter(district => district.districtID === req.query.districtID),
+          edxUserSchools: []
         };
       });
     }
@@ -895,13 +908,16 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
 
 async function findPrimaryEdxActivationCode(req, res) {
   const token = getAccessToken(req);
-  if (!token && req.session.userSchoolIDs) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
-  }
+  validateAccessToken(token, res);
+
   let instituteType = req.params.instituteType.toUpperCase();
-  checkEDXUserSchoolAdminPermission(req, res);
+
+  if(instituteType === 'SCHOOL'){
+    checkEDXUserSchoolAdminPermission(req, res);
+  }else{
+    checkEDXUserDistrictAdminPermission(req, res);
+  }
+
   checkEDXUserAccess(req, res, instituteType, req.params.instituteIdentifier);
 
   try {
@@ -918,6 +934,16 @@ async function findPrimaryEdxActivationCode(req, res) {
 
 function checkEDXUserSchoolAdminPermission(req, res) {
   let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
+  if (!permission) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  }
+}
+
+function checkEDXUserDistrictAdminPermission(req, res) {
+  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_DISTRICT_ADMIN');
   if (!permission) {
     return res.status(HttpStatus.FORBIDDEN).json({
       status: HttpStatus.FORBIDDEN,
