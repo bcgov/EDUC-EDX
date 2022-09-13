@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams} = require('./utils');
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData} = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
 const config = require('../config');
@@ -31,6 +31,21 @@ async function getAllCachedSchools(req, res){
     logApiError(e, 'getAllCachedSchools', 'Error occurred while attempting to GET school entity.');
     return errorResponse(res);
   }
+}
+
+async function getFullSchoolDetails(req, res){
+  const token = getAccessToken(req);
+  validateAccessToken(token);
+
+  return Promise.all([
+    getData(token, `${config.get('instituteAPIURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
+  ])
+    .then(async ([dataResponse]) => {
+      return res.status(200).json(dataResponse);
+    }).catch(e => {
+      log.error(e, 'getFullSchoolDetails', 'Error getting school details by ID from API.');
+      return errorResponse(res);
+    });
 }
 
 async function getAllSchoolDetails(req, res){
@@ -128,5 +143,6 @@ function validateAccessToken(token, res) {
 module.exports = {
   getSchoolBySchoolID,
   getAllCachedSchools,
-  getAllSchoolDetails
+  getAllSchoolDetails,
+  getFullSchoolDetails
 };

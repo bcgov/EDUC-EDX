@@ -25,6 +25,7 @@ import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
 import SchoolListPage from '@/components/school/SchoolList';
+import SchoolContactsPage from '@/components/school/SchoolContacts';
 import AccessDistrictUsersPage from '@/components/SecureExchange/AccessDistrictUsersPage';
 
 
@@ -212,6 +213,16 @@ const router = new VueRouter({
           component: SchoolListPage,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOLS,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          }
+        },
+        {
+          path: 'schoolContacts',
+          name: 'schoolContacts',
+          component: SchoolContactsPage,
+          meta: {
+            pageTitle: PAGE_TITLES.SCHOOL_CONTACTS,
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }
