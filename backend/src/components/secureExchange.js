@@ -601,6 +601,7 @@ async function activateEdxUser(req, res) {
   }
   try {
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
+    log.info('User Activation Sucessful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
     getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
@@ -841,20 +842,26 @@ const createSearchParamObject = (key, value) => {
 };
 
 function setInstituteTypeIdentifierAndRedirect(req, res) {
+  log.info('Set InstituteTypeIdentifier And Redirect called');
   if (req.session.userSchoolIDs?.length === 1 && req.session.userDistrictIDs?.length === 0) {
+    log.info('User associated to 1 School Redirecting to School Dashboard');
     setSessionInstituteIdentifiers(req, req.session.userSchoolIDs[0], 'SCHOOL');
     res.redirect(config.get('server:frontend'));
   }else if (req.session.userSchoolIDs?.length === 0 && req.session.userDistrictIDs?.length === 1) {
+    log.info('User associated to 1 District Redirecting to District Dashboard');
     setSessionInstituteIdentifiers(req, req.session.userDistrictIDs[0], 'DISTRICT');
     res.redirect(config.get('server:frontend'));
   } else if (req.session.userSchoolIDs?.length > 1 || req.session.userDistrictIDs?.length > 1) {
+    log.info('User associated to multiple schools and or districts redirecting to Institute Selection');
     res.redirect(config.get('server:frontend') + '/institute-selection');
   } else {
+    log.info('User has no associated schools or districts redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
   }
 }
 
 function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
+  log.info('User Set Up and Redirect called');
   user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
     if (edxUserData) {
       req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el)=>{
@@ -870,6 +877,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
       }
       setInstituteTypeIdentifierAndRedirect(req, res);
     } else {
+      log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
   });
