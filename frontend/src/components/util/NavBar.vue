@@ -126,12 +126,17 @@ export default {
         },
         {
           title: PAGE_TITLES.ADMINISTRATION,
-          authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN),
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN) || this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN),
           items: [
             {
-              title: 'User Management',
-              link: 'exchangeAccess',
+              title: 'School User Management',
+              link: 'schoolAccess',
               authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
+            },
+            {
+              title: 'District User Management',
+              link: 'districtAccess',
+              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
             }
           ],
         }

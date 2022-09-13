@@ -20,11 +20,12 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay';
 import ExchangePage from './components/SecureExchange/ExchangeInbox';
 import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
-import AccessUsersPage from '@/components/SecureExchange/AccessUsersPage';
+import AccessSchoolUsersPage from '@/components/SecureExchange/AccessSchoolUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
 import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
 import SchoolListPage from '@/components/school/SchoolList';
+import AccessDistrictUsersPage from '@/components/SecureExchange/AccessDistrictUsersPage';
 
 
 Vue.prototype.moment = moment;
@@ -128,13 +129,23 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/access',
-      name: 'exchangeAccess',
-      component: AccessUsersPage,
+      path: '/schoolAccess',
+      name: 'schoolAccess',
+      component: AccessSchoolUsersPage,
       meta: {
-        pageTitle: PAGE_TITLES.EXCHANGE_USERS,
+        pageTitle: PAGE_TITLES.SCHOOL_EXCHANGE_USERS,
         requiresAuth: true,
         permission: 'EDX_USER_SCHOOL_ADMIN'
+      }
+    },
+    {
+      path: '/districtAccess',
+      name: 'districtAccess',
+      component: AccessDistrictUsersPage,
+      meta: {
+        pageTitle: PAGE_TITLES.DISTRICT_EXCHANGE_USERS,
+        requiresAuth: true,
+        permission: 'EDX_USER_DISTRICT_ADMIN'
       }
     },
     {

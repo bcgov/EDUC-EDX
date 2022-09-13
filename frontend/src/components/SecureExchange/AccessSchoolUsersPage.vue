@@ -107,7 +107,7 @@ import NewUserPage from '@/components/SecureExchange/NewUserPage';
 import Spinner from '@/components/common/Spinner';
 
 export default {
-  name: 'AccessUsersPage',
+  name: 'AccessSchoolUsersPage',
   components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner},
   data() {
     return {
