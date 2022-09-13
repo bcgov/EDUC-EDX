@@ -241,7 +241,8 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && authStore.state.userInfo?.userSchoolIDs?.length > 0 && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          console.info('User Info here!!', JSON.stringify(authStore.state.userInfo));
+          if (to.meta.permission && (authStore.state.userInfo?.userSchoolIDs?.length > 0 || authStore.state.userInfo?.userDistrictIDs?.length > 0) && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/institute-selection');
           }else if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
