@@ -625,12 +625,12 @@ async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token, res);
 
-  if(req.query.districtID){
-    checkEDXUserDistrictAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
-  }else{
+  if(req.query.schoolID){
     checkEDXUserSchoolAdminPermission(req, res);
     checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
+  }else{
+    checkEDXUserDistrictAdminPermission(req, res);
+    checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
   }
 
   try {
