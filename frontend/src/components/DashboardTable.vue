@@ -1,77 +1,108 @@
 <template>
-  <div>
-    <v-card class="mt-0 mb-5" height="100%" width="100%" outlined rounded @click="redirectToInbox()">
-      <v-row class="px-4">
-        <v-col md="5">
-          <div v-if="unreadExchangeCount > 0">
-            <v-badge bordered top color="rgb(0, 51, 102)" circle offset-x="23" offset-y="30">
-              <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                mdi-email-outline
-              </v-icon>
-            </v-badge>
-          </div>
-          <div v-else >
-            <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-              mdi-email-outline
-            </v-icon>
-          </div>
+  <v-row class="d-flex justify-center">
+    <v-col md="5" sm="10">
+      <v-row no-gutters>
+        <v-col cols="6">
+          <v-card class="mt-0 mb-5" width="22em"  outlined rounded @click="redirectToInbox()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div v-if="unreadExchangeCount > 0">
+                  <v-badge bordered top color="rgb(0, 51, 102)" circle offset-x="23" offset-y="30">
+                    <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                      mdi-email-outline
+                    </v-icon>
+                  </v-badge>
+                </div>
+                <div v-else >
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-email-outline
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-card-title class="pa-0">
+                  <h4>
+                    <v-row class="dashboard-title mr-4">{{ title }}</v-row>
+                  </h4>
+                </v-card-title>
+                <v-row><span> {{exchangeCount}} messages, {{unreadExchangeCount}} unread</span></v-row>
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
-        <v-col class="mt-4 mr-1">
-          <v-card-title class="pa-0">
-            <h4>
-              <v-row class="dashboard-title mr-4">{{ title }}</v-row>
-            </h4>
-          </v-card-title>
-          <v-row class="mr-4"><span> {{exchangeCount}} messages, {{unreadExchangeCount}} unread</span></v-row>
+        <v-col cols="6">
+          <v-card v-if="isLoggedInDistrictUser" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-domain
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-card-title class="pa-0">
+                  <h4>
+                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.DISTRICT_DETAILS }}</v-row>
+                  </h4>
+                </v-card-title>
+                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="6">
+          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-account-multiple-outline
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-card-title class="pa-0">
+                  <h4>
+                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</v-row>
+                  </h4>
+                </v-card-title>
+                <v-row><span> Last updated {{schoolContactsLastUpdateDate}}</span></v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="6">
+          <v-card v-if="isLoggedInDistrictUser" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-library
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-card-title class="pa-0">
+                  <h4>
+                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOLS }}</v-row>
+                  </h4>
+                </v-card-title>
+                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
       </v-row>
-    </v-card>
-    <v-card class="mt-0 mb-5" height="100%" width="100%" outlined rounded @click="redirectToSchools()">
-      <v-row class="px-4">
-        <v-col md="5">
-          <div>
-            <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-              mdi-library
-            </v-icon>
-          </div>
-        </v-col>
-        <v-col class="mt-4">
-          <v-card-title class="pa-0">
-            <h4>
-              <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOLS }}</v-row>
-            </h4>
-          </v-card-title>
-          <v-row class="mr-4"><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
-        </v-col>
-      </v-row>
-    </v-card>
-    <v-card class="mt-0 mb-5" height="100%" width="100%" outlined rounded @click="redirectToSchoolContacts()">
-      <v-row class="px-4">
-        <v-col md="5">
-          <div>
-            <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-              mdi-account-multiple-outline
-            </v-icon>
-          </div>
-        </v-col>
-        <v-col class="mt-4">
-          <v-card-title class="pa-0">
-            <h4>
-              <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</v-row>
-            </h4>
-          </v-card-title>
-          <v-row class="mr-4"><span> Last updated {{schoolContactsLastUpdateDate}}</span></v-row>
-        </v-col>
-      </v-row>
-    </v-card>
-  </div>
+    </v-col>
+
+  </v-row>
 </template>
 <script>
 import omit from 'lodash/omit';
 import ApiService from '../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
+import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
-import {PAGE_TITLES} from '@/utils/constants';
 import {mapGetters} from 'vuex';
 
 export default {
@@ -111,7 +142,10 @@ export default {
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
-    }
+    },
+    isLoggedInDistrictUser(){
+      return this.userInfo.activeInstituteType === 'DISTRICT';
+    },
   },
   created() {
     this.getExchangesCount();
@@ -168,6 +202,9 @@ export default {
     },
     redirectToSchools(){
       router.push('/schools');
+    },
+    redirectToDistrictDetails(){
+      router.push('/district/' + this.userInfo.activeInstituteIdentifier);
     },
     getSchoolContactsLastUpdate(school){
       this.schoolContactsLastUpdateDate = '';

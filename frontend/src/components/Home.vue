@@ -22,20 +22,22 @@
     </article>
   </v-container>
 
-  <v-container fluid v-else class="card-size margin-initial">
-    <v-row class="pb-6 tile-size">
-      <v-col cols="2" md="5" class="tile-size">
-        <DashboardTable  v-if="isAuthenticated && !isLoadingExchange" :title="PAGE_TITLES.EXCHANGE" colour="#CED6E2"
+  <v-container fluid v-else class="d-flex justify-center">
+    <v-row>
+      <v-col cols="12" class="d-flex justify-center">
+        <DashboardTable v-if="isAuthenticated && !isLoadingExchange" :title="PAGE_TITLES.EXCHANGE" colour="#CED6E2"
                          :tableData="exchangeData" id="schoolInboxCard"></DashboardTable>
         <v-container v-else-if="isLoadingExchange" class="tile-size" fluid>
           <article class="top-banner full-height">
-            <v-row align="center" justify="center">
-              <v-progress-circular
-                  :size="70"
-                  :width="7"
-                  color="primary"
-                  indeterminate
-              ></v-progress-circular>
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <v-progress-circular
+                    :size="70"
+                    :width="7"
+                    color="primary"
+                    indeterminate
+                ></v-progress-circular>
+              </v-col>
             </v-row>
           </article>
         </v-container>
@@ -67,15 +69,12 @@ export default {
     };
   },
   mounted()  {
-    //TODO: replace this with API call and add ROLES for secure exchange messaging
-    //if (this.EXCHANGE_ROLE) {
     this.exchangeData.push({
       title: 'School Inbox',
       button: {route: '/inbox', text: 'View Inbox'},
     });
 
     setTimeout(() => this.isLoadingExchange = false, 1000);
-    //}
   }
 };
 </script>
@@ -83,7 +82,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .top-banner{
-  background-color: aliceblue;
   background-size: cover;
   align-items: center;
   display: flex;

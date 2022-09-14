@@ -1,117 +1,119 @@
 <template>
   <v-container class="containerSetup" fluid>
-    <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
-      <v-col cols="12" md="3" class="d-flex justify-start">
+    <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
+      <v-col cols="12" md="3">
         <v-select id="name-text-field" label="School Code & Name" item-value="mincode" item-text="schoolCodeName"
                   :items="schoolSearchNames" v-model="schoolCodeNameFilter" clearable></v-select>
       </v-col>
-      <v-col cols="12" md="2" class="d-flex justify-start">
+      <v-col cols="12" md="2">
         <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-text="name"
                   item-value="code" label="Status"></v-select>
       </v-col>
-      <v-col cols="12" md="2" class="d-flex justify-start">
+      <v-col cols="12" md="2">
         <v-select id="status-select-field" clearable :items="schoolCategories" v-model="schoolCategoryFilter" item-text="name"
                   item-value="code" label="School Category"></v-select>
       </v-col>
-      <v-col cols="12" md="3" class="d-flex justify-start">
+      <v-col cols="12" md="1">
         <v-select id="status-select-field" clearable :items="schoolFacilityTypes" v-model="schoolFacilityTypeFilter" item-text="name"
                   item-value="code" label="Facility Type"></v-select>
       </v-col>
-      <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
+      <v-col cols="12" md="1">
         <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-        <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" @click.native="searchButtonClick"
+      </v-col>
+      <v-col cols="12" md="2">
+        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
                        :disabled="!searchEnabled()"/>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-data-table
-            :items-per-page.sync="pageSize"
-            :page.sync="pageNumber"
-            :headers="headers"
-            :footer-props="{
-                  'items-per-page-options': itemsPerPageOptions
-                }"
-            :items="schools"
-            :loading="loadingTable"
-            :server-items-length="totalSchools"
-            class="elevation-1"
-            hide-default-header
-            mobile-breakpoint="0"
-        >
+        <v-row>
+          <v-col>
+            <v-data-table
+                :items-per-page.sync="pageSize"
+                :page.sync="pageNumber"
+                :headers="headers"
+                :footer-props="{
+                      'items-per-page-options': itemsPerPageOptions
+                    }"
+                :items="schools"
+                :loading="loadingTable"
+                :server-items-length="totalSchools"
+                class="elevation-1"
+                hide-default-header
+                mobile-breakpoint="0"
+            >
 
-          <template v-slot:item.secureExchangeStatusCode="{ item }">
-              <v-row @click="openSchool(item.schoolId)" style="cursor: pointer;">
-                <v-col cols="12" lg="4" xl="5" class="pb-0 pt-0">
-                  <v-row class="mb-n4">
-                    <v-col cols="12" class="pb-2 pt-2 pr-0">
-                      <span class="subjectHeading">{{ item.mincode }} - {{ item.displayName }}</span>
+              <template v-slot:item.secureExchangeStatusCode="{ item }">
+                  <v-row @click="openSchool(item.schoolId)" style="cursor: pointer;">
+                    <v-col cols="4" lg="4" class="pb-0 pt-0">
+                      <v-row class="mb-n4">
+                        <v-col cols="12" class="pb-2 pt-2 pr-0">
+                          <span class="subjectHeading">{{ item.mincode }} - {{ item.displayName }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="pb-1 pr-0">
+                          <span class="ministryLine" style="color: black">{{
+                              item.schoolCategory
+                            }} | {{ item.facilityType }}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="8" lg="5" xl="3" class="pb-0 pt-0">
+                      <v-row>
+                        <v-col cols="8" class="pb-1 pr-0">
+                          <v-icon class="pb-1" :color="getStatusColor(item.status)" right dark>
+                            mdi-circle-medium
+                          </v-icon>
+                          <span class="statusCodeLabel">{{ item.status }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" class="pb-1 pr-0">
+                          <v-icon aria-hidden="false">
+                            mdi-phone-outline
+                          </v-icon>
+                          <span class="statusCodeLabel"> {{ item.phoneNumber }}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="12" lg="5" xl="3" style="text-align: start" class="pb-0 pt-0">
+                      <v-row>
+                        <v-col cols="12" class="pb-1 pr-0">
+                          <v-icon aria-hidden="false">
+                            mdi-at
+                          </v-icon>
+                          <span class="subjectHeading">{{ item.email }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="pb-1 pr-0">
+                          <v-icon aria-hidden="false">
+                            mdi-account-outline
+                          </v-icon>
+                          <span class="ministryLine" style="color: black">{{item.principalsName}}</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col lg="2" md="3" sm="4">
+                      <v-row class="mb-1" no-gutters>
+                        <v-col>
+                          <PrimaryButton width="100%" secondary icon="mdi-newspaper-variant-outline" text="School Details"></PrimaryButton>
+                        </v-col>
+                      </v-row>
+                      <v-row no-gutters>
+                        <v-col>
+                          <PrimaryButton width="100%" secondary icon="mdi-account-multiple-outline" text="School Contacts"></PrimaryButton>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col cols="12" class="pb-1 pr-0">
-                      <span class="ministryLine" style="color: black">{{
-                          item.schoolCategory
-                        }} | {{ item.facilityType }}</span>
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col cols="6" lg="5" xl="2" class="pb-0 pt-0 mt-2">
-                  <v-row>
-                    <v-col cols="8" class="pb-1 pr-0">
-                      <v-icon class="pb-1" :color="getStatusColor(item.status)" right dark>
-                        mdi-circle-medium
-                      </v-icon>
-                      <span class="statusCodeLabel">{{ item.status }}</span>
-                    </v-col>
-                  </v-row>
-                  <v-row no-gutters>
-                    <v-col cols="8" class="pb-1 pr-0">
-                      <v-icon class="mb-1" aria-hidden="false">
-                        mdi-phone-outline
-                      </v-icon>
-                      <span class="statusCodeLabel"> {{ item.phoneNumber }}</span>
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col cols="6" lg="5" xl="3" style="text-align: start" class="pb-0 pt-0 mt-2">
-                  <v-row>
-                    <v-col cols="12" class="pb-1 pr-0">
-                      <v-icon class="mr-1" aria-hidden="false">
-                        mdi-at
-                      </v-icon>
-                      <span class="statusCodeLabel">{{ item.email }}</span>
-                    </v-col>
-                  </v-row>
-                  <v-row no-gutters>
-                    <v-col cols="12" class="pb-1 pr-0">
-                      <v-icon class="mb-1 mr-1" aria-hidden="false">
-                        mdi-account-outline
-                      </v-icon>
-                      <span class="statusCodeLabel" style="color: black">{{item.principalsName}}</span>
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col lg="2" md="3" sm="4">
-                  <v-row class="mb-2" no-gutters>
-                    <v-col>
-                      <PrimaryButton width="100%" secondary icon="mdi-newspaper-variant-outline" text="School Details"></PrimaryButton>
-                    </v-col>
-                  </v-row>
-                  <v-row no-gutters>
-                    <v-col>
-                      <PrimaryButton width="100%" secondary icon="mdi-account-multiple-outline" text="School Contacts"></PrimaryButton>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-          </template>
+              </template>
 
-          <template v-slot:no-data>There are no schools.</template>
+              <template v-slot:no-data>There are no schools.</template>
 
-        </v-data-table>
-      </v-col>
-    </v-row>
+            </v-data-table>
+          </v-col>
+        </v-row>
   </v-container>
 </template>
 
@@ -125,7 +127,7 @@ import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
 
 export default {
-  name: 'SchoolListPage',
+  name: 'DistrictDetailsPage',
   mixins: [alertMixin],
   components: {
     PrimaryButton,
@@ -189,7 +191,6 @@ export default {
     this.setSchoolStatuses();
     this.setSchoolCategories();
     this.setSchoolFacilityTypes();
-    this.getSchoolDropDownItems();
     this.getSchoolList();
     
   },
@@ -203,23 +204,6 @@ export default {
     },
     setSchoolFacilityTypes() {
       this.schoolFacilityTypes = [{name: 'Standard School', code:'STANDARD'},{name: 'Offshore School', code:'OFFSHORE'},{name: 'Distance Learning', code:'DIST_LEARN'}];
-    },
-    getSchoolDropDownItems(){
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_CACHE_SCHOOLS, {
-        params: {}
-      }).then(response => {
-        let schoolList = response.data;
-        for(const school of schoolList){
-          var schoolItem = {
-            schoolCodeName: school.mincode +' - '+school.schoolName,
-            mincode: school.mincode,
-          };
-          this.schoolSearchNames.push(schoolItem);
-        }
-      }).catch(error => {
-        //to do add the alert framework for error or success
-        console.error(error);
-      });
     },
     getSchoolList() {
       this.loadingTable = true;
@@ -444,8 +428,8 @@ export default {
 }
 
 .containerSetup{
-  padding-right: 24em !important;
-  padding-left: 24em !important;
+  padding-right: 32em !important;
+  padding-left: 32em !important;
 }
 
 @media screen and (max-width: 1950px) {

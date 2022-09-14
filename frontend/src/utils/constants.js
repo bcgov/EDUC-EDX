@@ -72,6 +72,7 @@ export const PAGE_TITLES = Object.freeze({
   LOGIN:'Login',
   NEW_USER_INVITE:'New User',
   SCHOOLS:'Schools',
+  DISTRICT_DETAILS:'District Details',
   SCHOOL_CONTACTS:'School Contacts'
 });
 
