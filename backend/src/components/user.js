@@ -33,9 +33,16 @@ async function getUserInfo(req, res) {
       message: 'No session data'
     });
   }
-  let school;
-  if(req.session.activeInstituteIdentifier){
-    school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
+  let activeInstituteTitle;
+  switch (req.session.activeInstituteType) {
+  case 'SCHOOL':
+    activeInstituteTitle = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier)?.schoolName;
+    break;
+  case 'DISTRICT':
+    activeInstituteTitle = cacheService.getDistrictJSONByDistrictID(req.session.activeInstituteIdentifier)?.name;
+    break;
+  default:
+    break;
   }
 
   if (req.session.digitalIdentityData && isDistrictOrSchoolAlreadyInUserSession(req) && req.session.edxUserData) {
@@ -46,7 +53,7 @@ async function getUserInfo(req, res) {
       userDistrictIDs:req.session.userDistrictIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
-      activeInstituteTitle: school?.schoolName,
+      activeInstituteTitle: activeInstituteTitle,
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       edxUserID: req.session.edxUserData?.edxUserID,
@@ -82,8 +89,6 @@ async function getUserInfo(req, res) {
       throw new ServiceError('userInfo error: session does not exist');
     }
 
-    school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
-
     let resData = {
       //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
       displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
@@ -92,7 +97,7 @@ async function getUserInfo(req, res) {
       userDistrictIDs: req.session.userDistrictIDs,
       activeInstituteIdentifier: req.session.activeInstituteIdentifier,
       activeInstituteType: req.session.activeInstituteType,
-      activeInstituteTitle: school?.schoolName,
+      activeInstituteTitle: activeInstituteTitle,
       identityTypeLabel: identityType.label,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       edxUserID: req.session.edxUserData?.edxUserID,
