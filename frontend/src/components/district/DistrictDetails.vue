@@ -51,7 +51,7 @@
             <v-icon class="mb-1" aria-hidden="false">
               mdi-web
             </v-icon>
-            <span class="fontBolder">{{ district.website }}</span>
+            <a class="fontBolder" target="_blank" :href="district.website">{{ district.website }}</a>
           </v-col>
         </v-row>
         <v-row>
