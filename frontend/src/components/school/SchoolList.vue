@@ -210,7 +210,7 @@ export default {
       }).then(response => {
         let schoolList = response.data;
         for(const school of schoolList){
-          var schoolItem = {
+          let schoolItem = {
             schoolCodeName: school.mincode +' - '+school.schoolName,
             mincode: school.mincode,
           };
