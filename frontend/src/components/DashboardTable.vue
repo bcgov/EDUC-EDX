@@ -30,8 +30,8 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols="6">
-          <v-card v-if="isLoggedInDistrictUser" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
+        <v-col v-if="isLoggedInDistrictUser" cols="6">
+          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
