@@ -33,7 +33,7 @@
             <v-icon class="mb-1" aria-hidden="false">
               mdi-phone-outline
             </v-icon>
-            <span class="fontBolder">{{ district.phoneNumber }}</span>
+            <span class="fontBolder">{{ formatPhoneNumber(district.phoneNumber) }}</span>
           </v-col>
           <v-col lg="3" sm="4">
             <v-icon class="mb-1" aria-hidden="false">
@@ -45,7 +45,7 @@
             <v-icon class="mb-1" aria-hidden="false">
               mdi-fax
             </v-icon>
-            <span class="fontBolder">{{ district.faxNumber }}</span>
+            <span class="fontBolder">{{ formatPhoneNumber(district.faxNumber) }}</span>
           </v-col>
           <v-col  lg="3" sm="4">
             <v-icon class="mb-1" aria-hidden="false">
@@ -150,6 +150,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from '@/components/util/PrimaryButton';
+import {formatPhoneNumber} from '@/utils/format';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -171,6 +172,7 @@ export default {
     this.getDistrict();
   },
   methods: {
+    formatPhoneNumber,
     getDistrict() {
       this.loading = true;
 
@@ -218,7 +220,7 @@ export default {
           return physicalAddress[0][item];
         }
       }
-    },
+    }
   }
 };
 </script>
