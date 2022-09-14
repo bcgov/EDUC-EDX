@@ -95,12 +95,28 @@
                 <v-col lg="2" md="3" sm="4">
                   <v-row class="mb-2" no-gutters>
                     <v-col>
-                      <PrimaryButton width="100%" secondary icon="mdi-newspaper-variant-outline" text="School Details"></PrimaryButton>
+                      <v-btn id="schoolDetails"
+                             color="#003366"
+                             width="100%"
+                             outlined
+                             class="mt-0 pt-0 filterButton"
+                      >
+                        <v-icon color="#003366" style="margin-top: 0.07em" class="ml-n5 mr-1" right dark>mdi-newspaper-variant-outline</v-icon>
+                        <span class="ml-1">School Details</span>
+                      </v-btn>
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
                     <v-col>
-                      <PrimaryButton width="100%" secondary icon="mdi-account-multiple-outline" text="School Contacts"></PrimaryButton>
+                      <v-btn id="schoolContacts"
+                             color="#003366"
+                             width="100%"
+                             outlined
+                             class="mt-0 pt-0 filterButton"
+                      >
+                        <v-icon color="#003366" style="margin-top: 0.07em" class="ml-n1 mr-1" right dark>mdi-account-multiple-outline</v-icon>
+                        <span class="ml-1">School Contacts</span>
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -390,7 +406,7 @@ export default {
 }
 
 .filterButton.v-btn--outlined {
-  border: thin solid #ebedef;
+  border: thin solid #003366 !important;
 }
 
 .v-radio >>> .v-icon {
@@ -422,6 +438,10 @@ export default {
 
 .v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
   display: none;
+}
+
+.filterButton.v-btn--outlined {
+  border: thin solid #ebedef;
 }
 
 @media screen and (max-width: 801px){
