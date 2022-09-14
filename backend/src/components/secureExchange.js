@@ -10,7 +10,10 @@ const {
   SecureExchangeStatuses,
   errorResponse,
   getCodeTable,
-  getDataWithParams
+  getDataWithParams,
+  checkEDXUserAccess,
+  checkEDXUserDistrictAdminPermission,
+  checkEDXUserSchoolAdminPermission
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
@@ -937,35 +940,6 @@ async function findPrimaryEdxActivationCode(req, res) {
     }
     log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
     return errorResponse(res);
-  }
-}
-
-function checkEDXUserSchoolAdminPermission(req, res) {
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-  if (!permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
-  }
-}
-
-function checkEDXUserDistrictAdminPermission(req, res) {
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_DISTRICT_ADMIN');
-  if (!permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
-  }
-}
-
-function checkEDXUserAccess(req, res, instituteType, instituteIdentifier) {
-  if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have access this information'
-    });
   }
 }
 

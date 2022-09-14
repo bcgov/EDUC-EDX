@@ -25,6 +25,7 @@ const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const edxRouter = require('./routes/edx');
 const schoolRouter = require('./routes/schools');
+const districtRouter = require('./routes/districts');
 const studentRouter = require('./routes/student');
 const instituteRouter = require('./routes/institute');
 const configRouter = require('./routes/config');
@@ -169,9 +170,10 @@ apiRouter.use('/auth', authRouter);
 apiRouter.use('/user', userRouter);
 apiRouter.use('/edx', edxRouter);
 apiRouter.use('/schools', schoolRouter);
+apiRouter.use('/districts', districtRouter);
 apiRouter.use('/config',configRouter);
 apiRouter.use('/student', studentRouter);
-apiRouter.use('/institute',instituteRouter)
+apiRouter.use('/institute',instituteRouter);
 
 //Handle 500 error
 app.use((err, _req, res, next) => {
