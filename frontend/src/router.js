@@ -27,6 +27,7 @@ import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
 import SchoolListPage from '@/components/school/SchoolList';
 import SchoolContactsPage from '@/components/school/SchoolContacts';
 import AccessDistrictUsersPage from '@/components/SecureExchange/AccessDistrictUsersPage';
+import DistrictDetails from '@/components/district/DistrictDetails';
 
 
 Vue.prototype.moment = moment;
@@ -218,6 +219,16 @@ const router = new VueRouter({
           }
         },
         {
+          path: 'district/:districtID',
+          name: 'district',
+          component: DistrictDetails,
+          meta: {
+            pageTitle: PAGE_TITLES.DISTRICT_DETAILS,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          }
+        },
+        {
           path: 'schoolContacts',
           name: 'schoolContacts',
           component: SchoolContactsPage,
@@ -241,7 +252,6 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          console.info('User Info here!!', JSON.stringify(authStore.state.userInfo));
           if (to.meta.permission && (authStore.state.userInfo?.userSchoolIDs?.length > 0 || authStore.state.userInfo?.userDistrictIDs?.length > 0) && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/institute-selection');
           }else if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
