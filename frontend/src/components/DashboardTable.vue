@@ -145,11 +145,12 @@ export default {
     },
     isLoggedInDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
-    },
+    }
   },
   created() {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
+    this.getSchoolContactsLastUpdate();
   },
   methods: {
     omit(object, key) {
@@ -183,22 +184,33 @@ export default {
     redirectToInbox(){
       router.push('/inbox');
     },
+    isThisLoggedInDistrictUser(){
+      return this.userInfo.activeInstituteType === 'DISTRICT';
+    },
     getSchoolsLastUpdateDate() {
-      //The school tile should only show if the userInfo.activeInstituteType == DISTRICT
-      this.loadingTable = true;
-      this.requests = [];
+      if(this.isThisLoggedInDistrictUser()){
+        this.loadingTable = true;
+        this.requests = [];
+        for(const schoolId of this.userInfo.userSchoolIDs) {
 
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+          ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${schoolId}`).then(response => {
 
-        let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
-        this.schoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-        this.getSchoolContactsLastUpdate(response.data);
-      }).catch(error => {
-        //to do add the alert framework for error or success
-        console.error(error);
-      }).finally(() => {
-        this.loadingTable = false;
-      });
+            let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
+            let thisSchoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+
+            if(thisSchoolsLastUpdateDate !== null) {
+              if (thisSchoolsLastUpdateDate > this.schoolsLastUpdateDate) {
+                this.schoolsLastUpdateDate = thisSchoolsLastUpdateDate;
+              }
+            }
+          }).catch(error => {
+            //to do add the alert framework for error or success
+            console.error(error);
+          }).finally(() => {
+            this.loadingTable = false;
+          });
+        }
+      }
     },
     redirectToSchools(){
       router.push('/schools');
@@ -206,20 +218,27 @@ export default {
     redirectToDistrictDetails(){
       router.push('/district/' + this.userInfo.activeInstituteIdentifier);
     },
-    getSchoolContactsLastUpdate(school){
-      this.schoolContactsLastUpdateDate = '';
-      let lastUpdate = '';
+    getSchoolContactsLastUpdate(){
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
 
-      for (const contact of school.contacts){
-        if(contact.updateDate !== null) {
-          if (contact.updateDate > lastUpdate) {
-            lastUpdate = contact.updateDate;
+          for (const contact of response.data.contacts) {
+            let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
+            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+
+            if (thisContactLastUpdated !== null) {
+              if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
+                this.schoolContactsLastUpdateDate = thisContactLastUpdated;
+              }
+            }
           }
-        } else {
-          lastUpdate = contact.effectiveDate;
-        }
+        }).catch(error => {
+          //to do add the alert framework for error or success
+          console.error(error);
+        }).finally(() => {
+          this.loadingTable = false;
+        });
       }
-      this.schoolContactsLastUpdateDate = new Date(lastUpdate).toISOString().slice(0,10).replace(/-/g,'/');
     },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
