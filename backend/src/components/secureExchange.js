@@ -770,7 +770,7 @@ function mapEdxUserActivationErrorMessage(message) {
   } else if (msg.includes('This Activation Code has expired')) {
     return 'Your activation code has expired. Please contact your administrator for a new activation code.';
   } else if (msg.includes('This User Activation Link has expired')) {
-    return 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
+    return 'Your activation link has expired. Please contact your administrator for a new activation code.';
   } else if (msg.includes('This user is already associated to the school')) {
     return 'This user account is already associated to the school';
   }
@@ -797,7 +797,7 @@ async function verifyActivateUserLink(req, res) {
     if (e.status === 400) {
       msg = 'Invalid link clicked. Please click the link provided in your email';
     } else if (e.status === 410) {
-      msg = 'Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.';
+      msg = 'Your activation link has expired. Please contact your administrator for a new activation code.';
     }
     log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
     return res.redirect(baseUrl + `/activation-error?errorMessage= ${msg}`);
