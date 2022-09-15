@@ -237,7 +237,7 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-import {formatPhoneNumber, formatDateTime} from '@/utils/format';
+import {formatPhoneNumber} from '@/utils/format';
 
 export default {
   name: 'SchoolDetailsPage',
