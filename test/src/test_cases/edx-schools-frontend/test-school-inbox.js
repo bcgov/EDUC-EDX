@@ -4,10 +4,11 @@
 import { base_url } from '../../config/constants';
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
-import { createSecureExchange } from "../../services/edx-api-service";
+import {createSecureExchange} from '../../services/edx-api-service';
 import { deleteSecureExchange } from "../../services/edx-api-service";
 import { findAllPaginated } from "../../services/edx-api-service";
 import { createTestExchange } from "../../helpers/secure-exchange-utils";
+const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
@@ -22,6 +23,7 @@ let testExchange = createTestExchange();
 
 fixture `school-inbox`
     .before(async t => {
+        await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
        getToken().then(async (data) => {
             token = data.access_token;
             // make sure there are no artifact messages from previous runs 
@@ -37,6 +39,7 @@ fixture `school-inbox`
         // find all test automation artifacts produced and remove them
         log.info("Performing tear-down operation");
         await deleteMessagesBySubject(testExchangeSubject);
+        await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
         // log in as studentAdmin

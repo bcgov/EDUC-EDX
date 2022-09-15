@@ -3,7 +3,7 @@
     <v-col md="5" sm="10">
       <v-row no-gutters>
         <v-col cols="6">
-          <v-card class="mt-0 mb-5" width="22em"  outlined rounded @click="redirectToInbox()">
+          <v-card id="secureMessageInboxCard" class="mt-0 mb-5" width="22em"  outlined rounded @click="redirectToInbox()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div v-if="unreadExchangeCount > 0">

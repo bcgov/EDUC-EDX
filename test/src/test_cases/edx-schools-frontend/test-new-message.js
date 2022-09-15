@@ -2,7 +2,6 @@
  * Tests to run against the school inbox page
  */
 import {base_url, student_penList} from '../../config/constants';
-
 import {Role} from 'testcafe';
 import {getToken} from '../../helpers/oauth-utils';
 
@@ -12,6 +11,7 @@ import Dashboard from "../../page_models/dashboard";
 import DocumentUploadPage  from '../../page_models/common/documentUploadPage';
 import MessageDisplay from '../../page_models/message-display';
 import AddStudent from '../../page_models/common/addStudent';
+const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
@@ -23,7 +23,8 @@ const messageDisplay = new MessageDisplay();
 let token = '';
 
 fixture`school-inbox-new-message`
-  .before(async => {
+  .before(async async => {
+    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
     getToken().then(async (data) => {
       token = data.access_token;
       // make sure there are no artifact messages from previous runs
@@ -37,6 +38,8 @@ fixture`school-inbox-new-message`
     log.info('Performing tear-down operation');
     const data = await getToken();
     await inbox.deleteMessagesBySubject(testExchangeSubject, data.access_token);
+    await deleteSetUpEdxUser();
+
   })
   .beforeEach(async t => {
     // log in as studentAdmin
@@ -79,7 +82,7 @@ test('test-send-new-message-with-students', async t => {
 
 test('test-send-new-message-with-attachment', async t => {
   await t.navigateTo(base_url);
-  await dashboard.clickSchoolInboxCard();
+  await t.navigateTo(base_url + '/inbox');
 
   await inbox.createANewMessage(testExchangeSubject);
   await inbox.clickAttachFileButton();

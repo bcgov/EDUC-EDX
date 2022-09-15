@@ -1,4 +1,4 @@
-import {Role, Selector} from 'testcafe';
+import {Role} from 'testcafe';
 
 
 import studentAdmin from '../../auth/Roles';
@@ -8,9 +8,9 @@ import AccessUsersPage from '../../page_models/access-users-page';
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 import NavBarPage from "../../page_models/common/navBarPage";
 import SnackBarPage from "../../page_models/common/snackBarPage";
-
 const log = require('npmlog');
 const {getToken} = require('../../helpers/oauth-utils');
+const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 let newUserInvitePage = new NewUserPage();
 let accessUsersPage = new AccessUsersPage();
 const menu = new HamburgerMenuPage();
@@ -21,21 +21,25 @@ const snackBar = new SnackBarPage();
 fixture`new-user-invite`
   .beforeEach(async t => {
     // log in as studentAdmin
+    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
     await t.useRole(studentAdmin);
     await t.maximizeWindow();
   }).afterEach(async t => {
   // logout
   await t.useRole(Role.anonymous());
+  const data = await getToken();
+  await deleteSetUpEdxUser();
 });
 
 test('test-school-user-activation-invite', async t => {
 
   await t.navigateTo(base_url);
+
   await menu.clickHamburgerMenu();
   await menu.clickAdministrationMenuOption();
-  await menu.clickEDXAccessMenuLink();
+  await menu.clickSchoolUserManagementSubMenuLink();
   await t.wait(3000);
-  await navBar.verifyNavTitleByText('User Management');
+  await navBar.verifyNavTitleByText('School User Management');
   await accessUsersPage.clickNewUserButton();
   await accessUsersPage.verifyUserByText('New User');
 

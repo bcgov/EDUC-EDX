@@ -1,20 +1,18 @@
 import {Selector} from 'testcafe';
-import {base_url} from '../../config/constants';
+import {base_url} from '../../../config/constants';
 const log = require('npmlog');
-const {getToken} = require('../../helpers/oauth-utils');
-const {deleteActivationCode, generateCode,createFixtureSetupForEdxUserActivation,submitDetailsOnUserActivationForm,login, deleteEdxUser} = require('../../services/edx-api-service');
+const {getToken} = require('../../../helpers/oauth-utils');
+const {deleteActivationCode,setUpDataForUserActivation,submitDetailsOnUserActivationForm,login, deleteEdxUser} = require('../../../services/edx-api-service');
 
 fixture`edx-user-activate-success-scenario`
   .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
-    const codes= await generateCode();
-    await createFixtureSetupForEdxUserActivation(ctx,codes[0],codes[1]);
+    await setUpDataForUserActivation(ctx,'SCHOOL','99178');
   })
   .after(async ctx => {
     const data = await getToken();
-    await deleteEdxUser(data.access_token, 'USERACTIVATIONFIRSTNAME', 'USERACTIVATIONLASTNAME');
+    await deleteEdxUser(data.access_token, 'TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
     await deleteActivationCode(data.access_token, ctx.acCode1);
-    await deleteActivationCode(data.access_token, ctx.acCode2);
 
   });
 

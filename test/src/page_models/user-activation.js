@@ -6,7 +6,7 @@ import {Selector} from 'testcafe';
 class UserActivation {
 
   constructor() {
-    this.mincodeInput = Selector('#mincodeTextField');
+    this.mincodeInput = Selector('#instituteIdentifierTextField');
     this.primaryActivationCodeInput = Selector('#primaryEdxCodeTextField');
     this.personalActivationCodeInput = Selector('#personalActivationCodeTextField');
     this.submitUserActivationButton = Selector('#edxUserActivationSubmitBtn');

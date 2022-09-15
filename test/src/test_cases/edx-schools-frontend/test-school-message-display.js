@@ -1,6 +1,6 @@
 import {Role, Selector} from 'testcafe';
 import {getToken} from '../../helpers/oauth-utils';
-import {createSecureExchange, deleteSecureExchange} from '../../services/edx-api-service';
+import {createSecureExchange,  deleteSecureExchange} from '../../services/edx-api-service';
 import {createTestExchange} from '../../helpers/secure-exchange-utils';
 import log from 'npmlog';
 import {base_url, student_penList} from '../../config/constants';
@@ -9,6 +9,7 @@ import Dashboard from '../../page_models/dashboard';
 import Inbox from '../../page_models/inbox';
 import DocumentUploadPage from '../../page_models/common/documentUploadPage';
 import AddStudent from '../../page_models/common/addStudent';
+const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
 const studentAdmin = require('../../auth/Roles');
 
@@ -24,6 +25,7 @@ let testExchange = createTestExchange();
 fixture`school-message-display`
   .before(async t => {
     // data provisioning
+    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
     getToken().then(async (data) => {
       token = data.access_token;
       testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
@@ -33,6 +35,7 @@ fixture`school-message-display`
   })
   .after(async ctx => {
     await deleteSecureExchange(token, testExchange.secureExchangeID);
+    await deleteSetUpEdxUser();
     log.info('Performing tear-down operation');
   })
   .beforeEach(async t => {
