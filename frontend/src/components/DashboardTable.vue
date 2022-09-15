@@ -41,12 +41,21 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.DISTRICT_DETAILS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.DISTRICT_DETAILS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{districtLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -104,6 +113,7 @@ import ApiService from '../common/apiService';
 import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
 import {mapGetters} from 'vuex';
+import {formatDateTime} from '@/utils/format';
 
 export default {
   name: 'DashboardTable.vue',
@@ -127,6 +137,7 @@ export default {
       exchangeCount: '',
       unreadExchangeCount: '',
       schoolsLastUpdateDate: '',
+      districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
       headerSearchParams: {
         sequenceNumber: '',
@@ -150,6 +161,7 @@ export default {
   created() {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
+    this.getDistrictsLastUpdateDate();
   },
   methods: {
     omit(object, key) {
@@ -182,6 +194,21 @@ export default {
     },
     redirectToInbox(){
       router.push('/inbox');
+    },
+    getDistrictsLastUpdateDate() {
+      this.loading = true;
+
+      ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.userInfo.activeInstituteIdentifier, {
+      }).then(response => {
+        this.districtLastUpdateDate = this.formatDate(response.data.updateDate);
+      }).catch(error => {
+        console.error(error);
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    formatDate(dateTime) {
+      return formatDateTime(dateTime,'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', true);
     },
     getSchoolsLastUpdateDate() {
       //The school tile should only show if the userInfo.activeInstituteType == DISTRICT
@@ -234,6 +261,7 @@ export default {
 }
 .dashboard-title {
   word-break: break-word;
+  font-size: 20px;
 }
 </style>
 
