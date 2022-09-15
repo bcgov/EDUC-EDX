@@ -6,7 +6,8 @@ module.exports.api_html_status_threshold = config.get('test:api_html_status_thre
 module.exports.credentials = Object.freeze({
     adminCredentials: {
       username: config.get('adminCredential:user'),
-      password: config.get('adminCredential:pass')
+      password: config.get('adminCredential:pass'),
+      digitalID:config.get('adminCredential:digitalID')
     },
     activateUserCredentials:{
         username: config.get('activateUserCredentials:user'),
@@ -15,6 +16,7 @@ module.exports.credentials = Object.freeze({
   });
 
 module.exports.student_penList = config.get('student:penList');
+module.exports.institute_base_url = config.get('institute:base_url');
 //Token related config
 //module.exports.token_namespace = config.get('token:token_namespace');
 //module.exports.token_environment = config.get('token:token_environment');

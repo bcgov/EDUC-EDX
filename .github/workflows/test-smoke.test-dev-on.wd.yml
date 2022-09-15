@@ -55,9 +55,11 @@ jobs:
           TOKEN_ENDPOINT: ${{ secrets.TOKEN_ENDPOINT }}
           TEST_ADMIN_USERNAME: ${{ secrets.TEST_ADMIN_USERNAME }}
           TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_ADMIN_DIGITAL_ID: ${{ secrets.AT_EDX_ADMIN_DIGITAL_ID }}
           TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.TEST_EDX_ACTIVATE_USER_USERNAME }}
           TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.TEST_EDX_ACTIVATE_USER_PWD }}
           PEN_LIST: ${{secrets.AT_PEN_LIST}}
+          INSTITUTE_API_URL: ${{ secrets.INSTITUTE_API_URL}}
 
 
   # now burn it all down!!

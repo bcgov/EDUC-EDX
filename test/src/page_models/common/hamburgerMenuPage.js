@@ -1,13 +1,15 @@
 import { Selector, t } from 'testcafe';
 const log = require('npmlog');
 
-class StaffHamburgerMenuPage {
+class HamburgerMenuPage {
 
     constructor() {
 
         this.hamburgerMenuButton = Selector('#menuBtn');
         this.secureMessagingInboxMenuButton = Selector("#SecureMessagingInboxMenuBtn");
         this.administrationMenuOption = Selector('#AdministrationMenuBtn');
+        this.schoolUserManagementOption = Selector('#SchoolUserManagementMenuBtn');
+        this.districtUserManagementOption = Selector('#DistrictUserManagementMenuBtn')
         this.edxAccessMenuLink = Selector('#UserManagementMenuBtn');
     }
 
@@ -42,4 +44,14 @@ class StaffHamburgerMenuPage {
         log.info("Administrative EDX management link is clicked");
     }
 
-} export default StaffHamburgerMenuPage
+    async clickSchoolUserManagementSubMenuLink(){
+        await t.click(this.schoolUserManagementOption);
+        log.info("School User Management link is clicked");
+    }
+
+    async clickDistrictUserManagementSubMenuLink(){
+        await t.click(this.districtUserManagementOption);
+        log.info("District User Management link is clicked");
+    }
+
+} export default HamburgerMenuPage;

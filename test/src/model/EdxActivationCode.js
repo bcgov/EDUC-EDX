@@ -5,7 +5,8 @@ class EdxActivationCode{
     this.createDate = null;
     this.updateDate = null;
     this.edxActivationCodeId = null;
-    this.mincode = null;
+    this.schoolID = null;
+    this.districtID = null;
     this.districtCode = null;
     this.activationCode = null;
     this.isPrimary = null;

@@ -18,7 +18,8 @@ nconf.defaults({
       },
     adminCredential: {
         user: process.env.TEST_ADMIN_USERNAME,
-        pass: process.env.TEST_ADMIN_PASSWORD
+        pass: process.env.TEST_ADMIN_PASSWORD,
+        digitalID: process.env.TEST_ADMIN_DIGITAL_ID
     },
     activateUserCredentials:{
         user: process.env.TEST_EDX_ACTIVATE_USER_USERNAME,
@@ -36,6 +37,9 @@ nconf.defaults({
     },
     student:{
         penList: process.env.PEN_LIST
+    },
+    institute:{
+        base_url: process.env.INSTITUTE_API_URL
     }
 });
 
