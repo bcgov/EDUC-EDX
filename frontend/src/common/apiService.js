@@ -69,6 +69,25 @@ export default {
     }
   },
 
+  async getFacilityTypeCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.school.FACILITY_TYPES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getFacilityTypeCodes API - ${e}`);
+      throw e;
+    }
+  },
+
+  async getSchoolCategoryTypeCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.school.SCHOOL_CATEGORY_TYPES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      throw e;
+    }
+  },
+
+
   async getFileRequirements() {
     try{
       return await apiAxios.get(ApiRoutes.edx.FILE_REQUIREMENTS_URL);

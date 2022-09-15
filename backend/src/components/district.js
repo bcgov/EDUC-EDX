@@ -10,7 +10,7 @@ async function getDistrictByDistrictID(req, res){
   checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
 
   return Promise.all([
-    getData(token, `${config.get('instituteAPIURL')}/district/${req.params.districtID}`, req.session?.correlationID),
+    getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
