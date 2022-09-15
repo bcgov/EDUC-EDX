@@ -17,7 +17,7 @@ const instituteApiService = {
   async getSchoolIDBySchoolCode(schoolCode) {
     const data = await getToken();
     const token = data.access_token;
-    //this will give us the school wildflower
+
     const schoolSearchCriteria = [{
       condition: null,
       searchCriteriaList: [
