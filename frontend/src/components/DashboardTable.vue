@@ -52,7 +52,7 @@
           </v-card>
         </v-col>
         <v-col cols="6">
-          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
+          <v-card v-if="isLoggedInSchoolUser" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -86,6 +86,27 @@
                 <v-card-title class="pa-0">
                   <h4>
                     <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOLS }}</v-row>
+                  </h4>
+                </v-card-title>
+                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="6">
+          <v-card v-if="isLoggedInSchoolUser" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-newspaper-variant-outline
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-card-title class="pa-0">
+                  <h4>
+                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_DETAILS }}</v-row>
                   </h4>
                 </v-card-title>
                 <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
@@ -145,6 +166,9 @@ export default {
     },
     isLoggedInDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
+    },
+    isLoggedInSchoolUser(){
+      return this.userInfo.activeInstituteType === 'SCHOOL';
     },
   },
   created() {
@@ -223,6 +247,9 @@ export default {
     },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
+    },
+    redirectToSchoolDetails() {
+      router.push('/schoolDetails');
     }
   }
 };
