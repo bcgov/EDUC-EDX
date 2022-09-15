@@ -20,7 +20,7 @@ test('when_url_visited_twice_user_gets_error_link_expired', async t => {
   await t.navigateTo(t.fixtureCtx.activationUrl[0]);
   await t.navigateTo(t.fixtureCtx.activationUrl[0]);
   const errorText = await Selector('#user_activation_error_message').innerText;
-  await t.expect(errorText).contains('Your activation link is expired; the activation link should only be usable one time. Please contact your administrator for a new activation code.');
+  await t.expect(errorText).contains('Your activation link has expired. Please contact your administrator for a new activation code.');
   log.info('activation link expired on double click on activation url is verified');
 });
 
