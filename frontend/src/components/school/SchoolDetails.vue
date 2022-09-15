@@ -1,13 +1,8 @@
 <template>
   <v-container class="containerSetup" fluid>
-    <div style="width: 100%;" :overlay=false>
-      <v-row class="pt-0"
-             :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
-        <v-col cols="10 pt-0">
-          <div>
-          <!--  <v-row> -->
-              <!--<v-col class="pb-0 pt-0 d-flex justify-start"> -->
-            <v-col class="pb-10 pt-0">
+    <div style="width: 90em;" :overlay=false>
+        <v-row class="pl-3">
+            <v-col cols="10" class="pb-3 pt-0">
                 <v-row cols="2">
                   <v-col cols="12" lg="10" class="pb-2 pt-2 pr-0" style="text-align: left">
                     <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
@@ -18,8 +13,8 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="2" lg="1" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
+                  <v-col cols="2" lg="2" class="pb-0 pt-0">
+                    <v-row no-gutters>
                       <v-col cols="10" class="pb-2 pt-2 pr-0">
                         <v-icon class="ml-n1 pr-3" :color="getStatusColor(school.status)" dark>
                           mdi-circle-medium
@@ -29,7 +24,7 @@
                     </v-row>
                   </v-col>
                   <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
+                    <v-row no-gutters>
                       <v-col cols="10" class="pb-2 pt-2 pr-0">
                         <v-icon aria-hidden="false" class="pr-3">
                           mdi-phone-outline
@@ -39,7 +34,7 @@
                     </v-row>
                   </v-col>
                   <v-col cols="4" lg="3" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
+                    <v-row no-gutters>
                       <v-col cols="10" class="pb-2 pt-2 pr-0">
                         <v-icon aria-hidden="false" class="pr-3">
                           mdi-at
@@ -49,7 +44,7 @@
                     </v-row>
                   </v-col>
                   <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
+                    <v-row no-gutters>
                       <v-col cols="10" class="pb-2 pt-2 pr-0">
                         <v-icon aria-hidden="false" class="pr-3">
                           mdi-fax
@@ -59,17 +54,19 @@
                     </v-row>
                   </v-col>
                   <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row class="mb-n4">
+                    <v-row no-gutters>
                       <v-col cols="10" class="pb-2 pt-0 pr-0 pl-10">
                          <v-btn icon :href="`${school.website}`" target="_blank">
                           <v-icon aria-hidden="false" class="pr-3">mdi-web</v-icon>
-                           {{school.website}} https://www.google.com
+                           {{school.website}}
                         </v-btn>
                       </v-col>
                     </v-row>
                   </v-col>
                 </v-row>
               </v-col>
+        </v-row>
+      <v-col>
             <v-row no-gutters>
               <v-col>
                 <v-divider class="divider"></v-divider>
@@ -78,8 +75,8 @@
             </v-row>
             <v-row class="pl-3">
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <span style="color: grey">Open Date</span>
                   </v-col>
                 </v-row>
@@ -90,8 +87,8 @@
                 </v-row>
               </v-col>
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class=" pt-2 pr-0">
                     <span style="color: grey">Close Date</span>
                   </v-col>
                 </v-row>
@@ -102,8 +99,8 @@
                 </v-row>
               </v-col>
                 <v-col cols="4" lg="3" class="pb-0 pt-0">
-                  <v-row class="mb-n4">
-                    <v-col cols="10" class="pb-2 pt-2 pr-0">
+                  <v-row no-gutters>
+                    <v-col cols="10" class="pt-2 pr-0">
                       <span style="color: grey">Facility Type</span>
                     </v-col>
                   </v-row>
@@ -114,8 +111,8 @@
                   </v-row>
                 </v-col>
                 <v-col cols="4" lg="3" class="pb-0 pt-0">
-                  <v-row class="mb-n4">
-                    <v-col cols="10" class="pb-2 pt-2 pr-0">
+                  <v-row no-gutters>
+                    <v-col cols="10" class="pt-2 pr-0">
                       <span style="color: grey">School Category</span>
                     </v-col>
                 </v-row>
@@ -126,11 +123,10 @@
                   </v-row>
                 </v-col>
               </v-row>
-            <!-- -->
             <v-row class="pt-5 pl-3">
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <span style="color: grey">Grades Offered</span>
                   </v-col>
                 </v-row>
@@ -141,8 +137,8 @@
                 </v-row>
               </v-col>
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <span style="color: grey">School Organization</span>
                   </v-col>
                 </v-row>
@@ -153,8 +149,8 @@
                 </v-row>
               </v-col>
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <span style="color: grey">NLC Activity</span>
                   </v-col>
                 </v-row>
@@ -172,8 +168,8 @@
             </v-row>
             <v-row class="pt-5 pl-3">
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <v-icon aria-hidden="false" class="pr-3">
                       mdi-email-outline
                     </v-icon>
@@ -181,7 +177,7 @@
                   </v-col>
                 </v-row>
                 <v-row class="pl-3">
-                  <v-col cols="10" class="pb-1 pr-0" v-for="address in school.addresses" :key="address.addressId">
+                  <v-col cols="10" class="pr-0" v-for="address in school.addresses" :key="address.addressId">
                     <v-row v-if="address.addressTypeCode === 'MAILING'">
                       <v-col>
                         <v-row>
@@ -199,8 +195,8 @@
                 </v-row>
               </v-col>
               <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row class="mb-n4">
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pt-2 pr-0">
                     <v-icon aria-hidden="false" class="pr-3">
                       mdi-home-outline
                     </v-icon>
@@ -229,9 +225,7 @@
                 </v-row>
               </v-col>
             </v-row>
-          </div>
-        </v-col>
-      </v-row>
+      </v-col>
     </div>
   </v-container>
 </template>
@@ -243,6 +237,7 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
+import {formatPhoneNumber, formatDateTime} from '@/utils/format';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -276,8 +271,8 @@ export default {
           this.populateExtraSchoolFields(this.school);
           this.getDistrictDetails(this.school.districtId);
         }).catch(error => {
-        //to do add the alert framework for error or success
           console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
           this.loadingTable = false;
         });
@@ -288,8 +283,8 @@ export default {
         .then(response => {
           this.district = response.data;
         }).catch(error => {
-        //to do add the alert framework for error or success
           console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
           this.loadingTable = false;
         });
@@ -473,14 +468,7 @@ export default {
         return '-';
       }
     },
-    formatPhoneNumber(phNumber){
-      let formattedPhNum = '';
-      let ph1 = phNumber.substring(0,3);
-      let ph2 = phNumber.substring(3, 6);
-      let ph3 = phNumber.substring(6, 10);
-      formattedPhNum = ph1+'-'+ph2+'-'+ph3;
-      return formattedPhNum;
-    },
+    formatPhoneNumber,
     getCountryName(countryCode){
       let countryName = '';
       if(countryCode === 'CA'){
