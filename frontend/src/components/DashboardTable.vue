@@ -104,9 +104,11 @@ import ApiService from '../common/apiService';
 import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
 import {mapGetters} from 'vuex';
+import alertMixin from '@/mixins/alertMixin';
 
 export default {
   name: 'DashboardTable.vue',
+  mixins: [alertMixin],
   props: {
     tableData: {
       type: Array,
@@ -175,8 +177,8 @@ export default {
         this.exchangeCount = response.data.exchangeCount;
         this.unreadExchangeCount = response.data.unreadExchangeCount;
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
       }).finally(() => {
         this.loadingTable = false;
       });
@@ -191,9 +193,9 @@ export default {
       if(this.isThisLoggedInDistrictUser()){
         this.loadingTable = true;
         this.requests = [];
-        for(const schoolId of this.userInfo.userSchoolIDs) {
+        for(const schoolID of this.userInfo.userSchoolIDs) {
 
-          ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${schoolId}`).then(response => {
+          ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${schoolID}`).then(response => {
 
             let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
             let thisSchoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
@@ -204,8 +206,8 @@ export default {
               }
             }
           }).catch(error => {
-            //to do add the alert framework for error or success
             console.error(error);
+            this.setFailureAlert(error.response?.data?.message || error.message);
           }).finally(() => {
             this.loadingTable = false;
           });
@@ -233,8 +235,8 @@ export default {
             }
           }
         }).catch(error => {
-          //to do add the alert framework for error or success
           console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
           this.loadingTable = false;
         });
