@@ -2,6 +2,7 @@ const baseRoot = '/api';
 const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
 const schoolRoot = baseRoot + '/schools';
+const districtRoot = baseRoot + '/districts';
 const instituteRoot = baseRoot + '/institute';
 const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
@@ -33,6 +34,9 @@ export const ApiRoutes = Object.freeze({
     ALL_DIS_SCHOOLS: schoolRoot + '/allSchools',
     ALL_CACHE_SCHOOLS: schoolRoot + '/allCachedSchools',
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
+  },
+  district: {
+    BASE_URL: districtRoot
   },
   institute: {
     BASE_URL: instituteRoot,
