@@ -78,7 +78,8 @@ export const PAGE_TITLES = Object.freeze({
   NEW_USER_INVITE:'New User',
   SCHOOLS:'Schools',
   SCHOOL_CONTACTS:'School Contacts',
-  SCHOOL_DETAILS:'School Details'
+  SCHOOL_DETAILS:'School Details',
+  DISTRICT_DETAILS:'District Details',
 });
 
 
