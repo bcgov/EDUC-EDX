@@ -20,12 +20,16 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ title }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> {{exchangeCount}} messages, {{unreadExchangeCount}} unread</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ title }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{exchangeCount}} messages, {{unreadExchangeCount}} unread</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -60,7 +64,7 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols="6">
+        <v-col v-if="isLoggedInSchoolUser" cols="6">
           <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
@@ -71,18 +75,27 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolContactsLastUpdateDate}}</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{schoolContactsLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols="6">
-          <v-card v-if="isLoggedInDistrictUser" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
+        <v-col v-if="isLoggedInDistrictUser" cols="6">
+          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -92,12 +105,21 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOLS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOLS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{schoolsLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -114,6 +136,7 @@ import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
 import {mapGetters} from 'vuex';
 import {formatDateTime} from '@/utils/format';
+import {isEmpty, omitBy} from 'lodash';
 
 export default {
   name: 'DashboardTable.vue',
@@ -157,6 +180,9 @@ export default {
     isLoggedInDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
     },
+    isLoggedInSchoolUser(){
+      return this.userInfo.activeInstituteType === 'SCHOOL';
+    },
   },
   created() {
     this.getExchangesCount();
@@ -170,11 +196,6 @@ export default {
     getExchangesCount() {
       this.loadingTable = true;
       this.requests = [];
-
-      this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-      this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
-      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_COUNT_URL, {
         params: {
@@ -211,17 +232,23 @@ export default {
       return formatDateTime(dateTime,'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', true);
     },
     getSchoolsLastUpdateDate() {
-      //The school tile should only show if the userInfo.activeInstituteType == DISTRICT
       this.loadingTable = true;
-      this.requests = [];
+      this.schools = [];
+      let searchParams = {};
+      searchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
-
-        let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
-        this.schoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-        this.getSchoolContactsLastUpdate(response.data);
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
+        params: {
+          pageNumber: 1,
+          pageSize: 1,
+          sort: {
+            updateDate: 'DESC'
+          },
+          searchParams: omitBy(searchParams, isEmpty),
+        }
+      }).then(response => {
+        this.schoolsLastUpdateDate = this.formatDate(response.data.content[0].updateDate);
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
         this.loadingTable = false;

@@ -256,7 +256,7 @@ export default {
       this.headerSearchParams.status = this.schoolStatusFilter;
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
 
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_DIS_SCHOOLS, {
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
