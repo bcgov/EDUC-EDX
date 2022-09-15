@@ -1,21 +1,32 @@
 <template>
   <v-container class="containerSetup" fluid>
     <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
-      <v-col cols="12" md="3" class="d-flex justify-start">
-        <v-select id="name-text-field" label="School Code & Name" item-value="mincode" item-text="schoolCodeName"
-                  :items="schoolSearchNames" v-model="schoolCodeNameFilter" clearable></v-select>
+      <v-col cols="12" md="5" class="d-flex justify-start">
+        <v-autocomplete
+          id="name-text-field"
+          label="School Code & Name"
+          item-value="mincode"
+          item-text="schoolCodeName"
+          :items="schoolSearchNames"
+          v-model="schoolCodeNameFilter"
+          clearable>
+          <template v-slot:selection="{ item }">
+            <span> {{ item.schoolCodeName }} </span>
+          </template>
+        </v-autocomplete>
       </v-col>
       <v-col cols="12" md="2" class="d-flex justify-start">
         <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-text="name"
                   item-value="code" label="Status"></v-select>
       </v-col>
-      <v-col cols="12" md="2" class="d-flex justify-start">
-        <v-select id="status-select-field" clearable :items="schoolCategories" v-model="schoolCategoryFilter" item-text="name"
-                  item-value="code" label="School Category"></v-select>
-      </v-col>
       <v-col cols="12" md="3" class="d-flex justify-start">
-        <v-select id="status-select-field" clearable :items="schoolFacilityTypes" v-model="schoolFacilityTypeFilter" item-text="name"
-                  item-value="code" label="Facility Type"></v-select>
+        <v-select
+          id="status-select-field"
+          clearable
+          :items="schoolFacilityTypes"
+          v-model="schoolFacilityTypeFilter"
+          item-text="label"
+          item-value="facilityTypeCode" label="Facility Type"></v-select>
       </v-col>
       <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
         <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
@@ -177,16 +188,17 @@ export default {
       schools: [],
       schoolSearchNames: [],
       schoolStatus: [],
-      schoolCategories: [],
-      schoolFacilityTypes: [],
       schoolCodeNameFilter: '',
       schoolStatusFilter: '',
-      schoolCategoryFilter: '',
+      schoolFacilityTypes: [],
+      schoolCategoryTypes: [],
       schoolFacilityTypeFilter: '',
     };
   },
   computed: {
     ...mapState('app', ['schoolsMap']),
+    ...mapState('institute', ['facilityTypeCodes']),
+    ...mapState('institute', ['schoolCategoryTypeCodes']),
 
     getSheetWidth(){
       switch (this.$vuetify.breakpoint.name) {
@@ -201,24 +213,20 @@ export default {
   created() {
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('app/getInstitutesData');
+    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+      this.schoolFacilityTypes = this.facilityTypeCodes;
+    });
+    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+      this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
+    });
 
     this.setSchoolStatuses();
-    this.setSchoolCategories();
-    this.setSchoolFacilityTypes();
     this.getSchoolDropDownItems();
     this.getSchoolList();
-    
   },
   methods: {
     setSchoolStatuses() {
       this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}, {name: 'Closed', code: 'Closed'}];
-    },
-    setSchoolCategories() {
-      this.schoolCategories = [{name: 'Public School', code:'PUBLIC'},{name: 'Independent School', code:'INDEPEND'},
-        {name: 'Yukon School', code:'YUKON'},{name: 'Indigenous School', code:'FED_BAND'},{name: 'Offshore School', code:'OFFSHORE'}];
-    },
-    setSchoolFacilityTypes() {
-      this.schoolFacilityTypes = [{name: 'Standard School', code:'STANDARD'},{name: 'Offshore School', code:'OFFSHORE'},{name: 'Distance Learning', code:'DIST_LEARN'}];
     },
     getSchoolDropDownItems(){
       ApiService.apiAxios.get(ApiRoutes.school.ALL_CACHE_SCHOOLS, {
@@ -246,7 +254,6 @@ export default {
         this.headerSearchParams.schoolNumber = this.schoolCodeNameFilter.substring(3);
       }
       this.headerSearchParams.status = this.schoolStatusFilter;
-      this.headerSearchParams.category = this.schoolCategoryFilter;
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
 
       ApiService.apiAxios.get(ApiRoutes.school.ALL_DIS_SCHOOLS, {
@@ -281,30 +288,10 @@ export default {
 
     },
     getFacilityType(school){
-      let type = null;
-      if(school.facilityTypeCode === 'STANDARD'){
-        type = 'Standard School';
-      } else if(school.facilityTypeCode === 'OFFSHORE'){
-        type = 'Offshore School';
-      } else if(school.facilityTypeCode === 'DIST_LEARN'){
-        type = 'Distance Learning';
-      }
-      return type;
+      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
     },
     getSchoolCategory(school){
-      let category = null;
-      if(school.schoolCategoryCode === 'PUBLIC'){
-        category = 'Public School';
-      } else if(school.schoolCategoryCode === 'INDEPEND'){
-        category = 'Independent School';
-      } else if(school.schoolCategoryCode === 'YUKON'){
-        category = 'Yukon School';
-      } else if(school.schoolCategoryCode === 'FED_BAND'){
-        category = 'Indigenous School';
-      } else if(school.schoolCategoryCode === 'OFFSHORE'){
-        category = 'Offshore School';
-      }
-      return category;
+      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
     getPrincipalsName(contacts) {
       let principalsName = null;
@@ -345,7 +332,6 @@ export default {
       }
     },
     openSchool(schoolId){
-      console.log('OPEN_SCHOOL_ID:= ' + schoolId);
       this.$router.push({name: 'viewSchool', params: {schoolID: schoolId}});
     },
     resetPageNumber(){
@@ -353,17 +339,15 @@ export default {
     },
     searchEnabled(){
       return (this.schoolCodeNameFilter !== '' && this.schoolCodeNameFilter !== null) || (this.schoolStatusFilter !== '' && this.schoolStatusFilter !== null)
-          || (this.schoolCategoryFilter !== '' & this.schoolCategoryFilter !== null) || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
+          || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
     },
     clearButtonClick() {
       this.schoolCodeNameFilter = '';
       this.schoolStatusFilter = '';
-      this.schoolCategoryFilter = '';
       this.schoolFacilityTypeFilter = '';
 
       this.headerSearchParams.schoolNumber = '';
       this.headerSearchParams.status = '';
-      this.headerSearchParams.category = '';
       this.headerSearchParams.type = '';
 
       this.getSchoolList();
