@@ -1,122 +1,85 @@
 <template>
   <v-container class="containerSetup" fluid>
-    <v-row cols="2">
-      <v-col cols="10" lg="7">
-        <v-chip class="mr-3" color="green">Active</v-chip>
-        <v-chip class="mr-3" color="blue">Pending Start Date</v-chip>
-        <v-chip color="orange">Pending End Date</v-chip>
-      </v-col>
-      <v-col cols="10" lg="5">
-        <PrimaryButton width="30%" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
+    <v-row v-if="loading">
+      <v-col class="d-flex justify-center">
+        <v-progress-circular
+            class="mt-16"
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+            :active="loading"
+        ></v-progress-circular>
       </v-col>
     </v-row>
-    <v-row>
-      <h2 style="color:#1A5A96">Principal</h2>
-    </v-row>
-    <v-row cols="2">
-      <v-col cols="5" lg="4" v-for="contact in schoolContacts" :key="contact.schoolId">
-        <v-card v-if="isPrincipal(contact)">
-          <v-card-title class="pb-0">
-            <v-row no-gutters>
-              <v-col>
+    <template v-if="!loading">
+      <v-row cols="2">
+        <v-col cols="10" lg="7">
+          <v-chip class="mr-3" color="green">Active</v-chip>
+          <v-chip class="mr-3" color="blue">Pending Start Date</v-chip>
+          <v-chip color="orange">Pending End Date</v-chip>
+        </v-col>
+        <v-col cols="10" lg="5">
+          <PrimaryButton width="30%" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
+        </v-col>
+      </v-row>
+      <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
+        <v-row>
+          <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+        </v-row>
+        <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
+          <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
+            <v-card>
+              <v-card-title class="pb-0">
                 <v-row no-gutters>
-                  <v-col cols="9">
-                    <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
-                      mdi-circle-medium
+                  <v-col>
+                    <v-row no-gutters>
+                      <v-col cols="9">
+                        <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
+                          mdi-circle-medium
+                        </v-icon>
+                        <strong>{{ `${contact.firstName} ${contact.lastName}` }}</strong>
+                      </v-col>
+                      <v-col cols="3" class="d-flex justify-end">
+                        <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col cols="12" class="pt-1">
+                        <span>{{ contact.email }}</span>
+                      </v-col>
+                      <v-col cols="12" class="pt-1">
+                        <span>{{ contact.phoneNumber }}</span>
+                      </v-col>
+                      <v-col cols="12" class="pt-1">
+                        <span></span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card-title>
+              <v-card-text class="pt-2">
+                <v-row no-gutters>
+                  <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
+                    <v-icon aria-hidden="false">
+                      mdi-calendar-today
                     </v-icon>
-                    <strong>{{ `${contact.firstName} ${contact.lastName}` }}</strong>
+                    <span> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
                   </v-col>
-                  <v-col cols="3" class="d-flex justify-end">
-                    <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col cols="12" class="pt-1">
-                    <span>{{ contact.email }}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1">
-                    <span>{{ contact.phoneNumber }}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1">
-                    <span></span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card-title>
-          <v-card-text class="pt-2">
-            <v-row no-gutters>
-              <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
-                <v-icon aria-hidden="false">
-                  mdi-calendar-today
-                </v-icon>
-                <span> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
-              </v-col>
-              <v-col cols="12" class="pt-1" v-else>
-                <v-icon aria-hidden="false">
-                  mdi-calendar-today
-                </v-icon>
-                <span> {{ formatDate(contact.effectiveDate) }}</span>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <h2 style="color:#1A5A96" class="mt-3">Vice Principal</h2>
-    </v-row>
-    <v-row cols="2">
-      <v-col cols="5" lg="5" v-for="contact in schoolContacts" :key="contact.schoolId">
-        <v-card v-if="isVicePrincipal(contact)">
-          <v-card-title class="pb-0">
-            <v-row no-gutters>
-              <v-col>
-                <v-row no-gutters>
-                  <v-col cols="9">
-                    <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
-                      mdi-circle-medium
+                  <v-col cols="12" class="pt-1" v-else>
+                    <v-icon aria-hidden="false">
+                      mdi-calendar-today
                     </v-icon>
-                    <strong>{{ `${contact.firstName} ${contact.lastName}` }}</strong>
-                  </v-col>
-                  <v-col cols="3" class="d-flex justify-end">
-                    <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
+                    <span> {{ formatDate(contact.effectiveDate) }}</span>
                   </v-col>
                 </v-row>
-                <v-row no-gutters>
-                  <v-col cols="12" class="pt-1">
-                    <span>{{ contact.email }}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1">
-                    <span>{{ contact.phoneNumber }}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1">
-                    <span></span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card-title>
-          <v-card-text class="pt-2">
-            <v-row no-gutters>
-              <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
-                <v-icon aria-hidden="false">
-                  mdi-calendar-today
-                </v-icon>
-                <span> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
-              </v-col>
-              <v-col cols="12" class="pt-1" v-else>
-                <v-icon aria-hidden="false">
-                  mdi-calendar-today
-                </v-icon>
-                <span> {{ formatDate(contact.effectiveDate) }}</span>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row cols="2" v-else><p>No contacts of this type have been listed.</p></v-row>
+      </div>
+    </template>
   </v-container>
 </template>
 
@@ -136,43 +99,55 @@ export default {
   },
   data() {
     return {
-      schoolContacts: [],
+      loadingCount: 0,
+      schoolContactTypes: [],
+      schoolContacts: new Map(),
     };
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
-    dataReady: function () {
-      return this.userInfo;
+    loading() {
+      return this.loadingCount !== 0;
     }
   },
   created() {
+    this.getSchoolContactTypeCodes();
     this.getThisSchoolsContacts();
   },
   methods: {
-    getThisSchoolsContacts(){
-      this.schoolContacts = '';
-
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`)
+    getSchoolContactTypeCodes() {
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_CONTACT_TYPE_CODES)
         .then(response => {
-          let rawData = response.data;
-          this.schoolContacts = rawData.contacts;
-
-        }).catch(error => {
-        //to do add the alert framework for error or success
+          this.schoolContactTypes = response.data;
+        })
+        .catch(error => {
           console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get the details of available School Contact Type Codes. Please try again later.');
         }).finally(() => {
-          this.loadingTable = false;
+          this.loadingCount -= 1;
         });
-
-
     },
-    isPrincipal(contact){
-      return contact.schoolContactTypeCode === 'PRINCIPAL';
+    getThisSchoolsContacts(){
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/${this.userInfo.activeInstituteIdentifier}`)
+        .then(response => {
+          this.schoolContacts = new Map();
+          response.data.contacts.forEach(contact => {
+            if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
+              this.schoolContacts.set(contact.schoolContactTypeCode, [contact]);
+              return;
+            }
+            this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
+          });
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of the school\'s contacts. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
     },
-    isVicePrincipal(contact){
-      return contact.schoolContactTypeCode === 'VICE PRINCIPAL';
-    },
-    getSchoolStatus(contact) {
+    getSchoolContactStatus(contact) {
       const currentDate = new Date();
       let effectiveDate = contact.effectiveDate;
       let expiryDate = contact.expiryDate;
@@ -185,11 +160,10 @@ export default {
       } else if (expiryDate > currentDate) {
         status = 'Pending End Date';
       }
-
       return status;
     },
     getStatusColor(contact) {
-      let status = this.getSchoolStatus(contact);
+      let status = this.getSchoolContactStatus(contact);
       if (status === 'Active') {
         return 'green';
       } else if (status === 'Pending Start Date'){
@@ -207,19 +181,6 @@ export default {
 
 <style scoped>
 
-@media screen and (max-width: 801px){
-  .subjectHeading {
-    font-size: medium;
-  }
-
-  .statusCodeLabel{
-    font-size: inherit;
-  }
-
-  .ministryLine{
-    font-size: inherit;
-  }
-}
 @media screen and (max-width: 950px){
   .v-dialog__content /deep/ .v-bottom-sheet {
     width: 60% !important;
