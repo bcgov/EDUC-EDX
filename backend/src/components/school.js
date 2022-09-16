@@ -23,7 +23,7 @@ async function getSchoolBySchoolID(req, res) {
   }
 }
 
-async function getAllCachedSchools(req, res){
+async function getAllCachedSchools(_req, res){
   try {
     let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
     return res.status(200).json(allActiveSchools ? allActiveSchools : []);
@@ -38,7 +38,7 @@ async function getFullSchoolDetails(req, res){
   validateAccessToken(token);
 
   return Promise.all([
-    getData(token, `${config.get('instituteAPIURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
+    getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
@@ -91,7 +91,7 @@ async function getSchoolsPaginated(req, res){
     }
   };
 
-  return getDataWithParams(accessToken, config.get('instituteAPIURL') + '/school/paginated', schoolSearchParam, req.session?.correlationID);
+  return getDataWithParams(accessToken, config.get('institute:rootURL') + '/school/paginated', schoolSearchParam, req.session?.correlationID);
 }
 
 function createSchoolSearchCriteria(searchParams){
