@@ -19,5 +19,10 @@ router.get('/facility-types', passport.authenticate('jwt', {session: false}, und
 router.get('/school-category-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_CATEGORY_TYPES, '/category-codes'));
 router.get('/schoolContactTypeCodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_CONTACT_TYPE_CODES, '/school-contact-type-codes'));
 
+router.get('/school-organization-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_ORGANIZATION_TYPES, '/organization-codes'));
+router.get('/school-neighborhood-learning-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES, '/neighborhood-learning-codes'));
+router.get('/school-grade-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_GRADE_TYPES, '/grade-codes'));
+
+
 module.exports = router;
 

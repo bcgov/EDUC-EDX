@@ -3,6 +3,7 @@ const authRoot = baseRoot + '/auth';
 const edxRoot = baseRoot + '/edx';
 const schoolRoot = baseRoot + '/schools';
 const districtRoot = baseRoot + '/districts';
+const instituteRoot = baseRoot + '/institute';
 const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
@@ -35,10 +36,17 @@ export const ApiRoutes = Object.freeze({
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
     FACILITY_TYPES_URL: schoolRoot + '/facility-types',
     SCHOOL_CATEGORY_TYPES_URL: schoolRoot + '/school-category-types',
-    SCHOOL_CONTACT_TYPE_CODES: `${schoolRoot}/schoolContactTypeCodes`
+    SCHOOL_CONTACT_TYPE_CODES: `${schoolRoot}/schoolContactTypeCodes`,
+    SCHOOL_ORGANIZATION_TYPES_URL: schoolRoot + '/school-organization-types',
+    SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL: schoolRoot + '/school-neighborhood-learning-types',
+    SCHOOL_GRADE_TYPES_URL: schoolRoot + '/school-grade-types',
   },
   district: {
     BASE_URL: districtRoot
+  },
+  institute: {
+    BASE_URL: instituteRoot,
+    DISTRICT: instituteRoot + '/districts',
   },
   DISTRICT_DATA_URL: districtRequestRoot,
   SCHOOL_DATA_URL: schoolRequestRoot,
@@ -79,8 +87,9 @@ export const PAGE_TITLES = Object.freeze({
   LOGIN:'Login',
   NEW_USER_INVITE:'New User',
   SCHOOLS:'Schools',
+  SCHOOL_CONTACTS:'School Contacts',
+  SCHOOL_DETAILS:'School Details',
   DISTRICT_DETAILS:'District Details',
-  SCHOOL_CONTACTS:'School Contacts'
 });
 
 

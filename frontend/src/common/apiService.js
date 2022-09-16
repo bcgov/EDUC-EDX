@@ -86,7 +86,30 @@ export default {
       throw e;
     }
   },
-
+  async getSchoolOrganizationTypeCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.school.SCHOOL_ORGANIZATION_TYPES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      throw e;
+    }
+  },
+  async getSchoolNeighborhoodLearningCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.school.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      throw e;
+    }
+  },
+  async getGradeCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.school.SCHOOL_GRADE_TYPES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      throw e;
+    }
+  },
 
   async getFileRequirements() {
     try{

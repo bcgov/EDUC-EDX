@@ -124,6 +124,36 @@
             </v-row>
           </v-card>
         </v-col>
+        <v-col v-if="isLoggedInSchoolUser" cols="6">
+          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-newspaper-variant-outline
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOL_DETAILS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{schoolLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
       </v-row>
     </v-col>
 
@@ -164,6 +194,7 @@ export default {
       schoolsLastUpdateDate: '',
       districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
+      schoolLastUpdateDate: '',
       headerSearchParams: {
         sequenceNumber: '',
         contact: '',
@@ -190,6 +221,7 @@ export default {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
     this.getSchoolContactsLastUpdate();
+    this.getSchoolLastUpdateDate();
     this.getDistrictsLastUpdateDate();
   },
   methods: {
@@ -257,6 +289,18 @@ export default {
         this.loadingTable = false;
       });
     },
+    getSchoolLastUpdateDate() {
+      this.loading = true;
+
+      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + '/' + this.userInfo.activeInstituteIdentifier, {
+      }).then(response => {
+        this.schoolLastUpdateDate = this.formatDate(response.data.updateDate);
+      }).catch(error => {
+        console.error(error);
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
     redirectToSchools(){
       router.push('/schools');
     },
@@ -287,6 +331,9 @@ export default {
     },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
+    },
+    redirectToSchoolDetails() {
+      router.push('/schoolDetails');
     }
   }
 };
