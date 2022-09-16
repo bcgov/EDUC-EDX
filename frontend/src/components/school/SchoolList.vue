@@ -147,7 +147,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
 
@@ -196,6 +196,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('auth', ['userInfo']),
     ...mapState('app', ['schoolsMap']),
     ...mapState('institute', ['facilityTypeCodes']),
     ...mapState('institute', ['schoolCategoryTypeCodes']),
@@ -255,6 +256,7 @@ export default {
       }
       this.headerSearchParams.status = this.schoolStatusFilter;
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
+      this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
       ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {

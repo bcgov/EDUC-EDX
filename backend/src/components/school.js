@@ -116,15 +116,15 @@ function createSchoolSearchCriteria(searchParams){
       }
     }
     if(key === 'schoolNumber'){
-
       searchCriteriaList.push({key: 'schoolNumber', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.STRING, condition: null});
     }
+    if(key === 'districtID'){
+      searchCriteriaList.push({key: 'districtID', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.UUID, condition: null});
+    }
     if(key === 'category'){
-
       searchCriteriaList.push({key: 'schoolCategoryCode', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.STRING, condition: null});
     }
     if(key === 'type'){
-
       searchCriteriaList.push({key: 'facilityTypeCode', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.STRING, condition: null});
     }
   });
