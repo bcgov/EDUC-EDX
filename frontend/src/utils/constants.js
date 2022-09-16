@@ -33,6 +33,7 @@ export const ApiRoutes = Object.freeze({
     ALL_DIS_SCHOOLS: schoolRoot + '/allSchools',
     ALL_CACHE_SCHOOLS: schoolRoot + '/allCachedSchools',
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
+    SCHOOL_CONTACT_TYPE_CODES: `${schoolRoot}/schoolContactTypeCodes`
   },
   district: {
     BASE_URL: districtRoot
