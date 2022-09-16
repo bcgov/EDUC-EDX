@@ -130,7 +130,7 @@
             </v-row>
             <v-row v-else no-gutters>
               <v-col>
-                <v-row no-gutters>
+                <v-row class="ml-9" no-gutters>
                   <v-col class="fontBolder fontItalic">
                     <span>Same as Mailing Address</span>
                   </v-col>
