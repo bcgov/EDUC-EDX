@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getSchoolBySchoolID, getAllCachedSchools, getAllSchoolDetails, getFullSchoolDetails, getSchoolContactTypeCodes} = require('../components/school');
+const { getSchoolBySchoolID, getAllCachedSchools, getAllSchoolDetails, getFullSchoolDetails } = require('../components/school');
 const auth = require('../components/auth');
 const {getCodes} = require('../components/utils');
 const {CACHE_KEYS} = require('../components/constants');
@@ -17,7 +17,7 @@ router.get('/allSchools', passport.authenticate('jwt', {session: false}, undefin
 router.get('/schoolDetailsById/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getFullSchoolDetails);
 router.get('/facility-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_FACILITY_TYPES, '/facility-codes'));
 router.get('/school-category-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_CATEGORY_TYPES, '/category-codes'));
-router.get('/schoolContactTypeCodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSchoolContactTypeCodes);
+router.get('/schoolContactTypeCodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_CONTACT_TYPE_CODES, '/school-contact-type-codes'));
 
 module.exports = router;
 
