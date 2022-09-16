@@ -20,12 +20,16 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ title }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> {{exchangeCount}} messages, {{unreadExchangeCount}} unread</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ title }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{exchangeCount}} messages, {{unreadExchangeCount}} unread</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -60,8 +64,8 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols="6">
-          <v-card v-if="isLoggedInSchoolUser" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
+        <v-col v-if="isLoggedInSchoolUser" cols="6">
+          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -71,18 +75,27 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolContactsLastUpdateDate}}</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{schoolContactsLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col cols="6">
-          <v-card v-if="isLoggedInDistrictUser" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
+        <v-col v-if="isLoggedInDistrictUser" cols="6">
+          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -92,33 +105,21 @@
                 </div>
               </v-col>
               <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOLS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col cols="6">
-          <v-card v-if="isLoggedInSchoolUser" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                    mdi-newspaper-variant-outline
-                  </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-card-title class="pa-0">
-                  <h4>
-                    <v-row class="dashboard-title mr-4">{{ PAGE_TITLES.SCHOOL_DETAILS }}</v-row>
-                  </h4>
-                </v-card-title>
-                <v-row><span> Last updated {{schoolsLastUpdateDate}}</span></v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOLS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{schoolsLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -134,10 +135,13 @@ import ApiService from '../common/apiService';
 import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
 import {mapGetters} from 'vuex';
+import alertMixin from '@/mixins/alertMixin';
 import {formatDateTime} from '@/utils/format';
+import {isEmpty, omitBy} from 'lodash';
 
 export default {
   name: 'DashboardTable.vue',
+  mixins: [alertMixin],
   props: {
     tableData: {
       type: Array,
@@ -185,6 +189,7 @@ export default {
   created() {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
+    this.getSchoolContactsLastUpdate();
     this.getDistrictsLastUpdateDate();
   },
   methods: {
@@ -194,11 +199,6 @@ export default {
     getExchangesCount() {
       this.loadingTable = true;
       this.requests = [];
-
-      this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
-      this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
-      this.headerSearchParams.sequenceNumber = this.messageIDFilter;
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_COUNT_URL, {
         params: {
@@ -210,8 +210,8 @@ export default {
         this.exchangeCount = response.data.exchangeCount;
         this.unreadExchangeCount = response.data.unreadExchangeCount;
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
       }).finally(() => {
         this.loadingTable = false;
       });
@@ -235,17 +235,23 @@ export default {
       return formatDateTime(dateTime,'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', true);
     },
     getSchoolsLastUpdateDate() {
-      //The school tile should only show if the userInfo.activeInstituteType == DISTRICT
       this.loadingTable = true;
-      this.requests = [];
+      this.schools = [];
+      let searchParams = {};
+      searchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
-
-        let rawDate = response.data.updateDate === null ? response.data.openedDate : response.data.updateDate;
-        this.schoolsLastUpdateDate = new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-        this.getSchoolContactsLastUpdate(response.data);
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
+        params: {
+          pageNumber: 1,
+          pageSize: 1,
+          sort: {
+            updateDate: 'DESC'
+          },
+          searchParams: omitBy(searchParams, isEmpty),
+        }
+      }).then(response => {
+        this.schoolsLastUpdateDate = this.formatDate(response.data.content[0].updateDate);
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
         this.loadingTable = false;
@@ -257,26 +263,30 @@ export default {
     redirectToDistrictDetails(){
       router.push('/district/' + this.userInfo.activeInstituteIdentifier);
     },
-    getSchoolContactsLastUpdate(school){
-      this.schoolContactsLastUpdateDate = '';
-      let lastUpdate = '';
+    getSchoolContactsLastUpdate(){
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
 
-      for (const contact of school.contacts){
-        if(contact.updateDate !== null) {
-          if (contact.updateDate > lastUpdate) {
-            lastUpdate = contact.updateDate;
+          for (const contact of response.data.contacts) {
+            let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
+            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+
+            if (thisContactLastUpdated !== null) {
+              if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
+                this.schoolContactsLastUpdateDate = thisContactLastUpdated;
+              }
+            }
           }
-        } else {
-          lastUpdate = contact.effectiveDate;
-        }
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loadingTable = false;
+        });
       }
-      this.schoolContactsLastUpdateDate = new Date(lastUpdate).toISOString().slice(0,10).replace(/-/g,'/');
     },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
-    },
-    redirectToSchoolDetails() {
-      router.push('/schoolDetails');
     }
   }
 };
