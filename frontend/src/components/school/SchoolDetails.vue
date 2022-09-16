@@ -144,7 +144,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ getSchoolOrganization(school.schoolOrganizationCode) }}</span>
+                    <span class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -156,7 +156,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ getNLCActivity(school.neighborhoodLearning) }}</span>
+                    <span class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -233,7 +233,7 @@
 <script>
 
 import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
@@ -249,15 +249,40 @@ export default {
     return {
       school: '',
       district: '',
+      schoolFacilityTypes: [],
+      schoolCategoryTypes: [],
+      schoolOrganizationTypes: [],
+      schoolNeighborhoodLearningTypes: [],
+      schoolGradeTypes: [],
     };
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState('institute', ['facilityTypeCodes']),
+    ...mapState('institute', ['schoolCategoryTypeCodes']),
+    ...mapState('institute', ['schoolOrganizationTypeCodes']),
+    ...mapState('institute', ['schoolNeighborhoodLearningCodes']),
+    ...mapState('institute', ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
     }
   },
   created() {
+    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+      this.schoolFacilityTypes = this.facilityTypeCodes;
+    });
+    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+      this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
+    });
+    this.$store.dispatch('institute/getSchoolOrganizationTypeCodes').then(() => {
+      this.schoolOrganizationTypes = this.schoolOrganizationTypeCodes;
+    });
+    this.$store.dispatch('institute/getSchoolNeighborhoodLearningCodes').then(() => {
+      this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
+    });
+    this.$store.dispatch('institute/getGradeCodes').then(() => {
+      this.schoolGradeTypes = this.gradeCodes;
+    });
     this.getThisSchoolsDetails();
   },
   methods: {
@@ -295,142 +320,30 @@ export default {
       school.schoolCategory = this.getSchoolCategory(school);
     },
     getGradesOffered(rawGrades){
-
-      let gradeCodes = [];
-      for(const grade of rawGrades){
-        gradeCodes.push(grade.schoolGradeCode);
-      }
-      return this.convertSortGradeCodes(gradeCodes);
-    },
-    convertSortGradeCodes(gradeCodes){
       let gradeList = [];
-      for(const gradeCode of gradeCodes ){
-        switch (gradeCode){
-        case 'GRADE01':
-          gradeList.push('1');
-          break;
-        case 'GRADE02':
-          gradeList.push('2');
-          break;
-        case 'GRADE03':
-          gradeList.push('3');
-          break;
-        case 'GRADE04':
-          gradeList.push('4');
-          break;
-        case 'GRADE05':
-          gradeList.push('5');
-          break;
-        case 'GRADE06':
-          gradeList.push('6');
-          break;
-        case 'GRADE07':
-          gradeList.push('7');
-          break;
-        case 'GRADE08':
-          gradeList.push('8');
-          break;
-        case 'GRADE09':
-          gradeList.push('9');
-          break;
-        case 'GRADE10':
-          gradeList.push('10');
-          break;
-        case 'GRADE11':
-          gradeList.push('11');
-          break;
-        case 'GRADE12':
-          gradeList.push('12');
-          break;
-        }
+      for(const grade of rawGrades){
+        gradeList.push(this.schoolGradeTypes.find((facility) => facility.schoolGradeCode === grade.schoolGradeCode).label);
       }
+
       gradeList.sort();
       return gradeList.toString();
     },
-    getSchoolOrganization(schoolOrganizationCode){
-      let schoolOrg = '';
-      switch(schoolOrganizationCode){
-      case 'TWO_SEM':
-        schoolOrg = 'Two Semesters';
-        break;
-      case 'TRIMESTER':
-        schoolOrg = 'Trimester';
-        break;
-      case 'QUARTER':
-        schoolOrg = 'Quarter';
-        break;
-      case 'TEN_MONTHS':
-        schoolOrg = 'Ten Months';
-        break;
-      case 'PART_TEN':
-        schoolOrg = 'Part ten month';
-        break;
-      case 'OTHER':
-        schoolOrg = 'Other';
-        break;
-      default:
-        schoolOrg = '-';
-      }
-
-      return schoolOrg;
+    getSchoolOrganization(school){
+      return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school.schoolOrganizationCode).label;
     },
-    getNLCActivity(neighborhoodLearning){
-      let NLCActivity = '';
-      for(const nl of neighborhoodLearning){
-        switch(nl){
-        case 'EARLYLEARN':
-          NLCActivity = 'Early Learning';
-          break;
-        case 'AFTERSCHL':
-          NLCActivity = 'After School Programs';
-          break;
-        case 'CONTINEDUC':
-          NLCActivity = 'Continuing Education';
-          break;
-        case 'SENIORS':
-          NLCActivity = 'Seniors';
-          break;
-        case 'SPORTRECR':
-          NLCActivity = 'Sports and Recreation';
-          break;
-        case 'COMMUNITY':
-          NLCActivity = 'Community Use';
-          break;
-        case 'INTEGRSERV':
-          NLCActivity = 'Integrated Services';
-          break;
-        default:
-          NLCActivity = '-';
-        }
+    getNLCActivity(school){
+      let nLCActivityList = [];
+      for(const nl of school.neighborhoodLearning){
+        nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl.neighborhoodLearningTypeCode).label);
       }
-
-      return NLCActivity;
+      nLCActivityList.sort();
+      return nLCActivityList.toString();
     },
     getFacilityType(school){
-      let type = null;
-      if(school.facilityTypeCode === 'STANDARD'){
-        type = 'Standard School';
-      } else if(school.facilityTypeCode === 'OFFSHORE'){
-        type = 'Offshore School';
-      } else if(school.facilityTypeCode === 'DIST_LEARN'){
-        type = 'Distance Learning';
-      }
-      return type;
+      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
     },
     getSchoolCategory(school){
-      let category = null;
-      if(school.schoolCategoryCode === 'PUBLIC'){
-        category = 'Public School';
-      } else if(school.schoolCategoryCode === 'INDEPEND'){
-        category = 'Independent School';
-      } else if(school.schoolCategoryCode === 'YUKON'){
-        category = 'Yukon School';
-      } else if(school.schoolCategoryCode === 'FED_BAND'){
-        category = 'Indigenous School';
-      } else if(school.schoolCategoryCode === 'OFFSHORE'){
-        category = 'Offshore School';
-      }
-      return category;
+      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
     getSchoolStatus(school) {
       const currentDate = new Date();
