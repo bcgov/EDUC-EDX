@@ -116,7 +116,6 @@ function createSchoolSearchCriteria(searchParams){
       }
     }
     if(key === 'schoolID'){
-      console.log('Value ' + pValue);
       searchCriteriaList.push({key: 'schoolId', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND});
     }
     if(key === 'districtID'){
