@@ -867,7 +867,7 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
     log.info('User associated to 1 District Redirecting to District Dashboard');
     setSessionInstituteIdentifiers(req, req.session.userDistrictIDs[0], 'DISTRICT');
     res.redirect(config.get('server:frontend'));
-  } else if (req.session.userSchoolIDs?.length > 1 || req.session.userDistrictIDs?.length > 1) {
+  } else if (req.session.userSchoolIDs?.length >= 1 || req.session.userDistrictIDs?.length >= 1) {
     log.info('User associated to multiple schools and or districts redirecting to Institute Selection');
     res.redirect(config.get('server:frontend') + '/institute-selection');
   } else {
