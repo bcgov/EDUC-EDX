@@ -89,6 +89,8 @@ nconf.defaults({
     schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+ '/exchange'+'/school-user-activation-invite-saga',
     activationCodeUrl: process.env.EDX_API_ENDPOINT + '/users/activation-code'
   },
-  instituteAPIURL: process.env.INSTITUTE_API_ENDPOINT,
+  institute:{
+    rootURL: process.env.INSTITUTE_API_ENDPOINT
+  }
 });
 module.exports = nconf;

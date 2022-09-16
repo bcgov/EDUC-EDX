@@ -1,21 +1,32 @@
 <template>
   <v-container class="containerSetup" fluid>
     <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
-      <v-col cols="12" md="3" class="d-flex justify-start">
-        <v-select id="name-text-field" label="School Code & Name" item-value="mincode" item-text="schoolCodeName"
-                  :items="schoolSearchNames" v-model="schoolCodeNameFilter" clearable></v-select>
+      <v-col cols="12" md="5" class="d-flex justify-start">
+        <v-autocomplete
+          id="name-text-field"
+          label="School Code & Name"
+          item-value="mincode"
+          item-text="schoolCodeName"
+          :items="schoolSearchNames"
+          v-model="schoolCodeNameFilter"
+          clearable>
+          <template v-slot:selection="{ item }">
+            <span> {{ item.schoolCodeName }} </span>
+          </template>
+        </v-autocomplete>
       </v-col>
       <v-col cols="12" md="2" class="d-flex justify-start">
         <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-text="name"
                   item-value="code" label="Status"></v-select>
       </v-col>
-      <v-col cols="12" md="2" class="d-flex justify-start">
-        <v-select id="status-select-field" clearable :items="schoolCategories" v-model="schoolCategoryFilter" item-text="name"
-                  item-value="code" label="School Category"></v-select>
-      </v-col>
       <v-col cols="12" md="3" class="d-flex justify-start">
-        <v-select id="status-select-field" clearable :items="schoolFacilityTypes" v-model="schoolFacilityTypeFilter" item-text="name"
-                  item-value="code" label="Facility Type"></v-select>
+        <v-select
+          id="status-select-field"
+          clearable
+          :items="schoolFacilityTypes"
+          v-model="schoolFacilityTypeFilter"
+          item-text="label"
+          item-value="facilityTypeCode" label="Facility Type"></v-select>
       </v-col>
       <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
         <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
@@ -58,19 +69,19 @@
                 </v-col>
                 <v-col cols="6" lg="5" xl="2" class="pb-0 pt-0 mt-2">
                   <v-row>
-                    <v-col cols="8" class="pb-1 pr-0">
-                      <v-icon class="pb-1" :color="getStatusColor(item.status)" right dark>
+                    <v-col cols="12" class="pb-1 pr-0">
+                      <v-icon class="ml-0 pb-1" :color="getStatusColor(item.status)" right dark>
                         mdi-circle-medium
                       </v-icon>
-                      <span class="statusCodeLabel">{{ item.status }}</span>
+                      <span class="ml-1 statusCodeLabel">{{ item.status }}</span>
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
-                    <v-col cols="8" class="pb-1 pr-0">
+                    <v-col cols="12" class="pb-1 pr-0">
                       <v-icon class="mb-1" aria-hidden="false">
                         mdi-phone-outline
                       </v-icon>
-                      <span class="statusCodeLabel"> {{ item.phoneNumber }}</span>
+                      <span class="statusCodeLabel"> {{ formatPhoneNumber(item.phoneNumber) }}</span>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -136,9 +147,11 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
+import {formatPhoneNumber} from '@/utils/format';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'SchoolListPage',
@@ -177,16 +190,18 @@ export default {
       schools: [],
       schoolSearchNames: [],
       schoolStatus: [],
-      schoolCategories: [],
-      schoolFacilityTypes: [],
       schoolCodeNameFilter: '',
       schoolStatusFilter: '',
-      schoolCategoryFilter: '',
+      schoolFacilityTypes: [],
+      schoolCategoryTypes: [],
       schoolFacilityTypeFilter: '',
     };
   },
   computed: {
+    ...mapGetters('auth', ['userInfo']),
     ...mapState('app', ['schoolsMap']),
+    ...mapState('institute', ['facilityTypeCodes']),
+    ...mapState('institute', ['schoolCategoryTypeCodes']),
 
     getSheetWidth(){
       switch (this.$vuetify.breakpoint.name) {
@@ -201,33 +216,37 @@ export default {
   created() {
     this.$store.dispatch('edx/getMinistryTeams');
     this.$store.dispatch('app/getInstitutesData');
+    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+      this.schoolFacilityTypes = this.facilityTypeCodes;
+    });
+    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+      this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
+    });
 
     this.setSchoolStatuses();
-    this.setSchoolCategories();
-    this.setSchoolFacilityTypes();
     this.getSchoolDropDownItems();
     this.getSchoolList();
-    
   },
   methods: {
     setSchoolStatuses() {
-      this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}, {name: 'Closed', code: 'Closed'}];
-    },
-    setSchoolCategories() {
-      this.schoolCategories = [{name: 'Public School', code:'PUBLIC'},{name: 'Independent School', code:'INDEPEND'},
-        {name: 'Yukon School', code:'YUKON'},{name: 'Indigenous School', code:'FED_BAND'},{name: 'Offshore School', code:'OFFSHORE'}];
-    },
-    setSchoolFacilityTypes() {
-      this.schoolFacilityTypes = [{name: 'Standard School', code:'STANDARD'},{name: 'Offshore School', code:'OFFSHORE'},{name: 'Distance Learning', code:'DIST_LEARN'}];
+      this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}];
     },
     getSchoolDropDownItems(){
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_CACHE_SCHOOLS, {
-        params: {}
+      this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
+        params: {
+          pageNumber: 0,
+          pageSize: 5000,
+          sort: {
+            schoolNumber: 'ASC'
+          },
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+        }
       }).then(response => {
-        let schoolList = response.data;
+        let schoolList = response.data.content;
         for(const school of schoolList){
           let schoolItem = {
-            schoolCodeName: school.mincode +' - '+school.schoolName,
+            schoolCodeName: school.mincode +' - '+school.displayName,
             mincode: school.mincode,
           };
           this.schoolSearchNames.push(schoolItem);
@@ -246,14 +265,16 @@ export default {
         this.headerSearchParams.schoolNumber = this.schoolCodeNameFilter.substring(3);
       }
       this.headerSearchParams.status = this.schoolStatusFilter;
-      this.headerSearchParams.category = this.schoolCategoryFilter;
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
+      this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_DIS_SCHOOLS, {
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          sort: '',
+          sort: {
+            schoolNumber: 'ASC'
+          },
           searchParams: omitBy(this.headerSearchParams, isEmpty),
         }
       }).then(response => {
@@ -281,31 +302,12 @@ export default {
 
     },
     getFacilityType(school){
-      let type = null;
-      if(school.facilityTypeCode === 'STANDARD'){
-        type = 'Standard School';
-      } else if(school.facilityTypeCode === 'OFFSHORE'){
-        type = 'Offshore School';
-      } else if(school.facilityTypeCode === 'DIST_LEARN'){
-        type = 'Distance Learning';
-      }
-      return type;
+      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
     },
     getSchoolCategory(school){
-      let category = null;
-      if(school.schoolCategoryCode === 'PUBLIC'){
-        category = 'Public School';
-      } else if(school.schoolCategoryCode === 'INDEPEND'){
-        category = 'Independent School';
-      } else if(school.schoolCategoryCode === 'YUKON'){
-        category = 'Yukon School';
-      } else if(school.schoolCategoryCode === 'FED_BAND'){
-        category = 'Indigenous School';
-      } else if(school.schoolCategoryCode === 'OFFSHORE'){
-        category = 'Offshore School';
-      }
-      return category;
+      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
+    formatPhoneNumber,
     getPrincipalsName(contacts) {
       let principalsName = null;
       for (const contact of contacts){
@@ -315,23 +317,30 @@ export default {
       }
       return principalsName;
     },
-    getSchoolStatus(school) {
-      const currentDate = new Date();
+    getSchoolStatus: function (school) {
+      const currentDate = LocalDate.now();
       let openedDate = school.openedDate;
       let closedDate = school.closedDate;
-      let status = null;
 
-      if (openedDate <= currentDate || closedDate === null || closedDate > currentDate) {
-        status = 'Open';
-      } else if (openedDate > currentDate) {
-        status = 'Opening';
-      } else if (closedDate > currentDate) {
-        status = 'Closing';
-      } else {
-        status = 'Closed';
+      if (!openedDate) {
+        return 'Never Opened';
+      }
+      const parsedOpenDate = new LocalDate.parse(openedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+
+      let parsedCloseDate = null;
+      if(closedDate){
+        parsedCloseDate = new LocalDate.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
       }
 
-      return status;
+      if (parsedOpenDate <= currentDate && parsedCloseDate === null) {
+        return 'Open';
+      } else if (parsedOpenDate > currentDate) {
+        return 'Opening';
+      } else if (parsedOpenDate <= currentDate && parsedCloseDate > currentDate) {
+        return 'Closing';
+      }
+
+      return 'Closed';
     },
     getStatusColor(status) {
       if (status === 'Open') {
@@ -345,7 +354,6 @@ export default {
       }
     },
     openSchool(schoolId){
-      console.log('OPEN_SCHOOL_ID:= ' + schoolId);
       this.$router.push({name: 'viewSchool', params: {schoolID: schoolId}});
     },
     resetPageNumber(){
@@ -353,17 +361,15 @@ export default {
     },
     searchEnabled(){
       return (this.schoolCodeNameFilter !== '' && this.schoolCodeNameFilter !== null) || (this.schoolStatusFilter !== '' && this.schoolStatusFilter !== null)
-          || (this.schoolCategoryFilter !== '' & this.schoolCategoryFilter !== null) || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
+          || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
     },
     clearButtonClick() {
       this.schoolCodeNameFilter = '';
       this.schoolStatusFilter = '';
-      this.schoolCategoryFilter = '';
       this.schoolFacilityTypeFilter = '';
 
       this.headerSearchParams.schoolNumber = '';
       this.headerSearchParams.status = '';
-      this.headerSearchParams.category = '';
       this.headerSearchParams.type = '';
 
       this.getSchoolList();
