@@ -69,19 +69,19 @@
                 </v-col>
                 <v-col cols="6" lg="5" xl="2" class="pb-0 pt-0 mt-2">
                   <v-row>
-                    <v-col cols="8" class="pb-1 pr-0">
-                      <v-icon class="pb-1" :color="getStatusColor(item.status)" right dark>
+                    <v-col cols="12" class="pb-1 pr-0">
+                      <v-icon class="ml-0 pb-1" :color="getStatusColor(item.status)" right dark>
                         mdi-circle-medium
                       </v-icon>
-                      <span class="statusCodeLabel">{{ item.status }}</span>
+                      <span class="ml-1 statusCodeLabel">{{ item.status }}</span>
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
-                    <v-col cols="8" class="pb-1 pr-0">
+                    <v-col cols="12" class="pb-1 pr-0">
                       <v-icon class="mb-1" aria-hidden="false">
                         mdi-phone-outline
                       </v-icon>
-                      <span class="statusCodeLabel"> {{ item.phoneNumber }}</span>
+                      <span class="statusCodeLabel"> {{ formatPhoneNumber(item.phoneNumber) }}</span>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -150,6 +150,8 @@ import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
+import {formatPhoneNumber} from '@/utils/format';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'SchoolListPage',
@@ -227,16 +229,24 @@ export default {
   },
   methods: {
     setSchoolStatuses() {
-      this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}, {name: 'Closed', code: 'Closed'}];
+      this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}];
     },
     getSchoolDropDownItems(){
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_CACHE_SCHOOLS, {
-        params: {}
+      this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
+        params: {
+          pageNumber: 0,
+          pageSize: 5000,
+          sort: {
+            schoolNumber: 'ASC'
+          },
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+        }
       }).then(response => {
-        let schoolList = response.data;
+        let schoolList = response.data.content;
         for(const school of schoolList){
           let schoolItem = {
-            schoolCodeName: school.mincode +' - '+school.schoolName,
+            schoolCodeName: school.mincode +' - '+school.displayName,
             mincode: school.mincode,
           };
           this.schoolSearchNames.push(schoolItem);
@@ -262,7 +272,9 @@ export default {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          sort: '',
+          sort: {
+            schoolNumber: 'ASC'
+          },
           searchParams: omitBy(this.headerSearchParams, isEmpty),
         }
       }).then(response => {
@@ -295,6 +307,7 @@ export default {
     getSchoolCategory(school){
       return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
+    formatPhoneNumber,
     getPrincipalsName(contacts) {
       let principalsName = null;
       for (const contact of contacts){
@@ -304,23 +317,30 @@ export default {
       }
       return principalsName;
     },
-    getSchoolStatus(school) {
-      const currentDate = new Date();
+    getSchoolStatus: function (school) {
+      const currentDate = LocalDate.now();
       let openedDate = school.openedDate;
       let closedDate = school.closedDate;
-      let status = null;
 
-      if (openedDate <= currentDate || closedDate === null || closedDate > currentDate) {
-        status = 'Open';
-      } else if (openedDate > currentDate) {
-        status = 'Opening';
-      } else if (closedDate > currentDate) {
-        status = 'Closing';
-      } else {
-        status = 'Closed';
+      if (!openedDate) {
+        return 'Never Opened';
+      }
+      const parsedOpenDate = new LocalDate.parse(openedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+
+      let parsedCloseDate = null;
+      if(closedDate){
+        parsedCloseDate = new LocalDate.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
       }
 
-      return status;
+      if (parsedOpenDate <= currentDate && parsedCloseDate === null) {
+        return 'Open';
+      } else if (parsedOpenDate > currentDate) {
+        return 'Opening';
+      } else if (parsedOpenDate <= currentDate && parsedCloseDate > currentDate) {
+        return 'Closing';
+      }
+
+      return 'Closed';
     },
     getStatusColor(status) {
       if (status === 'Open') {
