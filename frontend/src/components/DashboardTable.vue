@@ -135,11 +135,13 @@ import ApiService from '../common/apiService';
 import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
 import {mapGetters} from 'vuex';
+import alertMixin from '@/mixins/alertMixin';
 import {formatDateTime} from '@/utils/format';
 import {isEmpty, omitBy} from 'lodash';
 
 export default {
   name: 'DashboardTable.vue',
+  mixins: [alertMixin],
   props: {
     tableData: {
       type: Array,
@@ -187,6 +189,7 @@ export default {
   created() {
     this.getExchangesCount();
     this.getSchoolsLastUpdateDate();
+    this.getSchoolContactsLastUpdate();
     this.getDistrictsLastUpdateDate();
   },
   methods: {
@@ -207,8 +210,8 @@ export default {
         this.exchangeCount = response.data.exchangeCount;
         this.unreadExchangeCount = response.data.unreadExchangeCount;
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
       }).finally(() => {
         this.loadingTable = false;
       });
@@ -260,20 +263,27 @@ export default {
     redirectToDistrictDetails(){
       router.push('/district/' + this.userInfo.activeInstituteIdentifier);
     },
-    getSchoolContactsLastUpdate(school){
-      this.schoolContactsLastUpdateDate = '';
-      let lastUpdate = '';
+    getSchoolContactsLastUpdate(){
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
 
-      for (const contact of school.contacts){
-        if(contact.updateDate !== null) {
-          if (contact.updateDate > lastUpdate) {
-            lastUpdate = contact.updateDate;
+          for (const contact of response.data.contacts) {
+            let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
+            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+
+            if (thisContactLastUpdated !== null) {
+              if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
+                this.schoolContactsLastUpdateDate = thisContactLastUpdated;
+              }
+            }
           }
-        } else {
-          lastUpdate = contact.effectiveDate;
-        }
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loadingTable = false;
+        });
       }
-      this.schoolContactsLastUpdateDate = new Date(lastUpdate).toISOString().slice(0,10).replace(/-/g,'/');
     },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
