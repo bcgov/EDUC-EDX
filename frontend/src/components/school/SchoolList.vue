@@ -5,14 +5,11 @@
         <v-autocomplete
           id="name-text-field"
           label="School Code & Name"
-          item-value="mincode"
+          item-value="schoolID"
           item-text="schoolCodeName"
           :items="schoolSearchNames"
           v-model="schoolCodeNameFilter"
           clearable>
-          <template v-slot:selection="{ item }">
-            <span> {{ item.schoolCodeName }} </span>
-          </template>
         </v-autocomplete>
       </v-col>
       <v-col cols="12" md="2" class="d-flex justify-start">
@@ -232,6 +229,7 @@ export default {
       this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}];
     },
     getSchoolDropDownItems(){
+      this.headerSearchParams.status = 'NotClosed';
       this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
       ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {
@@ -247,7 +245,7 @@ export default {
         for(const school of schoolList){
           let schoolItem = {
             schoolCodeName: school.mincode +' - '+school.displayName,
-            mincode: school.mincode,
+            schoolID: school.schoolId,
           };
           this.schoolSearchNames.push(schoolItem);
         }
@@ -262,9 +260,17 @@ export default {
       this.schools = [];
 
       if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
-        this.headerSearchParams.schoolNumber = this.schoolCodeNameFilter.substring(3);
+        this.headerSearchParams.schoolID = this.schoolCodeNameFilter;
+      }else{
+        this.headerSearchParams.schoolID = '';
       }
-      this.headerSearchParams.status = this.schoolStatusFilter;
+
+      if(!this.schoolStatusFilter){
+        this.headerSearchParams.status = 'NotClosed';
+      }else{
+        this.headerSearchParams.status = this.schoolStatusFilter;
+      }
+
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
       this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
