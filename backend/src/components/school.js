@@ -94,6 +94,25 @@ async function getSchoolsPaginated(req, res){
   return getDataWithParams(accessToken, config.get('institute:rootURL') + '/school/paginated', schoolSearchParam, req.session?.correlationID);
 }
 
+async function getSchoolContactTypeCodes(req, res){
+  const token = getAccessToken(req);
+  validateAccessToken(token);
+
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getSchoolContactTypeCodes error: User activeInstituteIdentifier does not exist in session');
+  }
+
+  return Promise.all([
+    getData(token, `${config.get('instituteAPIURL')}/school-contact-type-codes`, req.session?.correlationID),
+  ])
+    .then(async ([dataResponse]) => {
+      return res.status(200).json(dataResponse);
+    }).catch(e => {
+      log.error(e, 'getFullSchoolDetails', 'Error getting School Contact Type Codes from the API.');
+      return errorResponse(res);
+    });
+}
+
 function createSchoolSearchCriteria(searchParams){
 
   let searchCriteriaList = [];
@@ -141,5 +160,6 @@ module.exports = {
   getSchoolBySchoolID,
   getAllCachedSchools,
   getAllSchoolDetails,
-  getFullSchoolDetails
+  getFullSchoolDetails,
+  getSchoolContactTypeCodes
 };
