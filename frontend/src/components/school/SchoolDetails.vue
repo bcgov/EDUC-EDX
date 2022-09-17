@@ -189,12 +189,12 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row no-gutters>
+        <v-row>
           <v-col>
             <h2 class="subjectHeading pt-4">Addresses</h2>
           </v-col>
         </v-row>
-        <v-row class="pt-5 pl-3">
+        <v-row class="pl-3">
           <v-col cols="4" lg="3" class="pb-0 pt-0">
             <v-row no-gutters>
               <v-col cols="10" class="pt-2 pr-0">
