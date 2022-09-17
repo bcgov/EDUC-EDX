@@ -1,232 +1,262 @@
 <template>
   <v-container class="containerSetup" fluid>
-    <div style="width: 90em;" :overlay=false>
-        <v-row class="pl-3">
-            <v-col cols="10" class="pb-3 pt-0">
-                <v-row cols="2">
-                  <v-col cols="12" lg="10" class="pb-2 pt-2 pr-0" style="text-align: left">
-                    <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
-                    <div class="ministryOwnershipTeamName" style="color: black">{{district.districtNumber}} - {{district.name}}</div>
-                  </v-col>
-                  <v-col cols="12" lg="2" class="d-flex justify-end">
-                    <PrimaryButton width="8em" primary icon="mdi-pencil" text="Edit"></PrimaryButton>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="2" lg="2" class="pb-0 pt-0">
-                    <v-row no-gutters>
-                      <v-col cols="10" class="pb-2 pt-2 pr-0">
-                        <v-icon class="ml-n1 pr-3" :color="getStatusColor(school.status)" dark>
-                          mdi-circle-medium
-                        </v-icon>
-                        <span class="ml-n1">{{ school.status }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row no-gutters>
-                      <v-col cols="10" class="pb-2 pt-2 pr-0">
-                        <v-icon aria-hidden="false" class="pr-3">
-                          mdi-phone-outline
-                        </v-icon>
-                        <span class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="4" lg="3" class="pb-0 pt-0">
-                    <v-row no-gutters>
-                      <v-col cols="10" class="pb-2 pt-2 pr-0">
-                        <v-icon aria-hidden="false" class="pr-3">
-                          mdi-at
-                        </v-icon>
-                        <span class="ml-n1">{{ school.email }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row no-gutters>
-                      <v-col cols="10" class="pb-2 pt-2 pr-0">
-                        <v-icon aria-hidden="false" class="pr-3">
-                          mdi-fax
-                        </v-icon>
-                        <span class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="4" lg="2" class="pb-0 pt-0">
-                    <v-row no-gutters>
-                      <v-col cols="10" class="pb-2 pt-0 pr-0 pl-10">
-                         <v-btn icon :href="`${school.website}`" target="_blank">
-                          <v-icon aria-hidden="false" class="pr-3">mdi-web</v-icon>
-                           {{school.website}}
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-col>
-        </v-row>
+    <v-row v-if="loading">
+      <v-col class="d-flex justify-center">
+        <v-progress-circular
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="loading"
+        ></v-progress-circular>
+      </v-col>
+    </v-row>
+    <v-row v-else no-gutters>
       <v-col>
-            <v-row no-gutters>
-              <v-col>
-                <v-divider class="divider"></v-divider>
-                <h2 class="subjectHeading pt-4">School Details</h2>
+        <v-row class="pl-3">
+          <v-col cols="12" class="pb-3 pt-0">
+            <v-row cols="2">
+              <v-col class="pb-0" cols="12">
+                <v-row>
+                  <v-col cols="6" class="d-flex justify-start">
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="6" class="d-flex justify-end">
+                    <PrimaryButton width="6em" icon="mdi-pencil" text="Edit"></PrimaryButton>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
-            <v-row class="pl-3">
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row>
+              <v-col class="pt-0 mt-n2" cols="12">
+                <div class="ministryOwnershipTeamName" style="color: black">{{district.districtNumber}} - {{district.name}}</div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2" lg="2" class="pb-0 pt-0">
                 <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <span style="color: grey">Open Date</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ formatDate(school.openedDate) }}</span>
+                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                    <v-icon class="ml-n1 pr-3" :color="getStatusColor(school.status)" dark>
+                      mdi-circle-medium
+                    </v-icon>
+                    <span class="ml-n1">{{ school.status }}</span>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
+              <v-col cols="12" lg="2" class="pb-0 pt-0">
                 <v-row no-gutters>
-                  <v-col cols="10" class=" pt-2 pr-0">
-                    <span style="color: grey">Close Date</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ formatDate(school.closedDate) }}</span>
+                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                    <v-icon aria-hidden="false" class="pr-3">
+                      mdi-phone-outline
+                    </v-icon>
+                    <span class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
                   </v-col>
                 </v-row>
               </v-col>
-                <v-col cols="4" lg="3" class="pb-0 pt-0">
-                  <v-row no-gutters>
-                    <v-col cols="10" class="pt-2 pr-0">
-                      <span style="color: grey">Facility Type</span>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="10" class="pb-1 pr-0">
-                      <span class="ministryLine" style="color: black">{{school.facilityType}}</span>
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col cols="4" lg="3" class="pb-0 pt-0">
-                  <v-row no-gutters>
-                    <v-col cols="10" class="pt-2 pr-0">
-                      <span style="color: grey">School Category</span>
-                    </v-col>
+              <v-col cols="12" lg="3" class="pb-0 pt-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                    <v-icon aria-hidden="false" class="pr-3">
+                      mdi-at
+                    </v-icon>
+                    <span class="ml-n1">{{ school.email }}</span>
+                  </v-col>
                 </v-row>
-                <v-row>
-                    <v-col cols="10" class="pb-1 pr-0">
-                      <span class="ministryLine" style="color: black">{{ school.schoolCategory }}</span>
-                    </v-col>
-                  </v-row>
+              </v-col>
+              <v-col cols="12" lg="2" class="pb-0 pt-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pb-2 pt-2 pr-0">
+                    <v-icon aria-hidden="false" class="pr-3">
+                      mdi-fax
+                    </v-icon>
+                    <span class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="12" lg="2" class="pb-0 pt-0">
+                <v-row no-gutters>
+                  <v-col cols="10" class="pb-2 pt-0 pr-0">
+                     <v-btn icon :href="`${school.website}`" target="_blank">
+                      <v-icon aria-hidden="false" class="pr-3">mdi-web</v-icon>
+                       {{school.website}}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <v-divider class="divider"></v-divider>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <h2 class="subjectHeading pt-4">School Details</h2>
+          </v-col>
+        </v-row>
+        <v-row class="pl-3">
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class="pt-2 pr-0">
+                <span style="color: grey">Open Date</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="10" class="pb-1 pr-0">
+                <span class="ministryLine" style="color: black">{{ formatDate(school.openedDate) }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class=" pt-2 pr-0">
+                <span style="color: grey">Close Date</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="10" class="pb-1 pr-0">
+                <span class="ministryLine" style="color: black">{{ formatDate(school.closedDate) }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+            <v-col cols="4" lg="3" class="pb-0 pt-0">
+              <v-row no-gutters>
+                <v-col cols="10" class="pt-2 pr-0">
+                  <span style="color: grey">Facility Type</span>
                 </v-col>
               </v-row>
-            <v-row class="pt-5 pl-3">
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <span style="color: grey">Grades Offered</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ getGradesOffered(school.grades) }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <span style="color: grey">School Organization</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <span style="color: grey">NLC Activity</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0">
-                    <span class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
+              <v-row>
+                <v-col cols="10" class="pb-1 pr-0">
+                  <span class="ministryLine" style="color: black">{{school.facilityType}}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols="4" lg="3" class="pb-0 pt-0">
+              <v-row no-gutters>
+                <v-col cols="10" class="pt-2 pr-0">
+                  <span style="color: grey">School Category</span>
+                </v-col>
             </v-row>
+            <v-row>
+                <v-col cols="10" class="pb-1 pr-0">
+                  <span class="ministryLine" style="color: black">{{ school.schoolCategory }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        <v-row class="pt-5 pl-3">
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
             <v-row no-gutters>
-              <v-col>
-                <h2 class="subjectHeading pt-4">Addresses</h2>
+              <v-col cols="10" class="pt-2 pr-0">
+                <span style="color: grey">Grades Offered</span>
               </v-col>
             </v-row>
-            <v-row class="pt-5 pl-3">
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <v-icon aria-hidden="false" class="pr-3">
-                      mdi-email-outline
-                    </v-icon>
-                    <span style="color: grey">Mailing Addresses</span>
-                  </v-col>
-                </v-row>
-                <v-row class="pl-3">
-                  <v-col cols="10" class="pr-0" v-for="address in school.addresses" :key="address.addressId">
-                    <v-row v-if="address.addressTypeCode === 'MAILING'">
-                      <v-col>
-                        <v-row>
-                          <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
-                        </v-row>
-                        <v-row>
-                          <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
-                        </v-row>
-                        <v-row>
-                          <span>{{address.postal}}</span>
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+            <v-row>
+              <v-col cols="10" class="pb-1 pr-0">
+                <span class="ministryLine" style="color: black">{{ getGradesOffered(school.grades) }}</span>
               </v-col>
-              <v-col cols="4" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pt-2 pr-0">
-                    <v-icon aria-hidden="false" class="pr-3">
-                      mdi-home-outline
-                    </v-icon>
-                    <span style="color: grey">Physical Addresses</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="10" class="pb-1 pr-0" v-for="address in school.addresses" :key="address.addressId">
-                    <v-row v-if="address.addressTypeCode === 'PHYSICAL'">
-                      <v-col>
-                        <v-row>
-                          <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
-                        </v-row>
-                        <v-row>
-                          <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
-                        </v-row>
-                        <v-row>
-                          <span>{{address.postal}}</span>
-                        </v-row>
-                      </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class="pt-2 pr-0">
+                <span style="color: grey">School Organization</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="10" class="pb-1 pr-0">
+                <span class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class="pt-2 pr-0">
+                <span style="color: grey">NLC Activity</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="10" class="pb-1 pr-0">
+                <span class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <h2 class="subjectHeading pt-4">Addresses</h2>
+          </v-col>
+        </v-row>
+        <v-row class="pt-5 pl-3">
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class="pt-2 pr-0">
+                <v-icon aria-hidden="false" class="pr-1">
+                  mdi-email-outline
+                </v-icon>
+                <span style="color: grey">Mailing Addresses</span>
+              </v-col>
+            </v-row>
+            <v-row class="ml-7">
+              <v-col cols="10" class="pr-0 pt-0" v-for="address in school.addresses" :key="address.addressId">
+                <v-row v-if="address.addressTypeCode === 'MAILING'">
+                  <v-col>
+                    <v-row>
+                      <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
                     </v-row>
-                    <v-row class="pl-4" v-else>
-                      <span>Same as Mailing Address</span>
+                    <v-row>
+                      <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
+                    </v-row>
+                    <v-row>
+                      <span>{{address.postal}}</span>
                     </v-row>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
+          </v-col>
+          <v-col cols="4" lg="3" class="pb-0 pt-0">
+            <v-row no-gutters>
+              <v-col cols="10" class="pt-2 pr-0">
+                <v-icon aria-hidden="false" class="pr-1">
+                  mdi-home-outline
+                </v-icon>
+                <span style="color: grey">Physical Addresses</span>
+              </v-col>
+            </v-row>
+            <v-row v-if="!hasSamePhysicalAddress" class="ml-7">
+              <v-col cols="10" class="pb-1 pr-0" v-for="address in school.addresses" :key="address.addressId">
+                <v-row v-if="address.addressTypeCode === 'PHYSICAL'">
+                  <v-col>
+                    <v-row>
+                      <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
+                    </v-row>
+                    <v-row>
+                      <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
+                    </v-row>
+                    <v-row>
+                      <span>{{address.postal}}</span>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row class="ml-7 pl-0" v-else>
+              <v-col class="pl-0 fontBolder fontItalic">
+                <span>Same as Mailing Address</span>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-col>
-    </div>
+    </v-row>
   </v-container>
 </template>
 
@@ -254,6 +284,7 @@ export default {
       schoolOrganizationTypes: [],
       schoolNeighborhoodLearningTypes: [],
       schoolGradeTypes: [],
+      loading: true
     };
   },
   computed: {
@@ -288,6 +319,7 @@ export default {
   methods: {
     
     getThisSchoolsDetails(){
+      this.loading = true;
       this.school = '';
 
       ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`)
@@ -299,7 +331,7 @@ export default {
           console.error(error);
           this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
-          this.loadingTable = false;
+          this.loading = false;
         });
     },
     getDistrictDetails(districtId){
@@ -311,7 +343,7 @@ export default {
           console.error(error);
           this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
-          this.loadingTable = false;
+          this.loading = false;
         });
     },
     populateExtraSchoolFields(school){
@@ -326,10 +358,13 @@ export default {
       }
 
       gradeList.sort();
-      return gradeList.toString();
+      return gradeList.toString().replace(/,/g, ', ').replaceAll('Grade', '');
     },
     getSchoolOrganization(school){
       return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school.schoolOrganizationCode).label;
+    },
+    hasSamePhysicalAddress(){
+      return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
     getNLCActivity(school){
       let nLCActivityList = [];
@@ -375,7 +410,7 @@ export default {
       }
     },
     formatDate(date){
-      if(date !== '' && date !== null) {
+      if(date) {
         return new Date(date).toISOString().slice(0, 10).replace(/-/g, '/');
       } else {
         return '-';
@@ -394,9 +429,36 @@ export default {
 </script>
 
 <style scoped>
+.fontBolder{
+  font-weight: bolder;
+}
+
+.fontItalic{
+  font-style: italic;
+}
+
 .divider {
   border-color: #FCBA19;
-  border-width: medium;
+  border-width: unset;
+}
+
+.containerSetup{
+  padding-right: 50em !important;
+  padding-left: 5em !important;
+}
+
+@media screen and (max-width: 1950px) {
+  .containerSetup{
+    padding-right: 20em !important;
+    padding-left: 5em !important;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .containerSetup{
+    padding-right: 2em !important;
+    padding-left: 2em !important;
+  }
 }
 </style>
   
