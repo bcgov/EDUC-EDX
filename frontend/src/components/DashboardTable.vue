@@ -219,10 +219,15 @@ export default {
   },
   created() {
     this.getExchangesCount();
-    this.getSchoolsLastUpdateDate();
-    this.getSchoolContactsLastUpdate();
-    this.getSchoolLastUpdateDate();
-    this.getDistrictsLastUpdateDate();
+
+    if(this.isLoggedInSchoolUser) {
+      this.getSchoolContactsLastUpdate();
+      this.getSchoolLastUpdateDate();
+    }
+    if(this.isLoggedInDistrictUser){
+      this.getDistrictsLastUpdateDate();
+      this.getDistrictSchoolsLastUpdateDate();
+    }
   },
   methods: {
     omit(object, key) {
@@ -266,10 +271,11 @@ export default {
     formatDate(dateTime) {
       return formatDateTime(dateTime,'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', true);
     },
-    getSchoolsLastUpdateDate() {
+    getDistrictSchoolsLastUpdateDate() {
       this.loadingTable = true;
       this.schools = [];
       let searchParams = {};
+
       searchParams.districtID = this.userInfo.activeInstituteIdentifier;
 
       ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
