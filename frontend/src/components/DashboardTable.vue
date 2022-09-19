@@ -34,7 +34,7 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInDistrictUser" cols="6">
+        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
           <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
             <v-row class="pl-4">
               <v-col cols="4">
@@ -64,7 +64,7 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInSchoolUser" cols="6">
+        <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
           <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
@@ -94,7 +94,7 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInDistrictUser" cols="6">
+        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
           <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
             <v-row class="pl-4">
               <v-col cols="4">
@@ -124,7 +124,7 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInSchoolUser" cols="6">
+        <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
           <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
             <v-row class="pl-4">
               <v-col cols="4">
@@ -164,7 +164,7 @@ import omit from 'lodash/omit';
 import ApiService from '../common/apiService';
 import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
 import router from '@/router';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatDateTime} from '@/utils/format';
 import {isEmpty, omitBy} from 'lodash';
@@ -195,6 +195,8 @@ export default {
       districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
       schoolLastUpdateDate: '',
+      activeUserSchools: [],
+      activeUserDistricts:[],
       headerSearchParams: {
         sequenceNumber: '',
         contact: '',
@@ -206,6 +208,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('app', ['activeSchoolsMap','activeDistrictsMap']),
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
@@ -223,10 +226,12 @@ export default {
     if(this.isLoggedInSchoolUser) {
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
+      this.isSchoolActive();
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
       this.getDistrictSchoolsLastUpdateDate();
+      this.isDistrictActive();
     }
   },
   methods: {
@@ -340,6 +345,32 @@ export default {
     },
     redirectToSchoolDetails() {
       router.push('/schoolDetails');
+    },
+    isSchoolActive(){
+      this.$store.dispatch('app/getInstitutesData').finally(() => {
+        this.isTableLoading = false;
+        const schoolsMap = this.activeSchoolsMap;
+        this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
+          return {
+            'mincode': schoolsMap.get(value)?.mincode,
+            'schoolID': value
+          };
+        });
+      });
+      return this.activeUserSchools.length > 0;
+    },
+    isDistrictActive(){
+      this.$store.dispatch('app/getInstitutesData').finally(() => {
+        this.isTableLoading = false;
+        const districtMap = this.activeDistrictsMap;
+        this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
+          return {
+            'districtNumber': districtMap.get(value)?.districtNumber,
+            'districtID': value
+          };
+        });
+      });
+      return this.activeUserDistricts.length > 0;
     }
   }
 };
