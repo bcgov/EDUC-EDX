@@ -876,8 +876,9 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
+async function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
   log.info('User Set Up and Redirect called');
+  await cacheService.loadAllSchoolsToMap();
   user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
     if (edxUserData) {
       req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el)=>{
