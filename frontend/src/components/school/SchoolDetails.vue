@@ -443,21 +443,21 @@ export default {
 }
 
 .containerSetup{
-  padding-right: 50em !important;
-  padding-left: 5em !important;
+  padding-right: 24em !important;
+  padding-left: 24em !important;
 }
 
 @media screen and (max-width: 1950px) {
   .containerSetup{
     padding-right: 20em !important;
-    padding-left: 5em !important;
+    padding-left: 20em !important;
   }
 }
 
 @media screen and (max-width: 1200px) {
   .containerSetup{
-    padding-right: 2em !important;
-    padding-left: 2em !important;
+    padding-right: 4em !important;
+    padding-left: 4em !important;
   }
 }
 </style>
