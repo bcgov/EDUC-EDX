@@ -14,18 +14,20 @@
     </v-row>
     <template v-if="!loading">
       <v-row cols="2">
-        <v-col cols="10" lg="7">
+        <v-col class="d-flex justify-start">
           <v-chip class="mr-3" color="green">Active</v-chip>
           <v-chip class="mr-3" color="blue">Pending Start Date</v-chip>
           <v-chip color="orange">Pending End Date</v-chip>
         </v-col>
-        <v-col cols="10" lg="5">
-          <PrimaryButton width="30%" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
+        <v-col class="d-flex justify-end">
+          <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
         <v-row>
-          <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+          <v-col>
+            <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+          </v-col>
         </v-row>
         <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
@@ -49,10 +51,10 @@
                         <span>{{ contact.email }}</span>
                       </v-col>
                       <v-col cols="12" class="pt-1">
-                        <span>{{ contact.phoneNumber }}</span>
+                        <span>{{ formatPhoneNumber(contact.phoneNumber) }}</span><span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
                       </v-col>
-                      <v-col cols="12" class="pt-1">
-                        <span></span>
+                      <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
+                        <span>{{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)</span> <span v-if="contact.alternatePhoneExtension"> ext. {{contact.alternatePhoneExtension}}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -77,7 +79,11 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row cols="2" v-else><p>No contacts of this type have been listed.</p></v-row>
+        <v-row cols="2" v-else>
+          <v-col>
+            <p>No contacts of this type have been listed.</p>
+          </v-col>
+        </v-row>
       </div>
     </template>
   </v-container>
@@ -90,6 +96,8 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {formatPhoneNumber} from '@/utils/format';
 
 export default {
   name: 'SchoolContactsPage',
@@ -148,16 +156,22 @@ export default {
         });
     },
     getSchoolContactStatus(contact) {
-      const currentDate = new Date();
+      const currentDate = LocalDate.now();
       let effectiveDate = contact.effectiveDate;
       let expiryDate = contact.expiryDate;
       let status = null;
 
-      if (expiryDate === '' || expiryDate === null) {
+      const parsedEffectiveDate = new LocalDate.parse(effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+
+      let parsedExpiryDate = null;
+      if (expiryDate) {
+        parsedExpiryDate = new LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+      }
+      if (parsedExpiryDate === null) {
         status = 'Active';
-      } else if (effectiveDate > currentDate) {
+      } else if (parsedEffectiveDate > currentDate) {
         status = 'Pending Start Date';
-      } else if (expiryDate > currentDate) {
+      } else if (parsedExpiryDate > currentDate) {
         status = 'Pending End Date';
       }
       return status;
@@ -174,7 +188,8 @@ export default {
     },
     formatDate(rawDate){
       return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    }
+    },
+    formatPhoneNumber,
   }
 };
 </script>
