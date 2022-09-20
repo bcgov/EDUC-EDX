@@ -22,14 +22,14 @@
           <template v-slot:item.mincode="{ item }">
             <v-row @click="selectSchool(item.schoolID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
-                <h3 class="mt-1 mb-1" style="color: black;">{{getSchoolName(item.schoolID)}}</h3>
+                <h3 class="mt-1 mb-1" style="color: black;">{{item.displayName}}</h3>
                 <h3 style="color: grey;">{{item.mincode}}</h3>
               </v-col>
             </v-row>
           </template>
         </v-data-table>
         <v-row v-if="activeUserDistricts.length>0">
-          <v-col><h2>District Dashboard</h2></v-col>
+          <v-col class="mt-6"><h2>District Dashboard</h2></v-col>
         </v-row>
         <v-data-table v-if="activeUserDistricts.length>0"
             :items="activeUserDistricts"
@@ -37,13 +37,14 @@
             hide-default-header
             :headers="districtHeaders"
             mobile-breakpoint="0"
+            sort-by="displayName"
             hide-default-footer
             :loading="isTableLoading"
         >
           <template v-slot:item.districtNumber="{ item }">
             <v-row @click="selectDistrict(item.districtID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
-                <h3 class="mt-1 mb-1" style="color: black;">{{getDistrictName(item.districtID)}}</h3>
+                <h3 class="mt-1 mb-1" style="color: black;">{{item.displayName}}</h3>
                 <h3 style="color: grey;">{{item.districtNumber}}</h3>
               </v-col>
             </v-row>
@@ -103,25 +104,21 @@ export default {
       this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
         return {
           'mincode': schoolsMap.get(value)?.mincode,
-          'schoolID': value
+          'schoolID': value,
+          'displayName': schoolsMap.get(value)?.schoolName,
         };
       });
       const districtMap = this.activeDistrictsMap;
       this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
         return {
           'districtNumber': districtMap.get(value)?.districtNumber,
-          'districtID': value
+          'districtID': value,
+          'displayName': districtMap.get(value)?.name,
         };
       });
     });
   },
   methods: {
-    getSchoolName(schoolID) {
-      return this.activeSchoolsMap.get(schoolID)?.schoolName;
-    },
-    getDistrictName(districtID) {
-      return this.activeDistrictsMap.get(districtID)?.name;
-    },
     selectSchool(schoolID){
       const payload = {params: {schoolID: schoolID}};
       ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)

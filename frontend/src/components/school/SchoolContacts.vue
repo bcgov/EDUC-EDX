@@ -14,18 +14,20 @@
     </v-row>
     <template v-if="!loading">
       <v-row cols="2">
-        <v-col cols="10" lg="7">
+        <v-col class="d-flex justify-start">
           <v-chip class="mr-3" color="green">Active</v-chip>
           <v-chip class="mr-3" color="blue">Pending Start Date</v-chip>
           <v-chip color="orange">Pending End Date</v-chip>
         </v-col>
-        <v-col cols="10" lg="5">
-          <PrimaryButton width="30%" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
+        <v-col class="d-flex justify-end">
+          <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
         <v-row>
-          <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+          <v-col>
+            <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+          </v-col>
         </v-row>
         <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
@@ -77,7 +79,11 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row cols="2" v-else><p>No contacts of this type have been listed.</p></v-row>
+        <v-row cols="2" v-else>
+          <v-col>
+            <p>No contacts of this type have been listed.</p>
+          </v-col>
+        </v-row>
       </div>
     </template>
   </v-container>
