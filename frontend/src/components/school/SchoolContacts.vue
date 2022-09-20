@@ -142,7 +142,6 @@ export default {
             }
             this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
           });
-          console.log(this.schoolContacts);
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of the school\'s contacts. Please try again later.');
