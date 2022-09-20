@@ -15,9 +15,9 @@
     <template v-if="!loading">
       <v-row cols="2">
         <v-col class="d-flex justify-start">
-          <v-chip class="mr-3" color="green">Active</v-chip>
-          <v-chip class="mr-3" color="blue">Pending Start Date</v-chip>
-          <v-chip color="orange">Pending End Date</v-chip>
+          <v-chip class="mr-3" color="#A9D18E">Active</v-chip>
+          <v-chip class="mr-3" color="#9DC3E6">Pending Start Date</v-chip>
+          <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
           <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
@@ -187,11 +187,11 @@ export default {
     getStatusColor(contact) {
       let status = this.getSchoolContactStatus(contact);
       if (status === 'Active') {
-        return 'green';
+        return '#A9D18E';
       } else if (status === 'Pending Start Date'){
-        return 'blue';
+        return '#9DC3E6';
       } else if (status === 'Pending End Date'){
-        return 'orange';
+        return '#F4B183';
       }
     },
     formatDate(rawDate){
