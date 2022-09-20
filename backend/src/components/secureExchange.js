@@ -876,27 +876,28 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-async function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
   log.info('User Set Up and Redirect called');
-  await cacheService.loadAllSchoolsToMap();
-  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
-    if (edxUserData) {
-      req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el)=>{
-        return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
-      }).flatMap(el =>el.schoolID);//this is list of active schoolIDs associated to the user
-      req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el)=>{
-        return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
-      }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
-      if (Array.isArray(edxUserData)) {
-        req.session.edxUserData = edxUserData[0];
+  cacheService.loadAllSchoolsToMap().then(() => {
+    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
+      if (edxUserData) {
+        req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
+        }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
+        req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
+          return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
+        }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
+        if (Array.isArray(edxUserData)) {
+          req.session.edxUserData = edxUserData[0];
+        } else {
+          req.session.edxUserData = edxUserData;
+        }
+        setInstituteTypeIdentifierAndRedirect(req, res);
       } else {
-        req.session.edxUserData = edxUserData;
+        log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
+        res.redirect(config.get('server:frontend') + '/unauthorized');
       }
-      setInstituteTypeIdentifierAndRedirect(req, res);
-    } else {
-      log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
-      res.redirect(config.get('server:frontend') + '/unauthorized');
-    }
+    });
   });
 }
 
