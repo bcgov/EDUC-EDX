@@ -275,6 +275,12 @@ export default {
   components: {
     PrimaryButton,
   },
+  props: {
+    schoolID: {
+      type: String,
+      required: false
+    },
+  },
   data() {
     return {
       school: '',
@@ -317,12 +323,13 @@ export default {
     this.getThisSchoolsDetails();
   },
   methods: {
-    
     getThisSchoolsDetails(){
       this.loading = true;
       this.school = '';
 
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + `/${this.userInfo.activeInstituteIdentifier}`)
+      let searchSchoolID = this.schoolID ? this.schoolID: this.userInfo.activeInstituteIdentifier;
+
+      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + '/' + searchSchoolID)
         .then(response => {
           this.school = response.data;
           this.populateExtraSchoolFields(this.school);
@@ -372,7 +379,7 @@ export default {
         nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl.neighborhoodLearningTypeCode).label);
       }
       nLCActivityList.sort();
-      return nLCActivityList.toString();
+      return nLCActivityList.toString().replace(/,/g, ', ');
     },
     getFacilityType(school){
       return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
