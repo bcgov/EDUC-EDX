@@ -49,7 +49,7 @@
         >
 
           <template v-slot:item.secureExchangeStatusCode="{ item }">
-              <v-row @click="openSchool(item.schoolId)" style="cursor: pointer;">
+              <v-row style="cursor: pointer;">
                 <v-col cols="12" lg="4" xl="5" class="pb-0 pt-0">
                   <v-row class="mb-n4">
                     <v-col cols="12" class="pb-2 pt-2 pr-0">
@@ -107,6 +107,7 @@
                              color="#003366"
                              width="100%"
                              outlined
+                             @click="openSchool(item.schoolId)"
                              class="mt-0 pt-0 filterButton"
                       >
                         <v-icon color="#003366" style="margin-top: 0.07em" class="ml-n5 mr-1" right dark>mdi-newspaper-variant-outline</v-icon>
@@ -120,6 +121,7 @@
                              color="#003366"
                              width="100%"
                              outlined
+                             @click="openSchoolContacts(item.schoolId)"
                              class="mt-0 pt-0 filterButton"
                       >
                         <v-icon color="#003366" style="margin-top: 0.07em" class="ml-n1 mr-1" right dark>mdi-account-multiple-outline</v-icon>
@@ -360,7 +362,10 @@ export default {
       }
     },
     openSchool(schoolId){
-      this.$router.push({name: 'viewSchool', params: {schoolID: schoolId}});
+      this.$router.push({name: 'schoolDetails', params: {schoolID: schoolId}});
+    },
+    openSchoolContacts(schoolId){
+      this.$router.push({name: 'schoolContacts', params: {schoolID: schoolId}});
     },
     resetPageNumber(){
       this.pageNumber = 1;

@@ -234,6 +234,7 @@ const router = new VueRouter({
           path: 'schoolContacts',
           name: 'schoolContacts',
           component: SchoolContactsPage,
+          props: true,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOL_CONTACTS,
             requiresAuth: true,
@@ -244,6 +245,7 @@ const router = new VueRouter({
           path: 'schoolDetails',
           name: 'schoolDetails',
           component: SchoolDetailsPage,
+          props: true,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOL_DETAILS,
             requiresAuth: true,
