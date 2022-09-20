@@ -379,7 +379,7 @@ export default {
         nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl.neighborhoodLearningTypeCode).label);
       }
       nLCActivityList.sort();
-      return nLCActivityList.toString();
+      return nLCActivityList.toString().replace(/,/g, ', ');
     },
     getFacilityType(school){
       return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
