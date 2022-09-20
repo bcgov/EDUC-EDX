@@ -16,6 +16,7 @@
           hide-default-header
           :headers="schoolHeaders"
           mobile-breakpoint="0"
+          sort-by="displayName"
           hide-default-footer
           :loading="isTableLoading"
         >
