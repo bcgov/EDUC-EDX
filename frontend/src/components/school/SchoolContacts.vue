@@ -49,10 +49,10 @@
                         <span>{{ contact.email }}</span>
                       </v-col>
                       <v-col cols="12" class="pt-1">
-                        <span>{{ contact.phoneNumber }}</span>
+                        <span>{{ formatPhoneNumber(contact.phoneNumber) }}</span><span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
                       </v-col>
-                      <v-col cols="12" class="pt-1">
-                        <span></span>
+                      <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
+                        <span>{{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)</span> <span v-if="contact.alternatePhoneExtension"> ext. {{contact.alternatePhoneExtension}}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -90,6 +90,8 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {formatPhoneNumber} from '@/utils/format';
 
 export default {
   name: 'SchoolContactsPage',
@@ -148,16 +150,22 @@ export default {
         });
     },
     getSchoolContactStatus(contact) {
-      const currentDate = new Date();
+      const currentDate = LocalDate.now();
       let effectiveDate = contact.effectiveDate;
       let expiryDate = contact.expiryDate;
       let status = null;
 
-      if (expiryDate === '' || expiryDate === null) {
+      const parsedEffectiveDate = new LocalDate.parse(effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+
+      let parsedExpiryDate = null;
+      if (expiryDate) {
+        parsedExpiryDate = new LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+      }
+      if (parsedExpiryDate === null) {
         status = 'Active';
-      } else if (effectiveDate > currentDate) {
+      } else if (parsedEffectiveDate > currentDate) {
         status = 'Pending Start Date';
-      } else if (expiryDate > currentDate) {
+      } else if (parsedExpiryDate > currentDate) {
         status = 'Pending End Date';
       }
       return status;
@@ -174,7 +182,8 @@ export default {
     },
     formatDate(rawDate){
       return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    }
+    },
+    formatPhoneNumber,
   }
 };
 </script>
