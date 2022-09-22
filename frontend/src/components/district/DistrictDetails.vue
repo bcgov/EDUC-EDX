@@ -27,25 +27,25 @@
             <v-icon class="pb-1" :color="getStatusColor()" right dark>
               mdi-circle-medium
             </v-icon>
-            <span class="fontBolder">{{getStatusText()}}</span>
+            <span>{{getStatusText()}}</span>
           </v-col>
           <v-col lg="2" sm="4">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
               mdi-phone-outline
             </v-icon>
-            <span class="fontBolder">{{ formatPhoneNumber(district.phoneNumber) }}</span>
+            <span>{{ formatPhoneNumber(district.phoneNumber) }}</span>
           </v-col>
           <v-col lg="3" sm="4">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
               mdi-at
             </v-icon>
-            <span class="fontBolder">{{ district.email }}</span>
+            <span>{{ district.email }}</span>
           </v-col>
           <v-col lg="2" sm="4">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
               mdi-fax
             </v-icon>
-            <span class="fontBolder">{{ formatPhoneNumber(district.faxNumber) }}</span>
+            <span>{{ formatPhoneNumber(district.faxNumber) }}</span>
           </v-col>
           <v-col  lg="3" sm="4">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
@@ -74,23 +74,23 @@
                 <span>Mailing Address</span>
               </v-col>
             </v-row>
-            <v-row class="ml-9 fontBolder" no-gutters>
+            <v-row class="ml-9" no-gutters>
               <v-col>
                 <span>{{ getMailingAddressItem('addressLine1') }}</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="ml-9 fontBolder">
+              <v-col class="ml-9">
                 <span>{{ getMailingAddressItem('addressLine2') }}</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="ml-9 fontBolder">
+              <v-col class="ml-9">
                 <span>{{ getMailingAddressItem('city') + ', ' + getMailingAddressItem('provinceCode')  + ', ' + getMailingAddressItem('countryCode') }}</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="ml-9 fontBolder">
+              <v-col class="ml-9">
                 <span>{{ getMailingAddressItem('postal') }}</span>
               </v-col>
             </v-row>
@@ -107,22 +107,22 @@
             <v-row v-if="!hasSamePhysicalAddress()" no-gutters>
               <v-col>
                 <v-row no-gutters>
-                  <v-col class="ml-9 fontBolder">
+                  <v-col class="ml-9">
                     <span>{{ getPhysicalAddressItem('addressLine1') }}</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
-                  <v-col class="ml-9 fontBolder">
+                  <v-col class="ml-9">
                     <span>{{ getPhysicalAddressItem('addressLine2') }}</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
-                  <v-col class="ml-9 fontBolder">
+                  <v-col class="ml-9">
                     <span>{{ getPhysicalAddressItem('city') + ', ' + getPhysicalAddressItem('provinceCode')  + ', ' + getPhysicalAddressItem('countryCode') }}</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
-                  <v-col class="ml-9 fontBolder">
+                  <v-col class="ml-9">
                     <span>{{ getPhysicalAddressItem('postal') }}</span>
                   </v-col>
                 </v-row>
@@ -131,7 +131,7 @@
             <v-row v-else no-gutters>
               <v-col>
                 <v-row class="ml-9" no-gutters>
-                  <v-col class="fontBolder fontItalic">
+                  <v-col class="fontItalic">
                     <span>Same as Mailing Address</span>
                   </v-col>
                 </v-row>
