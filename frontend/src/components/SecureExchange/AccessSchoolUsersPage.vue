@@ -6,15 +6,13 @@
         <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
       </v-col>
       <v-col class="d-flex justify-end">
-        <v-chip
-          :color="getChipColor()"
-
-        >
+        <v-chip id="primaryEdxActivationCodeChip" :color="getChipColor()">
           <v-icon left>
             mdi-shield-key-outline
           </v-icon>Primary Activation Code:
           {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
         </v-chip>
+        <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
       </v-col>
     </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
@@ -105,10 +103,11 @@ import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
 import NewUserPage from '@/components/SecureExchange/NewUserPage';
 import Spinner from '@/components/common/Spinner';
+import ClipboardButton from '@/components/util/ClipboardButton';
 
 export default {
   name: 'AccessSchoolUsersPage',
-  components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner},
+  components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
   data() {
     return {
       newUserInviteSheet: false,

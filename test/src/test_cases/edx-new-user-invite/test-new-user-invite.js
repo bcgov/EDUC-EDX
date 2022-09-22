@@ -40,6 +40,11 @@ test('test-school-user-activation-invite', async t => {
   await menu.clickSchoolUserManagementSubMenuLink();
   await t.wait(3000);
   await navBar.verifyNavTitleByText('School User Management');
+
+  await accessUsersPage.verifyPrimaryEdxActivationCodeChipHasValue();
+  await accessUsersPage.verifyCopyPrimaryEdxActivationCodeButtonExists();
+  await accessUsersPage.verifyCopyPrimaryEdxActivationCodeButtonValueMatchesPrimaryEdxActivationCodeChip();
+
   await accessUsersPage.clickNewUserButton();
   await accessUsersPage.verifyUserByText('New User');
 
