@@ -22,7 +22,7 @@ let documentTypeCodes = [];
 const cacheService = {
 
   async loadAllSchoolsToMap() {
-    log.debug('Loading all schoolsMap during start up');
+    log.debug('Loading all schoolsMap');
     await retry(async () => {
       // if anything throws, we retry
       const data = await getApiCredentials(); // get the tokens first to make api calls.
@@ -80,7 +80,7 @@ const cacheService = {
     });
   },
   async loadAllDistrictsToMap() {
-    log.debug('loading all districtsMap during start up');
+    log.debug('Loading all districtsMap');
     await retry(async () => {
       const data = await getApiCredentials();
       const districtsResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/district`);
