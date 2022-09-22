@@ -32,61 +32,41 @@
                 </v-row>
               </v-col>
             </v-row>
-            <v-row>
+            <v-row class="pb-2">
               <v-col class="pt-0 mt-n2" cols="12">
-                <div class="ministryOwnershipTeamName" style="color: black">{{district.districtNumber}} - {{district.name}}</div>
+                <div class="ministryOwnershipTeamName"  style="color: black">{{district.districtNumber}} - {{district.name}}</div>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="2" lg="2" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
-                    <v-icon class="ml-n1 pr-3" :color="getStatusColor(school.status)" dark>
-                      mdi-circle-medium
-                    </v-icon>
-                    <span class="ml-n1">{{ school.status }}</span>
-                  </v-col>
-                </v-row>
+                <v-icon class="ml-n1 pr-3" :color="getStatusColor(school.status)" dark>
+                  mdi-circle-medium
+                </v-icon>
+                <span class="ml-n1">{{ school.status }}</span>
               </v-col>
               <v-col cols="12" lg="2" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
-                    <v-icon aria-hidden="false" class="pr-3">
-                      mdi-phone-outline
-                    </v-icon>
-                    <span class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
-                  </v-col>
-                </v-row>
+                <v-icon aria-hidden="false" class="pr-3">
+                  mdi-phone-outline
+                </v-icon>
+                <span class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
               </v-col>
               <v-col cols="12" lg="3" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
-                    <v-icon aria-hidden="false" class="pr-3">
-                      mdi-at
-                    </v-icon>
-                    <span class="ml-n1">{{ school.email }}</span>
-                  </v-col>
-                </v-row>
+                <v-icon aria-hidden="false" class="pr-3">
+                  mdi-at
+                </v-icon>
+                <span class="ml-n1">{{ school.email }}</span>
               </v-col>
               <v-col cols="12" lg="2" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pb-2 pt-2 pr-0">
-                    <v-icon aria-hidden="false" class="pr-3">
-                      mdi-fax
-                    </v-icon>
-                    <span class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
-                  </v-col>
-                </v-row>
+                <v-icon aria-hidden="false" class="pr-3">
+                  mdi-fax
+                </v-icon>
+                <span class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
               </v-col>
-              <v-col cols="12" lg="2" class="pb-0 pt-0">
-                <v-row no-gutters>
-                  <v-col cols="10" class="pb-2 pt-0 pr-0">
-                     <v-btn icon :href="`${school.website}`" target="_blank">
-                      <v-icon aria-hidden="false" class="pr-3">mdi-web</v-icon>
-                       {{school.website}}
-                    </v-btn>
-                  </v-col>
-                </v-row>
+              <v-col  lg="3" sm="4" class="pb-0 pt-0">
+                <v-icon class="mr-1" aria-hidden="false">
+                  mdi-web
+                </v-icon>
+                <a target="_blank" :href="school.website">{{ school.website }}</a>
               </v-col>
             </v-row>
           </v-col>
@@ -249,7 +229,7 @@
               </v-col>
             </v-row>
             <v-row class="ml-7 pl-0" v-else>
-              <v-col class="pl-0 fontBolder fontItalic">
+              <v-col class="pl-0 fontItalic">
                 <span>Same as Mailing Address</span>
               </v-col>
             </v-row>
@@ -268,6 +248,7 @@ import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import {formatPhoneNumber} from '@/utils/format';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -361,11 +342,14 @@ export default {
     getGradesOffered(rawGrades){
       let gradeList = [];
       for(const grade of rawGrades){
-        gradeList.push(this.schoolGradeTypes.find((facility) => facility.schoolGradeCode === grade.schoolGradeCode).label);
+        gradeList.push(this.schoolGradeTypes.find((facility) => facility.schoolGradeCode === grade.schoolGradeCode).label.replaceAll('Grade ', ''));
       }
+      let onlyNumbers = gradeList.filter(Number);
+      let onlyLetters = gradeList.filter(x => !onlyNumbers.includes(x));
 
-      gradeList.sort();
-      return gradeList.toString().replace(/,/g, ', ').replaceAll('Grade', '');
+      onlyNumbers = onlyNumbers.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      gradeList = onlyNumbers.concat(onlyLetters);
+      return gradeList.toString().replace(/,/g, ', ');
     },
     getSchoolOrganization(school){
       return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school.schoolOrganizationCode).label;
@@ -387,23 +371,30 @@ export default {
     getSchoolCategory(school){
       return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
-    getSchoolStatus(school) {
-      const currentDate = new Date();
+    getSchoolStatus: function (school) {
+      const currentDate = LocalDate.now();
       let openedDate = school.openedDate;
       let closedDate = school.closedDate;
-      let status = null;
 
-      if (openedDate <= currentDate || closedDate === null || closedDate > currentDate) {
-        status = 'Open';
-      } else if (openedDate > currentDate) {
-        status = 'Opening';
-      } else if (closedDate > currentDate) {
-        status = 'Closing';
-      } else {
-        status = 'Closed';
+      if (!openedDate) {
+        return 'Never Opened';
+      }
+      const parsedOpenDate = new LocalDate.parse(openedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+
+      let parsedCloseDate = null;
+      if(closedDate){
+        parsedCloseDate = new LocalDate.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
       }
 
-      return status;
+      if (parsedOpenDate <= currentDate && parsedCloseDate === null) {
+        return 'Open';
+      } else if (parsedOpenDate > currentDate) {
+        return 'Opening';
+      } else if (parsedOpenDate <= currentDate && parsedCloseDate > currentDate) {
+        return 'Closing';
+      }
+
+      return 'Closed';
     },
     getStatusColor(status) {
       if (status === 'Open') {
