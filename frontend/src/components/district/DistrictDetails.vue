@@ -104,7 +104,7 @@
                 <span>Physical Address</span>
               </v-col>
             </v-row>
-            <v-row v-if="!hasSamePhysicalAddress()" no-gutters>
+            <v-row v-if="!hasSamePhysicalAddress" no-gutters>
               <v-col>
                 <v-row no-gutters>
                   <v-col class="ml-9">
@@ -168,6 +168,11 @@ export default {
       loading: false
     };
   },
+  computed:{
+    hasSamePhysicalAddress(){
+      return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
+    }
+  },
   created() {
     this.getDistrict();
   },
@@ -201,9 +206,6 @@ export default {
     },
     hasMailingAddress(){
       return this.district.addresses.filter(address => address.addressTypeCode === 'MAILING').length > 0;
-    },
-    hasSamePhysicalAddress(){
-      return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
     getMailingAddressItem(item){
       let mailingAddress = this.district.addresses.filter(address => address.addressTypeCode === 'MAILING');
