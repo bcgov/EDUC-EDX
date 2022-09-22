@@ -6,7 +6,7 @@
         <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
       </v-col>
       <v-col class="d-flex justify-end">
-        <v-chip id="primaryEdxActivationCodeChip" :color="getChipColor()">
+        <v-chip id="primaryEdxActivationCode" :color="getChipColor()">
           <v-icon left>
             mdi-shield-key-outline
           </v-icon>Primary Activation Code:

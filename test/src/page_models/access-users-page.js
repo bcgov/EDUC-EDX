@@ -8,7 +8,7 @@ class AccessUsersPage {
     this.navTitle = Selector('#navTitle');
     this.newUserVCard= Selector('#newUserInviteVCard');
     this.vCardTitle = Selector(('#newUserInviteVCardTitle'));
-    this.primaryEdxActivationCodeChip = Selector("#primaryEdxActivationCodeChip");
+    this.primaryEdxActivationCode = Selector("#primaryEdxActivationCode");
     this.copyPrimaryEdxActivationCodeButton = Selector("#copyPrimaryEdxActivationCodeButton");
   }
 
@@ -22,13 +22,13 @@ class AccessUsersPage {
     log.info(`User found ${name}`);
   }
 
-  async verifyPrimaryEdxActivationCodeChipHasValue() {
-    await t.expect(this.primaryEdxActivationCodeChip.innerText).notContains('Code Not Found');
+  async verifyPrimaryEdxActivationCodeHasValue() {
+    await t.expect(this.primaryEdxActivationCode.innerText).notContains('Code Not Found');
     log.info('Verified that the Primary EDX Activation Code has a value.');
   }
 
-  async verifyPrimaryEdxActivationCodeChipDoesNotHaveValue() {
-    await t.expect(this.primaryEdxActivationCodeChip.innerText).contains('Code Not Found');
+  async verifyPrimaryEdxActivationCodeDoesNotHaveValue() {
+    await t.expect(this.primaryEdxActivationCode.innerText).contains('Code Not Found');
     log.info('Verified that the Primary EDX Activation Code does not have a value.');
   }
 
@@ -42,8 +42,8 @@ class AccessUsersPage {
     log.info('Verified that the Copy Primary EDX Activation Code Button does not exist.');
   }
 
-  async verifyCopyPrimaryEdxActivationCodeButtonValueMatchesPrimaryEdxActivationCodeChip() {
-    let primaryEdxActivationCode = (await this.primaryEdxActivationCodeChip.innerText).replace('Primary Activation Code:', '').trim();
+  async verifyCopyPrimaryEdxActivationCodeButtonValueMatchesPrimaryEdxActivationCode() {
+    let primaryEdxActivationCode = (await this.primaryEdxActivationCode.innerText).replace('Primary Activation Code:', '').trim();
     await t.expect(this.copyPrimaryEdxActivationCodeButton.withAttribute('title', `Copy ${primaryEdxActivationCode} to the clipboard.`).exists).ok();
     log.info('Verified that the Copy Primary EDX Activation Code Button does not exist.');
   }
