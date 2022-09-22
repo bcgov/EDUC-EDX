@@ -283,6 +283,9 @@ export default {
     ...mapState('institute', ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
+    },
+    hasSamePhysicalAddress(){
+      return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     }
   },
   created() {
@@ -353,9 +356,6 @@ export default {
     },
     getSchoolOrganization(school){
       return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school.schoolOrganizationCode).label;
-    },
-    hasSamePhysicalAddress(){
-      return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
     getNLCActivity(school){
       let nLCActivityList = [];
