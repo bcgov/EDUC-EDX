@@ -45,7 +45,7 @@ class AccessUsersPage {
   async verifyCopyPrimaryEdxActivationCodeButtonValueMatchesPrimaryEdxActivationCode() {
     let primaryEdxActivationCode = (await this.primaryEdxActivationCode.innerText).replace('Primary Activation Code:', '').trim();
     await t.expect(this.copyPrimaryEdxActivationCodeButton.withAttribute('title', `Copy ${primaryEdxActivationCode} to the clipboard.`).exists).ok();
-    log.info('Verified that the Copy Primary EDX Activation Code Button does not exist.');
+    log.info('Verified that the Copy Primary EDX Activation Code Button\'s value matches the Primary Edx Activation Code.');
   }
 
 }
