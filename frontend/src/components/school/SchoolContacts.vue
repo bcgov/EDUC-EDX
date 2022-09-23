@@ -175,7 +175,7 @@ export default {
       if (expiryDate) {
         parsedExpiryDate = new LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
       }
-      if (parsedExpiryDate === null) {
+      if (parsedExpiryDate === null && parsedEffectiveDate < currentDate) {
         status = 'Active';
       } else if (parsedEffectiveDate > currentDate) {
         status = 'Pending Start Date';
