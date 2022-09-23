@@ -175,62 +175,76 @@
           </v-col>
         </v-row>
         <v-row class="pl-3">
-          <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
-                <v-icon aria-hidden="false" class="pr-1">
+          <v-col cols="3">
+            <v-row>
+              <v-col>
+                <v-icon class="pb-1 mr-1" right >
                   mdi-email-outline
                 </v-icon>
-                <span style="color: grey">Mailing Addresses</span>
+                <span>Mailing Address</span>
               </v-col>
             </v-row>
-            <v-row class="ml-7">
-              <v-col cols="10" class="pr-0 pt-0" v-for="address in school.addresses" :key="address.addressId">
-                <v-row v-if="address.addressTypeCode === 'MAILING'">
-                  <v-col>
-                    <v-row>
-                      <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
-                    </v-row>
-                    <v-row>
-                      <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
-                    </v-row>
-                    <v-row>
-                      <span>{{address.postal}}</span>
-                    </v-row>
-                  </v-col>
-                </v-row>
+            <v-row class="ml-9" no-gutters>
+              <v-col>
+                <span>{{ getMailingAddressItem('addressLine1') }}</span>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="ml-9">
+                <span>{{ getMailingAddressItem('addressLine2') }}</span>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="ml-9">
+                <span>{{ getMailingAddressItem('city') + ', ' + getMailingAddressItem('provinceCode')  + ', ' + getMailingAddressItem('countryCode') }}</span>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="ml-9">
+                <span>{{ getMailingAddressItem('postal') }}</span>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
-                <v-icon aria-hidden="false" class="pr-1">
+          <v-col v-if="!isOffshoreSchool" cols="3">
+            <v-row>
+              <v-col>
+                <v-icon class="pb-1 mr-1" right >
                   mdi-home-outline
                 </v-icon>
-                <span style="color: grey">Physical Addresses</span>
+                <span>Physical Address</span>
               </v-col>
             </v-row>
-            <v-row v-if="!hasSamePhysicalAddress" class="ml-7">
-              <v-col cols="10" class="pb-1 pr-0" v-for="address in school.addresses" :key="address.addressId">
-                <v-row v-if="address.addressTypeCode === 'PHYSICAL'">
-                  <v-col>
-                    <v-row>
-                      <span class="ministryLine" style="color: black">{{ address.addressLine1 }}</span>
-                    </v-row>
-                    <v-row>
-                      <span>{{ address.city }}, {{ address.provinceCode }} {{getCountryName(address.countryCode)}}</span>
-                    </v-row>
-                    <v-row>
-                      <span>{{address.postal}}</span>
-                    </v-row>
+            <v-row v-if="!hasSamePhysicalAddress" no-gutters>
+              <v-col>
+                <v-row no-gutters>
+                  <v-col class="ml-9">
+                    <span>{{ getPhysicalAddressItem('addressLine1') }}</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="ml-9">
+                    <span>{{ getPhysicalAddressItem('addressLine2') }}</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="ml-9">
+                    <span>{{ getPhysicalAddressItem('city') + ', ' + getPhysicalAddressItem('provinceCode')  + ', ' + getPhysicalAddressItem('countryCode') }}</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="ml-9">
+                    <span>{{ getPhysicalAddressItem('postal') }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
-            <v-row class="ml-7 pl-0" v-else>
-              <v-col class="pl-0 fontItalic">
-                <span>Same as Mailing Address</span>
+            <v-row v-else no-gutters>
+              <v-col>
+                <v-row class="ml-9" no-gutters>
+                  <v-col class="fontItalic">
+                    <span>Same as Mailing Address</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>
@@ -286,6 +300,9 @@ export default {
     },
     hasSamePhysicalAddress(){
       return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
+    },
+    isOffshoreSchool(){
+      return this.school.schoolCategoryCode === 'OFFSHORE';
     }
   },
   created() {
@@ -341,6 +358,22 @@ export default {
       school.status = this.getSchoolStatus(school);
       school.facilityType = this.getFacilityType(school);
       school.schoolCategory = this.getSchoolCategory(school);
+    },
+    getMailingAddressItem(item){
+      let mailingAddress = this.school.addresses.filter(address => address.addressTypeCode === 'MAILING');
+      for (const x in mailingAddress[0]) {
+        if(x === item){
+          return mailingAddress[0][item];
+        }
+      }
+    },
+    getPhysicalAddressItem(item){
+      let physicalAddress = this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL');
+      for (const x in physicalAddress[0]) {
+        if(x === item){
+          return physicalAddress[0][item];
+        }
+      }
     },
     getGradesOffered(rawGrades){
       let gradeList = [];
