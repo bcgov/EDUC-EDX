@@ -42,7 +42,8 @@ export const ApiRoutes = Object.freeze({
     SCHOOL_GRADE_TYPES_URL: schoolRoot + '/school-grade-types',
   },
   district: {
-    BASE_URL: districtRoot
+    BASE_URL: districtRoot,
+    DISTRICT_CONTACT_TYPE_CODES: `${districtRoot}/districtContactTypeCodes`,
   },
   institute: {
     BASE_URL: instituteRoot,
@@ -90,6 +91,7 @@ export const PAGE_TITLES = Object.freeze({
   SCHOOL_CONTACTS:'School Contacts',
   SCHOOL_DETAILS:'School Details',
   DISTRICT_DETAILS:'District Details',
+  DISTRICT_CONTACTS: 'District Contacts',
 });
 
 

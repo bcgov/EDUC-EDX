@@ -7,6 +7,7 @@ cacheKeys = {
   SCHOOL_FACILITY_TYPES:'school_facilityTypes',
   SCHOOL_CATEGORY_TYPES:'school_categoryTypes',
   SCHOOL_CONTACT_TYPE_CODES: 'school_contactTypeCodes',
+  DISTRICT_CONTACT_TYPE_CODES: 'district_contactTypeCodes',
   SCHOOL_ORGANIZATION_TYPES: 'school_organizationTypes',
   SCHOOL_NEIGHBORHOOD_LEARNING_TYPES: 'school_neighborhoodTypes',
   SCHOOL_GRADE_TYPES: 'school_gradeTypes',
