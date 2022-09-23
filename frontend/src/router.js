@@ -29,6 +29,7 @@ import SchoolContactsPage from '@/components/school/SchoolContacts';
 import SchoolDetailsPage from '@/components/school/SchoolDetails';
 import AccessDistrictUsersPage from '@/components/SecureExchange/AccessDistrictUsersPage';
 import DistrictDetails from '@/components/district/DistrictDetails';
+import DistrictContactsPage from '@/components/district/DistrictContacts';
 
 
 Vue.prototype.moment = moment;
@@ -226,6 +227,17 @@ const router = new VueRouter({
           component: DistrictDetails,
           meta: {
             pageTitle: PAGE_TITLES.DISTRICT_DETAILS,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          }
+        },
+        {
+          path: 'districtContacts',
+          name: 'districtContacts',
+          component: DistrictContactsPage,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.DISTRICT_CONTACTS,
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }

@@ -64,6 +64,36 @@
             </v-row>
           </v-card>
         </v-col>
+        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
+          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictContacts()">
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                    mdi-account-multiple-outline
+                  </v-icon>
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">{{ PAGE_TITLES.DISTRICT_CONTACTS }}</h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>Last updated:</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{districtContactsLastUpdateDate}}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
         <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
           <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
@@ -194,6 +224,7 @@ export default {
       schoolsLastUpdateDate: '',
       districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
+      districtContactsLastUpdateDate: '',
       schoolLastUpdateDate: '',
       activeUserSchools: [],
       activeUserDistricts:[],
@@ -231,6 +262,7 @@ export default {
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
       this.getDistrictSchoolsLastUpdateDate();
+      this.getDistrictContactsLastUpdate();
       this.isDistrictActive();
     }
   },
@@ -340,11 +372,36 @@ export default {
         });
       }
     },
+    getDistrictContactsLastUpdate(){
+      if(this.userInfo.activeInstituteType === 'DISTRICT') {
+        ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.userInfo.activeInstituteIdentifier).then(response => {
+
+          for (const contact of response.data.contacts) {
+            let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
+            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+
+            if (thisContactLastUpdated !== null) {
+              if (thisContactLastUpdated > this.districtContactsLastUpdateDate) {
+                this.districtContactsLastUpdateDate = thisContactLastUpdated;
+              }
+            }
+          }
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loadingTable = false;
+        });
+      }
+    },
     redirectToSchoolContacts(){
       router.push('/schoolContacts');
     },
     redirectToSchoolDetails() {
       router.push('/schoolDetails');
+    },
+    redirectToDistrictContacts(){
+      router.push('/districtContacts');
     },
     isSchoolActive(){
       this.$store.dispatch('app/getInstitutesData').finally(() => {
