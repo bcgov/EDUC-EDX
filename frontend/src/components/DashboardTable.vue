@@ -198,6 +198,7 @@ import {mapGetters, mapState} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatDateTime} from '@/utils/format';
 import {isEmpty, omitBy} from 'lodash';
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 export default {
   name: 'DashboardTable.vue',
@@ -356,7 +357,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+            let thisContactLastUpdated = new LocalDate.parse(rawDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
             if (thisContactLastUpdated !== null) {
               if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
@@ -378,7 +379,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new Date(rawDate).toISOString().slice(0, 10).replace(/-/g, '/');
+            let thisContactLastUpdated = new LocalDate.parse(rawDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
             if (thisContactLastUpdated !== null) {
               if (thisContactLastUpdated > this.districtContactsLastUpdateDate) {
