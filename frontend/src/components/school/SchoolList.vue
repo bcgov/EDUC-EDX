@@ -233,6 +233,7 @@ export default {
     getSchoolDropDownItems(){
       this.headerSearchParams.status = 'NotClosed';
       this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
+      this.headerSearchParams.pubEarlyLearning = 'true';
       ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {
           pageNumber: 0,
