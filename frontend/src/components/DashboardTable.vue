@@ -198,7 +198,7 @@ import {mapGetters, mapState} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatDateTime} from '@/utils/format';
 import {isEmpty, omitBy} from 'lodash';
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'DashboardTable.vue',
@@ -318,7 +318,7 @@ export default {
 
       ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
         params: {
-          pageNumber: 1,
+          pageNumber: 0,
           pageSize: 1,
           sort: {
             updateDate: 'DESC'
