@@ -59,9 +59,6 @@ jobs:
 
       - run: npm ci
       - run: npm run lint:fix
-      - run: npm run test:unit
-        env:
-          NODE_ENV: 'test'
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -81,4 +78,4 @@ jobs:
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.sources=./src
-            -Dsonar.projectBaseDir=backend
+            -Dsonar.projectBaseDir=/home/runner/work/EDUC-EDX/EDUC-EDX/backend/
