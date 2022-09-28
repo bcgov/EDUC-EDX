@@ -2,13 +2,7 @@
   <v-container class="containerSetup" fluid>
 
     <template v-if="!loading">
-      <v-row>
-        <v-col class="mt-1 d-flex justify-start">
-          <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
-          <a v-if="isDistrictUser()" class="ml-1 mt-1" @click="backButtonClick">Return to List of Schools</a>
-          <a v-else class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
-        </v-col>
-      </v-row>
+
       <v-row cols="2">
         <v-col class="d-flex justify-start">
           <v-chip class="mr-3" color="#A9D18E">Active</v-chip>
