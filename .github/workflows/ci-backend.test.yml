@@ -4,6 +4,8 @@
 name: CI Backend
 
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - master
