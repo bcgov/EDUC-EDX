@@ -73,4 +73,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: backend
+          args: >
+            -Dsonar.exclusions=**/tests/**,.github/**/*,*.md
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=backend/coverage/test-report.xml
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=bcgov_EDUC-EDX
+            -Dsonar.sources=backend/src
+            -Dsonar.projectBaseDir=backend
