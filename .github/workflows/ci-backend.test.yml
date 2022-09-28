@@ -81,4 +81,4 @@ jobs:
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.sources=./src
-            -Dsonar.projectBaseDir=./home/runner/work/EDUC-EDX/EDUC-EDX/backend
+            -Dsonar.projectBaseDir=backend
