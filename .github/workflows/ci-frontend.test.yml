@@ -4,6 +4,7 @@
 name: CI Frontend
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -57,10 +58,19 @@ jobs:
         run: npm install
 
       - name: Run unit tests
-        run: npm run test
+        run: npm run test:unit
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.exclusions=**/test/**,.github/**/*,*.md
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.sources=frontend
+            -Dsonar.tests=frontend/tests
