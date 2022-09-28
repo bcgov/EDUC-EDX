@@ -77,8 +77,8 @@ jobs:
             -Dsonar.exclusions=**/tests/**,.github/**/*,*.md
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
-            -Dsonar.testExecutionReportPaths=backend/coverage/test-report.xml
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=./coverage/test-report.xml
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.sources=./src
