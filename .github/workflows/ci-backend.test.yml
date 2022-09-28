@@ -62,18 +62,17 @@ jobs:
 
       - name: Run unit tests
         run: npm run test
-
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.exclusions=**/test/**,.github/**/*,*.md
+            -Dsonar.exclusions=**/tests/**,.github/**/*,*.md
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
             -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.sources=backend
             -Dsonar.tests=backend/tests
