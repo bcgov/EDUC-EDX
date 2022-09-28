@@ -80,6 +80,5 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
-            -Dsonar.sources=/home/runner/work/EDUC-EDX/EDUC-EDX/backend/src
-            -Dsonar.tests=/home/runner/work/EDUC-EDX/EDUC-EDX/backend/tests
+            -Dsonar.sources=**/backend/src
             -Dsonar.working.directory=/home/runner/work/EDUC-EDX/EDUC-EDX/backend
