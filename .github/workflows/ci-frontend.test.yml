@@ -34,7 +34,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '14.x'
     - run: npm ci
     - run: npm run lint:fix
     - run: npm run test:unit
@@ -55,13 +55,14 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
 
-      - name: Node install dependencies
-        run: npm install
-
-      - name: Run unit tests
-        run: npm run test:unit
+      - run: npm ci
+      - run: npm run lint:fix
+      - run: npm run test:unit
+        env:
+          NODE_ENV: 'test'
+          VUE_APP_TITLE: 'Education Data Exchange'
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -74,6 +75,6 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
             -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.sources=frontend
             -Dsonar.tests=frontend/tests
