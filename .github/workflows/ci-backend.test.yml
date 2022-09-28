@@ -81,5 +81,5 @@ jobs:
             -Dsonar.testExecutionReportPaths=backend/coverage/test-report.xml
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
-            -Dsonar.sources=backend/src
+            -Dsonar.sources=./src
             -Dsonar.projectBaseDir=backend
