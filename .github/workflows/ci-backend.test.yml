@@ -63,4 +63,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+        with:
+          args: >
+            -Dsonar.exclusions=**/test/**,.github/**/*,*.md
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
+            -Dsonar.project.monorepo.enabled=true
+            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.sources=backend
+            -Dsonar.tests=backend/tests
