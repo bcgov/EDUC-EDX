@@ -40,3 +40,27 @@ jobs:
       env:
         NODE_ENV: 'test'
         VUE_APP_TITLE: 'Education Data Exchange'
+
+  sonarcloud:
+    name: Build (Sonar Cloud)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Node install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
