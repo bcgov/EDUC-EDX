@@ -73,8 +73,6 @@ jobs:
           args: >
             -Dsonar.exclusions=**/tests/**,.github/**/*,*.md
             -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-            -Dsonar.testExecutionReportPaths=./coverage/test-report.xml
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
            
