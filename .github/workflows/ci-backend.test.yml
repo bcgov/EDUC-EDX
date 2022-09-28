@@ -45,9 +45,6 @@ jobs:
   sonarcloud:
     name: Build (Sonar Cloud)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
     steps:
       - uses: actions/checkout@v2
         with:
@@ -57,8 +54,6 @@ jobs:
         with:
           node-version: '14.x'
 
-      - run: npm ci
-      - run: npm run lint:fix
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
