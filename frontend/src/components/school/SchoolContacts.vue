@@ -1,17 +1,6 @@
 <template>
   <v-container class="containerSetup" fluid>
-    <v-row v-if="loading">
-      <v-col class="d-flex justify-center">
-        <v-progress-circular
-            class="mt-16"
-            :size="70"
-            :width="7"
-            color="primary"
-            indeterminate
-            :active="loading"
-        ></v-progress-circular>
-      </v-col>
-    </v-row>
+
     <template v-if="!loading">
       <v-row>
         <v-col class="mt-1 d-flex justify-start">
