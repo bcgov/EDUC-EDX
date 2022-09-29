@@ -106,6 +106,11 @@ import alertMixin from '@/mixins/alertMixin';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {formatPhoneNumber} from '@/utils/format';
 
+// checks the expiry of a contact
+function isExpired(contact) {
+  return (contact.expiryDate) ? new Date(contact.expiryDate) < new Date() : false;
+}
+
 export default {
   name: 'SchoolContactsPage',
   mixins: [alertMixin],
@@ -152,16 +157,17 @@ export default {
     getThisSchoolsContacts(){
       this.loadingCount += 1;
       let searchSchoolID = this.schoolID ? this.schoolID: this.userInfo.activeInstituteIdentifier;
-
       ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/` + searchSchoolID)
         .then(response => {
           this.schoolContacts = new Map();
           response.data.contacts.forEach(contact => {
-            if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
-              this.schoolContacts.set(contact.schoolContactTypeCode, [contact]);
-              return;
+            if(!isExpired(contact)){
+              if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
+                this.schoolContacts.set(contact.schoolContactTypeCode, [contact]);
+              } else {
+                this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
+              }
             }
-            this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
           });
         }).catch(error => {
           console.error(error);
