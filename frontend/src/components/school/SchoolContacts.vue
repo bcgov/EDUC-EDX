@@ -164,9 +164,9 @@ export default {
             if(!isExpired(contact)){
               if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
                 this.schoolContacts.set(contact.schoolContactTypeCode, [contact]);
-                return;
+              } else {
+                this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
               }
-              this.schoolContacts.get(contact.schoolContactTypeCode).push(contact);
             }
           });
         }).catch(error => {
