@@ -41,7 +41,7 @@ const userSetUpUtils = {
     await userSetUpUtils.deleteSetUpEdxUser();
     const data = await getToken();
     const token = data.access_token;
-    const instituteIDs = userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
+    const instituteIDs = await userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
     const roles = await getAllEdxUserRoleForInstitute(token, 'DISTRICT');
     return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, '', '', instituteIDs, roles);
   },
@@ -97,7 +97,7 @@ const userSetUpUtils = {
   },
 
   async createEdxUserDistrictWithRoles(edxUser, districtIDs, districtRoles) {
-    if (districtIDs.length > 1 && districtRoles.length > 1) {
+    if (districtIDs.length > 0 && districtRoles.length > 0) {
       const edxUserDistricts = [];
       for (const districtID of districtIDs) {
         const edxUserDistrict = new EdxUserDistrict();
@@ -108,7 +108,7 @@ const userSetUpUtils = {
           edxUserDistrictRole.updateUser = 'Test-automation';
           edxUserDistrict.addEdxUserDistrictRoles(edxUserDistrictRole);
         }
-        edxUserDistrict.schoolID = districtID;
+        edxUserDistrict.districtID = districtID;
         edxUserDistrict.createUser = 'Test-automation';
         edxUserDistrict.updateUser = 'Test-automation';
         edxUserDistricts.push(edxUserDistrict);
