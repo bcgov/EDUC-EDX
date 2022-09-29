@@ -23,25 +23,6 @@ on:
       - 'backend/tests/unit/**'
 
 jobs:
-  test:
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: backend
-        
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - run: npm ci
-    - run: npm run lint:fix
-    - run: npm run test:unit
-      env:
-        NODE_ENV: 'test'
-
   sonarcloud:
     name: Build (Sonar Cloud)
     runs-on: ubuntu-latest
@@ -53,13 +34,16 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - run: |
+      - name: Install Package
+        run: |
           cd backend
           npm ci
-      - run: |
+      - name: Lint Fix
+        run: |
           cd backend
           npm run lint:fix
-      - run: |
+      - name: Run Tests
+        run: |
           cd backend
           npm run test:unit
         env:
@@ -76,6 +60,5 @@ jobs:
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
             -Dsonar.verbose=true
-            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-            -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
-            -Dsonar.sources=backend,frontend
+            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
+            -Dsonar.sources=backend
