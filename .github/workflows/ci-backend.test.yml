@@ -24,18 +24,15 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: backend
-        
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '14.x'
     - run: npm ci
     - run: npm run lint:fix
     - run: npm run test:unit
@@ -46,31 +43,24 @@ jobs:
     name: Build (Sonar Cloud)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
-
-      - name: Node install dependencies
-        run: npm install
-
-      - name: Run unit tests
-        run: npm run test
-
+          node-version: '14.x'
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.exclusions=**/test/**,.github/**/*,*.md
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
-            -Dsonar.project.monorepo.enabled=true
-            -Dsonar.projectKey=${{ github.event.repository.name }}
-            -Dsonar.sources=backend
-            -Dsonar.tests=backend/tests
+        #with:
+          #args: >
+            #-Dsonar.exclusions=**/test/**,.github/**/*,*.md
+            #-Dsonar.organization=bcgov-sonarcloud
+            #-Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
+            #-Dsonar.project.monorepo.enabled=true
+            #-Dsonar.projectKey=${{ github.event.repository.name }}
+            #-Dsonar.sources=backend
+            #-Dsonar.tests=backend/tests
