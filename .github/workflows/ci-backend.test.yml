@@ -70,4 +70,5 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
+            -Dsonar.verbose=true
            
