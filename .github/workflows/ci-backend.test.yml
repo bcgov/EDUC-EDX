@@ -48,6 +48,21 @@ jobs:
           npm run test:unit
         env:
           NODE_ENV: 'test'
+      - name: Install Package FE
+        run: |
+          cd frontend
+          npm ci
+      - name: Lint Fix FE
+        run: |
+          cd frontend
+          npm run lint:fix
+      - name: Run Tests FE
+        run: |
+          cd frontend
+          npm run test:unit
+        env:
+          NODE_ENV: 'test'
+          VUE_APP_TITLE: 'Education Data Exchange'
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
