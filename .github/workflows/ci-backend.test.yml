@@ -53,9 +53,15 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - run: npm ci
-      - run: npm run lint:fix
-      - run: npm run test:unit
+      - run: |
+          cd backend
+          npm ci
+      - run: |
+          cd backend
+          npm run lint:fix
+      - run: |
+          cd backend
+          npm run test:unit
         env:
           NODE_ENV: 'test'
       - name: SonarCloud Scan
