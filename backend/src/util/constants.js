@@ -131,3 +131,6 @@ module.exports = {
   EVENT_OUTCOME,
   EVENT_WS_TOPIC
 };
+/**
+ * Test comment
+ */
