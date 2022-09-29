@@ -24,18 +24,15 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: backend
-        
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '14.x'
     - run: npm ci
     - run: npm run lint:fix
     - run: npm run test:unit
@@ -45,24 +42,14 @@ jobs:
   sonarcloud:
     name: Build (Sonar Cloud)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-
-      - name: Node install dependencies
-        run: npm install
-
-      - name: Run unit tests
-        run: npm run test
-
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
