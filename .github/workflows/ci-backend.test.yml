@@ -53,7 +53,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-
+      - run: npm ci
+      - run: npm run lint:fix
+      - run: npm run test:unit
+        env:
+          NODE_ENV: 'test'
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -65,7 +69,7 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.project.monorepo.enabled=true
             -Dsonar.projectKey=bcgov_EDUC-EDX
-            -Dsonar.verbose=false
+            -Dsonar.verbose=true
             -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
             -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
             -Dsonar.sources=backend,frontend
