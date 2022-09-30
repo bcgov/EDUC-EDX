@@ -18,7 +18,7 @@ const {getDistrictSuperintendentDetails} = require('../../helpers/district-set-u
 fixture `district-contacts`
     .before(async t => {
         await setUpEdxDistrictUserWithAllAvailableRoles(['006'])
-        getToken().then(async (data, data2) => {
+        getToken().then(async (data) => {
             token = data.access_token;
         }).catch((error => {
             log.error("Failure during test setup: " + error);

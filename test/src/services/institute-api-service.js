@@ -26,7 +26,14 @@ const instituteApiService = {
           operation: "eq",
           value: schoolCode,
           valueType: "STRING",
-          condition: null
+          condition: "AND"
+        },
+        {
+          key: "closedDate",
+          operation: "eq",
+          value: null,
+          valueType: "STRING",
+          condition: "AND"
         }
       ]
     }];
@@ -38,6 +45,8 @@ const instituteApiService = {
     };
     const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/paginated`;
     const userSchoolResult = await restUtils.getData(token, url, schoolSearchParam);
+    console.log('SCHOOL_RESULT:== ');
+    console.log(userSchoolResult);
     return userSchoolResult?.content[0]?.schoolId;
   },
 
