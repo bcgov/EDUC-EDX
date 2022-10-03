@@ -112,7 +112,7 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber} from '@/utils/format';
+import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 
 // checks the expiry of a contact
@@ -198,9 +198,7 @@ export default {
       return this.userInfo.activeInstituteType === 'DISTRICT';
     },
     getStatusColor,
-    formatDate(rawDate){
-      return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    },
+    formatDate,
     formatPhoneNumber,
   }
 };
