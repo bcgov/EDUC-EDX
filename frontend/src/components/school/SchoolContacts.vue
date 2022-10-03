@@ -20,6 +20,15 @@
           <a v-else class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-start">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <v-row cols="2">
         <v-col class="d-flex justify-start">
           <v-chip class="mr-3" color="#A9D18E">Active</v-chip>
@@ -128,6 +137,7 @@ export default {
       loadingCount: 0,
       schoolContactTypes: [],
       schoolContacts: new Map(),
+      school: {}
     };
   },
   computed: {
@@ -160,6 +170,7 @@ export default {
       ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/` + searchSchoolID)
         .then(response => {
           this.schoolContacts = new Map();
+          this.school = response.data;
           response.data.contacts.forEach(contact => {
             if(!isExpired(contact)){
               if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
