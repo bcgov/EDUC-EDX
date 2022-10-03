@@ -396,13 +396,13 @@ export default {
       }
     },
     redirectToSchoolContacts(){
-      router.push('/schoolContacts');
+      router.push({name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToSchoolDetails() {
       router.push('/schoolDetails');
     },
     redirectToDistrictContacts(){
-      router.push('/districtContacts');
+      router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     isSchoolActive(){
       this.$store.dispatch('app/getInstitutesData').finally(() => {

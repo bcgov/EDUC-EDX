@@ -138,10 +138,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.district.DISTRICT_CONTACT_TYPE_CODES)
         .then(response => {
           this.districtContactTypes = response.data;
-          console.log(this.districtContactTypes);
           this.districtContactTypes.sort((a,b) => a.displayOrder - b.displayOrder);
-          console.log('AFTER_SORTING');
-          console.log(this.districtContactTypes);
         })
         .catch(error => {
           console.error(error);

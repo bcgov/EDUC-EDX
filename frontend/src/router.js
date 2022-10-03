@@ -232,7 +232,7 @@ const router = new VueRouter({
           }
         },
         {
-          path: 'districtContacts',
+          path: 'districtContacts/:districtID',
           name: 'districtContacts',
           component: DistrictContactsPage,
           props: true,
@@ -243,7 +243,7 @@ const router = new VueRouter({
           }
         },
         {
-          path: 'schoolContacts',
+          path: 'schoolContacts/:schoolID',
           name: 'schoolContacts',
           component: SchoolContactsPage,
           props: true,
