@@ -45,8 +45,6 @@ const instituteApiService = {
     };
     const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/paginated`;
     const userSchoolResult = await restUtils.getData(token, url, schoolSearchParam);
-    console.log('SCHOOL_RESULT:== ');
-    console.log(userSchoolResult);
     return userSchoolResult?.content[0]?.schoolId;
   },
 

@@ -7,14 +7,15 @@ import { getToken } from "../../helpers/oauth-utils";
 let token = '';
 import log from "npmlog";
 import studentAdmin from "../../auth/Roles";
-import Schools from "../../page_models/schools-page";
-import DistrictContacts from "../../page_models/district/district-contacts-page";
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import NavBarPage from "../../page_models/common/navBarPage";
+import SchoolListPage from "../../page_models/school/schoolsListPage";
+import SchoolContacts from "../../page_models/school/schoolContactsPage";
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
-const schools = new Schools();
-const districtContacts = new DistrictContacts();
-const {getSchoolPrincipalDetails} = require('../../helpers/school-set-up-utils');
+const schoolsList = new SchoolListPage();
+const schoolContacts = new SchoolContacts();
+
+const navBar = new NavBarPage();
 
 fixture `school-contacts`
     .before(async t => {
@@ -39,18 +40,12 @@ fixture `school-contacts`
 });
 
 test('testPage', async t => {
-    // navigate to /schools, expect title
     await t.navigateTo(base_url + '/schools');
-    await schools.clickSchoolContactsButton();
-    await t.expect(districtContacts.navTitle.innerText).contains('School Contacts');
 
-    //Verify the Principal and data is loaded
-    let schoolPrincipalContact = await getSchoolPrincipalDetails('03005');
-    console.log(schoolPrincipalContact);
-    await t.expect(districtContacts.superContactHeader.innerText).contains('Principal');
-    let principalDisplayName = schoolPrincipalContact.firstName + ' '+ schoolPrincipalContact.lastName;
-    await t.expect(Selector('strong').withText(principalDisplayName).innerText).contains(principalDisplayName);
-    let principalEffectiveDate = new LocalDate.parse(schoolPrincipalContact.effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')).toString();
-    principalEffectiveDate = ' '+ principalEffectiveDate.replace(/-/g, '/');
-    await t.expect(Selector('span').withText(principalEffectiveDate).innerText).contains(principalEffectiveDate);
+    await schoolsList.clickSchoolContactsButton();
+    await navBar.verifyNavTitleByText('School Contacts');
+
+    await schoolContacts.verifyPrincipalContact('03005');
+
+
 });
