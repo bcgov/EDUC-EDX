@@ -100,7 +100,7 @@ import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import {formatPhoneNumber} from '@/utils/format';
+import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 
 export default {
@@ -184,9 +184,7 @@ export default {
       return result;
     },
     getStatusColor,
-    formatDate(rawDate){
-      return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    },
+    formatDate,
     formatPhoneNumber,
   }
 };

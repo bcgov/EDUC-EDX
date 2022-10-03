@@ -39,3 +39,7 @@ export function formatDob(dob, from='uuuuMMdd', to='uuuu/MM/dd') {
   return formatDateTime(dob, from, to);
 }
 
+//used in institution schools/districts/authorities date formatting
+export function formatDate(rawDate, from='uuuu-MM-dd\'T\'HH:mm:ss', to='uuuu/MM/dd') {
+  return formatDateTime(rawDate,from, to);
+}
