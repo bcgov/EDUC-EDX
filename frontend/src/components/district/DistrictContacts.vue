@@ -100,7 +100,8 @@ import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import {formatPhoneNumber} from '@/utils/format';
+import {formatPhoneNumber, formatDate} from '@/utils/format';
+import {getStatusColor} from '@/utils/institute/status';
 
 export default {
   name: 'DistrictContactsPage',
@@ -137,10 +138,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.district.DISTRICT_CONTACT_TYPE_CODES)
         .then(response => {
           this.districtContactTypes = response.data;
-          console.log(this.districtContactTypes);
           this.districtContactTypes.sort((a,b) => a.displayOrder - b.displayOrder);
-          console.log('AFTER_SORTING');
-          console.log(this.districtContactTypes);
         })
         .catch(error => {
           console.error(error);
@@ -185,40 +183,8 @@ export default {
       }
       return result;
     },
-    getDistrictContactStatus(contact) {
-      const currentDate = LocalDate.now();
-      let effectiveDate = contact.effectiveDate;
-      let expiryDate = contact.expiryDate;
-      let status = null;
-
-      const parsedEffectiveDate = new LocalDate.parse(effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-
-      let parsedExpiryDate = null;
-      if (expiryDate) {
-        parsedExpiryDate = new LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-      }
-      if (parsedExpiryDate === null) {
-        status = 'Active';
-      } else if (parsedEffectiveDate > currentDate) {
-        status = 'Pending Start Date';
-      } else if (parsedExpiryDate > currentDate) {
-        status = 'Pending End Date';
-      }
-      return status;
-    },
-    getStatusColor(contact) {
-      let status = this.getDistrictContactStatus(contact);
-      if (status === 'Active') {
-        return '#A9D18E';
-      } else if (status === 'Pending Start Date'){
-        return '#9DC3E6';
-      } else if (status === 'Pending End Date'){
-        return '#F4B183';
-      }
-    },
-    formatDate(rawDate){
-      return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    },
+    getStatusColor,
+    formatDate,
     formatPhoneNumber,
   }
 };

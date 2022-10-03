@@ -20,6 +20,15 @@
           <a v-else class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-start">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <v-row cols="2">
         <v-col class="d-flex justify-start">
           <v-chip class="mr-3" color="#A9D18E">Active</v-chip>
@@ -103,8 +112,8 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import {formatPhoneNumber} from '@/utils/format';
+import {formatPhoneNumber, formatDate} from '@/utils/format';
+import {getStatusColor} from '@/utils/institute/status';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -128,6 +137,7 @@ export default {
       loadingCount: 0,
       schoolContactTypes: [],
       schoolContacts: new Map(),
+      school: {}
     };
   },
   computed: {
@@ -160,6 +170,7 @@ export default {
       ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/` + searchSchoolID)
         .then(response => {
           this.schoolContacts = new Map();
+          this.school = response.data;
           response.data.contacts.forEach(contact => {
             if(!isExpired(contact)){
               if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
@@ -186,40 +197,8 @@ export default {
     isDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
     },
-    getSchoolContactStatus(contact) {
-      const currentDate = LocalDate.now();
-      let effectiveDate = contact.effectiveDate;
-      let expiryDate = contact.expiryDate;
-      let status = null;
-
-      const parsedEffectiveDate = new LocalDate.parse(effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-
-      let parsedExpiryDate = null;
-      if (expiryDate) {
-        parsedExpiryDate = new LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-      }
-      if (parsedExpiryDate === null && parsedEffectiveDate < currentDate) {
-        status = 'Active';
-      } else if (parsedEffectiveDate > currentDate) {
-        status = 'Pending Start Date';
-      } else if (parsedExpiryDate > currentDate) {
-        status = 'Pending End Date';
-      }
-      return status;
-    },
-    getStatusColor(contact) {
-      let status = this.getSchoolContactStatus(contact);
-      if (status === 'Active') {
-        return '#A9D18E';
-      } else if (status === 'Pending Start Date'){
-        return '#9DC3E6';
-      } else if (status === 'Pending End Date'){
-        return '#F4B183';
-      }
-    },
-    formatDate(rawDate){
-      return new Date(rawDate).toISOString().slice(0,10).replace(/-/g,'/');
-    },
+    getStatusColor,
+    formatDate,
     formatPhoneNumber,
   }
 };
