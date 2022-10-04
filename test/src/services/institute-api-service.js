@@ -26,7 +26,14 @@ const instituteApiService = {
           operation: "eq",
           value: schoolCode,
           valueType: "STRING",
-          condition: null
+          condition: "AND"
+        },
+        {
+          key: "closedDate",
+          operation: "eq",
+          value: null,
+          valueType: "STRING",
+          condition: "AND"
         }
       ]
     }];
