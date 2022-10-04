@@ -13,7 +13,7 @@ class SchoolContactsPage {
 
     async verifyPrincipalContact(schoolNumber){
         //Verify the Principal and data is loaded
-        let schoolPrincipalContact = await getSchoolPrincipalDetails('03005');
+        let schoolPrincipalContact = await getSchoolPrincipalDetails(schoolNumber);
         await t.expect(districtContacts.superContactHeader.innerText).contains('Principal');
         let principalDisplayName = schoolPrincipalContact.firstName + ' '+ schoolPrincipalContact.lastName;
         await t.expect(Selector('strong').withText(principalDisplayName).innerText).contains(principalDisplayName);
