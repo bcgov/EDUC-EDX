@@ -3,7 +3,7 @@ const {getSchoolIDBySchoolCode} = require('../services/institute-api-service');
 
 const constants = require('../config/constants');
 const restUtils = require('./rest-utils');
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
 
 const schoolSetUpUtils = {
 
@@ -18,13 +18,14 @@ const schoolSetUpUtils = {
     async getSchoolPrincipalDetails(schoolNumber){
         let schoolPrincipal = '';
         let schoolDetails = await schoolSetUpUtils.getSchoolDetails(schoolNumber);
+        const currentDate = LocalDateTime.now();
         for (const schoolContact of schoolDetails.contacts){
             if(schoolContact.schoolContactTypeCode === 'PRINCIPAL'){
                 let parsedExpiryDate = null;
                 if (schoolContact.expiryDate) {
-                    parsedExpiryDate = new LocalDate.parse(schoolContact.expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+                    parsedExpiryDate = new LocalDateTime.parse(schoolContact.expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
                 }
-                if (parsedExpiryDate === null) {
+                if (parsedExpiryDate === null && parsedExpiryDate < currentDate) {
                     schoolPrincipal = schoolContact;
                 }
             }
