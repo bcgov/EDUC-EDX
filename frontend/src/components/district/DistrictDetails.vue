@@ -1,5 +1,9 @@
 <template>
   <v-container class="containerSetup" fluid>
+    <v-col class="mt-1 d-flex justify-start">
+      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+      <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+    </v-col>
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
@@ -225,7 +229,10 @@ export default {
           return physicalAddress[0][item];
         }
       }
-    }
+    },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
+    },
   }
 };
 </script>

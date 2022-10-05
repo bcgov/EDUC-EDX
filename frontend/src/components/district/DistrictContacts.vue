@@ -1,5 +1,9 @@
 <template>
   <v-container class="containerSetup" fluid>
+    <v-col class="mt-1 d-flex justify-start">
+      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+      <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+    </v-col>
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
@@ -46,7 +50,7 @@
                         <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
                       </v-col>
                     </v-row>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="titleSetup">
                       <v-col cols="12" class="pt-1">
                         <strong>{{ contact.jobTitle }}</strong>
                       </v-col>
@@ -169,6 +173,9 @@ export default {
           this.loadingCount -= 1;
         });
     },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
+    },
     getStatusColor,
     formatDate,
     formatPhoneNumber,
@@ -187,6 +194,10 @@ export default {
 .containerSetup{
   padding-right: 32em !important;
   padding-left: 32em !important;
+}
+
+.titleSetup{
+  word-break: break-word;
 }
 
 @media screen and (max-width: 1950px) {
