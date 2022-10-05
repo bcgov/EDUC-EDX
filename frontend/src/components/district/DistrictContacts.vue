@@ -50,7 +50,7 @@
                         <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
                       </v-col>
                     </v-row>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="titleSetup">
                       <v-col cols="12" class="pt-1">
                         <strong>{{ contact.jobTitle }}</strong>
                       </v-col>
@@ -194,6 +194,10 @@ export default {
 .containerSetup{
   padding-right: 32em !important;
   padding-left: 32em !important;
+}
+
+.titleSetup{
+  word-break: break-word;
 }
 
 @media screen and (max-width: 1950px) {
