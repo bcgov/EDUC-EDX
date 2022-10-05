@@ -1,5 +1,9 @@
 <template>
   <v-container class="containerSetup" fluid>
+    <v-col class="mt-1 d-flex justify-start">
+      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+      <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+    </v-col>
     <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
       <v-col cols="12" md="5" class="d-flex justify-start">
         <v-autocomplete
@@ -389,6 +393,9 @@ export default {
     searchButtonClick() {
       this.resetPageNumber();
       this.getSchoolList();
+    },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
     },
   },
   watch: {
