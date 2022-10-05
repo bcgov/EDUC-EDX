@@ -51,7 +51,7 @@
             <v-icon class="mb-1 mr-1" aria-hidden="false">
               mdi-web
             </v-icon>
-            <a target="_blank" :href="district.website">{{ district.website }}</a>
+            <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
           </v-col>
         </v-row>
         <v-row>
@@ -151,6 +151,7 @@ import {ApiRoutes} from '@/utils/constants';
 import alertMixin from '@/mixins/alertMixin';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import {formatPhoneNumber} from '@/utils/format';
+import {sanitizeUrl} from '@braintree/sanitize-url';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -165,7 +166,8 @@ export default {
   data() {
     return {
       district: null,
-      loading: false
+      loading: false,
+      cleanWebsiteUrl: '',
     };
   },
   computed:{
@@ -184,6 +186,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.districtID, {
       }).then(response => {
         this.district = response.data;
+        this.cleanWebsiteUrl = this.district.website ? sanitizeUrl(this.district.website) : '';
       }).catch(error => {
         console.error(error);
       }).finally(() => {
@@ -231,10 +234,6 @@ export default {
 .divider {
   border-color: #FCBA19;
   border-width: medium;
-}
-
-.fontBolder{
-  font-weight: bolder;
 }
 
 .fontItalic{

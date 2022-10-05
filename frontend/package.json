@@ -24,6 +24,7 @@
     "vue-pdf-app": "^2.1.0",
     "v-viewer": "^1.6.4",
     "@babel/polyfill": "^7.12.1",
+    "@braintree/sanitize-url": "^6.0.0",
     "@babel/preset-env": "7.11.0",
     "@fortawesome/fontawesome-free": "5.11.2",
     "@mdi/font": "^4.9.95",

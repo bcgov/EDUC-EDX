@@ -66,7 +66,7 @@
                 <v-icon class="mr-1" aria-hidden="false">
                   mdi-web
                 </v-icon>
-                <a target="_blank" :href="school.website">{{ school.website }}</a>
+                <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
               </v-col>
             </v-row>
           </v-col>
@@ -263,6 +263,7 @@ import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
+import {sanitizeUrl} from '@braintree/sanitize-url';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -285,7 +286,8 @@ export default {
       schoolOrganizationTypes: [],
       schoolNeighborhoodLearningTypes: [],
       schoolGradeTypes: [],
-      loading: true
+      loading: true,
+      cleanWebsiteUrl:''
     };
   },
   computed: {
@@ -335,6 +337,7 @@ export default {
           this.school = response.data;
           this.populateExtraSchoolFields(this.school);
           this.getDistrictDetails(this.school.districtId);
+          this.cleanWebsiteUrl = this.district.website ? sanitizeUrl(this.district.website) : '';
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error.response?.data?.message || error.message);
@@ -419,9 +422,6 @@ export default {
 </script>
 
 <style scoped>
-.fontBolder{
-  font-weight: bolder;
-}
 
 .fontItalic{
   font-style: italic;
