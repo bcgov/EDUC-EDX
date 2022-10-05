@@ -99,9 +99,8 @@ import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
+import {getStatusColor, isExpired} from '@/utils/institute/status';
 
 export default {
   name: 'DistrictContactsPage',
@@ -155,7 +154,7 @@ export default {
         .then(response => {
           this.districtContacts = new Map();
           response.data.contacts.forEach(contact => {
-            if(this.isDistrictContactActive(contact)) {
+            if(!isExpired(contact.expiryDate)) {
               if (!this.districtContacts.has(contact.districtContactTypeCode)) {
                 this.districtContacts.set(contact.districtContactTypeCode, [contact]);
                 return;
@@ -163,25 +162,12 @@ export default {
               this.districtContacts.get(contact.districtContactTypeCode).push(contact);
             }
           });
-          console.log(this.districtContacts);
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of the district\'s contacts. Please try again later.');
         }).finally(() => {
           this.loadingCount -= 1;
         });
-    },
-    isDistrictContactActive(contact){
-      let result = false;
-      const currentDate = LocalDate.now();
-      let parsedExpiryDate = null;
-      if (contact.expiryDate) {
-        parsedExpiryDate = new LocalDate.parse(contact.expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-      }
-      if(parsedExpiryDate === null || parsedExpiryDate > currentDate) {
-        result = true;
-      }
-      return result;
     },
     getStatusColor,
     formatDate,
