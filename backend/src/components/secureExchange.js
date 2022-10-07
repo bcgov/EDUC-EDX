@@ -688,7 +688,7 @@ async function schoolUserActivationInvite(req, res) {
 
 function validateAccessToken(token) {
   if (!token) {
-    return 401;
+    throw new Error('401');
   }
 }
 
