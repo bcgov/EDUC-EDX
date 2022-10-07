@@ -136,7 +136,7 @@ function getCriteria(key, value, operation, valueType) {
   return {key, value, operation, valueType};
 }
 
-async function getExchangesPaginated(req, _res) {
+async function getExchangesPaginated(req) {
   const accessToken = getAccessToken(req);
   validateAccessToken(accessToken);
 
@@ -276,7 +276,7 @@ async function getExchanges(req, res) {
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getExchangesPaginated(req, res)
+    getExchangesPaginated(req)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       if (statusCodeResponse && ministryTeamCodeResponse && dataResponse?.content) {
