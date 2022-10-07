@@ -102,7 +102,7 @@
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="mt-0 d-flex justify-end">
+              <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
                                text="Cancel" class="mr-2" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`" text="Remove"
@@ -280,6 +280,7 @@ export default {
       if (this.instituteTypeCode === 'SCHOOL') {
         const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
+        payload.params.schoolID = userSchool.schoolID;
       } else {
         const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtId === this.instituteCode);
         payload.params.districtID = this.instituteCode;

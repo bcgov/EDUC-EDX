@@ -9,6 +9,7 @@ const {
   putData,
   SecureExchangeStatuses,
   errorResponse,
+  handleExceptionResponse,
   getCodeTable,
   getDataWithParams,
   checkEDXUserAccess,
@@ -50,7 +51,7 @@ function verifyRequest(req, res, next) {
 async function uploadFile(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
+    validateAccessToken(token);
     let secureExchangeData = await getData(token, config.get('edx:exchangeURL') + `/${req.params.id}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, secureExchangeData);
 
@@ -76,9 +77,7 @@ async function uploadFile(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('uploadFile Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Upload secureExchange file error'
-    });
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -94,7 +93,7 @@ async function getDocument(token, secureExchangeID, documentID, correlationID) {
 async function deleteDocument(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
+    validateAccessToken(token);
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
     let secureExchangeData = await getData(token, config.get('edx:exchangeURL') + `/${req.params.id}`, req.session?.correlationID);
@@ -112,17 +111,14 @@ async function deleteDocument(req, res) {
     return res.status(HttpStatus.OK).json();
   } catch (e) {
     log.error('deleteDocument Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Delete secureExchange document error',
-      errorSource: e.errorSource
-    });
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function downloadFile(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
+    validateAccessToken(token);
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
 
@@ -132,10 +128,7 @@ async function downloadFile(req, res) {
     return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
   } catch (e) {
     log.error('downloadFile Error', e.stack);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Download secureExchange file error',
-      errorSource: e.errorSource
-    });
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -143,9 +136,9 @@ function getCriteria(key, value, operation, valueType) {
   return {key, value, operation, valueType};
 }
 
-async function getExchangesPaginated(req, res) {
+async function getExchangesPaginated(req, _res) {
   const accessToken = getAccessToken(req);
-  validateAccessToken(accessToken, res);
+  validateAccessToken(accessToken);
 
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
@@ -181,10 +174,10 @@ async function getExchangesPaginated(req, res) {
   return getDataWithParams(accessToken, config.get('edx:exchangeURL') + '/paginated', params, req.session?.correlationID);
 }
 
-async function getExchangesCountPaginated(req, res) {
+async function getExchangesCountPaginated(req) {
   const accessToken = getAccessToken(req);
-  validateAccessToken(accessToken, res);
-  checkSecureExchangePermission(req, res);
+  validateAccessToken(accessToken);
+  checkSecureExchangePermission(req);
 
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
@@ -204,8 +197,8 @@ async function getExchangesCountPaginated(req, res) {
 async function createExchange(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-    checkSecureExchangePermission(req, res);
+    validateAccessToken(token);
+    checkSecureExchangePermission(req);
 
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
@@ -244,13 +237,13 @@ async function createExchange(req, res) {
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'createExchange', 'Error occurred while attempting to create a new exchange.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function instituteSelection(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
+  validateAccessToken(token);
   if (req.session.userSchoolIDs.includes(req.body.params.schoolID)) {
     setSessionInstituteIdentifiers(req, req.body.params.schoolID, 'SCHOOL');
     return res.status(200).json('OK');
@@ -273,8 +266,12 @@ async function clearActiveSession(req) {
 
 async function getExchanges(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-  checkSecureExchangePermission(req, res);
+  try{
+    validateAccessToken(token);
+    checkSecureExchangePermission(req);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
 
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
@@ -314,8 +311,12 @@ async function getExchanges(req, res) {
 
 async function getExchange(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-  checkSecureExchangePermission(req, res);
+  try{
+    validateAccessToken(token);
+    checkSecureExchangePermission(req);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
 
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
@@ -409,11 +410,11 @@ async function getExchange(req, res) {
 async function getExchangesCount(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token);
-  checkSecureExchangePermission(req, res);
+  checkSecureExchangePermission(req);
   return Promise.all([
     getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
     getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getExchangesCountPaginated(req, res)
+    getExchangesCountPaginated(req)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       let urExchangeCount = 0;
@@ -439,19 +440,20 @@ async function getExchangesCount(req, res) {
 
 async function markAs(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-  let validReadStatuses = ['read', 'unread'];
-  let readStatus = req.params.readStatus;
-  if (validReadStatuses.indexOf(readStatus) === -1) {
-    return res.status(HttpStatus.BAD_REQUEST).json({
-      message: 'Invalid read status. Please specify read or unread.'
-    });
-  }
-  let isReadByExchangeContact = readStatus === 'read';
   try {
+    validateAccessToken(token);
+    let validReadStatuses = ['read', 'unread'];
+    let readStatus = req.params.readStatus;
+    if (validReadStatuses.indexOf(readStatus) === -1) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Invalid read status. Please specify read or unread.'
+      });
+    }
+    let isReadByExchangeContact = readStatus === 'read';
+
     const currentExchange = await getData(token, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, currentExchange);
-    checkSecureExchangePermission(req, res);
+    checkSecureExchangePermission(req);
 
     if (currentExchange.isReadByExchangeContact === isReadByExchangeContact) {
       return res.status(HttpStatus.OK).json({
@@ -465,26 +467,27 @@ async function markAs(req, res) {
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'markAs', 'Error with updating the read status of an exchange.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function createSecureExchangeStudent(req, res) {
   const accessToken = getAccessToken(req);
-  validateAccessToken(accessToken, res);
-  checkSecureExchangePermission(req, res);
-
-  const edxUserInfo = req.session.edxUserData;
-  if (!edxUserInfo) {
-    return errorResponse(res, 'No EDX User Info token.', HttpStatus.UNAUTHORIZED);
-  }
-
-  const exchangeURL = config.get('edx:exchangeURL');
-  const secureExchangeStudent = {
-    edxUserID: edxUserInfo.edxUserID,
-    studentId: req.body.studentID
-  };
   try {
+    validateAccessToken(accessToken);
+    checkSecureExchangePermission(req);
+
+    const edxUserInfo = req.session.edxUserData;
+    if (!edxUserInfo) {
+      return errorResponse(res, 'No EDX User Info token.', HttpStatus.UNAUTHORIZED);
+    }
+
+    const exchangeURL = config.get('edx:exchangeURL');
+    const secureExchangeStudent = {
+      edxUserID: edxUserInfo.edxUserID,
+      studentId: req.body.studentID
+    };
+
     const secureExchange = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, secureExchange);
 
@@ -497,15 +500,15 @@ async function createSecureExchangeStudent(req, res) {
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
     log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function removeSecureExchangeStudent(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-    checkSecureExchangePermission(req, res);
+    validateAccessToken(token);
+    checkSecureExchangePermission(req);
 
     const secureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, secureExchange);
@@ -515,15 +518,15 @@ async function removeSecureExchangeStudent(req, res) {
 
   } catch (e) {
     log.error(e, 'removeSecureExchangeStudent', 'Error occurred while attempting to remove a secure exchange student.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function updateEdxUserRoles(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-    checkEDXUserSchoolAdminPermission(req, res);
+    validateAccessToken(token);
+    checkEDXUserSchoolAdminPermission(req);
     checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
 
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID, req.session?.correlationID);
@@ -562,47 +565,48 @@ async function updateEdxUserRoles(req, res) {
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateEdxUserRoles', 'Error occurred while attempting to update user roles.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function activateEdxUser(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-  const numberOfRetries = req.session[`${req.body.validationCode}`];
-  if (numberOfRetries && numberOfRetries >= 5) {
-    return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
-  }
-  const payload = {
-    digitalId: req.session.digitalIdentityData.digitalID,
-    personalActivationCode: req.body.personalActivationCode,
-    primaryEdxCode: req.body.primaryEdxCode,
-    validationCode: req.body.validationCode,
-  };
-  let districtID;
-  let schoolID;
-  if (req.body.districtNumber) {
-    districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
-    if (!districtID) {
-      incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
-    }
-    payload.districtID = districtID;
-  }
-  else if (req.body.mincode) {//this remains as mincode as user will input mincode
-    schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
-    if (!schoolID) {
-      incrementNumberOfRetriesCounter(req,numberOfRetries);
-      return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
-    }
-    payload.schoolID = schoolID;
-  }
-
-  if(!payload.schoolID && !payload.districtID){
-    incrementNumberOfRetriesCounter(req,numberOfRetries);
-    return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
-  }
   try {
+    validateAccessToken(token);
+    const numberOfRetries = req.session[`${req.body.validationCode}`];
+    if (numberOfRetries && numberOfRetries >= 5) {
+      return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
+    }
+    const payload = {
+      digitalId: req.session.digitalIdentityData.digitalID,
+      personalActivationCode: req.body.personalActivationCode,
+      primaryEdxCode: req.body.primaryEdxCode,
+      validationCode: req.body.validationCode,
+    };
+    let districtID;
+    let schoolID;
+    if (req.body.districtNumber) {
+      districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
+      if (!districtID) {
+        incrementNumberOfRetriesCounter(req,numberOfRetries);
+        return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
+      }
+      payload.districtID = districtID;
+    }
+    else if (req.body.mincode) {//this remains as mincode as user will input mincode
+      schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
+      if (!schoolID) {
+        incrementNumberOfRetriesCounter(req,numberOfRetries);
+        return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
+      }
+      payload.schoolID = schoolID;
+    }
+
+    if(!payload.schoolID && !payload.districtID){
+      incrementNumberOfRetriesCounter(req,numberOfRetries);
+      return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
+    }
+
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
     log.info('User Activation Sucessful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
@@ -612,7 +616,7 @@ async function activateEdxUser(req, res) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
     if (e?.status > 399 && e?.status < 410) {
-      incrementNumberOfRetriesCounter(req,numberOfRetries);
+      incrementNumberOfRetriesCounter(req);
     }
     return errorResponse(res, msg);
   }
@@ -627,17 +631,16 @@ function incrementNumberOfRetriesCounter(req,numberOfRetries) {
 }
 async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-
-  if(req.query.schoolID){
-    checkEDXUserSchoolAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
-  }else{
-    checkEDXUserDistrictAdminPermission(req, res);
-    checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
-  }
-
   try {
+    validateAccessToken(token);
+    if(req.query.schoolID){
+      checkEDXUserSchoolAdminPermission(req);
+      checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
+    }else{
+      checkEDXUserDistrictAdminPermission(req);
+      checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
+    }
+
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
     let filteredResponse = [];
 
@@ -663,38 +666,37 @@ async function getEdxUsers(req, res) {
     return res.status(HttpStatus.OK).json(filteredResponse);
   } catch (e) {
     log.error(e, 'getEdxUsers', 'Error getting EDX users');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function schoolUserActivationInvite(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-  const payload = {
-    ...req.body
-  };
   try {
+    validateAccessToken(token);
+    const payload = {
+      ...req.body
+    };
+
     const response = await postData(token, payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
     return res.status(200).json(response);
   } catch (e) {
     log.error(e, 'schoolUserActivationInvite', 'Error occurred while sending user activation invite');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
-function validateAccessToken(token, res) {
+function validateAccessToken(token) {
   if (!token) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
+    return 401;
   }
 }
 
 async function removeUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-    checkEDXUserSchoolAdminPermission(req, res);
+    validateAccessToken(token);
+    checkEDXUserSchoolAdminPermission(req);
     checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
 
     await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
@@ -702,15 +704,15 @@ async function removeUserSchoolAccess(req, res) {
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
     log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function relinkUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-    checkEDXUserSchoolAdminPermission(req, res);
+    validateAccessToken(token);
+    checkEDXUserSchoolAdminPermission(req);
     checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
 
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
@@ -733,14 +735,14 @@ async function relinkUserSchoolAccess(req, res) {
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
     log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
 async function createSecureExchangeComment(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
+    validateAccessToken(token);
 
     const secureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${req.params.secureExchangeID}`, req.session?.correlationID);
     checkSecureExchangeAccess(req, res, secureExchange);
@@ -759,7 +761,7 @@ async function createSecureExchangeComment(req, res) {
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'createExchangeComment', 'Error occurred while attempting to create a new exchange comment.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -925,39 +927,36 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
 
 async function findPrimaryEdxActivationCode(req, res) {
   const token = getAccessToken(req);
-  validateAccessToken(token, res);
-
-  let instituteType = req.params.instituteType.toUpperCase();
-
-  if(instituteType === 'SCHOOL'){
-    checkEDXUserSchoolAdminPermission(req, res);
-  }else{
-    checkEDXUserDistrictAdminPermission(req, res);
-  }
-
-  checkEDXUserAccess(req, res, instituteType, req.params.instituteIdentifier);
 
   try {
+    validateAccessToken(token);
+    let instituteType = req.params.instituteType.toUpperCase();
+
+    if(instituteType === 'SCHOOL'){
+      checkEDXUserSchoolAdminPermission(req);
+    }else{
+      checkEDXUserDistrictAdminPermission(req);
+    }
+
+    checkEDXUserAccess(req, res, instituteType, req.params.instituteIdentifier);
+
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    if (e.status === 404) {
-      return res.status(HttpStatus.NOT_FOUND).json();
-    }
     log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
-function checkSecureExchangeAccess(req, res, secureExchange) {
+function checkSecureExchangeAccess(req, _res, secureExchange) {
   if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
-    return errorResponse(res, 'You do not have permission to this secure exchange', HttpStatus.FORBIDDEN);
+    throw new Error('403');
   }
 }
 
-function checkSecureExchangePermission(req, res) {
+function checkSecureExchangePermission(req) {
   if (!req.session.activeInstitutePermissions.includes('SECURE_EXCHANGE')) {
-    return errorResponse(res, 'You are not authorized to access this page.', HttpStatus.UNAUTHORIZED);
+    throw new Error('403');
   }
 }
 

@@ -251,6 +251,28 @@ function errorResponse(res, msg, code) {
     code: code || HttpStatus.INTERNAL_SERVER_ERROR
   });
 }
+
+function handleExceptionResponse(e, res) {
+  if (e.message === '404' || e.status === '404') {
+    return res.status(HttpStatus.NOT_FOUND).json();
+  } else if(e.message === '403') {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to access this information'
+    });
+  } else if(e.message === '401'){
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      status: HttpStatus.UNAUTHORIZED,
+      message: 'Token is not valid'
+    });
+  } else {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'INTERNAL SERVER ERROR',
+      code: HttpStatus.INTERNAL_SERVER_ERROR
+    });
+  }
+}
+
 function getCodeTable(token, key, url, useCache = true) {
   try {
     let cacheContent = useCache && memCache.get(key);
@@ -325,32 +347,23 @@ function unauthorizedError(res) {
   });
 }
 
-function checkEDXUserSchoolAdminPermission(req, res) {
+function checkEDXUserSchoolAdminPermission(req) {
   let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
   if (!permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
+    throw new Error('403');
   }
 }
 
-function checkEDXUserDistrictAdminPermission(req, res) {
+function checkEDXUserDistrictAdminPermission(req) {
   let permission = req.session.activeInstitutePermissions.includes('EDX_USER_DISTRICT_ADMIN');
   if (!permission) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have permission to access this information'
-    });
+    throw new Error('403');
   }
 }
 
-function checkEDXUserAccess(req, res, instituteType, instituteIdentifier) {
+function checkEDXUserAccess(req, _res, instituteType, instituteIdentifier) {
   if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      status: HttpStatus.FORBIDDEN,
-      message: 'You do not have access this information'
-    });
+    throw new Error('403');
   }
 }
 
@@ -370,6 +383,7 @@ const utils = {
   generateJWTToken,
   formatCommentTimestamp,
   errorResponse,
+  handleExceptionResponse,
   getCodes,
   cacheMiddleware,
   getCodeTable,
