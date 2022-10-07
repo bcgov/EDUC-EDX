@@ -60,6 +60,10 @@ describe('uploadFile', () => {
 
   it('should return UNAUTHORIZED if no session', async () => {
     utils.getAccessToken.mockReturnValue(null);
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.UNAUTHORIZED).json({
+      status: HttpStatus.UNAUTHORIZED,
+      message: 'Token is not valid'
+    }));
 
     await uploadFile(req, res);
 
@@ -92,6 +96,10 @@ describe('uploadFile', () => {
 
   it('should return INTERNAL_SERVER_ERROR if postData is failed', async () => {
     utils.postData.mockRejectedValue(new Error('test error'));
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'Error'
+    }));
 
     await uploadFile(req, res);
 
@@ -175,6 +183,10 @@ describe('deleteDocument', () => {
 
   it('should return UNAUTHORIZED if no session', async () => {
     utils.getAccessToken.mockReturnValue(null);
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.UNAUTHORIZED).json({
+      status: HttpStatus.UNAUTHORIZED,
+      message: 'Error'
+    }));
 
     await deleteDocument(req, res);
 
@@ -186,7 +198,9 @@ describe('deleteDocument', () => {
       secureExchange: {
         secureExchangeStatusCode: utils.SecureExchangeStatuses.CLOSED,
         statusUpdateDate: '2020-03-01T12:13:16'
-      }
+      },
+      activeInstituteType: 'SCHOOL',
+      activeInstituteIdentifier: '03636084'
     };
     utils.getData.mockResolvedValue(JSON.parse(sampleDataJsonResponse));
     req = mockRequest(null, session, params);
@@ -199,6 +213,10 @@ describe('deleteDocument', () => {
 
   it('should return INTERNAL_SERVER_ERROR if deleteData is failed', async () => {
     utils.deleteData.mockRejectedValue(new Error('test error'));
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'Error'
+    }));
 
     await deleteDocument(req, res);
 
@@ -250,6 +268,10 @@ describe('downloadFile', () => {
 
   it('should return UNAUTHORIZED if no session', async () => {
     utils.getAccessToken.mockReturnValue(null);
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.UNAUTHORIZED).json({
+      status: HttpStatus.UNAUTHORIZED,
+      message: 'Error'
+    }));
 
     await downloadFile(req, res);
 
@@ -258,6 +280,10 @@ describe('downloadFile', () => {
 
   it('should return INTERNAL_SERVER_ERROR if deleteData is failed', async () => {
     utils.getData.mockRejectedValue(new Error('test error'));
+    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'Error'
+    }));
 
     await downloadFile(req, res);
 
