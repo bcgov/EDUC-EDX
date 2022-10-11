@@ -254,7 +254,7 @@ const router = new VueRouter({
           }
         },
         {
-          path: 'schoolDetails',
+          path: 'schoolDetails/:schoolID',
           name: 'schoolDetails',
           component: SchoolDetailsPage,
           props: true,
