@@ -2,7 +2,7 @@
   <v-container class="containerSetup" fluid>
     <v-col class="mt-1 d-flex justify-start">
       <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-      <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+      <a class="ml-1" @click="backButtonClick">Return to Dashboard</a>
     </v-col>
     <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
       <v-col cols="12" md="5" class="d-flex justify-start">
@@ -154,7 +154,7 @@ import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber} from '@/utils/format';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'SchoolListPage',
@@ -331,18 +331,18 @@ export default {
       return principalsName;
     },
     getSchoolStatus: function (school) {
-      const currentDate = LocalDate.now();
+      const currentDate = LocalDateTime.now();
       let openedDate = school.openedDate;
       let closedDate = school.closedDate;
 
       if (!openedDate) {
         return 'Never Opened';
       }
-      const parsedOpenDate = new LocalDate.parse(openedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+      const parsedOpenDate = new LocalDateTime.parse(openedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
       let parsedCloseDate = null;
       if(closedDate){
-        parsedCloseDate = new LocalDate.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+        parsedCloseDate = new LocalDateTime.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
       }
 
       if (parsedOpenDate <= currentDate && parsedCloseDate === null) {

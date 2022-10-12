@@ -2,7 +2,8 @@
   <v-container class="containerSetup" fluid>
     <v-col class="mt-1 d-flex justify-start">
       <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-      <a class="pt-1 ml-1" @click="backButtonClick">Return to School List</a>
+      <a v-if="isDistrictUser()" class="ml-1" @click="backButtonClick">Return to List of Schools</a>
+      <a v-else class="ml-1" @click="backButtonClick">Return to Dashboard</a>
     </v-col>
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
@@ -412,7 +413,14 @@ export default {
       return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
     },
     backButtonClick() {
-      this.$router.push({name: 'schools'});
+      if(this.isDistrictUser()){
+        this.$router.push({name: 'schools'});
+      }else{
+        this.$router.push({name: 'home'});
+      }
+    },
+    isDistrictUser(){
+      return this.userInfo.activeInstituteType === 'DISTRICT';
     },
     formatDate,
     formatPhoneNumber,

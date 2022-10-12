@@ -399,7 +399,7 @@ export default {
       router.push({name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToSchoolDetails() {
-      router.push('/schoolDetails');
+      this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToDistrictContacts(){
       router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
