@@ -151,7 +151,7 @@
                         </v-card-title>
                         <v-row no-gutters>
                           <v-card-text class="mt-n2 pt-0 pb-0" :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}">
-                            <a @click="showDocModal(activity)">
+                            <a @click="showDocModal(activity)" :class="disabledAnchorDocumentName">
                               {{ activity.fileName }}
                             </a>
                           </v-card-text>
@@ -342,13 +342,17 @@ export default {
       imageRendererDialog: false,
       documentId: '',
       imageId: '',
-      addStudentWarningMessage: ''
+      addStudentWarningMessage: '',
+      disableAnchorTagDocumentName: true,
     };
   },
   computed: {
     ...mapState('auth', ['userInfo']),
     loading() {
       return this.loadingCount !== 0;
+    },
+    disabledAnchorDocumentName() {
+      return this.disableAnchorTagDocumentName ? 'disabled-anchor' : '';
     }
   },
   created() {
@@ -450,6 +454,9 @@ export default {
         })
         .finally(() => {
           this.loadingCount -= 1;
+          if (this.isEditable()) {
+            this.disableAnchorTagDocumentName = false;
+          }
         });
     },
     setIsReadByExchangeContact(isRead) {
