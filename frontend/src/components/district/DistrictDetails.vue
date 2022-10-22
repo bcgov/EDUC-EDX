@@ -381,7 +381,7 @@ import PrimaryButton from '@/components/util/PrimaryButton';
 import {formatPhoneNumber} from '@/utils/format';
 import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -433,12 +433,13 @@ export default {
         v => /^[a-z\d]+@[a-z]+\.[a-z]{2,3}$/.test(v) || 'E-mail must be valid',
       ],
       websiteRules: [
-        v => /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi.test(v) || 'Website must be valid',
+        v => /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(v) || 'Website must be valid',
       ],
     };
   },
   computed:{
     ...mapState('institute', ['provinceCodes', 'countryCodes']),
+    ...mapGetters('auth', ['userInfo']),
     hasSamePhysicalAddress(){
       return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     }
@@ -456,8 +457,7 @@ export default {
     formatPhoneNumber,
     deepCloneObject,
     canEditDistrict(){
-      //Marco fix this
-      return true;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN').length > 0;
     },
     getDistrict() {
       this.loading = true;

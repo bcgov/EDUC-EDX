@@ -239,7 +239,6 @@ export default {
           this.schoolSearchNames.push(schoolItem);
         }
       }).catch(error => {
-        //to do add the alert framework for error or success
         console.error(error);
       }).finally(() => {
         this.loadingSchools = false;
