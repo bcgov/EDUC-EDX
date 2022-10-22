@@ -12,7 +12,9 @@ cacheKeys = {
   SCHOOL_NEIGHBORHOOD_LEARNING_TYPES: 'school_neighborhoodTypes',
   SCHOOL_GRADE_TYPES: 'school_gradeTypes',
   EDX_SECURE_EXCHANGE_DOCUMENT_TYPES: 'edx_secureExchangeDocumentTypes',
-  EDX_SECURE_EXChANGE_FILE_REQUIREMENTS: 'edx_secureExchangeFileRequirements'
+  EDX_SECURE_EXChANGE_FILE_REQUIREMENTS: 'edx_secureExchangeFileRequirements',
+  PROVINCE_CODES: 'institute_provinceCodes',
+  COUNTRY_CODES: 'institute_countryCodes',
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 

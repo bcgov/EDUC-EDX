@@ -3,6 +3,7 @@
 import {getDateFormatter} from '@/utils/format';
 import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
+const clone = require('rfdc')();
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
@@ -12,6 +13,10 @@ export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
     console.error(`Error is ${e}`);
   }
 };
+
+export function deepCloneObject(objectToBeCloned) {
+  return clone(objectToBeCloned);
+}
 
 export function setEmptyInputParams(params, ...excludedParams) {
   Object.keys(params).forEach(key => {

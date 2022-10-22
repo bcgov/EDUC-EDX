@@ -299,7 +299,7 @@ export default {
 
       ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.userInfo.activeInstituteIdentifier, {
       }).then(response => {
-        this.districtLastUpdateDate = this.formatDate(response.data.updateDate);
+        this.districtLastUpdateDate = this.formatDate(response.data.updateDate.substring(0,19));
       }).catch(error => {
         console.error(error);
       }).finally(() => {
@@ -326,7 +326,7 @@ export default {
           searchParams: omitBy(searchParams, isEmpty),
         }
       }).then(response => {
-        this.schoolsLastUpdateDate = this.formatDate(response.data.content[0].updateDate);
+        this.schoolsLastUpdateDate = this.formatDate(response.data.content[0].updateDate.substring(0,19));
       }).catch(error => {
         console.error(error);
       }).finally(() => {
@@ -338,7 +338,7 @@ export default {
 
       ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + '/' + this.userInfo.activeInstituteIdentifier, {
       }).then(response => {
-        this.schoolLastUpdateDate = this.formatDate(response.data.updateDate);
+        this.schoolLastUpdateDate = this.formatDate(response.data.updateDate.substring(0,19));
       }).catch(error => {
         console.error(error);
       }).finally(() => {
@@ -357,7 +357,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
             if (thisContactLastUpdated !== null) {
               if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
@@ -379,7 +379,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
             if (thisContactLastUpdated !== null) {
               if (thisContactLastUpdated > this.districtContactsLastUpdateDate) {
