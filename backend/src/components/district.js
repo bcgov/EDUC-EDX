@@ -24,7 +24,6 @@ async function updateDistrict(req, res){
   try{
     const token = getAccessToken(req);
     validateAccessToken(token);
-    console.log('Req ' + JSON.stringify(req.params));
     checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
     checkEDXUserDistrictAdminPermission(req);
 
