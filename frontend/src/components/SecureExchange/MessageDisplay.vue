@@ -151,9 +151,12 @@
                         </v-card-title>
                         <v-row no-gutters>
                           <v-card-text class="mt-n2 pt-0 pb-0" :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}">
-                            <a @click="showDocModal(activity)" :class="disabledAnchorDocumentName">
+                            <a @click="showDocModal(activity)" v-if="isEditable()">
                               {{ activity.fileName }}
                             </a>
+                            <span v-else style="color: grey">
+                              {{ activity.fileName }}
+                            </span>
                           </v-card-text>
                           <v-card-text v-if="activity.documentType.label !== 'Other'" class="pt-0 pb-3">{{ activity.documentType.label }}</v-card-text>
                           <v-btn class="ml-12 mb-2 mr-1 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveDoc(index)" v-show="isOpenDocIndex !== index" :disabled="!isEditable()">
@@ -350,9 +353,6 @@ export default {
     ...mapState('auth', ['userInfo']),
     loading() {
       return this.loadingCount !== 0;
-    },
-    disabledAnchorDocumentName() {
-      return this.disableAnchorTagDocumentName ? 'disabled-anchor' : '';
     }
   },
   created() {
