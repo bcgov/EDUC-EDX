@@ -90,7 +90,7 @@ export default {
     try{
       return await apiAxios.get(ApiRoutes.school.SCHOOL_ORGANIZATION_TYPES_URL);
     } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      console.log(`Failed to get from Nodejs getSchoolOrganizationTypeCodes API - ${e}`);
       throw e;
     }
   },
@@ -98,7 +98,7 @@ export default {
     try{
       return await apiAxios.get(ApiRoutes.school.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL);
     } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      console.log(`Failed to get from Nodejs getSchoolNeighborhoodLearningCodes API - ${e}`);
       throw e;
     }
   },
@@ -106,7 +106,23 @@ export default {
     try{
       return await apiAxios.get(ApiRoutes.school.SCHOOL_GRADE_TYPES_URL);
     } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
+      console.log(`Failed to get from Nodejs getGradeCodes API - ${e}`);
+      throw e;
+    }
+  },
+  async getProvinceCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.institute.PROVINCE_CODES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getProvinceCodes API - ${e}`);
+      throw e;
+    }
+  },
+  async getCountryCodes() {
+    try{
+      return await apiAxios.get(ApiRoutes.institute.COUNTRY_CODES_URL);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getCountryCodes API - ${e}`);
       throw e;
     }
   },
