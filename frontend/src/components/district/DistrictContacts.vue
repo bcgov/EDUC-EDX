@@ -414,8 +414,6 @@ export default {
       this.loadingContactForm = true;
       this.validateEditContactForm();
 
-      console.log('CONTACT_TO_SAVE:==');
-      console.log(contact);
       contact.districtId = this.districtID;
       contact.createDate = null;
       contact.createUSer = this.userInfo.userName;
