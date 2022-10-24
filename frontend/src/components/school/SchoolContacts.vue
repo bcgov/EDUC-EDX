@@ -36,7 +36,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact"></PrimaryButton>
+          <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -102,6 +102,21 @@
         </v-row>
       </div>
     </template>
+<!--    new contact sheet -->
+    <v-bottom-sheet
+        v-model="newContactSheet"
+        inset
+        no-click-animation
+        scrollable
+        persistent
+    >
+      <NewSchoolContactPage
+          v-if="newContactSheet"
+          :schoolContactTypes="this.schoolContactTypes"
+          @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
+          @newSchoolContact:addNewSchoolContact="newContactSheet = !newContactSheet"
+      />
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -110,6 +125,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
+import NewSchoolContactPage from './NewSchoolContactPage';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
@@ -125,6 +141,7 @@ export default {
   mixins: [alertMixin],
   components: {
     PrimaryButton,
+    NewSchoolContactPage
   },
   props: {
     schoolID: {
@@ -137,7 +154,8 @@ export default {
       loadingCount: 0,
       schoolContactTypes: [],
       schoolContacts: new Map(),
-      school: {}
+      school: {},
+      newContactSheet: false
     };
   },
   computed: {
@@ -206,12 +224,6 @@ export default {
 
 <style scoped>
 
-@media screen and (max-width: 950px){
-  .v-dialog__content /deep/ .v-bottom-sheet {
-    width: 60% !important;
-  }
-}
-
 .containerSetup{
   padding-right: 32em !important;
   padding-left: 32em !important;
@@ -228,6 +240,16 @@ export default {
   .containerSetup{
     padding-right: 4em !important;
     padding-left: 4em !important;
+  }
+}
+
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
+}
+
+@media screen and (max-width: 950px){
+  .v-dialog__content /deep/ .v-bottom-sheet {
+    width: 60% !important;
   }
 }
 
