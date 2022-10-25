@@ -113,6 +113,7 @@
       <NewSchoolContactPage
           v-if="newContactSheet"
           :schoolContactTypes="this.schoolContactTypes"
+          :schoolID="this.$route.params.schoolID"
           @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
           @newSchoolContact:addNewSchoolContact="newContactSheet = !newContactSheet"
       />

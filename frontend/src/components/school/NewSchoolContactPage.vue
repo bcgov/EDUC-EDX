@@ -19,21 +19,21 @@
             />
             <v-text-field
                 id='newContactFirstNameInput'
-                :rules="[rules.required]"
+                :rules="[rules.required, rules.length(255, 'Must be less than 255 letters')]"
                 v-model="newContact.firstName"
                 class="pt-0"
                 label="First Name*"
             />
             <v-text-field
                 id='newContactLastNameInput'
-                :rules="[rules.required]"
+                :rules="[rules.required, rules.length(255, 'Must be less than 255 letters')]"
                 v-model="newContact.lastName"
                 class="pt-0"
                 label="Last Name*"
             />
             <v-text-field
                 id='newContactEmailInput'
-                :rules="[rules.required, rules.email]"
+                :rules="[rules.required, rules.email, rules.length(255, 'Must be less than 255 letters')]"
                 v-model="newContact.email"
                 class="pt-0"
                 label="Email*"
@@ -52,6 +52,7 @@
               <v-col cols="6">
                 <v-text-field
                     id='newContactPhoneExtensionInput'
+                    :rules="[rules.length(10, 'Must be less than 10 digits')]"
                     v-model="newContact.phoneExtension"
                     class="pt-0"
                     label="Ext."
@@ -73,6 +74,7 @@
               <v-col cols="6">
                 <v-text-field
                     id='newContactAltPhoneExtensionInput'
+                    :rules="[rules.length(10, 'Must be less than 10 digits')]"
                     v-model="newContact.alternatePhoneExtension"
                     class="pt-0"
                     label="Alt. Phone Ext."
@@ -107,7 +109,6 @@
                   <v-date-picker
                       v-model="newContact.effectiveDate"
                       :active-picker.sync="newContactEffectiveDatePicker"
-                      :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                       @change="saveNewContactEffectiveDate"
                   ></v-date-picker>
                 </v-menu>
@@ -124,6 +125,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactExpiryDateTextField"
+                        :rules="[rules.endDate]"
                         class="pt-0 mt-0"
                         v-model="newContact.expiryDate"
                         label="Expiry Date"
@@ -137,7 +139,7 @@
                   <v-date-picker
                       v-model="newContact.expiryDate"
                       :active-picker.sync="newContactExpiryDatePicker"
-                      :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                      :min="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                       @change="saveNewContactExpiryDate"
                   ></v-date-picker>
                 </v-menu>
@@ -148,8 +150,8 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-end">
-      <PrimaryButton id="cancelMessage" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
-      <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid"></PrimaryButton>
+      <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
+      <PrimaryButton id="newContactPostBtn" text="Send" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid"></PrimaryButton>
       <!--          TODO and processing-->
     </v-card-actions>
   </v-card>
@@ -159,6 +161,9 @@
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
+import ApiService from '@/common/apiService';
+import {ApiRoutes} from '@/utils/constants';
+import {LocalDate} from '@js-joda/core';
 
 export default {
   name: 'NewSchoolContactPage',
@@ -166,6 +171,10 @@ export default {
   props: {
     schoolContactTypes: {
       type: Array,
+      required: true
+    },
+    schoolID: {
+      type: String,
       required: true
     }
   },
@@ -178,15 +187,28 @@ export default {
   data() {
     return {
       isFormValid: false,
+      // newContact: {
+      //   contactType: null,
+      //   firstName: null,
+      //   lastName: null,
+      //   email: null,
+      //   phoneNumber: null,
+      //   phoneExtension: null,
+      //   alternatePhoneNumber: null,
+      //   alternatePhoneExtension: null,
+      //   effectiveDate: null,
+      //   expiryDate: null
+      // },
       newContact: {
         contactType: null,
-        firstName: null,
-        lastName: null,
-        phoneNumber: null,
+        firstName: 'jo',
+        lastName: 'jo',
+        email: 'x.x@gmail.com',
+        phoneNumber: '6042294313',
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: null,
+        effectiveDate: '2022-12-10',
         expiryDate: null
       },
       rules: {
@@ -194,6 +216,7 @@ export default {
         length: (length, message) => v => (!v || v.length <= length) || message,
         phoneNumber: v => !v || /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Phone Number must be valid',
         email: v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+        endDate: this.endDateRuleValidator,
       },
       effectiveDateFilter: false,
       newContactEffectiveDatePicker: null,
@@ -216,6 +239,17 @@ export default {
       this.$emit('newSchoolContact:closeNewSchoolContactPage');
     },
     addNewSchoolContact() {
+      ApiService.apiAxios.post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
+        .then(() => {
+          this.setSuccessAlert('Success! New contact added.');
+        })
+        .catch(error => {
+          this.setFailureAlert('An error occurred while sending message. Please try again later.');
+          console.log(error);
+        })
+        .finally(() => {
+          this.processing = false;
+        });
       this.resetForm();
       this.$emit('newSchoolContact:addNewSchoolContact');
     },
@@ -232,6 +266,27 @@ export default {
     },
     validateForm() {
       this.isFormValid = this.$refs.newContactForm.validate();
+    },
+    endDateRuleValidator() {
+      if (!this.newContact.effectiveDate && this.newContact.expiryDate) {
+        return 'Effective date required';
+      }
+
+      if (this.newContact.effectiveDate && this.newContact.expiryDate) {
+        const effDate = LocalDate.parse(this.newContact.effectiveDate);
+        const expDate = LocalDate.parse(this.newContact.expiryDate);
+        return effDate.isBefore(expDate) || effDate.equals(expDate) || 'End date cannot be before start date';
+      }
+
+      return true;
+    }
+  },
+  watch: {
+    //watching effective date because we need to cross validate expiry date with effective date
+    'newContact.effectiveDate': {
+      handler() {
+        this.validateForm();
+      }
     }
   }
 };
