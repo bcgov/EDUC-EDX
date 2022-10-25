@@ -44,13 +44,16 @@ async function updateSchool(req, res){
     payload.createDate = null;
     payload.updateDate = null;
     const nlcObjectsArray = [];
+
     for(const nlcCode of payload.neighborhoodLearning){
+      //when there is an update in frontend to neigborhoodlearning system adds array of codes to the payload
       if(_.isString(nlcCode)){
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode,
           schoolId: payload.schoolId
         });
       }else{
+        //if neighborhood learning was not changed as part of edit , it will be passed as an array of objects from frontend.
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode.neighborhoodLearningTypeCode,
           schoolId: payload.schoolId
