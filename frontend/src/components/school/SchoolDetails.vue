@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="schoolDetailsForm" v-model="schoolDetailsFormValid">
   <v-container class="containerSetup" fluid>
     <v-col class="mt-1 d-flex justify-start">
       <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
@@ -19,74 +20,74 @@
     </v-row>
     <v-row v-else no-gutters>
       <v-col>
-        <v-row class="pl-3">
-          <v-col cols="12" class="pb-3 pt-0">
-            <v-row cols="2">
-              <v-col class="pb-0" cols="12">
-                <v-row>
-                  <v-col cols="6" class="d-flex justify-start">
-                    <v-row no-gutters>
-                      <v-col cols="12">
-                        <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="6" class="d-flex justify-end">
-                    <PrimaryButton width="6em" icon="mdi-pencil" text="Edit"></PrimaryButton>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-            <v-row class="pb-2">
-              <v-col class="pt-0 mt-n2" cols="12">
+        <v-row class="d-flex justify-start">
+          <v-col cols="6" class="d-flex justify-start">
+            <h2 class="subjectHeading">{{ school.mincode }} - {{ school.displayName }}</h2>
+          </v-col>
+          <v-col v-if="!editing" cols="6" class="d-flex justify-end">
+            <PrimaryButton id="schoolDetailsEditButton" icon-left width="6em" icon="mdi-pencil" text="Edit"
+                           :disabled="!canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
+          </v-col>
+          <v-col v-else cols="6" class="d-flex justify-end">
+            <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel"
+                           @click.native="cancelClicked"></PrimaryButton>
+            <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!schoolDetailsFormValid"
+                           @click.native="updateSchoolDetails"></PrimaryButton>
+          </v-col>
+        </v-row>
+        <v-row class="d-flex justify-start">
+          <v-col class="d-flex">
                 <div class="ministryOwnershipTeamName"  style="color: black">{{district.districtNumber}} - {{district.name}}</div>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="2" lg="2" class="pb-0 pt-0">
+        <v-row class="d-flex justify-start">
+          <v-col class="d-flex">
                 <v-icon class="ml-n1 pr-3" :color="getStatusColorAuthorityOrSchool(school.status)" dark>
                   mdi-circle-medium
                 </v-icon>
-                <span class="ml-n1">{{ school.status }}</span>
+            <span v-if="!editing">{{ school.status }}</span>
+            <span v-else class="mt-5">{{ school.status }}</span>
               </v-col>
-              <v-col cols="12" lg="2" class="pb-0 pt-0">
-                <v-icon aria-hidden="false" class="pr-3">
+          <v-col class="d-flex">
+            <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-phone-outline
                 </v-icon>
-                <span class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
+                <span v-if="!editing" class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
+                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="phNumRules" v-model="schoolDetailsCopy.phoneNumber"/>
               </v-col>
-              <v-col cols="12" lg="3" class="pb-0 pt-0">
-                <v-icon aria-hidden="false" class="pr-3">
+          <v-col class="d-flex">
+            <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-at
                 </v-icon>
-                <span class="ml-n1">{{ school.email }}</span>
+                <span v-if="!editing" class="ml-n1">{{ school.email }}</span>
+                <v-text-field v-else class="py-0" required :rules="emailRules" :maxlength="255" v-model="schoolDetailsCopy.email"/>
               </v-col>
-              <v-col cols="12" lg="2" class="pb-0 pt-0">
-                <v-icon aria-hidden="false" class="pr-3">
+          <v-col class="d-flex">
+            <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-fax
                 </v-icon>
-                <span class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
+                <span v-if="!editing" class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
+                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="faxNumRules" :maxlength="10" v-model="schoolDetailsCopy.faxNumber"/>
               </v-col>
-              <v-col  lg="3" sm="4" class="pb-0 pt-0">
-                <v-icon class="mr-1" aria-hidden="false">
+          <v-col class="d-flex">
+            <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-web
                 </v-icon>
-                <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
+                <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
+                <v-text-field v-if="editing" class="py-0" :rules="websiteRules" :maxlength="255" v-model="schoolDetailsCopy.website"/>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
+        <v-row>
           <v-col>
             <v-divider class="divider"></v-divider>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
+        <v-row class="d-flex justify-start">
+          <v-col cols="12" class="d-flex justify-start">
             <h2 class="subjectHeading pt-4">School Details</h2>
           </v-col>
         </v-row>
-        <v-row class="pl-3">
+        <v-row class="d-flex justify-start">
           <v-col cols="4" lg="3" class="pb-0 pt-0">
             <v-row no-gutters>
               <v-col cols="10" class="pt-2 pr-0">
@@ -157,7 +158,14 @@
             </v-row>
             <v-row>
               <v-col cols="10" class="pb-1 pr-0">
-                <span class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
+                <span v-if="!editing" class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
+                <v-select v-else :items="schoolOrganizationTypeCodes"
+                          item-value="schoolOrganizationCode"
+                          item-text="label"
+                          v-model="schoolDetailsCopy.schoolOrganizationCode"
+                          single
+                          required
+                ></v-select>
               </v-col>
             </v-row>
           </v-col>
@@ -165,17 +173,24 @@
             <v-row no-gutters>
               <v-col cols="10" class="pt-2 pr-0">
                 <span style="color: grey">NLC Activity</span>
+
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="10" class="pb-1 pr-0">
-                <span class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
+                <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
+                <v-select v-else :items="schoolNeighborhoodLearningTypes"
+                          item-value="neighborhoodLearningTypeCode"
+                          item-text="label"
+                          v-model="schoolDetailsCopy.neighborhoodLearning"
+                          multiple
+                          ></v-select>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
+        <v-row class="d-flex justify-start">
+          <v-col cols="12" class="d-flex justify-start">
             <h2 class="subjectHeading pt-4">Addresses</h2>
           </v-col>
         </v-row>
@@ -257,6 +272,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 
 <script>
@@ -269,6 +285,7 @@ import {ApiRoutes} from '@/utils/constants';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
 import {sanitizeUrl} from '@braintree/sanitize-url';
+import {deepCloneObject} from '@/utils/common';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -292,7 +309,29 @@ export default {
       schoolNeighborhoodLearningTypes: [],
       schoolGradeTypes: [],
       loading: true,
-      cleanWebsiteUrl:''
+      cleanWebsiteUrl:'',
+      schoolDetailsFormValid:true,
+      editing: false,
+      schoolDetailsCopy: {},
+      sameAsMailingCheckbox: true,
+      selectedNLCs:[],
+      phNumRules: [
+        v => !!v || 'Phone Number is required',
+        v => (v && v.length <= 10) || 'Phone Number must be 10 digits',
+        v => /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Phone Number must be valid',
+      ],
+      faxNumRules: [
+        v => !v || /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Fax Number must be valid',
+      ],
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || 'E-mail must be valid',
+      ],
+      websiteRules: [
+        v => /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(v) || 'Website must be valid',
+      ],
+
+
     };
   },
   computed: {
@@ -342,7 +381,7 @@ export default {
           this.school = response.data;
           this.populateExtraSchoolFields(this.school);
           this.getDistrictDetails(this.school.districtId);
-          this.cleanWebsiteUrl = this.district.website ? sanitizeUrl(this.district.website) : '';
+          this.cleanWebsiteUrl = this.school.website ? sanitizeUrl(this.school.website) : '';
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error.response?.data?.message || error.message);
@@ -396,21 +435,21 @@ export default {
       return gradeList.toString().replace(/,/g, ', ');
     },
     getSchoolOrganization(school){
-      return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school.schoolOrganizationCode).label;
+      return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school?.schoolOrganizationCode).label;
     },
     getNLCActivity(school){
       let nLCActivityList = [];
       for(const nl of school.neighborhoodLearning){
-        nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl.neighborhoodLearningTypeCode).label);
+        nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl?.neighborhoodLearningTypeCode).label);
       }
       nLCActivityList.sort();
       return nLCActivityList.toString().replace(/,/g, ', ');
     },
     getFacilityType(school){
-      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school.facilityTypeCode).label;
+      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school?.facilityTypeCode).label;
     },
     getSchoolCategory(school){
-      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school.schoolCategoryCode).label;
+      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school?.schoolCategoryCode).label;
     },
     backButtonClick() {
       if(this.isDistrictUser()){
@@ -425,13 +464,114 @@ export default {
     formatDate,
     formatPhoneNumber,
     getStatusColorAuthorityOrSchool,
+    deepCloneObject,
     getCountryName(countryCode){
       let countryName = '';
       if(countryCode === 'CA'){
         countryName = 'Canada';
       }
       return countryName;
-    }
+    },
+    canEditSchoolDetails(){
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN'||'EDX_USER_SCHOOL_ADMIN').length > 0;
+    },
+    async toggleEdit(){
+      this.schoolDetailsCopy = this.deepCloneObject(this.school);
+      this.editing = !this.editing;
+      await this.$nextTick();
+      this.$refs.schoolDetailsForm.validate();
+    },
+    cancelClicked(){
+      this.editing = false;
+      this.setHasSamePhysicalFlag();
+    },
+    setHasSamePhysicalFlag(){
+      this.sameAsMailingCheckbox = this.hasSamePhysicalAddress;
+    },
+    updateSchoolDetails() {
+      this.loading = true;
+
+      if(this.sameAsMailingCheckbox){
+        this.schoolDetailsCopy.addresses = this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
+      }
+      ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolID, this.schoolDetailsCopy)
+        .then(() => {
+          this.setSuccessAlert('Success! The school details have been updated.');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while saving the school information. Please try again later.');
+        })
+        .finally(() => {
+          this.toggleEdit();
+          this.getThisSchoolsDetails();
+        });
+    },
+    hasMailingAddress(){
+      return this.school.addresses.filter(address => address.addressTypeCode === 'MAILING').length > 0;
+    },
+    hasPhysicalAddress(){
+      return this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
+    },
+    getMailingAddressCopy(){
+      return this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
+    },
+    getPhysicalAddressCopy(){
+      return this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'PHYSICAL');
+    },
+    addAddressesIfRequired(school){
+      let addresses = school.addresses;
+      if(!this.hasMailingAddress()){
+        addresses.push({
+          'createUser': null,
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'addressId': null,
+          'schoolId': null,
+          'districtId': null,
+          'independentAuthorityId': null,
+          'phoneNumber': null,
+          'email': null,
+          'addressLine1': null,
+          'addressLine2': null,
+          'city': null,
+          'postal': null,
+          'addressTypeCode': 'MAILING',
+          'provinceCode': null,
+          'countryCode': null
+        });
+      }
+      if(!this.hasPhysicalAddress()){
+        addresses.push({
+          'createUser': null,
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'addressId': null,
+          'schoolId': null,
+          'districtId': null,
+          'independentAuthorityId': null,
+          'phoneNumber': null,
+          'email': null,
+          'addressLine1': null,
+          'addressLine2': null,
+          'city': null,
+          'postal': null,
+          'addressTypeCode': 'PHYSICAL',
+          'provinceCode': null,
+          'countryCode': null
+        });
+      }
+    },
+    isNumber: function(evt) {
+      let charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
   }
 };
 </script>
