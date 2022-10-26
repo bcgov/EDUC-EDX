@@ -198,6 +198,7 @@ export default {
         alternatePhoneExtension: null,
         effectiveDate: null,
         expiryDate: null
+
       },
       rules: {
         required: v => !!v || 'Required',
