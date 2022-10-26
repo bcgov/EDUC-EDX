@@ -89,55 +89,55 @@
         </v-row>
         <v-row class="d-flex justify-start">
           <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
+            <v-row no-gutters class="d-flex justify-start">
+              <v-col cols="10" class="d-flex justify-start">
                 <span style="color: grey">Open Date</span>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="10" class="pb-1 pr-0">
+              <v-col cols="10" class="d-flex justify-start">
                 <span class="ministryLine" style="color: black">{{ formatDate(school.openedDate) || '-' }}</span>
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class=" pt-2 pr-0">
+            <v-row no-gutters class="d-flex justify-start">
+              <v-col cols="10" class="d-flex justify-start">
                 <span style="color: grey">Close Date</span>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="10" class="pb-1 pr-0">
+              <v-col cols="10" class="d-flex justify-start">
                 <span class="ministryLine" style="color: black">{{ formatDate(school.closedDate) || '-' }}</span>
               </v-col>
             </v-row>
           </v-col>
             <v-col cols="4" lg="3" class="pb-0 pt-0">
-              <v-row no-gutters>
-                <v-col cols="10" class="pt-2 pr-0">
+              <v-row no-gutters class="d-flex justify-start">
+                <v-col cols="10" class="d-flex justify-start">
                   <span style="color: grey">Facility Type</span>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="10" class="pb-1 pr-0">
+                <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{school.facilityType}}</span>
                 </v-col>
               </v-row>
             </v-col>
             <v-col cols="4" lg="3" class="pb-0 pt-0">
-              <v-row no-gutters>
-                <v-col cols="10" class="pt-2 pr-0">
+              <v-row no-gutters class="d-flex justify-start">
+                <v-col cols="10" class="d-flex justify-start">
                   <span style="color: grey">School Category</span>
                 </v-col>
             </v-row>
             <v-row>
-                <v-col cols="10" class="pb-1 pr-0">
+                <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{ school.schoolCategory }}</span>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
-        <v-row class="pt-5 pl-3">
+        <v-row class="d-flex justify-start">
           <v-col cols="4" lg="3" class="pb-0 pt-0">
             <v-row no-gutters>
               <v-col cols="10" class="pt-2 pr-0">
@@ -145,19 +145,19 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="10" class="pb-1 pr-0">
+              <v-col cols="10" class="d-flex justify-start">
                 <span class="ministryLine" style="color: black">{{ getGradesOffered(school.grades) }}</span>
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
+            <v-row no-gutters class="d-flex justify-start">
+              <v-col cols="10" class="d-flex justify-start">
                 <span style="color: grey">School Organization</span>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="10" class="pb-1 pr-0">
+              <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
                 <v-select v-else :items="schoolOrganizationTypeCodes"
                           item-value="schoolOrganizationCode"
@@ -170,14 +170,13 @@
             </v-row>
           </v-col>
           <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
+            <v-row no-gutters class="d-flex justify-start">
+              <v-col cols="10" class="d-flex justify-start">
                 <span style="color: grey">NLC Activity</span>
-
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="10" class="pb-1 pr-0">
+              <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
                 <v-select v-else :items="schoolNeighborhoodLearningTypes"
                           item-value="neighborhoodLearningTypeCode"
@@ -194,8 +193,8 @@
             <h2 class="subjectHeading pt-4">Addresses</h2>
           </v-col>
         </v-row>
-        <v-row class="pl-3">
-          <v-col cols="3">
+        <v-row no-gutters class="d-flex justify-start">
+          <v-col v-if="hasMailingAddress()" cols="3" >
             <v-row>
               <v-col>
                 <v-icon class="pb-1 mr-1" right >
