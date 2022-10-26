@@ -1,9 +1,8 @@
 'use strict';
 const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
-  checkEDXUserAccess,
-  checkEDXUserDistrictAdminPermission,checkEDXUserSchoolAdminPermission,
-  putData,
-  handleExceptionResponse
+  checkEDXUserAccess, checkEDXUserDistrictAdminPermission,
+  checkEDXUserSchoolAdminPermission, checkSchoolBelongsToEDXUserDistrict,
+  putData, postData, handleExceptionResponse
 } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
@@ -11,6 +10,7 @@ const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
 const _ = require('lodash');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -66,6 +66,46 @@ async function updateSchool(req, res){
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateSchool', 'Error occurred while attempting to update a school.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function addSchoolContact(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token, res);
+
+    if (req.session.activeInstituteType === 'SCHOOL') {
+      checkEDXUserAccess(req, res, 'SCHOOL', req.params.schoolID);
+      checkEDXUserSchoolAdminPermission(req);
+
+    } else if (req.session.activeInstituteType === 'DISTRICT') {
+      checkEDXUserDistrictAdminPermission(req);
+      checkSchoolBelongsToEDXUserDistrict(req, req.params.schoolID);
+    }
+
+    const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
+
+    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+    const payload = {
+      schoolContactTypeCode: req.body.contactType,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      phoneExtension: req.body.phoneExtension,
+      alternatePhoneNumber: req.body.alternatePhoneNumber,
+      alternatePhoneExtension: req.body.alternatePhoneExtension,
+      effectiveDate: req.body.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null,
+      expiryDate: req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null
+    };
+
+    const data = await postData(token, payload, url, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json(data);
+  }catch (e) {
+    log.error('Create School Contact Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -192,5 +232,6 @@ module.exports = {
   getAllCachedSchools,
   getAllSchoolDetails,
   getFullSchoolDetails,
-  updateSchool
+  updateSchool,
+  addSchoolContact
 };

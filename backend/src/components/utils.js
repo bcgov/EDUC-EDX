@@ -367,6 +367,25 @@ function checkEDXUserAccess(req, _res, instituteType, instituteIdentifier) {
   }
 }
 
+function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
+  const cacheService = require('./cache-service');
+
+  let school = cacheService.getSchoolBySchoolID(schoolID);
+
+  if (req.session.activeInstituteType !== 'DISTRICT') {
+    log.warn('checkSchoolBelongstoEDXUserDistrict should only be used for District EDX users');
+  }
+
+  if (!school) {
+    log.error('unable to find school checkEDXUserSchoolBelongsToDistrict');
+    throw new Error('404');
+  }
+
+  if (school.districtID !== req.session.activeInstituteIdentifier) {
+    throw new Error('403');
+  }
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -389,7 +408,8 @@ const utils = {
   getCodeTable,
   checkEDXUserSchoolAdminPermission,
   checkEDXUserDistrictAdminPermission,
-  checkEDXUserAccess
+  checkEDXUserAccess,
+  checkSchoolBelongsToEDXUserDistrict
 };
 
 module.exports = utils;
