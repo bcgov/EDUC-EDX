@@ -83,7 +83,7 @@
     "eslint": "^7.26.0",
     "jest": "^27.0.3",
     "jest-sonar-reporter": "^2.0.0",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.20",
     "redis-mock": "^0.56.3",
     "supertest": "^4.0.2"
   },
