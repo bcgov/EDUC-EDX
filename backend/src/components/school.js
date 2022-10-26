@@ -38,6 +38,7 @@ async function updateSchool(req, res){
       checkEDXUserSchoolAdminPermission(req);
     }else if( req.session.activeInstituteType === 'DISTRICT'){
       checkEDXUserDistrictAdminPermission(req);
+      checkSchoolBelongsToEDXUserDistrict(req,  req.body.schoolId);
     }
 
     const payload = req.body;
