@@ -1,5 +1,5 @@
 'use strict';
-const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserDistrictAdminPermission, putData, handleExceptionResponse} = require('./utils');
+const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserDistrictAdminPermission, putData, postData, handleExceptionResponse} = require('./utils');
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
@@ -38,6 +38,22 @@ async function updateDistrict(req, res){
   }
 }
 
+async function createDistrictContact(req, res) {
+  const token = getAccessToken(req);
+  validateAccessToken(token);
+  checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
+
+  return Promise.all([
+    postData(token, req.body, `${config.get('institute:rootURL')}/district/${req.body.districtId}/contact`, req.session?.correlationID),
+  ])
+    .then(async ([dataResponse]) => {
+      return res.status(200).json(dataResponse);
+    }).catch(e => {
+      log.error(e, 'createDistrictContact', 'Error creating district contact with API.');
+      return errorResponse(res);
+    });
+}
+
 function validateAccessToken(token, res) {
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -48,5 +64,6 @@ function validateAccessToken(token, res) {
 
 module.exports = {
   getDistrictByDistrictID,
-  updateDistrict
+  updateDistrict,
+  createDistrictContact
 };
