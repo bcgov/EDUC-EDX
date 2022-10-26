@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getSchoolBySchoolID, getAllCachedSchools, getAllSchoolDetails, getFullSchoolDetails,updateSchool } = require('../components/school');
+const { getSchoolBySchoolID, getAllCachedSchools, getAllSchoolDetails, getFullSchoolDetails, updateSchool, addSchoolContact } = require('../components/school');
 const auth = require('../components/auth');
 const {getCodes} = require('../components/utils');
 const {CACHE_KEYS} = require('../components/constants');
@@ -24,5 +24,8 @@ router.get('/school-neighborhood-learning-types', passport.authenticate('jwt', {
 router.get('/school-grade-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.SCHOOL_GRADE_TYPES, '/grade-codes'));
 
 router.put('/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateSchool);
+
+router.post('/:schoolID/contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, addSchoolContact);
+
 module.exports = router;
 

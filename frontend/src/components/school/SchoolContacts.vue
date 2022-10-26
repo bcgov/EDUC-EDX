@@ -36,7 +36,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton v-if="canAddContact()" id="addSchoolContactBtn" width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -115,7 +115,7 @@
           :schoolContactTypes="this.schoolContactTypes"
           :schoolID="this.$route.params.schoolID"
           @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
-          @newSchoolContact:addNewSchoolContact="newContactSheet = !newContactSheet"
+          @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"
       />
     </v-bottom-sheet>
   </v-container>
@@ -125,6 +125,7 @@
 
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
+import {PERMISSION} from '@/utils/constants/Permission';
 import PrimaryButton from '../util/PrimaryButton';
 import NewSchoolContactPage from './NewSchoolContactPage';
 import {mapGetters} from 'vuex';
@@ -215,6 +216,13 @@ export default {
     },
     isDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
+    },
+    newSchoolContactAdded() {
+      this.newContactSheet = !this.newContactSheet;
+      this.getThisSchoolsContacts();
+    },
+    canAddContact(){
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN || PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
     },
     getStatusColor,
     formatDate,

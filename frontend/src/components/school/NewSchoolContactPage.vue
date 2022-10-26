@@ -1,6 +1,6 @@
 <template>
   <v-card
-      class="information-window-v-card">
+      id="newContactVCard">
     <v-card-title class="sheetHeader pt-1 pb-1">New Contact</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
@@ -151,8 +151,7 @@
     </v-card-text>
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
-      <PrimaryButton id="newContactPostBtn" text="Send" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid"></PrimaryButton>
-      <!--          TODO and processing-->
+      <PrimaryButton id="newContactPostBtn" text="Send" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
     </v-card-actions>
   </v-card>
 </template>
@@ -187,28 +186,17 @@ export default {
   data() {
     return {
       isFormValid: false,
-      // newContact: {
-      //   contactType: null,
-      //   firstName: null,
-      //   lastName: null,
-      //   email: null,
-      //   phoneNumber: null,
-      //   phoneExtension: null,
-      //   alternatePhoneNumber: null,
-      //   alternatePhoneExtension: null,
-      //   effectiveDate: null,
-      //   expiryDate: null
-      // },
+      processing: false,
       newContact: {
         contactType: null,
-        firstName: 'jo',
-        lastName: 'jo',
-        email: 'x.x@gmail.com',
-        phoneNumber: '6042294313',
+        firstName: null,
+        lastName: null,
+        email: null,
+        phoneNumber: null,
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: '2022-12-10',
+        effectiveDate: null,
         expiryDate: null
       },
       rules: {
@@ -239,9 +227,12 @@ export default {
       this.$emit('newSchoolContact:closeNewSchoolContactPage');
     },
     addNewSchoolContact() {
+      this.processing = true;
       ApiService.apiAxios.post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
         .then(() => {
           this.setSuccessAlert('Success! New contact added.');
+          this.resetForm();
+          this.$emit('newSchoolContact:addNewSchoolContact');
         })
         .catch(error => {
           this.setFailureAlert('An error occurred while sending message. Please try again later.');
@@ -250,8 +241,6 @@ export default {
         .finally(() => {
           this.processing = false;
         });
-      this.resetForm();
-      this.$emit('newSchoolContact:addNewSchoolContact');
     },
     isNumber: function(evt) {
       let charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -282,7 +271,7 @@ export default {
     }
   },
   watch: {
-    //watching effective date because we need to cross validate expiry date with effective date
+    //watching effective date to valid form because we need to cross validate expiry and effective date fields
     'newContact.effectiveDate': {
       handler() {
         this.validateForm();
