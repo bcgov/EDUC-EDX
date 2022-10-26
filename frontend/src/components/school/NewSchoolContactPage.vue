@@ -223,6 +223,8 @@ export default {
       this.$refs.newContactExpiryDateFilter.save(date);
     },
     closeNewContactPage() {
+
+
       this.resetForm();
       this.$emit('newSchoolContact:closeNewSchoolContactPage');
     },

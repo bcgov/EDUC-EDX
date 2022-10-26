@@ -9,6 +9,8 @@ async function getDistrictByDistrictID(req, res){
   validateAccessToken(token);
   checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
 
+
+
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
   ])
