@@ -4,6 +4,7 @@ const { LocalDate, DateTimeFormatter } = require('@js-joda/core');
 function generateSchoolObject(school) {
   return {
     schoolID: school.schoolId,
+    districtID: school.districtId,
     mincode: school.mincode,
     schoolName: school.displayName,
     effectiveDate: school.openedDate,
