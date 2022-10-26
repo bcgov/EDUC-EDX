@@ -396,7 +396,7 @@ export default {
   data() {
     return {
       district: null,
-      districtCopy: null,
+      districtCopy:  {},
       districtFormValid: true,
       sameAsMailingCheckbox: true,
       editing: false,

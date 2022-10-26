@@ -1,10 +1,16 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData} = require('./utils');
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
+  checkEDXUserAccess,
+  checkEDXUserDistrictAdminPermission,checkEDXUserSchoolAdminPermission,
+  putData,
+  handleExceptionResponse
+} = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
+const _ = require('lodash');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -20,6 +26,47 @@ async function getSchoolBySchoolID(req, res) {
   } catch (e) {
     logApiError(e, 'getSchoolBySchoolId', 'Error occurred while attempting to GET school entity.');
     return errorResponse(res);
+  }
+}
+
+async function updateSchool(req, res){
+  try{
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    if( req.session.activeInstituteType === 'SCHOOL'){
+      checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolId);
+      checkEDXUserSchoolAdminPermission(req);
+    }else if( req.session.activeInstituteType === 'DISTRICT'){
+      checkEDXUserDistrictAdminPermission(req);
+    }
+
+    const payload = req.body;
+    payload.createDate = null;
+    payload.updateDate = null;
+    const nlcObjectsArray = [];
+
+    for(const nlcCode of payload.neighborhoodLearning){
+      //when there is an update in frontend to neigborhoodlearning system adds array of codes to the payload
+      if(_.isString(nlcCode)){
+        nlcObjectsArray.push({
+          neighborhoodLearningTypeCode:nlcCode,
+          schoolId: payload.schoolId
+        });
+      }else{
+        //if neighborhood learning was not changed as part of edit , it will be passed as an array of objects from frontend.
+        nlcObjectsArray.push({
+          neighborhoodLearningTypeCode:nlcCode.neighborhoodLearningTypeCode,
+          schoolId: payload.schoolId
+        });
+      }
+
+    }
+    payload.neighborhoodLearning = nlcObjectsArray;
+    const result = await putData(token, payload, config.get('institute:rootURL') + '/school/' + payload.schoolId, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'updateSchool', 'Error occurred while attempting to update a school.');
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -144,5 +191,6 @@ module.exports = {
   getSchoolBySchoolID,
   getAllCachedSchools,
   getAllSchoolDetails,
-  getFullSchoolDetails
+  getFullSchoolDetails,
+  updateSchool
 };
