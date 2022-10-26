@@ -42,7 +42,6 @@ async function createDistrictContact(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token);
   checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
-  console.log(req.body);
 
   return Promise.all([
     postData(token, req.body, `${config.get('institute:rootURL')}/district/${req.body.districtId}/contact`, req.session?.correlationID),
