@@ -110,17 +110,19 @@
         <v-form ref="editContactForm" v-model="ecFormValid">
           <v-col>
             <v-row>
-              <v-autocomplete
-                  id="name-text-field"
-                  label="Contact Type"
-                  item-value="districtContactTypeCode"
-                  item-text="label"
-                  :items="districtContactTypes"
-                  v-model="contactToEdit.districtContactTypeCode"
-                  :rules="contactTypeRules"
-                  clearable
-                  required>
-              </v-autocomplete>
+              <v-col>
+                <v-autocomplete
+                    id="name-text-field"
+                    label="Contact Type"
+                    item-value="districtContactTypeCode"
+                    item-text="label"
+                    :items="districtContactTypes"
+                    v-model="contactToEdit.districtContactTypeCode"
+                    :rules="contactTypeRules"
+                    clearable
+                    required>
+                </v-autocomplete>
+              </v-col>
             </v-row>
             <v-row>
               <v-col>
@@ -455,8 +457,10 @@ export default {
         return true;
       }
     },
-    openContactEditForm(){
+    async openContactEditForm(){
       this.openForm = !this.openForm;
+      await this.$nextTick();
+      this.validateEditContactForm();
     },
     cancelDistrictContactEdit(){
       this.openForm = !this.openForm;
