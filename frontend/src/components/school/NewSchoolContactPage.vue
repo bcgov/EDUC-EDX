@@ -45,6 +45,7 @@
                     :rules="[rules.required, rules.length(10, 'Phone number must be 10 digits'), rules.phoneNumber]"
                     v-model="newContact.phoneNumber"
                     class="pt-0"
+                    :maxlength="10"
                     label="Phone Number*"
                     @keypress="isNumber($event)"
                 />
@@ -54,6 +55,7 @@
                     id='newContactPhoneExtensionInput'
                     :rules="[rules.length(10, 'Must be less than 10 digits')]"
                     v-model="newContact.phoneExtension"
+                    :maxlength="10"
                     class="pt-0"
                     label="Ext."
                     @keypress="isNumber($event)"
@@ -67,6 +69,7 @@
                     :rules="[rules.length(10, 'Phone number must be 10 digits'), rules.phoneNumber]"
                     v-model="newContact.alternatePhoneNumber"
                     class="pt-0"
+                    :maxlength="10"
                     label="Alt. Phone Number"
                     @keypress="isNumber($event)"
                 />
@@ -77,6 +80,7 @@
                     :rules="[rules.length(10, 'Must be less than 10 digits')]"
                     v-model="newContact.alternatePhoneExtension"
                     class="pt-0"
+                    :maxlength="10"
                     label="Alt. Phone Ext."
                     @keypress="isNumber($event)"
                 />
