@@ -30,20 +30,16 @@ fixture `data-load`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
-        await t.useRole(studentAdmin);
+        //await t.useRole(studentAdmin);
     }).afterEach(async t => {
         // logout
-        await t.useRole(Role.anonymous());
+        //await t.useRole(Role.anonymous());
     });
 
 test('testPageLoad', async t => {
-    const getLocation = ClientFunction(() => window.location.href);
-    await t.expect(getLocation()).contains('about:blank');
+    console.log('Development mode: ', process.env.TEST_VALUE);
 });
 
-test('testConfigMapEnv', async t => {
-    console.log('Development mode: ', process.env.AT_EDX_ADMIN_USERNAME);
-});
 
 /**
  * Given a subject, will delete messages from the api
