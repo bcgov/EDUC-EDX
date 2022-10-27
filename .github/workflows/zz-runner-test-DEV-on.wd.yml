@@ -1,4 +1,4 @@
-name: Smoke Test
+name: Runner Test - DEV
 on:
   workflow_dispatch:
 
@@ -45,6 +45,7 @@ jobs:
       - run: npm install
       - run: npm run runner-test
         if: ${{ always() }}
+          # envs can now be stored on OS secrets
         #env:
           #BASE_URL: ${{ secrets.BASE_URL }}
           #EDX_API_BASE_URL: ${{ secrets.EDX_API_BASE_URL }}
