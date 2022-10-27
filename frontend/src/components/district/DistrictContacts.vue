@@ -117,7 +117,7 @@
                     item-value="districtContactTypeCode"
                     item-text="label"
                     :items="districtContactTypes"
-                    v-model="contactToEdit.districtContactTypeCode"
+                    v-model="newContact.districtContactTypeCode"
                     :rules="contactTypeRules"
                     clearable
                     required>
@@ -127,7 +127,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditFirstName"
-                              v-model="contactToEdit.firstName"
+                              v-model="newContact.firstName"
                               :rules="firstNameRules"
                               label="First Name"
                               type="text"
@@ -138,7 +138,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditLastName"
-                              v-model="contactToEdit.lastName"
+                              v-model="newContact.lastName"
                               :rules="lastNameRules"
                               label="Last Name"
                               type="text"
@@ -149,7 +149,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditTitle"
-                              v-model="contactToEdit.title"
+                              v-model="newContact.title"
                               :rules="titleRules"
                               label="Title"
                               type="text"
@@ -159,7 +159,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditEmail"
-                              v-model="contactToEdit.email"
+                              v-model="newContact.email"
                               :rules="emailRules"
                               label="Email"
                               type="text"
@@ -170,7 +170,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditPhoneNumber"
-                              v-model="contactToEdit.phoneNumber"
+                              v-model="newContact.phoneNumber"
                               :rules="phNumRules"
                               label="Phone"
                               type="text"
@@ -181,7 +181,7 @@
               </v-col>
               <v-col>
                 <v-text-field id="contactEditPhoneExt"
-                              v-model="contactToEdit.phoneExtension"
+                              v-model="newContact.phoneExtension"
                               :rules="phNumExtRules"
                               label="Ext"
                               type="text"
@@ -192,7 +192,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditAltPhoneNumber"
-                              v-model="contactToEdit.alternatePhoneNumber"
+                              v-model="newContact.alternatePhoneNumber"
                               :rules="altPhNumRules"
                               label="Alternative Phone"
                               type="text"
@@ -202,7 +202,7 @@
               </v-col>
               <v-col>
                 <v-text-field id="contactEditAltPhoneExt"
-                              v-model="contactToEdit.alternatePhoneExtension"
+                              v-model="newContact.alternatePhoneExtension"
                               :rules="altPhNumExtRules"
                               label="Alternative Ext"
                               type="text"
@@ -230,7 +230,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                      v-model="contactToEdit.effectiveDate"
+                      v-model="newContact.effectiveDate"
                       no-title
                       @input="effDateMenu = false"
                   ></v-date-picker>
@@ -253,7 +253,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                      v-model="contactToEdit.expiryDate"
+                      v-model="newContact.expiryDate"
                       no-title
                       @input="expDateMenu = false"
                   ></v-date-picker>
@@ -264,7 +264,7 @@
               <v-col cols="12" class="d-flex justify-end">
                 <PrimaryButton class="mr-3" id="cancelEditButton" :secondary="true" @click.native="cancelDistrictContactEdit"
                                text="Cancel"></PrimaryButton>
-                <PrimaryButton @click.native="saveDistrictContact(contactToEdit)" id="saveEditButton" :disabled="!ecFormValid" text="Save"></PrimaryButton>
+                <PrimaryButton @click.native="saveDistrictContact(newContact)" id="saveEditButton" :disabled="!ecFormValid" text="Save"></PrimaryButton>
               </v-col>
             </v-row>
           </v-col>
@@ -308,19 +308,7 @@ export default {
       ecFormValid: false,
       effDateMenu: false,
       expDateMenu: false,
-      contactToEdit: {
-        districtContactTypeCode: '',
-        firstName: '',
-        lastName: '',
-        title: '',
-        email: '',
-        phoneNumber:'',
-        phoneExtension:'',
-        alternatePhoneNumber:'',
-        alternatePhoneExtension:'',
-        effectiveDate:'',
-        expiryDate:''
-      },
+      newContact: '',
       contactTypeRules: [
         v => !!v || 'Contact Type is required',
       ],
@@ -361,10 +349,10 @@ export default {
       return this.loadingCount !== 0;
     },
     computedEffDateFormatted () {
-      return this.formatEffectiveDisplayDate(this.contactToEdit.effectiveDate?.substring(0,10));
+      return this.formatEffectiveDisplayDate(this.newContact.effectiveDate?.substring(0,10));
     },
     computedExpDateFormatted () {
-      return this.formatEffectiveDisplayDate(this.contactToEdit.expiryDate?.substring(0,10));
+      return this.formatEffectiveDisplayDate(this.newContact.expiryDate?.substring(0,10));
     },
   },
   created() {
@@ -440,7 +428,7 @@ export default {
         .finally(() => {
           this.loadingContactForm = false;
           this.cancelDistrictContactEdit();
-          this.contactToEdit = '';
+          this.newContact = '';
           this.getThisDistrictsContacts();
         });
     },
@@ -458,6 +446,19 @@ export default {
       }
     },
     async openContactEditForm(){
+      this.newContact = {
+        districtContactTypeCode: '',
+        firstName: '',
+        lastName: '',
+        title: '',
+        email: '',
+        phoneNumber:'',
+        phoneExtension:'',
+        alternatePhoneNumber:'',
+        alternatePhoneExtension:'',
+        effectiveDate:'',
+        expiryDate:''
+      };
       this.openForm = !this.openForm;
       await this.$nextTick();
       this.validateEditContactForm();
