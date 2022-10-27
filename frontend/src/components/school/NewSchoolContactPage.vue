@@ -139,7 +139,6 @@
                   <v-date-picker
                       v-model="newContact.expiryDate"
                       :active-picker.sync="newContactExpiryDatePicker"
-                      :min="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                       @change="saveNewContactExpiryDate"
                   ></v-date-picker>
                 </v-menu>
