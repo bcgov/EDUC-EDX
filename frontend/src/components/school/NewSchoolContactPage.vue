@@ -1,7 +1,7 @@
 <template>
   <v-card
       id="newContactVCard">
-    <v-card-title class="sheetHeader pt-1 pb-1">New Contact</v-card-title>
+    <v-card-title class="sheetHeader pt-1 pb-1">New School Contact</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-form ref="newContactForm" v-model="isFormValid">
@@ -150,7 +150,7 @@
     </v-card-text>
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
-      <PrimaryButton id="newContactPostBtn" text="Send" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
+      <PrimaryButton id="newContactPostBtn" text="Save" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
     </v-card-actions>
   </v-card>
 </template>
