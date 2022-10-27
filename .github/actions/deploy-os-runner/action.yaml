@@ -59,7 +59,7 @@ runs:
         echo ::set-output name=runner_name::"$RUNNER_ID"
         DEPLOYMENT_CONFIG_FILE=os-deployment.yaml
         # get config
-        wget https://raw.githubusercontent.com/bcgov/EDUC-INFRA-COMMON/master/github-self-hosted-runner/os-deployment-gh-runner.yaml
+        wget https://raw.githubusercontent.com/bcgov/EDUC-EDX/master/tools/openshift/test-runner.dc.yaml
         # replace vars
         envsubst < os-deployment-gh-runner.yaml > $DEPLOYMENT_CONFIG_FILE
         # Login to OpenShift and select project
