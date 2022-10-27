@@ -33,6 +33,9 @@ inputs:
   gh-access-token:
     description: A Github personal access token with admin rights on the repo
     required: true
+  secret-ref:
+    description: A secretRef for injecting OS env vars from OS secret
+    required: true
 outputs:
   runner_name:
     description: The name of the runner that is created.
@@ -51,7 +54,7 @@ runs:
         # set the necessary env vars
         # create a random runner id, etc
         # note: export used for these vars for envsubst to pick up later on
-        export RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployment-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
+        export SECRET_REF=${{inputs.secret-ref}} RUNNER_ID=gh-runner-$(echo $RANDOM | md5sum | head -c 20) OPENSHIFT_NAMESPACE=${{ inputs.runner-deployment-namespace }} GITHUB_REPO=${{ inputs.github-repo }} ORGANIZATION=${{ inputs.organization }} GITHUB_ACCESS_TOKEN=${{ inputs.gh-access-token }}
         # exporting runner id to the labels below. One test = one runner.
         # add more labels if you like in csv format (label1,label2,label3,etc.)
         export LABELS=$RUNNER_ID

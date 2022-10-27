@@ -19,7 +19,7 @@ spec:
             image-registry.apps.silver.devops.gov.bc.ca/${OPENSHIFT_NAMESPACE}/gh-runner-ubuntu-18:latest
           envFrom:
             - secretRef:
-                name: test-runner-dev-secrets
+                name: ${SECRET_REF}
           env:
             - name: REPO
               value: ${GITHUB_REPO}
