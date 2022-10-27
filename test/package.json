@@ -7,7 +7,8 @@
   },
   "scripts": {
     "smoke-test": "node --max-http-header-size=81000 src/test_suites/smoke-test.js",
-    "regression": "node --max-http-header-size=81000 src/test_suites/regression.js"
+    "regression": "node --max-http-header-size=81000 src/test_suites/regression.js",
+    "runner-test": "node --max-http-header-size=81000 src/test_suites/runner-test.js"
   },
   "repository": {
     "type": "git",
