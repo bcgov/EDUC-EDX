@@ -42,7 +42,7 @@ test('testPageLoad', async t => {
 });
 
 test('testConfigMapEnv', async t => {
-    //console.log('Development mode: ', process.env);
+    console.log('Development mode: ', process.env.AT_EDX_ADMIN_USERNAME);
 });
 
 /**

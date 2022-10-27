@@ -61,7 +61,7 @@ runs:
         # get config
         wget https://raw.githubusercontent.com/bcgov/EDUC-EDX/master/tools/openshift/test-runner.dc.yaml
         # replace vars
-        envsubst < os-deployment-gh-runner.yaml > $DEPLOYMENT_CONFIG_FILE
+        envsubst < test-runner.dc.yaml > $DEPLOYMENT_CONFIG_FILE
         # Login to OpenShift and select project
         oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
         oc project ${{ inputs.runner-deployment-namespace }}
