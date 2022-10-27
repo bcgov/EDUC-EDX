@@ -1,0 +1,31 @@
+apiVersion: template.openshift.io/v1
+kind: Deployment
+metadata:
+  name: ${RUNNER_ID}
+  namespace: ${OPENSHIFT_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: ${RUNNER_ID}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ${RUNNER_ID}
+    spec:
+      containers:
+        - name: ${RUNNER_ID}
+          image: >-
+            image-registry.apps.silver.devops.gov.bc.ca/${OPENSHIFT_NAMESPACE}/gh-runner-ubuntu-18:latest
+          envFrom:
+            - secretRef:
+                name: test-runner-dev-secrets
+          env:
+            - name: REPO
+              value: ${GITHUB_REPO}
+            - name: ORGANIZATION
+              value: bcgov
+            - name: ACCESS_TOKEN
+              value: ${GITHUB_ACCESS_TOKEN}
+            - name: LABELS
+              value: ${LABELS}
