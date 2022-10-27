@@ -71,24 +71,28 @@ addBaseRouterGet('oidcBceidActivateDistrictUser', '/login_bceid_activate_distric
 
 
 //removes tokens and destroys session
-router.get('/logout', async (req, res) => {
-  req.logout();
-  req.session.destroy();
-  let retUrl;
-  if (req.query && req.query.sessionExpired) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired');
-  } else if (req.query && req.query.loginError) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/login-error');
-  } else if (req.query && req.query.loginBceid) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
-  } else if (req.query && req.query.loginBceidActivateUser) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
-  } else if (req.query && req.query.loginBceidActivateDistrictUser) {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_district_user');
-  } else {
-    retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
-  }
-  res.redirect(config.get('siteMinder_logout_endpoint') + retUrl);
+router.get('/logout', async (req, res, next) => {
+  req.logout(function(err) {
+    if (err) {
+      return next(err);
+    }
+    req.session.destroy();
+    let retUrl;
+    if (req.query && req.query.sessionExpired) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired');
+    } else if (req.query && req.query.loginError) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/login-error');
+    } else if (req.query && req.query.loginBceid) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
+    } else if (req.query && req.query.loginBceidActivateUser) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
+    } else if (req.query && req.query.loginBceidActivateDistrictUser) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_district_user');
+    } else {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
+    }
+    res.redirect(config.get('siteMinder_logout_endpoint') + retUrl);
+  });
 });
 
 const UnauthorizedRsp = {
