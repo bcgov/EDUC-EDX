@@ -233,7 +233,7 @@ export default {
       this.processing = true;
       ApiService.apiAxios.post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
         .then(() => {
-          this.setSuccessAlert('Success! New contact added.');
+          this.setSuccessAlert('Success! The school contact has been created.');
           this.resetForm();
           this.$emit('newSchoolContact:addNewSchoolContact');
         })

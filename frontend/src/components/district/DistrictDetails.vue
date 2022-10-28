@@ -500,7 +500,7 @@ export default {
       const payload = this.districtCopy;
       ApiService.apiAxios.post(`${ApiRoutes.district.BASE_URL}` + '/' + this.districtCopy.districtId, payload)
         .then(() => {
-          this.setSuccessAlert('Success! The district has been updated.');
+          this.setSuccessAlert('Success! The district details have been updated.');
         })
         .catch(error => {
           console.error(error);
