@@ -40,14 +40,14 @@
                 <v-row no-gutters>
                   <v-col>
                     <v-row no-gutters>
-                      <v-col cols="9">
+                      <v-col cols="8">
                         <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
                           mdi-circle-medium
                         </v-icon>
-                        <strong>{{ `${contact.firstName} ${contact.lastName}` }}</strong>
+                        <strong style="word-break: break-word">{{ `${contact.firstName} ${contact.lastName}` }}</strong>
                       </v-col>
-                      <v-col cols="3" class="d-flex justify-end">
-                        <PrimaryButton width="100%" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
+                      <v-col cols="4" class="d-flex justify-end">
+                        <PrimaryButton width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
                       </v-col>
                     </v-row>
                     <v-row no-gutters class="titleSetup">
