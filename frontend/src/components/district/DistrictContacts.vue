@@ -149,7 +149,7 @@
             <v-row>
               <v-col>
                 <v-text-field id="contactEditTitle"
-                              v-model="newContact.title"
+                              v-model="newContact.jobTitle"
                               :rules="titleRules"
                               label="Title"
                               type="text"
