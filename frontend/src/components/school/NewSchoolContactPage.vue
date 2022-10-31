@@ -9,51 +9,61 @@
           <v-col>
             <v-select
                 id='newContactDropdown'
-                :rules="[rules.required]"
+                :rules="[rules.required()]"
                 v-model="newContact.contactType"
                 :items="schoolContactTypes"
                 item-text="label"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
-                label="School Contact Type*"
+                label="School Contact Type"
             />
             <v-text-field
                 id='newContactFirstNameInput'
-                :rules="[rules.required, rules.length(255, 'Must be less than 255 letters')]"
+                :rules="[rules.required()]"
                 v-model="newContact.firstName"
                 class="pt-0"
-                label="First Name*"
+                :maxlength="255"
+                label="First Name"
             />
             <v-text-field
                 id='newContactLastNameInput'
-                :rules="[rules.required, rules.length(255, 'Must be less than 255 letters')]"
+                :rules="[rules.required()]"
                 v-model="newContact.lastName"
                 class="pt-0"
-                label="Last Name*"
+                :maxlength="255"
+                label="Last Name"
+            />
+            <v-text-field
+                id='newContactJobTitleInput'
+                v-model="newContact.jobTitle"
+                class="pt-0"
+                :maxlength="255"
+                label="Job Title"
             />
             <v-text-field
                 id='newContactEmailInput'
-                :rules="[rules.required, rules.email, rules.length(255, 'Must be less than 255 letters')]"
+                :rules="[rules.required(), rules.email()]"
                 v-model="newContact.email"
                 class="pt-0"
-                label="Email*"
+                :maxlength="255"
+                label="Email"
             />
             <v-row>
               <v-col cols="6">
                 <v-text-field
                     id='newContactPhoneNumberInput'
-                    :rules="[rules.required, rules.length(10, 'Phone number must be 10 digits'), rules.phoneNumber]"
+                    :rules="[rules.required(), rules.phoneNumber()]"
                     v-model="newContact.phoneNumber"
                     class="pt-0"
                     :maxlength="10"
-                    label="Phone Number*"
+                    label="Phone Number"
                     @keypress="isNumber($event)"
                 />
               </v-col>
               <v-col cols="6">
                 <v-text-field
                     id='newContactPhoneExtensionInput'
-                    :rules="[rules.length(10, 'Must be less than 10 digits')]"
+                    :rules="[rules.number()]"
                     v-model="newContact.phoneExtension"
                     :maxlength="10"
                     class="pt-0"
@@ -66,7 +76,7 @@
               <v-col cols="6">
                 <v-text-field
                     id='newContactAltPhoneNumberInput'
-                    :rules="[rules.length(10, 'Phone number must be 10 digits'), rules.phoneNumber]"
+                    :rules="[rules.phoneNumber()]"
                     v-model="newContact.alternatePhoneNumber"
                     class="pt-0"
                     :maxlength="10"
@@ -77,7 +87,7 @@
               <v-col cols="6">
                 <v-text-field
                     id='newContactAltPhoneExtensionInput'
-                    :rules="[rules.length(10, 'Must be less than 10 digits')]"
+                    :rules="[rules.number()]"
                     v-model="newContact.alternatePhoneExtension"
                     class="pt-0"
                     :maxlength="10"
@@ -99,7 +109,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactEffectiveDateTextField"
-                        :rules="[rules.required]"
+                        :rules="[rules.required()]"
                         class="pt-0 mt-0"
                         v-model="newContact.effectiveDate"
                         label="Effective Date*"
@@ -129,7 +139,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactExpiryDateTextField"
-                        :rules="[rules.endDate]"
+                        :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
                         class="pt-0 mt-0"
                         v-model="newContact.expiryDate"
                         label="Expiry Date"
@@ -165,7 +175,8 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-import {LocalDate} from '@js-joda/core';
+import * as Rules from '@/utils/institute/formRules';
+import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'NewSchoolContactPage',
@@ -194,6 +205,7 @@ export default {
         contactType: null,
         firstName: null,
         lastName: null,
+        jobTitle: null,
         email: null,
         phoneNumber: null,
         phoneExtension: null,
@@ -202,13 +214,7 @@ export default {
         effectiveDate: null,
         expiryDate: null
       },
-      rules: {
-        required: v => !!v || 'Required',
-        length: (length, message) => v => (!v || v.length <= length) || message,
-        phoneNumber: v => !v || /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Phone Number must be valid',
-        email: v => !v || /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || 'E-mail must be valid',
-        endDate: this.endDateRuleValidator,
-      },
+      rules: Rules,
       effectiveDateFilter: false,
       newContactEffectiveDatePicker: null,
       expiryDateFilter: false,
@@ -245,33 +251,13 @@ export default {
           this.processing = false;
         });
     },
-    isNumber: function(evt) {
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
-    },
     resetForm() {
       this.$refs.newContactForm.reset();
     },
     validateForm() {
       this.isFormValid = this.$refs.newContactForm.validate();
     },
-    endDateRuleValidator() {
-      if (!this.newContact.effectiveDate && this.newContact.expiryDate) {
-        return 'Effective date required';
-      }
-
-      if (this.newContact.effectiveDate && this.newContact.expiryDate) {
-        const effDate = LocalDate.parse(this.newContact.effectiveDate);
-        const expDate = LocalDate.parse(this.newContact.expiryDate);
-        return effDate.isBefore(expDate) || effDate.equals(expDate) || 'End date cannot be before start date';
-      }
-
-      return true;
-    }
+    isNumber,
   },
   watch: {
     //watching effective date to valid form because we need to cross validate expiry and effective date fields

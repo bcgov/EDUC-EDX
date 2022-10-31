@@ -93,6 +93,7 @@ async function addSchoolContact(req, res) {
       schoolContactTypeCode: req.body.contactType,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      jobTitle: req.body.jobTitle,
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
       phoneExtension: req.body.phoneExtension,
