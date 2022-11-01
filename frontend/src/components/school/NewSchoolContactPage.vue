@@ -10,7 +10,7 @@
             <v-select
                 id='newContactDropdown'
                 :rules="[rules.required()]"
-                v-model="newContact.contactType"
+                v-model="newContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
                 item-text="label"
                 class="pt-0"
@@ -202,7 +202,7 @@ export default {
       isFormValid: false,
       processing: false,
       newContact: {
-        contactType: null,
+        schoolContactTypeCode: null,
         firstName: null,
         lastName: null,
         jobTitle: null,

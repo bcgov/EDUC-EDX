@@ -90,7 +90,7 @@ async function addSchoolContact(req, res) {
     const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
     const payload = {
-      schoolContactTypeCode: req.body.contactType,
+      schoolContactTypeCode: req.body.schoolContactTypeCode,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       jobTitle: req.body.jobTitle,
