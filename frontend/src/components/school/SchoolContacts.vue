@@ -64,9 +64,6 @@
                     </v-row>
                     <v-row no-gutters>
                       <v-col cols="12" class="pt-1">
-                        <span>{{ contact.jobTitle }}</span>
-                      </v-col>
-                      <v-col cols="12" class="pt-1">
                         <span>{{ contact.email }}</span>
                       </v-col>
                       <v-col cols="12" class="pt-1">
