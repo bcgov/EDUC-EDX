@@ -68,7 +68,7 @@
                 mdi-web
               </v-icon>
               <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-              <v-text-field v-else class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="districtCopy.website">
+              <v-text-field v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="districtCopy.website">
               </v-text-field>
             </v-col>
           </v-row>
