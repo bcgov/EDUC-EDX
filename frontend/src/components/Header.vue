@@ -74,6 +74,7 @@ export default {
       return this.userInfo?.userDistrictIDs?.length > 1;
     },
     hasBothSchoolAndDistrict(){
+
       return this.userInfo?.userDistrictIDs?.length>0 && this.userInfo?.userSchoolIDs?.length > 0;
     }
 
