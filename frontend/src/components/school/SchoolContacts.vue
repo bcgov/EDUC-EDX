@@ -213,6 +213,13 @@ export default {
       }else{
         this.$router.push({name: 'home'});
       }
+      console.log('set off tests');
+      console.log('set off tests');
+      console.log('set off tests');
+      console.log('set off tests');
+      console.log('set off tests');
+      console.log('set off tests');
+      console.log('set off tests');
     },
     isDistrictUser(){
       return this.userInfo.activeInstituteType === 'DISTRICT';
