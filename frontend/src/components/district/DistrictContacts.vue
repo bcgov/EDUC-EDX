@@ -118,7 +118,7 @@
                     item-text="label"
                     :items="districtContactTypes"
                     v-model="newContact.districtContactTypeCode"
-                    :rules="contactTypeRules"
+                    :rules="[rules.required()]"
                     clearable
                     required>
                 </v-autocomplete>
@@ -128,7 +128,7 @@
               <v-col>
                 <v-text-field id="contactEditFirstName"
                               v-model="newContact.firstName"
-                              :rules="firstNameRules"
+                              :rules="[rules.required()]"
                               label="First Name"
                               type="text"
                               maxlength="255"
@@ -139,7 +139,7 @@
               <v-col>
                 <v-text-field id="contactEditLastName"
                               v-model="newContact.lastName"
-                              :rules="lastNameRules"
+                              :rules="[rules.required()]"
                               label="Last Name"
                               type="text"
                               maxlength="255"
@@ -150,7 +150,6 @@
               <v-col>
                 <v-text-field id="contactEditTitle"
                               v-model="newContact.jobTitle"
-                              :rules="titleRules"
                               label="Title"
                               type="text"
                               maxlength="255"></v-text-field>
@@ -160,7 +159,7 @@
               <v-col>
                 <v-text-field id="contactEditEmail"
                               v-model="newContact.email"
-                              :rules="emailRules"
+                              :rules="[rules.required(), rules.email()]"
                               label="Email"
                               type="text"
                               maxlength="255"
@@ -171,18 +170,17 @@
               <v-col>
                 <v-text-field id="contactEditPhoneNumber"
                               v-model="newContact.phoneNumber"
-                              :rules="phNumRules"
+                              :rules="[rules.required(), rules.phoneNumber()]"
                               label="Phone"
                               type="text"
                               maxlength="10"
-                              :counter="10"
                               @keypress="isNumber($event)"
                               required></v-text-field>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditPhoneExt"
                               v-model="newContact.phoneExtension"
-                              :rules="phNumExtRules"
+                              :rules="[rules.number()]"
                               label="Ext"
                               type="text"
                               maxlength="10"
@@ -193,17 +191,16 @@
               <v-col>
                 <v-text-field id="contactEditAltPhoneNumber"
                               v-model="newContact.alternatePhoneNumber"
-                              :rules="altPhNumRules"
+                              :rules="[rules.number()]"
                               label="Alternative Phone"
                               type="text"
                               maxlength="10"
-                              :counter="10"
                               @keypress="isNumber($event)"></v-text-field>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditAltPhoneExt"
                               v-model="newContact.alternatePhoneExtension"
-                              :rules="altPhNumExtRules"
+                              :rules="[rules.number()]"
                               label="Alternative Ext"
                               type="text"
                               maxlength="10"
@@ -225,7 +222,7 @@
                         @click:append="effDateMenu = true"
                         v-bind="attrs"
                         v-on="on"
-                        :rules="startDateRules"
+                        :rules="[rules.required()]"
                         required
                     ></v-text-field>
                   </template>
@@ -284,6 +281,8 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
+import * as Rules from '@/utils/institute/formRules';
+import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictContactsPage',
@@ -309,38 +308,7 @@ export default {
       effDateMenu: false,
       expDateMenu: false,
       newContact: '',
-      contactTypeRules: [
-        v => !!v || 'Contact Type is required',
-      ],
-      firstNameRules: [
-        v => !!v || 'First Name is required',
-      ],
-      lastNameRules: [
-        v => !!v || 'Last Name is required',
-      ],
-      titleRules: [
-
-      ],
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => !v || /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || 'E-mail must be valid',
-      ],
-      phNumRules: [
-        v => !!v || 'Phone Number is required',
-        v => v.length >= 10 || 'Phone Number must be 10 digits',
-      ],
-      phNumExtRules: [
-        v => !v || /^\d+$/.test(v) || 'Phone Extension must be valid',
-      ],
-      altPhNumRules: [
-        v => !v || v.length >= 10 || 'Alt. Phone Number must be 10 digits',
-      ],
-      altPhNumExtRules: [
-        v => !v || /^\d+$/.test(v) || 'Phone Extension must be valid',
-      ],
-      startDateRules: [
-        v => !!v || 'Start Date is required',
-      ],
+      rules: Rules,
     };
   },
   computed: {
@@ -437,14 +405,7 @@ export default {
       const [year, month, day] = effectiveDate.split('-');
       return `${year}/${month}/${day}`;
     },
-    isNumber: function(evt) {
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
-    },
+
     async openContactEditForm(){
       this.newContact = {
         districtContactTypeCode: '',
@@ -472,7 +433,8 @@ export default {
     getStatusColor,
     formatDate,
     formatPhoneNumber,
-  }
+    isNumber,
+  },
 };
 </script>
 
