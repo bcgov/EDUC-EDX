@@ -44,7 +44,7 @@
                 mdi-phone-outline
               </v-icon>
               <span v-if="!editing">{{ formatPhoneNumber(district.phoneNumber) }}</span>
-              <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="phNumRules" v-model="districtCopy.phoneNumber">
+              <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="districtCopy.phoneNumber">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
@@ -52,7 +52,7 @@
                 mdi-at
               </v-icon>
               <span v-if="!editing">{{ district.email }}</span>
-              <v-text-field v-else class="py-0" required :rules="emailRules" :maxlength="255" v-model="districtCopy.email">
+              <v-text-field v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
@@ -60,7 +60,7 @@
                 mdi-fax
               </v-icon>
               <span v-if="!editing">{{ formatPhoneNumber(district.faxNumber) }}</span>
-              <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="faxNumRules" :maxlength="10" v-model="districtCopy.faxNumber">
+              <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
@@ -68,7 +68,7 @@
                 mdi-web
               </v-icon>
               <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-              <v-text-field v-else class="py-0" :rules="websiteRules" :maxlength="255" v-model="districtCopy.website">
+              <v-text-field v-else class="py-0" :rules="[rules.required(), rules.website()]" :maxlength="255" v-model="districtCopy.website">
               </v-text-field>
             </v-col>
           </v-row>
@@ -125,7 +125,7 @@
                   </v-row>
                   <v-row class="ml-9" no-gutters>
                     <v-col cols="8">
-                      <v-text-field id="mailAddressLine1" required :rules="addressLine1Rules" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].addressLine1">
+                      <v-text-field id="mailAddressLine1" required :rules="[rules.required('Address Line 1 is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].addressLine1">
                       </v-text-field>
                     </v-col>
                   </v-row>
@@ -147,7 +147,7 @@
                   </v-row>
                   <v-row class="ml-9" no-gutters>
                     <v-col cols="8">
-                      <v-text-field id="mailAddressCity" required :rules="cityRules" class="shrink mt-n5 mb-3" :maxlength="255" v-model="getMailingAddressCopy()[0].city">
+                      <v-text-field id="mailAddressCity" required :rules="[rules.required('City is required')]" class="shrink mt-n5 mb-3" :maxlength="255" v-model="getMailingAddressCopy()[0].city">
                       </v-text-field>
                     </v-col>
                   </v-row>
@@ -166,7 +166,7 @@
                         v-model="getMailingAddressCopy()[0].provinceCode"
                         dense
                         outlined
-                        :rules="provinceRules"
+                        :rules="[rules.required('Province is required')]"
                         required
                         class="mt-2"
                         style="color: black">
@@ -185,7 +185,7 @@
                         :items="this.countryCodeValues"
                         item-text="label"
                         item-value="countryCode"
-                        :rules="countryRules"
+                        :rules="[rules.required('Country is required')]"
                         v-model="getMailingAddressCopy()[0].countryCode"
                         dense
                         outlined
@@ -201,7 +201,7 @@
                   </v-row>
                   <v-row class="ml-9" no-gutters>
                     <v-col cols="8">
-                      <v-text-field :maxlength="6" required :rules="postalRules"  id="mailAddressPostal" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].postal">
+                      <v-text-field :maxlength="6" required :rules="[rules.required(), rules.postalCode()]"  id="mailAddressPostal" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].postal">
                       </v-text-field>
                     </v-col>
                   </v-row>
@@ -261,7 +261,7 @@
                                   </v-row>
                                   <v-row no-gutters>
                                     <v-col cols="8">
-                                      <v-text-field id="physicalAddressLine1" required :rules="addressLine1Rules" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].addressLine1">
+                                      <v-text-field id="physicalAddressLine1" required :rules="[rules.required('Address Line 1 is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].addressLine1">
                                       </v-text-field>
                                     </v-col>
                                   </v-row>
@@ -283,7 +283,7 @@
                                   </v-row>
                                   <v-row no-gutters>
                                     <v-col cols="8">
-                                      <v-text-field id="physicalAddressCity" required :rules="cityRules" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].city">
+                                      <v-text-field id="physicalAddressCity" required :rules="[rules.required('City is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].city">
                                       </v-text-field>
                                     </v-col>
                                   </v-row>
@@ -302,7 +302,7 @@
                                         v-model="getPhysicalAddressCopy()[0].provinceCode"
                                         dense
                                         required
-                                        :rules="provinceRules"
+                                        :rules="[rules.required('Province is required')]"
                                         outlined
                                         class="mt-2"
                                         style="color: black">
@@ -323,7 +323,7 @@
                                         item-value="countryCode"
                                         v-model="getPhysicalAddressCopy()[0].countryCode"
                                         dense
-                                        :rules="countryRules"
+                                        :rules="[rules.required('Country is required')]"
                                         required
                                         outlined
                                         class="mt-2 mb-2"
@@ -338,7 +338,7 @@
                                   </v-row>
                                   <v-row no-gutters>
                                     <v-col cols="8">
-                                      <v-text-field id="physicalAddressPostal" required :rules="postalRules" :maxlength="6" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].postal">
+                                      <v-text-field id="physicalAddressPostal" required :rules="[rules.required(), rules.postalCode()]" :maxlength="6" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].postal">
                                       </v-text-field>
                                     </v-col>
                                   </v-row>
@@ -382,6 +382,7 @@ import {formatPhoneNumber} from '@/utils/format';
 import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import {mapGetters, mapState} from 'vuex';
+import * as Rules from '@/utils/institute/formRules';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -404,37 +405,7 @@ export default {
       provinceCodeValues: null,
       countryCodeValues: null,
       cleanWebsiteUrl: '',
-      addressLine1Rules: [
-        v => !!v || 'Address Line 1 is required'
-      ],
-      cityRules: [
-        v => !!v || 'City is required'
-      ],
-      provinceRules: [
-        v => !!v || 'Province is required'
-      ],
-      countryRules: [
-        v => !!v || 'Country is required'
-      ],
-      postalRules: [
-        v => !!v || 'Postal code is required',
-        v => /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i.test(v) || 'Postal code must be valid',
-      ],
-      phNumRules: [
-        v => !!v || 'Phone Number is required',
-        v => (v && v.length <= 10) || 'Phone Number must be 10 digits',
-        v => /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Phone Number must be valid',
-      ],
-      faxNumRules: [
-        v => !v || /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Fax Number must be valid',
-      ],
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /^[a-z\d]+@[a-z]+\.[a-z]{2,3}$/.test(v) || 'E-mail must be valid',
-      ],
-      websiteRules: [
-        v => /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(v) || 'Website must be valid',
-      ],
+      rules: Rules,
     };
   },
   computed:{

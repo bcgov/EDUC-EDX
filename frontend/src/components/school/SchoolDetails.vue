@@ -53,28 +53,28 @@
                   mdi-phone-outline
                 </v-icon>
                 <span v-if="!editing" class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
-                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="phNumRules" v-model="schoolDetailsCopy.phoneNumber"/>
+                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="schoolDetailsCopy.phoneNumber"/>
               </v-col>
           <v-col class="d-flex">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-at
                 </v-icon>
                 <span v-if="!editing" class="ml-n1">{{ school.email }}</span>
-                <v-text-field v-else class="py-0" required :rules="emailRules" :maxlength="255" v-model="schoolDetailsCopy.email"/>
+                <v-text-field v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="schoolDetailsCopy.email"/>
               </v-col>
           <v-col class="d-flex">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-fax
                 </v-icon>
                 <span v-if="!editing" class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
-                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="faxNumRules" :maxlength="10" v-model="schoolDetailsCopy.faxNumber"/>
+                <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="schoolDetailsCopy.faxNumber"/>
               </v-col>
           <v-col class="d-flex">
             <v-icon class="mb-1 mr-1" aria-hidden="false">
                   mdi-web
                 </v-icon>
                 <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-                <v-text-field v-if="editing" class="py-0" :rules="websiteRules" :maxlength="255" v-model="schoolDetailsCopy.website"/>
+                <v-text-field v-if="editing" class="py-0" :rules="[rules.required(), rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
               </v-col>
             </v-row>
         <v-row>
@@ -285,6 +285,7 @@ import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
 import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
+import * as Rules from '@/utils/institute/formRules';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -314,23 +315,7 @@ export default {
       schoolDetailsCopy: {},
       sameAsMailingCheckbox: true,
       selectedNLCs:[],
-      phNumRules: [
-        v => !!v || 'Phone Number is required',
-        v => (v && v.length <= 10) || 'Phone Number must be 10 digits',
-        v => /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Phone Number must be valid',
-      ],
-      faxNumRules: [
-        v => !v || /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(v) || 'Fax Number must be valid',
-      ],
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || 'E-mail must be valid',
-      ],
-      websiteRules: [
-        v => /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(v) || 'Website must be valid',
-      ],
-
-
+      rules: Rules,
     };
   },
   computed: {
