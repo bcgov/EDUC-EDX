@@ -31,7 +31,7 @@
           <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.DASHBOARD'>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="hasSeveralSchools() || hasSeveralDistricts()" id="switch_dashboard_button" :href='authRoutes.INSTITUTE_SELECTION'>
+          <v-list-item v-if="hasSeveralSchools() || hasSeveralDistricts() || hasBothSchoolAndDistrict()" id="switch_dashboard_button" :href='authRoutes.INSTITUTE_SELECTION'>
             <v-list-item-title>Switch Dashboard</v-list-item-title>
           </v-list-item>
           <v-list-item style="min-height: 4vh" id="logout_button" :href='authRoutes.LOGOUT'>
@@ -72,6 +72,9 @@ export default {
     },
     hasSeveralDistricts() {
       return this.userInfo?.userDistrictIDs?.length > 1;
+    },
+    hasBothSchoolAndDistrict(){
+      return this.userInfo?.userDistrictIDs?.length>0 && this.userInfo?.userSchoolIDs?.length > 0;
     }
 
   }
