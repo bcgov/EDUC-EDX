@@ -24,7 +24,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" @click.native="openContactEditForm()"></PrimaryButton>
+          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="districtContactType in districtContactTypes" :key="districtContactType.code">
@@ -94,180 +94,20 @@
       </div>
     </template>
     <v-bottom-sheet
-        v-model="openForm"
+        v-model="newContactSheet"
         inset
         no-click-animation
         scrollable
         persistent
         width="30%"
-        max-height="100%"
     >
-      <v-card v-show="openForm" id="newContactSheet"
-              class="information-window-v-card">
-        <v-card-title class="sheetHeader pt-1 pb-1">New District Contact</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-        <v-form ref="editContactForm" v-model="ecFormValid">
-          <v-col>
-            <v-row>
-              <v-col>
-                <v-autocomplete
-                    id="name-text-field"
-                    label="Contact Type"
-                    item-value="districtContactTypeCode"
-                    item-text="label"
-                    :items="districtContactTypes"
-                    v-model="newContact.districtContactTypeCode"
-                    :rules="[rules.required()]"
-                    clearable
-                    required>
-                </v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditFirstName"
-                              v-model="newContact.firstName"
-                              :rules="[rules.required()]"
-                              label="First Name"
-                              type="text"
-                              maxlength="255"
-                              required></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditLastName"
-                              v-model="newContact.lastName"
-                              :rules="[rules.required()]"
-                              label="Last Name"
-                              type="text"
-                              maxlength="255"
-                              required></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditTitle"
-                              v-model="newContact.jobTitle"
-                              label="Title"
-                              type="text"
-                              maxlength="255"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditEmail"
-                              v-model="newContact.email"
-                              :rules="[rules.required(), rules.email()]"
-                              label="Email"
-                              type="text"
-                              maxlength="255"
-                              required></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditPhoneNumber"
-                              v-model="newContact.phoneNumber"
-                              :rules="[rules.required(), rules.phoneNumber()]"
-                              label="Phone"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"
-                              required></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field id="contactEditPhoneExt"
-                              v-model="newContact.phoneExtension"
-                              :rules="[rules.number()]"
-                              label="Ext"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditAltPhoneNumber"
-                              v-model="newContact.alternatePhoneNumber"
-                              :rules="[rules.number()]"
-                              label="Alternative Phone"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field id="contactEditAltPhoneExt"
-                              v-model="newContact.alternatePhoneExtension"
-                              :rules="[rules.number()]"
-                              label="Alternative Ext"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-menu v-model="effDateMenu" :close-on-content-click="false" transition="scale-transition"
-                        offset-y max-width="290px" min-width="auto">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        id="contactEditStartDate"
-                        v-model="computedEffDateFormatted"
-                        label="Start Date"
-                        hint="YYYY/MM/DD format"
-                        persistent-hint
-                        append-icon="mdi-calendar"
-                        @click:append="effDateMenu = true"
-                        v-bind="attrs"
-                        v-on="on"
-                        :rules="[rules.required()]"
-                        required
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                      v-model="newContact.effectiveDate"
-                      no-title
-                      @input="effDateMenu = false"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-menu v-model="expDateMenu" :close-on-content-click="false" transition="scale-transition"
-                        offset-y max-width="290px" min-width="auto">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        id="contactEditEndDate"
-                        v-model="computedExpDateFormatted"
-                        label="End Date"
-                        hint="YYYY/MM/DD format"
-                        persistent-hint
-                        append-icon="mdi-calendar"
-                        @click:append="expDateMenu = true"
-                        v-bind="attrs"
-                        v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                      v-model="newContact.expiryDate"
-                      no-title
-                      @input="expDateMenu = false"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-            <v-row no-gutters class="justify-end mt-n2 pr-2 pt-2">
-              <v-col cols="12" class="d-flex justify-end">
-                <PrimaryButton class="mr-3" id="cancelEditButton" :secondary="true" @click.native="cancelDistrictContactEdit"
-                               text="Cancel"></PrimaryButton>
-                <PrimaryButton @click.native="saveDistrictContact(newContact)" id="saveEditButton" :disabled="!ecFormValid" text="Save"></PrimaryButton>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-form>
-        </v-card-text>
-      </v-card>
+      <NewDistrictContactPage
+          v-if="newContactSheet"
+          :districtContactTypes="this.districtContactTypes"
+          :districtID="this.$route.params.districtID"
+          @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
+          @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
+      />
     </v-bottom-sheet>
   </v-container>
 </template>
@@ -277,18 +117,18 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
+import NewDistrictContactPage from './NewDistrictContactPage';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictContactsPage',
   mixins: [alertMixin],
   components: {
     PrimaryButton,
+    NewDistrictContactPage
   },
   props: {
     districtID: {
@@ -301,26 +141,13 @@ export default {
       loadingCount: 0,
       districtContactTypes: [],
       districtContacts: new Map(),
-      loadingContactForm: true,
-      openForm: false,
-      saveEnabled: true,
-      ecFormValid: false,
-      effDateMenu: false,
-      expDateMenu: false,
-      newContact: '',
-      rules: Rules,
+      newContactSheet: false,
     };
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
-    },
-    computedEffDateFormatted () {
-      return this.formatEffectiveDisplayDate(this.newContact.effectiveDate?.substring(0,10));
-    },
-    computedExpDateFormatted () {
-      return this.formatEffectiveDisplayDate(this.newContact.expiryDate?.substring(0,10));
     },
   },
   created() {
@@ -368,83 +195,18 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'home'});
     },
-    saveDistrictContact(contact) {
-      this.loadingContactForm = true;
-      this.validateEditContactForm();
-
-      contact.districtId = this.districtID;
-      contact.createDate = null;
-      contact.createUSer = this.userInfo.userName;
-      contact.updateDate = null;
-      contact.updateUser = null;
-      if(contact.effectiveDate.length <= 10) {
-        contact.effectiveDate = contact.effectiveDate + 'T00:00:00';
-      }
-      if (contact.expiryDate !== null && contact.expiryDate !== '') {
-        contact.expiryDate = contact.expiryDate + 'T00:00:00';
-      }
-
-      const payload = contact;
-      ApiService.apiAxios.post(`${ApiRoutes.district.CREATE_DISTRICT_CONTACT_URL}`, payload)
-        .then(() => {
-          this.setSuccessAlert('Success! The district contact has been created.');
-        })
-        .catch(error => {
-          console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while saving the district contact information. Please try again later.');
-        })
-        .finally(() => {
-          this.loadingContactForm = false;
-          this.cancelDistrictContactEdit();
-          this.newContact = '';
-          this.getThisDistrictsContacts();
-        });
-    },
-    formatEffectiveDisplayDate (effectiveDate) {
-      if (!effectiveDate) return null;
-      const [year, month, day] = effectiveDate.split('-');
-      return `${year}/${month}/${day}`;
-    },
-
-    async openContactEditForm(){
-      this.newContact = {
-        districtContactTypeCode: '',
-        firstName: '',
-        lastName: '',
-        title: '',
-        email: '',
-        phoneNumber:'',
-        phoneExtension:'',
-        alternatePhoneNumber:'',
-        alternatePhoneExtension:'',
-        effectiveDate:'',
-        expiryDate:''
-      };
-      this.openForm = !this.openForm;
-      await this.$nextTick();
-      this.validateEditContactForm();
-    },
-    cancelDistrictContactEdit(){
-      this.openForm = !this.openForm;
-    },
-    validateEditContactForm(){
-      this.$refs.editContactForm.validate();
+    newDistrictContactAdded() {
+      this.newContactSheet= !this.newContactSheet;
+      this.getThisDistrictsContacts();
     },
     getStatusColor,
     formatDate,
     formatPhoneNumber,
-    isNumber,
   },
 };
 </script>
 
 <style scoped>
-.sheetHeader{
-  background-color: #003366;
-  color: white;
-  font-size: medium !important;
-  font-weight: bolder !important;
-}
 
 @media screen and (max-width: 950px){
   .v-dialog__content /deep/ .v-bottom-sheet {
