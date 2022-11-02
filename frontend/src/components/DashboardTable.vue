@@ -35,7 +35,7 @@
           </v-card>
         </v-col>
         <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
+          <v-card id="districtDetailsCard" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -65,7 +65,7 @@
           </v-card>
         </v-col>
         <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictContacts()">
+          <v-card id="districtContactsCard" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -95,7 +95,7 @@
           </v-card>
         </v-col>
         <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
-          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
+          <v-card id="schoolContactsCard" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
@@ -155,7 +155,7 @@
           </v-card>
         </v-col>
         <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
-          <v-card class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
+          <v-card id="schoolDetailsCard" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>

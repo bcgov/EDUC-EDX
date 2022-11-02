@@ -10,6 +10,7 @@ class Dashboard {
         this.navTitle = Selector('#navTitle');
         this.schoolInboxCard = Selector('#schoolInboxCard');
         this.secureMessageInboxCard = Selector('#secureMessageInboxCard');
+        this.schoolDetailsCard=Selector('#schoolDetailsCard');
     }
 
     async clickSchoolInboxCard() {
@@ -20,6 +21,11 @@ class Dashboard {
     async clickSecureMessageInbox() {
         await t.click(this.secureMessageInboxCard());
         log.info('School inbox card clicked');
+    }
+
+    async clickSchoolDetails() {
+        await t.click(this.schoolDetailsCard);
+        log.info('School Details card clicked');
     }
 
 }
