@@ -11,6 +11,7 @@ class Dashboard {
         this.schoolInboxCard = Selector('#schoolInboxCard');
         this.secureMessageInboxCard = Selector('#secureMessageInboxCard');
         this.schoolDetailsCard=Selector('#schoolDetailsCard');
+        this.districtContactsCard = Selector('#districtContactsCard');
     }
 
     async clickSchoolInboxCard() {
@@ -26,6 +27,11 @@ class Dashboard {
     async clickSchoolDetails() {
         await t.click(this.schoolDetailsCard);
         log.info('School Details card clicked');
+    }
+
+    async clickDistrictContactsCard() {
+        await t.click(this.districtContactsCard);
+        log.info('District Contacts card clicked');
     }
 
 }

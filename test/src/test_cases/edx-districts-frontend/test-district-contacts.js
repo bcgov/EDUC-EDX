@@ -1,19 +1,21 @@
 /**
  * Tests to run against the districts contact page
  */
-import { base_url } from '../../config/constants';
-import { Role, Selector } from 'testcafe';
+import { credentials } from '../../config/constants';
+import { Role } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 
 import log from "npmlog";
-import studentAdmin from "../../auth/Roles";
 let token = '';
+import LoginPage from "../../page_models/login-page";
 import DistrictContacts from "../../page_models/district/district-contacts-page";
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import Dashboard from "../../page_models/dashboard";
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
+const loginPage = new LoginPage();
 const districtContacts = new DistrictContacts();
-const {getDistrictSuperintendentDetails} = require('../../helpers/district-set-up-utils');
+const dashboard = new Dashboard();
+const {deleteDistrictContact} = require('../../helpers/district-set-up-utils');
 
 fixture `district-contacts`
     .before(async t => {
@@ -30,30 +32,22 @@ fixture `district-contacts`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
-        // log in as studentAdmin
-        await t.useRole(studentAdmin);
-        //await t.maximizeWindow();
+        await t.maximizeWindow();
     }).afterEach(async t => {
     // logout
     await t.useRole(Role.anonymous());
 });
 
-test('testPage', async t => {
-    // navigate to /districtContacts, expect title
-    await t.navigateTo(base_url + '/districtContacts')
-        .expect(districtContacts.navTitle.innerText).contains('District Contacts');
-    //Verify the Superintendent and all data is loaded
-    let districtSuperContact = await getDistrictSuperintendentDetails('006');
-    await t.expect(districtContacts.superContactHeader.innerText).contains('Superintendent');
-    let superDisplayName = districtSuperContact.firstName + ' '+ districtSuperContact.lastName;
-    await t.expect(Selector('strong').withText(superDisplayName).innerText).contains(superDisplayName);
-    await t.expect(Selector('strong').withText(districtSuperContact.jobTitle).innerText).contains(districtSuperContact.jobTitle);
-    await t.expect(Selector('span').withText(districtSuperContact.email).innerText).contains(districtSuperContact.email);
-    let superPHNumber = districtSuperContact.phoneNumber.replace(/(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/, '$1$2$3-$4$5$6-$7$8$9$10');
-    await t.expect(Selector('span').withText(superPHNumber).innerText).contains(superPHNumber);
-    let superPhExtNumber = ' ext. ' + districtSuperContact.phoneExtension;
-    await t.expect(Selector('span').withText(superPhExtNumber).innerText).contains(superPhExtNumber);
-    let superEffectiveDate = new LocalDate.parse(districtSuperContact.effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')).toString();
-    superEffectiveDate = ' '+ superEffectiveDate.replace(/-/g, '/');
-    await t.expect(Selector('span').withText(superEffectiveDate).innerText).contains(superEffectiveDate);
+test('new-district-contact', async t => {
+
+    await loginPage.login(credentials.adminCredentials);
+    await dashboard.clickDistrictContactsCard();
+    await t.expect(districtContacts.navTitle.innerText).contains('District Contacts');
+
+    await districtContacts.clickNewContactButton();
+    await districtContacts.fillDistrictContactForm();
+    await districtContacts.verifyDistrictContactDetails();
+
+    await deleteDistrictContact('006');
+
 });

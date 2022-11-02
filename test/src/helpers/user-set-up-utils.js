@@ -68,7 +68,6 @@ const userSetUpUtils = {
     edxUser.digitalIdentityID = digitalId;
     edxUser.createUser = 'Test-automation';
     edxUser.updateUser = 'Test-automation';
-
     await userSetUpUtils.createEdxUserSchoolWithRoles(edxUser, schoolIDs, schoolRoles);
     await userSetUpUtils.createEdxUserDistrictWithRoles(edxUser, districtIDs, districtRoles);
 
@@ -121,7 +120,7 @@ const userSetUpUtils = {
     const data = await getToken();
     const token = data.access_token;
     const edxUser = await getEdxUserFromFirstNameLastName(token, 'TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
-    log.info('edxUser found ::', edxUser);
+
     const endpoint = 'api/v1/edx/users';
     if (edxUser) {
       const url = `${constants.edx_api_base_url}${endpoint}/${edxUser?.edxUserID}`;
