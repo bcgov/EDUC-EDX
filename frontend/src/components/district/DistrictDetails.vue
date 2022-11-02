@@ -125,7 +125,7 @@
                   </v-row>
                   <v-row class="ml-9" no-gutters>
                     <v-col cols="8">
-                      <v-text-field id="mailAddressLine1" required :rules="[rules.required('Address Line 1 is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].addressLine1">
+                      <v-text-field id="mailAddressLine1" required :rules="[rules.required()]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getMailingAddressCopy()[0].addressLine1">
                       </v-text-field>
                     </v-col>
                   </v-row>
@@ -147,7 +147,7 @@
                   </v-row>
                   <v-row class="ml-9" no-gutters>
                     <v-col cols="8">
-                      <v-text-field id="mailAddressCity" required :rules="[rules.required('City is required')]" class="shrink mt-n5 mb-3" :maxlength="255" v-model="getMailingAddressCopy()[0].city">
+                      <v-text-field id="mailAddressCity" required :rules="[rules.required()]" class="shrink mt-n5 mb-3" :maxlength="255" v-model="getMailingAddressCopy()[0].city">
                       </v-text-field>
                     </v-col>
                   </v-row>
@@ -166,7 +166,7 @@
                         v-model="getMailingAddressCopy()[0].provinceCode"
                         dense
                         outlined
-                        :rules="[rules.required('Province is required')]"
+                        :rules="[rules.required()]"
                         required
                         class="mt-2"
                         style="color: black">
@@ -185,7 +185,7 @@
                         :items="this.countryCodeValues"
                         item-text="label"
                         item-value="countryCode"
-                        :rules="[rules.required('Country is required')]"
+                        :rules="[rules.required()]"
                         v-model="getMailingAddressCopy()[0].countryCode"
                         dense
                         outlined
@@ -261,7 +261,7 @@
                                   </v-row>
                                   <v-row no-gutters>
                                     <v-col cols="8">
-                                      <v-text-field id="physicalAddressLine1" required :rules="[rules.required('Address Line 1 is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].addressLine1">
+                                      <v-text-field id="physicalAddressLine1" required :rules="[rules.required()]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].addressLine1">
                                       </v-text-field>
                                     </v-col>
                                   </v-row>
@@ -283,7 +283,7 @@
                                   </v-row>
                                   <v-row no-gutters>
                                     <v-col cols="8">
-                                      <v-text-field id="physicalAddressCity" required :rules="[rules.required('City is required')]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].city">
+                                      <v-text-field id="physicalAddressCity" required :rules="[rules.required()]" :maxlength="255" class="shrink mt-n5 mb-3" v-model="getPhysicalAddressCopy()[0].city">
                                       </v-text-field>
                                     </v-col>
                                   </v-row>
@@ -302,7 +302,7 @@
                                         v-model="getPhysicalAddressCopy()[0].provinceCode"
                                         dense
                                         required
-                                        :rules="[rules.required('Province is required')]"
+                                        :rules="[rules.required()]"
                                         outlined
                                         class="mt-2"
                                         style="color: black">
@@ -323,7 +323,7 @@
                                         item-value="countryCode"
                                         v-model="getPhysicalAddressCopy()[0].countryCode"
                                         dense
-                                        :rules="[rules.required('Country is required')]"
+                                        :rules="[rules.required()]"
                                         required
                                         outlined
                                         class="mt-2 mb-2"

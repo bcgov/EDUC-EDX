@@ -118,7 +118,7 @@
                     item-text="label"
                     :items="districtContactTypes"
                     v-model="newContact.districtContactTypeCode"
-                    :rules="contactTypeRules"
+                    :rules="[rules.required()]"
                     clearable
                     required>
                 </v-autocomplete>
@@ -128,7 +128,7 @@
               <v-col>
                 <v-text-field id="contactEditFirstName"
                               v-model="newContact.firstName"
-                              :rules="firstNameRules"
+                              :rules="[rules.required()]"
                               label="First Name"
                               type="text"
                               maxlength="255"
@@ -139,7 +139,7 @@
               <v-col>
                 <v-text-field id="contactEditLastName"
                               v-model="newContact.lastName"
-                              :rules="lastNameRules"
+                              :rules="[rules.required()]"
                               label="Last Name"
                               type="text"
                               maxlength="255"
@@ -150,7 +150,6 @@
               <v-col>
                 <v-text-field id="contactEditTitle"
                               v-model="newContact.jobTitle"
-                              :rules="titleRules"
                               label="Title"
                               type="text"
                               maxlength="255"></v-text-field>
@@ -160,7 +159,7 @@
               <v-col>
                 <v-text-field id="contactEditEmail"
                               v-model="newContact.email"
-                              :rules="emailRules"
+                              :rules="[rules.required(), rules.email()]"
                               label="Email"
                               type="text"
                               maxlength="255"
@@ -171,7 +170,7 @@
               <v-col>
                 <v-text-field id="contactEditPhoneNumber"
                               v-model="newContact.phoneNumber"
-                              :rules="phNumRules"
+                              :rules="[rules.required(), rules.phoneNumber()]"
                               label="Phone"
                               type="text"
                               maxlength="10"
@@ -284,6 +283,7 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
+import * as Rules from '@/utils/institute/formRules';
 
 export default {
   name: 'DistrictContactsPage',
@@ -309,26 +309,7 @@ export default {
       effDateMenu: false,
       expDateMenu: false,
       newContact: '',
-      contactTypeRules: [
-        v => !!v || 'Contact Type is required',
-      ],
-      firstNameRules: [
-        v => !!v || 'First Name is required',
-      ],
-      lastNameRules: [
-        v => !!v || 'Last Name is required',
-      ],
-      titleRules: [
-
-      ],
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => !v || /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || 'E-mail must be valid',
-      ],
-      phNumRules: [
-        v => !!v || 'Phone Number is required',
-        v => v.length >= 10 || 'Phone Number must be 10 digits',
-      ],
+      rules: Rules,
       phNumExtRules: [
         v => !v || /^\d+$/.test(v) || 'Phone Extension must be valid',
       ],
