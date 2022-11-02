@@ -3,6 +3,7 @@ const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserD
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
@@ -41,10 +42,26 @@ async function updateDistrict(req, res){
 async function createDistrictContact(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token);
-  checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
+  checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
+
+  const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+  const payload = {
+    districtContactTypeCode: req.body.districtContactTypeCode,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    jobTitle: req.body.jobTitle,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    phoneExtension: req.body.phoneExtension,
+    alternatePhoneNumber: req.body.alternatePhoneNumber,
+    alternatePhoneExtension: req.body.alternatePhoneExtension,
+    effectiveDate: req.body.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null,
+    expiryDate: req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null
+  };
 
   return Promise.all([
-    postData(token, req.body, `${config.get('institute:rootURL')}/district/${req.body.districtId}/contact`, req.session?.correlationID),
+    postData(token, payload, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);

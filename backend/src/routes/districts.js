@@ -11,7 +11,7 @@ const isValidBackendToken = auth.isValidBackendToken();
  * Get a District entity by districtID
  */
 router.get('/districtContactTypeCodes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('institute:rootURL', CACHE_KEYS.DISTRICT_CONTACT_TYPE_CODES, '/district-contact-type-codes'));
-router.post('/createContact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createDistrictContact);
+router.post('/:districtID/contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createDistrictContact);
 router.get('/:districtID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getDistrictByDistrictID);
 router.post('/:districtID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateDistrict);
 
