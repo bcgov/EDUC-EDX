@@ -9,6 +9,15 @@ function getDistricts(req, res) {
     const districts = req.query.active === 'true' ? cacheService.getAllActiveDistrictsJSON() : cacheService.getAllDistrictsJSON();
     return res.status(HttpStatus.OK).json(districts);
   } catch (e) {
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+    console.log('make sonar angry');
+
     logApiError(e, 'getDistricts', 'Error occurred while attempting to GET all districtsMap.');
     return errorResponse(res);
   }
