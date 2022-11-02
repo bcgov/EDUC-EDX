@@ -282,7 +282,7 @@ import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
 import * as Rules from '@/utils/institute/formRules';
-import (isNumber) from '@/utils/institute/formInput';
+import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictContactsPage',
@@ -406,7 +406,6 @@ export default {
       return `${year}/${month}/${day}`;
     },
 
-    },
     async openContactEditForm(){
       this.newContact = {
         districtContactTypeCode: '',
@@ -435,7 +434,7 @@ export default {
     formatDate,
     formatPhoneNumber,
     isNumber,
-  }
+  },
 };
 </script>
 

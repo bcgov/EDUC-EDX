@@ -286,7 +286,7 @@ import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/util
 import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import * as Rules from '@/utils/institute/formRules';
-import (isNumber) from '@/utils/institute/formInput';
+import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'SchoolDetailsPage',

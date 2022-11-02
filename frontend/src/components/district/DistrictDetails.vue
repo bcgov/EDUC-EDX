@@ -383,7 +383,7 @@ import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import {mapGetters, mapState} from 'vuex';
 import * as Rules from '@/utils/institute/formRules';
-import (isNumber) from '@/utils/institute/formInput';
+import {isNumber} from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -498,8 +498,6 @@ export default {
       await this.$nextTick();
       this.$refs.districtForm.validate();
     },
-
-    },
     addAddressesIfRequired(district){
       let addresses = district.addresses;
       if(!this.hasMailingAddress()){
@@ -578,7 +576,7 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'home'});
     },
-  }
+  },
 };
 </script>
 
