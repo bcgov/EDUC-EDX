@@ -286,6 +286,7 @@ import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/util
 import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import * as Rules from '@/utils/institute/formRules';
+import (isNumber) from '@/utils/institute/formInput';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -449,6 +450,7 @@ export default {
     formatPhoneNumber,
     getStatusColorAuthorityOrSchool,
     deepCloneObject,
+    isNumber,
     getCountryName(countryCode){
       let countryName = '';
       if(countryCode === 'CA'){
@@ -548,14 +550,7 @@ export default {
         });
       }
     },
-    isNumber: function(evt) {
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
-    },
+
   }
 };
 </script>

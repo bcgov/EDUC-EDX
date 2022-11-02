@@ -174,14 +174,13 @@
                               label="Phone"
                               type="text"
                               maxlength="10"
-                              :counter="10"
                               @keypress="isNumber($event)"
                               required></v-text-field>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditPhoneExt"
                               v-model="newContact.phoneExtension"
-                              :rules="phNumExtRules"
+                              :rules="[rules.number()]"
                               label="Ext"
                               type="text"
                               maxlength="10"
@@ -192,17 +191,16 @@
               <v-col>
                 <v-text-field id="contactEditAltPhoneNumber"
                               v-model="newContact.alternatePhoneNumber"
-                              :rules="altPhNumRules"
+                              :rules="[rules.number()]"
                               label="Alternative Phone"
                               type="text"
                               maxlength="10"
-                              :counter="10"
                               @keypress="isNumber($event)"></v-text-field>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditAltPhoneExt"
                               v-model="newContact.alternatePhoneExtension"
-                              :rules="altPhNumExtRules"
+                              :rules="[rules.number()]"
                               label="Alternative Ext"
                               type="text"
                               maxlength="10"
@@ -224,7 +222,7 @@
                         @click:append="effDateMenu = true"
                         v-bind="attrs"
                         v-on="on"
-                        :rules="startDateRules"
+                        :rules="[rules.required()]"
                         required
                     ></v-text-field>
                   </template>
@@ -284,6 +282,7 @@ import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
 import * as Rules from '@/utils/institute/formRules';
+import (isNumber) from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictContactsPage',
@@ -310,18 +309,6 @@ export default {
       expDateMenu: false,
       newContact: '',
       rules: Rules,
-      phNumExtRules: [
-        v => !v || /^\d+$/.test(v) || 'Phone Extension must be valid',
-      ],
-      altPhNumRules: [
-        v => !v || v.length >= 10 || 'Alt. Phone Number must be 10 digits',
-      ],
-      altPhNumExtRules: [
-        v => !v || /^\d+$/.test(v) || 'Phone Extension must be valid',
-      ],
-      startDateRules: [
-        v => !!v || 'Start Date is required',
-      ],
     };
   },
   computed: {
@@ -418,13 +405,7 @@ export default {
       const [year, month, day] = effectiveDate.split('-');
       return `${year}/${month}/${day}`;
     },
-    isNumber: function(evt) {
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
+
     },
     async openContactEditForm(){
       this.newContact = {
@@ -453,6 +434,7 @@ export default {
     getStatusColor,
     formatDate,
     formatPhoneNumber,
+    isNumber,
   }
 };
 </script>

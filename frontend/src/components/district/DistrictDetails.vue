@@ -383,6 +383,7 @@ import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import {mapGetters, mapState} from 'vuex';
 import * as Rules from '@/utils/institute/formRules';
+import (isNumber) from '@/utils/institute/formInput';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -426,6 +427,7 @@ export default {
   },
   methods: {
     formatPhoneNumber,
+    isNumber,
     deepCloneObject,
     canEditDistrict(){
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN').length > 0;
@@ -496,13 +498,7 @@ export default {
       await this.$nextTick();
       this.$refs.districtForm.validate();
     },
-    isNumber: function(evt) {
-      let charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
-      } else {
-        return true;
-      }
+
     },
     addAddressesIfRequired(district){
       let addresses = district.addresses;
