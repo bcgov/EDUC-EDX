@@ -35,7 +35,7 @@
             />
             <v-text-field id="newContactJobTitle"
                           v-model="newContact.jobTitle"
-                          label="Job title"
+                          label="Job Title"
                           type="text"
                           maxlength="255"
             />
