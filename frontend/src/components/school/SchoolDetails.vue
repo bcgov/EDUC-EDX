@@ -271,6 +271,12 @@
       </v-col>
     </v-row>
   </v-container>
+    <ConfirmationDialog ref="confirmSchoolDetailsUpdateAndSave">
+      <template v-slot:message>
+        <p>All changes made to school details will be <strong>available to the public on save</strong>.</p>
+        <p>Please be sure to review your changes carefully before you publish them.</p>
+      </template>
+    </ConfirmationDialog>
   </v-form>
 </template>
 
@@ -287,11 +293,13 @@ import {sanitizeUrl} from '@braintree/sanitize-url';
 import {deepCloneObject} from '@/utils/common';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
+import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 
 export default {
   name: 'SchoolDetailsPage',
   mixins: [alertMixin],
   components: {
+    ConfirmationDialog,
     PrimaryButton,
   },
   props: {
@@ -474,7 +482,11 @@ export default {
     setHasSamePhysicalFlag(){
       this.sameAsMailingCheckbox = this.hasSamePhysicalAddress;
     },
-    updateSchoolDetails() {
+    async updateSchoolDetails() {
+      const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to School Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});
+      if (!confirmation) {
+        return;
+      }
       this.loading = true;
 
       if(this.sameAsMailingCheckbox){
