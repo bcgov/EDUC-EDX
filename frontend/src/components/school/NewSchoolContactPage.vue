@@ -19,7 +19,6 @@
             />
             <v-text-field
                 id='newContactFirstNameInput'
-                :rules="[rules.required()]"
                 v-model="newContact.firstName"
                 class="pt-0"
                 :maxlength="255"
