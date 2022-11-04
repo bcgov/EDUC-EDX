@@ -53,7 +53,7 @@ jobs:
           job_name: "SmokeTest"
           icon_emoji: ":bell:"
           channel: "grad-project"
-          url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
+          url: ${{ env.ROCKETCHAT_WEBHOOK }}
           # envs can now be stored on OS secrets
         #env:
           #BASE_URL: ${{ secrets.BASE_URL }}
