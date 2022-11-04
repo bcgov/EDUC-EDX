@@ -17,7 +17,7 @@ const schoolContacts = new SchoolContacts();
 
 const navBar = new NavBarPage();
 
-fixture `school-contacts`
+fixture `district-school-contacts`
     .before(async t => {
         await setUpEdxDistrictUserWithAllAvailableRoles(['006'])
         getToken().then(async (data) => {

@@ -35,7 +35,7 @@
             />
             <v-text-field id="newContactJobTitle"
                           v-model="newContact.jobTitle"
-                          label="Job title"
+                          label="Job Title"
                           type="text"
                           maxlength="255"
             />
@@ -141,7 +141,7 @@
                         :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
                         class="pt-0 mt-0"
                         v-model="newContact.expiryDate"
-                        label="Expiry Date"
+                        label="End Date"
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
