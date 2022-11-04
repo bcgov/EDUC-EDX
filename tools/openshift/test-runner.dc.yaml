@@ -1,12 +1,11 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
 metadata:
   name: ${RUNNER_ID}
   namespace: ${OPENSHIFT_NAMESPACE}
 spec:
   selector:
-    matchLabels:
-      app: ${RUNNER_ID}
+    app: ${RUNNER_ID}
   replicas: 1
   template:
     metadata:
@@ -17,6 +16,13 @@ spec:
         - name: ${RUNNER_ID}
           image: >-
             image-registry.apps.silver.devops.gov.bc.ca/${OPENSHIFT_NAMESPACE}/gh-runner-ubuntu-18:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1Gi
+            limits:
+              cpu: 500m
+              memory: 2Gi
           envFrom:
             - secretRef:
                 name: ${SECRET_REF}
@@ -29,3 +35,22 @@ spec:
               value: ${GITHUB_ACCESS_TOKEN}
             - name: LABELS
               value: ${LABELS}
+parameters:
+  - name: LABELS
+    description: Any labels
+    required: false
+  - name: GITHUB_ACCESS_TOKEN
+    description: Access token to reach github repo
+    required: false
+  - name: GITHUB_REPO
+    description: The repo to run against
+    required: false
+  - name: SECRET_REF
+    description: Which OS secret to reference for this run
+    required: false
+  - name: RUNNER_ID
+    description: The runner id (usually randomized)
+    required: false
+  - name: OPENSHIFT_NAMESPACE
+    description: The namespace we are running in
+    required: false

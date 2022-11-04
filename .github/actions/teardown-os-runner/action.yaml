@@ -22,13 +22,13 @@ runs:
         set -eux
         oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
         oc project ${{ inputs.runner-deployment-namespace }}
-        dep=$(oc get deployment ${{ inputs.runner-deployment-name }})
+        dep=$(oc get dc ${{ inputs.runner-deployment-name }})
         if [ -z "$dep" ]
         then
            echo "Runner does not exist. Doing nothing."
         else
           echo "Deleting runner deployment..."
-          oc delete deployment ${{ inputs.runner-deployment-name }}
+          oc delete dc ${{ inputs.runner-deployment-name }}
         fi
 
       shell: bash
