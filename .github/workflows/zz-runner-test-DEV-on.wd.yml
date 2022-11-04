@@ -46,15 +46,14 @@ jobs:
       - run: npm run runner-test
         if: ${{ always() }}
       - name: Rocket.Chat Notification
-        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
-        if: ${{ always() }}
+        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@1.1.1
+        if:  always()
         with:
           type: ${{ job.status }}
-          job_name: 'SmokeTest'
-          mention: 'here'
-          mention_if: 'success'
-          channel: '#grad-project'
-          url: ${{ env.ROCKETCHAT_WEBHOOK }}
+          job_name: "SmokeTest"
+          icon_emoji: ":bell:"
+          channel: "grad-project"
+          url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
           # envs can now be stored on OS secrets
         #env:
           #BASE_URL: ${{ secrets.BASE_URL }}
