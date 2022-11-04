@@ -36,7 +36,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton v-if="canAddContact()" id="addSchoolContactBtn" width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton :disabled="!canAddContact()" id="addSchoolContactBtn" width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -59,7 +59,7 @@
                         <strong style="word-break: break-word;">{{ `${contact.firstName} ${contact.lastName}` }}</strong>
                       </v-col>
                       <v-col cols="4" class="d-flex justify-end">
-                        <PrimaryButton width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
+                        <PrimaryButton :disabled="!canAddContact()" width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -222,7 +222,7 @@ export default {
       this.getThisSchoolsContacts();
     },
     canAddContact(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN || PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN || perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
     },
     getStatusColor,
     formatDate,
