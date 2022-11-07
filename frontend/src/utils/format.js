@@ -43,3 +43,7 @@ export function formatDob(dob, from='uuuuMMdd', to='uuuu/MM/dd') {
 export function formatDate(rawDate, from='uuuu-MM-dd\'T\'HH:mm:ss', to='uuuu/MM/dd') {
   return formatDateTime(rawDate,from, to);
 }
+
+export function formatContactName(contact) {
+  return contact.firstName ? `${contact.firstName} ${contact.lastName}` : contact.lastName;
+}

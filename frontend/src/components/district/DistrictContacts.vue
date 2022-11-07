@@ -44,7 +44,7 @@
                         <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
                           mdi-circle-medium
                         </v-icon>
-                        <strong style="word-break: break-word">{{ `${contact.firstName} ${contact.lastName}` }}</strong>
+                        <strong style="word-break: break-word">{{ formatContactName(contact) }}</strong>
                       </v-col>
                       <v-col cols="4" class="d-flex justify-end">
                         <PrimaryButton width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
@@ -120,7 +120,7 @@ import PrimaryButton from '../util/PrimaryButton';
 import NewDistrictContactPage from './NewDistrictContactPage';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate} from '@/utils/format';
+import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
 
 export default {
@@ -202,6 +202,7 @@ export default {
     getStatusColor,
     formatDate,
     formatPhoneNumber,
+    formatContactName
   },
 };
 </script>
