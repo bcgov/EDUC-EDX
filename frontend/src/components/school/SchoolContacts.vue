@@ -56,7 +56,7 @@
                         <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
                           mdi-circle-medium
                         </v-icon>
-                        <strong style="word-break: break-word;">{{ `${contact.firstName} ${contact.lastName}` }}</strong>
+                        <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
                       </v-col>
                       <v-col cols="4" class="d-flex justify-end">
                         <PrimaryButton :disabled="!canAddContact()" width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
@@ -130,7 +130,7 @@ import PrimaryButton from '../util/PrimaryButton';
 import NewSchoolContactPage from './NewSchoolContactPage';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate} from '@/utils/format';
+import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 
 // checks the expiry of a contact
@@ -227,6 +227,7 @@ export default {
     getStatusColor,
     formatDate,
     formatPhoneNumber,
+    formatContactName
   }
 };
 </script>
