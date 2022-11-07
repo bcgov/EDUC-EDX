@@ -111,6 +111,35 @@ async function addSchoolContact(req, res) {
   }
 }
 
+async function updateSchoolContact(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token, res);
+
+    if (req.session.activeInstituteType === 'SCHOOL') {
+      checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolID);
+      checkEDXUserSchoolAdminPermission(req);
+
+    } else if (req.session.activeInstituteType === 'DISTRICT') {
+      checkEDXUserDistrictAdminPermission(req);
+      checkSchoolBelongsToEDXUserDistrict(req, req.body.schoolID);
+    }
+    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+    const params = req.body;
+    params.updateDate = null;
+    params.createDate = null;
+    params.effectiveDate = params.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
+    params.expiryDate = req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
+
+    const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    logApiError(e, 'updateSchoolContact', 'Error occurred while attempting to update a school contact.');
+    return errorResponse(res);
+  }
+}
+
 async function getAllCachedSchools(_req, res){
   try {
     let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
@@ -234,5 +263,6 @@ module.exports = {
   getAllSchoolDetails,
   getFullSchoolDetails,
   updateSchool,
-  addSchoolContact
+  addSchoolContact,
+  updateSchoolContact
 };
