@@ -110,7 +110,7 @@
                         :rules="[rules.required()]"
                         class="pt-0 mt-0"
                         v-model="newContact.effectiveDate"
-                        label="Effective Date*"
+                        label="Start Date"
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
