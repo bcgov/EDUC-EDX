@@ -7,6 +7,7 @@ class SchoolDetailsPage {
     this.emailField =Selector('#schoolDetailsEmail');
     this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
     this.saveButton = Selector('#saveButton');
+    this.publishChangesButton = Selector('#resolveBtn');
 
   }
 
@@ -18,6 +19,12 @@ class SchoolDetailsPage {
   async clickSaveButton(){
     await t.click(this.saveButton());
     log.info('Edit School Details Save Button Clicked');
+  }
+
+
+  async clickPublishChangesButton(){
+    await t.click(this.publishChangesButton());
+    log.info('Edit School Details Publish Changes Button Clicked');
   }
 
   async editEmailAddress(emailId){

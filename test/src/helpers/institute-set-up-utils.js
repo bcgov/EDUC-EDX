@@ -1,5 +1,5 @@
 const {getToken} = require('./oauth-utils');
-const {deleteInstituteSetUp,createDistrict,createSchool} = require('../services/institute-api-service');
+const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest} = require('../services/institute-api-service');
 
 const constants = require('../config/constants');
 const restUtils = require('./rest-utils');
@@ -20,7 +20,15 @@ const instituteSetupUtils = {
 
         await deleteInstituteSetUp();
         log.info('AT institute set up deleted')
-    }
+    },
+
+    async setupInstituteEntities(){
+        log.info('setupInstituteEntities started')
+        await createAuthorityWithContactToTest();
+        let district = await createDistrictWithContactToTest();
+        await createSchoolWithContactToTest(district.districtId);
+        log.info('setupInstituteEntities completed')
+    },
 };
 
 module.exports = instituteSetupUtils;
