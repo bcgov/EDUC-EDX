@@ -45,6 +45,7 @@ fixture`school-message-display`
     await t.resizeWindow(1920, 1080);
   }).afterEach(async t => {
   // logout
+  await t.navigateTo(base_url + '/logout');
 });
 
 test('test-school-message-display', async t => {

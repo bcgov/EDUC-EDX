@@ -2,11 +2,9 @@
  * Tests to run against the districts contact page
  */
 import {base_url, credentials} from '../../config/constants';
-import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 let token = '';
 import log from "npmlog";
-import studentAdmin from "../../auth/Roles";
 import NavBarPage from "../../page_models/common/navBarPage";
 import SchoolListPage from "../../page_models/school/schoolsListPage";
 import SchoolContacts from "../../page_models/school/schoolContactsPage";
@@ -37,6 +35,8 @@ fixture `district-school-contacts`
       await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
+      await t.navigateTo(base_url + '/logout');
+
 });
 
 test('testPage', async t => {

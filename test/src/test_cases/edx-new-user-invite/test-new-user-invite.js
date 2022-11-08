@@ -29,9 +29,8 @@ fixture`new-user-invite`
     await t.resizeWindow(1920, 1080);
   }).afterEach(async t => {
   // logout
-//  await t.useRole(Role.anonymous());
- // const data = await getToken();
-  await deleteSetUpEdxUser();
+    await t.navigateTo(base_url + '/logout');
+    await deleteSetUpEdxUser();
 });
 
 test('test-school-user-activation-invite', async t => {

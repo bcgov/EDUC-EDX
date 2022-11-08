@@ -36,6 +36,9 @@ fixture `school-details-edit`
   // log in as studentAdmin
   await t.resizeWindow(1920, 1080)
   log.info("Resized the browser window")
+  }).afterEach(async t => {
+  // logout
+  await t.navigateTo(base_url + '/logout');
 });
 
 test('test-edit-school-details', async t => {

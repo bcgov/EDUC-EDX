@@ -48,6 +48,7 @@ fixture`school-inbox-new-message`
     log.info("Resized the browser window")
   }).afterEach(async t => {
   // logout
+  await t.navigateTo(base_url + '/logout');
 });
 
 test('test-send-new-message-with-students', async t => {
