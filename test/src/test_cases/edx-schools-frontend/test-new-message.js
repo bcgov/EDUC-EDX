@@ -1,8 +1,7 @@
 /**
  * Tests to run against the school inbox page
  */
-import {base_url, student_penList} from '../../config/constants';
-import {Role} from 'testcafe';
+import {base_url, student_penList,credentials} from '../../config/constants';
 import {getToken} from '../../helpers/oauth-utils';
 
 import log from 'npmlog';
@@ -11,6 +10,7 @@ import Dashboard from "../../page_models/dashboard";
 import DocumentUploadPage  from '../../page_models/common/documentUploadPage';
 import MessageDisplay from '../../page_models/message-display';
 import AddStudent from '../../page_models/common/addStudent';
+import LoginPage from '../../page_models/login-page';
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
 const studentAdmin = require('../../auth/Roles');
@@ -20,6 +20,7 @@ const dashboard = new Dashboard();
 const addStudent = new AddStudent();
 const documentUpload = new DocumentUploadPage();
 const messageDisplay = new MessageDisplay();
+const loginPage = new LoginPage();
 let token = '';
 
 fixture`school-inbox-new-message`
@@ -43,16 +44,17 @@ fixture`school-inbox-new-message`
   })
   .beforeEach(async t => {
     // log in as studentAdmin
-    await t.useRole(studentAdmin);
     await t.maximizeWindow();
   }).afterEach(async t => {
   // logout
-  await t.useRole(Role.anonymous());
 });
 
 test('test-send-new-message-with-students', async t => {
   // navigate to /inbox, expect title
+  await t.navigateTo(base_url);
+  await loginPage.login(credentials.adminCredentials);
   await t.navigateTo(base_url + '/inbox');
+
   await inbox.createANewMessage(testExchangeSubject);
   const penArr = student_penList;
 
@@ -82,6 +84,7 @@ test('test-send-new-message-with-students', async t => {
 
 test('test-send-new-message-with-attachment', async t => {
   await t.navigateTo(base_url);
+  await loginPage.login(credentials.adminCredentials);
   await t.navigateTo(base_url + '/inbox');
 
   await inbox.createANewMessage(testExchangeSubject);

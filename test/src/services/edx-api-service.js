@@ -11,6 +11,7 @@ import {createEdxActivationCode} from '../helpers/user-activation-utils';
 import LoginPage from '../page_models/login-page';
 import UserActivation from '../page_models/user-activation';
 import {getSchoolIDBySchoolCode,getDistrictIdByDistrictNumber} from './institute-api-service';
+import HttpStatus from 'http-status-codes';
 const loginPage = new LoginPage();
 const userActivationPage = new UserActivation();
 
@@ -183,6 +184,50 @@ const edxApiService = {
     const responseBody = await restUtils.getData(token, url, searchParams);
 
     return responseBody[0];
+  },
+  async verifyInstituteActivationCodes(districtID,schoolID){
+    const data = await getToken();
+    const token = data.access_token;
+    const endpoint = 'api/v1/edx/users';
+    const schoolActivationCodeUrl = `${constants.edx_api_base_url}${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
+    try{
+       await restUtils.getData(token, schoolActivationCodeUrl);
+      log.info('school Activation code found');
+    }catch (e){
+      if(e.response.status === HttpStatus.NOT_FOUND ){
+        //generate school activation code if it doesn't exist
+        const schoolActivationCodePayload = {
+          createUser: 'EDXAT',
+          updateUser: 'EDXAT',
+          createDate: null,
+          updateDate: null,
+          districtID: null,
+          schoolID:schoolID,
+        };
+        await restUtils.postData(token,schoolActivationCodeUrl,schoolActivationCodePayload,'');
+        log.info('district Activation code created');
+      }
+    }
+
+    const districtActivationCodeUrl = `${constants.edx_api_base_url}${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
+    try{
+       await restUtils.getData(token, districtActivationCodeUrl);
+      console.log('district Activation code found');
+    }catch (e){
+      if(e.response.status === HttpStatus.NOT_FOUND ){
+        //generate school activation code if it doesn't exist
+        const districtActivationCodePayload = {
+          createUser: 'EDXAT',
+          updateUser: 'EDXAT',
+          createDate: null,
+          updateDate: null,
+          districtID: districtID,
+          schoolID: null,
+        };
+        await restUtils.postData(token,districtActivationCodeUrl,districtActivationCodePayload, '');
+        log.info('district Activation code created');
+      }
+    }
   }
 
 };
