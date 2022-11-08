@@ -15,7 +15,6 @@ import Inbox from "../../page_models/inbox";
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 import LoginPage from '../../page_models/login-page';
 
-const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 const hamburgerMenu = new HamburgerMenuPage();
@@ -48,7 +47,6 @@ fixture `school-inbox`
         await t.maximizeWindow();
     }).afterEach(async t => {
         // logout
-        await t.useRole(Role.anonymous());
     });
 
 test('testPage', async t => {
@@ -93,6 +91,7 @@ test('testPage', async t => {
 test('test-navigation-to-school-inbox', async t => {
     await t.navigateTo(base_url);
     await loginPage.login(credentials.adminCredentials);
+    await t.navigateTo(base_url);
     hamburgerMenu.clickHamburgerMenu();
     hamburgerMenu.verifySecureMessagingInboxMenuButtonIsAvailable();
     hamburgerMenu.clickSecureMessagingInboxMenuButton();
