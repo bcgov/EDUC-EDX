@@ -467,7 +467,8 @@ export default {
       return countryName;
     },
     canEditSchoolDetails(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN' || perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+      console.log('Perms ' + JSON.stringify(this.userInfo));
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
     },
     async toggleEdit(){
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
