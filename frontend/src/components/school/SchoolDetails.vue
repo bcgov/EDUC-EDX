@@ -322,7 +322,6 @@ export default {
       schoolDetailsFormValid:true,
       editing: false,
       schoolDetailsCopy: {},
-      sameAsMailingCheckbox: true,
       selectedNLCs:[],
       rules: Rules,
     };
@@ -467,7 +466,7 @@ export default {
       return countryName;
     },
     canEditSchoolDetails(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN' || perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
     },
     async toggleEdit(){
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
@@ -479,9 +478,6 @@ export default {
       this.editing = false;
       this.setHasSamePhysicalFlag();
     },
-    setHasSamePhysicalFlag(){
-      this.sameAsMailingCheckbox = this.hasSamePhysicalAddress;
-    },
     async updateSchoolDetails() {
       const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to School Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});
       if (!confirmation) {
@@ -489,9 +485,6 @@ export default {
       }
       this.loading = true;
 
-      if(this.sameAsMailingCheckbox){
-        this.schoolDetailsCopy.addresses = this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
-      }
       ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolID, this.schoolDetailsCopy)
         .then(() => {
           this.setSuccessAlert('Success! The school details have been updated.');

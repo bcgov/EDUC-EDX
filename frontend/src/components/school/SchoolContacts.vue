@@ -47,52 +47,7 @@
         </v-row>
         <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
-            <v-card>
-              <v-card-title class="pb-0">
-                <v-row no-gutters>
-                  <v-col>
-                    <v-row no-gutters>
-                      <v-col cols="8">
-                        <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
-                          mdi-circle-medium
-                        </v-icon>
-                        <strong style="word-break: break-word;">{{ `${contact.firstName} ${contact.lastName}` }}</strong>
-                      </v-col>
-                      <v-col cols="4" class="d-flex justify-end">
-                        <PrimaryButton :disabled="!canAddContact()" width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
-                      </v-col>
-                    </v-row>
-                    <v-row no-gutters>
-                      <v-col cols="12" class="pt-1">
-                        <span>{{ contact.email }}</span>
-                      </v-col>
-                      <v-col cols="12" class="pt-1">
-                        <span>{{ formatPhoneNumber(contact.phoneNumber) }}</span><span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
-                      </v-col>
-                      <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
-                        <span>{{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)</span> <span v-if="contact.alternatePhoneExtension"> ext. {{contact.alternatePhoneExtension}}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-card-text class="pt-2">
-                <v-row no-gutters>
-                  <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
-                    <v-icon aria-hidden="false">
-                      mdi-calendar-today
-                    </v-icon>
-                    <span> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1" v-else>
-                    <v-icon aria-hidden="false">
-                      mdi-calendar-today
-                    </v-icon>
-                    <span> {{ formatDate(contact.effectiveDate) }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
+            <SchoolContact :contact="contact" :schoolID="$route.params.schoolID" @editSchoolContact:editSchoolContactSuccess="contactEditSuccess" :canEditSchoolContact="canEditSchoolContact()"/>
           </v-col>
         </v-row>
         <v-row cols="2" v-else>
@@ -128,9 +83,10 @@ import {ApiRoutes} from '@/utils/constants';
 import {PERMISSION} from '@/utils/constants/Permission';
 import PrimaryButton from '../util/PrimaryButton';
 import NewSchoolContactPage from './NewSchoolContactPage';
+import SchoolContact from './SchoolContact';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate} from '@/utils/format';
+import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 
 // checks the expiry of a contact
@@ -143,7 +99,8 @@ export default {
   mixins: [alertMixin],
   components: {
     PrimaryButton,
-    NewSchoolContactPage
+    NewSchoolContactPage,
+    SchoolContact
   },
   props: {
     schoolID: {
@@ -222,11 +179,18 @@ export default {
       this.getThisSchoolsContacts();
     },
     canAddContact(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN || perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+    },
+    canEditSchoolContact() {
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+    },
+    contactEditSuccess() {
+      this.getThisSchoolsContacts();
     },
     getStatusColor,
     formatDate,
     formatPhoneNumber,
+    formatContactName
   }
 };
 </script>
