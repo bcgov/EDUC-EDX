@@ -1,7 +1,7 @@
 /**
  * Tests to run against the districts contact page
  */
-import { base_url } from '../../config/constants';
+import {base_url, credentials} from '../../config/constants';
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 let token = '';
@@ -10,11 +10,12 @@ import studentAdmin from "../../auth/Roles";
 import NavBarPage from "../../page_models/common/navBarPage";
 import SchoolListPage from "../../page_models/school/schoolsListPage";
 import SchoolContacts from "../../page_models/school/schoolContactsPage";
+import LoginPage from '../../page_models/login-page';
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 const schoolsList = new SchoolListPage();
 const schoolContacts = new SchoolContacts();
-
+const loginPage = new LoginPage();
 const navBar = new NavBarPage();
 
 fixture `district-school-contacts`
@@ -33,15 +34,14 @@ fixture `district-school-contacts`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
-        await t.useRole(studentAdmin);
+      await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
-    await t.useRole(Role.anonymous());
 });
 
 test('testPage', async t => {
     await t.navigateTo(base_url + '/schools');
-
+    await loginPage.login(credentials.adminCredentials);
     await schoolsList.clickSchoolContactsButton();
     await navBar.verifyNavTitleByText('School Contacts');
 

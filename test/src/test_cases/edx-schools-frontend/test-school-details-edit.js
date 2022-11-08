@@ -32,7 +32,11 @@ fixture `school-details-edit`
     log.info('Performing tear-down operation');
     await deleteSetUpEdxUser();
 
-  })
+  }) .beforeEach(async t => {
+  // log in as studentAdmin
+  await t.resizeWindow(1920, 1080)
+  log.info("Resized the browser window")
+});
 
 test('test-edit-school-details', async t => {
   await t.navigateTo(base_url+'/login');

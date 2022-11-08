@@ -32,7 +32,7 @@ fixture `district-contacts`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
-        await t.maximizeWindow();
+      await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
     await t.useRole(Role.anonymous());

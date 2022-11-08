@@ -6,14 +6,16 @@ const {deleteActivationCode, generateCode,setUpDataForUserActivation,submitDetai
 const userActivationPage = new UserActivation();
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
-  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     await setUpDataForUserActivation(ctx,'SCHOOL','99178');
   })
   .after(async ctx => {
     const data = await getToken();
     await deleteActivationCode(data.access_token, ctx.acCode1);
-  });
+  }).beforeEach(async t => {
+  // log in as studentAdmin
+  await t.resizeWindow(1920, 1080);
+});
 
 test('when_url_visited_incorrect_activation_details_input_error_is_shown_to_user', async t => {
   await login(t);
