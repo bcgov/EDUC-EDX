@@ -129,6 +129,7 @@
 
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
+import Spinner from '@/components/common/Spinner';
 import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
@@ -140,7 +141,7 @@ export default {
   name: 'SchoolListPage',
   mixins: [alertMixin],
   components: {
-    PrimaryButton,
+    PrimaryButton,Spinner
   },
   data() {
     return {

@@ -222,7 +222,7 @@ export default {
       this.getThisSchoolsContacts();
     },
     canAddContact(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN || perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
     },
     getStatusColor,
     formatDate,
