@@ -192,7 +192,7 @@ const edxApiService = {
     const schoolActivationCodeUrl = `${constants.edx_api_base_url}${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
     try{
        await restUtils.getData(token, schoolActivationCodeUrl);
-       console.log('school Activation code found');
+      log.info('school Activation code found');
     }catch (e){
       if(e.response.status === HttpStatus.NOT_FOUND ){
         //generate school activation code if it doesn't exist
@@ -205,7 +205,7 @@ const edxApiService = {
           schoolID:schoolID,
         };
         await restUtils.postData(token,schoolActivationCodeUrl,schoolActivationCodePayload,'');
-        console.log('district Activation code created');
+        log.info('district Activation code created');
       }
     }
 
@@ -225,7 +225,7 @@ const edxApiService = {
           schoolID: null,
         };
         await restUtils.postData(token,districtActivationCodeUrl,districtActivationCodePayload, '');
-        console.log('district Activation code created');
+        log.info('district Activation code created');
       }
     }
   }
