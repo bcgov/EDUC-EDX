@@ -405,6 +405,7 @@ const instituteApiService = {
     schoolPayload.schoolId = schoolID;
     let freshSchool = await restUtils.putData(token, url + '/' + schoolID, schoolPayload);
     await instituteApiService.setupSchoolContact(freshSchool);
+    return freshSchool;
   },
 
   async setupSchoolContact(school){
@@ -482,6 +483,8 @@ const instituteApiService = {
     const userSchoolResult = await restUtils.getData(token, url, schoolSearchParam);
     return userSchoolResult?.content[0]?.schoolId;
   },
+
+
 
 };
 
