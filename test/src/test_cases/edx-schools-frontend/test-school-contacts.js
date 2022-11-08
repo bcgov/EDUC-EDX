@@ -12,6 +12,7 @@ import LoginPage from "../../page_models/login-page";
 
 const {setUpEdxSchoolUserWithAllAvailableRoles} =  require('../../helpers/user-set-up-utils');
 const {cleanUpSchoolContactRecord} = require('../../helpers/school-set-up-utils');
+const {setupInstituteEntities, deleteInstituteSetUp} = require('../../helpers/institute-set-up-utils');
 const loginPage = new LoginPage();
 const navBar = new NavBarPage();
 const dashboard = new Dashboard();
@@ -20,20 +21,22 @@ const snackBarPage = new SnackBarPage();
 
 fixture `school-school-contacts`
     .before(async t => {
-        await setUpEdxSchoolUserWithAllAvailableRoles(['03005']);
+        await setUpEdxSchoolUserWithAllAvailableRoles(['99999']);
     })
     .beforeEach(async t => {
+        await setupInstituteEntities();
         await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
     await t.useRole(Role.anonymous());
+    await deleteInstituteSetUp();
 });
 
 test('testPage', async t => {
     await loginPage.login(credentials.adminCredentials);
     await dashboard.clickSchoolContactsCard();
     await navBar.verifyNavTitleByText('School Contacts');
-    await schoolContactsPage.verifyPrincipalContact('03005');
+    await schoolContactsPage.verifyPrincipalContact('99999');
 
     //Test adding a contact.
     //Test the initial state of the new contact dialog.
@@ -77,5 +80,17 @@ test('testPage', async t => {
     await schoolContactsPage.clickSaveNewContactButton();
     await snackBarPage.verifySnackBarText('Success! The school contact has been created.');
     await schoolContactsPage.verifyNewContactAdded(schoolContactToAdd);
-    await cleanUpSchoolContactRecord('03005', schoolContactToAdd.firstName, schoolContactToAdd.lastName);
+});
+
+
+test('edit-school-contact', async t => {
+
+    await loginPage.login(credentials.adminCredentials);
+    await dashboard.clickSchoolContactsCard();
+    await navBar.verifyNavTitleByText('School Contacts');
+
+    await schoolContactsPage.clickEditContactButton();
+    await schoolContactsPage.editSchoolContact();
+
+    await schoolContactsPage.verifySchoolContactEditDetails();
 });
