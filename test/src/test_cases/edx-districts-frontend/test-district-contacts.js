@@ -1,7 +1,7 @@
 /**
  * Tests to run against the districts contact page
  */
-import { credentials } from '../../config/constants';
+import {base_url, credentials} from '../../config/constants';
 import { Role } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 
@@ -32,15 +32,15 @@ fixture `district-contacts`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
-        await t.maximizeWindow();
+        await t.resizeWindow(1920, 1080);
+        await loginPage.login(credentials.adminCredentials);
     }).afterEach(async t => {
     // logout
-    await t.useRole(Role.anonymous());
+    await t.navigateTo(base_url + '/logout')
 });
 
 test('new-district-contact', async t => {
 
-    await loginPage.login(credentials.adminCredentials);
     await dashboard.clickDistrictContactsCard();
     await t.expect(districtContacts.navTitle.innerText).contains('District Contacts');
 
