@@ -2,7 +2,7 @@
  * Tests to run against the school contact page
  */
 import { Role } from 'testcafe';
-import { credentials } from '../../config/constants';
+import {base_url, credentials} from '../../config/constants';
 import NavBarPage from "../../page_models/common/navBarPage";
 import SchoolContactsPage from "../../page_models/school/schoolContactsPage";
 import Dashboard from "../../page_models/dashboard";
@@ -28,8 +28,7 @@ fixture `school-school-contacts`
         await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
-    await t.useRole(Role.anonymous());
-    await deleteInstituteSetUp();
+    await t.navigateTo(base_url + '/logout');
 });
 
 test('testPage', async t => {

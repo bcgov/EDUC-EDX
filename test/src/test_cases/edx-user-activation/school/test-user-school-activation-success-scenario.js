@@ -5,7 +5,6 @@ const {getToken} = require('../../../helpers/oauth-utils');
 const {deleteActivationCode,setUpDataForUserActivation,submitDetailsOnUserActivationForm,login, deleteEdxUser} = require('../../../services/edx-api-service');
 
 fixture`edx-user-activate-success-scenario`
-  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     await setUpDataForUserActivation(ctx,'SCHOOL','99178');
   })
@@ -14,7 +13,10 @@ fixture`edx-user-activate-success-scenario`
     await deleteEdxUser(data.access_token, 'TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
     await deleteActivationCode(data.access_token, ctx.acCode1);
 
-  });
+  }).beforeEach(async t => {
+  // log in as studentAdmin
+  await t.resizeWindow(1920, 1080);
+});
 
 
 test('when_url_visited_user_redirected_to_login_page_and_db_updated', async t => {

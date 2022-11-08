@@ -7,13 +7,14 @@ const {deleteActivationCode, setUpDataForUserActivation} = require('../../../ser
 
 
 fixture`edx-user-activate-error-scenario-activation-url-visited-twice`
-  .beforeEach(t => t.maximizeWindow())
   .before(async ctx => {
     await setUpDataForUserActivation(ctx,'DISTRICT','006');
   })
   .after(async ctx => {
     const data = await getToken();
     await deleteActivationCode(data.access_token, ctx.acCode1);
+  }).beforeEach(async t => {
+    await t.resizeWindow(1920, 1080);
   });
 
 test('when_url_visited_twice_user_gets_error_link_expired', async t => {

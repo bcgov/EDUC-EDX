@@ -32,11 +32,13 @@ fixture `district-contacts`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
+
         await t.resizeWindow(1920, 1080);
         await loginPage.login(credentials.adminCredentials);
+
     }).afterEach(async t => {
     // logout
-    await t.navigateTo(base_url + '/logout')
+    await t.navigateTo(base_url + '/logout');
 });
 
 test('new-district-contact', async t => {

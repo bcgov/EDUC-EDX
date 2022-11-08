@@ -44,9 +44,10 @@ fixture `school-inbox`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
-        await t.maximizeWindow();
+        await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
         // logout
+    await t.navigateTo(base_url + '/logout');
     });
 
 test('testPage', async t => {
