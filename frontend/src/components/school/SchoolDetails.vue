@@ -467,7 +467,6 @@ export default {
       return countryName;
     },
     canEditSchoolDetails(){
-      console.log('Perms ' + JSON.stringify(this.userInfo));
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
     },
     async toggleEdit(){
