@@ -13,6 +13,7 @@ const {Locale} = require('@js-joda/locale_en');
 let discovery = null;
 const cache = require('memory-cache');
 let memCache = new cache.Cache();
+const fsStringify = require('fast-safe-stringify');
 
 axios.interceptors.request.use((axiosRequestConfig) => {
   axiosRequestConfig.headers['X-Client-Name'] = 'PEN-EDX';
@@ -386,6 +387,19 @@ function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
   }
 }
 
+async function logApiError(e, functionName, message) {
+  if (e?.response?.status === 404) {
+    log.info('Entity not found', e);
+  } else if (e?.response?.data) {
+    log.error(fsStringify(e.response.data));
+  } else if (message) {
+    log.error(message);
+    log.error(functionName, ' Error', e.stack);
+  } else {
+    log.error(functionName, ' Error', e.stack);
+  }
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -409,7 +423,8 @@ const utils = {
   checkEDXUserSchoolAdminPermission,
   checkEDXUserDistrictAdminPermission,
   checkEDXUserAccess,
-  checkSchoolBelongsToEDXUserDistrict
+  checkSchoolBelongsToEDXUserDistrict,
+  logApiError
 };
 
 module.exports = utils;
