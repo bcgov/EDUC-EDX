@@ -133,8 +133,8 @@ import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters, mapState} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber} from '@/utils/format';
-import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
+import {formatPhoneNumber, formatContactName} from '@/utils/format';
+import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '@/utils/institute/status';
 
 export default {
   name: 'SchoolListPage',
@@ -305,13 +305,23 @@ export default {
     },
     formatPhoneNumber,
     getPrincipalsName(contacts) {
-      let principalsName = null;
-      for (const contact of contacts){
-        if(contact.schoolContactTypeCode === 'PRINCIPAL'){
-          principalsName = contact.firstName + ' ' + contact.lastName;
+      let oldestPrincipal = null;
+      for (const contact of contacts) {
+        if (contact.schoolContactTypeCode !== 'PRINCIPAL') {
+          continue;
         }
+        if (!isContactCurrent(contact)) {
+          continue;
+        }
+        if ((oldestPrincipal !== null) && (new Date(oldestPrincipal.effectiveDate) < new Date(contact.effectiveDate))) {
+          continue;
+        }
+        oldestPrincipal = contact;
       }
-      return principalsName;
+      if (oldestPrincipal == null) {
+        return '';
+      }
+      return formatContactName(oldestPrincipal);
     },
     getStatusColorAuthorityOrSchool,
     openSchool(schoolId){
