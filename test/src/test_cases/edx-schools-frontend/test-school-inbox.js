@@ -1,7 +1,7 @@
 /**
  * Tests to run against the school inbox page
  */
-import { base_url } from '../../config/constants';
+import { base_url,credentials } from '../../config/constants';
 import { Role, Selector } from 'testcafe';
 import { getToken } from "../../helpers/oauth-utils";
 import {createSecureExchange} from '../../services/edx-api-service';
@@ -13,11 +13,13 @@ const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('.
 import log from "npmlog";
 import Inbox from "../../page_models/inbox";
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
+import LoginPage from '../../page_models/login-page';
 
 const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 const hamburgerMenu = new HamburgerMenuPage();
+const loginPage = new LoginPage();
 let token = '';
 let testExchange = createTestExchange();
 
@@ -43,7 +45,6 @@ fixture `school-inbox`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
-        await t.useRole(studentAdmin);
         await t.maximizeWindow();
     }).afterEach(async t => {
         // logout
@@ -52,6 +53,8 @@ fixture `school-inbox`
 
 test('testPage', async t => {
     // navigate to /inbox, expect title
+    await t.navigateTo(base_url);
+    await loginPage.login(credentials.adminCredentials);
     await t.navigateTo(base_url + '/inbox')
            .expect(inbox.navTitle.innerText).contains('Secure Messaging Inbox');
     // click filtersToggle
@@ -89,6 +92,7 @@ test('testPage', async t => {
 
 test('test-navigation-to-school-inbox', async t => {
     await t.navigateTo(base_url);
+    await loginPage.login(credentials.adminCredentials);
     hamburgerMenu.clickHamburgerMenu();
     hamburgerMenu.verifySecureMessagingInboxMenuButtonIsAvailable();
     hamburgerMenu.clickSecureMessagingInboxMenuButton();

@@ -3,7 +3,7 @@ import {getToken} from '../../helpers/oauth-utils';
 import {createSecureExchange,  deleteSecureExchange} from '../../services/edx-api-service';
 import {createTestExchange} from '../../helpers/secure-exchange-utils';
 import log from 'npmlog';
-import {base_url, student_penList} from '../../config/constants';
+import {base_url, student_penList,credentials} from '../../config/constants';
 import MessageDisplay from '../../page_models/message-display';
 import Dashboard from '../../page_models/dashboard';
 import Inbox from '../../page_models/inbox';
