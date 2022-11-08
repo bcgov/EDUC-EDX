@@ -37,7 +37,7 @@ jobs:
           type: ${{ job.status }}
           job_name: "EDX Daily Regression - DEV --->"
           icon_emoji: ":bell:"
-          channel: "pen-automation-notifications"
+          channel: "educ-automation-failures"
           url: ${{ secrets.ROCKETCHAT_WEBHOOK_FAILURES }}
       - name: Rocket.Chat Notification
         uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@1.1.1
@@ -46,7 +46,7 @@ jobs:
           type: ${{ job.status }}
           job_name: "EDX Daily Regression - DEV --->"
           icon_emoji: ":bell:"
-          channel: "educ-automation-failures"
+          channel: "pen-automation-notifications"
           url: ${{ secrets.ROCKETCHAT_WEBHOOK }}
 
 
