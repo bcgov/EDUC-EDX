@@ -45,7 +45,6 @@ fixture`school-inbox-new-message`
   .beforeEach(async t => {
     // log in as studentAdmin
     await t.resizeWindow(1920, 1080)
-    log.info("Resized the browser window")
   }).afterEach(async t => {
   // logout
   await t.navigateTo(base_url + '/logout');

@@ -32,6 +32,8 @@ fixture `district-school-contacts`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
+      await t.navigateTo(base_url);
+      await loginPage.login(credentials.adminCredentials);
       await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
     // logout
@@ -41,7 +43,6 @@ fixture `district-school-contacts`
 
 test('testPage', async t => {
     await t.navigateTo(base_url + '/schools');
-    await loginPage.login(credentials.adminCredentials);
     await schoolsList.clickSchoolContactsButton();
     await navBar.verifyNavTitleByText('School Contacts');
 
