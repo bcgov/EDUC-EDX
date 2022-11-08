@@ -37,7 +37,7 @@ jobs:
           type: ${{ job.status }}
           job_name: "EDX Daily Regression - DEV --->"
           icon_emoji: ":bell:"
-          channel: "sld-development"
+          channel: "educ-automation-failures"
           url: ${{ secrets.ROCKETCHAT_WEBHOOK_FAILURES }}
 
 
