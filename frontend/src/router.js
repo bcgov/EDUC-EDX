@@ -278,9 +278,9 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && (authStore.state.userInfo?.userSchoolIDs?.length > 0 || authStore.state.userInfo?.userDistrictIDs?.length > 0) && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          if (to.meta.permission && (authStore.state.userInfo?.userSchoolIDs?.length > 0 || authStore.state.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(authStore.state.userInfo,'activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/institute-selection');
-          }else if (to.meta.permission && (!authStore.state.userInfo.hasOwnProperty('activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(authStore.state.userInfo,'activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
             if(authStore.state.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
