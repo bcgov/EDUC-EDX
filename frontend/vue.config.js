@@ -1,6 +1,7 @@
 //const path = require('path');
 module.exports = {
   configureWebpack: {
+    devtool: 'inline-source-map',
     module: {
       rules: [
         {
