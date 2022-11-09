@@ -4,6 +4,13 @@ import App from './App';
 import router from './router';
 import store from './store';
 
+/**
+* The globalThis.regeneratorRuntime = undefined addresses a potentially unsafe-eval problem
+* Source: https://github.com/facebook/regenerator/issues/378#issuecomment-802628326
+* Date: July 14, 2021
+*/
+global.globalThis.regeneratorRuntime = undefined;
+
 Vue.config.productionTip = false;
 new Vue({
   vuetify,
