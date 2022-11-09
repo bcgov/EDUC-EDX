@@ -1,14 +1,15 @@
-import webpack from 'webpack';
+//const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   configureWebpack: {
-    devtool: 'inline-source-map',
     node: {
       global: false
     },
     plugins: [new webpack.DefinePlugin({
       global: 'window'		// Placeholder for global used in any node_modules
     })],
+    devtool: 'inline-source-map',
     module: {
       rules: [
         {
