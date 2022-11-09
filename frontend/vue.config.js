@@ -1,6 +1,13 @@
 //const path = require('path');
+const webpack = require('webpack');
+
 module.exports = {
   configureWebpack: {
+    plugins: [
+      new webpack.DefinePlugin({
+        global: 'window' // Placeholder for global used in any node_modules
+      })
+    ],
     module: {
       rules: [
         {
