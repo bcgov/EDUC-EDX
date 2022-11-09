@@ -34,6 +34,7 @@
     "dotenv": "^8.2.0",
     "faker": "4.1.0",
     "glob-all": "^3.2.1",
+    "globalthis": "^1.0.3",
     "http-status-codes": "^1.4.0",
     "jest-junit": "^7.0.0",
     "minimist": "^1.2.7",

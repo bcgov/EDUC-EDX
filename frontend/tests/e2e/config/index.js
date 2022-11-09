@@ -1,4 +1,3 @@
-'use strict';
 const nconf = require('nconf');
 const dotenv = require('dotenv');
 const path = require('path');
