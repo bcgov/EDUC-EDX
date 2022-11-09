@@ -81,7 +81,7 @@
     "stylus-loader": "^3.0.1",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-jest": "^3.0.7",
-    "vue-template-compiler": "^2.6.12",
+    "vue-template-compiler": "^2.7.13",
     "vuetify-loader": "^1.9.2",
     "webpack": "^5.74.0"
   },
@@ -132,6 +132,7 @@
     }
   },
   "jest": {
+    "testEnvironment": "jsdom",
     "reporters": [
       "default",
       "jest-junit"
