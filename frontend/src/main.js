@@ -8,8 +8,10 @@ import store from './store';
 * The globalThis.regeneratorRuntime = undefined addresses a potentially unsafe-eval problem
 * Source: https://github.com/facebook/regenerator/issues/378#issuecomment-802628326
 * Date: July 14, 2021
+ * eslint-disable to stop complaint that globalThis does not exist. It exists since Node 12 and we are using Node 14
 */
-global.globalThis.regeneratorRuntime = undefined;
+/* eslint-disable */
+globalThis.regeneratorRuntime = undefined;
 
 Vue.config.productionTip = false;
 new Vue({
