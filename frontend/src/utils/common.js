@@ -1,3 +1,5 @@
+'use strict';
+
 import {getDateFormatter} from '@/utils/format';
 import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
