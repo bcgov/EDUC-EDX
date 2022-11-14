@@ -191,6 +191,12 @@
                 </v-menu>
               </v-col>
             </v-row>
+            <ConfirmationDialog ref="confirmSchoolContactUpdateAndSave">
+              <template v-slot:message>
+                <p>All changes made to school contact information will be <strong>available to the public on save</strong>.</p>
+                <p>Please be sure to review your changes carefully before you publish them.</p>
+              </template>
+            </ConfirmationDialog>
           </v-form>
         </v-card-text>
       </v-card>
@@ -207,11 +213,13 @@ import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
+import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 
 export default {
   name: 'SchoolContact',
   mixins: [alertMixin],
   components: {
+    ConfirmationDialog,
     PrimaryButton,
   },
   props: {
@@ -254,7 +262,12 @@ export default {
     };
   },
   methods: {
-    saveSchoolContact(contact) {
+    async saveSchoolContact(contact) {
+      const confirmation = await this.$refs.confirmSchoolContactUpdateAndSave.open('Confirm Updates to School Contact', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Contacts'});
+      if (!confirmation) {
+        return;
+      }
+
       this.processing = true;
       this.validateEditContactForm();
 
