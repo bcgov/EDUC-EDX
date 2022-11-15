@@ -574,7 +574,7 @@ async function activateEdxUser(req, res) {
   try {
     validateAccessToken(token);
     const numberOfRetries = req.session[`${req.body.validationCode}`];
-    if (numberOfRetries && numberOfRetries >= 5) {
+    if (numberOfRetries && numberOfRetries >= 4) {
       return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
     }
     const payload = {
