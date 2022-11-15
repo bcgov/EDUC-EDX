@@ -88,6 +88,7 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
+import { sortBy } from 'lodash';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -148,6 +149,7 @@ export default {
         .then(response => {
           this.schoolContacts = new Map();
           this.school = response.data;
+          response.data.contacts = sortBy(response.data.contacts, ['firstName']);
           response.data.contacts.forEach(contact => {
             if(!isExpired(contact)){
               if (!this.schoolContacts.has(contact.schoolContactTypeCode)) {
