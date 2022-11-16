@@ -1,30 +1,30 @@
 /**
  * Tests to run against the school inbox page
  */
-import {base_url, student_penList,credentials} from '../../config/constants';
+import {base_url, student_penList, credentials} from '../../config/constants';
 import {getToken} from '../../helpers/oauth-utils';
 
 import log from 'npmlog';
 import Inbox from '../../page_models/inbox';
-import Dashboard from "../../page_models/dashboard";
+import InstituteSelectionPage from "../../page_models/institute-selection-page";
 import DocumentUploadPage  from '../../page_models/common/documentUploadPage';
 import MessageDisplay from '../../page_models/message-display';
 import AddStudent from '../../page_models/common/addStudent';
 import LoginPage from '../../page_models/login-page';
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
-const studentAdmin = require('../../auth/Roles');
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
-const dashboard = new Dashboard();
 const addStudent = new AddStudent();
 const documentUpload = new DocumentUploadPage();
 const messageDisplay = new MessageDisplay();
 const loginPage = new LoginPage();
+const instituteSelectionPage = new InstituteSelectionPage();
 let token = '';
+const schoolTitle = 'Camosun College';
 
 fixture`school-inbox-new-message`
-  .before(async async => {
+  .before(async t => {
     await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
     getToken().then(async (data) => {
       token = data.access_token;
@@ -34,7 +34,7 @@ fixture`school-inbox-new-message`
       log.error('Failure during test setup: ' + error);
     }));
   })
-  .after(async ctx => {
+  .after(async t => {
     // find all test automation artifacts produced and remove them
     log.info('Performing tear-down operation');
     const data = await getToken();
@@ -44,6 +44,7 @@ fixture`school-inbox-new-message`
   })
   .beforeEach(async t => {
     // log in as studentAdmin
+    await loginPage.login(credentials.adminCredentials);
     await t.resizeWindow(1920, 1080)
   }).afterEach(async t => {
   // logout
@@ -52,10 +53,11 @@ fixture`school-inbox-new-message`
 
 test('test-send-new-message-with-students', async t => {
   // navigate to /inbox, expect title
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
-  await t.navigateTo(base_url + '/inbox');
+  if(await instituteSelectionPage.isInstituteSelectionPage()){
+    await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle(schoolTitle);
+  }
 
+  await t.navigateTo(base_url + '/inbox');
   await inbox.createANewMessage(testExchangeSubject);
   const penArr = student_penList;
 
@@ -84,8 +86,9 @@ test('test-send-new-message-with-students', async t => {
 });
 
 test('test-send-new-message-with-attachment', async t => {
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
+  if(await instituteSelectionPage.isInstituteSelectionPage()){
+    await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle(schoolTitle);
+  }
   await t.navigateTo(base_url + '/inbox');
 
   await inbox.createANewMessage(testExchangeSubject);
