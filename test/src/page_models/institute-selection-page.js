@@ -21,9 +21,8 @@ class InstituteSelectionPage {
   }
 
   async isInstituteSelectionPage() {
-    let url = httpUtils.getPageUrl();
-    log.info(url);
-    return url.indexOf('/institute-selection') > -1;
+    //let url = await httpUtils.getPageUrl();
+    return await httpUtils.urlContains('/institute-selection');
   }
 
   async clickItemFromSchoolDashboardBasedOnTitle(title) {
