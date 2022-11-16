@@ -6,15 +6,18 @@ import { getToken } from "../../helpers/oauth-utils";
 let token = '';
 import log from "npmlog";
 import NavBarPage from "../../page_models/common/navBarPage";
-import SchoolListPage from "../../page_models/school/schoolsListPage";
 import SchoolContacts from "../../page_models/school/schoolContactsPage";
 import LoginPage from '../../page_models/login-page';
+import InstituteSelectionPage from "../../page_models/institute-selection-page";
+import Dashboard from "../../page_models/dashboard";
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
-const schoolsList = new SchoolListPage();
+
 const schoolContacts = new SchoolContacts();
 const loginPage = new LoginPage();
+const dashboard = new Dashboard();
 const navBar = new NavBarPage();
+const instituteSelectionPage = new InstituteSelectionPage();
 
 fixture `district-school-contacts`
     .before(async t => {
@@ -32,7 +35,6 @@ fixture `district-school-contacts`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
-      await t.navigateTo(base_url);
       await loginPage.login(credentials.adminCredentials);
       await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
@@ -42,11 +44,11 @@ fixture `district-school-contacts`
 });
 
 test('testPage', async t => {
-    await t.navigateTo(base_url + '/schools');
-    await schoolsList.clickSchoolContactsButton();
+    if(await instituteSelectionPage.isInstituteSelectionPage()){
+        await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle('Camosun College');
+    }
+    await dashboard.clickSchoolContactsCard();
     await navBar.verifyNavTitleByText('School Contacts');
 
-    await schoolContacts.verifyPrincipalContact('03005');
-
-
+    await schoolContacts.verifyPrincipalContact('00002');
 });
