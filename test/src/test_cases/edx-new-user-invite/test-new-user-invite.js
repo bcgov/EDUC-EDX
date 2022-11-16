@@ -1,7 +1,3 @@
-import {Role} from 'testcafe';
-
-
-import studentAdmin from '../../auth/Roles';
 import {base_url, credentials} from '../../config/constants';
 import NewUserPage from '../../page_models/new-user-page';
 import AccessUsersPage from '../../page_models/access-users-page';
@@ -11,8 +7,6 @@ import SnackBarPage from "../../page_models/common/snackBarPage";
 const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils');
 import LoginPage from '../../page_models/login-page';
 import InstituteSelectionPage from "../../page_models/institute-selection-page";
-const log = require('npmlog');
-const {getToken} = require('../../helpers/oauth-utils');
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 let newUserInvitePage = new NewUserPage();
 let accessUsersPage = new AccessUsersPage();
@@ -39,9 +33,9 @@ test('test-school-user-activation-invite', async t => {
 
   await t.navigateTo(base_url);
   if(await instituteSelectionPage.isInstituteSelectionPage()){
-    log.info('******** IS SELECTION PAGE! **********');
+    await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle('Camosun College');
   }
-  /*await menu.clickHamburgerMenu();
+  await menu.clickHamburgerMenu();
   await menu.clickAdministrationMenuOption();
   await menu.clickSchoolUserManagementSubMenuLink();
   await t.wait(3000);
@@ -60,6 +54,6 @@ test('test-school-user-activation-invite', async t => {
   await newUserInvitePage.selectRole('Secure Exchange');
   await newUserInvitePage.clickInviteBtn();
 
-  await snackBar.verifySnackBarText('Success! The request is being processed.');*/
+  await snackBar.verifySnackBarText('Success! The request is being processed.');
 
 });

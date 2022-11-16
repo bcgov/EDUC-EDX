@@ -1,4 +1,4 @@
-import {t, Selector, ClientFunction} from 'testcafe';
+import {t, Selector} from 'testcafe';
 import log from 'npmlog';
 
 const httpUtils = require('../helpers/http-utils');
@@ -21,13 +21,12 @@ class InstituteSelectionPage {
   }
 
   async isInstituteSelectionPage() {
-    //let url = await httpUtils.getPageUrl();
     return await httpUtils.urlContains('/institute-selection');
   }
 
   async clickItemFromSchoolDashboardBasedOnTitle(title) {
-    const distDashExists = Selector(this.districtDashboard).find('h3').withExactText(title);
-    await t.click(distDashExists());
+    const schDashSelection = Selector(this.schoolDashboard).find('h3').withExactText(title);
+    await t.click(schDashSelection);
     log.info('Clicked schools dash item with text: ' + title);
   }
 
