@@ -1,7 +1,3 @@
-import {Role} from 'testcafe';
-
-
-import studentAdmin from '../../auth/Roles';
 import {base_url, credentials} from '../../config/constants';
 import NewUserPage from '../../page_models/new-user-page';
 import AccessUsersPage from '../../page_models/access-users-page';
@@ -10,8 +6,7 @@ import NavBarPage from "../../page_models/common/navBarPage";
 import SnackBarPage from "../../page_models/common/snackBarPage";
 const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils');
 import LoginPage from '../../page_models/login-page';
-const log = require('npmlog');
-const {getToken} = require('../../helpers/oauth-utils');
+import InstituteSelectionPage from "../../page_models/institute-selection-page";
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 let newUserInvitePage = new NewUserPage();
 let accessUsersPage = new AccessUsersPage();
@@ -19,13 +14,14 @@ const menu = new HamburgerMenuPage();
 const navBar = new NavBarPage();
 const snackBar = new SnackBarPage();
 const loginPage = new LoginPage();
+const instituteSelectionPage = new InstituteSelectionPage();
 
 fixture`new-user-invite`
   .beforeEach(async t => {
     // log in as studentAdmin
     await setupInstituteEntities();
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
-    await t.useRole(studentAdmin);
+    await loginPage.login(credentials.adminCredentials);
     await t.resizeWindow(1920, 1080);
   }).afterEach(async t => {
   // logout
@@ -36,7 +32,9 @@ fixture`new-user-invite`
 test('test-school-user-activation-invite', async t => {
 
   await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
+  if(await instituteSelectionPage.isInstituteSelectionPage()){
+    await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle('Camosun College');
+  }
   await menu.clickHamburgerMenu();
   await menu.clickAdministrationMenuOption();
   await menu.clickSchoolUserManagementSubMenuLink();

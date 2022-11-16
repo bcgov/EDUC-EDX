@@ -11,6 +11,7 @@
           <v-col><h2>School Dashboard</h2></v-col>
         </v-row>
         <v-data-table v-if="activeUserSchools.length>0"
+                      id="schools-dashboard-items"
           :items="activeUserSchools"
           class="elevation-1"
           hide-default-header
@@ -33,6 +34,7 @@
           <v-col class="mt-6"><h2>District Dashboard</h2></v-col>
         </v-row>
         <v-data-table v-if="activeUserDistricts.length>0"
+                      id="schools-district-items"
             :items="activeUserDistricts"
             class="elevation-1"
             hide-default-header

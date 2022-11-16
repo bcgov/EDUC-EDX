@@ -13,7 +13,7 @@ createTestCafe('localhost', 1337, 1338)
         testcafe = tc;
         const runner = testcafe.createRunner();
         return runner
-            .src(["src/test_cases/runner-testing"])
+            .src(["src/test_cases/edx-new-user-invite"])
             .run();
     })
     .then(failedCount => {
