@@ -30,6 +30,12 @@ class InstituteSelectionPage {
     log.info('Clicked schools dash item with text: ' + title);
   }
 
+  async clickItemFromDistrictDashboardBasedOnTitle(title) {
+    const schDashSelection = Selector(this.districtDashboard).find('h3').withExactText(title);
+    await t.click(schDashSelection);
+    log.info('Clicked district dash item with text: ' + title);
+  }
+
 }
 
 export default InstituteSelectionPage;

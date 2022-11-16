@@ -3,7 +3,6 @@ const {getDistrictIdByDistrictNumber} = require('../services/institute-api-servi
 
 const constants = require('../config/constants');
 const restUtils = require('./rest-utils');
-import log from 'npmlog';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 const districtSetUpUtils = {
@@ -42,9 +41,11 @@ const districtSetUpUtils = {
         districtSuperintendent = districtDetails.contacts.filter(contact => contact.districtContactTypeCode === 'SUPER'
             && contact.expiryDate === null && contact.firstName === 'Tony' && contact.lastName === 'Hawk');
 
-        let contactID = districtSuperintendent[0].districtContactId;
-        const url = `${constants.institute_base_url}/api/v1/institute/district/${districtID}/contact/${contactID}`;
-        return await restUtils.deleteData(token, url);
+        for (const i of districtSuperintendent) {
+            let contactID = i.districtContactId;
+            const url = `${constants.institute_base_url}/api/v1/institute/district/${districtID}/contact/${contactID}`;
+            await restUtils.deleteData(token, url);
+        }
     }
 
 };
