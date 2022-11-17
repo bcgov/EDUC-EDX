@@ -43,7 +43,7 @@
               <v-icon class="mb-1 mr-1" aria-hidden="false">
                 mdi-phone-outline
               </v-icon>
-              <span id="districtPhone" v-if="!editing">{{ formatPhoneNumber(district.phoneNumber) }}</span>
+              <span v-if="!editing">{{ formatPhoneNumber(district.phoneNumber) }}</span>
               <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="districtCopy.phoneNumber">
               </v-text-field>
             </v-col>
@@ -51,8 +51,8 @@
               <v-icon class="mb-1 mr-1" aria-hidden="false">
                 mdi-at
               </v-icon>
-              <span id="districtEmail" v-if="!editing">{{ district.email }}</span>
-              <v-text-field v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
+              <span v-if="!editing">{{ district.email }}</span>
+              <v-text-field id="districtEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
@@ -60,7 +60,7 @@
                 mdi-fax
               </v-icon>
               <span v-if="!editing">{{ formatPhoneNumber(district.faxNumber) }}</span>
-              <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
+              <v-text-field id="districtPhone" v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
