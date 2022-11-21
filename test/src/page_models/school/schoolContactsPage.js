@@ -36,6 +36,8 @@ class SchoolContactsPage {
         this.principalContactStartDate = Selector('span');
         this.editContactButton = Selector('#editContactButton');
         this.saveContactButton = Selector('#saveEditButton');
+        this.confirmationPromptHeader = Selector('.v-toolbar__title');
+        this.confirmPublishChangesButton = Selector('#resolveBtn');
 
         this.editContactFirstName = Selector('#contactEditFirstName');
         this.editContactLastName = Selector('#contactEditLastName');
@@ -398,6 +400,16 @@ class SchoolContactsPage {
         log.info('Verified that the alt phone number of the new contact record was set correctly.');
         await t.expect(contactDetails.find('span').withText(` ext. ${newContact.altPhoneExtension}`).exists).ok();
         log.info('Verified that the alt phone extension of the new contact record was set correctly.');
+    }
+
+    async verifyConfirmation(){
+        await t.expect(this.confirmationPromptHeader.withText('Confirm Updates to School Contact').innerText).contains('Confirm Updates to School Contact');
+        log.info(`Confirmation prompt Verified`);
+    }
+
+    async confirmPublishChanges(){
+        await t.click(this.confirmPublishChangesButton);
+        log.info('Publish Changes confirmation clicked');
     }
 
 }
