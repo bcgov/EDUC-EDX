@@ -30,7 +30,7 @@ fixture `school-school-contacts`
     // logout
     await t.navigateTo(base_url + '/logout');
 });
-/*
+
 test('testPage', async t => {
     await loginPage.login(credentials.adminCredentials);
     await dashboard.clickSchoolContactsCard();
@@ -80,7 +80,7 @@ test('testPage', async t => {
     await snackBarPage.verifySnackBarText('Success! The school contact has been created.');
     await schoolContactsPage.verifyNewContactAdded(schoolContactToAdd);
 });
-*/
+
 
 test('edit-school-contact', async t => {
 

@@ -36,7 +36,7 @@ class SchoolContactsPage {
         this.principalContactStartDate = Selector('span');
         this.editContactButton = Selector('#editContactButton');
         this.saveContactButton = Selector('#saveEditButton');
-        this.confirmationPromptHeader = Selector('div');
+        this.confirmationPromptHeader = Selector('.v-toolbar__title');
         this.confirmPublishChangesButton = Selector('#resolveBtn');
 
         this.editContactFirstName = Selector('#contactEditFirstName');
