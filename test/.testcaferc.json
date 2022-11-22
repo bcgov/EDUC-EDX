@@ -22,10 +22,10 @@
     "screenshots": {
         "path": "src/screenshots",
         "pathPattern": "${DATE}_${TIME}/test-${TEST_INDEX}/${USERAGENT}/${TEST}.png",
-        "takeOnFails": true,
-        "fullPage": true
+        "takeOnFails": false,
+        "fullPage": false
     },
     "filter": {
-        "testGrep": "test-send-new-message-with-students.*"
+        "testGrep": ".*"
     }
 }
