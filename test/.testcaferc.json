@@ -1,6 +1,6 @@
 {
     "_comment": "browsers should accept: edge -private, firefox -private-window, chrome -incognito",
-    "browsers": ["chrome:headless --incognito --no-sandbox --disable-dev-shm-usage"],
+    "browsers": ["chrome --incognito --no-sandbox --disable-dev-shm-usage"],
     "browserInitTimeout": 360000,
     "reporter": "list",
     "quarantineMode": false,
@@ -18,5 +18,14 @@
     "disableMultipleWindows": true,
     "clientScripts": [
         { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" }
-      ]
+      ],
+    "screenshots": {
+        "path": "test/screenshots",
+        "pathPattern": "${DATE}_${TIME}/test-${TEST_INDEX}/${USERAGENT}/${TEST}.png",
+        "takeOnFails": true,
+        "fullPage": true
+    },
+    "filter": {
+        "testGrep": "test-send-new-message-with-students.*"
+    }
 }
