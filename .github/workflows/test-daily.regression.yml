@@ -30,8 +30,7 @@ jobs:
           TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.AT_EDX_ACTIVATE_USER_PWD }}
           PEN_LIST: ${{secrets.AT_PEN_LIST}}
           INSTITUTE_API_URL: ${{ secrets.INSTITUTE_API_URL}}
-      - name: Upload failures
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
           name: Screenshot
