@@ -36,6 +36,7 @@ nconf.defaults({
         token_endpoint: process.env.TOKEN_ENDPOINT
     },
     student:{
+        //We need to parse github secret type String to an Array to use for test-send-new-message-with-students
         penList: process.env.PEN_LIST && JSON.parse(process.env.PEN_LIST)
     },
     institute:{
