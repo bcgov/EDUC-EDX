@@ -20,7 +20,7 @@
         { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" }
       ],
     "screenshots": {
-        "path": "screenshots",
+        "path": "src/screenshots",
         "pathPattern": "${DATE}_${TIME}/test-${TEST_INDEX}/${USERAGENT}/${TEST}.png",
         "takeOnFails": true,
         "fullPage": true
