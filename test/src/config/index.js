@@ -36,7 +36,7 @@ nconf.defaults({
         token_endpoint: process.env.TOKEN_ENDPOINT
     },
     student:{
-        penList: process.env.PEN_LIST
+        penList: process.env.PEN_LIST && JSON.parse(process.env.PEN_LIST)
     },
     institute:{
         base_url: process.env.INSTITUTE_API_URL
