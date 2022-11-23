@@ -126,7 +126,6 @@ export default {
       instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid schoolID'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
-      validationCode: null,
       submissionInProgress: false,
       isEdxUserActivationFormDisabled: false,
       showActivationSnackBar:false
@@ -158,7 +157,6 @@ export default {
       const body = {
         personalActivationCode: this.personalActivationCode,
         primaryEdxCode: this.primaryEdxCode,
-        validationCode: this.validationCode,
       };
 
       if(this.instituteTypeCode === 'SCHOOL') {
