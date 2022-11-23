@@ -581,7 +581,6 @@ async function activateEdxUser(req, res) {
       digitalId: req.session.digitalIdentityData.digitalID,
       personalActivationCode: req.body.personalActivationCode,
       primaryEdxCode: req.body.primaryEdxCode,
-      validationCode: req.body.validationCode,
     };
     let districtID;
     let schoolID;
