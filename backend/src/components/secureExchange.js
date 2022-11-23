@@ -573,8 +573,8 @@ async function activateEdxUser(req, res) {
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
-    const numberOfRetries = req.session[`${req.body.validationCode}`];
-    if (numberOfRetries && numberOfRetries >= 4) {
+    const numberOfRetries = req.session['activationAttempts'];
+    if (numberOfRetries && numberOfRetries >= 5) {
       return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
     }
     const payload = {
@@ -588,7 +588,7 @@ async function activateEdxUser(req, res) {
     if (req.body.districtNumber) {
       districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
       if (!districtID) {
-        incrementNumberOfRetriesCounter(req,numberOfRetries);
+        incrementNumberOfRetriesCounter(req);
         return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
       }
       payload.districtID = districtID;
@@ -596,14 +596,14 @@ async function activateEdxUser(req, res) {
     else if (req.body.mincode) {//this remains as mincode as user will input mincode
       schoolID = cacheService.getSchoolIdByMincode(req.body.mincode);
       if (!schoolID) {
-        incrementNumberOfRetriesCounter(req,numberOfRetries);
+        incrementNumberOfRetriesCounter(req);
         return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
       }
       payload.schoolID = schoolID;
     }
 
     if(!payload.schoolID && !payload.districtID){
-      incrementNumberOfRetriesCounter(req,numberOfRetries);
+      incrementNumberOfRetriesCounter(req);
       return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
     }
 
@@ -622,11 +622,11 @@ async function activateEdxUser(req, res) {
   }
 }
 
-function incrementNumberOfRetriesCounter(req,numberOfRetries) {
-  if (numberOfRetries && numberOfRetries <= 4) {
-    req.session[`${req.body.validationCode}`] = numberOfRetries + 1;
+function incrementNumberOfRetriesCounter(req) {
+  if (req.session['activationAttempts']) {
+    req.session['activationAttempts']++;
   } else {
-    req.session[`${req.body.validationCode}`] = 1;
+    req.session['activationAttempts'] = 1;
   }
 }
 async function getEdxUsers(req, res) {
