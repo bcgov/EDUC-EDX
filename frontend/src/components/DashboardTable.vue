@@ -125,7 +125,7 @@
           </v-card>
         </v-col>
         <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
+          <v-card width="22em" id="districtUserSchoolContactsCard" class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
