@@ -42,9 +42,26 @@ async function updateSchool(req, res){
     }
 
     const payload = req.body;
+
+    payload.addresses.forEach(function(addy) {
+      addy.updateDate = null;
+      addy.createDate = null;
+    });
+
+    payload.notes.forEach(function(note) {
+      note.updateDate = null;
+      note.createDate = null;
+    });
+
+    payload.contacts.forEach(function(contact) {
+      contact.updateDate = null;
+      contact.createDate = null;
+    });
+
     payload.createDate = null;
     payload.updateDate = null;
     const nlcObjectsArray = [];
+    const gradesObjectArray = [];
 
     for(const nlcCode of payload.neighborhoodLearning){
       //when there is an update in frontend to neigborhoodlearning system adds array of codes to the payload
@@ -61,8 +78,26 @@ async function updateSchool(req, res){
         });
       }
 
+      for (const gradeCode of payload.grades) {
+        //when there is an update in frontend to grades system adds array of codes to the payload
+        if (_.isString(gradeCode)) {
+          gradesObjectArray.push({
+            schoolGradeCode: gradeCode,
+            schoolId: payload.schoolId
+          });
+        } else {
+          //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
+          gradesObjectArray.push({
+            schoolGradeCode: gradeCode.schoolGradeCode,
+            schoolId: payload.schoolId
+          });
+        }
+      }
+
     }
     payload.neighborhoodLearning = nlcObjectsArray;
+    payload.grades = gradesObjectArray;
+
     const result = await putData(token, payload, config.get('institute:rootURL') + '/school/' + payload.schoolId, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {

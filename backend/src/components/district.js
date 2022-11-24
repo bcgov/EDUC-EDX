@@ -29,6 +29,22 @@ async function updateDistrict(req, res){
     checkEDXUserDistrictAdminPermission(req);
 
     const params = req.body;
+
+    params.addresses.forEach(function(addy) {
+      addy.updateDate = null;
+      addy.createDate = null;
+    });
+
+    params.notes.forEach(function(note) {
+      note.updateDate = null;
+      note.createDate = null;
+    });
+
+    params.contacts.forEach(function(contact) {
+      contact.updateDate = null;
+      contact.createDate = null;
+    });
+
     params.createDate = null;
     params.updateDate = null;
     const result = await putData(token, params, config.get('institute:rootURL') + '/district/' + req.params.districtID, req.session?.correlationID);
