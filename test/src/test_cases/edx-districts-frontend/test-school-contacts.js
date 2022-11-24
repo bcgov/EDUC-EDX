@@ -5,23 +5,21 @@ import {base_url, credentials} from '../../config/constants';
 import { getToken } from "../../helpers/oauth-utils";
 let token = '';
 import log from "npmlog";
-import NavBarPage from "../../page_models/common/navBarPage";
+import SchoolListPage from "../../page_models/school/schoolsListPage";
 import SchoolContacts from "../../page_models/school/schoolContactsPage";
 import LoginPage from '../../page_models/login-page';
-import InstituteSelectionPage from "../../page_models/institute-selection-page";
 import Dashboard from "../../page_models/dashboard";
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
 const schoolContacts = new SchoolContacts();
+const schoolList = new SchoolListPage();
 const loginPage = new LoginPage();
 const dashboard = new Dashboard();
-const navBar = new NavBarPage();
-const instituteSelectionPage = new InstituteSelectionPage();
 
 fixture `district-school-contacts`
     .before(async t => {
-        await setUpEdxDistrictUserWithAllAvailableRoles(['006'])
+        await setUpEdxDistrictUserWithAllAvailableRoles(['998'])
         getToken().then(async (data) => {
             token = data.access_token;
         }).catch((error => {
@@ -43,12 +41,9 @@ fixture `district-school-contacts`
 
 });
 
-test('testPage', async t => {
-    if(await instituteSelectionPage.isInstituteSelectionPage()){
-        await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle('Camosun College');
-    }
-    await dashboard.clickSchoolContactsCard();
-    await navBar.verifyNavTitleByText('School Contacts');
+test('view-school-contacts-as-district-user', async t => {
+    await dashboard.clickDistrictUserSchoolContactsCard();
+    await schoolList.clickSchoolContactsButton();
 
-    await schoolContacts.verifyPrincipalContact('00002');
+    await schoolContacts.verifyPrincipalContact(99998);
 });
