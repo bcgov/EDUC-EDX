@@ -2,9 +2,6 @@
 const { logApiError, errorResponse} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const cacheService = require('./cache-service');
-const config = require('../config');
-const log = require('./logger');
-
 
 function getDistricts(req, res) {
   try {
