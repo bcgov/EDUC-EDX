@@ -1,7 +1,6 @@
 /**
  * Tests to run against the school contact page
  */
-import { Role } from 'testcafe';
 import {base_url, credentials} from '../../config/constants';
 import NavBarPage from "../../page_models/common/navBarPage";
 import SchoolContactsPage from "../../page_models/school/schoolContactsPage";
@@ -11,8 +10,7 @@ import crypto from "crypto";
 import LoginPage from "../../page_models/login-page";
 
 const {setUpEdxSchoolUserWithAllAvailableRoles} =  require('../../helpers/user-set-up-utils');
-const {cleanUpSchoolContactRecord} = require('../../helpers/school-set-up-utils');
-const {setupInstituteEntities, deleteInstituteSetUp} = require('../../helpers/institute-set-up-utils');
+const {setupInstituteEntities} = require('../../helpers/institute-set-up-utils');
 const loginPage = new LoginPage();
 const navBar = new NavBarPage();
 const dashboard = new Dashboard();
