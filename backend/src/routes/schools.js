@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getSchoolBySchoolID, getAllCachedSchools, getAllSchoolDetails, getFullSchoolDetails, updateSchool, addSchoolContact, updateSchoolContact } = require('../components/school');
+const { getSchoolBySchoolID, getAllSchoolDetails, getFullSchoolDetails, updateSchool, addSchoolContact, updateSchoolContact } = require('../components/school');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 
