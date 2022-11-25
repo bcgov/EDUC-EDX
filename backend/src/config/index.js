@@ -90,7 +90,16 @@ nconf.defaults({
     activationCodeUrl: process.env.EDX_API_ENDPOINT + '/users/activation-code'
   },
   institute:{
-    rootURL: process.env.INSTITUTE_API_ENDPOINT
+    rootURL: process.env.INSTITUTE_API_ENDPOINT,
+    facilityTypeURL: process.env.INSTITUTE_API_URL + '/facility-codes',
+    categoryCodesURL: process.env.INSTITUTE_API_URL + '/category-codes',
+    organizationCodeURL: process.env.INSTITUTE_API_URL + '/organization-codes',
+    neighbourhoodLearningURL: process.env.INSTITUTE_API_URL + '/neighborhood-learning-codes',
+    gradeCodeURL: process.env.INSTITUTE_API_URL + '/grade-codes',
+    provinceCodesURL: process.env.INSTITUTE_API_URL + '/province-codes',
+    countryCodesURL: process.env.INSTITUTE_API_URL + '/country-codes',
+    schoolContactTypeCodesURL: process.env.INSTITUTE_API_URL + '/school-contact-type-codes',
+    districtContactTypeCodesURL: process.env.INSTITUTE_API_URL + '/district-contact-type-codes'
   }
 });
 module.exports = nconf;

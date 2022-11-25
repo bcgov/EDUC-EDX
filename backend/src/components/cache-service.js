@@ -6,6 +6,7 @@ const {getData} = require('../components/utils');
 const retry = require('async-retry');
 const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
 const {generateDistrictObject, isDistrictActive} = require('./districtUtils');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 let schoolMap = new Map();
 let schools = [];
@@ -18,6 +19,7 @@ let activeDistricts = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
+const cachedData = {};
 
 const cacheService = {
 
@@ -154,6 +156,40 @@ const cacheService = {
   },
   getDocumentTypeCodeLabelByCode(code) {
     return documentTypeCodesMap.get(code);
+  },
+  isActiveRecord(record) {
+    const currentTime = LocalDate.now();
+    const openedDate = record?.effectiveDate;
+    const closedDate = record?.expiryDate;
+    return !(!record || !openedDate || currentTime.isBefore(LocalDate.parse(openedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)) || (closedDate && currentTime.isAfter(LocalDate.parse(closedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
+  },
+  async loadDataToCache(cacheKey,url){
+    log.debug(` loading all ${cacheKey} during start up`);
+    await retry(async () => {
+      const tokenData = await getApiCredentials();
+      const responseData = await getData(tokenData.accessToken, config.get(url));
+      // reset the value.
+      const records = [];
+      const activeRecords = [];
+      if (responseData && responseData.length > 0) {
+        for (const data of responseData) {
+          records.push(data);
+          if(this.isActiveRecord(data)){
+            activeRecords.push(data);
+          }
+        }
+        cachedData[`${cacheKey}`]={
+          'activeRecords':activeRecords,
+          'records':records
+        };
+      }
+      log.info(`loaded ${responseData.length} ${cacheKey} Types.`);
+    }, {
+      retries: 50
+    });
+  },
+  getCachedData(){
+    return cachedData;
   }
 };
 

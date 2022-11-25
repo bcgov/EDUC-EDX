@@ -8,7 +8,7 @@ const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, c
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
 const auth = require('../components/auth');
-const {CACHE_KEYS} = require('../components/constants');
+const {CACHE_KEYS} = require('../util/constants');
 const isValidBackendToken = auth.isValidBackendToken();
 const router = express.Router();
 
