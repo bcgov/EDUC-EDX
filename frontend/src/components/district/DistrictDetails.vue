@@ -369,6 +369,12 @@
         </v-col>
       </v-row>
     </v-container>
+    <ConfirmationDialog ref="confirmSchoolDetailsUpdateAndSave">
+      <template v-slot:message>
+        <p>All changes made to district details will be <strong>available to the public on save</strong>.</p>
+        <p>Please be sure to review your changes carefully before you publish them.</p>
+      </template>
+    </ConfirmationDialog>
   </v-form>
 </template>
 
@@ -384,11 +390,15 @@ import {deepCloneObject} from '@/utils/common';
 import {mapGetters, mapState} from 'vuex';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
+import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 
 export default {
   name: 'DistrictDetailsPage',
   mixins: [alertMixin],
-  components: {PrimaryButton},
+  components: {
+    PrimaryButton,
+    ConfirmationDialog,
+  },
   props: {
     districtID: {
       type: String,
@@ -463,7 +473,11 @@ export default {
         return 'Inactive';
       }
     },
-    saveDistrict() {
+    async saveDistrict() {
+      const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to District Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});
+      if (!confirmation) {
+        return;
+      }
       this.loading = true;
 
       if(this.sameAsMailingCheckbox){
