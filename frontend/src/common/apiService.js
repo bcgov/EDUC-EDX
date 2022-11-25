@@ -69,64 +69,6 @@ export default {
     }
   },
 
-  async getFacilityTypeCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.school.FACILITY_TYPES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getFacilityTypeCodes API - ${e}`);
-      throw e;
-    }
-  },
-
-  async getSchoolCategoryTypeCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.school.SCHOOL_CATEGORY_TYPES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolCategoryTypeCodes API - ${e}`);
-      throw e;
-    }
-  },
-  async getSchoolOrganizationTypeCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.school.SCHOOL_ORGANIZATION_TYPES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolOrganizationTypeCodes API - ${e}`);
-      throw e;
-    }
-  },
-  async getSchoolNeighborhoodLearningCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.school.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getSchoolNeighborhoodLearningCodes API - ${e}`);
-      throw e;
-    }
-  },
-  async getGradeCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.school.SCHOOL_GRADE_TYPES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getGradeCodes API - ${e}`);
-      throw e;
-    }
-  },
-  async getProvinceCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.institute.PROVINCE_CODES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getProvinceCodes API - ${e}`);
-      throw e;
-    }
-  },
-  async getCountryCodes() {
-    try{
-      return await apiAxios.get(ApiRoutes.institute.COUNTRY_CODES_URL);
-    } catch(e) {
-      console.log(`Failed to get from Nodejs getCountryCodes API - ${e}`);
-      throw e;
-    }
-  },
-
   async getFileRequirements() {
     try{
       return await apiAxios.get(ApiRoutes.edx.FILE_REQUIREMENTS_URL);
@@ -186,6 +128,20 @@ export default {
   getDistricts: getCodes(`${ApiRoutes.DISTRICT_DATA_URL}`),
   getActiveSchools: getCodes(`${ApiRoutes.SCHOOL_DATA_URL}?active=true`),
   getActiveDistricts: getCodes(`${ApiRoutes.DISTRICT_DATA_URL}?active=true`),
+  getFacilityTypeCodes: getCodes(`${ApiRoutes.institute.FACILITY_TYPES_URL}`),
+  getSchoolCategoryTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_CATEGORY_TYPES_URL}`),
+  getSchoolOrganizationTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_ORGANIZATION_TYPES_URL}`),
+  getSchoolNeighborhoodLearningCodes: getCodes(`${ApiRoutes.institute.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL}`),
+  getGradeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_GRADE_TYPES_URL}`),
+  getProvinceCodes: getCodes(`${ApiRoutes.institute.PROVINCE_CODES_URL}`),
+  getCountryCodes: getCodes(`${ApiRoutes.institute.COUNTRY_CODES_URL}`),
+  getAllActiveFacilityTypeCodes: getCodes(`${ApiRoutes.institute.FACILITY_TYPES_URL}?active=true`),
+  getAllActiveSchoolCategoryTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_CATEGORY_TYPES_URL}?active=true`),
+  getAllActiveSchoolOrganizationTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_ORGANIZATION_TYPES_URL}?active=true`),
+  getAllActiveSchoolNeighborhoodLearningCodes: getCodes(`${ApiRoutes.institute.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL}?active=true`),
+  getAllActiveSchoolGradeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_GRADE_TYPES_URL}?active=true`),
+  getAllActiveInstituteProvinceCodes: getCodes(`${ApiRoutes.institute.PROVINCE_CODES_URL}?active=true`),
+  getAllActiveInstituteCountryCodes: getCodes(`${ApiRoutes.institute.COUNTRY_CODES_URL}?active=true`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

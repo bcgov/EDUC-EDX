@@ -131,7 +131,7 @@ export default {
   methods: {
     getSchoolContactTypeCodes() {
       this.loadingCount += 1;
-      ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_CONTACT_TYPE_CODES)
+      ApiService.apiAxios.get(ApiRoutes.institute.SCHOOL_CONTACT_TYPE_CODES)
         .then(response => {
           this.schoolContactTypes = response.data;
         })

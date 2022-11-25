@@ -302,6 +302,7 @@ function getCodeTable(token, key, url, useCache = true) {
     throw new Error(`getCodeTable error, ${e}`);
   }
 }
+
 function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   return async function getCodesHandler(req, res) {
     try {
@@ -320,6 +321,7 @@ function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
     }
   };
 }
+
 function cacheMiddleware() {
   return (req, res, next) => {
     let key = '__express__' + req.originalUrl || req.url;

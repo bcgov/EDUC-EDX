@@ -137,10 +137,10 @@
               </v-row>
             </v-col>
           </v-row>
-        <v-row class="d-flex justify-start">
+        <v-row class="d-flex justify-start pt-2">
           <v-col cols="4" lg="3" class="pb-0 pt-0">
             <v-row no-gutters>
-              <v-col cols="10" class="pt-2 pr-0">
+              <v-col cols="10" class="pr-0">
                 <span style="color: grey">Grades Offered</span>
               </v-col>
             </v-row>
@@ -151,7 +151,7 @@
             </v-row>
           </v-col>
           <v-col cols="4" lg="3" class="pb-0 pt-0">
-            <v-row no-gutters class="d-flex justify-start">
+            <v-row no-gutters class="">
               <v-col cols="10" class="d-flex justify-start">
                 <span style="color: grey">School Organization</span>
               </v-col>
@@ -159,11 +159,13 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
-                <v-select v-else :items="schoolOrganizationTypeCodes"
+                <v-select v-else :items="schoolActiveOrganizationTypes"
                           item-value="schoolOrganizationCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.schoolOrganizationCode"
                           single
+                          dense
+                          class="pt-0 mt-0"
                           required
                 ></v-select>
               </v-col>
@@ -178,11 +180,13 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
-                <v-select v-else :items="schoolNeighborhoodLearningTypes"
+                <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
                           item-value="neighborhoodLearningTypeCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.neighborhoodLearning"
                           multiple
+                          dense
+                          class="pt-0 mt-0"
                           ></v-select>
               </v-col>
             </v-row>
@@ -316,6 +320,8 @@ export default {
       schoolCategoryTypes: [],
       schoolOrganizationTypes: [],
       schoolNeighborhoodLearningTypes: [],
+      schoolActiveOrganizationTypes: [],
+      schoolActiveNeighborhoodLearningTypes: [],
       schoolGradeTypes: [],
       loading: true,
       cleanWebsiteUrl:'',
@@ -332,6 +338,9 @@ export default {
     ...mapState('institute', ['schoolCategoryTypeCodes']),
     ...mapState('institute', ['schoolOrganizationTypeCodes']),
     ...mapState('institute', ['schoolNeighborhoodLearningCodes']),
+    ...mapState('institute', ['activeSchoolOrganizationTypeCodes']),
+    ...mapState('institute', ['activeSchoolNeighborhoodLearningCodes']),
+
     ...mapState('institute', ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
@@ -355,6 +364,12 @@ export default {
     });
     this.$store.dispatch('institute/getSchoolNeighborhoodLearningCodes').then(() => {
       this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
+    });
+    this.$store.dispatch('institute/getAllActiveSchoolOrganizationTypeCodes').then(() => {
+      this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
+    });
+    this.$store.dispatch('institute/getAllActiveSchoolNeighborhoodLearningCodes').then(() => {
+      this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
     });
     this.$store.dispatch('institute/getGradeCodes').then(() => {
       this.schoolGradeTypes = this.gradeCodes;
@@ -476,7 +491,6 @@ export default {
     },
     cancelClicked(){
       this.editing = false;
-      this.setHasSamePhysicalFlag();
     },
     async updateSchoolDetails() {
       const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to School Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});

@@ -9,7 +9,14 @@ export default {
     schoolNeighborhoodLearningCodes: null,
     gradeCodes: null,
     provinceCodes: null,
-    countryCodes: null
+    countryCodes: null,
+    activeFacilityTypeCodes: null,
+    activeSchoolCategoryTypeCodes: null,
+    activeSchoolOrganizationTypeCodes: null,
+    activeSchoolNeighborhoodLearningCodes: null,
+    activeGradeCodes: null,
+    activeProvinceCodes: null,
+    activeCountryCodes: null,
   },
   getters: {
     facilityTypeCodes: state => state.facilityTypeCodes,
@@ -18,7 +25,14 @@ export default {
     schoolNeighborhoodLearningCodes: state => state.schoolNeighborhoodLearningCodes,
     gradeCodes: state => state.gradeCodes,
     provinceCodes: state => state.provinceCodes,
-    countryCodes: state => state.countryCodes
+    countryCodes: state => state.countryCodes,
+    activeFacilityTypeCodes: state => state.activeFacilityTypeCodes,
+    activeSchoolCategoryTypeCodes: state => state.activeSchoolCategoryTypeCodes,
+    activeSchoolOrganizationTypeCodes: state => state.activeSchoolOrganizationTypeCodes,
+    activeSchoolNeighborhoodLearningCodes: state => state.activeSchoolNeighborhoodLearningCodes,
+    activeGradeCodes: state => state.activeGradeCodes,
+    activeProvinceCodes: state => state.activeProvinceCodes,
+    activeCountryCodes: state => state.activeCountryCodes,
   },
   mutations: {
     setFacilityTypeCodes: (state, facilityTypeCodes) => {
@@ -41,7 +55,28 @@ export default {
     },
     setCountryCodes: (state, countryCodes) => {
       state.countryCodes = countryCodes;
-    }
+    },
+    setActiveFacilityTypeCodes: (state, activeFacilityTypeCodes) => {
+      state.activeFacilityTypeCodes = activeFacilityTypeCodes;
+    },
+    setActiveSchoolCategoryTypeCodes: (state, activeSchoolCategoryTypeCodes) => {
+      state.activeSchoolCategoryTypeCodes = activeSchoolCategoryTypeCodes;
+    },
+    setActiveSchoolOrganizationTypeCodes: (state, activeSchoolOrganizationTypeCodes) => {
+      state.activeSchoolOrganizationTypeCodes = activeSchoolOrganizationTypeCodes;
+    },
+    setActiveSchoolNeighborhoodLearningCodes: (state, activeSchoolNeighborhoodLearningCodes) => {
+      state.activeSchoolNeighborhoodLearningCodes = activeSchoolNeighborhoodLearningCodes;
+    },
+    setActiveGradeCodes: (state, activeGradeCodes) => {
+      state.activeGradeCodes = activeGradeCodes;
+    },
+    setActiveProvinceCodes: (state, activeProvinceCodes) => {
+      state.activeProvinceCodes = activeProvinceCodes;
+    },
+    setActiveCountryCodes: (state, activeCountryCodes) => {
+      state.activeCountryCodes = activeCountryCodes;
+    },
   },
   actions: {
     async getFacilityTypeCodes({commit}) {
@@ -71,6 +106,34 @@ export default {
     async getCountryCodes({commit}) {
       const response = await ApiService.getCountryCodes();
       commit('setCountryCodes', response.data);
-    }
+    },
+    async getAllActiveFacilityTypeCodes({commit}) {
+      const response = await ApiService.getAllActiveFacilityTypeCodes();
+      commit('setActiveFacilityTypeCodes', response.data);
+    },
+    async getAllActiveSchoolCategoryTypeCodes({commit}) {
+      const response = await ApiService.getAllActiveSchoolCategoryTypeCodes();
+      commit('setActiveSchoolCategoryTypeCodes', response.data);
+    },
+    async getAllActiveSchoolOrganizationTypeCodes({commit}) {
+      const response = await ApiService.getAllActiveSchoolOrganizationTypeCodes();
+      commit('setActiveSchoolOrganizationTypeCodes', response.data);
+    },
+    async getAllActiveSchoolNeighborhoodLearningCodes({commit}) {
+      const reponse = await ApiService.getAllActiveSchoolNeighborhoodLearningCodes();
+      commit('setActiveSchoolNeighborhoodLearningCodes', reponse.data);
+    },
+    async getAllActiveGradeCodes({commit}) {
+      const response = await ApiService.getAllActiveSchoolGradeCodes();
+      commit('setActiveGradeCodes', response.data);
+    },
+    async getAllActiveProvinceCodes({commit}) {
+      const response = await ApiService.getAllActiveInstituteProvinceCodes();
+      commit('setActiveProvinceCodes', response.data);
+    },
+    async getAllActiveCountryCodes({commit}) {
+      const response = await ApiService.getAllActiveInstituteCountryCodes();
+      commit('setActiveCountryCodes', response.data);
+    },
   }
 };

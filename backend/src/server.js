@@ -2,6 +2,7 @@
 
 const config = require('./config/index');
 const http = require('http');
+const constants = require('./util/constants');
 const log = require('./components/logger');
 const localDateTime = require('@js-joda/core').LocalDateTime;
 //Add timestamp to log
@@ -41,8 +42,53 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   }).catch((e) => {
     log.error('Error loading document type codes during boot .', e);
   });
-
-  require('./schedulers/cache-service-scheduler');
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_FACILITY_TYPES, 'institute:facilityTypeURL').then(() => {
+    log.info('Loaded FACILITY_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading FACILITY_TYPES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_CATEGORY_TYPES, 'institute:categoryCodesURL').then(() => {
+    log.info('Loaded SCHOOL_CATEGORY_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading SCHOOL_CATEGORY_TYPES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_ORGANIZATION_TYPES, 'institute:organizationCodeURL').then(() => {
+    log.info('Loaded SCHOOL_ORGANIZATION_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading SCHOOL_ORGANIZATION_TYPES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES, 'institute:neighbourhoodLearningURL').then(() => {
+    log.info('Loaded SCHOOL_NEIGHBOURHOOD_LEARNING_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading SCHOOL_NEIGHBOURHOOD_LEARNING_TYPES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_GRADE_TYPES, 'institute:gradeCodeURL').then(() => {
+    log.info('Loaded GRADE_CODES data to memory');
+  }).catch((e) => {
+    log.error('Error loading GRADE_CODES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.PROVINCE_CODES, 'institute:provinceCodesURL').then(() => {
+    log.info('Loaded PROVINCE_CODES data to memory');
+  }).catch((e) => {
+    log.error('Error loading PROVINCE_CODES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.COUNTRY_CODES, 'institute:countryCodesURL').then(() => {
+    log.info('Loaded COUNTRY_CODES data to memory');
+  }).catch((e) => {
+    log.error('Error loading COUNTRY_CODES data during boot .', e);
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_CONTACT_TYPE_CODES, 'institute:schoolContactTypeCodesURL').then(() => {
+    log.info('Loaded SCHOOL_CONTACT_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading SCHOOL_CONTACT_TYPES data during boot .', e);
+    require('./schedulers/cache-service-scheduler');
+  });
+  cacheService.loadDataToCache( constants.CACHE_KEYS.DISTRICT_CONTACT_TYPE_CODES, 'institute:districtContactTypeCodesURL').then(() => {
+    log.info('Loaded DISTRICT_CONTACT_TYPES data to memory');
+  }).catch((e) => {
+    log.error('Error loading DISTRICT_CONTACT_TYPES data during boot .', e);
+    require('./schedulers/cache-service-scheduler');
+  });
 }
 
 require('./schedulers/saga-check-scheduler');
