@@ -363,14 +363,19 @@ const instituteApiService = {
       };
 
     let newDistrict = await restUtils.getData(token, `${constants.institute_base_url}${DISTRICT_ENDPOINT}/${district.districtId}`);
-    let filteredContacts = newDistrict.contacts.filter(contact => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
-    const url = `${constants.institute_base_url}${DISTRICT_ENDPOINT}/${district.districtId}/contact`;
 
-    if(filteredContacts.length < 1){
-      return await restUtils.postData(token, url, districtContactPayload);
+    const contactUrl = `${constants.institute_base_url}${DISTRICT_ENDPOINT}/${district.districtId}/contact`;
+
+    if (newDistrict.contacts) {
+      log.info('deleting all district contacts');
+      newDistrict.contacts.forEach(contact => {
+        restUtils.deleteData(token, `${contactUrl}/${contact.districtContactId}`);
+      });
     }
-    districtContactPayload.districtContactId = filteredContacts[0].districtContactId;
-    return await restUtils.putData(token, url + '/' + districtContactPayload.districtContactId, districtContactPayload);
+
+    log.info('adding Automation Testing district superintendent contact')
+    return await restUtils.postData(token, contactUrl, districtContactPayload);
+
   },
   async createSchoolWithContactToTest(districtID){
     const data = await getToken();
@@ -434,14 +439,19 @@ const instituteApiService = {
       };
 
     let newSchool = await restUtils.getData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`);
-    let filteredContacts = newSchool.contacts.filter(contact => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
-    const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`;
 
-    if(filteredContacts.length < 1){
-      return await restUtils.postData(token, url, schoolContactPayload);
+    const contactUrl = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`;
+
+    if (newSchool.contacts) {
+      log.info('deleting all school contacts');
+      newSchool.contacts.forEach(contact => {
+        restUtils.deleteData(token, `${contactUrl}/${contact.schoolContactId}`);
+      });
     }
-    schoolContactPayload.schoolContactId = filteredContacts[0].schoolContactId;
-    return await restUtils.putData(token, url + '/' + schoolContactPayload.schoolContactId, schoolContactPayload);
+
+    log.info('adding Automation Testing school principal contact')
+    return await restUtils.postData(token, contactUrl, schoolContactPayload);
+
   },
   async getSchoolIDBySchoolCodeAndDistrictID(schoolCode, districtID) {
     const data = await getToken();

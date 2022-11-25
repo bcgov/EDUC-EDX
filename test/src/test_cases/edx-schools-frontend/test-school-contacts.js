@@ -1,7 +1,6 @@
 /**
  * Tests to run against the school contact page
  */
-import { Role } from 'testcafe';
 import {base_url, credentials} from '../../config/constants';
 import NavBarPage from "../../page_models/common/navBarPage";
 import SchoolContactsPage from "../../page_models/school/schoolContactsPage";
@@ -11,8 +10,7 @@ import crypto from "crypto";
 import LoginPage from "../../page_models/login-page";
 
 const {setUpEdxSchoolUserWithAllAvailableRoles} =  require('../../helpers/user-set-up-utils');
-const {cleanUpSchoolContactRecord} = require('../../helpers/school-set-up-utils');
-const {setupInstituteEntities, deleteInstituteSetUp} = require('../../helpers/institute-set-up-utils');
+const {setupInstituteEntities} = require('../../helpers/institute-set-up-utils');
 const loginPage = new LoginPage();
 const navBar = new NavBarPage();
 const dashboard = new Dashboard();
@@ -21,7 +19,7 @@ const snackBarPage = new SnackBarPage();
 
 fixture `school-school-contacts`
     .before(async t => {
-        await setUpEdxSchoolUserWithAllAvailableRoles(['99999']);
+        await setUpEdxSchoolUserWithAllAvailableRoles(['99998']);
     })
     .beforeEach(async t => {
         await setupInstituteEntities();
@@ -35,7 +33,7 @@ test('testPage', async t => {
     await loginPage.login(credentials.adminCredentials);
     await dashboard.clickSchoolContactsCard();
     await navBar.verifyNavTitleByText('School Contacts');
-    await schoolContactsPage.verifyPrincipalContact('99999');
+    await schoolContactsPage.verifyPrincipalContact('99998');
 
     //Test adding a contact.
     //Test the initial state of the new contact dialog.
