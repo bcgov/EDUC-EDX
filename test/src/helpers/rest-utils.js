@@ -16,7 +16,7 @@ const restService = {
      * @param params
      * @returns {Promise<any>}
      */
-    async getData(token, url, params) {
+    async getData(token, url, params = {}) {
         try {
             params = setToken(params, token);
             const response = await axios.get(url, params);
@@ -38,7 +38,7 @@ const restService = {
      * @param params
      * @returns {Promise<any>}
      */
-    async postData(token, url, data, params) {
+    async postData(token, url, data, params = {}) {
         try {
             params = setToken(params, token);
             const response = await axios.post(url, data, params);
@@ -60,7 +60,7 @@ const restService = {
      * @param params
      * @returns {Promise<any>}
      */
-    async putData(token, url, data, params) {
+    async putData(token, url, data, params = {}) {
         try {
             params = setToken(params, token);
             const response = await axios.put(url, data, params);
@@ -81,7 +81,7 @@ const restService = {
      * @param params
      * @returns {Promise<any>}
      */
-    async deleteData(token, url, params) {
+    async deleteData(token, url, params = {}) {
         try {
             params = setToken(params, token);
             const response = await axios.delete(url, params);
