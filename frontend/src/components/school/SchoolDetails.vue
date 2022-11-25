@@ -159,7 +159,7 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getSchoolOrganization(school) }}</span>
-                <v-select v-else :items="schoolOrganizationTypeCodes"
+                <v-select v-else :items="schoolActiveOrganizationTypes"
                           item-value="schoolOrganizationCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.schoolOrganizationCode"
@@ -180,7 +180,7 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
-                <v-select v-else :items="schoolNeighborhoodLearningTypes"
+                <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
                           item-value="neighborhoodLearningTypeCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.neighborhoodLearning"
@@ -320,6 +320,8 @@ export default {
       schoolCategoryTypes: [],
       schoolOrganizationTypes: [],
       schoolNeighborhoodLearningTypes: [],
+      schoolActiveOrganizationTypes: [],
+      schoolActiveNeighborhoodLearningTypes: [],
       schoolGradeTypes: [],
       loading: true,
       cleanWebsiteUrl:'',
@@ -336,6 +338,9 @@ export default {
     ...mapState('institute', ['schoolCategoryTypeCodes']),
     ...mapState('institute', ['schoolOrganizationTypeCodes']),
     ...mapState('institute', ['schoolNeighborhoodLearningCodes']),
+    ...mapState('institute', ['activeSchoolOrganizationTypeCodes']),
+    ...mapState('institute', ['activeSchoolNeighborhoodLearningCodes']),
+
     ...mapState('institute', ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
@@ -359,6 +364,12 @@ export default {
     });
     this.$store.dispatch('institute/getSchoolNeighborhoodLearningCodes').then(() => {
       this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
+    });
+    this.$store.dispatch('institute/getAllActiveSchoolOrganizationTypeCodes').then(() => {
+      this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
+    });
+    this.$store.dispatch('institute/getAllActiveSchoolNeighborhoodLearningCodes').then(() => {
+      this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
     });
     this.$store.dispatch('institute/getGradeCodes').then(() => {
       this.schoolGradeTypes = this.gradeCodes;
