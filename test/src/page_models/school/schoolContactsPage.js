@@ -10,7 +10,7 @@ class SchoolContactsPage {
     constructor() {
         this.addSchoolContactButton = Selector('#addSchoolContactBtn');
         this.newContactSheet = Selector('#newContactVCard');
-        this.newContactDropdown = Selector('#newContactDropdown');
+        this.newContactDropdown = Selector('#newContactDropdown').parent('div[role="button"');
         this.newContactFirstNameInput = Selector('#newContactFirstNameInput');
         this.newContactLastNameInput = Selector('#newContactLastNameInput');
         this.newContactEmailInput = Selector("#newContactEmailInput");
@@ -398,7 +398,7 @@ class SchoolContactsPage {
         log.info('Verified that the phone extension of the new contact record was set correctly.');
         await t.expect(contactDetails.find('span').withText(newContact.altPhoneNumber).exists).ok();
         log.info('Verified that the alt phone number of the new contact record was set correctly.');
-        await t.expect(contactDetails.find('span').withText(` ext. ${newContact.altPhoneExtension}`).exists).ok();
+        await t.expect(contactDetails.find('span').withText(`ext. ${newContact.altPhoneExtension}`).exists).ok();
         log.info('Verified that the alt phone extension of the new contact record was set correctly.');
     }
 

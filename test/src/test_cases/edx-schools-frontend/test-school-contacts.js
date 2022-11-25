@@ -21,7 +21,7 @@ const snackBarPage = new SnackBarPage();
 
 fixture `school-school-contacts`
     .before(async t => {
-        await setUpEdxSchoolUserWithAllAvailableRoles(['99999']);
+        await setUpEdxSchoolUserWithAllAvailableRoles(['99998']);
     })
     .beforeEach(async t => {
         await setupInstituteEntities();
@@ -35,7 +35,7 @@ test('testPage', async t => {
     await loginPage.login(credentials.adminCredentials);
     await dashboard.clickSchoolContactsCard();
     await navBar.verifyNavTitleByText('School Contacts');
-    await schoolContactsPage.verifyPrincipalContact('99999');
+    await schoolContactsPage.verifyPrincipalContact('99998');
 
     //Test adding a contact.
     //Test the initial state of the new contact dialog.
