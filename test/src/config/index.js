@@ -35,6 +35,10 @@ nconf.defaults({
         token_client_secret: process.env.TOKEN_CLIENT_SECRET,
         token_endpoint: process.env.TOKEN_ENDPOINT
     },
+    secureExchange:{
+      contactIdentifier: process.env.CONTACT_IDENTIFIER,
+      ministryOwnershipTeamID: process.env.MINISTRY_OWNERSHIP_TEAM_ID
+    },
     student:{
         //We need to parse github secret type String to an Array to use for test-send-new-message-with-students
         penList: process.env.PEN_LIST && JSON.parse(process.env.PEN_LIST)

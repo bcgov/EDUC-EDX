@@ -29,6 +29,8 @@ jobs:
           TEST_EDX_ACTIVATE_USER_USERNAME: ${{ secrets.AT_EDX_ACTIVATE_USER_USERNAME }}
           TEST_EDX_ACTIVATE_USER_PWD: ${{ secrets.AT_EDX_ACTIVATE_USER_PWD }}
           PEN_LIST: ${{secrets.AT_PEN_LIST}}
+          MINISTRY_OWNERSHIP_TEAM_ID: ${{secrets.AT_MINISTRY_OWNERSHIP_TEAM_ID}}
+          CONTACT_IDENTIFIER: ${{secrets.AT_CONTACT_IDENTIFIER}}
           INSTITUTE_API_URL: ${{ secrets.INSTITUTE_API_URL}}
 #      - name: Upload Failure Screenshot
 #        uses: actions/upload-artifact@v2
