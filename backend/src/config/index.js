@@ -91,15 +91,15 @@ nconf.defaults({
   },
   institute:{
     rootURL: process.env.INSTITUTE_API_ENDPOINT,
-    facilityTypeURL: process.env.INSTITUTE_API_URL + '/facility-codes',
-    categoryCodesURL: process.env.INSTITUTE_API_URL + '/category-codes',
-    organizationCodeURL: process.env.INSTITUTE_API_URL + '/organization-codes',
-    neighbourhoodLearningURL: process.env.INSTITUTE_API_URL + '/neighborhood-learning-codes',
-    gradeCodeURL: process.env.INSTITUTE_API_URL + '/grade-codes',
-    provinceCodesURL: process.env.INSTITUTE_API_URL + '/province-codes',
-    countryCodesURL: process.env.INSTITUTE_API_URL + '/country-codes',
-    schoolContactTypeCodesURL: process.env.INSTITUTE_API_URL + '/school-contact-type-codes',
-    districtContactTypeCodesURL: process.env.INSTITUTE_API_URL + '/district-contact-type-codes'
+    facilityTypeURL: process.env.INSTITUTE_API_ENDPOINT + '/facility-codes',
+    categoryCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/category-codes',
+    organizationCodeURL: process.env.INSTITUTE_API_ENDPOINT + '/organization-codes',
+    neighbourhoodLearningURL: process.env.INSTITUTE_API_ENDPOINT + '/neighborhood-learning-codes',
+    gradeCodeURL: process.env.INSTITUTE_API_ENDPOINT + '/grade-codes',
+    provinceCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/province-codes',
+    countryCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/country-codes',
+    schoolContactTypeCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/school-contact-type-codes',
+    districtContactTypeCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/district-contact-type-codes'
   }
 });
 module.exports = nconf;
