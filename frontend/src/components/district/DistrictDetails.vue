@@ -474,7 +474,7 @@ export default {
       }
     },
     async saveDistrict() {
-      const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to District Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});
+      const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to District Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to District Details'});
       if (!confirmation) {
         return;
       }
