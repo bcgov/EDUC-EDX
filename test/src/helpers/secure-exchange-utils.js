@@ -1,7 +1,6 @@
 import SecureExchange from '../model/SecureExchange';
 import SecureExchangeComment from '../model/SecureExchangeComment';
-const date = require('date-and-time');
-const {test_exchange_object} = require('../config/constants');
+const {ministry_ownership_team_id, contact_identifier} = require('../config/constants');
 
 
 
@@ -10,8 +9,8 @@ const secureExchangeUtils = {
     const userName = "EDX";
     let secureExchange = new SecureExchange();
     let comment = new SecureExchangeComment();
-    secureExchange.contactIdentifier = "00899178";
-    secureExchange.ministryOwnershipTeamID = "5bbdacff-1b36-4ce5-8f0a-8dab03b59715";
+    secureExchange.contactIdentifier = contact_identifier;
+    secureExchange.ministryOwnershipTeamID = ministry_ownership_team_id;
     secureExchange.secureExchangeContactTypeCode = "SCHOOL";
     secureExchange.createUser = userName;
     secureExchange.updateUser = userName;

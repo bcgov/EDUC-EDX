@@ -15,8 +15,11 @@ module.exports.credentials = Object.freeze({
     }
   });
 
+//secure exchange
 module.exports.student_penList = config.get('student:penList');
-module.exports.institute_base_url = config.get('institute:base_url');
+module.exports.contact_identifier = config.get('secureExchange:contactIdentifier');
+module.exports.ministry_ownership_team_id = config.get('secureExchange:ministryOwnershipTeamID');
+
 //Token related config
 //module.exports.token_namespace = config.get('token:token_namespace');
 //module.exports.token_environment = config.get('token:token_environment');
@@ -26,6 +29,7 @@ module.exports.token_endpoint = config.get('token:token_endpoint');
 
 // URLS
 module.exports.edx_api_url = module.exports.base_url + config.get('url:edx_api_url');
+module.exports.institute_base_url = config.get('institute:base_url');
 
 // PAGE Titles
 module.exports.page_titles = Object.freeze({

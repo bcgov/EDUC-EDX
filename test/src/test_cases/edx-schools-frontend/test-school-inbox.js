@@ -14,17 +14,19 @@ import log from "npmlog";
 import Inbox from "../../page_models/inbox";
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 import LoginPage from '../../page_models/login-page';
+import Dashboard from "../../page_models/dashboard";
 
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
 const hamburgerMenu = new HamburgerMenuPage();
 const loginPage = new LoginPage();
+const dashboard = new Dashboard();
 let token = '';
 let testExchange = createTestExchange();
 
 fixture `school-inbox`
     .before(async t => {
-        await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
+        await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
        getToken().then(async (data) => {
             token = data.access_token;
             // make sure there are no artifact messages from previous runs 
@@ -44,18 +46,16 @@ fixture `school-inbox`
     })
     .beforeEach(async t => {
         // log in as studentAdmin
+        await loginPage.login(credentials.adminCredentials);
         await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
         // logout
     await t.navigateTo(base_url + '/logout');
     });
 
-test('testPage', async t => {
+test('test-school-inbox', async t => {
     // navigate to /inbox, expect title
-    await t.navigateTo(base_url);
-    await loginPage.login(credentials.adminCredentials);
-    await t.navigateTo(base_url + '/inbox')
-           .expect(inbox.navTitle.innerText).contains('Secure Messaging Inbox');
+    await dashboard.clickSecureMessageInbox();
     // click filtersToggle
     await inbox.clickFiltersToggle();
     // type in a subject
@@ -90,12 +90,9 @@ test('testPage', async t => {
 });
 
 test('test-navigation-to-school-inbox', async t => {
-    await t.navigateTo(base_url);
-    await loginPage.login(credentials.adminCredentials);
-    await t.navigateTo(base_url);
-    hamburgerMenu.clickHamburgerMenu();
-    hamburgerMenu.verifySecureMessagingInboxMenuButtonIsAvailable();
-    hamburgerMenu.clickSecureMessagingInboxMenuButton();
+    await hamburgerMenu.clickHamburgerMenu();
+    await hamburgerMenu.verifySecureMessagingInboxMenuButtonIsAvailable();
+    await hamburgerMenu.clickSecureMessagingInboxMenuButton();
     await t.expect(inbox.navTitle.innerText).contains('Secure Messaging Inbox');
 });
 
