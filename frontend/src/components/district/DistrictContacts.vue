@@ -157,7 +157,7 @@ export default {
   methods: {
     getDistrictContactTypeCodes() {
       this.loadingCount += 1;
-      ApiService.apiAxios.get(ApiRoutes.district.DISTRICT_CONTACT_TYPE_CODES)
+      ApiService.apiAxios.get(ApiRoutes.institute.DISTRICT_CONTACT_TYPE_CODES)
         .then(response => {
           this.districtContactTypes = response.data;
           this.districtContactTypes.sort((a,b) => a.displayOrder - b.displayOrder);
