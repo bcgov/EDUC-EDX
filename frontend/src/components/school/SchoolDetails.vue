@@ -1,6 +1,13 @@
 <template>
   <v-form ref="schoolDetailsForm" v-model="schoolDetailsFormValid">
   <v-container class="containerSetup" fluid>
+    <v-row v-if="!loading && editing" class="d-flex justify-center">
+      <v-col>
+        <v-alert color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
+          <span>Require updates to non-editable fields? Please contact data.management@gov.bc.ca</span>
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-col class="mt-1 d-flex justify-start">
       <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
       <a v-if="isDistrictUser()" class="ml-1" @click="backButtonClick">Return to School List</a>
