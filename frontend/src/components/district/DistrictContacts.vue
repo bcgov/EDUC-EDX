@@ -122,6 +122,7 @@ import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
+import {sortBy} from 'lodash';
 
 export default {
   name: 'DistrictContactsPage',
@@ -176,6 +177,7 @@ export default {
       ApiService.apiAxios.get(`${ApiRoutes.district.BASE_URL}/` + searchDistrictID)
         .then(response => {
           this.districtContacts = new Map();
+          response.data.contacts = sortBy(response.data.contacts, ['firstName']);
           response.data.contacts.forEach(contact => {
             if(!isExpired(contact.expiryDate)) {
               if (!this.districtContacts.has(contact.districtContactTypeCode)) {
