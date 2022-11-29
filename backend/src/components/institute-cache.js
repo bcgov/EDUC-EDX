@@ -38,8 +38,6 @@ function getCachedInstituteData(cacheKey,url){
         await cacheService.loadDataToCache(cacheKey, url);
       }
       const cachedData = cacheService.getCachedData();
-      console.log('Cached ' + JSON.stringify(cachedData));
-      console.log('Cached ' + cacheKey);
       const dataResponse = req.query.active === 'true' ? cachedData[cacheKey].activeRecords : cachedData[cacheKey].records;
       return res.status(HttpStatus.OK).json(dataResponse);
     } catch (e) {
