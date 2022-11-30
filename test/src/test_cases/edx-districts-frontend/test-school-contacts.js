@@ -41,9 +41,16 @@ fixture `district-school-contacts`
 
 });
 
-test('view-school-contacts-as-district-user', async t => {
+test('view-school-contacts-as-district-user-and-edit', async t => {
     await dashboard.clickDistrictUserSchoolContactsCard();
     await schoolList.clickSchoolContactsButton();
 
     await schoolContacts.verifyPrincipalContact(99998);
+
+    await schoolContacts.clickEditContactButton();
+    await schoolContacts.editSchoolContact();
+    await schoolContacts.verifyConfirmation();
+    await schoolContacts.confirmPublishChanges();
+
+    await schoolContacts.verifySchoolContactEditDetails();
 });
