@@ -9,18 +9,20 @@ import LoginPage from "../../page_models/login-page";
 import DistrictContacts from "../../page_models/district/district-contacts-page";
 import Dashboard from "../../page_models/dashboard";
 import InstituteSelectionPage from "../../page_models/institute-selection-page";
+import NavBarPage from '../../page_models/common/navBarPage';
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 const loginPage = new LoginPage();
 const districtContacts = new DistrictContacts();
 const dashboard = new Dashboard();
+const navBar = new NavBarPage();
 const {deleteDistrictContact} = require('../../helpers/district-set-up-utils');
 const instituteSelectionPage = new InstituteSelectionPage();
 let token = '';
 
 fixture `district-contacts`
     .before(async t => {
-        await setUpEdxDistrictUserWithAllAvailableRoles(['006'])
+        await setUpEdxDistrictUserWithAllAvailableRoles(['998'])
         getToken().then(async (data) => {
             token = data.access_token;
         }).catch((error => {
@@ -53,4 +55,18 @@ test('new-district-contact', async t => {
 
     await deleteDistrictContact('019');
 
+});
+
+test('edit-district-contact', async t => {
+
+    await loginPage.login(credentials.adminCredentials);
+    await dashboard.clickDistrictContactsCard();
+    await navBar.verifyNavTitleByText('District Contacts');
+
+    await districtContacts.clickEditContactButton();
+    await districtContacts.editDistrictContact();
+    await districtContacts.verifyConfirmation();
+    await districtContacts.confirmPublishChanges();
+
+    await districtContacts.verifyDistrictContactEditDetails();
 });

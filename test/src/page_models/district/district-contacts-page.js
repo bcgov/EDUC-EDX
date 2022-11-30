@@ -1,6 +1,5 @@
 import { Selector, t } from 'testcafe'
 const log = require('npmlog')
-import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
 
 class DistrictContactsPage {
     constructor() {
@@ -31,11 +30,32 @@ class DistrictContactsPage {
         this.contactAltPhonenumberExtension = Selector('#newContactAltPhoneExtensionInput');
         this.contactStartDate = Selector('#newContactEffectiveDateTextField');
 
+        this.editContactFirstName = Selector('#contactEditFirstName');
+        this.editContactLastName = Selector('#contactEditLastName');
+        this.editContactEmail = Selector('#contactEditEmail');
+        this.editContactPhoneNumber = Selector('#contactEditPhoneNumber');
+        this.editContactPhoneExt = Selector('#contactEditPhoneExt');
+        this.editContactAltPhoneNumber = Selector('#contactEditAltPhoneNumber');
+        this.editContactAltPhoneExt = Selector('#contactEditAltPhoneExt');
+        this.editContactStartDate = Selector('#editContactEffectiveDateTextField');
+
         this.datePickerClickOne = Selector('.v-date-picker-header__value').child('div').child('button');
         this.datePickerYear = Selector('.v-date-picker-years').find('li').withText('2022');
         this.datePickerMonth = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText('Jan');
         this.datePickerDay = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText('1');
         this.saveContactButton = Selector('#newContactPostBtn');
+
+        this.editContactButton = Selector('#editContactButton');
+        this.confirmPublishChangesButton = Selector('#resolveBtn');
+        this.confirmationPromptHeader = Selector('.v-toolbar__title');
+        this.districtContactName = Selector('strong');
+        this.districtContactEmail = Selector('span');
+        this.districtContactPhoneNumber = Selector('span');
+        this.districtContactPhoneNumberExt = Selector('span');
+        this.districtContactAltPhoneNumber = Selector('span');
+        this.districtContactAltPhoneNumberExt = Selector('span');
+        this.districtContactStartDate = Selector('span');
+        this.saveEditContactButton = Selector('#saveEditButton');
     }
 
     async clickNewContactButton(){
@@ -59,7 +79,7 @@ class DistrictContactsPage {
         await this.selectStartDate();
 
         await t.click(this.saveContactButton);
-        log.info("School Contact Edit Complete");
+        log.info("District Contact Edit Complete");
     }
 
     async selectStartDate() {
@@ -74,18 +94,6 @@ class DistrictContactsPage {
         log.info("Contact start date selected")
     }
 
-    async verifyDistrictContactDetails() {
-
-        await this.verifyContactName('Tony Hawk');
-        await this.verifyContactTitle('Executive Superintendent');
-        await this.verifyContactEmail('thawk@test.com');
-        await this.verifyContactPhoneNum('250-123-4564');
-        await this.verifyContactPhoneNumExt('888');
-        await this.verifyContactAltPhoneNum('250-885-4578');
-        await this.verifyContactAltPhoneNumExt('999');
-        await this.verifyContactStartDate('2022/01/01');
-        log.info('Contact Verification Complete');
-    }
     async verifyContactName(name){
         await t.expect(this.contactNameDisplay.withText(name).innerText).contains(name);
         log.info(`Contact Name ${name} Verified`);
@@ -119,7 +127,99 @@ class DistrictContactsPage {
         log.info(`Contact Start Date ${startDate} Verified`);
     }
 
+    async clickEditContactButton() {
+        await t.click(this.editContactButton);
+        log.info('Edit Contact Button clicked.');
+    }
 
+    async selectEditStartDate() {
+        await t.click(this.editContactStartDate);
+
+        await t.click(this.datePickerClickOne()).wait(1000);
+        await t.click(this.datePickerClickOne()).wait(1000);
+        await t.click(this.datePickerYear()).wait(1000);
+        await t.click(this.datePickerMonth());
+        await t.click(this.datePickerDay());
+
+        log.info("Contact start date selected")
+    }
+    async editDistrictContact(){
+        await t.typeText(this.editContactFirstName, 'Tony', { replace: true });
+        await t.typeText(this.editContactLastName, 'Hawk', { replace: true });
+        await t.typeText(this.editContactEmail, 'thawk@test.com', { replace: true });
+        await t.typeText(this.editContactPhoneNumber, '2501234564', { replace: true });
+        await t.typeText(this.editContactPhoneExt, '888', { replace: true });
+        await t.typeText(this.editContactAltPhoneNumber, '2508854578', { replace: true });
+        await t.typeText(this.editContactAltPhoneExt, '999', { replace: true });
+
+        await this.selectEditStartDate();
+
+        await t.click(this.saveEditContactButton);
+        log.info("District Contact Edit Complete");
+    }
+
+    async verifyConfirmation(){
+        await t.expect(this.confirmationPromptHeader.withText('Confirm Updates to District Contact').innerText).contains('Confirm Updates to District Contact');
+        log.info(`Confirmation prompt Verified`);
+    }
+    async confirmPublishChanges(){
+        await t.click(this.confirmPublishChangesButton);
+        log.info('Publish Changes confirmation clicked');
+    }
+
+    async verifyContactEditName(name){
+        await t.expect(this.districtContactName.withText(name).innerText).contains(name);
+        log.info(`Contact Name ${name} Verified`);
+    }
+    async verifyContactEditEmail(email){
+        await t.expect(this.districtContactEmail.withText(email).innerText).contains(email);
+        log.info(`Contact Email ${email} Verified`);
+    }
+    async verifyContactEditPhoneNum(phoneNumber){
+        await t.expect(this.districtContactPhoneNumber.withText(phoneNumber).innerText).contains(phoneNumber);
+        log.info(`Contact Phone Number ${phoneNumber} Verified`);
+    }
+    async verifyContactEditPhoneNumExt(phoneNumberExt){
+        await t.expect(this.districtContactPhoneNumberExt.withText(phoneNumberExt).innerText).contains(phoneNumberExt);
+        log.info(`Contact Phone Number Extension ${phoneNumberExt} Verified`);
+    }
+    async verifyContactEditAltPhoneNum(altPhoneNumber){
+        await t.expect(this.districtContactAltPhoneNumber.withText(altPhoneNumber).innerText).contains(altPhoneNumber);
+        log.info(`Contact Alternate Phone Number ${altPhoneNumber} Verified`);
+    }
+    async verifyContactEditAltPhoneNumExt(altPhoneNumberExt){
+        await t.expect(this.districtContactAltPhoneNumberExt.withText(altPhoneNumberExt).innerText).contains(altPhoneNumberExt);
+        log.info(`Contact Alternate Phone Number Extension ${altPhoneNumberExt} Verified`);
+    }
+    async verifyContactEditStartDate(startDate){
+        await t.expect(this.districtContactStartDate.withText(startDate).innerText).contains(startDate);
+        log.info(`Contact Start Date ${startDate} Verified`);
+    }
+
+    async verifyDistrictContactEditDetails() {
+
+        await this.verifyContactEditName('Tony Hawk');
+        await this.verifyContactEditEmail('thawk@test.com');
+        await this.verifyContactEditPhoneNum('250-123-4564');
+        await this.verifyContactEditPhoneNumExt('888');
+        await this.verifyContactEditAltPhoneNum('250-885-4578');
+        await this.verifyContactEditAltPhoneNumExt('999');
+        await this.verifyContactEditStartDate('2022/01/01');
+        log.info('Contact Verification Complete');
+    }
+
+    async verifyDistrictContactDetails() {
+
+        await this.verifyContactName('Tony Hawk');
+        await this.verifyContactTitle('Executive Superintendent');
+        await this.verifyContactEmail('thawk@test.com');
+        await this.verifyContactPhoneNum('250-123-4564');
+        await this.verifyContactPhoneNumExt('888');
+        await this.verifyContactAltPhoneNum('250-885-4578');
+        await this.verifyContactAltPhoneNumExt('999');
+        await this.verifyContactStartDate('2022/01/01');
+        log.info('Contact Verification Complete');
+    }
 }
 
 export default DistrictContactsPage;
