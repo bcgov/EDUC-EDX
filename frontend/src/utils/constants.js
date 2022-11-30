@@ -37,7 +37,8 @@ export const ApiRoutes = Object.freeze({
   },
   district: {
     BASE_URL: districtRoot,
-    CREATE_DISTRICT_CONTACT_URL: `${districtRoot}/createContact`
+    CREATE_DISTRICT_CONTACT_URL: `${districtRoot}/createContact`,
+    UPDATE_DISTRICT_CONTACT_URL: districtRoot + '/update-contact'
   },
   institute: {
     BASE_URL: instituteRoot,

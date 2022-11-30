@@ -35,55 +35,7 @@
         </v-row>
         <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in districtContacts.get(districtContactType.districtContactTypeCode)" :key="contact.schoolId">
-            <v-card>
-              <v-card-title class="pb-0">
-                <v-row no-gutters>
-                  <v-col>
-                    <v-row no-gutters>
-                      <v-col cols="8">
-                        <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
-                          mdi-circle-medium
-                        </v-icon>
-                        <strong style="word-break: break-word">{{ formatContactName(contact) }}</strong>
-                      </v-col>
-                      <v-col cols="4" class="d-flex justify-end">
-                        <PrimaryButton width="6em" secondary icon="mdi-pencil" text="Edit"></PrimaryButton>
-                      </v-col>
-                    </v-row>
-                    <v-row no-gutters class="titleSetup">
-                      <v-col cols="12" class="pt-1">
-                        <strong>{{ contact.jobTitle }}</strong>
-                      </v-col>
-                      <v-col cols="12" class="pt-1">
-                        <span>{{ contact.email }}</span>
-                      </v-col>
-                      <v-col cols="12" class="pt-1">
-                        <span>{{ formatPhoneNumber(contact.phoneNumber) }}</span><span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
-                      </v-col>
-                      <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
-                        <span>{{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)</span> <span v-if="contact.alternatePhoneExtension"> ext. {{contact.alternatePhoneExtension}}</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-card-text class="pt-2">
-                <v-row no-gutters>
-                  <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
-                    <v-icon aria-hidden="false">
-                      mdi-calendar-today
-                    </v-icon>
-                    <span> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
-                  </v-col>
-                  <v-col cols="12" class="pt-1" v-else>
-                    <v-icon aria-hidden="false">
-                      mdi-calendar-today
-                    </v-icon>
-                    <span> {{ formatDate(contact.effectiveDate) }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
+            <DistrictContact :contact="contact" :districtID="$route.params.districtID" @editDistrictContact:editDistrictContactSuccess="contactEditSuccess" :canEditDistrictContact="canEditDistrictContact()" />
           </v-col>
         </v-row>
         <v-row cols="2" v-else>
@@ -118,18 +70,21 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import NewDistrictContactPage from './NewDistrictContactPage';
+import DistrictContact from './DistrictContact';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor, isExpired} from '@/utils/institute/status';
 import {sortBy} from 'lodash';
+import {PERMISSION} from '@/utils/constants/Permission';
 
 export default {
   name: 'DistrictContactsPage',
   mixins: [alertMixin],
   components: {
     PrimaryButton,
-    NewDistrictContactPage
+    NewDistrictContactPage,
+    DistrictContact
   },
   props: {
     districtID: {
@@ -204,7 +159,13 @@ export default {
     getStatusColor,
     formatDate,
     formatPhoneNumber,
-    formatContactName
+    formatContactName,
+    canEditDistrictContact() {
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+    },
+    contactEditSuccess() {
+      this.getThisDistrictsContacts();
+    }
   },
 };
 </script>

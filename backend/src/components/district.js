@@ -95,8 +95,32 @@ function validateAccessToken(token, res) {
   }
 }
 
+async function updateDistrictContact(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
+    checkEDXUserDistrictAdminPermission(req);
+    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+
+    const payload = req.body;
+    payload.updateDate = null;
+    payload.createDate = null;
+    payload.effectiveDate = payload.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
+    payload.expiryDate = payload.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
+
+    const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'updateDistrictContact', 'Error occurred while attempting to update a district contact.');
+    return errorResponse(res);
+  }
+}
+
 module.exports = {
   getDistrictByDistrictID,
   updateDistrict,
-  createDistrictContact
+  createDistrictContact,
+  updateDistrictContact
 };
