@@ -11,8 +11,9 @@ class MessageDisplay {
         this.sequenceNumber = Selector('#messageDisplaySequenceNumber');
         this.editOptionsMenu = Selector('#editOptionsMenu');
         this.editOptionsMenuButton = Selector('#editOptionsMenuBtn');
-        this.newMessageButton = Selector('#newMessageToConvBtn');
-        this.newMessageTextArea = Selector ('#newMessageToConvTextArea');
+        this.newMessageButton = Selector('#newMessageBtn');
+        this.newMessagesubjectField = Selector('#subjectTxtField');
+        this.newMessageTextArea = Selector ('#newMessageTextArea');
         this.sendMessageButton = Selector('#newMessagePostBtn');
         this.addStudentButton = Selector("#addStudentConvButton");
         this.addStudentDialog = Selector("#addStudentDialog");
@@ -26,6 +27,8 @@ class MessageDisplay {
         this.addAttachmentMenuButton = Selector('#addAttachmentConvButton');
         this.imageCanvas = Selector('img[src*="data:image"]').parent('div[class="viewer-canvas"]');
         this.pdfCanvas = Selector('div.v-list-item__title').withText('Document Viewer');
+        this.toNewMessageSelect = Selector('#schoolNameTxtField').parent('div[role="button"]');
+        this.selectionBox = Selector('div[role="listbox"]');
     }
 
     async clickEditOptionsMenuButton() {
@@ -60,6 +63,9 @@ class MessageDisplay {
         log.info(`Exchange message with text - ${text} - found`);
     }
 
+    async clickNewMessageButton(){
+        await t.click(this.newMessageButton);
+    }
     async clickDocumentToDisplayByName(text) {
         await t.click(Selector('a').withText(text));
         log.info(`Clicking document with title - ${text}`);
@@ -78,6 +84,22 @@ class MessageDisplay {
     async verifyPDFCanvasDisplay(){
         await t.expect(this.pdfCanvas.exists).ok();
         log.info('PDF canvas displayed');
+    }
+    async enterNewMessageSubjectLine(text){
+        await t.click(this.newMessagesubjectField()).typeText(this.newMessagesubjectField(), text, {timeout: 20000});
+    }
+
+    async enterTextForNewMessage(text){
+        await t.click(this.newMessageTextArea).typeText(this.newMessageTextArea(), text, {timeout: 20000});
+    }
+    async clickNewMessageSend(){
+        await t.click(this.sendMessageButton);
+    }
+
+    async selectToForNewMessage(name) {
+        await t.click(this.toNewMessageSelect).wait(100);
+        await t.expect(this.selectionBox.exists).ok();
+        await t.click(this.selectionBox.find('div').withExactText(name));
     }
 }
 

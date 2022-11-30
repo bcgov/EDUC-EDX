@@ -1,4 +1,5 @@
-import {Role, Selector} from 'testcafe';
+'use strict';
+import { Selector} from 'testcafe';
 import {getToken} from '../../helpers/oauth-utils';
 import {createSecureExchange,  deleteSecureExchange} from '../../services/edx-api-service';
 import {createTestExchange} from '../../helpers/secure-exchange-utils';
@@ -12,7 +13,6 @@ import AddStudent from '../../page_models/common/addStudent';
 import LoginPage from '../../page_models/login-page';
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 
-const studentAdmin = require('../../auth/Roles');
 
 const dashboard = new Dashboard();
 const inbox = new Inbox();
@@ -27,7 +27,11 @@ let testExchange = createTestExchange();
 fixture`school-message-display`
   .before(async t => {
     // data provisioning
-    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
+    try {
+      await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
+    }catch (e) {
+      log.error('Failure during test setup: ' + e);
+    }
     getToken().then(async (data) => {
       token = data.access_token;
       testExchange = await createSecureExchange(token, JSON.stringify(testExchange));
@@ -42,17 +46,17 @@ fixture`school-message-display`
   })
   .beforeEach(async t => {
     // log in as studentAdmin
+    await loginPage.login(credentials.adminCredentials);
     await t.resizeWindow(1920, 1080);
   }).afterEach(async t => {
   // logout
   await t.navigateTo(base_url + '/logout');
 });
 
-test('test-school-message-display', async t => {
+/*test('test-school-message-display', async t => {
   //Verify header information.
   log.info('verifying header information');
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
+  await dashboard.clickSecureMessageInbox();
   await t.navigateTo(base_url + '/exchange/' + testExchange.secureExchangeID);
   await t.expect(messageDisplay.navTitle.innerText).contains('Secure Message');
   await messageDisplay.verifySubjectHeadingByText(testExchange.subject);
@@ -78,26 +82,21 @@ test('test-school-message-display', async t => {
   await t.click(messageDisplay.markAsButton);
   //once we mark message as unread, we should go back to the inbox page.
   await t.expect(messageDisplay.navTitle.innerText).contains('Secure Messaging Inbox');
-});
+});*/
 
 test('test-school-message-display-new-message', async t => {
   //Verify header information.
-  log.info('verifying header information');
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
-  await t.navigateTo(base_url + '/exchange/' + testExchange.secureExchangeID);
-  await t.expect(messageDisplay.navTitle.innerText).contains('Secure Message');
-  await t.click(messageDisplay.editOptionsMenuButton);
-  await t.click(messageDisplay.newMessageButton);
-  await t.click(messageDisplay.newMessageTextArea).typeText(messageDisplay.newMessageTextArea(), 'Message To Test', {timeout: 20000});
-  await t.click(messageDisplay.sendMessageButton);
+  await dashboard.clickSecureMessageInbox();
+  await messageDisplay.clickNewMessageButton();
+  await messageDisplay.selectToForNewMessage('PEN Team');
+  await messageDisplay.enterNewMessageSubjectLine('AT Message');
+  await messageDisplay.enterTextForNewMessage('Message To Test');
+  await messageDisplay.clickNewMessageSend();
   await t.expect(Selector('#mainSnackBar').innerText).contains('Success! The message has been sent.');
 
 });
 
 test('test-attach-document-to-existing-message', async t => {
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
   await testMessageDisplayHelper(t);
   await uploadDocument('Canadian Citizenship Card', '../../uploads/BC.jpg');
   //verify message detail
@@ -105,8 +104,6 @@ test('test-attach-document-to-existing-message', async t => {
 });
 
 test('test-attach-jpg-document-to-existing-message-displays', async t => {
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
   await testMessageDisplayHelper(t);
   await uploadDocument('Canadian Citizenship Card', '../../uploads/BC.jpg');
   await messageDisplay.clickDocumentToDisplayByName('BC.jpg');
@@ -114,8 +111,6 @@ test('test-attach-jpg-document-to-existing-message-displays', async t => {
 });
 
 test('test-attach-pdf-document-to-existing-message-displays', async t => {
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
   await testMessageDisplayHelper(t);
   await uploadDocument('Canadian Passport', '../../uploads/BC.pdf');
   await messageDisplay.clickDocumentToDisplayByName('BC.pdf');
@@ -123,8 +118,6 @@ test('test-attach-pdf-document-to-existing-message-displays', async t => {
 });
 
 test('test-school-message-display-add-student', async t => {
-  await t.navigateTo(base_url);
-  await loginPage.login(credentials.adminCredentials);
   await testMessageDisplayHelper(t);
   await messageDisplay.clickEditOptionsMenuButton();
   await messageDisplay.clickAddStudentMenuButton();
@@ -185,7 +178,7 @@ async function findMessageAndOpen(subject, contact, status){
  */
 async function navigateToMessages(t){
   await t.navigateTo(base_url);
-  await dashboard.clickSchoolInboxCard();
+  await dashboard.clickSecureMessageInbox();
 }
 
 /**
