@@ -24,7 +24,7 @@ class Dashboard {
 
     async clickSecureMessageInbox() {
         await t.click(this.secureMessageInboxCard);
-        log.info('School inbox card clicked');
+        log.info('Secure Inbox card clicked');
     }
 
     async clickSchoolDetails() {
