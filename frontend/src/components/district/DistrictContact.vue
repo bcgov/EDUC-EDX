@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card v-show="!expandEdit">
+  <span>
+    <v-card height="100%" v-show="!expandEdit">
       <v-card-title class="pb-0">
         <v-row no-gutters>
           <v-col>
@@ -213,7 +213,7 @@
         </v-card-text>
       </v-card>
     </v-expand-transition>
-  </div>
+  </span>
 </template>
 
 <script>
