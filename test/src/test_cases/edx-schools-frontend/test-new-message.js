@@ -20,14 +20,13 @@ const documentUpload = new DocumentUploadPage();
 const messageDisplay = new MessageDisplay();
 const loginPage = new LoginPage();
 const instituteSelectionPage = new InstituteSelectionPage();
-let token = '';
 const schoolTitle = 'Camosun College';
 
 fixture`school-inbox-new-message`
   .before(async () => {
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
-      token = data.access_token;
+      const token = data.access_token;
       // make sure there are no artifact messages from previous runs
       await inbox.deleteMessagesBySubject(testExchangeSubject, token);
     }).catch((error => {

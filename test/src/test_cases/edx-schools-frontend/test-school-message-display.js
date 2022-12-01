@@ -28,7 +28,7 @@ fixture`school-message-display`
     // data provisioning
     try {
       await setUpEdxSchoolUserWithAllAvailableRoles(['99998']);
-      let data = await getToken();
+      const data = await getToken();
       await inbox.deleteMessagesBySubject(testExchangeSubject, data.access_token);
     }catch (e) {
       log.error('Failure during test setup: ' + e);
