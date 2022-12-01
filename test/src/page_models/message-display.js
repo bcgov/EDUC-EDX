@@ -26,6 +26,7 @@ class MessageDisplay {
         this.studentPensRaw = Selector('.studentPenRaw');
         this.addAttachmentMenuButton = Selector('#addAttachmentConvButton');
         this.imageCanvas = Selector('img[src*="data:image"]').parent('div[class="viewer-canvas"]');
+        this.closeCanvasButton = Selector('.viewer-button.viewer-close');
         this.pdfCanvas = Selector('div.v-list-item__title').withText('Document Viewer');
         this.toNewMessageSelect = Selector('#schoolNameTxtField').parent('div[role="button"]');
         this.selectionBox = Selector('div[role="listbox"]');
@@ -81,6 +82,11 @@ class MessageDisplay {
         log.info('Image canvas displayed');
     }
 
+    async clickCloseCanvasDisplay() {
+        await t.click(this.closeCanvasButton);
+        log.info('Close canvas button cLicked');
+    }
+
     async verifyPDFCanvasDisplay(){
         await t.expect(this.pdfCanvas.exists).ok();
         log.info('PDF canvas displayed');
@@ -100,6 +106,16 @@ class MessageDisplay {
         await t.click(this.toNewMessageSelect).wait(100);
         await t.expect(this.selectionBox.exists).ok();
         await t.click(this.selectionBox.find('div').withExactText(name));
+    }
+
+    async verifyMarkAsSpanText(text) {
+        await t.expect(this.markAsSpan.innerText).eql(text);
+        log.info(`Mark as span text verified as ${text}`);
+    }
+
+    async clickMarkAsButton() {
+        await t.click(this.markAsButton);
+        log.info('Mark as button clicked');
     }
 }
 

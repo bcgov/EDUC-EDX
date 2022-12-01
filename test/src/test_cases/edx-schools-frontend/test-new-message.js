@@ -20,21 +20,20 @@ const documentUpload = new DocumentUploadPage();
 const messageDisplay = new MessageDisplay();
 const loginPage = new LoginPage();
 const instituteSelectionPage = new InstituteSelectionPage();
-let token = '';
 const schoolTitle = 'Camosun College';
 
 fixture`school-inbox-new-message`
-  .before(async t => {
-    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
+  .before(async () => {
+    await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
-      token = data.access_token;
+      const token = data.access_token;
       // make sure there are no artifact messages from previous runs
       await inbox.deleteMessagesBySubject(testExchangeSubject, token);
     }).catch((error => {
       log.error('Failure during test setup: ' + error);
     }));
   })
-  .after(async t => {
+  .after(async () => {
     // find all test automation artifacts produced and remove them
     log.info('Performing tear-down operation');
     const data = await getToken();
