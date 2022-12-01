@@ -24,8 +24,8 @@ let token = '';
 const schoolTitle = 'Camosun College';
 
 fixture`school-inbox-new-message`
-  .before(async t => {
-    await setUpEdxSchoolUserWithAllAvailableRoles(['99178'])
+  .before(async () => {
+    await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
       token = data.access_token;
       // make sure there are no artifact messages from previous runs
@@ -34,7 +34,7 @@ fixture`school-inbox-new-message`
       log.error('Failure during test setup: ' + error);
     }));
   })
-  .after(async t => {
+  .after(async () => {
     // find all test automation artifacts produced and remove them
     log.info('Performing tear-down operation');
     const data = await getToken();
