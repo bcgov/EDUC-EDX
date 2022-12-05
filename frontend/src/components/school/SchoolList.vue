@@ -57,7 +57,7 @@
           >
 
             <template v-slot:item.secureExchangeStatusCode="{ item }">
-              <v-row style="cursor: pointer;" @click="openSchool(item.schoolId)">
+              <v-row class="schoolDetailsRow" style="cursor: pointer;" @click="openSchool(item.schoolId)">
                 <v-col class="pb-0 pt-0">
                   <v-row class="mb-n4">
                     <v-col cols="6">
@@ -78,11 +78,10 @@
                     <v-col class="d-flex justify-end" cols="1">
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                          <v-btn id="schoolContacts"
-                                 color="#003366"
+                          <v-btn color="#003366"
                                  outlined
                                  @click.native.stop="openSchoolContacts(item.schoolId)"
-                                 class="mt-0 pt-0 filterButton"
+                                 class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
                                  v-on="on"
                           >

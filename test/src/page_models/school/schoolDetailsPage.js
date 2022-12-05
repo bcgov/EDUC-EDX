@@ -7,8 +7,8 @@ class SchoolDetailsPage {
     this.emailField =Selector('#schoolDetailsEmail');
     this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
     this.saveButton = Selector('#saveButton');
-    this.publishChangesButton = Selector('#resolveBtn');
-
+    this.confirmationPromptHeader = Selector('.v-toolbar__title');
+    this.confirmPublishChangesButton = Selector('#resolveBtn');
   }
 
   async clickEditButton(){
@@ -19,12 +19,6 @@ class SchoolDetailsPage {
   async clickSaveButton(){
     await t.click(this.saveButton());
     log.info('Edit School Details Save Button Clicked');
-  }
-
-
-  async clickPublishChangesButton(){
-    await t.click(this.publishChangesButton());
-    log.info('Edit School Details Publish Changes Button Clicked');
   }
 
   async editEmailAddress(emailId){
@@ -38,6 +32,16 @@ class SchoolDetailsPage {
     await t.click(this.phoneNumberField)
     await t.selectText(this.phoneNumberField).pressKey('delete');
     await t.typeText(this.phoneNumberField,phoneNumber);
+  }
+
+  async verifyConfirmation(){
+    await t.expect(this.confirmationPromptHeader.withText('Confirm Updates to School Details').innerText).contains('Confirm Updates to School Details');
+    log.info(`Confirmation prompt Verified`);
+  }
+
+  async confirmPublishChanges(){
+    await t.click(this.confirmPublishChangesButton);
+    log.info('Publish Changes confirmation clicked');
   }
 
 }
