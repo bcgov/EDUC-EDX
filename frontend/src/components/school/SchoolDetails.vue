@@ -4,7 +4,7 @@
     <v-row v-if="!loading && editing" class="d-flex justify-center">
       <v-col>
         <v-alert color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
-          <span>Require updates to non-editable fields? Please contact data.management@gov.bc.ca</span>
+          <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
     </v-row>
@@ -351,6 +351,14 @@ export default {
     ...mapState('institute', ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
+    },
+    emailBox(){
+      if(this.school.schoolCategoryCode === 'INDEPEND'){
+        return 'educ.independentschoolsoffice@gov.bc.ca';
+      } else if(this.school.schoolCategoryCode === 'OFFSHORE'){
+        return 'offshore.administrator@gov.bc.ca';
+      }
+      return 'data.management@gov.bc.ca';
     },
     hasSamePhysicalAddress(){
       return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
