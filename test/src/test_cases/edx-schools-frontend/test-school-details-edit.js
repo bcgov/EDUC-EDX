@@ -46,7 +46,10 @@ test('test-edit-school-details', async t => {
   await loginPage.login(credentials.adminCredentials);
   await navBarPage.navTitle('EDX Automation Testing School');
   await dashboard.clickSchoolDetails();
+  await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
   await schoolDetailsPage.clickEditButton();
+  await schoolDetailsPage.verifyEditableFieldAlertIsDisplayed();
+  await schoolDetailsPage.verifyEditableFieldAlertContent();
   await schoolDetailsPage.editEmailAddress('edxAT@gov.bc.ca');
   await schoolDetailsPage.editPhoneNumber('1234567890');
   await schoolDetailsPage.clickSaveButton();
