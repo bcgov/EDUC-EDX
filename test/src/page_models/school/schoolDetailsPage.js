@@ -44,6 +44,24 @@ class SchoolDetailsPage {
     log.info('Publish Changes confirmation clicked');
   }
 
+  async verifyEditableFieldAlertIsNotDisplayed() {
+    let schoolDetailsEditableFieldAlert = Selector('.v-alert__content');
+    await t.expect(schoolDetailsEditableFieldAlert.exists).notOk();
+    log.info('Verified Alert banner is not displayed');
+  }
+
+  async verifyEditableFieldAlertIsDisplayed() {
+    let schoolDetailsEditableFieldAlert = Selector('.v-alert__content');
+    await t.expect(schoolDetailsEditableFieldAlert.exists).ok();
+    log.info('Verified Alert banner is displayed when Edit button is clicked');
+  }
+
+  async verifyEditableFieldAlertContent() {
+    let schoolDetailsEditableFieldAlert = Selector('.v-alert__content').find('span');
+    await t.expect(schoolDetailsEditableFieldAlert.withText('Require updates to non-editable fields? Please contact data.management@gov.bc.ca').exists).ok();
+    log.info('Verified Alert banner is displaying the correct text');
+  }
+
 }
 
 export default SchoolDetailsPage;

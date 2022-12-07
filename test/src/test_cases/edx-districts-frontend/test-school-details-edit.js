@@ -43,12 +43,15 @@ fixture `district-school-details-edit`
 test('view-school-deetails-as-district-user-and-edit', async t => {
   await dashboard.clickDistrictUserSchoolContactsCard();
   await schoolList.clickSchoolDetailsRow();
+  await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
   await schoolDetailsPage.clickEditButton();
+  await schoolDetailsPage.verifyEditableFieldAlertIsDisplayed();
+  await schoolDetailsPage.verifyEditableFieldAlertContent();
   await schoolDetailsPage.editEmailAddress('edxAT@gov.bc.ca');
   await schoolDetailsPage.editPhoneNumber('1234567890');
   await schoolDetailsPage.clickSaveButton();
   await schoolDetailsPage.verifyConfirmation();
   await schoolDetailsPage.confirmPublishChanges();
-  await snackBarPage.verifySnackBarText('Success! The school details have been updated.')
+  await snackBarPage.verifySnackBarText('Success! The school details have been updated.') 
   log.info('School Details Edited Successfully.');
 });
