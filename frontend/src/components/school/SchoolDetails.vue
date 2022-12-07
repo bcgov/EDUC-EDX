@@ -32,7 +32,9 @@
             <h2 class="subjectHeading">{{ school.mincode }} - {{ school.displayName }}</h2>
           </v-col>
           <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-            <PrimaryButton id="schoolDetailsEditButton" icon-left width="6em" icon="mdi-pencil" text="Edit"
+
+            <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple" text="View School Contacts"></PrimaryButton>
+            <PrimaryButton id="schoolDetailsEditButton" icon-left class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
                            :disabled="!canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
           </v-col>
           <v-col v-else cols="6" class="d-flex justify-end">
