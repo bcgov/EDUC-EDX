@@ -1,18 +1,30 @@
 <template>
-  <div>
-    <v-card v-show="!expandEdit">
+  <span>
+    <v-card height="100%" v-show="!expandEdit">
       <v-card-title class="pb-0">
         <v-row no-gutters>
           <v-col>
             <v-row no-gutters>
               <v-col cols="8" class="justify-start">
-                <v-icon class="pb-1" :color="getStatusColor(contact)" left dark>
-                  mdi-circle-medium
+                <v-icon class="pb-1" small :color="getStatusColor(contact)" left dark>
+                  mdi-circle
                 </v-icon>
                 <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
               </v-col>
               <v-col cols="4" class="d-flex justify-end">
-                <PrimaryButton icon-left width="6em" secondary icon="mdi-pencil" text="Edit" id="editContactButton" :disabled="!canEditDistrictContact" @click.native="openContactEditForm(contact)"></PrimaryButton>
+                <v-btn id="editContactButton"
+                       title="Edit"
+                       color="white"
+                       width="0.5em"
+                       min-width="0.5em"
+                       depressed
+                       :disabled="!canEditDistrictContact"
+                       @click="openContactEditForm(contact)"
+                       small
+                       class="mr-2"
+                >
+                  <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
+                </v-btn>
               </v-col>
             </v-row>
             <v-row no-gutters>
@@ -213,7 +225,7 @@
         </v-card-text>
       </v-card>
     </v-expand-transition>
-  </div>
+  </span>
 </template>
 
 <script>
