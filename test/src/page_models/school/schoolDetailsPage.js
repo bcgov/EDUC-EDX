@@ -56,11 +56,6 @@ class SchoolDetailsPage {
     log.info('Verified Alert banner is displayed when Edit button is clicked');
   }
 
-  async clickCancelButton(){
-    await t.click(this.cancelButton);
-    log.info('School Details Cancel button clicked');
-  }
-
   async verifyEditableFieldAlertContent() {
     let schoolDetailsEditableFieldAlert = Selector('.v-alert__content').find('span');
     await t.expect(schoolDetailsEditableFieldAlert.withText('Require updates to non-editable fields? Please contact data.management@gov.bc.ca').exists).ok();
