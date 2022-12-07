@@ -160,7 +160,7 @@
               <v-col cols="4">
                 <div>
                   <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                    mdi-newspaper-variant-outline
+                    mdi-domain
                   </v-icon>
                 </div>
               </v-col>
