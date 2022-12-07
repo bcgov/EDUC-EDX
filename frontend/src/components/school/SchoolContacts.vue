@@ -36,7 +36,8 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton :disabled="!canAddContact()" id="addSchoolContactBtn" width="12em" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-map-marker-outline" text="View School Details" @click.native="redirectToSchoolDetails"></PrimaryButton>
+          <PrimaryButton :disabled="!canAddContact()" id="addSchoolContactBtn" class="mr-0 mb-3" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -129,6 +130,9 @@ export default {
     this.getThisSchoolsContacts();
   },
   methods: {
+    redirectToSchoolDetails() {
+      this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
     getSchoolContactTypeCodes() {
       this.loadingCount += 1;
       ApiService.apiAxios.get(ApiRoutes.institute.SCHOOL_CONTACT_TYPE_CODES)
