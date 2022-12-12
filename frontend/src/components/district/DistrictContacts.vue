@@ -24,6 +24,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
+          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" @click.native="redirectToDistrictDetails"></PrimaryButton>
           <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
@@ -160,6 +161,9 @@ export default {
     newDistrictContactAdded() {
       this.newContactSheet= !this.newContactSheet;
       this.getThisDistrictsContacts();
+    },
+    redirectToDistrictDetails() {
+      this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
     },
     getStatusColor,
     formatDate,
