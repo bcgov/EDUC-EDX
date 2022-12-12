@@ -52,6 +52,9 @@ test('test-edit-school-details', async t => {
   await schoolDetailsPage.verifyEditableFieldAlertContent();
   await schoolDetailsPage.editEmailAddress('edxAT@gov.bc.ca');
   await schoolDetailsPage.editPhoneNumber('1234567890');
+  await schoolDetailsPage.editFaxNumber('1234567890');
+  await schoolDetailsPage.editSchoolWebsite('https://www.google.com/');
+  await schoolDetailsPage.editNLCActivity('After School Programs');
   await schoolDetailsPage.clickSaveButton();
   await schoolDetailsPage.verifyConfirmation();
   await schoolDetailsPage.confirmPublishChanges();

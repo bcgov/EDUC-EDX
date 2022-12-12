@@ -83,7 +83,7 @@
                   mdi-web
                 </v-icon>
                 <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-                <v-text-field v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
+                <v-text-field id="schoolDetailsWebsite" v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
               </v-col>
             </v-row>
         <v-row>
@@ -189,7 +189,7 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
-                <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
+                <v-select id="schoolDetailsNlc" v-else :items="schoolActiveNeighborhoodLearningTypes"
                           item-value="neighborhoodLearningTypeCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.neighborhoodLearning"
