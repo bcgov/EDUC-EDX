@@ -349,7 +349,7 @@ export default {
       router.push('/schools');
     },
     redirectToDistrictDetails(){
-      router.push('/district/' + this.userInfo.activeInstituteIdentifier);
+      router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
     },
     getSchoolContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'SCHOOL') {

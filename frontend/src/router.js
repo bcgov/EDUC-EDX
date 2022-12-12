@@ -221,8 +221,8 @@ const router = new VueRouter({
           }
         },
         {
-          path: 'district/:districtID',
-          name: 'district',
+          path: 'districtDetails/:districtID',
+          name: 'districtDetails',
           props: true,
           component: DistrictDetails,
           meta: {
