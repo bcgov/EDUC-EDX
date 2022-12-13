@@ -3,7 +3,7 @@
   <v-container class="containerSetup" fluid>
     <v-row v-if="!loading && editing" class="d-flex justify-center">
       <v-col>
-        <v-alert color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
+        <v-alert id="nonEditableAlert" color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
           <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
