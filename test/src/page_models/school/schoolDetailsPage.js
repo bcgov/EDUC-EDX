@@ -9,11 +9,14 @@ class SchoolDetailsPage {
     this.saveButton = Selector('#saveButton');
     this.confirmationPromptHeader = Selector('.v-toolbar__title');
     this.confirmPublishChangesButton = Selector('#resolveBtn');
+    this.nonEditableAlert = Selector('#nonEditableAlert')
   }
 
   async clickEditButton(){
     await t.click(this.schoolDetailsEditButton);
     log.info('School Details Edit button clicked');
+    await t.expect(this.nonEditableAlert.innerText).contains('Require updates to non-editable fields? Please contact');
+    log.info('Non-Editable alert displayed');
   }
 
   async clickSaveButton(){
