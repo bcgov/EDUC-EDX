@@ -50,8 +50,8 @@ on:
 jobs:
   openshift-ci-cd:
     name: Build and deploy to PROD
-    # ubuntu-20.04 can also be used.
-    runs-on: ubuntu-18.04
+    # ubuntu-latest can also be used.
+    runs-on: ubuntu-20.04
     environment: prod
 
     outputs:
