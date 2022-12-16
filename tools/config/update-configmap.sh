@@ -101,7 +101,7 @@ edxServiceClientSecret=$(curl -sX GET "https://$SOAM_KC/auth/admin/realms/$SOAM_
   | jq -r '.value')
 
 echo Generating private and public keys
-ssh-keygen -b 4096 -t rsa -f tempPenBackendkey -q -N ""
+ssh-keygen -b 4096 -t rsa -f tempPenBackendkey -m pem -q -N ""
 UI_PRIVATE_KEY_VAL="$(cat tempPenBackendkey)"
 UI_PUBLIC_KEY_VAL="$(ssh-keygen -f tempPenBackendkey -e -m pem)"
 echo Removing key files

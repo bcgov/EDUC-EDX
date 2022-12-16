@@ -51,7 +51,7 @@ jobs:
   openshift-ci-cd:
     name: Build and deploy to PROD
     # ubuntu-latest can also be used.
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     environment: prod
 
     outputs:
