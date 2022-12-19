@@ -7,7 +7,7 @@ const userActivationPage = new UserActivation();
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`
   .before(async ctx => {
-    await setUpDataForUserActivation(ctx,'SCHOOL','99178');
+    await setUpDataForUserActivation(ctx,'SCHOOL','99998');
   })
   .after(async ctx => {
     const data = await getToken();
