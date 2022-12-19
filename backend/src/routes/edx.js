@@ -3,7 +3,8 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles,
-  createSecureExchangeComment,clearActiveSession,getExchangesCount, removeUserSchoolAccess, relinkUserSchoolAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, removeSecureExchangeStudent
+  createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserSchoolAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, removeSecureExchangeStudent,
+  removeUserSchoolOrDistrictAccess
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const config = require('../config/index');
@@ -48,7 +49,7 @@ router.get('/exchange/:secureExchangeID', passport.authenticate('jwt', {session:
 router.post('/exchange/:secureExchangeID/comments', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createSecureExchangeComment);
 router.post('/exchange/:secureExchangeID/students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createSecureExchangeStudent);
 router.put('/exchange/:secureExchangeID/markAs/:readStatus', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, markAs);
-router.post('/users/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeUserSchoolAccess);
+router.post('/users/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeUserSchoolOrDistrictAccess);
 router.post('/users/relink', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, relinkUserSchoolAccess);
 router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', CACHE_KEYS.EDX_MINISTRY_TEAMS));
 router.get('/users/user-schools', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,

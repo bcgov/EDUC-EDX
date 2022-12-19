@@ -274,15 +274,15 @@ export default {
     clickRemoveButton(userToRemove) {
       const payload = {
         params:{
-          userToRemove: userToRemove.edxUserID,
+          userToRemove: userToRemove.edxUserID
         }
       };
       if (this.instituteTypeCode === 'SCHOOL') {
         const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
-        payload.params.userSchoolID = userSchool.edxUserSchoolID;
         payload.params.schoolID = userSchool.schoolID;
+        payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
-        const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtId === this.instituteCode);
+        const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
