@@ -322,8 +322,28 @@ const instituteApiService = {
       website: null,
       displayName: 'EDX Automation Testing District',
       districtRegionCode: 'NOT_APPLIC',
-      districtStatusCode: 'ACTIVE'
+      districtStatusCode: 'ACTIVE',
+      addresses: [
+          {
+            updateUser: 'EDXAT',
+            createUser: 'EDXAT',
+            createDate: null,
+            updateDate: null,
+            addressId: null,
+            schoolId: null,
+            districtId: null,
+            independentAuthorityId: null,
+            addressLine1: 'Fake Address',
+            addressLine2: null,
+            city: 'Faketown',
+            postal: 'v9v9v9',
+            addressTypeCode: 'MAILING',
+            provinceCode: 'BC',
+            countryCode: 'CA'
+          }
+        ]
     };
+
     const url = `${constants.institute_base_url}${DISTRICT_ENDPOINT}`;
     if(!districtID){
       return await restUtils.postData(token, url, districtPayload);

@@ -15,6 +15,7 @@ createTestCafe('localhost', 1337, 1338)
             "src/test_cases/edx-user-activation/school/",
             "src/test_cases/edx-user-activation/district/",
             "src/test_cases/edx-districts-frontend/test-district-contacts.js",
+            "src/test_cases/edx-districts-frontend/test-district-details-edit.js",
             "src/test_cases/edx-districts-frontend/test-school-contacts.js",
             "src/test_cases/edx-districts-frontend/test-school-details-edit.js",
             "src/test_cases/edx-schools-frontend/test-school-details-edit.js",

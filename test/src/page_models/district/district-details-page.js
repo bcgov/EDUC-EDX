@@ -7,6 +7,7 @@ class DistrictDetailsPage {
         this.districtEmail =Selector('#districtEmail');
         this.districtPhone = Selector('#districtPhone');
         this.saveButton = Selector('#saveButton');
+        this.confirmPublishChangesButton = Selector('#resolveBtn');
     }
 
     async editEmailAddress(emailId){
@@ -28,9 +29,14 @@ class DistrictDetailsPage {
         log.info('Edit District Details Save Button Clicked');
     }
 
-     async clickDistrictEditButton() {
+    async clickDistrictEditButton() {
         await t.click(this.editButton);
         log.info('District Details Edit button clicked');
+    }
+
+    async clickConfirmPublishChanges(){
+        await t.click(this.confirmPublishChangesButton);
+        log.info('Publish Changes confirmation clicked');
     }
 }
 
