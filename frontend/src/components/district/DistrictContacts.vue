@@ -36,7 +36,7 @@
         </v-row>
         <v-row v-if="!districtContactType.publiclyAvailable">
           <v-col>
-            <v-alert color="#003366" dense text type="info">Contacts of this type are only available to the ministry and not available to public.</v-alert>
+            <v-alert :id="`publiclyAvailableAlert${districtContactType.label}`" color="#003366" dense text type="info">Contacts of this type are only available to the ministry and not available to public.</v-alert>
           </v-col>
         </v-row>
         <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
