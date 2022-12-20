@@ -38,7 +38,7 @@
               </v-row>
               <v-spacer></v-spacer>
               <v-row justify="center" v-if="!isLoading">
-<!--                <vue-pdf-app page-scale="page-fit" :config="config" v-if="!isLoading" :pdf="arrayBuffer"></vue-pdf-app>-->
+                <vue-pdf-app page-scale="page-fit" :config="config" v-if="!isLoading" :pdf="arrayBuffer"></vue-pdf-app>
               </v-row>
             </v-card-text>
           </v-card>
@@ -53,16 +53,16 @@
 <script>
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-// import VuePdfApp from 'vue-pdf-app';
+import VuePdfApp from 'vue-pdf-app';
 import alertMixin from '@/mixins/alertMixin';
-// import 'vue-pdf-app/dist/icons/main.css';
+import 'vue-pdf-app/dist/icons/main.css';
 
 export default {
   name: 'PdfRenderer',
   mixins: [alertMixin],
-  // components: {
-  //   VuePdfApp
-  // },
+  components: {
+    VuePdfApp
+  },
   data() {
     return {
       arrayBuffer: undefined,
@@ -161,6 +161,7 @@ export default {
       for (let i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
       }
+      console.log('Hw');
       this.arrayBuffer = bytes.buffer;
     }
   }
