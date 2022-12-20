@@ -161,7 +161,6 @@ export default {
       for (let i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
       }
-      console.log('Hw');
       this.arrayBuffer = bytes.buffer;
     }
   }
