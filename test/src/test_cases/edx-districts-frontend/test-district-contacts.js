@@ -43,9 +43,6 @@ fixture `district-contacts`
 });
 
 test('new-district-contact', async t => {
-    if(await instituteSelectionPage.isInstituteSelectionPage()){
-        await instituteSelectionPage.clickItemFromDistrictDashboardBasedOnTitle('Revelstoke');
-    }
     await dashboard.clickDistrictContactsCard();
     await t.expect(districtContacts.navTitle.innerText).contains('District Contacts');
 
@@ -53,7 +50,7 @@ test('new-district-contact', async t => {
     await districtContacts.fillDistrictContactForm();
     await districtContacts.verifyDistrictContactDetails();
 
-    await deleteDistrictContact('019');
+    await deleteDistrictContact('998');
 
 });
 
@@ -69,4 +66,6 @@ test('edit-district-contact', async t => {
     await districtContacts.confirmPublishChanges();
 
     await districtContacts.verifyDistrictContactEditDetails();
+
+    await districtContacts.verifyPubliclyAvailableAlert();
 });
