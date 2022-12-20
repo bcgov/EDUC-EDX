@@ -691,19 +691,22 @@ function validateAccessToken(token) {
   }
 }
 
-async function removeUserSchoolAccess(req, res) {
+async function removeUserSchoolOrDistrictAccess(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserSchoolAdminPermission(req);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
-
-    await deleteData(token, config.get('edx:edxUsersURL') + `/${req.body.params.userToRemove}` + '/school' + `/${req.body.params.userSchoolID}`, req.session.correlationID);
-
+    if (req.body.params.userSchoolID) {
+      checkEDXUserSchoolAdminPermission(req);
+    } else {
+      checkEDXUserDistrictAdminPermission(req);
+    }
+    let edxUserInstituteType = req.body.params.userSchoolID ? 'school' : 'district';
+    let edxUserInstituteID = req.body.params.userSchoolID ?? req.body.params.edxUserDistrictID;
+    await deleteData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.userToRemove}/${edxUserInstituteType}/${edxUserInstituteID}`, req.session.correlationID);
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
-    log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
-    return handleExceptionResponse(e, res);
+    log.error(e, 'removeUserSchoolOrDistrictAccess', 'Error occurred while attempting to remove user school or district access.');
+    return errorResponse(res);
   }
 }
 
@@ -979,7 +982,7 @@ module.exports = {
   clearActiveSession,
   getAndSetupEDXUserAndRedirect,
   getExchangesCount,
-  removeUserSchoolAccess,
+  removeUserSchoolOrDistrictAccess,
   relinkUserSchoolAccess,
   findPrimaryEdxActivationCode,
   removeSecureExchangeStudent
