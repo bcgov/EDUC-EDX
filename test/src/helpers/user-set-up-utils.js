@@ -11,7 +11,6 @@ import EdxUser from '../model/EdxUser';
 import EdxUserSchoolRole from '../model/EdxUserSchoolRole';
 import EdxUserDistrict from '../model/EdxUserDistrict';
 import EdxUserDistrictRole from '../model/EdxUserDistrictRole';
-import log from 'npmlog';
 
 
 const userSetUpUtils = {
@@ -44,6 +43,14 @@ const userSetUpUtils = {
     const instituteIDs = await userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
     const roles = await getAllEdxUserRoleForInstitute(token, 'DISTRICT');
     return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, '', '', instituteIDs, roles);
+  },
+
+  async setUpEdxDistrictUserWithSpecificDigitalUserIdAndAllAvailableRoles(digitalUserID, districtNumbers) {
+    const data = await getToken();
+    const token = data.access_token;
+    const instituteIDs = await userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
+    const roles = await getAllEdxUserRoleForInstitute(token, 'DISTRICT');
+    return await userSetUpUtils.createEdxUserObject(token, digitalUserID, '', '', instituteIDs, roles);
   },
 
   async getInstituteIds(instituteTypeCode, instituteCodes) {
@@ -120,12 +127,18 @@ const userSetUpUtils = {
     const data = await getToken();
     const token = data.access_token;
     const edxUser = await getEdxUserFromFirstNameLastName(token, 'TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
-
-    const endpoint = 'api/v1/edx/users';
-    if (edxUser) {
-      const url = `${constants.edx_api_base_url}${endpoint}/${edxUser?.edxUserID}`;
-      await restUtils.deleteData(token, url);
+    if (!edxUser) {
+      return;
     }
+    const url = `${constants.edx_api_base_url}api/v1/edx/users/${edxUser?.edxUserID}`;
+    await restUtils.deleteData(token, url);
+  },
+
+  async deleteSpecificEdxUser(edxUserID) {
+    const data = await getToken();
+    const token = data.access_token;
+    const url = `${constants.edx_api_base_url}api/v1/edx/users/${edxUserID}`;
+    await restUtils.deleteData(token, url);
   }
 
 };
