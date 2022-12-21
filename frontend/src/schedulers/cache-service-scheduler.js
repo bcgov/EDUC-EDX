@@ -1,5 +1,3 @@
-'use strict';
-
 const CronJob = require('cron').CronJob;
 const log = require('../components/logger');
 const cacheService = require('../components/cache-service');
