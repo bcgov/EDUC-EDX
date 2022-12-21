@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col>
-      <v-card>
+      <v-card :id="`edxUser-${user.edxUserID}`">
         <v-card-title class="pb-0">
           <v-row no-gutters>
             <v-col>
@@ -30,7 +30,7 @@
                          depressed
                          @click="clickDeleteButton"
                          small
-                         class="mr-2"
+                         class="mr-2 removeEdxUserButton"
                   >
                     <v-icon size="x-large" color="#003366" dark>mdi-delete</v-icon>
                   </v-btn>
@@ -93,7 +93,7 @@
           </v-list-item-group>
         </v-card-text>
         <Transition name="bounce">
-          <v-card-text style="background-color: #e7ebf0;" v-if="deleteState">
+          <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
             <v-row no-gutters>
               <v-col class="d-flex justify-center">
                 <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to remove this users access for the {{
@@ -104,9 +104,9 @@
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
-                               text="Cancel" class="mr-2" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
-                <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`" text="Remove"
-                               @click.native="clickRemoveButton(user)"></PrimaryButton>
+                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
+                <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
+                               text="Remove" class="confirmUserDeleteButton" @click.native="clickRemoveButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
