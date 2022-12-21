@@ -38,7 +38,7 @@
               </v-row>
               <v-spacer></v-spacer>
               <v-row justify="center" v-if="!isLoading">
-                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />
+<!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
               </v-row>
             </v-card-text>
           </v-card>
@@ -53,15 +53,15 @@
 <script>
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed';
+// import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed';
 import alertMixin from '@/mixins/alertMixin';
 
 export default {
   name: 'PdfRenderer',
   mixins: [alertMixin],
-  components: {
-    VuePdfEmbed
-  },
+  // components: {
+  //   VuePdfEmbed
+  // },
   data() {
     return {
       arrayBuffer: undefined,
