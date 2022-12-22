@@ -8,7 +8,7 @@
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert color="#003366" dense text type="info">
-              <p>School contacts will be <strong>available to the public as of start date.</strong></p>
+              <p>New school contacts will be <strong>available to the public</strong> as soon as their start date has passed.</p>
               <p class="mb-1">Please be sure to review the new contact details carefully before saving.</p>
             </v-alert>
           </v-col>
