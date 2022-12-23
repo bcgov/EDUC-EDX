@@ -1,93 +1,141 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col class="mt-1 d-flex justify-start">
-        <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
-        <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
-      </v-col>
-      <v-col class="d-flex justify-end">
-        <v-chip id="primaryEdxActivationCode" :color="getChipColor()">
-          <v-icon left>
-            mdi-shield-key-outline
-          </v-icon>Primary Activation Code:
-          {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
-        </v-chip>
-        <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
-      </v-col>
-    </v-row>
-    <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-      <v-col cols="12" md="4">
-        <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-select id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-text="label"
-                  item-value="edxRoleCode" label="Role"></v-select>
-      </v-col>
-      <v-col cols="12" md="4" :class="['text-right']">
-        <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
-                       :disabled="searchEnabled()"/>
-      </v-col>
-    </v-row>
-    <!--  user info -->
-    <Spinner v-if="loadingUsers"/>
-    <v-row v-else-if="filteredUsers.length">
-      <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
-        <AccessUserCard @refresh="getUsersData" :userRoles="getCurrentUserSchoolRoles(user)" :user="user" :institute-code="schoolID" :institute-roles="schoolRoles" institute-type-code="SCHOOL" institute-type-label="School"></AccessUserCard>
-      </v-col>
-      <v-col xl="4" cols="6" >
-        <v-row>
-          <v-col style="height: 180px">
-            <v-card height="100%">
-              <v-card-title>
-                <v-row no-gutters>
-                  <v-col class="d-flex justify-center mt-10">
-                    <PrimaryButton icon="mdi-plus"
-                                   :large-icon=true
-                                   id="new-user-button"
-                                   secondary
-                                   text="Add New User"
-                                   @click.native="newUserInviteSheet = !newUserInviteSheet"/>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row  v-else>
-      <v-col class="d-flex justify-center">
-        No users found
-      </v-col>
-    </v-row>
+    <div v-if="this.userInfo.activeInstituteType === 'SCHOOL'">
+      <v-row>
+        <v-col class="mt-1 d-flex justify-start">
+          <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
+          <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+        </v-col>
+        <v-col class="d-flex justify-end">
+          <v-chip id="primaryEdxActivationCode" :color="getChipColor()">
+            <v-icon left>
+              mdi-shield-key-outline
+            </v-icon>
+            Primary Activation Code:
+            {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
+          </v-chip>
+          <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode"
+                           :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
+        </v-col>
+      </v-row>
+      <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
+        <v-col cols="12" md="4">
+          <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-select id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName"
+                    item-text="label"
+                    item-value="edxRoleCode" label="Role"></v-select>
+        </v-col>
+        <v-col cols="12" md="4" :class="['text-right']">
+          <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
+          <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
+                         :disabled="searchEnabled()"/>
+        </v-col>
+      </v-row>
+      <!--  user info -->
+      <Spinner v-if="loadingUsers"/>
+      <v-row v-else-if="filteredUsers.length">
+        <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
+          <AccessUserCard @refresh="getUsersData" :userRoles="getCurrentUserSchoolRoles(user)" :user="user"
+                          :institute-code="schoolID" :institute-roles="schoolRoles" institute-type-code="SCHOOL"
+                          institute-type-label="School"></AccessUserCard>
+        </v-col>
+        <v-col xl="4" cols="6">
+          <v-row>
+            <v-col style="height: 180px">
+              <v-card height="100%">
+                <v-card-title>
+                  <v-row no-gutters>
+                    <v-col class="d-flex justify-center mt-10">
+                      <PrimaryButton icon="mdi-plus"
+                                     :large-icon=true
+                                     id="new-user-button"
+                                     secondary
+                                     text="Add New User"
+                                     @click.native="newUserInviteSheet = !newUserInviteSheet"/>
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col class="d-flex justify-center">
+          No users found
+        </v-col>
+      </v-row>
 
-    <v-bottom-sheet
-        v-model="newUserInviteSheet"
-        inset
-        no-click-animation
-        scrollable
-        persistent
-    >
-      <v-card
-          id="newUserInviteVCard"
-          v-if="newUserInviteSheet"
-          class="information-window-v-card">
-        <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
-        <v-divider></v-divider>
+      <v-bottom-sheet
+          v-model="newUserInviteSheet"
+          inset
+          no-click-animation
+          scrollable
+          persistent
+      >
+        <v-card
+            id="newUserInviteVCard"
+            v-if="newUserInviteSheet"
+            class="information-window-v-card">
+          <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <NewUserPage
+                :userRoles="schoolRoles"
+                :userInfo="userInfo"
+                :schools-map="schoolsMap"
+                @access-user:messageSent="closeNewUserModal"
+                @access-user:updateRoles="updateUserRoles"
+                @access-user:cancelMessage="closeNewUserModal"
+            >
+            </NewUserPage>
+          </v-card-text>
+        </v-card>
+      </v-bottom-sheet>
+    </div>
+    <div v-else>
+      <v-row>
+        <v-col class="mt-1 d-flex justify-start">
+          <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
+          <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+        </v-col>
+      </v-row>
+      <v-card color="#F2F2F2">
+        <v-card-title>
+          <v-row justify="center">
+            <v-col class="d-flex justify-center">
+              <strong>Search a school below to manage their EDX Access</strong>
+            </v-col>
+          </v-row>
+        </v-card-title>
         <v-card-text>
-          <NewUserPage
-              :userRoles="schoolRoles"
-              :userInfo="userInfo"
-              :schools-map="schoolsMap"
-              @access-user:messageSent="closeNewUserModal"
-              @access-user:updateRoles="updateUserRoles"
-              @access-user:cancelMessage="closeNewUserModal"
-          >
-          </NewUserPage>
+          <v-row justify="center">
+            <v-col cols="8">
+              <v-row justify="center" no-gutters>
+                <v-col cols="9">
+<!--                  <v-autocomplete
+                      id='selectInstituteName'
+                      class="pt-0 mt-n1"
+                      prepend-inner-icon="mdi-account-box-outline"
+                      v-model="instituteCode"
+                      :items="institutes"
+                      color="#003366"
+                      :label="instituteTypeLabel"
+                      clearable
+                  ></v-autocomplete>-->
+                </v-col>
+                <v-col class="pl-4" cols="3">
+<!--                  <PrimaryButton id="manageInstituteButton" :to="`/edx/exchange/access/${this.instituteTypeLabel.toLowerCase()}/${this.instituteCode}`" :disabled="!instituteCode">Manage {{this.instituteTypeLabel}} Access</PrimaryButton>-->
+                      <PrimaryButton id="manageInstituteButton"> Manage [School] Access</PrimaryButton>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
-    </v-bottom-sheet>
+    </div>
   </v-container>
 
 </template>
@@ -134,6 +182,12 @@ export default {
   created() {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.schoolID = this.userInfo.activeInstituteIdentifier;
+
+      if(this.userInfo.activeInstituteType === 'DISTRICT'){
+        // this is not an active school, show search for school
+        console.log('****NOT AN ACTIVE SCHOOL!!');
+      }
+
       this.getUsersData();
 
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
