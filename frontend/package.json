@@ -46,7 +46,7 @@
     "rfdc": "^1.1.4",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
-    "testcafe": "^1.20.1",
+    "testcafe": "^15.1.317922",
     "v-viewer": "^1.6.4",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.3.1",
