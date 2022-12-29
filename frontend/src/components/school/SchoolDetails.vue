@@ -205,8 +205,13 @@
             <h2 class="subjectHeading pt-4">Addresses</h2>
           </v-col>
         </v-row>
-        <v-row no-gutters class="d-flex justify-start">
-          <v-col v-if="hasMailingAddress()" cols="3" >
+        <v-row v-if="!hasMailingAddress()" no-gutters class="d-flex justify-start">
+          <v-col>
+            <span>Not Provided</span>
+          </v-col>
+        </v-row>
+        <v-row v-else no-gutters class="d-flex justify-start">
+          <v-col cols="3" >
             <v-row>
               <v-col>
                 <v-icon class="pb-1 mr-1" right >
