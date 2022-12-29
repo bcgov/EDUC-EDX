@@ -217,7 +217,7 @@
             </v-row>
             <ConfirmationDialog ref="confirmDistrictContactUpdateAndSave">
               <template v-slot:message>
-                <p>All changes made to publicly available district contact information will be <strong>available to the public on save</strong>.</p>
+                <p>All changes made to district contact information will be <strong>available to the public on save.</strong></p>
                 <p>Please be sure to review your changes carefully before you publish them.</p>
               </template>
             </ConfirmationDialog>
