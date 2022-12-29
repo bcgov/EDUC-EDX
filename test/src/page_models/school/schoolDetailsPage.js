@@ -3,14 +3,14 @@ import log from "npmlog";
 
 class SchoolDetailsPage {
   constructor() {
-    this.schoolDetailsEditButton = Selector("#schoolDetailsEditButton");
-    this.emailField = Selector("#schoolDetailsEmail");
-    this.phoneNumberField = Selector("#schoolDetailsPhoneNumber");
-    this.faxNumberField = Selector("#schoolDetailsFaxNumber");
-    this.websiteField = Selector("#schoolDetailsWebsite");
-    this.saveButton = Selector("#saveButton");
-    this.confirmationPromptHeader = Selector(".v-toolbar__title");
-    this.confirmPublishChangesButton = Selector("#resolveBtn");
+    this.schoolDetailsEditButton = Selector('#schoolDetailsEditButton');
+    this.emailField = Selector('#schoolDetailsEmail');
+    this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
+    this.faxNumberField = Selector('#schoolDetailsFaxNumber');
+    this.websiteField = Selector('#schoolDetailsWebsite');
+    this.saveButton = Selector('#saveButton');
+    this.confirmationPromptHeader = Selector('.v-toolbar__title');
+    this.confirmPublishChangesButton = Selector('#resolveBtn');
     this.nonEditableAlert = Selector('#nonEditableAlert')
   }
 
