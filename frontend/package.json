@@ -42,7 +42,7 @@
     "path": "^0.12.7",
     "prom-client": "^11.5.3",
     "purgecss-webpack-plugin": "^5.0.0",
-    "regenerator-runtime": "^0.13.3",
+    "regenerator-runtime": "^0.13.11",
     "rfdc": "^1.1.4",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",

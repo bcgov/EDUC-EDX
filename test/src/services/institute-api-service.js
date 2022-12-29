@@ -133,7 +133,6 @@ const instituteApiService = {
           phoneExtension: '123',
           alternatePhoneNumber: '2506544578',
           alternatePhoneExtension: '321',
-          publiclyAvailable: true,
           email: 'test@test.com',
           firstName: 'EDX AT Principal First Name',
           lastName: 'Last Name',
@@ -287,7 +286,6 @@ const instituteApiService = {
         phoneExtension: '123',
         alternatePhoneNumber: '2506544578',
         alternatePhoneExtension: '321',
-        publiclyAvailable: true,
         email: 'test@test.com',
         firstName: 'EDXAutomation',
         lastName: 'Testing',
@@ -324,8 +322,28 @@ const instituteApiService = {
       website: null,
       displayName: 'EDX Automation Testing District',
       districtRegionCode: 'NOT_APPLIC',
-      districtStatusCode: 'ACTIVE'
+      districtStatusCode: 'ACTIVE',
+      addresses: [
+          {
+            updateUser: 'EDXAT',
+            createUser: 'EDXAT',
+            createDate: null,
+            updateDate: null,
+            addressId: null,
+            schoolId: null,
+            districtId: null,
+            independentAuthorityId: null,
+            addressLine1: 'Fake Address',
+            addressLine2: null,
+            city: 'Faketown',
+            postal: 'v9v9v9',
+            addressTypeCode: 'MAILING',
+            provinceCode: 'BC',
+            countryCode: 'CA'
+          }
+        ]
     };
+
     const url = `${constants.institute_base_url}${DISTRICT_ENDPOINT}`;
     if(!districtID){
       return await restUtils.postData(token, url, districtPayload);
@@ -354,7 +372,6 @@ const instituteApiService = {
         phoneExtension: '123',
         alternatePhoneNumber: '2506544578',
         alternatePhoneExtension: '321',
-        publiclyAvailable: true,
         email: 'test@test.com',
         firstName: 'EDXAutomation',
         lastName: 'Testing',
@@ -430,7 +447,6 @@ const instituteApiService = {
         phoneExtension: '123',
         alternatePhoneNumber: '2506544578',
         alternatePhoneExtension: '321',
-        publiclyAvailable: true,
         email: 'test@test.com',
         firstName: 'EDXAutomation',
         lastName: 'Testing',

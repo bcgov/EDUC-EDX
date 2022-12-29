@@ -3,7 +3,7 @@
   <v-container class="containerSetup" fluid>
     <v-row v-if="!loading && editing" class="d-flex justify-center">
       <v-col>
-        <v-alert color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
+        <v-alert id="nonEditableAlert" color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
           <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
@@ -32,7 +32,6 @@
             <h2 class="subjectHeading">{{ school.mincode }} - {{ school.displayName }}</h2>
           </v-col>
           <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-
             <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" @click.native="redirectToSchoolContacts"></PrimaryButton>
             <PrimaryButton id="schoolDetailsEditButton" icon-left class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
                            :disabled="!canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
@@ -395,7 +394,7 @@ export default {
   },
   methods: {
     redirectToSchoolContacts(){
-      this.$router.push({name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+      this.$router.push({name: 'schoolContacts', params: {schoolID: this.school.schoolId}});
     },
     getThisSchoolsDetails(){
       this.loading = true;

@@ -11,7 +11,7 @@ import SnackBarPage from "../../page_models/common/snackBarPage";
 import DistrictDetailsPage from "../../page_models/district/district-details-page";
 
 const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils');
-const {deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
+const {deleteSetUpEdxUser, setUpEdxDistrictUserWithAllAvailableRoles} =  require('../../helpers/user-set-up-utils');
 const dashboard = new Dashboard();
 const loginPage = new LoginPage();
 const navBarPage = new NavBarPage();
@@ -19,15 +19,16 @@ const snackBarPage = new SnackBarPage();
 const districtDetailsPage = new DistrictDetailsPage()
 
 fixture `district-details-edit`
-  .before(async async => {
+  .before(async () => {
     await setupInstituteEntities();
+    await setUpEdxDistrictUserWithAllAvailableRoles(['998']);
     getToken().then(async (data) => {
       token = data.access_token;
     }).catch((error => {
       log.error("Failure during test setup: " + error);
     }));
   })
-  .after(async ctx => {
+  .after(async () => {
     log.info('Performing tear-down operation');
     await deleteSetUpEdxUser();
 
@@ -40,13 +41,14 @@ fixture `district-details-edit`
   await t.navigateTo(base_url + '/logout');
 });
 
-test('test-edit-district-details', async t => {
+test('test-edit-district-details', async () => {
   await navBarPage.navTitle('EDX Automation Testing School')
   await dashboard.clickDistrictDetails();
   await districtDetailsPage.clickDistrictEditButton();
   await districtDetailsPage.editEmailAddress('edxAT@gov.bc.ca');
   await districtDetailsPage.editPhoneNumber('1234567890');
   await districtDetailsPage.clickSaveButton();
+  await districtDetailsPage.clickConfirmPublishChanges();
   await snackBarPage.verifySnackBarText('Success! The district details have been updated.')
   log.info('District Details Edited Successfully.');
 });

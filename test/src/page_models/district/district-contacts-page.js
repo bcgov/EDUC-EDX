@@ -17,7 +17,7 @@ class DistrictContactsPage {
         this.contactStartDateDisplay = Selector('span');
 
         this.newContactButton = Selector('#newContactButton');
-        this.contactTypeSelect = Selector('#newContactDropdown');
+        this.contactTypeSelect = Selector('#newContactDropdown').parent('div[role="button"]');
         this.contactTypeOption = Selector('.v-select-list').child('.v-list-item').find('div').find('div');
 
         this.contactFirstName = Selector('#newContactFirstNameInput');
@@ -56,6 +56,8 @@ class DistrictContactsPage {
         this.districtContactAltPhoneNumberExt = Selector('span');
         this.districtContactStartDate = Selector('span');
         this.saveEditContactButton = Selector('#saveEditButton');
+
+        this.publiclyAvailable1701Alert = Selector('#publiclyAvailableAlert1701');
     }
 
     async clickNewContactButton(){
@@ -219,6 +221,11 @@ class DistrictContactsPage {
         await this.verifyContactAltPhoneNumExt('999');
         await this.verifyContactStartDate('2022/01/01');
         log.info('Contact Verification Complete');
+    }
+
+    async verifyPubliclyAvailableAlert() {
+        await t.expect(this.publiclyAvailable1701Alert.innerText).contains('Contacts of this type are only available to the ministry and not available to public.');
+        log.info('1701 Publicly Available Alert verified');
     }
 }
 

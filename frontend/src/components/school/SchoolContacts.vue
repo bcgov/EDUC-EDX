@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     redirectToSchoolDetails() {
-      this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+      this.$router.push({name: 'schoolDetails', params: {schoolID: this.school.schoolId}});
     },
     getSchoolContactTypeCodes() {
       this.loadingCount += 1;

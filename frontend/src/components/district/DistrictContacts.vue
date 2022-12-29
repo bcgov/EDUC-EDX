@@ -24,6 +24,7 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
+          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" @click.native="redirectToDistrictDetails"></PrimaryButton>
           <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
@@ -31,6 +32,11 @@
         <v-row>
           <v-col>
             <h2 style="color:#1A5A96">{{districtContactType.label}}</h2>
+          </v-col>
+        </v-row>
+        <v-row v-if="!districtContactType.publiclyAvailable">
+          <v-col>
+            <v-alert :id="`publiclyAvailableAlert${districtContactType.label}`" color="#003366" dense text type="info">Contacts of this type are only available to the ministry and not available to public.</v-alert>
           </v-col>
         </v-row>
         <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
@@ -156,6 +162,9 @@ export default {
       this.newContactSheet= !this.newContactSheet;
       this.getThisDistrictsContacts();
     },
+    redirectToDistrictDetails() {
+      this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
+    },
     getStatusColor,
     formatDate,
     formatPhoneNumber,
@@ -181,10 +190,6 @@ export default {
 .containerSetup{
   padding-right: 32em !important;
   padding-left: 32em !important;
-}
-
-.titleSetup{
-  word-break: break-word;
 }
 
 @media screen and (max-width: 1950px) {

@@ -38,7 +38,7 @@
               </v-row>
               <v-spacer></v-spacer>
               <v-row justify="center" v-if="!isLoading">
-<!--                <vue-pdf-app page-scale="page-fit" :config="config" v-if="!isLoading" :pdf="arrayBuffer"></vue-pdf-app>-->
+<!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
               </v-row>
             </v-card-text>
           </v-card>
@@ -53,65 +53,21 @@
 <script>
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-// import VuePdfApp from 'vue-pdf-app';
+// import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed';
 import alertMixin from '@/mixins/alertMixin';
-// import 'vue-pdf-app/dist/icons/main.css';
 
 export default {
   name: 'PdfRenderer',
   mixins: [alertMixin],
   // components: {
-  //   VuePdfApp
+  //   VuePdfEmbed
   // },
   data() {
     return {
       arrayBuffer: undefined,
       isLoading: true,
       PDFRenderDialog: false,
-      documentID: '',
-      config:{
-        sidebar: false,
-        secondaryToolbar: {
-          secondaryPresentationMode: false,
-          secondaryOpenFile: false,
-          secondaryPrint: false,
-          secondaryDownload: false,
-          secondaryViewBookmark: false,
-          firstPage: false,
-          lastPage: false,
-          pageRotateCw: true,
-          pageRotateCcw: true,
-          cursorSelectTool: false,
-          cursorHandTool: false,
-          scrollVertical: false,
-          scrollHorizontal: false,
-          scrollWrapped: false,
-          spreadNone: false,
-          spreadOdd: false,
-          spreadEven: false,
-          documentProperties: false,
-        },
-        toolbar: {
-          toolbarViewerLeft: {
-            findbar: false,
-            previous: true,
-            next: true,
-            pageNumber: false,
-          },
-          toolbarViewerRight: {
-            presentationMode: false,
-            openFile: false,
-            print: false,
-            download: false,
-            viewBookmark: false,
-          },
-          toolbarViewerMiddle: {
-            zoomOut: true,
-            zoomIn: true,
-            scaleSelectContainer: true,
-          },
-        },
-      }
+      documentID: ''
     };
   },
   props: {

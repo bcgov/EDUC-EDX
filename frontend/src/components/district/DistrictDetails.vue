@@ -24,6 +24,7 @@
               <h2 id="districtName">{{ district.districtNumber }} - {{ district.displayName }}</h2>
             </v-col>
             <v-col v-if="!editing" cols="6" class="d-flex justify-end">
+              <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View District Contacts" @click.native="redirectToDistrictContacts"></PrimaryButton>
               <PrimaryButton id="editButton" icon-left width="6em" icon="mdi-pencil" text="Edit" :disabled="!canEditDistrict()" @click.native="toggleEdit"></PrimaryButton>
             </v-col>
             <v-col v-else cols="6" class="d-flex justify-end">
@@ -351,7 +352,7 @@
                                     id="sameAsMailingCheckbox"
                                     @click.native="clickSameAsAddressButton"
                                     v-model="sameAsMailingCheckbox"
-                                    label="Same as mailing address"
+                                    label="Same as Mailing Address"
                                     class="mt-n3 pt-0"
                                   ></v-checkbox>
                                 </v-col>
@@ -562,6 +563,9 @@ export default {
     },
     hasPhysicalAddress(){
       return this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
+    },
+    redirectToDistrictContacts(){
+      this.$router.push({name: 'districtContacts', params: {districtID: this.districtID}});
     },
     async clickSameAsAddressButton(){
       await this.$nextTick();
