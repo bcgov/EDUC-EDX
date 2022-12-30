@@ -128,7 +128,7 @@
                 </v-col>
                 <v-col class="pl-4" cols="3">
 <!--                  <PrimaryButton id="manageInstituteButton" :to="`/edx/exchange/access/${this.instituteTypeLabel.toLowerCase()}/${this.instituteCode}`" :disabled="!instituteCode">Manage {{this.instituteTypeLabel}} Access</PrimaryButton>-->
-                      <PrimaryButton id="manageInstituteButton"> Manage [School] Access</PrimaryButton>
+                      <PrimaryButton id="manageSchoolButton" text="Manage School Access"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-col>
