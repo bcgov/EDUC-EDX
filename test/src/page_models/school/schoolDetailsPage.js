@@ -4,8 +4,10 @@ import log from 'npmlog';
 class SchoolDetailsPage {
   constructor() {
     this.schoolDetailsEditButton = Selector('#schoolDetailsEditButton');
-    this.emailField =Selector('#schoolDetailsEmail');
+    this.emailField = Selector('#schoolDetailsEmail');
     this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
+    this.faxNumberField = Selector('#schoolDetailsFaxNumber');
+    this.websiteField = Selector('#schoolDetailsWebsite');
     this.saveButton = Selector('#saveButton');
     this.confirmationPromptHeader = Selector('.v-toolbar__title');
     this.confirmPublishChangesButton = Selector('#resolveBtn');
@@ -27,14 +29,14 @@ class SchoolDetailsPage {
   async editEmailAddress(emailId){
     await t.click(this.emailField);
     await t.selectText(this.emailField).pressKey('delete');
-    await t.typeText(this.emailField,emailId);
+    await t.typeText(this.emailField, emailId);
     log.info('Email ID updated');
   }
 
   async editPhoneNumber(phoneNumber){
-    await t.click(this.phoneNumberField)
+    await t.click(this.phoneNumberField);
     await t.selectText(this.phoneNumberField).pressKey('delete');
-    await t.typeText(this.phoneNumberField,phoneNumber);
+    await t.typeText(this.phoneNumberField, phoneNumber);
   }
 
   async verifyConfirmation(){
@@ -65,6 +67,29 @@ class SchoolDetailsPage {
     log.info('Verified Alert banner is displaying the correct text');
   }
 
+  async editFaxNumber(faxNumber) {
+    await t.click(this.faxNumberField);
+    await t.selectText(this.faxNumberField).pressKey('delete');
+    await t.typeText(this.faxNumberField, faxNumber);
+    log.info('Fax number updated');
+  }
+
+  async editSchoolWebsite(website) {
+    await t.click(this.websiteField);
+    await t.selectText(this.websiteField).pressKey('delete');
+    await t.typeText(this.websiteField, website);
+    log.info('School website updated');
+  }
+
+  async editNLCActivity(nlcDesc) {
+    let nlcField = Selector("#schoolDetailsNlc");
+    await t
+      .click(nlcField)
+      .click(Selector('div[role="listbox"]').find('div').withText(nlcDesc))
+      .expect(nlcField.sibling('.v-select__selection').innerText)
+      .eql(nlcDesc);
+    log.info('NLC field updated');
+  }
 }
 
 export default SchoolDetailsPage;

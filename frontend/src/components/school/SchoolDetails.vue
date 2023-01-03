@@ -82,7 +82,7 @@
                   mdi-web
                 </v-icon>
                 <a v-if="cleanWebsiteUrl && !editing" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-                <v-text-field v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
+                <v-text-field id="schoolDetailsWebsite" v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
               </v-col>
             </v-row>
         <v-row>
@@ -188,7 +188,7 @@
             <v-row>
               <v-col cols="10" class="d-flex justify-start">
                 <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
-                <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
+                <v-select id="schoolDetailsNlc" v-else :items="schoolActiveNeighborhoodLearningTypes"
                           item-value="neighborhoodLearningTypeCode"
                           item-text="label"
                           v-model="schoolDetailsCopy.neighborhoodLearning"
@@ -205,8 +205,13 @@
             <h2 class="subjectHeading pt-4">Addresses</h2>
           </v-col>
         </v-row>
-        <v-row no-gutters class="d-flex justify-start">
-          <v-col v-if="hasMailingAddress()" cols="3" >
+        <v-row v-if="!hasMailingAddress()" no-gutters class="d-flex justify-start">
+          <v-col>
+            <span>Not Provided</span>
+          </v-col>
+        </v-row>
+        <v-row v-else no-gutters class="d-flex justify-start">
+          <v-col cols="3" >
             <v-row>
               <v-col>
                 <v-icon class="pb-1 mr-1" right >

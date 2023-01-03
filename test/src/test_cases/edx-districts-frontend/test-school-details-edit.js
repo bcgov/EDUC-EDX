@@ -49,6 +49,8 @@ test('view-school-deetails-as-district-user-and-edit', async t => {
   await schoolDetailsPage.verifyEditableFieldAlertContent();
   await schoolDetailsPage.editEmailAddress('edxAT@gov.bc.ca');
   await schoolDetailsPage.editPhoneNumber('1234567890');
+  await schoolDetailsPage.editFaxNumber('1234567890');
+  await schoolDetailsPage.editSchoolWebsite('https://www.google.com/');
   await schoolDetailsPage.clickSaveButton();
   await schoolDetailsPage.verifyConfirmation();
   await schoolDetailsPage.confirmPublishChanges();
