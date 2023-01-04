@@ -52,8 +52,7 @@ export default {
     }
   },
   methods: {
-    previewImgObject () {
-      let image = [{'src': this.src,'data-source': this.src}];
+    previewImgObject (imageArray) {
       this.$viewerApi({
         options: {
           toolbar: true,
@@ -64,7 +63,7 @@ export default {
           hide: this.closeDialog(),
           initialViewIndex: 0
         },
-        images: image
+        images: imageArray
       });
     },
     closeDialog(){
@@ -80,9 +79,19 @@ export default {
       this.isLoading = true;
       this.src = undefined;
       if (this.documentID?.length > 0) {
+        let imageArray = [];
         ApiService.apiAxios.get(`${ApiRoutes.edx.EXCHANGE_URL}/${this.requestId}/documents/${this.imageId}`).then((response) => {
-          this.src = 'data:image/jpeg;base64,' + response.data?.documentData;
-          this.previewImgObject();
+
+          if(Array.isArray(response.data?.documentData)){
+            response.data?.documentData.forEach((pngPDF) => {
+              let base64Img = 'data:application/png;base64,' + pngPDF;
+              imageArray.push({'src': base64Img,'data-source': base64Img});
+            });
+          }else{
+            let base64Img = 'data:application/png;base64,' + response.data?.documentData;
+            imageArray.push({'src': base64Img,'data-source': base64Img});
+          }
+          this.previewImgObject(imageArray);
         }).catch(e => {
           console.error(e);
           this.setFailureAlert('Could not load image. Please try again later.');

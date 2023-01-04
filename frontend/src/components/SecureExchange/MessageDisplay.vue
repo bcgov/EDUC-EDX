@@ -16,8 +16,7 @@
       <v-row class="pt-0"
              :class="{'mr-0 ml-0': $vuetify.breakpoint.smAndDown, 'mr-3 ml-3': $vuetify.breakpoint.mdAndUp}">
         <v-col cols="12 pt-0">
-          <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :document-id="this.documentId"></PdfRenderer>
-          <ImageRenderer  :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :image-id="this.imageId"></ImageRenderer>
+          <ImageRenderer :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :image-id="this.imageId"></ImageRenderer>
           <div v-if="!loading && secureExchange">
             <v-row>
               <v-col class="pb-0 pt-0 d-flex justify-start">
@@ -308,7 +307,6 @@ import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
 import alertMixin from '@/mixins/alertMixin';
 import DocumentUpload from '@/components/common/DocumentUpload';
 import AddStudent from '@/components/AddStudent';
-import PdfRenderer from '@/components/common/PdfRenderer';
 import ImageRenderer from '@/components/common/ImageRenderer';
 import {mapState} from 'vuex';
 
@@ -316,7 +314,7 @@ import {mapState} from 'vuex';
 export default {
   name: 'MessageDisplay',
   mixins: [alertMixin],
-  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer, PdfRenderer },
+  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer },
   props: {
     secureExchangeID: {
       type: String,
@@ -341,7 +339,6 @@ export default {
       isOpenStudentIndex: false,
       show: false,
       isHideIndex: false,
-      pdfRenderDialog: false,
       imageRendererDialog: false,
       documentId: '',
       imageId: '',
@@ -377,30 +374,14 @@ export default {
       }
     },
     showDocModal(document){
-      if (this.isPdf(document)) {
-        this.documentId = document.documentID;
-        this.pdfRenderDialog = true;
-      }else {
-        this.imageId = document.documentID;
-        this.imageRendererDialog = true;
-      }
-    },
-    isPdf(document){
-      return (
-        'fileName' in document &&
-        typeof document.fileName === 'string' &&
-        document.fileName.toLowerCase().endsWith('.pdf')
-      );
+      this.imageId = document.documentID;
+      this.imageRendererDialog = true;
     },
     async closeDialog() {
       this.documentId = '';
       this.imageId = '';
-      this.pdfRenderDialog = false;
       this.imageRendererDialog = false;
       await this.$nextTick(); //need to wait so update can be made in parent and propagated back down to child component
-    },
-    documentUrl(document) {
-      return `${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/documents/${document.documentID}/download/${document.fileName}`;
     },
     displayMessageField() {
       this.isNewAttachmentDisplayed = false;

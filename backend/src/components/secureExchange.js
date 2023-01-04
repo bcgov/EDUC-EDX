@@ -28,6 +28,7 @@ const cacheService = require('./cache-service');
 const user = require('../components/user');
 const {isSchoolActive} = require('./schoolUtils');
 const {isDistrictActive} = require('./districtUtils');
+const { pdfToPng } =  require('pdf-to-png-converter');
 
 function verifyRequest(req, res, next) {
   const userInfo = getSessionUser(req);
@@ -122,14 +123,35 @@ async function downloadFile(req, res) {
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
 
-    res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
-    res.setHeader('Content-type', resData.fileExtension);
+    if(isPdf(resData)){
+      const pngPages = await pdfToPng(Buffer.from(resData.documentData, 'base64'),
+        {
+          disableFontFace: true,
+          useSystemFonts: false,
+          viewportScale: 2.0
+        });
+      let base64ImgArray = [];
 
-    return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
+      pngPages.forEach((pngPDF) => {
+        base64ImgArray.push(pngPDF.content.toString('base64'));
+      });
+
+      resData.documentData = base64ImgArray;
+    }
+
+    return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
     log.error('downloadFile Error', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+function isPdf(document){
+  return (
+    'fileName' in document &&
+    typeof document.fileName === 'string' &&
+    document.fileName.toLowerCase().endsWith('.pdf')
+  );
 }
 
 function getCriteria(key, value, operation, valueType) {

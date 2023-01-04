@@ -32,11 +32,12 @@ router.get('/exchange/:id/documents', passport.authenticate('jwt', {session: fal
   (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`)
 );
 
-router.get('/exchange/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
-  (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents/${req.params.documentId}`)
-);
+// router.get('/exchange/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
+//   (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents/${req.params.documentId}`)
+// );
+
 // special case this does not use frontend axios, so need to refresh here to handle expired jwt.
-router.get('/exchange/:id/documents/:documentId/download/:fileName', auth.refreshJWT, isValidBackendToken, [verifyRequest, downloadFile]);
+router.get('/exchange/:id/documents/:documentId', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, downloadFile]);
 
 router.post('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createExchange);
 router.get('/exchange', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getExchanges);
