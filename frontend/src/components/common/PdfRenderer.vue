@@ -38,7 +38,7 @@
               </v-row>
               <v-spacer></v-spacer>
               <v-row justify="center" v-if="!isLoading">
-<!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
+                <!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
               </v-row>
             </v-card-text>
           </v-card>

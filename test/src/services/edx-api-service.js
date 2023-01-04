@@ -115,7 +115,6 @@ const edxApiService = {
   },
   async deleteEdxUser(token, firstName, lastName) {
     const edxUser = await edxApiService.getEdxUserFromFirstNameLastName(token, firstName, lastName);
-    log.info('edxUser found ::', edxUser);
     const endpoint = 'api/v1/edx/users';
     const url = `${constants.edx_api_base_url}${endpoint}/${edxUser?.edxUserID}`;
     await restUtils.deleteData(token, url);
