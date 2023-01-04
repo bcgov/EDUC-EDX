@@ -670,13 +670,14 @@ async function getEdxUsers(req, res) {
 }
 
 async function districtUserActivationInvite(req, res) {
+  checkEDXUserDistrictAdminPermission(req);
+  checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtID);
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
     const payload = {
       ...req.body
     };
-
     const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
     return res.status(200).json(response);
   } catch (e) {
@@ -686,6 +687,8 @@ async function districtUserActivationInvite(req, res) {
 }
 
 async function schoolUserActivationInvite(req, res) {
+  checkEDXUserSchoolAdminPermission(req);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolID);
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
