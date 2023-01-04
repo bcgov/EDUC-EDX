@@ -127,8 +127,7 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pl-4" cols="3">
-<!--                  <PrimaryButton id="manageInstituteButton" :to="`/edx/exchange/access/${this.instituteTypeLabel.toLowerCase()}/${this.instituteCode}`" :disabled="!instituteCode">Manage {{this.instituteTypeLabel}} Access</PrimaryButton>-->
-                      <PrimaryButton id="manageSchoolButton" text="Manage School Access"></PrimaryButton>
+                      <PrimaryButton id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-col>
@@ -170,7 +169,7 @@ export default {
       },
       primaryEdxActivationCode: null,
       instituteCode: '',
-      instituteTypeLabel: ''
+      instituteTypeLabel: 'Schools'
     };
   },
   async beforeMount() {
@@ -191,7 +190,6 @@ export default {
     });
   },
   methods: {
-
     sortUserData(users){
       return users.sort((a, b) => {
         if (a.firstName > b.firstName) {
@@ -201,6 +199,9 @@ export default {
         }
         return 0;
       } );
+    },
+    manageSchoolButtonClicked(){
+      console.log('INSTITUTE CODE: ' + this.instituteCode);
     },
     getUsersData() {
       this.loadingUsers = true;
@@ -276,7 +277,7 @@ export default {
       return this.userInfo?.userSchoolIDs.map(function(id) {
         return {
           'text': schools.get(id)?.schoolName,
-          'value': schools.get(id)?.mincode
+          'value': id
         };
       });
     },
