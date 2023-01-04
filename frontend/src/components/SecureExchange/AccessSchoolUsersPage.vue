@@ -115,16 +115,16 @@
             <v-col cols="8">
               <v-row justify="center" no-gutters>
                 <v-col cols="9">
-<!--                  <v-autocomplete
+                <v-autocomplete
                       id='selectInstituteName'
                       class="pt-0 mt-n1"
                       prepend-inner-icon="mdi-account-box-outline"
                       v-model="instituteCode"
-                      :items="institutes"
+                      :items="loadSchoolsSelection"
                       color="#003366"
                       :label="instituteTypeLabel"
                       clearable
-                  ></v-autocomplete>-->
+                  ></v-autocomplete>
                 </v-col>
                 <v-col class="pl-4" cols="3">
 <!--                  <PrimaryButton id="manageInstituteButton" :to="`/edx/exchange/access/${this.instituteTypeLabel.toLowerCase()}/${this.instituteCode}`" :disabled="!instituteCode">Manage {{this.instituteTypeLabel}} Access</PrimaryButton>-->
@@ -168,7 +168,9 @@ export default {
         name: '',
         roleName: ''
       },
-      primaryEdxActivationCode: null
+      primaryEdxActivationCode: null,
+      instituteCode: '',
+      instituteTypeLabel: ''
     };
   },
   async beforeMount() {
@@ -182,21 +184,14 @@ export default {
   created() {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.schoolID = this.userInfo.activeInstituteIdentifier;
-
-      if(this.userInfo.activeInstituteType === 'DISTRICT'){
-        // this is not an active school, show search for school
-        console.log('****NOT AN ACTIVE SCHOOL!!');
-      }
-
-      this.getUsersData();
-
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.getPrimaryEdxActivationCodeSchool();
+        this.getUsersData();
       }
     });
-
   },
   methods: {
+
     sortUserData(users){
       return users.sort((a, b) => {
         if (a.firstName > b.firstName) {
@@ -273,10 +268,20 @@ export default {
     },
   },
   computed: {
-    ...mapState('app', ['schoolsMap']),
+    ...mapState('app', ['schoolsMap', 'activeSchoolsMap']),
     ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
     ...mapGetters('auth', ['userInfo']),
+    loadSchoolsSelection(){
+      const schools = this.activeSchoolsMap;
+      return this.userInfo?.userSchoolIDs.map(function(id) {
+        return {
+          'text': schools.get(id)?.schoolName,
+          'value': schools.get(id)?.mincode
+        };
+      });
+    },
   }
+
 };
 </script>
 
