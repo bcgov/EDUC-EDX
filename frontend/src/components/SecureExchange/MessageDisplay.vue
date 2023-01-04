@@ -151,7 +151,8 @@
                         </v-card-title>
                         <v-row no-gutters>
                           <v-card-text class="mt-n2 pt-0 pb-0" :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}">
-                            <a @click="showDocModal(activity)" v-if="isEditable()">
+                            <router-link v-if="isEditable() && isPdf(activity)" :to="{ path: documentUrl(activity) }" target="_blank">{{ activity.fileName }}</router-link>
+                            <a @click="showDocModal(activity)" v-else-if="isEditable()">
                               {{ activity.fileName }}
                             </a>
                             <span v-else style="color: grey">
