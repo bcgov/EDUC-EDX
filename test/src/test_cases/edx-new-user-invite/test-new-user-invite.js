@@ -1,5 +1,5 @@
 import {base_url, credentials} from '../../config/constants';
-import NewUserPage from '../../page_models/new-user-page';
+import InviteUserPage from '../../page_models/invite-user-page';
 import AccessUsersPage from '../../page_models/access-users-page';
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 import NavBarPage from "../../page_models/common/navBarPage";
@@ -8,7 +8,7 @@ const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils'
 import LoginPage from '../../page_models/login-page';
 import InstituteSelectionPage from "../../page_models/institute-selection-page";
 const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
-let newUserInvitePage = new NewUserPage();
+let newUserInvitePage = new InviteUserPage();
 let accessUsersPage = new AccessUsersPage();
 const menu = new HamburgerMenuPage();
 const navBar = new NavBarPage();
