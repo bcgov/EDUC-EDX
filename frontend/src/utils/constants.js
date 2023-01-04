@@ -71,6 +71,7 @@ export const ApiRoutes = Object.freeze({
     USER_ACTIVATION:edxRoot+'/user-activation',
     UPDATE_ACTIVATION_URL:edxRoot+'/activation-code/url',
     NEW_SCHOOL_USER_ACTIVATION_INVITE:edxRoot+'/school-user-activation-invite',
+    NEW_DISTRICT_USER_ACTIVATION_INVITE: edxRoot + '/district-user-activation-invite',
     PRIMARY_ACTIVATION_CODE_URL: edxRoot + '/users/activation-code/primary',
   },
   studentRequest: {

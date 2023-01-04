@@ -76,15 +76,18 @@
         <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <NewUserPage
+          <InviteUserPage
               :userRoles="districtRoles"
-              :userInfo="userInfo"
-              :districts-map="districtsMap"
+              :institute-code="districtID"
+              institute-type-code="DISTRICT"
+              instituteTypeLabel="District"
+              :districtName="districtName"
+              :districtNumber="districtNumber"
               @access-user:messageSent="closeNewUserModal"
               @access-user:updateRoles="updateUserRoles"
               @access-user:cancelMessage="closeNewUserModal"
           >
-          </NewUserPage>
+          </InviteUserPage>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -101,17 +104,19 @@ import {ApiRoutes} from '@/utils/constants';
 import {mapGetters, mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
-import NewUserPage from '@/components/SecureExchange/NewUserPage';
 import Spinner from '@/components/common/Spinner';
 import ClipboardButton from '@/components/util/ClipboardButton';
+import InviteUserPage from '@/components/SecureExchange/InviteUserPage.vue';
 
 export default {
   name: 'AccessDistrictUsersPage',
-  components: {ClipboardButton, NewUserPage, PrimaryButton, AccessUserCard, Spinner},
+  components: {ClipboardButton, InviteUserPage, PrimaryButton, AccessUserCard, Spinner},
   data() {
     return {
       newUserInviteSheet: false,
       districtID: '',
+      districtName: '',
+      districtNumber: '',
       users: [],
       loadingUsers: true,
       filteredUsers: [],
@@ -135,12 +140,11 @@ export default {
     this.$store.dispatch('auth/getUserInfo').then(() => {
       this.districtID = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
-
-      if(this.userInfo.activeInstituteType === 'DISTRICT') {
+      this.getDistrictInformation();
+      if (this.userInfo.activeInstituteType === 'DISTRICT') {
         this.getPrimaryEdxActivationCodeDistrict();
       }
     });
-
   },
   methods: {
     sortUserData(users){
@@ -162,6 +166,18 @@ export default {
           this.users = this.filteredUsers;
         }).finally(() => {
           this.loadingUsers = false;
+        });
+    },
+    getDistrictInformation() {
+      ApiService.apiAxios.get(`${ApiRoutes.DISTRICT_DATA_URL}/${this.districtID}`)
+        .then(response => {
+          this.districtNumber = response.data.districtNumber;
+          this.districtName = response.data.name;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loading = false;
         });
     },
     getCurrentUserDistrictRoles(user) {
