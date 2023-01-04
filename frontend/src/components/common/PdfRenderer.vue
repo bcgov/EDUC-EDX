@@ -14,7 +14,17 @@
                   </v-list-item-title>
                 </slot>
               </v-list-item-content>
-              <v-list-item-icon class="my-0">
+              <v-list-item-icon class="mr-7">
+                <v-btn text @click="$refs.pdfEditor.prevPage()">
+                  Previous
+                </v-btn>
+              </v-list-item-icon>
+              <v-list-item-icon class="mr-5">
+                <v-btn text @click="$refs.pdfEditor.nextPage()">
+                  Next
+                </v-btn>
+              </v-list-item-icon>
+              <v-list-item-icon class="">
                 <v-btn id="closePDFRendererModalBtn" text icon @click="PDFRenderDialog=false">
                   <v-icon large color="#38598A">mdi-close</v-icon>
                 </v-btn>
@@ -38,7 +48,7 @@
               </v-row>
               <v-spacer></v-spacer>
               <v-row justify="center" v-if="!isLoading">
-<!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
+                <pdf ref="pdfEditor" style="width: 100%" v-if="!isLoading" :src="arrayBuffer" />
               </v-row>
             </v-card-text>
           </v-card>
@@ -53,15 +63,15 @@
 <script>
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
-// import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed';
+import pdf from 'vue-pdf-cdn';
 import alertMixin from '@/mixins/alertMixin';
 
 export default {
   name: 'PdfRenderer',
   mixins: [alertMixin],
-  // components: {
-  //   VuePdfEmbed
-  // },
+  components: {
+    pdf
+  },
   data() {
     return {
       arrayBuffer: undefined,
@@ -99,7 +109,7 @@ export default {
       this.arrayBuffer = undefined;
       if (this.documentID?.length > 0) {
         ApiService.apiAxios.get(`${ApiRoutes.edx.EXCHANGE_URL}/${this.requestId}/documents/${this.documentID}`).then((response) => {
-          this.base64ToArrayBuffer(response.data?.documentData);
+          this.arrayBuffer =  'data:application/pdf;base64,' + response.data?.documentData;
         }).catch(e => {
           console.error(e);
           this.setFailureAlert('Could not load document. Please try again later.');
@@ -108,23 +118,7 @@ export default {
         });
       }
     }
-  },
-  methods: {
-    base64ToArrayBuffer(base64) {
-      let binary_string = window.atob(base64);
-      let len = binary_string.length;
-      let bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binary_string.charCodeAt(i);
-      }
-      this.arrayBuffer = bytes.buffer;
-    }
   }
 };
 </script>
 
-<style>
-.pdf-app #outerContainer{
-  position: inherit !important;
-}
-</style>
