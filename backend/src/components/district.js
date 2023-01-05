@@ -122,29 +122,18 @@ async function updateDistrictContact(req, res) {
 async function updateDistrictContact2(req, res) {
   try {
     const token = getAccessToken(req);
-    console.log('getting around duplication error');
     validateAccessToken(token);
-    console.log('getting around duplication error');
     checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
-    console.log('getting around duplication error');
     checkEDXUserDistrictAdminPermission(req);
-    console.log('getting around duplication error');
     const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-    console.log('getting around duplication error');
 
     const payload = req.body;
-    console.log('getting around duplication error');
     payload.updateDate = null;
-    console.log('getting around duplication error');
     payload.createDate = null;
-    console.log('getting around duplication error');
     payload.effectiveDate = payload.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
-    console.log('getting around duplication error');
     payload.expiryDate = payload.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
-    console.log('getting around duplication error');
 
     const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
-    console.log('getting around duplication error');
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateDistrictContact', 'Error occurred while attempting to update a district contact.');
