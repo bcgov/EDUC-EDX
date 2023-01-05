@@ -157,7 +157,6 @@ export default {
   components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
   data() {
     return {
-      schoolSelected: false,
       newUserInviteSheet: false,
       schoolID: '',
       users: [],
@@ -208,27 +207,6 @@ export default {
         .then(()=> {
           this.$router.go(0);
         });
-      /*const activationsReq = this.getPrimaryEdxActivationCodeSchoolPromise(schoolId);
-      const userDataReq = this.getUsersDataPromise(schoolId);
-      axios.all([activationsReq, userDataReq]).then(axios.spread((...responses) => {
-        const activationsResponse = responses[0];
-        const userDataResponse = responses[1];
-        // use/access the results
-        this.primaryEdxActivationCode = activationsResponse.data;
-        this.filteredUsers = this.sortUserData(userDataResponse.data);
-        this.users = this.filteredUsers;
-      })).catch(errors => {
-        // react on errors.
-        console.error(errors);
-      }).finally(() => {
-        this.loadingUsers = false;
-        this.schoolID = schoolId;
-      });*/
-    },
-    getUsersDataPromise(schoolId) {
-      this.loadingUsers = true;
-      const payload = {params: {schoolID: schoolId}};
-      return ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload);
     },
     getUsersData() {
       this.loadingUsers = true;
@@ -240,9 +218,6 @@ export default {
         }).finally(() => {
           this.loadingUsers = false;
         });
-    },
-    getPrimaryEdxActivationCodeSchoolPromise(schoolId) {
-      return ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${schoolId}`);
     },
     getPrimaryEdxActivationCodeSchool() {
       ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.schoolID}`)
