@@ -289,6 +289,11 @@ export default {
           this.setSuccessAlert('Success! The school contact has been updated.');
           this.closeSchoolContactEdit();
           this.$emit('editSchoolContact:editSchoolContactSuccess');
+          console.log('trigger sonar cloud');
+          console.log('trigger sonar cloud1');
+          console.log('trigger sonar cloud2');
+          console.log('trigger sonar cloud3');
+          console.log('trigger sonar cloud4');
         })
         .catch(error => {
           console.error(error);

@@ -18,6 +18,15 @@ async function getSchoolBySchoolID(req, res) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
       return res.status(200).json(allActiveSchools ? allActiveSchools : []);
     }
+    if (!req.query.schoolID) {
+      console.log('trigger sonar cloud');
+      console.log('trigger sonar cloud1');
+      console.log('trigger sonar cloud2');
+      console.log('trigger sonar cloud3');
+      console.log('trigger sonar cloud4');
+      let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
+      return res.status(200).json(allActiveSchools ? allActiveSchools : []);
+    }
     let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
     if (!school) {
       return res.status(200).json();
