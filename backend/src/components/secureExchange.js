@@ -122,7 +122,7 @@ async function downloadFile(req, res) {
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
 
-    res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
+    res.setHeader('Content-disposition', 'inline; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
     res.setHeader('Content-type', resData.fileExtension);
 
     return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
@@ -342,7 +342,7 @@ async function getExchange(req, res) {
       dataResponse['commentsList'].forEach((comment) => {
         let activity = {};
         activity['type'] = 'message';
-        activity['isSchool'] = comment.edxUserID ? true : false;
+        activity['isSchool'] = !!comment.edxUserID;
         activity['timestamp'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']) : '';
         activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
         activity['title'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
@@ -356,7 +356,7 @@ async function getExchange(req, res) {
         dataResponse['documentList'].forEach((document) => {
           let activity = {};
           activity['type'] = 'document';
-          activity['isSchool'] = document.edxUserID ? true : false;
+          activity['isSchool'] = !!document.edxUserID;
           activity['timestamp'] = document['createDate'] ? LocalDateTime.parse(document['createDate']) : '';
           activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
           activity['title'] = document.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
@@ -373,7 +373,7 @@ async function getExchange(req, res) {
           let includeDemographicDetails = studentDetail.mincode === school.mincode;
           let activity = {};
           activity['type'] = 'student';
-          activity['isSchool'] = student.edxUserID ? true : false;
+          activity['isSchool'] = !!student.edxUserID;
           activity['studentID'] = student.studentId;
           activity['secureExchangeStudentId'] = student.secureExchangeStudentId;
           activity['studentPEN'] = studentDetail.pen;

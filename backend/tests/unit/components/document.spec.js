@@ -261,7 +261,7 @@ describe('downloadFile', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.data.raw.toString()).toEqual('test data');
-    expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'attachment; filename=' + document.fileName);
+    expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-disposition', 'inline; filename=' + document.fileName);
     expect(res.setHeader).toHaveBeenNthCalledWith(2, 'Content-type', document.fileExtension);
     expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
   });
