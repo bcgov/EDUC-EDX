@@ -1,14 +1,13 @@
 import {Selector, t} from 'testcafe';
 import log from 'npmlog'
 
-class NewUserPage {
+class InviteUserPage {
 
   constructor() {
     this.firstNameInput = Selector('#newUserFirstName');
     this.lastNameInput = Selector('#newUserLastName');
     this.emailInput = Selector('#newUserEmail');
-    this.schoolNameMincodeInput = Selector('#newUserSchool');
-    this.rolesSelector = Selector('#newSchoolUserRolesSelect').parent('div[role="button"]');
+    this.rolesSelector = Selector('#instituteNewUserRolesSelect').parent('div[role="button"]');
     this.rolesSelectorBox = Selector('div[role="listbox"]');
     this.inviteBtn=Selector('#newUserInvitePostBtn');
   }
@@ -42,4 +41,4 @@ class NewUserPage {
 
 }
 
-export default NewUserPage;
+export default InviteUserPage;

@@ -669,7 +669,26 @@ async function getEdxUsers(req, res) {
   }
 }
 
+async function districtUserActivationInvite(req, res) {
+  checkEDXUserDistrictAdminPermission(req);
+  checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtID);
+  const token = getAccessToken(req);
+  try {
+    validateAccessToken(token);
+    const payload = {
+      ...req.body
+    };
+    const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
+    return res.status(200).json(response);
+  } catch (e) {
+    log.error(e, 'districtUserActivationInvite', 'Error occurred while sending user activation invite');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function schoolUserActivationInvite(req, res) {
+  checkEDXUserSchoolAdminPermission(req);
+  checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolID);
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
@@ -976,6 +995,7 @@ module.exports = {
   verifyActivateUserLink,
   instituteSelection,
   getEdxUsers,
+  districtUserActivationInvite,
   schoolUserActivationInvite,
   updateEdxUserRoles,
   createSecureExchangeComment,

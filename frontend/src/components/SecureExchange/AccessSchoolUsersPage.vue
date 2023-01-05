@@ -76,15 +76,18 @@
         <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <NewUserPage
+          <InviteUserPage
               :userRoles="schoolRoles"
-              :userInfo="userInfo"
-              :schools-map="schoolsMap"
+              :institute-code="schoolID"
+              institute-type-code="SCHOOL"
+              instituteTypeLabel="School"
+              :schoolName="schoolName"
+              :schoolMincode="schoolMincode"
               @access-user:messageSent="closeNewUserModal"
               @access-user:updateRoles="updateUserRoles"
               @access-user:cancelMessage="closeNewUserModal"
           >
-          </NewUserPage>
+          </InviteUserPage>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -101,13 +104,13 @@ import {ApiRoutes} from '@/utils/constants';
 import {mapGetters, mapState} from 'vuex';
 import PrimaryButton from '@/components/util/PrimaryButton';
 import AccessUserCard from './AccessUserCard';
-import NewUserPage from '@/components/SecureExchange/NewUserPage';
+import InviteUserPage from '@/components/SecureExchange/InviteUserPage';
 import Spinner from '@/components/common/Spinner';
 import ClipboardButton from '@/components/util/ClipboardButton';
 
 export default {
   name: 'AccessSchoolUsersPage',
-  components: {NewUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
+  components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
   data() {
     return {
       newUserInviteSheet: false,
@@ -222,6 +225,12 @@ export default {
     ...mapState('app', ['schoolsMap']),
     ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
     ...mapGetters('auth', ['userInfo']),
+    schoolName() {
+      return this.schoolsMap.get(this.schoolID).schoolName;
+    },
+    schoolMincode() {
+      return this.schoolsMap.get(this.schoolID).mincode;
+    }
   }
 };
 </script>

@@ -22,7 +22,6 @@ import NewMessagePage from './components/SecureExchange/NewMessagePage';
 import RouterView from './components/RouterView';
 import AccessSchoolUsersPage from '@/components/SecureExchange/AccessSchoolUsersPage';
 import InstituteSelection from '@/components/InstituteSelection.vue';
-import NewUserInvitePage from '@/components/SecureExchange/NewUserPage';
 import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
 import SchoolListPage from '@/components/school/SchoolList';
 import SchoolContactsPage from '@/components/school/SchoolContacts';
@@ -196,16 +195,6 @@ const router = new VueRouter({
           component: NewMessagePage,
           meta: {
             pageTitle: PAGE_TITLES.NEW_EXCHANGE,
-            requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
-          }
-        },
-        {
-          path: 'newUserInvite',
-          name: 'newUserInvite',
-          component: NewUserInvitePage,
-          meta: {
-            pageTitle: PAGE_TITLES.NEW_USER_INVITE,
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }
