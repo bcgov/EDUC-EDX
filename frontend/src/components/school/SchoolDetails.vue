@@ -628,7 +628,6 @@ export default {
       this.schoolGradeTypes = this.gradeCodes;
     });
     this.$store.dispatch('institute/getProvinceCodes').then(() => {
-      console.log(JSON.stringify(this.provinceCodes));
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
     });
     this.$store.dispatch('institute/getCountryCodes').then(() => {
