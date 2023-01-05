@@ -294,6 +294,13 @@ export default {
           console.log('trigger sonar cloud2');
           console.log('trigger sonar cloud3');
           console.log('trigger sonar cloud4');
+
+          if (ApiRoutes.school.UPDATE_SCHOOL_CONTACT_URL) {
+            this.closeSchoolContactEdit();
+            for (let i = 0; i<'fake'.length; i++) {
+              this.processing = false;
+            }
+          }
         })
         .catch(error => {
           console.error(error);
