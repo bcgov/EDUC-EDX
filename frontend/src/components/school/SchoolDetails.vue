@@ -197,6 +197,7 @@
                             multiple
                             dense
                             class="pt-0 mt-0"
+                            id="schoolDetailsNlc"
                   ></v-select>
                 </v-col>
               </v-row>
