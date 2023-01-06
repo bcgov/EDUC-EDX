@@ -11,7 +11,23 @@ class SchoolDetailsPage {
     this.saveButton = Selector('#saveButton');
     this.confirmationPromptHeader = Selector('.v-toolbar__title');
     this.confirmPublishChangesButton = Selector('#resolveBtn');
-    this.nonEditableAlert = Selector('#nonEditableAlert')
+    this.nonEditableAlert = Selector('#nonEditableAlert');
+    //Mailing Address fields
+    this.mailAddressLine1 = Selector('#mailAddressLine1');
+    this.mailAddressLine2 = Selector('#mailAddressLine2');
+    this.mailAddressCity = Selector('#mailAddressCity');
+    this.mailAddressProvince = Selector('#mailAddressProvince');
+    this.mailAddressCountry = Selector('#mailAddressCountry');
+    this.mailAddressPostal = Selector('#mailAddressPostal');
+    //Physical Address fields
+    this.physicalAddressLine1 = Selector('#physicalAddressLine1');
+    this.physicalAddressLine2 = Selector('#physicalAddressLine2');
+    this.physicalAddressCity = Selector('#physicalAddressCity');
+    this.physicalAddressProvince = Selector('#physicalAddressProvince');
+    this.physicalAddressCountry = Selector('#physicalAddressCountry');
+    this.physicalAddressPostal = Selector('#physicalAddressPostal');
+    //Same as Mailing checkbox
+    this.sameAsMailingCheckbox = Selector('#sameAsMailingCheckbox');
   }
 
   async clickEditButton(){
@@ -89,6 +105,74 @@ class SchoolDetailsPage {
       .expect(nlcField.sibling('.v-select__selection').innerText)
       .eql(nlcDesc);
     log.info('NLC field updated');
+  }
+
+  async editMailingAddress(mailingAddress) {
+    await t.click(this.mailAddressLine1);
+    await t.selectText(this.mailAddressLine1).pressKey('delete');
+    await t.typeText(this.mailAddressLine1, mailingAddress.addressLine1);
+    log.info('Mailing address Line1 updated');
+
+    await t.click(this.mailAddressLine2);
+    await t.selectText(this.mailAddressLine2).pressKey('delete');
+    await t.typeText(this.mailAddressLine2, mailingAddress.addressLine2);
+    log.info('Mailing address Line1 updated');
+
+    await t.click(this.mailAddressCity);
+    await t.selectText(this.mailAddressCity).pressKey('delete');
+    await t.typeText(this.mailAddressCity, mailingAddress.city);
+    log.info('Mailing city updated');
+
+    await t
+    .click(this.mailAddressProvince)
+    .click(Selector('div[role="listbox"]').find('div').withText(mailingAddress.provinceDescription));
+    log.info('Mailing province updated');
+
+    await t
+    .click(this.mailAddressCountry)
+    .click(Selector('div[role="listbox"]').find('div').withText(mailingAddress.countryDescription));
+    log.info('Mailing country updated');
+
+    await t.click(this.mailAddressPostal);
+    await t.selectText(this.mailAddressPostal).pressKey('delete');
+    await t.typeText(this.mailAddressPostal, mailingAddress.postal);
+    log.info('Mailing postal code updated');
+  }
+
+  async editPhysicalAddress(physicalAddress) {
+    if(this.sameAsMailingCheckbox) {
+      await t.click(this.sameAsMailingCheckbox);
+      log.info('Unchecked Same as Mailing address');
+    }
+    await t.click(this.physicalAddressLine1);
+    await t.selectText(this.physicalAddressLine1).pressKey('delete');
+    await t.typeText(this.physicalAddressLine1, physicalAddress.addressLine1);
+    log.info('Physical address Line1 updated');
+
+    await t.click(this.physicalAddressLine2);
+    await t.selectText(this.physicalAddressLine2).pressKey('delete');
+    await t.typeText(this.physicalAddressLine2, physicalAddress.addressLine2);
+    log.info('Physical address Line2 updated');
+
+    await t.click(this.physicalAddressCity);
+    await t.selectText(this.physicalAddressCity).pressKey('delete');
+    await t.typeText(this.physicalAddressCity, physicalAddress.city);
+    log.info('Physical city updated');
+
+    await t.click(this.physicalAddressProvince);
+    await t.selectText(this.physicalAddressProvince).pressKey('delete');
+    await t.typeText(this.physicalAddressProvince, physicalAddress.provinceDescription);
+    log.info('Physical province updated');
+
+    await t.click(this.physicalAddressCountry);
+    await t.selectText(this.physicalAddressCountry).pressKey('delete');
+    await t.typeText(this.physicalAddressCountry, physicalAddress.countryDescription);
+    log.info('Physical country updated');
+
+    await t.click(this.physicalAddressPostal);
+    await t.selectText(this.physicalAddressPostal).pressKey('delete');
+    await t.typeText(this.physicalAddressPostal, physicalAddress.postal);
+    log.info('Physical postal code updated');
   }
 }
 

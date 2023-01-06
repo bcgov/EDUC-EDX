@@ -53,6 +53,26 @@ test('view-school-details-as-district-user-and-edit', async t => {
   await schoolDetailsPage.editPhoneNumber('1234567890');
   await schoolDetailsPage.editFaxNumber('1234567890');
   await schoolDetailsPage.editSchoolWebsite('https://www.google.com/');
+
+  let mailingAddress = {
+    addressLine1: '1234',
+    addressLine2: 'Some Lane',
+    city: 'Victoria',
+    postal: 'v1v1v1',
+    provinceDescription: 'Yukon',
+    countryDescription: 'Canada'
+  }
+
+  let physicalAddress = {
+    addressLine1: '1235',
+    addressLine2: 'Something Lane',
+    city: 'Victoria',
+    postal: 'v1v1v1',
+    provinceDescription: 'British Columbia',
+    countryDescription: 'Canada'
+  }
+  await schoolDetailsPage.editMailingAddress(mailingAddress);
+  await schoolDetailsPage.editPhysicalAddress(physicalAddress);
   await schoolDetailsPage.clickSaveButton();
   await schoolDetailsPage.verifyConfirmation();
   await schoolDetailsPage.confirmPublishChanges();
