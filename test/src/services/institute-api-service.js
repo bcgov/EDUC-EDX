@@ -330,9 +330,7 @@ const instituteApiService = {
             createDate: null,
             updateDate: null,
             addressId: null,
-            schoolId: null,
             districtId: null,
-            independentAuthorityId: null,
             addressLine1: 'Fake Address',
             addressLine2: null,
             city: 'Faketown',
@@ -418,7 +416,24 @@ const instituteApiService = {
       schoolCategoryCode: 'PUBLIC',
       facilityTypeCode: 'STANDARD',
       openedDate: '2022-01-01T00:00:00',
-      closedDate: null
+      closedDate: null,
+      addresses: [
+        {
+          updateUser: 'EDXAT',
+          createUser: 'EDXAT',
+          createDate: null,
+          updateDate: null,
+          addressId: null,
+          schoolId: null,
+          addressLine1: 'Fake Address',
+          addressLine2: null,
+          city: 'Faketown',
+          postal: 'v9v9v9',
+          addressTypeCode: 'MAILING',
+          provinceCode: 'BC',
+          countryCode: 'CA'
+        }
+      ]
     };
     const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}`;
     if(!schoolID){

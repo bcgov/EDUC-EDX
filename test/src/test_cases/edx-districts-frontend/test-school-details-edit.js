@@ -9,6 +9,7 @@ import SchoolDetailsPage from '../../page_models/school/schoolDetailsPage';
 import SnackBarPage from '../../page_models/common/snackBarPage';
 import SchoolListPage from "../../page_models/school/schoolsListPage";
 
+const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils');
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
 const loginPage = new LoginPage();
 const dashboard = new Dashboard();
@@ -20,6 +21,7 @@ let token = '';
 fixture `district-school-details-edit`
   .before(async () => {
     await setUpEdxDistrictUserWithAllAvailableRoles(['998'])
+    await setupInstituteEntities();
     getToken().then(async (data) => {
       token = data.access_token;
     }).catch((error => {
@@ -40,7 +42,7 @@ fixture `district-school-details-edit`
   await t.navigateTo(base_url + '/logout');
 });
 
-test('view-school-deetails-as-district-user-and-edit', async t => {
+test('view-school-details-as-district-user-and-edit', async t => {
   await dashboard.clickDistrictUserSchoolContactsCard();
   await schoolList.clickSchoolDetailsRow();
   await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
