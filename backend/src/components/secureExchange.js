@@ -14,7 +14,7 @@ const {
   getDataWithParams,
   checkEDXUserAccess,
   checkEDXUserDistrictAdminPermission,
-  checkEDXUserSchoolAdminPermission
+  checkEDXUserAccessForSchoolAdminFunctions
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
@@ -526,8 +526,7 @@ async function updateEdxUserRoles(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserSchoolAdminPermission(req);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
 
     let response = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.edxUserID, req.session?.correlationID);
 
@@ -633,11 +632,10 @@ async function getEdxUsers(req, res) {
   try {
     validateAccessToken(token);
     if(req.query.schoolID){
-      checkEDXUserSchoolAdminPermission(req);
-      checkEDXUserAccess(req, res, 'SCHOOL', req.query.schoolID);
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.query.schoolID);
     }else{
       checkEDXUserDistrictAdminPermission(req);
-      checkEDXUserAccess(req, res, 'DISTRICT', req.query.districtID);
+      checkEDXUserAccess(req, 'DISTRICT', req.query.districtID);
     }
 
     let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
@@ -671,7 +669,7 @@ async function getEdxUsers(req, res) {
 
 async function districtUserActivationInvite(req, res) {
   checkEDXUserDistrictAdminPermission(req);
-  checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtID);
+  checkEDXUserAccess(req, 'DISTRICT', req.body.districtID);
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
@@ -687,10 +685,10 @@ async function districtUserActivationInvite(req, res) {
 }
 
 async function schoolUserActivationInvite(req, res) {
-  checkEDXUserSchoolAdminPermission(req);
-  checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolID);
-  const token = getAccessToken(req);
   try {
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
+
+    const token = getAccessToken(req);
     validateAccessToken(token);
     const payload = {
       ...req.body
@@ -715,9 +713,10 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     if (req.body.params.userSchoolID) {
-      checkEDXUserSchoolAdminPermission(req);
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.userSchoolID);
     } else {
       checkEDXUserDistrictAdminPermission(req);
+      checkEDXUserAccess(req, 'DISTRICT', req.body.districtID);
     }
     let edxUserInstituteType = req.body.params.userSchoolID ? 'school' : 'district';
     let edxUserInstituteID = req.body.params.userSchoolID ?? req.body.params.edxUserDistrictID;
@@ -733,8 +732,7 @@ async function relinkUserSchoolAccess(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserSchoolAdminPermission(req);
-    checkEDXUserAccess(req, res, 'SCHOOL', req.body.params.schoolID);
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
 
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
     let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === req.body.params.schoolID);
@@ -954,12 +952,11 @@ async function findPrimaryEdxActivationCode(req, res) {
     let instituteType = req.params.instituteType.toUpperCase();
 
     if(instituteType === 'SCHOOL'){
-      checkEDXUserSchoolAdminPermission(req);
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.params.instituteIdentifier);
     }else{
       checkEDXUserDistrictAdminPermission(req);
+      checkEDXUserAccess(req, instituteType, req.params.instituteIdentifer);
     }
-
-    checkEDXUserAccess(req, res, instituteType, req.params.instituteIdentifier);
 
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);

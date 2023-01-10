@@ -1,8 +1,6 @@
 'use strict';
 const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
-  checkEDXUserAccess, checkEDXUserDistrictAdminPermission,
-  checkEDXUserSchoolAdminPermission, checkSchoolBelongsToEDXUserDistrict,
-  putData, postData, handleExceptionResponse
+  checkEDXUserAccessForSchoolAdminFunctions, putData, postData, handleExceptionResponse
 } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
@@ -33,13 +31,7 @@ async function updateSchool(req, res){
   try{
     const token = getAccessToken(req);
     validateAccessToken(token);
-    if( req.session.activeInstituteType === 'SCHOOL'){
-      checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolId);
-      checkEDXUserSchoolAdminPermission(req);
-    }else if( req.session.activeInstituteType === 'DISTRICT'){
-      checkEDXUserDistrictAdminPermission(req);
-      checkSchoolBelongsToEDXUserDistrict(req,  req.body.schoolId);
-    }
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolId);
 
     const payload = req.body;
 
@@ -111,14 +103,7 @@ async function addSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    if (req.session.activeInstituteType === 'SCHOOL') {
-      checkEDXUserAccess(req, res, 'SCHOOL', req.params.schoolID);
-      checkEDXUserSchoolAdminPermission(req);
-
-    } else if (req.session.activeInstituteType === 'DISTRICT') {
-      checkEDXUserDistrictAdminPermission(req);
-      checkSchoolBelongsToEDXUserDistrict(req, req.params.schoolID);
-    }
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
 
     const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
 
@@ -151,14 +136,8 @@ async function updateSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    if (req.session.activeInstituteType === 'SCHOOL') {
-      checkEDXUserAccess(req, res, 'SCHOOL', req.body.schoolID);
-      checkEDXUserSchoolAdminPermission(req);
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
 
-    } else if (req.session.activeInstituteType === 'DISTRICT') {
-      checkEDXUserDistrictAdminPermission(req);
-      checkSchoolBelongsToEDXUserDistrict(req, req.body.schoolID);
-    }
     const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
     const params = req.body;

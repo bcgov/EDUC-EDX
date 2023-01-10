@@ -8,7 +8,7 @@ const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
   validateAccessToken(token);
-  checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
+  checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
 
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
@@ -25,7 +25,7 @@ async function updateDistrict(req, res){
   try{
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
+    checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
     checkEDXUserDistrictAdminPermission(req);
 
     const params = req.body;
@@ -58,7 +58,7 @@ async function updateDistrict(req, res){
 async function createDistrictContact(req, res) {
   const token = getAccessToken(req);
   validateAccessToken(token);
-  checkEDXUserAccess(req, res, 'DISTRICT', req.params.districtID);
+  checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
 
   const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
@@ -99,7 +99,7 @@ async function updateDistrictContact(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserAccess(req, res, 'DISTRICT', req.body.districtId);
+    checkEDXUserAccess(req, 'DISTRICT', req.body.districtId);
     checkEDXUserDistrictAdminPermission(req);
     const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 

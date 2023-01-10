@@ -32,7 +32,7 @@
       </v-row>
       <!--  user info -->
       <Spinner v-if="loadingUsers"/>
-      <v-row v-else-if="filteredUsers.length">
+      <v-row v-else>
         <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
           <AccessUserCard @refresh="getUsersData" :userRoles="getCurrentUserSchoolRoles(user)" :user="user" :institute-code="schoolID" :institute-roles="schoolRoles" institute-type-code="SCHOOL" institute-type-label="School"></AccessUserCard>
         </v-col>
@@ -55,11 +55,6 @@
               </v-card>
             </v-col>
           </v-row>
-        </v-col>
-      </v-row>
-      <v-row  v-else>
-        <v-col class="d-flex justify-center">
-          No users found
         </v-col>
       </v-row>
 
@@ -115,17 +110,19 @@
             <v-card-text>
               <v-row justify="center">
                 <v-col class="mx-2 d-flex justify-center">
-                      <v-autocomplete
-                        id='selectInstituteName'
-                        class="pt-0 mt-n2 mr-4"
-                        prepend-inner-icon="mdi-account-box-outline"
-                        v-model="instituteCode"
-                        :items="loadSchoolsSelection"
-                        color="#003366"
-                        :label="instituteTypeLabel"
-                        clearable
-                      ></v-autocomplete>
-                      <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                  <v-autocomplete
+                      id='selectInstituteName'
+                      class="pt-0 mt-n1"
+                      prepend-inner-icon="mdi-account-box-outline"
+                      v-model="instituteCode"
+                      :items="loadSchoolsInUsersDistrictSelection"
+                      color="#003366"
+                      :label="instituteTypeLabel"
+                      clearable
+                      item-text="schoolName"
+                      item-value="schoolID"
+                  ></v-autocomplete>
+                  <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -199,12 +196,9 @@ export default {
       } );
     },
     manageSchoolButtonClicked(){
-      const schoolId = this.instituteCode;
-      const payload = {params: {schoolID: schoolId}};
-      ApiService.apiAxios.post(ApiRoutes.edx.INSTITUTE_SELECTION_URL, payload)
-        .then(()=> {
-          this.$router.go(0);
-        });
+      this.schoolID = this.instituteCode;
+      this.getPrimaryEdxActivationCodeSchool();
+      this.getUsersData();
     },
     getUsersData() {
       this.loadingUsers = true;
@@ -275,14 +269,8 @@ export default {
     ...mapState('app', ['schoolsMap', 'activeSchoolsMap']),
     ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
     ...mapGetters('auth', ['userInfo']),
-    loadSchoolsSelection(){
-      const schools = this.activeSchoolsMap;
-      return this.userInfo?.userSchoolIDs.map(function(id) {
-        return {
-          'text': schools.get(id)?.schoolName,
-          'value': id
-        };
-      });
+    loadSchoolsInUsersDistrictSelection(){
+      return Object.values(Object.fromEntries(this.activeSchoolsMap)).filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier));
     },
     schoolName() {
       return this.schoolsMap.get(this.schoolID).schoolName;
