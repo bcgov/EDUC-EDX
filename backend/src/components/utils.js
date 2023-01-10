@@ -398,7 +398,6 @@ function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
  * @throws Error
  */
 function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
-
   checkEDXUserSchoolAdminPermission(req);
 
   if (req.session.activeInstituteType === 'SCHOOL') {
