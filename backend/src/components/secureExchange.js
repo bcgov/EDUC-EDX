@@ -716,7 +716,7 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
       checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.userSchoolID);
     } else {
       checkEDXUserDistrictAdminPermission(req);
-      checkEDXUserAccess(req, 'DISTRICT', req.body.districtID);
+      checkEDXUserAccess(req, 'DISTRICT', req.body.params.districtID);
     }
     let edxUserInstituteType = req.body.params.userSchoolID ? 'school' : 'district';
     let edxUserInstituteID = req.body.params.userSchoolID ?? req.body.params.edxUserDistrictID;
@@ -955,7 +955,7 @@ async function findPrimaryEdxActivationCode(req, res) {
       checkEDXUserAccessForSchoolAdminFunctions(req, req.params.instituteIdentifier);
     }else{
       checkEDXUserDistrictAdminPermission(req);
-      checkEDXUserAccess(req, instituteType, req.params.instituteIdentifer);
+      checkEDXUserAccess(req, instituteType, req.params.instituteIdentifier);
     }
 
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
