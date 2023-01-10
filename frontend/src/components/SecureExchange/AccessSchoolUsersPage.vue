@@ -95,43 +95,43 @@
     </div>
     <div v-else>
       <v-row>
-        <v-col class="mt-1 d-flex justify-start">
-          <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
-          <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+        <v-col class="d-flex justify-center">
+          <v-card flat min-width="55em">
+            <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+            <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+          </v-card>
         </v-col>
       </v-row>
-      <v-card color="#F2F2F2">
-        <v-card-title>
-          <v-row justify="center">
-            <v-col class="d-flex justify-center">
-              <strong>Search a school below to manage their EDX Access</strong>
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-card-text>
-          <v-row justify="center">
-            <v-col cols="8">
-              <v-row justify="center" no-gutters>
-                <v-col cols="9">
-                  <v-autocomplete
-                      id='selectInstituteName'
-                      class="pt-0 mt-n1"
-                      prepend-inner-icon="mdi-account-box-outline"
-                      v-model="instituteCode"
-                      :items="loadSchoolsSelection"
-                      color="#003366"
-                      :label="instituteTypeLabel"
-                      clearable
-                  ></v-autocomplete>
-                </v-col>
-                <v-col class="pl-4" cols="3">
-                  <PrimaryButton id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+      <v-row>
+        <v-col class="d-flex justify-center">
+          <v-card min-width="55em" color="#F2F2F2">
+            <v-card-title>
+              <v-row justify="center">
+                <v-col class="d-flex justify-center">
+                  <strong>Search a school below to manage their EDX Access</strong>
                 </v-col>
               </v-row>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+            </v-card-title>
+            <v-card-text>
+              <v-row justify="center">
+                <v-col class="mx-2 d-flex justify-center">
+                      <v-autocomplete
+                        id='selectInstituteName'
+                        class="pt-0 mt-n2 mr-4"
+                        prepend-inner-icon="mdi-account-box-outline"
+                        v-model="instituteCode"
+                        :items="loadSchoolsSelection"
+                        color="#003366"
+                        :label="instituteTypeLabel"
+                        clearable
+                      ></v-autocomplete>
+                      <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
   </v-container>
 
