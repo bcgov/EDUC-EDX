@@ -713,7 +713,7 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     if (req.body.params.userSchoolID) {
-      checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.userSchoolID);
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
     } else {
       checkEDXUserDistrictAdminPermission(req);
       checkEDXUserAccess(req, 'DISTRICT', req.body.districtID);
