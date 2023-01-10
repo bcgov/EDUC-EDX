@@ -364,7 +364,7 @@ function checkEDXUserDistrictAdminPermission(req) {
   }
 }
 
-function checkEDXUserAccess(req, _res, instituteType, instituteIdentifier) {
+function checkEDXUserAccess(req, instituteType, instituteIdentifier) {
   if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
     throw new Error('403');
   }
@@ -386,6 +386,25 @@ function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
 
   if (school.districtID !== req.session.activeInstituteIdentifier) {
     throw new Error('403');
+  }
+}
+
+/**
+ * Helper function that combines all the permissions and security checks for
+ * school admin operations. ex. editing school details.
+ * @param {Object} req
+ * @param {String} instituteIdentifier - SchoolID or DistrictID
+ * @returns void
+ * @throws Error
+ */
+function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
+
+  checkEDXUserSchoolAdminPermission(req);
+
+  if (req.session.activeInstituteType === 'SCHOOL') {
+    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
+  } else {
+    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
   }
 }
 
@@ -426,6 +445,7 @@ const utils = {
   checkEDXUserDistrictAdminPermission,
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
+  checkEDXUserAccessForSchoolAdminFunctions,
   logApiError
 };
 
