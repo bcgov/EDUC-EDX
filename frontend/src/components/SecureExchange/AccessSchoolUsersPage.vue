@@ -2,6 +2,15 @@
   <v-container>
     <div v-if="this.schoolID">
       <v-row>
+        <v-col cols="12" class="d-flex justify-start">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <h2 class="subjectHeading">{{schoolName}} - {{schoolMincode}}</h2>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col class="mt-1 d-flex justify-start">
           <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
           <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
@@ -315,6 +324,10 @@ export default {
 @media screen and (max-width: 950px){
   .v-dialog__content /deep/ .v-bottom-sheet {
     width: 60% !important;
+  }
+
+  .subjectHeading {
+    font-size: medium;
   }
 }
 
