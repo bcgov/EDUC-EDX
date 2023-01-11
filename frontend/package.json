@@ -46,7 +46,7 @@
     "rfdc": "^1.1.4",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
-    "testcafe": "^2.2.0",
+    "testcafe": "^15.1.317922",
     "v-viewer": "^1.6.4",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.3.1",
@@ -80,7 +80,7 @@
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.1",
     "vue-cli-plugin-vuetify": "^0.6.3",
-    "vue-jest": "^3.0.7",
+    "vue-jest": "^4.0.1",
     "vue-template-compiler": "^2.7.13",
     "vuetify-loader": "^1.9.2",
     "webpack": "^5.74.0"
