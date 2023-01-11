@@ -35,7 +35,7 @@
     "http-status-codes": "^1.4.0",
     "nconf": "^0.10.0",
     "npmlog": "^4.1.2",
-    "testcafe": "^1.20.0",
+    "testcafe": "^15.1.317922",
     "jsonwebtoken": "^8.5.1",
     "@js-joda/core": "^2.0.0"
   }
