@@ -319,7 +319,7 @@ export default {
           this.primaryEdxActivationCode = response.data;
         }).catch(e => {
           this.primaryEdxActivationCode = null;
-          if(!e.status === 404){
+          if(e.status !== 404){
             console.log(e);
           }
         });
