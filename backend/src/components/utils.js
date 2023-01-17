@@ -254,7 +254,7 @@ function errorResponse(res, msg, code) {
 }
 
 function handleExceptionResponse(e, res) {
-  if (e.message === '404' || e.status === '404') {
+  if (e.message === '404' || e.status === '404' || e.status === 404) {
     return res.status(HttpStatus.NOT_FOUND).json();
   } else if(e.message === '403') {
     return res.status(HttpStatus.FORBIDDEN).json({

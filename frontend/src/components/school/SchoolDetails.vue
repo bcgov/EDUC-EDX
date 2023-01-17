@@ -34,7 +34,7 @@
           <v-col v-if="!editing" cols="6" class="d-flex justify-end">
             <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" @click.native="redirectToSchoolContacts"></PrimaryButton>
             <PrimaryButton id="schoolDetailsEditButton" icon-left class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
-                           :disabled="!canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
+                           v-if="canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
           </v-col>
           <v-col v-else cols="6" class="d-flex justify-end">
             <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel"

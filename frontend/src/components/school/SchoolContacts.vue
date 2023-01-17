@@ -37,7 +37,7 @@
         </v-col>
         <v-col class="d-flex justify-end">
           <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View School Details" @click.native="redirectToSchoolDetails"></PrimaryButton>
-          <PrimaryButton :disabled="!canAddContact()" id="addSchoolContactBtn" class="mr-0 mb-3" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton v-if="canEditSchoolContacts()" id="addSchoolContactBtn" class="mr-0 mb-3" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -48,7 +48,7 @@
         </v-row>
         <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
-            <SchoolContact :contact="contact" :schoolID="$route.params.schoolID" @editSchoolContact:editSchoolContactSuccess="contactEditSuccess" :canEditSchoolContact="canEditSchoolContact()"/>
+            <SchoolContact :contact="contact" :schoolID="$route.params.schoolID" @editSchoolContact:editSchoolContactSuccess="contactEditSuccess" :canEditSchoolContact="canEditSchoolContacts()"/>
           </v-col>
         </v-row>
         <v-row cols="2" v-else>
@@ -184,10 +184,7 @@ export default {
       this.newContactSheet = !this.newContactSheet;
       this.getThisSchoolsContacts();
     },
-    canAddContact(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
-    },
-    canEditSchoolContact() {
+    canEditSchoolContacts() {
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
     },
     contactEditSuccess() {
