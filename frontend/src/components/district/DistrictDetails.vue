@@ -89,7 +89,7 @@
             </v-col>
           </v-row>
           <v-row v-else no-gutters class="d-flex justify-start">
-            <v-col v-if="hasMailingAddress()" cols="3">
+            <v-col v-if="editing || hasMailingAddress()" cols="3">
               <v-row>
                 <v-col>
                   <v-icon class="pb-1 mr-1" right >
