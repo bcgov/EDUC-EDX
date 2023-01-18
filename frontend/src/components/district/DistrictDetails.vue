@@ -83,8 +83,13 @@
               <h2>Addresses</h2>
             </v-col>
           </v-row>
-          <v-row no-gutters class="d-flex justify-start">
-            <v-col v-if="hasMailingAddress()" cols="3">
+          <v-row v-if="!hasMailingAddress() && !editing" no-gutters class="d-flex justify-start">
+            <v-col>
+              <a class="editField" @click="toggleEdit">+ address</a>
+            </v-col>
+          </v-row>
+          <v-row v-else no-gutters class="d-flex justify-start">
+            <v-col v-if="editing || hasMailingAddress()" cols="3">
               <v-row>
                 <v-col>
                   <v-icon class="pb-1 mr-1" right >
@@ -625,6 +630,15 @@ export default {
     padding-right: 4em !important;
     padding-left: 4em !important;
   }
+}
+.editField {
+  font-size: 14px;
+  color: rgb(0, 51, 102);
+  vertical-align: super;
+}
+
+.editField:hover {
+  text-decoration: underline;
 }
 
 </style>
