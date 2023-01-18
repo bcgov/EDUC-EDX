@@ -304,7 +304,7 @@ export default {
     setupSchoolList(){
       for(const school of this.activeSchoolsMap.values()){
         let schoolItem = {
-          schoolCodeName: school.mincode +' - '+school.schoolName,
+          schoolCodeName: school.schoolName + ' - ' + school.mincode,
           schoolID: school.schoolID,
           districtID: school.districtID,
         };
