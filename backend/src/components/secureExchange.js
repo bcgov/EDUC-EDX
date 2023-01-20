@@ -741,7 +741,7 @@ async function relinkUserAccess(req, res) {
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
 
     const payload = createRelinkPayload(req.body.params.schoolID, edxUserDetails, req.body.params)
-    const postUrl = req.body.params.schoolID ? config.get('edx:exchangeURL') + '/school-user-activation-relink-saga' : config.get('edx:exchangeURL') + '/district-user-activation-relink-saga';
+    const postUrl = req.body.params.schoolID ? config.get('edx:schoolUserActivationRelink') : config.get('edx:districtUserActivationRelink');
     await postData(token, payload, postUrl, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json('');
