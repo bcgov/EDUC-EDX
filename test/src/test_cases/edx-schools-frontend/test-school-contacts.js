@@ -29,7 +29,7 @@ fixture `school-school-contacts`
     await t.navigateTo(base_url + '/logout');
 });
 
-test('testPage', async t => {
+test('school_add_contact', async t => {
     await loginPage.login(credentials.adminCredentials);
     await dashboard.clickSchoolContactsCard();
     await navBar.verifyNavTitleByText('School Contacts');
