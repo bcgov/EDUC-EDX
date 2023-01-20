@@ -728,33 +728,58 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
   }
 }
 
-async function relinkUserSchoolAccess(req, res) {
+async function relinkUserAccess(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
-
+    if(req.body.params.schoolID) {
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
+    } else {
+      checkEDXUserDistrictAdminPermission(req);
+      checkEDXUserAccess(req, 'DISTRICT', req.body.params.districtID);
+    }
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
-    let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === req.body.params.schoolID);
-    let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
 
-    const payload = {
-      schoolID: req.body.params.schoolID,
-      schoolName: cacheService.getSchoolBySchoolID(req.body.params.schoolID)?.schoolName,
+    const payload = createRelinkPayload(req.body.params.schoolID, edxUserDetails, req.body.params)
+    const postUrl = req.body.params.schoolID ? config.get('edx:schoolUserActivationRelink') : config.get('edx:districtUserActivationRelink');
+    await postData(token, payload, postUrl, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json('');
+  } catch (e) {
+    log.error(e, 'relinkUserAccess', 'Error occurred while attempting to relink user access.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
+  if(schoolID) {
+   let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === requestParams.schoolID);
+   let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
+
+   return {
+    schoolID: requestParams.schoolID,
+    schoolName: cacheService.getSchoolBySchoolID(requestParams.schoolID)?.schoolName,
+    edxActivationRoleCodes: activationRoles,
+    firstName: edxUserDetails.firstName,
+    lastName: edxUserDetails.lastName,
+    email: edxUserDetails.email,
+    edxUserId: requestParams.userToRelink,
+    edxUserSchoolID: requestParams.userSchoolID,
+  };
+  } else {
+    let userDistrict = edxUserDetails.edxUserDistricts.find(district => district.districtID === requestParams.districtID);
+    let activationRoles = userDistrict.edxUserDistrictRoles.map(role => role.edxRoleCode);
+
+    return {
+      districtID: requestParams.districtID,
+      districtName: cacheService.getDistrictJSONByDistrictID(requestParams.districtID)?.name,
       edxActivationRoleCodes: activationRoles,
       firstName: edxUserDetails.firstName,
       lastName: edxUserDetails.lastName,
       email: edxUserDetails.email,
-      edxUserId: req.body.params.userToRelink,
-      edxUserSchoolID: req.body.params.userSchoolID,
+      edxUserId: requestParams.userToRelink,
+      edxUserDistrictID: requestParams.edxUserDistrictID,
     };
-
-    await postData(token, payload, config.get('edx:exchangeURL') + '/school-user-activation-relink-saga', req.session?.correlationID);
-
-    return res.status(HttpStatus.OK).json('');
-  } catch (e) {
-    log.error(e, 'removeUserSchoolAccess', 'Error occurred while attempting to remove user school access.');
-    return handleExceptionResponse(e, res);
   }
 }
 
@@ -1000,7 +1025,7 @@ module.exports = {
   getAndSetupEDXUserAndRedirect,
   getExchangesCount,
   removeUserSchoolOrDistrictAccess,
-  relinkUserSchoolAccess,
+  relinkUserAccess,
   findPrimaryEdxActivationCode,
   removeSecureExchangeStudent
 };

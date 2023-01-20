@@ -88,7 +88,9 @@ nconf.defaults({
     updateActivationUrlClicked:process.env.EDX_API_ENDPOINT+'/users/activation-code/url',
     districtUserActivationInviteURL:process.env.EDX_API_ENDPOINT+ '/exchange/district-user-activation-invite-saga',
     schoolUserActivationInviteURL:process.env.EDX_API_ENDPOINT+ '/exchange/school-user-activation-invite-saga',
-    activationCodeUrl: process.env.EDX_API_ENDPOINT + '/users/activation-code'
+    activationCodeUrl: process.env.EDX_API_ENDPOINT + '/users/activation-code',
+    schoolUserActivationRelink: process.env.EDX_API_ENDPOINT + '/exchange/school-user-activation-relink-saga',
+    districtUserActivationRelink: process.env.EDX_API_ENDPOINT + '/exchange/district-user-activation-relink-saga'
   },
   institute:{
     rootURL: process.env.INSTITUTE_API_ENDPOINT,
