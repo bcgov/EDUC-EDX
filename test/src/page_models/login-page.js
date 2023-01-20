@@ -1,6 +1,8 @@
 import { Selector, ClientFunction, t } from 'testcafe';
 import { base_url } from '../config/constants';
+import Dashboard from './dashboard';
 
+const dashboard = new Dashboard;
 const log = require('npmlog');
 /**
  * Represents the login page(s)
@@ -15,17 +17,22 @@ class LoginPage {
     }
 
     async login(credentials){
-        try {
-            await t.navigateTo(base_url + '/login');
-            // click login button
-            await t.click(this.loginButton);
+        for (let i=0; i<10; i++) {
+            try {
+                await t.navigateTo(base_url + '/login');
+                // click login button
+                await t.click(this.loginButton);
 
-            await t.typeText(this.userNameInput, credentials.username, { timeout: 20000 })
+                await t.typeText(this.userNameInput, credentials.username, { timeout: 20000 })
                 .typeText(this.passwordInput, credentials.password, { timeout: 20000 })
                 .click(this.submitCredentialsButton);
-            log.info("login successful");
-        } catch (error) {
-            log.error(error);
+                await t.expect(dashboard.secureMessageInboxCard.exists).ok({timeout: 20000});
+                log.info("login successful");
+                break;
+            } catch (error) {
+                log.error(error.errMsg);
+                log.info(`login failed ${i+1}/10 times.`);
+            }
         }
     }
 
