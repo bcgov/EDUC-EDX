@@ -17,7 +17,7 @@ class LoginPage {
     }
 
     async login(credentials){
-        for (let i=1; i<10; i++) {
+        for (let i=0; i<10; i++) {
             try {
                 await t.navigateTo(base_url + '/login');
                 // click login button
@@ -31,7 +31,7 @@ class LoginPage {
                 break;
             } catch (error) {
                 log.error(error.errMsg);
-                log.info(`login failed ${i}/10 times.`);
+                log.info(`login failed ${i+1}/10 times.`);
             }
         }
     }
