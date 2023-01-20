@@ -3,7 +3,7 @@
 const passport = require('passport');
 const express = require('express');
 const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles,
-  createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserSchoolAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, removeSecureExchangeStudent,
+  createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, removeSecureExchangeStudent,
   removeUserSchoolOrDistrictAccess
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
@@ -50,7 +50,7 @@ router.post('/exchange/:secureExchangeID/comments', passport.authenticate('jwt',
 router.post('/exchange/:secureExchangeID/students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, createSecureExchangeStudent);
 router.put('/exchange/:secureExchangeID/markAs/:readStatus', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, markAs);
 router.post('/users/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeUserSchoolOrDistrictAccess);
-router.post('/users/relink', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, relinkUserSchoolAccess);
+router.post('/users/relink', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, relinkUserAccess);
 router.get('/users/ministry-teams', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCodes('edx:ministryTeamURL', CACHE_KEYS.EDX_MINISTRY_TEAMS));
 router.get('/users/user-schools', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken,
   (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/user-schools`)
