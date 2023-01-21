@@ -18,7 +18,7 @@
                          depressed
                          @click="clickEditButton"
                          small
-                         class="mr-2"
+                         class="mr-2 editEdxUserButton"
                   >
                     <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
                   </v-btn>
@@ -42,6 +42,7 @@
                          depressed
                          @click="clickRelinkButton"
                          small
+                         class="relinkEdxUserButton"
                   >
                     <v-icon size="x-large" color="#003366" dark>mdi-backup-restore</v-icon>
                   </v-btn>
