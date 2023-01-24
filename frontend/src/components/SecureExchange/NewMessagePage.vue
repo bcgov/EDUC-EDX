@@ -12,7 +12,7 @@
                       <v-card-text id="newMessageCardText" class="pb-0 pt-0">
                         <v-form ref="newMessageForm" v-model="isValidForm">
                           <v-text-field
-                              :value="getSchoolName()"
+                              :value="getFromName()"
                               label="From"
                               class="pt-0"
                               readonly
@@ -171,12 +171,6 @@ export default {
     ConfirmationDialog,
     DocumentUpload
   },
-  props: {
-    schoolsMap: {
-      type: Map,
-      required: true
-    },
-  },
   data() {
     return {
       newMessage: '',
@@ -193,8 +187,8 @@ export default {
   },
   computed: {
     ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents'])
-
+    ...mapState('edx', ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
+    ...mapState('app', ['schoolsMap', 'activeDistrictsMap']),
   },
   created() {
     this.$store.dispatch('edx/getExchangeSchoolIds');
@@ -211,9 +205,14 @@ export default {
     navigateToList() {
       this.$emit('secure-exchange:cancelMessage');
     },
-    getSchoolName() {
-      const school = this.schoolsMap.get(this.userInfo.activeInstituteIdentifier);
-      return school?.schoolName + ' (' + school?.mincode + ')';
+    getFromName() {
+      if(this.userInfo.activeInstituteType === 'DISTRICT') {
+        const district = this.activeDistrictsMap.get(this.userInfo.activeInstituteIdentifier);
+        return district?.name + ' (' + district?.districtNumber + ')';
+      } else {
+        const school = this.schoolsMap.get(this.userInfo.activeInstituteIdentifier);
+        return school?.schoolName + ' (' + school?.mincode + ')';
+      }
     },
     messageSent(){
       this.subject = '';

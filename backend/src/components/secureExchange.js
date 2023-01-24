@@ -161,7 +161,12 @@ async function getExchangesPaginated(req) {
 
   //This needs to change when we have school selection
   criteria.push(getCriteria('contactIdentifier', req.session.activeInstituteIdentifier, FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
-  criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  if(req.session.activeInstituteType === 'SCHOOL') {
+    criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  } else {
+    criteria.push(getCriteria('secureExchangeContactTypeCode', 'DISTRICT', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  }
+
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
@@ -182,12 +187,26 @@ async function getExchangesCountPaginated(req) {
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesCountPaginated error: User activeInstituteIdentifier does not exist in session');
   }
+  let criteria = [];
+  let parsedParams = '';
+  if (req.query.searchParams) {
+    parsedParams = JSON.parse(req.query.searchParams);
+  }
+  criteria = buildSearchParams(JSON.stringify(parsedParams));
+
+  criteria.push(getCriteria('contactIdentifier', req.session.activeInstituteIdentifier, FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  if(req.session.activeInstituteType === 'SCHOOL') {
+    criteria.push(getCriteria('secureExchangeContactTypeCode', 'SCHOOL', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  } else {
+    criteria.push(getCriteria('secureExchangeContactTypeCode', 'DISTRICT', FILTER_OPERATION.EQUAL, VALUE_TYPE.STRING));
+  }
+
   const params = {
     params: {
       pageNumber: req.query.pageNumber,
       pageSize: req.query.pageSize,
       sort: '',
-      searchCriteriaList: '[{"key":"secureExchangeStatusCode","value":"OPEN","operation":"in","valueType":"STRING"},{"key":"contactIdentifier","value":"' + req.session.activeInstituteIdentifier + '","operation":"eq","valueType":"STRING"},{"key":"secureExchangeContactTypeCode","value":"SCHOOL","operation":"eq","valueType":"STRING"}]'
+      searchCriteriaList: JSON.stringify(criteria),
     }
   };
 
@@ -325,7 +344,7 @@ async function getExchange(req, res) {
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       checkSecureExchangeAccess(req, res, dataResponse);
-
+      let school = {};
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
         let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === dataResponse['secureExchangeStatusCode']);
         dataResponse['secureExchangeStatusCode'] = tempStatus?.label ? tempStatus.label : dataResponse['secureExchangeStatusCode'];
@@ -337,15 +356,22 @@ async function getExchange(req, res) {
       }
       dataResponse['createDate'] = dataResponse['createDate'] ? LocalDateTime.parse(dataResponse['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd')) : 'Unknown Date';
       dataResponse['commentsList'] = dataResponse['commentsList'] ? dataResponse['commentsList'] : [];
-      let school = cacheService.getSchoolBySchoolID(dataResponse['contactIdentifier']);
+
+      if(req.session.activeInstituteType === 'SCHOOL') {
+        school = cacheService.getSchoolBySchoolID(dataResponse['contactIdentifier']);
+      }
       dataResponse['activities'] = [];
       dataResponse['commentsList'].forEach((comment) => {
         let activity = {};
         activity['type'] = 'message';
         activity['isSchool'] = !!comment.edxUserID;
         activity['timestamp'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']) : '';
-        activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
-        activity['title'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+
+        if(req.session.activeInstituteType === 'SCHOOL') {
+          activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          activity['title'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+        }
+        
         activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
         activity['content'] = comment['content'];
         activity['secureExchangeID'] = comment['secureExchangeID'];
@@ -359,7 +385,9 @@ async function getExchange(req, res) {
           activity['isSchool'] = !!document.edxUserID;
           activity['timestamp'] = document['createDate'] ? LocalDateTime.parse(document['createDate']) : '';
           activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
-          activity['title'] = document.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          if(req.session.activeInstituteType === 'SCHOOL') {
+            activity['title'] = document.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          }
           activity['fileName'] = document.fileName;
           activity['documentType'] = cacheService.getDocumentTypeCodeLabelByCode(document.documentTypeCode);
           activity['displayDate'] = document['createDate'] ? LocalDateTime.parse(document['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
@@ -370,7 +398,10 @@ async function getExchange(req, res) {
       if (dataResponse['studentsList']) {
         for (const student of dataResponse['studentsList']) {
           let studentDetail = await getData(token, `${config.get('student:apiEndpoint')}/${student.studentId}`, req.session?.correlationID);
-          let includeDemographicDetails = studentDetail.mincode === school.mincode;
+          let includeDemographicDetails = false;
+          if(req.session.activeInstituteType === 'SCHOOL') {
+            includeDemographicDetails = studentDetail.mincode === school.mincode;
+          }
           let activity = {};
           activity['type'] = 'student';
           activity['isSchool'] = !!student.edxUserID;
@@ -385,7 +416,9 @@ async function getExchange(req, res) {
           activity['studentGender'] = includeDemographicDetails ? studentDetail.genderCode : null;
           activity['timestamp'] = student['createDate'] ? LocalDateTime.parse(student['createDate']) : '';
           activity['actor'] = student.edxUserID ? student.edxUserID : student.staffUserIdentifier;
-          activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          if(req.session.activeInstituteType === 'SCHOOL') {
+            activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          }
           activity['displayDate'] = student['createDate'] ? LocalDateTime.parse(student['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
           dataResponse['activities'].push(activity);
         }
