@@ -21,25 +21,33 @@
                          v-if="canEditSchoolContact"
                          @click="openContactEditForm(contact)"
                          small
-                         class="mr-2"
-                  >
+                         class="mr-2">
                     <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
                   </v-btn>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col v-if="!contact.email && !contact.phoneNumber" cols="12" class="pt-1">
-                <p class="missing-highlight"><v-icon size="x-large" color="#ff5252" dark>mdi-alert</v-icon> Missing contact details</p>
+                <p class="missing-highlight">
+                  <v-icon size="x-large" color="#ff5252" dark>mdi-alert</v-icon>
+                    Missing contact details
+                </p>
                 <a class="editField" @click="openContactEditForm(contact)">+ email or phone</a>
               </v-col>
               <v-col v-if="contact.email" cols="12" class="pt-1">
                 <span id="contactEmail"> {{ contact.email }}</span>
               </v-col>
               <v-col v-if="contact.phoneNumber" cols="12" class="pt-1">
-                <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span><span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
+                <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span>
+                <span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
               </v-col>
               <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
-                <span id="contactAlternatePhoneNumber">{{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)</span> <span v-if="contact.alternatePhoneExtension"> ext. {{contact.alternatePhoneExtension}}</span>
+                <span id="contactAlternatePhoneNumber">
+                  {{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)
+                </span>
+                <span v-if="contact.alternatePhoneExtension">
+                  ext. {{contact.alternatePhoneExtension}}
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -51,7 +59,9 @@
             <v-icon aria-hidden="false">
               mdi-calendar-today
             </v-icon>
-            <span id="contactEffectiveAndExpiryDate"> {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}</span>
+            <span id="contactEffectiveAndExpiryDate">
+              {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}
+            </span>
           </v-col>
           <v-col cols="12" class="pt-1" v-else>
             <v-icon aria-hidden="false">
@@ -65,9 +75,15 @@
     <v-expand-transition>
       <v-card v-show="expandEdit">
         <v-card-actions class="justify-end">
-          <PrimaryButton id="cancelEditButton" :secondary="true" @click.native="closeSchoolContactEdit"
-                         text="Cancel"></PrimaryButton>
-          <PrimaryButton @click.native="saveSchoolContact(contactEdit)" id="saveEditButton" :disabled="!ecFormValid" :loading="processing" text="Save"></PrimaryButton>
+          <PrimaryButton id="cancelEditButton"
+                         :secondary="true"
+                         @click.native="closeSchoolContactEdit"
+                         text="Cancel"/>
+          <PrimaryButton @click.native="saveSchoolContact(contactEdit)"
+                         id="saveEditButton"
+                         :disabled="!ecFormValid"
+                         :loading="processing"
+                         text="Save"/>
         </v-card-actions>
         <v-card-text>
           <v-form
@@ -79,8 +95,7 @@
                               v-model="contactEdit.firstName"
                               label="First Name"
                               type="text"
-                              maxlength="255"
-                ></v-text-field>
+                              maxlength="255"/>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditLastName"
@@ -88,8 +103,7 @@
                               :rules="[rules.required()]"
                               label="Last Name"
                               type="text"
-                              maxlength="255"
-                ></v-text-field>
+                              maxlength="255"/>
               </v-col>
             </v-row>
             <v-row>
@@ -99,8 +113,7 @@
                               :rules="[rules.required(), rules.email()]"
                               label="Email"
                               type="text"
-                              maxlength="255"
-                ></v-text-field>
+                              maxlength="255"/>
               </v-col>
             </v-row>
             <v-row>
@@ -111,8 +124,7 @@
                               label="Phone"
                               type="text"
                               maxlength="10"
-                              @keypress="isNumber($event)"
-                ></v-text-field>
+                              @keypress="isNumber($event)"/>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditPhoneExt"
@@ -121,7 +133,7 @@
                               label="Ext"
                               type="text"
                               maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
+                              @keypress="isNumber($event)"/>
               </v-col>
             </v-row>
             <v-row>
@@ -132,7 +144,7 @@
                               label="Alternative Phone"
                               type="text"
                               maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
+                              @keypress="isNumber($event)"/>
               </v-col>
               <v-col>
                 <v-text-field id="contactEditAltPhoneExt"
@@ -141,7 +153,7 @@
                               label="Alternative Ext"
                               type="text"
                               maxlength="10"
-                              @keypress="isNumber($event)"></v-text-field>
+                              @keypress="isNumber($event)"/>
               </v-col>
             </v-row>
             <v-row>
@@ -152,8 +164,7 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    min-width="auto"
-                >
+                    min-width="auto">
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="editContactEffectiveDateTextField"
@@ -165,14 +176,12 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
-                    ></v-text-field>
+                        v-on="on"/>
                   </template>
                   <v-date-picker
                       v-model="contactEdit.effectiveDate"
                       :active-picker.sync="editContactEffectiveDatePicker"
-                      @change="saveEditContactEffectiveDate"
-                  ></v-date-picker>
+                      @change="saveEditContactEffectiveDate"/>
                 </v-menu>
               </v-col>
               <v-col>
@@ -182,8 +191,7 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    min-width="auto"
-                >
+                    min-width="auto">
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="editContactExpiryDateTextField"
@@ -195,20 +203,21 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
-                    ></v-text-field>
+                        v-on="on"/>
                   </template>
                   <v-date-picker
                       v-model="contactEdit.expiryDate"
                       :active-picker.sync="editContactExpiryDatePicker"
-                      @change="saveEditContactExpiryDate"
-                  ></v-date-picker>
+                      @change="saveEditContactExpiryDate"/>
                 </v-menu>
               </v-col>
             </v-row>
             <ConfirmationDialog ref="confirmSchoolContactUpdateAndSave">
               <template v-slot:message>
-                <p>All changes made to school contact information will be <strong>available to the public on save</strong>.</p>
+                <p>
+                  All changes made to school contact information will be
+                    <strong>available to the public on save</strong>.
+                </p>
                 <p>Please be sure to review your changes carefully before you publish them.</p>
               </template>
             </ConfirmationDialog>
@@ -278,7 +287,16 @@ export default {
   },
   methods: {
     async saveSchoolContact(contact) {
-      const confirmation = await this.$refs.confirmSchoolContactUpdateAndSave.open('Confirm Updates to School Contact', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Contacts'});
+      const confirmation = await this.$refs.confirmSchoolContactUpdateAndSave
+        .open('Confirm Updates to School Contact', null, {
+          color: '#fff',
+          width: 580,
+          closeIcon: false,
+          subtitle: false,
+          dark: false,
+          resolveText: 'Publish Changes',
+          rejectText: 'Return to School Contacts'
+        });
       if (!confirmation) {
         return;
       }
@@ -296,7 +314,9 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while saving the school contact information. Please try again later.');
+          let fallback = 'An error occurred while saving the school contact information.' +
+                         ' Please try again later.';
+          this.setFailureAlert(error?.response?.data?.message || fallback);
         })
         .finally(() => {
           this.processing = false;
