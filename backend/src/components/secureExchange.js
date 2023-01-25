@@ -606,8 +606,28 @@ async function activateEdxUser(req, res) {
   try {
     validateAccessToken(token);
     const numberOfRetries = req.session['activationAttempts'];
-    if (numberOfRetries && numberOfRetries >= 5) {
-      return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
+    if (numberOfRetries) {
+      if(numberOfRetries >= 5){
+        return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
+      }
+    }else{
+      const payload = {
+        validationCode: req.query.validationCode
+      };
+
+      try {
+        let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
+        await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
+      } catch (e) {
+        let msg = 'Error Occurred please retry with the link provided in the email';
+        if (e.status === 400) {
+          msg = 'Invalid link clicked. Please click the link provided in your email';
+        } else if (e.status === 410) {
+          msg = 'Your activation link has expired. Please contact your administrator for a new activation code.';
+        }
+        log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
+        return errorResponse(res, msg, HttpStatus.BAD_REQUEST);
+      }
     }
     const payload = {
       digitalId: req.session.digitalIdentityData.digitalID,
@@ -773,7 +793,7 @@ async function relinkUserAccess(req, res) {
     }
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
 
-    const payload = createRelinkPayload(req.body.params.schoolID, edxUserDetails, req.body.params)
+    const payload = createRelinkPayload(req.body.params.schoolID, edxUserDetails, req.body.params);
     const postUrl = req.body.params.schoolID ? config.get('edx:schoolUserActivationRelink') : config.get('edx:districtUserActivationRelink');
     await postData(token, payload, postUrl, req.session?.correlationID);
 
@@ -786,19 +806,19 @@ async function relinkUserAccess(req, res) {
 
 function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
   if(schoolID) {
-   let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === requestParams.schoolID);
-   let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
+    let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === requestParams.schoolID);
+    let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
 
-   return {
-    schoolID: requestParams.schoolID,
-    schoolName: cacheService.getSchoolBySchoolID(requestParams.schoolID)?.schoolName,
-    edxActivationRoleCodes: activationRoles,
-    firstName: edxUserDetails.firstName,
-    lastName: edxUserDetails.lastName,
-    email: edxUserDetails.email,
-    edxUserId: requestParams.userToRelink,
-    edxUserSchoolID: requestParams.userSchoolID,
-  };
+    return {
+      schoolID: requestParams.schoolID,
+      schoolName: cacheService.getSchoolBySchoolID(requestParams.schoolID)?.schoolName,
+      edxActivationRoleCodes: activationRoles,
+      firstName: edxUserDetails.firstName,
+      lastName: edxUserDetails.lastName,
+      email: edxUserDetails.email,
+      edxUserId: requestParams.userToRelink,
+      edxUserSchoolID: requestParams.userSchoolID,
+    };
   } else {
     let userDistrict = edxUserDetails.edxUserDistricts.find(district => district.districtID === requestParams.districtID);
     let activationRoles = userDistrict.edxUserDistrictRoles.map(role => role.edxRoleCode);
@@ -858,29 +878,14 @@ function mapEdxUserActivationErrorMessage(message) {
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
-  if (!req.query.validationCode) {
+  if (!req.query.validationCode || !req.query.instituteType) {
     return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
   }
-  const payload = {
-    validationCode: req.query.validationCode
-  };
-  try {
-    let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
-    const result = await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
-    if (result === 'SCHOOL') {
-      return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
-    }
-    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
-  } catch (e) {
-    let msg = 'Error Occurred please retry with the link provided in the email';
-    if (e.status === 400) {
-      msg = 'Invalid link clicked. Please click the link provided in your email';
-    } else if (e.status === 410) {
-      msg = 'Your activation link has expired. Please contact your administrator for a new activation code.';
-    }
-    log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
-    return res.redirect(baseUrl + `/activation-error?errorMessage= ${msg}`);
+
+  if (req.query.instituteType === 'SCHOOL') {
+    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
   }
+  return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
 }
 
 /**
