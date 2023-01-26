@@ -606,28 +606,8 @@ async function activateEdxUser(req, res) {
   try {
     validateAccessToken(token);
     const numberOfRetries = req.session['activationAttempts'];
-    if (numberOfRetries) {
-      if(numberOfRetries >= 5){
-        return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
-      }
-    }else{
-      const payload = {
-        validationCode: req.query.validationCode
-      };
-
-      try {
-        let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
-        await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
-      } catch (e) {
-        let msg = 'Error Occurred please retry with the link provided in the email';
-        if (e.status === 400) {
-          msg = 'Invalid link clicked. Please click the link provided in your email';
-        } else if (e.status === 410) {
-          msg = 'Your activation link has expired. Please contact your administrator for a new activation code.';
-        }
-        log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
-        return errorResponse(res, msg, HttpStatus.BAD_REQUEST);
-      }
+    if (numberOfRetries && numberOfRetries >= 5) {
+      return errorResponse(res, 'You have exceeded the number of activation attempts allowed. Please contact your administrator for a new activation code.', HttpStatus.TOO_MANY_REQUESTS);
     }
     const payload = {
       digitalId: req.session.digitalIdentityData.digitalID,
@@ -878,14 +858,29 @@ function mapEdxUserActivationErrorMessage(message) {
 
 async function verifyActivateUserLink(req, res) {
   const baseUrl = config.get('server:frontend');
-  if (!req.query.validationCode || !req.query.instituteType) {
+  if (!req.query.validationCode) {
     return res.redirect(baseUrl + '/activation-error?errorMessage=Invalid URL, please click the link provided in your email to activate your account.');
   }
-
-  if (req.query.instituteType === 'SCHOOL') {
-    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
+  const payload = {
+    validationCode: req.query.validationCode
+  };
+  try {
+    let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
+    const result = await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
+    if (result === 'SCHOOL') {
+      return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateUser=true');
+    }
+    return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
+  } catch (e) {
+    let msg = 'Error Occurred please retry with the link provided in the email';
+    if (e.status === 400) {
+      msg = 'Invalid link clicked. Please click the link provided in your email';
+    } else if (e.status === 410) {
+      msg = 'Your activation link has expired. Please contact your administrator for a new activation code.';
+    }
+    log.error(e, 'verifyValidationCode', 'Error verifying Validation Code ');
+    return res.redirect(baseUrl + `/activation-error?errorMessage= ${msg}`);
   }
-  return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
 }
 
 /**
