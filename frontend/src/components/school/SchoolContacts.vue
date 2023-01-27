@@ -8,8 +8,7 @@
             :width="7"
             color="primary"
             indeterminate
-            :active="loading"
-        ></v-progress-circular>
+            :active="loading"/>
       </v-col>
     </v-row>
     <template v-if="!loading">
@@ -36,8 +35,17 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View School Details" @click.native="redirectToSchoolDetails"></PrimaryButton>
-          <PrimaryButton v-if="canEditSchoolContacts()" id="addSchoolContactBtn" class="mr-0 mb-3" icon="mdi-plus-thick" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton class="mr-2 mb-3"
+                         secondary id="viewDetailsButton"
+                         icon="mdi-domain"
+                         text="View School Details"
+                         @click.native="redirectToSchoolDetails"/>
+          <PrimaryButton v-if="canEditSchoolContacts()"
+                         id="addSchoolContactBtn"
+                         class="mr-0 mb-3"
+                         icon="mdi-plus-thick"
+                         text="New Contact"
+                         @click.native="newContactSheet = !newContactSheet"/>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -47,8 +55,16 @@
           </v-col>
         </v-row>
         <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
-          <v-col cols="5" lg="4" v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)" :key="contact.schoolId">
-            <SchoolContact :contact="contact" :schoolID="$route.params.schoolID" @editSchoolContact:editSchoolContactSuccess="contactEditSuccess" :canEditSchoolContact="canEditSchoolContacts()"/>
+          <v-col cols="5"
+                 lg="4"
+                 v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
+                 :key="contact.schoolId">
+            <SchoolContact
+              :handleOpenEditor="() => openEditContactSheet(contact)"
+              :contact="contact"
+              :schoolID="$route.params.schoolID"
+              @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"
+              :canEditSchoolContact="canEditSchoolContacts()"/>
           </v-col>
         </v-row>
         <v-row cols="2" v-else>
@@ -58,21 +74,34 @@
         </v-row>
       </div>
     </template>
-<!--    new contact sheet -->
+    <!--    new contact sheet -->
     <v-bottom-sheet
         v-model="newContactSheet"
         inset
         no-click-animation
         scrollable
-        persistent
-    >
+        persistent>
       <NewSchoolContactPage
           v-if="newContactSheet"
           :schoolContactTypes="this.schoolContactTypes"
           :schoolID="this.$route.params.schoolID"
           @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
-          @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"
-      />
+          @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"/>
+    </v-bottom-sheet>
+    <v-bottom-sheet
+        v-model="editContactSheet"
+        inset
+        no-click-animation
+        scrollable
+        persistent>
+      <EditSchoolContactPage
+          v-if="editContactSheet"
+          :contact="editContact"
+          :schoolContactTypes="this.schoolContactTypes"
+          :schoolID="this.$route.params.schoolID"
+          :closeHandler="() => editContactSheet = false"
+          :onSuccessHandler="() => contactEditSuccess()"
+          @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"/>
     </v-bottom-sheet>
   </v-container>
 </template>
@@ -82,14 +111,16 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import {PERMISSION} from '@/utils/constants/Permission';
-import PrimaryButton from '../util/PrimaryButton';
-import NewSchoolContactPage from './NewSchoolContactPage';
-import SchoolContact from './SchoolContact';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 import { sortBy } from 'lodash';
+
+import PrimaryButton from '../util/PrimaryButton.vue';
+import NewSchoolContactPage from './NewSchoolContactPage.vue';
+import EditSchoolContactPage from './EditSchoolContactPage.vue';
+import SchoolContact from './SchoolContact.vue';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -102,6 +133,7 @@ export default {
   components: {
     PrimaryButton,
     NewSchoolContactPage,
+    EditSchoolContactPage,
     SchoolContact
   },
   props: {
@@ -116,7 +148,9 @@ export default {
       schoolContactTypes: [],
       schoolContacts: new Map(),
       school: {},
-      newContactSheet: false
+      editContact: {},
+      newContactSheet: false,
+      editContactSheet: false
     };
   },
   computed: {
@@ -141,7 +175,9 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get the details of available School Contact Type Codes. Please try again later.');
+          let fallback =  'An error occurred while trying to get the details of available School' +
+            ' Contact Type Codes. Please try again later.';
+          this.setFailureAlert(error?.response?.data?.message || fallback);
         }).finally(() => {
           this.loadingCount -= 1;
         });
@@ -165,7 +201,9 @@ export default {
           });
         }).catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of the school\'s contacts. Please try again later.');
+          let fallback = 'An error occurred while trying to get a list of the school\'s contacts.' +
+            ' Please try again later.';
+          this.setFailureAlert(error?.response?.data?.message || fallback);
         }).finally(() => {
           this.loadingCount -= 1;
         });
@@ -185,10 +223,16 @@ export default {
       this.getThisSchoolsContacts();
     },
     canEditSchoolContacts() {
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+      let permissions = this.userInfo?.activeInstitutePermissions;
+      if (permissions === undefined) return false;
+      return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
     },
     contactEditSuccess() {
       this.getThisSchoolsContacts();
+    },
+    openEditContactSheet(contact) {
+      this.editContact = contact;
+      this.editContactSheet = !this.editContactSheet;
     },
     getStatusColor,
     formatDate,
