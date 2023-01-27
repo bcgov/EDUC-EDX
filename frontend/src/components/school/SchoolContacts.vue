@@ -60,6 +60,7 @@
                  v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
                  :key="contact.schoolId">
             <SchoolContact
+              :handleOpenEditor="() => openEditContactSheet(contact)"
               :contact="contact"
               :schoolID="$route.params.schoolID"
               @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"
@@ -86,6 +87,21 @@
           :schoolID="this.$route.params.schoolID"
           @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
           @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"/>
+    </v-bottom-sheet>
+    <v-bottom-sheet
+        v-model="editContactSheet"
+        inset
+        no-click-animation
+        scrollable
+        persistent>
+      <EditSchoolContactPage
+          v-if="editContactSheet"
+          :contact="editContact"
+          :schoolContactTypes="this.schoolContactTypes"
+          :schoolID="this.$route.params.schoolID"
+          :closeHandler="() => editContactSheet = false"
+          :onSuccessHandler="() => contactEditSuccess()"
+          @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"/>
     </v-bottom-sheet>
   </v-container>
 </template>
@@ -117,6 +133,7 @@ export default {
   components: {
     PrimaryButton,
     NewSchoolContactPage,
+    EditSchoolContactPage,
     SchoolContact
   },
   props: {
@@ -131,7 +148,9 @@ export default {
       schoolContactTypes: [],
       schoolContacts: new Map(),
       school: {},
-      newContactSheet: false
+      editContact: {},
+      newContactSheet: false,
+      editContactSheet: false
     };
   },
   computed: {
@@ -210,6 +229,10 @@ export default {
     },
     contactEditSuccess() {
       this.getThisSchoolsContacts();
+    },
+    openEditContactSheet(contact) {
+      this.editContact = contact;
+      this.editContactSheet = !this.editContactSheet;
     },
     getStatusColor,
     formatDate,

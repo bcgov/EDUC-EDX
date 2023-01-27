@@ -19,7 +19,7 @@
                          min-width="0.5em"
                          depressed
                          v-if="canEditSchoolContact"
-                         @click="openContactEditForm(contact)"
+                         @click="handleOpenEditor"
                          small
                          class="mr-2">
                     <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
@@ -72,180 +72,15 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-expand-transition>
-      <v-card v-show="expandEdit">
-        <v-card-actions class="justify-end">
-          <PrimaryButton id="cancelEditButton"
-                         :secondary="true"
-                         @click.native="closeSchoolContactEdit"
-                         text="Cancel"/>
-          <PrimaryButton @click.native="saveSchoolContact(contactEdit)"
-                         id="saveEditButton"
-                         :disabled="!ecFormValid"
-                         :loading="processing"
-                         text="Save"/>
-        </v-card-actions>
-        <v-card-text>
-          <v-form
-              ref="editContactForm"
-              v-model="ecFormValid">
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditFirstName"
-                              v-model="contactEdit.firstName"
-                              label="First Name"
-                              type="text"
-                              maxlength="255"/>
-              </v-col>
-              <v-col>
-                <v-text-field id="contactEditLastName"
-                              v-model="contactEdit.lastName"
-                              :rules="[rules.required()]"
-                              label="Last Name"
-                              type="text"
-                              maxlength="255"/>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditEmail"
-                              v-model="contactEdit.email"
-                              :rules="[rules.required(), rules.email()]"
-                              label="Email"
-                              type="text"
-                              maxlength="255"/>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditPhoneNumber"
-                              v-model="contactEdit.phoneNumber"
-                              :rules="[rules.required(), rules.phoneNumber()]"
-                              label="Phone"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"/>
-              </v-col>
-              <v-col>
-                <v-text-field id="contactEditPhoneExt"
-                              :rules="[rules.number()]"
-                              v-model="contactEdit.phoneExtension"
-                              label="Ext"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"/>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field id="contactEditAltPhoneNumber"
-                              :rules="[rules.phoneNumber()]"
-                              v-model="contactEdit.alternatePhoneNumber"
-                              label="Alternative Phone"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"/>
-              </v-col>
-              <v-col>
-                <v-text-field id="contactEditAltPhoneExt"
-                              :rules="[rules.number()]"
-                              v-model="contactEdit.alternatePhoneExtension"
-                              label="Alternative Ext"
-                              type="text"
-                              maxlength="10"
-                              @keypress="isNumber($event)"/>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-menu
-                    id="editContactEffectiveDatePicker"
-                    ref="editContactEffectiveDateFilter"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        id="editContactEffectiveDateTextField"
-                        :rules="[rules.required()]"
-                        class="pt-0 mt-0"
-                        v-model="contactEdit.effectiveDate"
-                        label="Start Date"
-                        prepend-inner-icon="mdi-calendar"
-                        clearable
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"/>
-                  </template>
-                  <v-date-picker
-                      v-model="contactEdit.effectiveDate"
-                      :active-picker.sync="editContactEffectiveDatePicker"
-                      @change="saveEditContactEffectiveDate"/>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-menu
-                    id="editContactExpiryDatePicker"
-                    ref="editContactExpiryDateFilter"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        id="editContactExpiryDateTextField"
-                        :rules="[rules.endDateRule(contactEdit.effectiveDate, contactEdit.expiryDate)]"
-                        class="pt-0 mt-0"
-                        v-model="contactEdit.expiryDate"
-                        label="End Date"
-                        prepend-inner-icon="mdi-calendar"
-                        clearable
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"/>
-                  </template>
-                  <v-date-picker
-                      v-model="contactEdit.expiryDate"
-                      :active-picker.sync="editContactExpiryDatePicker"
-                      @change="saveEditContactExpiryDate"/>
-                </v-menu>
-              </v-col>
-            </v-row>
-            <ConfirmationDialog ref="confirmSchoolContactUpdateAndSave">
-              <template v-slot:message>
-                <p>
-                  All changes made to school contact information will be
-                    <strong>available to the public on save</strong>.
-                </p>
-                <p>Please be sure to review your changes carefully before you publish them.</p>
-              </template>
-            </ConfirmationDialog>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-expand-transition>
   </span>
 </template>
 
 <script>
-import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import PrimaryButton from '../util/PrimaryButton';
-import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
 
 export default {
   name: 'SchoolContact',
-  mixins: [alertMixin],
-  components: {
-    ConfirmationDialog,
-    PrimaryButton,
-  },
   props: {
     schoolID: {
       type: String,
@@ -258,111 +93,17 @@ export default {
     canEditSchoolContact: {
       type: Boolean,
       required: true
+    },
+    handleOpenEditor: {
+      type: Function,
+      required: true
     }
   },
-  data() {
-    return {
-      processing: false,
-      school: {},
-      expandEdit: false,
-      saveEnabled: true,
-      ecFormValid: false,
-      effDateMenu: false,
-      expDateMenu: false,
-      contactEdit: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phoneNumber:'',
-        phoneExtension:'',
-        alternatePhoneNumber:'',
-        alternatePhoneExtension:'',
-        effectiveDate:'',
-        expiryDate:''
-      },
-      rules: Rules,
-      editContactExpiryDatePicker: null,
-      editContactEffectiveDatePicker: null,
-    };
-  },
   methods: {
-    async saveSchoolContact(contact) {
-      const confirmation = await this.$refs.confirmSchoolContactUpdateAndSave
-        .open('Confirm Updates to School Contact', null, {
-          color: '#fff',
-          width: 580,
-          closeIcon: false,
-          subtitle: false,
-          dark: false,
-          resolveText: 'Publish Changes',
-          rejectText: 'Return to School Contacts'
-        });
-      if (!confirmation) {
-        return;
-      }
-
-      this.processing = true;
-      this.validateEditContactForm();
-
-      contact.schoolID = this.schoolID;
-
-      ApiService.apiAxios.post(`${ApiRoutes.school.UPDATE_SCHOOL_CONTACT_URL}`, contact)
-        .then(() => {
-          this.setSuccessAlert('Success! The school contact has been updated.');
-          this.closeSchoolContactEdit();
-          this.$emit('editSchoolContact:editSchoolContactSuccess');
-        })
-        .catch(error => {
-          console.error(error);
-          let fallback = 'An error occurred while saving the school contact information.' +
-                         ' Please try again later.';
-          this.setFailureAlert(error?.response?.data?.message || fallback);
-        })
-        .finally(() => {
-          this.processing = false;
-        });
-    },
-    closeSchoolContactEdit(){
-      this.expandEdit = !this.expandEdit;
-      this.$refs.editContactForm.reset();
-    },
-    validateEditContactForm(){
-      this.$refs.editContactForm.validate();
-    },
-    openContactEditForm(contact){
-      this.expandEdit = !this.expandEdit;
-      this.populateContactEditForm(contact);
-    },
-    populateContactEditForm(contact){
-      this.contactEdit = _.cloneDeep(contact);
-
-      //we need to substring date because date picker does not like timestamps
-      this.contactEdit.effectiveDate = this.contactEdit?.effectiveDate?.substring(0, 10) || null;
-      this.contactEdit.expiryDate = this.contactEdit?.expiryDate?.substring(0, 10) || null;
-    },
-    formatEffectiveDisplayDate (effectiveDate) {
-      if (!effectiveDate) return null;
-      const [year, month, day] = effectiveDate.split('-');
-      return `${year}/${month}/${day}`;
-    },
-    saveEditContactExpiryDate(date) {
-      this.$refs.editContactExpiryDateFilter.save(date);
-    },
-    saveEditContactEffectiveDate(date) {
-      this.$refs.editContactEffectiveDateFilter.save(date);
-    },
     formatDate,
     formatPhoneNumber,
     getStatusColor,
-    isNumber,
     formatContactName
-  },
-  watch: {
-    'contactEdit.effectiveDate': {
-      handler() {
-        this.validateEditContactForm();
-      }
-    }
   }
 };
 </script>
