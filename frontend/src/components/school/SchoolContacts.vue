@@ -95,14 +95,16 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import {PERMISSION} from '@/utils/constants/Permission';
-import PrimaryButton from '../util/PrimaryButton';
-import NewSchoolContactPage from './NewSchoolContactPage';
-import SchoolContact from './SchoolContact';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
 import {getStatusColor} from '@/utils/institute/status';
 import { sortBy } from 'lodash';
+
+import PrimaryButton from '../util/PrimaryButton.vue';
+import NewSchoolContactPage from './NewSchoolContactPage.vue';
+import EditSchoolContactPage from './EditSchoolContactPage.vue';
+import SchoolContact from './SchoolContact.vue';
 
 // checks the expiry of a contact
 function isExpired(contact) {

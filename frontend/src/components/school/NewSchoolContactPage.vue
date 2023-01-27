@@ -166,13 +166,14 @@
 </template>
 
 <script>
-import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
+
+import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {
   name: 'NewSchoolContactPage',
