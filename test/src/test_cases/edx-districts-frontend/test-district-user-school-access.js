@@ -40,7 +40,6 @@ fixture `district-users-access`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
-        // log in as studentAdmin
         await loginPage.login(credentials.adminCredentials);
         await t.resizeWindow(1920, 1080);
 
