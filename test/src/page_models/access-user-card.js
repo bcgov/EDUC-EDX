@@ -114,12 +114,12 @@ class AccessUserCard {
         log.info('Clicked the user\'s edit button.');
     }
 
-    async unckeckExistingRoleFromList() {
+    async uncheckExistingRoleFromList() {
         await t.click(this.schoolAdminRoleCheckbox);
         log.info('Unchecked School administrator checkbox.');
     }
 
-    async ckeckNewRoleFromList() {
+    async checkNewRoleFromList() {
         await t.click(this.secureExchangeRoleCheckbox);
         log.info('Unchecked School administrator checkbox.');
     }
