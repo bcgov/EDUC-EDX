@@ -10,6 +10,9 @@ class AccessUsersPage {
     this.vCardTitle = Selector(('#newUserInviteVCardTitle'));
     this.primaryEdxActivationCode = Selector("#primaryEdxActivationCode");
     this.copyPrimaryEdxActivationCodeButton = Selector("#copyPrimaryEdxActivationCodeButton");
+    this.schoolSearchSection = Selector('div').withText('Search a school below to manage their EDX Access');
+    this.selectSchoolDropdown = Selector('#selectInstituteName');
+    this.manageSchoolButton = Selector('#manageSchoolButton');
   }
 
   async clickNewUserButton() {
@@ -46,6 +49,28 @@ class AccessUsersPage {
     let primaryEdxActivationCode = (await this.primaryEdxActivationCode.innerText).replace('Primary Activation Code:', '').trim();
     await t.expect(this.copyPrimaryEdxActivationCodeButton.withAttribute('title', `Copy ${primaryEdxActivationCode} to the clipboard.`).exists).ok();
     log.info('Verified that the Copy Primary EDX Activation Code Button\'s value matches the Primary Edx Activation Code.');
+  }
+
+  async verifySchoolSelectionCardExists() {
+    await t.expect(this.schoolSearchSection.exists).ok();
+    log.info('Verified school selection card exists');
+  }
+
+  async verifySchoolSelectDropdownExists() {
+    await t.expect(this.selectSchoolDropdown.exists).ok();
+    log.info('Verified search school dropdown exists');
+  }
+
+  async selectSchoolFromDropdown(schoolName) {
+    await t
+    .click(this.selectSchoolDropdown)
+    .click(Selector('div[role="listbox"]').find('div').withText(schoolName))
+    log.info('School Selected');
+  }
+
+  async clickManageSchoolButton(){
+    await t.click(this.manageSchoolButton);
+    log.info('Manage school button Clicked');
   }
 
 }
