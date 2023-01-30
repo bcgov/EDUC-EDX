@@ -5,13 +5,19 @@ import LoginPage from "../../page_models/login-page";
 import crypto from "crypto";
 import AccessUserCard from "../../page_models/access-user-card";
 import SnackBarPage from "../../page_models/common/snackBarPage";
+import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
+import InviteUserPage from '../../page_models/invite-user-page';
+import AccessUsersPage from '../../page_models/access-users-page';
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser,setUpEdxDistrictUserWithSpecificDigitalUserIdAndAllAvailableRoles,deleteSpecificEdxUser} =  require('../../helpers/user-set-up-utils');
 
 const loginPage = new LoginPage();
 const snackBarPage = new SnackBarPage();
+const menu = new HamburgerMenuPage();
+const newUserInvitePage = new InviteUserPage();
 let createdEdxDistrictUser
 let accessUserCard = null;
+const accessUsersPage = new AccessUsersPage();
 let token = '';
 
 fixture `district-users`
@@ -36,13 +42,33 @@ fixture `district-users`
         // log in as studentAdmin
         await loginPage.login(credentials.adminCredentials);
         await t.resizeWindow(1920, 1080);
+
+        //Select from hamburger menu
+        await menu.clickHamburgerMenu();
+        await menu.clickAdministrationMenuOption();
+        await menu.clickDistrictUserManagementSubMenuLink();
+        await t.wait(3000);
     }).afterEach(async t => {
     // logout
     await t.navigateTo(base_url + '/logout');
 });
 
+test('district-user-add-new-user-access', async t => {
+    // Add New User 
+    await accessUsersPage.clickNewUserButton();
+    await accessUsersPage.verifyUserByText('New User');
+
+    await newUserInvitePage.setFirstName('TestUserFirstName');
+    await newUserInvitePage.setLastName('TestUserLastName');
+    await newUserInvitePage.setEmail('penemail@mailsac.com');
+    await newUserInvitePage.selectRole('EDX District Administrator');
+    await newUserInvitePage.clickInviteBtn();
+
+    await snackBarPage.verifySnackBarText('Success! The request is being processed.');
+    
+});
+
 test('district-user-remove-other-district-user-access', async t => {
-    await t.navigateTo(`${base_url}/districtAccess`);
     //Confirm card state
     await accessUserCard.verifyEdxUserCardExists();
     await accessUserCard.verifyRemoveEdxUserButtonExists();
