@@ -1,18 +1,15 @@
 <template>
-  <v-card id="newContactVCard">
+  <v-card
+      id="newContactVCard">
     <v-card-title class="sheetHeader pt-1 pb-1">New School Contact</v-card-title>
-    <v-divider/>
+    <v-divider></v-divider>
     <v-card-text>
       <v-form ref="newContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert color="#003366" dense text type="info">
-              <p>School contacts will be
-                <strong>available to the public as of start date.</strong>
-              </p>
-              <p class="mb-1">
-                Please be sure to review the new contact details carefully before saving.
-              </p>
+              <p>School contacts will be <strong>available to the public as of start date.</strong></p>
+              <p class="mb-1">Please be sure to review the new contact details carefully before saving.</p>
             </v-alert>
           </v-col>
         </v-row>
@@ -26,27 +23,31 @@
                 item-text="label"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
-                label="School Contact Type"/>
+                label="School Contact Type"
+            />
             <v-text-field
                 id='newContactFirstNameInput'
                 v-model="newContact.firstName"
                 class="pt-0"
                 :maxlength="255"
-                label="First Name"/>
+                label="First Name"
+            />
             <v-text-field
                 id='newContactLastNameInput'
                 :rules="[rules.required()]"
                 v-model="newContact.lastName"
                 class="pt-0"
                 :maxlength="255"
-                label="Last Name"/>
+                label="Last Name"
+            />
             <v-text-field
                 id='newContactEmailInput'
                 :rules="[rules.required(), rules.email()]"
                 v-model="newContact.email"
                 class="pt-0"
                 :maxlength="255"
-                label="Email"/>
+                label="Email"
+            />
             <v-row>
               <v-col cols="6">
                 <v-text-field
@@ -56,7 +57,8 @@
                     class="pt-0"
                     :maxlength="10"
                     label="Phone Number"
-                    @keypress="isNumber($event)"/>
+                    @keypress="isNumber($event)"
+                />
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -66,7 +68,8 @@
                     :maxlength="10"
                     class="pt-0"
                     label="Ext."
-                    @keypress="isNumber($event)"/>
+                    @keypress="isNumber($event)"
+                />
               </v-col>
             </v-row>
             <v-row>
@@ -78,7 +81,8 @@
                     class="pt-0"
                     :maxlength="10"
                     label="Alt. Phone Number"
-                    @keypress="isNumber($event)"/>
+                    @keypress="isNumber($event)"
+                />
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -88,7 +92,8 @@
                     class="pt-0"
                     :maxlength="10"
                     label="Alt. Phone Ext."
-                    @keypress="isNumber($event)"/>
+                    @keypress="isNumber($event)"
+                />
               </v-col>
             </v-row>
             <v-row>
@@ -99,7 +104,8 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    min-width="auto">
+                    min-width="auto"
+                >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactEffectiveDateTextField"
@@ -111,12 +117,14 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"/>
+                        v-on="on"
+                    ></v-text-field>
                   </template>
                   <v-date-picker
                       v-model="newContact.effectiveDate"
                       :active-picker.sync="newContactEffectiveDatePicker"
-                      @change="saveNewContactEffectiveDate"/>
+                      @change="saveNewContactEffectiveDate"
+                  ></v-date-picker>
                 </v-menu>
               </v-col>
               <v-col cols="6">
@@ -126,7 +134,8 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    min-width="auto">
+                    min-width="auto"
+                >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactExpiryDateTextField"
@@ -138,12 +147,14 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"/>
+                        v-on="on"
+                    ></v-text-field>
                   </template>
                   <v-date-picker
                       v-model="newContact.expiryDate"
                       :active-picker.sync="newContactExpiryDatePicker"
-                      @change="saveNewContactExpiryDate"/>
+                      @change="saveNewContactExpiryDate"
+                  ></v-date-picker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -152,28 +163,20 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-end">
-      <PrimaryButton id="cancelNewContactBtn"
-                     secondary text="Cancel"
-                     @click.native="closeNewContactPage"/>
-      <PrimaryButton id="newContactPostBtn"
-                     text="Save"
-                     width="7rem"
-                     @click.native="addNewSchoolContact"
-                     :disabled="!isFormValid"
-                     :loading="processing"/>
+      <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
+      <PrimaryButton id="newContactPostBtn" text="Save" width="7rem" @click.native="addNewSchoolContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import PrimaryButton from '../util/PrimaryButton';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
 import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
-
-import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {
   name: 'NewSchoolContactPage',
@@ -233,8 +236,7 @@ export default {
     },
     addNewSchoolContact() {
       this.processing = true;
-      ApiService.apiAxios
-        .post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
+      ApiService.apiAxios.post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
         .then(() => {
           this.setSuccessAlert('Success! The school contact has been created.');
           this.resetForm();
@@ -257,10 +259,7 @@ export default {
     isNumber,
   },
   watch: {
-    /**
-     * Watching effective date to valid form because we need to cross validate expiry and
-     * effective date fields.
-     */
+    //watching effective date to valid form because we need to cross validate expiry and effective date fields
     'newContact.effectiveDate': {
       handler() {
         this.validateForm();
@@ -271,7 +270,7 @@ export default {
 </script>
 
 <style scoped>
-  .sheetHeader {
+  .sheetHeader{
     background-color: #003366;
     color: white;
     font-size: medium !important;
