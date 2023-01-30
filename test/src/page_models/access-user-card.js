@@ -4,11 +4,11 @@ import log from "npmlog";
 class AccessUserCard {
     constructor(edxUserID) {
         this.edxUserCard = Selector(`#edxUser-${edxUserID}`);
-        this.removeEdxUserButton = Selector(`#user-remove-button-${edxUserID}`);
+        this.removeEdxUserButton = Selector(`#edxUser-${edxUserID} .removeEdxUserButton`);
         this.deleteEdxUserConfirmationDialog = Selector(`#edxUser-${edxUserID} .deleteEdxUserConfirmationDialog`);
         this.cancelUserDeleteButton = Selector(`#edxUser-${edxUserID} .cancelUserDeleteButton`);
         this.confirmUserDeleteButton = Selector(`#edxUser-${edxUserID} .confirmUserDeleteButton`);
-        this.editEdxUserButton =  Selector(`#user-edit-button-${edxUserID}`);
+        this.editEdxUserButton =  Selector(`#edxUser-${edxUserID} .editEdxUserButton`);
         this.schoolAdminRoleCheckbox = Selector('div').withText('EDX School Administrator');
         this.secureExchangeRoleCheckbox = Selector('div').withText('Secure Exchange');
         this.editRoleSaveButton = Selector('button').withText('Save');
