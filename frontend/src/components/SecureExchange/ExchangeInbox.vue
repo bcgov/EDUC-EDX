@@ -248,8 +248,7 @@
         <v-card-title class="sheetHeader pt-1 pb-1">New Message</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <NewMessagePage
-            :schools-map="schoolsMap"
+          <NewMessagePage    
             @secure-exchange:messageSent="messageSent"
             @secure-exchange:cancelMessage="newMessageSheet = false"
           >
@@ -266,7 +265,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import NewMessagePage from './NewMessagePage';
-import {mapState} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '@/mixins/alertMixin';
 
@@ -318,9 +317,9 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['schoolsMap']),
     ...mapState('edx', ['statuses']),
     ...mapState('edx', ['ministryTeams']),
+    ...mapGetters('auth', ['userInfo']),
     secureExchangeStatusCodes() {
       return this.statuses;
     },
