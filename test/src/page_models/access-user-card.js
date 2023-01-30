@@ -4,10 +4,14 @@ import log from "npmlog";
 class AccessUserCard {
     constructor(edxUserID) {
         this.edxUserCard = Selector(`#edxUser-${edxUserID}`);
-        this.removeEdxUserButton = Selector(`#edxUser-${edxUserID} .removeEdxUserButton`);
+        this.removeEdxUserButton = Selector(`#user-remove-button-${edxUserID}`);
         this.deleteEdxUserConfirmationDialog = Selector(`#edxUser-${edxUserID} .deleteEdxUserConfirmationDialog`);
         this.cancelUserDeleteButton = Selector(`#edxUser-${edxUserID} .cancelUserDeleteButton`);
         this.confirmUserDeleteButton = Selector(`#edxUser-${edxUserID} .confirmUserDeleteButton`);
+        this.editEdxUserButton =  Selector(`#user-edit-button-${edxUserID}`);
+        this.schoolAdminRoleCheckbox = Selector('div').withText('EDX School Administrator');
+        this.secureExchangeRoleCheckbox = Selector('div').withText('Secure Exchange');
+        this.editRoleSaveButton = Selector('button').withText('Save');
     }
 
     async verifyEdxUserCardExists() {
@@ -74,6 +78,33 @@ class AccessUserCard {
         await t.click(this.confirmUserDeleteButton);
         log.info('Clicked the user\'s Confirm User Deletion button.');
     }
+
+    async verifyEditEdxUserButtonExists() {
+        await t.expect(this.editEdxUserButton.exists).ok();
+        log.info('Verified that the Edit EDX User Button exists.');
+    }
+
+    async clickEditEdxUserButton() {
+        await t.click(this.editEdxUserButton);
+        log.info('Clicked the user\'s edit button.');
+    }
+
+    async uncheckExistingRoleFromList() {
+        await t.click(this.schoolAdminRoleCheckbox);
+        log.info('Unchecked School administrator checkbox.');
+    }
+
+    async checkNewRoleFromList() {
+        await t.click(this.secureExchangeRoleCheckbox);
+        log.info('Unchecked School administrator checkbox.');
+    }
+
+    async clickSaveRoleButton() {
+        await t.click(this.editRoleSaveButton);
+        log.info('Clicked save button.');
+    }
+
+    
 }
 
 export default AccessUserCard;

@@ -10,7 +10,7 @@
                   <strong>{{ `${user.firstName} ${user.lastName}` }}</strong>
                 </v-col>
                 <v-col cols="2" class="d-flex justify-end" v-if="isNotSameEdxUser()">
-                  <v-btn :id="`user-edit-button-${user.firstName}-${user.lastName}`"
+                  <v-btn :id="`user-edit-button-${user.edxUserID}`"
                          title="Edit"
                          color="white"
                          width="0.5em"
@@ -22,7 +22,7 @@
                   >
                     <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
                   </v-btn>
-                  <v-btn :id="`user-remove-button-${user.firstName}-${user.lastName}`"
+                  <v-btn :id="`user-remove-button-${user.edxUserID}`"
                          title="Remove"
                          color="white"
                          width="0.5em"
@@ -30,11 +30,11 @@
                          depressed
                          @click="clickDeleteButton"
                          small
-                         class="mr-2 removeEdxUserButton"
+                         class="mr-2"
                   >
                     <v-icon size="x-large" color="#003366" dark>mdi-delete</v-icon>
                   </v-btn>
-                  <v-btn :id="`user-relink-button-${user.firstName}-${user.lastName}`"
+                  <v-btn :id="`user-relink-button-${user.edxUserID}`"
                          title="Re-Link"
                          color="white"
                          width="0.5em"

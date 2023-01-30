@@ -20,7 +20,7 @@ const userSetUpUtils = {
     const data = await getToken();
     const token = data.access_token;
     const schoolIDs = await userSetUpUtils.getInstituteIds('SCHOOL', schoolCodes);
-    const districtIDs = userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
+    const districtIDs = await userSetUpUtils.getInstituteIds('DISTRICT', districtNumbers);
     const schoolRoles = await getAllEdxUserRoleForInstitute(token, 'SCHOOL');
     const districtRoles = await getAllEdxUserRoleForInstitute(token, 'DISTRICT');
     return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, schoolIDs, schoolRoles, districtIDs, districtRoles);
@@ -53,6 +53,14 @@ const userSetUpUtils = {
     return await userSetUpUtils.createEdxUserObject(token, digitalUserID, '', '', instituteIDs, roles);
   },
 
+  async setUpEdxSchoolUserWithSpecificSchoolUserIdAndAllAvailableRoles(schoolUserID, schoolCodes) {
+    const data = await getToken();
+    const token = data.access_token;
+    const instituteIDs = await userSetUpUtils.getInstituteIds('SCHOOL', schoolCodes);
+    const roles = await getAllEdxUserRoleForInstitute(token, 'SCHOOL');
+    return await userSetUpUtils.createEdxUserObject(token, schoolUserID, instituteIDs, roles, '', '');
+  },
+
   async getInstituteIds(instituteTypeCode, instituteCodes) {
     let instituteIds = [];
     if (instituteTypeCode.toString().toUpperCase() === 'SCHOOL') {
@@ -77,7 +85,6 @@ const userSetUpUtils = {
     edxUser.updateUser = 'Test-automation';
     await userSetUpUtils.createEdxUserSchoolWithRoles(edxUser, schoolIDs, schoolRoles);
     await userSetUpUtils.createEdxUserDistrictWithRoles(edxUser, districtIDs, districtRoles);
-
     const url = `${constants.edx_api_base_url}api/v1/edx/users`;
     return await restUtils.postData(token, url, edxUser);
   },
