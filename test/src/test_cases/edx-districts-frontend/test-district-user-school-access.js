@@ -8,7 +8,6 @@ import SnackBarPage from "../../page_models/common/snackBarPage";
 import HamburgerMenuPage from "../../page_models/common/hamburgerMenuPage";
 import InviteUserPage from '../../page_models/invite-user-page';
 import AccessUsersPage from '../../page_models/access-users-page';
-import InstituteSelectionPage from "../../page_models/institute-selection-page";
 
 const {deleteSetUpEdxUser,setUpEdxSchoolUserWithSpecificSchoolUserIdAndAllAvailableRoles,deleteSpecificEdxUser, setUpEdxDistrictUserWithAllAvailableRoles} =  require('../../helpers/user-set-up-utils');
 
