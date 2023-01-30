@@ -8,9 +8,6 @@ class AccessUserCard {
         this.deleteEdxUserConfirmationDialog = Selector(`#edxUser-${edxUserID} .deleteEdxUserConfirmationDialog`);
         this.cancelUserDeleteButton = Selector(`#edxUser-${edxUserID} .cancelUserDeleteButton`);
         this.confirmUserDeleteButton = Selector(`#edxUser-${edxUserID} .confirmUserDeleteButton`);
-        this.schoolSearchSection = Selector('div').withText('Search a school below to manage their EDX Access');
-        this.selectSchoolDropdown = Selector('#selectInstituteName');
-        this.manageSchoolButton = Selector('#manageSchoolButton');
         this.editEdxUserButton =  Selector(`#edxUser-${edxUserID} .editEdxUserButton`);
         this.schoolAdminRoleCheckbox = Selector('div').withText('EDX School Administrator');
         this.secureExchangeRoleCheckbox = Selector('div').withText('Secure Exchange');
@@ -80,28 +77,6 @@ class AccessUserCard {
     async clickConfirmUserDeleteButton() {
         await t.click(this.confirmUserDeleteButton);
         log.info('Clicked the user\'s Confirm User Deletion button.');
-    }
-
-    async verifySchoolSelectionCardExists() {
-        await t.expect(this.schoolSearchSection.exists).ok();
-        log.info('Verified school selection card exists');
-    }
-
-    async verifySchoolSelectDropdownExists() {
-        await t.expect(this.selectSchoolDropdown.exists).ok();
-        log.info('Verified search school dropdown exists');
-    }
-
-    async selectSchoolFromDropdown(schoolName) {
-        await t
-        .click(this.selectSchoolDropdown)
-        .click(Selector('div[role="listbox"]').find('div').withText(schoolName))
-        log.info('School Selected');
-    }
-
-    async clickManageSchoolButton(){
-        await t.click(this.manageSchoolButton);
-        log.info('Manage school button Clicked');
     }
 
     async verifyEditEdxUserButtonExists() {

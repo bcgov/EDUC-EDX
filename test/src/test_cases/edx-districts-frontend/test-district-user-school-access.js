@@ -50,10 +50,10 @@ fixture `district-users-access`
         await t.wait(3000);
     
         //School User Management
-        await accessUserCard.verifySchoolSelectionCardExists();
-        await accessUserCard.verifySchoolSelectDropdownExists();
-        await accessUserCard.selectSchoolFromDropdown('EDX Automation Testing School');
-        await accessUserCard.clickManageSchoolButton();
+        await accessUsersPage.verifySchoolSelectionCardExists();
+        await accessUsersPage.verifySchoolSelectDropdownExists();
+        await accessUsersPage.selectSchoolFromDropdown('EDX Automation Testing School');
+        await accessUsersPage.clickManageSchoolButton();
 
     }).afterEach(async t => {
     // logout
@@ -79,8 +79,8 @@ test('school-access-edit-new-user', async t => {
     //Click the edit button
     await accessUserCard.verifyEditEdxUserButtonExists();
     await accessUserCard.clickEditEdxUserButton();
-    await accessUserCard.unckeckExistingRoleFromList();
-    await accessUserCard.ckeckNewRoleFromList();
+    await accessUserCard.uncheckExistingRoleFromList();
+    await accessUserCard.checkNewRoleFromList();
     await accessUserCard.clickSaveRoleButton();
 
     await snackBarPage.verifySnackBarText('User roles have been updated.');
