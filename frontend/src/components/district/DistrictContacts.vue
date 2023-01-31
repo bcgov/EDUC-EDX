@@ -41,7 +41,7 @@
         </v-row>
         <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
           <v-col cols="5" lg="4" v-for="contact in districtContacts.get(districtContactType.districtContactTypeCode)" :key="contact.schoolId">
-            <DistrictContact :contact="contact" :districtID="$route.params.districtID" @editDistrictContact:editDistrictContactSuccess="contactEditSuccess" :canEditDistrictContact="canEditDistrictContact()" />
+            <DistrictContact :contact="contact" :districtID="$route.params.districtID" :canEditDistrictContact="canEditDistrictContact" :handleOpenEditor="() => openEditContactSheet(contact)" />
           </v-col>
         </v-row>
         <v-row cols="2" v-else>
@@ -56,9 +56,7 @@
         inset
         no-click-animation
         scrollable
-        persistent
-        width="30%"
-    >
+        persistent>
       <NewDistrictContactPage
           v-if="newContactSheet"
           :districtContactTypes="this.districtContactTypes"
@@ -66,6 +64,20 @@
           @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
           @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
       />
+    </v-bottom-sheet>
+    <v-bottom-sheet
+        v-model="editContactSheet"
+        inset
+        no-click-animation
+        scrollable
+        persistent>
+      <EditDistrictContactPage
+          v-if="editContactSheet"
+          :contact="editContact"
+          :districtContactTypes="this.districtContactTypes"
+          :districtID="this.$route.params.districtID"
+          :closeHandler="() => editContactSheet = false"
+          :onSuccessHandler="contactEditSuccess"/>
     </v-bottom-sheet>
   </v-container>
 </template>
@@ -76,11 +88,11 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import PrimaryButton from '../util/PrimaryButton';
 import NewDistrictContactPage from './NewDistrictContactPage';
+import EditDistrictContactPage from './EditDistrictContactPage';
 import DistrictContact from './DistrictContact';
 import {mapGetters} from 'vuex';
 import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor, isExpired} from '@/utils/institute/status';
+import { isExpired } from '@/utils/institute/status';
 import {sortBy} from 'lodash';
 import {PERMISSION} from '@/utils/constants/Permission';
 
@@ -90,6 +102,7 @@ export default {
   components: {
     PrimaryButton,
     NewDistrictContactPage,
+    EditDistrictContactPage,
     DistrictContact
   },
   props: {
@@ -103,13 +116,18 @@ export default {
       loadingCount: 0,
       districtContactTypes: [],
       districtContacts: new Map(),
+      editContact: null,
       newContactSheet: false,
+      editContactSheet: false
     };
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
+    },
+    canEditDistrictContact() {
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
     },
   },
   created() {
@@ -135,7 +153,7 @@ export default {
       this.loadingCount += 1;
       let searchDistrictID = this.districtID ? this.districtID: this.userInfo.activeInstituteIdentifier;
 
-      ApiService.apiAxios.get(`${ApiRoutes.district.BASE_URL}/` + searchDistrictID)
+      ApiService.apiAxios.get(`${ApiRoutes.district.BASE_URL}/${searchDistrictID}`)
         .then(response => {
           this.districtContacts = new Map();
           response.data.contacts = sortBy(response.data.contacts, ['firstName']);
@@ -155,31 +173,32 @@ export default {
           this.loadingCount -= 1;
         });
     },
-    backButtonClick() {
-      this.$router.push({name: 'home'});
-    },
     newDistrictContactAdded() {
       this.newContactSheet= !this.newContactSheet;
       this.getThisDistrictsContacts();
     },
-    redirectToDistrictDetails() {
-      this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
-    },
-    getStatusColor,
-    formatDate,
-    formatPhoneNumber,
-    formatContactName,
-    canEditDistrictContact() {
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+    openEditContactSheet(contact) {
+      this.editContact = contact;
+      this.editContactSheet = !this.editContactSheet;
     },
     contactEditSuccess() {
       this.getThisDistrictsContacts();
+    },
+    backButtonClick() {
+      this.$router.push({name: 'home'});
+    },
+    redirectToDistrictDetails() {
+      this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
     }
   },
 };
 </script>
 
 <style scoped>
+
+.v-dialog__content >>> .v-bottom-sheet {
+  width: 30% !important;
+}
 
 @media screen and (max-width: 950px){
   .v-dialog__content /deep/ .v-bottom-sheet {

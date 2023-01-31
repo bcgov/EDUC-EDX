@@ -63,7 +63,6 @@
               :handleOpenEditor="() => openEditContactSheet(contact)"
               :contact="contact"
               :schoolID="$route.params.schoolID"
-              @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"
               :canEditSchoolContact="canEditSchoolContacts()"/>
           </v-col>
         </v-row>
@@ -100,8 +99,7 @@
           :schoolContactTypes="this.schoolContactTypes"
           :schoolID="this.$route.params.schoolID"
           :closeHandler="() => editContactSheet = false"
-          :onSuccessHandler="() => contactEditSuccess()"
-          @editSchoolContact:editSchoolContactSuccess="contactEditSuccess"/>
+          :onSuccessHandler="() => contactEditSuccess()"/>
     </v-bottom-sheet>
   </v-container>
 </template>
