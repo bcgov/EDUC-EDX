@@ -8,7 +8,6 @@ import log from "npmlog";
 import LoginPage from "../../page_models/login-page";
 import DistrictContacts from "../../page_models/district/district-contacts-page";
 import Dashboard from "../../page_models/dashboard";
-import InstituteSelectionPage from "../../page_models/institute-selection-page";
 import NavBarPage from '../../page_models/common/navBarPage';
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
@@ -17,7 +16,6 @@ const districtContacts = new DistrictContacts();
 const dashboard = new Dashboard();
 const navBar = new NavBarPage();
 const {deleteDistrictContact} = require('../../helpers/district-set-up-utils');
-const instituteSelectionPage = new InstituteSelectionPage();
 let token = '';
 
 fixture `district-contacts`
@@ -62,8 +60,6 @@ test('edit-district-contact', async t => {
 
     await districtContacts.clickEditContactButton();
     await districtContacts.editDistrictContact();
-    await districtContacts.verifyConfirmation();
-    await districtContacts.confirmPublishChanges();
 
     await districtContacts.verifyDistrictContactEditDetails();
 
