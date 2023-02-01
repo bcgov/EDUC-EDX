@@ -78,6 +78,7 @@
               <template v-slot:default="{ active, }">
                 <v-list-item-action class="mt-0 mb-2 mr-3">
                   <v-checkbox
+                    :id="`${newrole.edxRoleCode.toLowerCase()}-role-checkbox-${user.edxUserID}`"
                     :disabled="roleDisabled(newrole)"
                     :input-value="active"
                     color="primary"
@@ -142,9 +143,9 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
-                <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.firstName}-${user.lastName}`"
+                <PrimaryButton width="5em" :id="`user-cancel-edit-button-${edxUserID}`"
                                text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
-                <PrimaryButton :id="`user-save-action-button-${user.firstName}-${user.lastName}`" text="Save"
+                <PrimaryButton :id="`user-save-action-button-${user.edxUserID}`" text="Save"
                                :disabled="!minimumRolesSelected" :on="{click: clickSaveButton}"></PrimaryButton>
               </v-col>
             </v-row>

@@ -9,9 +9,9 @@ class AccessUserCard {
         this.cancelUserDeleteButton = Selector(`#edxUser-${edxUserID} .cancelUserDeleteButton`);
         this.confirmUserDeleteButton = Selector(`#edxUser-${edxUserID} .confirmUserDeleteButton`);
         this.editEdxUserButton =  Selector(`#user-edit-button-${edxUserID}`);
-        this.schoolAdminRoleCheckbox = Selector('div').withText('EDX School Administrator');
-        this.secureExchangeRoleCheckbox = Selector('div').withText('Secure Exchange');
-        this.editRoleSaveButton = Selector('button').withText('Save');
+        this.schoolAdminRoleCheckbox = Selector(`#edx_school_admin-role-checkbox-${edxUserID}`).parent('div[role="option"]');
+        this.secureExchangeRoleCheckbox = Selector(`#secure_exchange-role-checkbox-${edxUserID}`).parent('div[role="option"]');
+        this.editRoleSaveButton = Selector(`#user-save-action-button-${edxUserID}`);
     }
 
     async verifyEdxUserCardExists() {
