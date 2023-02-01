@@ -46,7 +46,7 @@ fixture `district-users-access`
         await menu.clickHamburgerMenu();
         await menu.clickAdministrationMenuOption();
         await menu.clickSchoolUserManagementSubMenuLink();
-        await t.wait(3000);
+        await t.wait(1000);
     
         //School User Management
         await accessUsersPage.verifySchoolSelectionCardExists();
@@ -79,7 +79,6 @@ test('school-access-edit-new-user', async t => {
     await accessUserCard.verifyEditEdxUserButtonExists();
     await accessUserCard.clickEditEdxUserButton();
     await accessUserCard.uncheckExistingRoleFromList();
-    await accessUserCard.checkNewRoleFromList();
     await accessUserCard.clickSaveRoleButton();
 
     await snackBarPage.verifySnackBarText('User roles have been updated.');
