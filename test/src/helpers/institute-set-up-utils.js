@@ -22,11 +22,11 @@ const instituteSetupUtils = {
         log.info('AT institute set up deleted')
     },
 
-    async setupInstituteEntities(){
+    async setupInstituteEntities(includeDistrictAddress=true, includeSchoolAddress=true){
         log.info('setupInstituteEntities started')
         await createAuthorityWithContactToTest();
-        let district = await createDistrictWithContactToTest();
-        let school = await createSchoolWithContactToTest(district.districtId);
+        let district = await createDistrictWithContactToTest(includeDistrictAddress);
+        let school = await createSchoolWithContactToTest(district.districtId, includeSchoolAddress);
         await verifyInstituteActivationCodes(district.districtId,school.schoolId);
         log.info('setupInstituteEntities completed')
     },

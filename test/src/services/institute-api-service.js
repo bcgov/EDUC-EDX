@@ -304,7 +304,7 @@ const instituteApiService = {
     return await restUtils.putData(token, url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
   },
 
-  async createDistrictWithContactToTest(){
+  async createDistrictWithContactToTest(includeDistrictAddress=true){
     const data = await getToken();
     const token = data.access_token;
 
@@ -322,25 +322,28 @@ const instituteApiService = {
       website: null,
       displayName: 'EDX Automation Testing District',
       districtRegionCode: 'NOT_APPLIC',
-      districtStatusCode: 'ACTIVE',
-      addresses: [
-          {
-            updateUser: 'EDXAT',
-            createUser: 'EDXAT',
-            createDate: null,
-            updateDate: null,
-            addressId: null,
-            districtId: null,
-            addressLine1: 'Fake Address',
-            addressLine2: null,
-            city: 'Faketown',
-            postal: 'v9v9v9',
-            addressTypeCode: 'MAILING',
-            provinceCode: 'BC',
-            countryCode: 'CA'
-          }
-        ]
+      districtStatusCode: 'ACTIVE'
     };
+
+    if(includeDistrictAddress){
+      districtPayload['addresses'] = [
+        {
+          updateUser: 'EDXAT',
+          createUser: 'EDXAT',
+          createDate: null,
+          updateDate: null,
+          addressId: null,
+          districtId: null,
+          addressLine1: 'Fake Address',
+          addressLine2: null,
+          city: 'Faketown',
+          postal: 'v9v9v9',
+          addressTypeCode: 'MAILING',
+          provinceCode: 'BC',
+          countryCode: 'CA'
+        }
+      ]
+    }
 
     const url = `${constants.institute_base_url}${DISTRICT_ENDPOINT}`;
     if(!districtID){
@@ -392,7 +395,7 @@ const instituteApiService = {
     return await restUtils.postData(token, contactUrl, districtContactPayload);
 
   },
-  async createSchoolWithContactToTest(districtID){
+  async createSchoolWithContactToTest(districtID, includeSchoolAddress=true){
     const data = await getToken();
     const token = data.access_token;
 
@@ -417,7 +420,10 @@ const instituteApiService = {
       facilityTypeCode: 'STANDARD',
       openedDate: '2022-01-01T00:00:00',
       closedDate: null,
-      addresses: [
+    };
+
+    if(includeSchoolAddress){
+      schoolPayload['addresses'] = [
         {
           updateUser: 'EDXAT',
           createUser: 'EDXAT',
@@ -434,7 +440,8 @@ const instituteApiService = {
           countryCode: 'CA'
         }
       ]
-    };
+    }
+
     const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}`;
     if(!schoolID){
       return restUtils.postData(token, url, schoolPayload);
