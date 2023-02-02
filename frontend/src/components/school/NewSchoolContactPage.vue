@@ -174,6 +174,7 @@ import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
 
 import PrimaryButton from '../util/PrimaryButton.vue';
+import {LocalDate} from '@js-joda/core';
 
 export default {
   name: 'NewSchoolContactPage',
@@ -207,7 +208,7 @@ export default {
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: null,
+        effectiveDate: LocalDate.now(),
         expiryDate: null
       },
       rules: Rules,

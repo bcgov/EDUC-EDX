@@ -183,6 +183,7 @@ import ApiService from '@/common/apiService';
 import {ApiRoutes} from '@/utils/constants';
 import * as Rules from '@/utils/institute/formRules';
 import {isNumber} from '@/utils/institute/formInput';
+import {LocalDate} from '@js-joda/core';
 
 export default {
   name: 'NewDistrictContactPage',
@@ -217,7 +218,7 @@ export default {
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: null,
+        effectiveDate: LocalDate.now(),
         expiryDate: null
       },
       rules: Rules,
