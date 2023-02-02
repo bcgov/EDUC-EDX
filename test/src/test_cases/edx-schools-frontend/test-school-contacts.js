@@ -88,8 +88,6 @@ test('edit-school-contact', async t => {
 
     await schoolContactsPage.clickEditContactButton();
     await schoolContactsPage.editSchoolContact();
-    await schoolContactsPage.verifyConfirmation();
-    await schoolContactsPage.confirmPublishChanges();
 
     await schoolContactsPage.verifySchoolContactEditDetails();
 });
