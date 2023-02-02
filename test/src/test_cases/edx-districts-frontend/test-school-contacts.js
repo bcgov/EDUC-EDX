@@ -13,7 +13,6 @@ import crypto from 'crypto';
 import SnackBarPage from "../../page_models/common/snackBarPage";
 
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
-const {setupInstituteEntities} =  require('../../helpers/institute-set-up-utils');
 
 const schoolContacts = new SchoolContacts();
 const schoolList = new SchoolListPage();
