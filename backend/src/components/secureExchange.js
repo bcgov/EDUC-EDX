@@ -611,13 +611,13 @@ async function activateEdxUser(req, res) {
     }
     const payload = {
       digitalId: req.session.digitalIdentityData.digitalID,
-      personalActivationCode: req.body.personalActivationCode,
-      primaryEdxCode: req.body.primaryEdxCode,
+      personalActivationCode: req.body.personalActivationCode.trim(),
+      primaryEdxCode: req.body.primaryEdxCode.trim(),
     };
     let districtID;
     let schoolID;
     if (req.body.districtNumber) {
-      districtID = cacheService.getDistrictIdByDistrictNumber(req.body.districtNumber);
+      districtID = cacheService.getDistrictIdByDistrictNumber(String(req.body.districtNumber.trim()).padStart(3, '0'));
       if (!districtID) {
         incrementNumberOfRetriesCounter(req);
         return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
