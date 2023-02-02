@@ -8,7 +8,9 @@ class SchoolDetailsPage {
     this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
     this.faxNumberField = Selector('#schoolDetailsFaxNumber');
     this.websiteField = Selector('#schoolDetailsWebsite');
+    this.cancelButton = Selector('#cancelButton');
     this.saveButton = Selector('#saveButton');
+    this.addAddressButton = Selector('#addAddressButton');
     this.confirmationPromptHeader = Selector('.v-toolbar__title');
     this.confirmPublishChangesButton = Selector('#resolveBtn');
     this.nonEditableAlert = Selector('#nonEditableAlert');
@@ -35,6 +37,16 @@ class SchoolDetailsPage {
     log.info('School Details Edit button clicked');
     await t.expect(this.nonEditableAlert.innerText).contains('Require updates to non-editable fields? Please contact');
     log.info('Non-Editable alert displayed');
+  }
+
+  async clickCancelButton(){
+    await t.click(this.cancelButton());
+    log.info('School Details Cancel button clicked');
+  }
+
+  async clickAddAddressButton(){
+    await t.click(this.addAddressButton());
+    log.info('School Details add address button clicked');
   }
 
   async clickSaveButton(){

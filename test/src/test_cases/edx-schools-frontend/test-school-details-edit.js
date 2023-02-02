@@ -20,7 +20,7 @@ let token = '';
 
 fixture `school-details-edit`
   .before(async () => {
-    await setupInstituteEntities();
+    await setupInstituteEntities(true, false);
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
       token = data.access_token;
@@ -47,6 +47,8 @@ test('test-edit-school-details', async t => {
   await navBarPage.navTitle('EDX Automation Testing School');
   await dashboard.clickSchoolDetails();
   await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
+  await schoolDetailsPage.clickAddAddressButton();
+  await schoolDetailsPage.clickCancelButton();
   await schoolDetailsPage.clickEditButton();
   await schoolDetailsPage.verifyEditableFieldAlertIsDisplayed();
   await schoolDetailsPage.verifyEditableFieldAlertContent();
@@ -55,6 +57,16 @@ test('test-edit-school-details', async t => {
   await schoolDetailsPage.editFaxNumber('1234567890');
   await schoolDetailsPage.editSchoolWebsite('https://www.google.com/');
   await schoolDetailsPage.editNLCActivity('After School Programs');
+  let mailingAddress = {
+    addressLine1: '1234',
+    addressLine2: 'Some Lane',
+    city: 'Victoria',
+    postal: 'v1v1v1',
+    provinceDescription: 'Yukon',
+    countryDescription: 'Canada'
+  }
+
+  await schoolDetailsPage.editMailingAddress(mailingAddress);
   await schoolDetailsPage.clickSaveButton();
   await schoolDetailsPage.verifyConfirmation();
   await schoolDetailsPage.confirmPublishChanges();
