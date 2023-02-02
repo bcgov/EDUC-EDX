@@ -162,12 +162,12 @@ class SchoolDetailsPage {
     await t
     .click(this.physicalAddressProvince)
     .click(Selector('div[role="listbox"]').filterVisible().find('div').withText(physicalAddress.provinceDescription));
-    log.info('Mailing province updated');
+    log.info('Physical province updated');
 
     await t
     .click(this.physicalAddressCountry)
     .click(Selector('div[role="listbox"]').filterVisible().find('div').withText(physicalAddress.countryDescription));
-    log.info('Mailing country updated');
+    log.info('Physical country updated');
 
     await t.click(this.physicalAddressPostal);
     await t.selectText(this.physicalAddressPostal).pressKey('delete');
