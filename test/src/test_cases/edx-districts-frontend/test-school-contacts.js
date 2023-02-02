@@ -22,7 +22,7 @@ const snackBarPage = new SnackBarPage();
 
 fixture `district-school-contacts`
     .before(async t => {
-        await setUpEdxDistrictUserWithAllAvailableRoles(['998'])
+        await setUpEdxDistrictUserWithAllAvailableRoles(['998']);
         getToken().then(async (data) => {
             token = data.access_token;
         }).catch((error => {
@@ -35,7 +35,7 @@ fixture `district-school-contacts`
         await deleteSetUpEdxUser();
     })
     .beforeEach(async t => {
-        // log in as studentAdmin
+    // log in as studentAdmin
       await loginPage.login(credentials.adminCredentials);
       await t.resizeWindow(1920, 1080);
     }).afterEach(async t => {
@@ -102,8 +102,6 @@ test('view-school-contacts-as-district-user-and-edit', async t => {
 
     await schoolContacts.clickEditContactButton();
     await schoolContacts.editSchoolContact();
-    await schoolContacts.verifyConfirmation();
-    await schoolContacts.confirmPublishChanges();
 
     await schoolContacts.verifySchoolContactEditDetails();
 });

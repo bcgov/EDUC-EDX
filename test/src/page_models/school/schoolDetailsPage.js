@@ -16,18 +16,18 @@ class SchoolDetailsPage {
     this.mailAddressLine1 = Selector('#mailAddressLine1');
     this.mailAddressLine2 = Selector('#mailAddressLine2');
     this.mailAddressCity = Selector('#mailAddressCity');
-    this.mailAddressProvince = Selector('#mailAddressProvince');
-    this.mailAddressCountry = Selector('#mailAddressCountry');
+    this.mailAddressProvince = Selector('#mailAddressProvince').parent('div[role="button"]');
+    this.mailAddressCountry = Selector('#mailAddressCountry').parent('div[role="button"]');
     this.mailAddressPostal = Selector('#mailAddressPostal');
     //Physical Address fields
     this.physicalAddressLine1 = Selector('#physicalAddressLine1');
     this.physicalAddressLine2 = Selector('#physicalAddressLine2');
     this.physicalAddressCity = Selector('#physicalAddressCity');
-    this.physicalAddressProvince = Selector('#physicalAddressProvince');
-    this.physicalAddressCountry = Selector('#physicalAddressCountry');
+    this.physicalAddressProvince = Selector('#physicalAddressProvince').parent('div[role="button"]');
+    this.physicalAddressCountry = Selector('#physicalAddressCountry').parent('div[role="button"]');
     this.physicalAddressPostal = Selector('#physicalAddressPostal');
     //Same as Mailing checkbox
-    this.sameAsMailingCheckbox = Selector('#sameAsMailingCheckbox');
+    this.sameAsMailingCheckbox = Selector('#sameAsMailingCheckbox').parent('div');
   }
 
   async clickEditButton(){
@@ -159,14 +159,14 @@ class SchoolDetailsPage {
     await t.typeText(this.physicalAddressCity, physicalAddress.city);
     log.info('Physical city updated');
 
-    await t.click(this.physicalAddressProvince);
-    await t.selectText(this.physicalAddressProvince).pressKey('delete');
-    await t.typeText(this.physicalAddressProvince, physicalAddress.provinceDescription);
+    await t
+    .click(this.physicalAddressProvince)
+    .click(Selector('div[role="listbox"]').filterVisible().find('div').withText(physicalAddress.provinceDescription));
     log.info('Physical province updated');
 
-    await t.click(this.physicalAddressCountry);
-    await t.selectText(this.physicalAddressCountry).pressKey('delete');
-    await t.typeText(this.physicalAddressCountry, physicalAddress.countryDescription);
+    await t
+    .click(this.physicalAddressCountry)
+    .click(Selector('div[role="listbox"]').filterVisible().find('div').withText(physicalAddress.countryDescription));
     log.info('Physical country updated');
 
     await t.click(this.physicalAddressPostal);
