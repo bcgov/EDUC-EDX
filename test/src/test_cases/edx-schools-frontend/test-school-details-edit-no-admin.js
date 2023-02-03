@@ -51,5 +51,5 @@ test('test-edit-school-details-no-admin', async t => {
   await schoolDetailsPage.confirmAddAddressButtonMissing();
   await schoolDetailsPage.confirmEditButtonMissing();
 
-  log.info('School Details Edited Successfully.');
+  log.info('School Details with no admin completed successfully.');
 });

@@ -21,7 +21,8 @@ createTestCafe('localhost', 1337, 1338)
             "src/test_cases/edx-districts-frontend/test-school-contacts.js",
             "src/test_cases/edx-districts-frontend/test-school-details-edit.js",
             "src/test_cases/edx-schools-frontend/test-school-details-edit.js",
-            "src/test_cases/edx-schools-frontend/test-school-contacts.js"])
+            "src/test_cases/edx-schools-frontend/test-school-contacts.js",
+            "src/test_cases/edx-schools-frontend/test-school-details-edit-no-admin.js"])
           .run();
     })
     .then(failedCount => {
