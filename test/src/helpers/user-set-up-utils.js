@@ -36,6 +36,17 @@ const userSetUpUtils = {
     return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, instituteIDs, roles, '', '');
   },
 
+  async setUpEdxSchoolUserWithSecureExchangeOnlyRole(schoolCodes) {
+    await userSetUpUtils.deleteSetUpEdxUser();
+    const data = await getToken();
+    const token = data.access_token;
+    const instituteIDs = await userSetUpUtils.getInstituteIds('SCHOOL', schoolCodes);
+    const roles = [{
+      edxRoleCode: 'SECURE_EXCHANGE'
+    }];
+    return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, instituteIDs, roles, '', '');
+  },
+
   async setUpEdxDistrictUserWithAllAvailableRoles(districtNumbers) {
     await userSetUpUtils.deleteSetUpEdxUser();
     const data = await getToken();

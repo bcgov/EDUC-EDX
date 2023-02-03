@@ -42,7 +42,7 @@ fixture `district-details-edit`
 });
 
 test('test-edit-district-details', async () => {
-  await navBarPage.navTitle('EDX Automation Testing School')
+  await navBarPage.navTitle('EDX Automation Testing District')
   await dashboard.clickDistrictDetails();
   await districtDetailsPage.clickDistrictEditButton();
   await districtDetailsPage.editEmailAddress('edxAT@gov.bc.ca');

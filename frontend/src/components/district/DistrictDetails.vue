@@ -46,7 +46,7 @@
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.phoneNumber" class="ml-n1">{{ formatPhoneNumber(district.phoneNumber) }}</span>
-                <a v-if="showEditLinks(district.phoneNumber)" class="editField" @click="toggleEdit">+phone</a>
+                <a v-if="showEditLinks(district.phoneNumber)" class="editField" @click="toggleEdit">+Phone</a>
               </div>
               <v-text-field id="districtPhone" v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="districtCopy.phoneNumber">
               </v-text-field>
@@ -57,7 +57,7 @@
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.email" class="ml-n1">{{ district.email }}</span>
-                <a v-if="showEditLinks(district.email)" class="editField" @click="toggleEdit">+email</a>
+                <a v-if="showEditLinks(district.email)" class="editField" @click="toggleEdit">+Email</a>
               </div>
               <v-text-field id="districtEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
               </v-text-field>
@@ -68,7 +68,7 @@
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.faxNumber" class="ml-n1">{{ formatPhoneNumber(district.faxNumber) }}</span>
-                <a v-if="showEditLinks(district.faxNumber)" class="editField" @click="toggleEdit">+fax</a>
+                <a v-if="showEditLinks(district.faxNumber)" class="editField" @click="toggleEdit">+Fax</a>
               </div>
               <v-text-field v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
               </v-text-field>
@@ -79,7 +79,7 @@
               </v-icon>
               <div v-if="!editing">
                 <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-                <a v-if="showEditLinks(cleanWebsiteUrl)" class="editField" @click="toggleEdit">+website</a>
+                <a v-if="showEditLinks(cleanWebsiteUrl)" class="editField" @click="toggleEdit">+Website</a>
               </div>
               <v-text-field v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="districtCopy.website">
               </v-text-field>
@@ -97,7 +97,7 @@
           </v-row>
           <v-row v-if="!hasMailingAddress() && !editing" no-gutters class="d-flex justify-start">
             <v-col>
-              <a class="editField" @click="toggleEdit">+ address</a>
+              <a class="editField" v-if="canEditDistrict()" @click="toggleEdit">+Address</a>
             </v-col>
           </v-row>
           <v-row v-else no-gutters class="d-flex justify-start">

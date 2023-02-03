@@ -5,6 +5,7 @@ class SchoolDetailsPage {
   constructor() {
     this.schoolDetailsEditButton = Selector('#schoolDetailsEditButton');
     this.emailField = Selector('#schoolDetailsEmail');
+    this.viewContactsButton = Selector('#viewContactsButton');
     this.phoneNumberField = Selector('#schoolDetailsPhoneNumber');
     this.faxNumberField = Selector('#schoolDetailsFaxNumber');
     this.websiteField = Selector('#schoolDetailsWebsite');
@@ -37,6 +38,21 @@ class SchoolDetailsPage {
     log.info('School Details Edit button clicked');
     await t.expect(this.nonEditableAlert.innerText).contains('Require updates to non-editable fields? Please contact');
     log.info('Non-Editable alert displayed');
+  }
+
+  async confirmViewContactsButtonPresent(){
+    await t.expect(this.viewContactsButton.exists).ok();
+    log.info('View contacts button is found as expected');
+  }
+
+  async confirmAddAddressButtonMissing(){
+    await t.expect(this.addAddressButton.exists).notOk();
+    log.info('Add address button is not found as expected');
+  }
+
+  async confirmEditButtonMissing(){
+    await t.expect(this.schoolDetailsEditButton.exists).notOk();
+    log.info('Edit button is not found as expected');
   }
 
   async clickCancelButton(){
