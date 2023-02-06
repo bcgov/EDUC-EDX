@@ -3,7 +3,7 @@ import { screen } from '@testing-library/testcafe';
 
 const log = require('npmlog');
 const { getToken } = require('../../helpers/oauth-utils');
-const { getAllMinistryTeams } = require('../../services/edx-api-service');
+import { getAllMinistryTeams } from '../../services/edx-api-service';
 
 fixture `edx-login`
     .page(base_url)

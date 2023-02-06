@@ -2,13 +2,13 @@ import UserActivation from '../../../page_models/user-activation';
 
 const log = require('npmlog');
 const {getToken} = require('../../../helpers/oauth-utils');
-const {
+import {
   deleteActivationCode,
   generateCode,
   setUpDataForUserActivation,
   submitDetailsOnUserActivationForm,
   login
-} = require('../../../services/edx-api-service');
+} from '../../../services/edx-api-service';
 const userActivationPage = new UserActivation();
 
 fixture`edx-user-activate-error-scenario-incorrect-activation-details-input`

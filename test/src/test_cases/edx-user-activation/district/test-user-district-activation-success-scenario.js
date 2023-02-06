@@ -1,7 +1,14 @@
 import Dashboard from '../../../page_models/dashboard';
 const log = require('npmlog');
 const {getToken} = require('../../../helpers/oauth-utils');
-const {deleteActivationCode,setUpDataForUserActivation,submitDetailsOnUserActivationForm,login, deleteEdxUser} = require('../../../services/edx-api-service');
+
+import {
+  deleteActivationCode,
+  setUpDataForUserActivation,
+  submitDetailsOnUserActivationForm,
+  login,
+  deleteEdxUser
+} from '../../../services/edx-api-service';
 
 const dashboard = new Dashboard();
 

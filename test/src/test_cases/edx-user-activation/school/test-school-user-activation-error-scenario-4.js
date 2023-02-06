@@ -2,7 +2,15 @@ import UserActivation from '../../../page_models/user-activation';
 import {base_url} from "../../../config/constants";
 
 const {getToken} = require('../../../helpers/oauth-utils');
-const {deleteActivationCode, generateCode,setUpDataForUserActivation,submitDetailsOnUserActivationForm,login} = require('../../../services/edx-api-service');
+
+import {
+  deleteActivationCode,
+  generateCode,
+  setUpDataForUserActivation,
+  submitDetailsOnUserActivationForm,
+  login
+} from '../../../services/edx-api-service';
+
 const userActivationPage = new UserActivation();
 
 

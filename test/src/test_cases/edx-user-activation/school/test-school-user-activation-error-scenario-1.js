@@ -1,8 +1,12 @@
 import {Selector} from 'testcafe';
 
-const log = require('npmlog');
+import log from 'npmlog';
 const {getToken} = require('../../../helpers/oauth-utils');
-const {deleteActivationCode, setUpDataForUserActivation} = require('../../../services/edx-api-service');
+
+import {
+  deleteActivationCode,
+  setUpDataForUserActivation
+} from '../../../services/edx-api-service';
 
 
 

@@ -1,6 +1,6 @@
 const {getToken} = require('./oauth-utils');
 const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest} = require('../services/institute-api-service');
-const {verifyInstituteActivationCodes} = require('../services/edx-api-service');
+import { verifyInstituteActivationCodes } from '../services/edx-api-service';
 const constants = require('../config/constants');
 const restUtils = require('./rest-utils');
 import log from 'npmlog';

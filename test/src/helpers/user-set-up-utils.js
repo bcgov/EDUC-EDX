@@ -2,7 +2,10 @@ import EdxUserSchool from '../model/EdxUserSchool';
 
 const {getToken} = require('./oauth-utils');
 const {getSchoolIDBySchoolCode, getDistrictIdByDistrictNumber} = require('../services/institute-api-service');
-const {getAllEdxUserRoleForInstitute, getEdxUserFromFirstNameLastName} = require('../services/edx-api-service');
+import {
+  getAllEdxUserRoleForInstitute,
+  getEdxUserFromFirstNameLastName
+} from '../services/edx-api-service';
 
 
 const constants = require('../config/constants');
