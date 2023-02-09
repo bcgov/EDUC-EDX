@@ -1,5 +1,5 @@
 const {getToken} = require('./oauth-utils');
-const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest} = require('../services/institute-api-service');
+const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest, clearSchoolContacts, setupSchoolContact} = require('../services/institute-api-service');
 const {verifyInstituteActivationCodes} = require('../services/edx-api-service');
 const constants = require('../config/constants');
 const restUtils = require('./rest-utils');
@@ -29,7 +29,23 @@ const instituteSetupUtils = {
         let school = await createSchoolWithContactToTest(district.districtId, includeSchoolAddress);
         await verifyInstituteActivationCodes(district.districtId,school.schoolId);
         log.info('setupInstituteEntities completed')
+        return {
+            district: district,
+            school: school
+        }
     },
+
+    async addContactToSchool(school, contact) {
+        log.info('addContactToSchool called.');
+        await setupSchoolContact(school, contact);
+        log.info('addContactToSchool completed.');
+    },
+
+    async clearSchoolContacts(school) {
+        log.info('clearSchoolContacts called.');
+        await clearSchoolContacts(school);
+        log.info('clearSchoolContacts completed.');
+    }
 };
 
 module.exports = instituteSetupUtils;

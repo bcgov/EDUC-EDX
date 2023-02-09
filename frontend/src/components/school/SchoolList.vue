@@ -73,7 +73,7 @@
                       <v-icon class="mb-3 mr-1" aria-hidden="false">
                         mdi-account-outline
                       </v-icon>
-                      <span class="statusCodeLabel" style="color: black">{{item.principalsName}}</span>
+                      <span class="principalName statusCodeLabel" style="color: black">{{item.principalsName}}</span>
                     </v-col>
                     <v-col class="d-flex justify-end" cols="1">
                       <v-tooltip bottom>

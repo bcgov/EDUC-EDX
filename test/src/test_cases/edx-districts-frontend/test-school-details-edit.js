@@ -20,7 +20,7 @@ let token = '';
 
 fixture `district-school-details-edit`
   .before(async () => {
-    await setUpEdxDistrictUserWithAllAvailableRoles(['998'])
+    await setUpEdxDistrictUserWithAllAvailableRoles(['998']);
     await setupInstituteEntities();
     getToken().then(async (data) => {
       token = data.access_token;
@@ -44,6 +44,8 @@ fixture `district-school-details-edit`
 
 test('view-school-details-as-district-user-and-edit', async t => {
   await dashboard.clickDistrictUserSchoolContactsCard();
+  await schoolList.verifySchoolPrincipalName('EDXAutomation Testing');
+
   await schoolList.clickSchoolDetailsRow();
   await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
   await schoolDetailsPage.clickEditButton();

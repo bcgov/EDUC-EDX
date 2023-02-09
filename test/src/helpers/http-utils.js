@@ -1,6 +1,7 @@
 import {ClientFunction} from "testcafe";
 
 const getURL = ClientFunction(() => window.location.href);
+const refreshPage = ClientFunction(() => location.reload(true));
 
 /**
  * Common functions for dealing with various http requests, etc.
@@ -24,6 +25,10 @@ const httpUtils = {
     async urlContains(content) {
         const url = await getURL();
         return url.indexOf(content) > -1;
+    },
+
+    async refreshPage() {
+        return refreshPage();
     }
 
 };
