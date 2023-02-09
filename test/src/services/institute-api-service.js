@@ -447,50 +447,53 @@ const instituteApiService = {
       return restUtils.postData(token, url, schoolPayload);
     }
     schoolPayload.schoolId = schoolID;
-    let freshSchool = await restUtils.putData(token, url + '/' + schoolID, schoolPayload);
-    await instituteApiService.setupSchoolContact(freshSchool);
+    let freshSchool = await restUtils.putData(token, `${url}/${schoolID}`, schoolPayload);
+    let contact = {
+      createUser: 'EDXAT',
+      updateUser: null,
+      createDate: null,
+      updateDate: null,
+      schoolContactId: null,
+      schoolId: freshSchool.schoolId,
+      schoolContactTypeCode: 'PRINCIPAL',
+      phoneNumber: '2506656585',
+      phoneExtension: '123',
+      alternatePhoneNumber: '2506544578',
+      alternatePhoneExtension: '321',
+      email: 'test@test.com',
+      firstName: 'EDXAutomation',
+      lastName: 'Testing',
+      effectiveDate: '2022-10-25T00:00:00',
+      expiryDate: null
+    }
+    await instituteApiService.clearSchoolContacts(freshSchool);
+    await instituteApiService.setupSchoolContact(freshSchool, contact);
     return freshSchool;
   },
 
-  async setupSchoolContact(school){
+  async clearSchoolContacts(school) {
     const data = await getToken();
     const token = data.access_token;
 
-    const schoolContactPayload =
-      {
-        createUser: 'EDXAT',
-        updateUser: null,
-        createDate: null,
-        updateDate: null,
-        schoolContactId: null,
-        schoolId: school.schoolId,
-        schoolContactTypeCode: 'PRINCIPAL',
-        phoneNumber: '2506656585',
-        phoneExtension: '123',
-        alternatePhoneNumber: '2506544578',
-        alternatePhoneExtension: '321',
-        email: 'test@test.com',
-        firstName: 'EDXAutomation',
-        lastName: 'Testing',
-        effectiveDate: '2022-10-25T00:00:00',
-        expiryDate: null
-      };
-
     let newSchool = await restUtils.getData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`);
 
-    const contactUrl = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`;
-
-    if (newSchool.contacts) {
-      log.info('deleting all school contacts');
-      newSchool.contacts.forEach(contact => {
-        restUtils.deleteData(token, `${contactUrl}/${contact.schoolContactId}`);
-      });
+    if (!newSchool.contacts) {
+      return;
     }
+    log.info('deleting all school contacts');
+    newSchool.contacts.forEach(contact => {
+      restUtils.deleteData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`);
+    });
+  },
 
+  async setupSchoolContact(school, contact){
+    const data = await getToken();
+    const token = data.access_token;
     log.info('adding Automation Testing school principal contact')
-    return await restUtils.postData(token, contactUrl, schoolContactPayload);
+    return await restUtils.postData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
 
   },
+  
   async getSchoolIDBySchoolCodeAndDistrictID(schoolCode, districtID) {
     const data = await getToken();
     const token = data.access_token;

@@ -19,7 +19,7 @@ const schoolSetUpUtils = {
         const currentDate = LocalDateTime.now();
         return schoolDetails.contacts.filter(sc => {
             let parsedExpiryDate = sc.expiryDate ? new LocalDateTime.parse(sc.expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')) : null;
-            return sc.schoolContactTypeCode === 'PRINCIPAL' && (parsedExpiryDate === null || parsedExpiryDate < currentDate);
+            return sc.schoolContactTypeCode === 'PRINCIPAL' && (parsedExpiryDate === null || parsedExpiryDate >= currentDate);
         });
     },
     async cleanUpSchoolContactRecord(schoolNumber, contactFirstName, contactLastName) {

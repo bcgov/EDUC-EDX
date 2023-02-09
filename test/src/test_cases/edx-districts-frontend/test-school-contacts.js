@@ -12,17 +12,21 @@ import Dashboard from '../../page_models/dashboard';
 import crypto from 'crypto';
 import SnackBarPage from "../../page_models/common/snackBarPage";
 
+const {setupInstituteEntities, addContactToSchool, clearSchoolContacts} =  require('../../helpers/institute-set-up-utils');
 const {setUpEdxDistrictUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
+const httpUtils = require('../../helpers/http-utils');
 
 const schoolContacts = new SchoolContacts();
 const schoolList = new SchoolListPage();
 const loginPage = new LoginPage();
 const dashboard = new Dashboard();
 const snackBarPage = new SnackBarPage();
+let instituteDetails = null;
 
 fixture `district-school-contacts`
     .before(async t => {
         await setUpEdxDistrictUserWithAllAvailableRoles(['998']);
+        instituteDetails = await setupInstituteEntities();
         getToken().then(async (data) => {
             token = data.access_token;
         }).catch((error => {
@@ -44,10 +48,85 @@ fixture `district-school-contacts`
 
 });
 
+test('verify-school-principal-name-in-school-list-as-district-user', async t => {
+    await dashboard.clickDistrictUserSchoolContactsCard();
+    log.info('Verifying base school list principal display name case (one active principal).');
+    await schoolList.verifySchoolPrincipalName('EDXAutomation Testing');
+    log.info('Verified base school list principal display name case (one active principal).');
+
+    await clearSchoolContacts(instituteDetails.school);
+
+    log.info('Verifying school list principal display name is empty with only expired principals.');
+    await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'PRINCIPAL',
+        phoneNumber: '2506656585',
+        phoneExtension: '123',
+        alternatePhoneNumber: '2506544578',
+        alternatePhoneExtension: '321',
+        email: 'test@test.com',
+        firstName: 'EDXAutomation',
+        lastName: 'Testing',
+        effectiveDate: '1900-01-01T00:00:00',
+        expiryDate: '1900-01-02T00:00:00'
+    });
+    await httpUtils.refreshPage();
+    await schoolList.verifySchoolPrincipalName('');
+    log.info('Verified school list principal display name is empty with only expired principals.');
+    log.info('Verifying school list principal display name is active principal\'s name.');
+    await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'PRINCIPAL',
+        phoneNumber: '2506656585',
+        phoneExtension: '123',
+        alternatePhoneNumber: '2506544578',
+        alternatePhoneExtension: '321',
+        email: 'test@test.com',
+        firstName: 'EDXAutomation Active',
+        lastName: 'Testing Active',
+        effectiveDate: '2000-01-01T00:00:00',
+        expiryDate: null
+    });
+    await httpUtils.refreshPage();
+    await schoolList.verifySchoolPrincipalName('EDXAutomation Active Testing Active');
+    log.info('Verified school list principal display name is active principal\'s name.');
+    log.info('Verifying school list principal display name is the oldest active principal\'s name.');
+    await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'PRINCIPAL',
+        phoneNumber: '2506656585',
+        phoneExtension: '123',
+        alternatePhoneNumber: '2506544578',
+        alternatePhoneExtension: '321',
+        email: 'test@test.com',
+        firstName: 'EDXAutomation Oldest Active',
+        lastName: 'Testing Oldest Active',
+        effectiveDate: '1950-01-01T00:00:00',
+        expiryDate: null
+    });
+    await httpUtils.refreshPage();
+    await schoolList.verifySchoolPrincipalName('EDXAutomation Oldest Active Testing Oldest Active');
+    log.info('Verified school list principal display name is the oldest active principal\'s name.');
+});
+
 test('add-new-school-contact-as-district-user', async t => {
     await dashboard.clickDistrictUserSchoolContactsCard();
     await schoolList.clickSchoolContactsButton();
-
     await schoolContacts.verifyPrincipalContact(99998);
 
     //Test adding a contact.
