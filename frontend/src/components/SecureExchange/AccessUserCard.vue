@@ -121,7 +121,7 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="pt-3 d-flex justify-start">
-                <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
+                <span :id="`userRelinkWarningText-${edxUserID}`" style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
