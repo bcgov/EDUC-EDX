@@ -121,7 +121,7 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="pt-3 d-flex justify-start">
-                <span :id="`userRelinkWarningText-${edxUserID}`" style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
+                <span :id="`userRelinkWarningText-${user.edxUserID}`" style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
@@ -143,7 +143,7 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
-                <PrimaryButton width="5em" :id="`user-cancel-edit-button-${edxUserID}`"
+                <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.edxUserID}`"
                                text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-save-action-button-${user.edxUserID}`" text="Save"
                                :disabled="!minimumRolesSelected" :on="{click: clickSaveButton}"></PrimaryButton>
