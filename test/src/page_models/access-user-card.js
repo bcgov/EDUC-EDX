@@ -5,13 +5,21 @@ class AccessUserCard {
     constructor(edxUserID) {
         this.edxUserCard = Selector(`#edxUser-${edxUserID}`);
         this.removeEdxUserButton = Selector(`#user-remove-button-${edxUserID}`);
-        this.deleteEdxUserConfirmationDialog = Selector(`#edxUser-${edxUserID} .deleteEdxUserConfirmationDialog`);
+        this.deleteEdxUserConfirmationDialog = Selector(
+            `#edxUser-${edxUserID} .deleteEdxUserConfirmationDialog`
+        );
         this.cancelUserDeleteButton = Selector(`#edxUser-${edxUserID} .cancelUserDeleteButton`);
         this.confirmUserDeleteButton = Selector(`#edxUser-${edxUserID} .confirmUserDeleteButton`);
         this.editEdxUserButton =  Selector(`#user-edit-button-${edxUserID}`);
-        this.schoolAdminRoleCheckbox = Selector(`#edx_school_admin-role-checkbox-${edxUserID}`).parent('div[role="option"]');
-        this.secureExchangeRoleCheckbox = Selector(`#secure_exchange-role-checkbox-${edxUserID}`).parent('div[role="option"]');
+        this.schoolAdminRoleCheckbox = Selector(`#edx_school_admin-role-checkbox-${edxUserID}`)
+            .parent('div[role="option"]');
+        this.secureExchangeRoleCheckbox = Selector(`#secure_exchange-role-checkbox-${edxUserID}`)
+            .parent('div[role="option"]');
         this.editRoleSaveButton = Selector(`#user-save-action-button-${edxUserID}`);
+        this.relinkUserButton = Selector(`#user-relink-button-${edxUserID}`);
+        this.relinkWarningText = Selector(`#userRelinkWarningText-${edxUserID}`);
+        this.relinkCancelButton = Selector(`#user-cancel-relink-button-${edxUserID}`);
+        this.relinkActionButton = Selector(`#user-relink-action-button-${edxUserID}`);
     }
 
     async verifyEdxUserCardExists() {
@@ -89,6 +97,61 @@ class AccessUserCard {
         log.info('Clicked the user\'s edit button.');
     }
 
+    async verifyRelinkEdxUserButtonExists() {
+        await t.expect(this.relinkUserButton.exists).ok();
+        log.info('pass:', 'verified user relink button exists');
+    }
+
+    async clickRelinkEdxUserButton() {
+        await t.click(this.relinkUserButton);
+    }
+
+    async verifyRelinkConfirmationDialog() {
+        await t.expect(this.relinkWarningText.exists).ok();
+        log.info('pass:', 'relink warning span exists');
+    }
+
+    async verifyRelinkWarningMessage() {
+        await t.expect(this.relinkWarningText.innerText)
+            .eql('Are you sure you want to re-link this account?');
+        log.info('pass:', 'user has been warned')
+    }
+
+    async verifyRelinkCancelButton() {
+        await t.expect(this.relinkCancelButton.exists).ok();
+        log.info('pass:', 'relink cancel button exists');
+    };
+
+    async verifyRelinkActionButton() {
+        await t.expect(this.relinkActionButton.exists).ok();
+        log.info('pass:', 'relink action button exists');
+    };
+
+    async clickRelinkCancelButton() {
+        await t.click(this.relinkCancelButton);
+        log.info('click:', 'relink cancel button');
+    };
+
+    async verifyRelinkConfirmationDialogDoesNotExist() {
+        await t.expect(this.relinkWarningText.exists).notOk();
+        log.info('pass:', 'warning text is closed');
+    }
+
+    async verifyRelinkCancelButtonDoesNotExist() {
+        await t.expect(this.relinkCancelButton.exists).notOk();
+        log.info('pass:', 'cancel button gone');
+    }
+
+    async verifyRelinkActionButtonDoesNotExist() {
+        await t.expect(this.relinkActionButton.exists).notOk();
+        log.info('pass:', 'cancel button gone');
+    }
+
+    async clickRelinkActionButton() {
+        await t.click(this.relinkActionButton);
+        log.info('click:', 'relink action button');
+    };
+
     async uncheckExistingRoleFromList() {
         await t.click(this.schoolAdminRoleCheckbox);
         log.info('Unchecked School administrator checkbox.');
@@ -103,8 +166,6 @@ class AccessUserCard {
         await t.click(this.editRoleSaveButton);
         log.info('Clicked save button.');
     }
-
-    
 }
 
 export default AccessUserCard;
