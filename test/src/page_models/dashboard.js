@@ -46,7 +46,7 @@ class Dashboard {
         await t.click(this.schoolContactsCard);
         log.info('Clicked School')
     }
-    
+
     async clickDistrictContactsCard() {
         await t.click(this.districtContactsCard);
         log.info('District Contacts card clicked');
