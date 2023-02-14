@@ -62,7 +62,7 @@
                 </v-icon>
                 <div v-if="!editing">
                   <span v-if="school.phoneNumber" class="ml-n1">{{ formatPhoneNumber(school.phoneNumber) }}</span>
-                  <a v-if="showEditLinks(school.phoneNumber)" class="editField" @click="toggleEdit">+phone</a>
+                  <a v-if="showEditLinks(school.phoneNumber)" id="addPhoneLink" class="editField" @click="toggleEdit">+Phone</a>
                 </div>
                 <v-text-field id="schoolDetailsPhoneNumber" v-else class="shrink py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="schoolDetailsCopy.phoneNumber"/>
               </v-col>
@@ -72,7 +72,7 @@
                 </v-icon>
                 <div v-if="!editing">
                   <span v-if="school.email" class="ml-n1">{{ school.email }}</span>
-                  <a v-if="showEditLinks(school.email)" class="editField" @click="toggleEdit">+Email</a>
+                  <a v-if="showEditLinks(school.email)" class="editField" id="addEmailLink" @click="toggleEdit">+Email</a>
                 </div>
                 <v-text-field id="schoolDetailsEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="schoolDetailsCopy.email"/>
               </v-col>
@@ -82,7 +82,7 @@
                 </v-icon>
                 <div v-if="!editing">
                   <span v-if="school.faxNumber" class="ml-n1">{{ formatPhoneNumber(school.faxNumber) }}</span>
-                  <a v-if="showEditLinks(school.faxNumber)" class="editField" @click="toggleEdit">+Fax</a>
+                  <a v-if="showEditLinks(school.faxNumber)" class="editField" id="addFaxLink" @click="toggleEdit">+Fax</a>
                 </div>
                 <v-text-field id="schoolDetailsFaxNumber" v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="schoolDetailsCopy.faxNumber"/>
               </v-col>
@@ -92,7 +92,7 @@
                 </v-icon>
                 <div v-if="!editing">
                   <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
-                  <a v-if="showEditLinks(cleanWebsiteUrl)" class="editField" @click="toggleEdit">+Website</a>
+                  <a v-if="showEditLinks(cleanWebsiteUrl)" class="editField" id="addWebsiteLink" @click="toggleEdit">+Website</a>
                 </div>
                 <v-text-field id="schoolDetailsWebsite" v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="schoolDetailsCopy.website"/>
               </v-col>
