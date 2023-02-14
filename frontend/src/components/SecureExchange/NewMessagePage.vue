@@ -171,6 +171,9 @@ export default {
     ConfirmationDialog,
     DocumentUpload
   },
+  mounted() {
+    this.validateForm();
+  },
   data() {
     return {
       newMessage: '',
@@ -293,7 +296,10 @@ export default {
       this.expandAttachFile = false;
       this.expandAddStudent = true;
       this.shouldShowOptions = false;
-    }
+    },
+    validateForm() {
+      this.isValidForm = this.$refs.newMessageForm.validate();
+    },
   }
 };
 </script>

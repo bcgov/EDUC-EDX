@@ -116,6 +116,9 @@ export default {
       required:true
     },
   },
+  mounted() {
+    this.validateForm();
+  },
   data() {
     return {
       instituteSpecificCode: null,
@@ -185,7 +188,10 @@ export default {
           }
           this.submissionInProgress = false;
         });
-    }
+    },
+    validateForm() {
+      this.isValidForm = this.$refs.edxUserActivationForm.validate();
+    },
   },
 };
 </script>
