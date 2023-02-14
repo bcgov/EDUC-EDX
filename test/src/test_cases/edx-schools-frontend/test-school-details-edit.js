@@ -20,7 +20,7 @@ let token = '';
 
 fixture `school-details-edit`
   .before(async () => {
-    await setupInstituteEntities(true, false);
+    await setupInstituteEntities(true, false, false);
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
       token = data.access_token;
@@ -47,6 +47,14 @@ test('test-edit-school-details', async t => {
   await navBarPage.navTitle('EDX Automation Testing School');
   await dashboard.clickSchoolDetails();
   await schoolDetailsPage.verifyEditableFieldAlertIsNotDisplayed();
+  await schoolDetailsPage.clickAddPhoneLink();
+  await schoolDetailsPage.clickCancelButton();
+  await schoolDetailsPage.clickAddEmailLink();
+  await schoolDetailsPage.clickCancelButton();
+  await schoolDetailsPage.clickAddFaxLink();
+  await schoolDetailsPage.clickCancelButton();
+  await schoolDetailsPage.clickAddWebsiteLink();
+  await schoolDetailsPage.clickCancelButton();
   await schoolDetailsPage.clickAddAddressButton();
   await schoolDetailsPage.clickCancelButton();
   await schoolDetailsPage.clickEditButton();

@@ -395,7 +395,7 @@ const instituteApiService = {
     return await restUtils.postData(token, contactUrl, districtContactPayload);
 
   },
-  async createSchoolWithContactToTest(districtID, includeSchoolAddress=true){
+  async createSchoolWithContactToTest(districtID, includeSchoolAddress=true, includeTombstoneValues=true){
     const data = await getToken();
     const token = data.access_token;
 
@@ -420,7 +420,13 @@ const instituteApiService = {
       facilityTypeCode: 'STANDARD',
       openedDate: '2022-01-01T00:00:00',
       closedDate: null,
-    };
+    }
+
+    if(!includeTombstoneValues){
+      schoolPayload.email = null;
+      schoolPayload.faxNumber = null;
+      schoolPayload.phoneNumber = null;
+    }
 
     if(includeSchoolAddress){
       schoolPayload['addresses'] = [

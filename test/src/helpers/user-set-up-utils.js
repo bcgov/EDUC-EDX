@@ -11,6 +11,7 @@ import EdxUser from '../model/EdxUser';
 import EdxUserSchoolRole from '../model/EdxUserSchoolRole';
 import EdxUserDistrict from '../model/EdxUserDistrict';
 import EdxUserDistrictRole from '../model/EdxUserDistrictRole';
+import log from 'npmlog';
 
 
 const userSetUpUtils = {
@@ -37,6 +38,7 @@ const userSetUpUtils = {
   },
 
   async setUpEdxSchoolUserWithSecureExchangeOnlyRole(schoolCodes) {
+    log.info('setUpEdxSchoolUserWithSecureExchangeOnlyRole started');
     await userSetUpUtils.deleteSetUpEdxUser();
     const data = await getToken();
     const token = data.access_token;
@@ -44,6 +46,7 @@ const userSetUpUtils = {
     const roles = [{
       edxRoleCode: 'SECURE_EXCHANGE'
     }];
+    log.info('setUpEdxSchoolUserWithSecureExchangeOnlyRole completed');
     return await userSetUpUtils.createEdxUserObject(token, constants.credentials.adminCredentials.digitalID, instituteIDs, roles, '', '');
   },
 
