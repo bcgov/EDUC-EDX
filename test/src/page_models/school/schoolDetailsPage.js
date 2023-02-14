@@ -12,6 +12,10 @@ class SchoolDetailsPage {
     this.cancelButton = Selector('#cancelButton');
     this.saveButton = Selector('#saveButton');
     this.addAddressButton = Selector('#addAddressButton');
+    this.addPhoneLink = Selector('#addPhoneLink');
+    this.addEmailLink = Selector('#addEmailLink');
+    this.addFaxLink = Selector('#addFaxLink');
+    this.addWebsiteLink = Selector('#addWebsiteLink');
     this.confirmationPromptHeader = Selector('.v-toolbar__title');
     this.confirmPublishChangesButton = Selector('#resolveBtn');
     this.nonEditableAlert = Selector('#nonEditableAlert');
@@ -63,6 +67,26 @@ class SchoolDetailsPage {
   async clickAddAddressButton(){
     await t.click(this.addAddressButton());
     log.info('School Details add address button clicked');
+  }
+
+  async clickAddPhoneLink(){
+    await t.click(this.addPhoneLink());
+    log.info('School Details add phone link clicked');
+  }
+
+  async clickAddEmailLink(){
+    await t.click(this.addEmailLink());
+    log.info('School Details add email link clicked');
+  }
+
+  async clickAddFaxLink(){
+    await t.click(this.addFaxLink());
+    log.info('School Details add fax link clicked');
+  }
+
+  async clickAddWebsiteLink(){
+    await t.click(this.addWebsiteLink());
+    log.info('School Details add website link clicked');
   }
 
   async clickSaveButton(){
