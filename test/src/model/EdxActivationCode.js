@@ -15,7 +15,7 @@ class EdxActivationCode{
     this.lastName = null;
     this.email = null;
     this.validationCode = null;
-    this.isUrlClicked = null;
+    this.numberOfClicks = null;
     this.edxActivationRoles = [];
   }
 
