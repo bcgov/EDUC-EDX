@@ -34,11 +34,10 @@ class SchoolContactsPage {
         this.principalContactAltPhoneNumber = Selector('span');
         this.principalContactAltPhoneNumberExt = Selector('span');
         this.principalContactStartDate = Selector('span');
-        this.editContactButton = Selector('#editContactButton');
-        this.saveContactButton = Selector('#editContactPostBtn');
-        this.confirmationPromptHeader = Selector('.v-toolbar__title');
-        this.confirmPublishChangesButton = Selector('#resolveBtn');
 
+        this.editContactButton = Selector('#editContactButton');
+
+        this.editContactSheet = Selector('#editContactVCard');
         this.editContactFirstName = Selector('#editContactFirstNameInput');
         this.editContactLastName = Selector('#editContactLastNameInput');
         this.editContactEmail = Selector('#editContactEmailInput');
@@ -51,7 +50,8 @@ class SchoolContactsPage {
         this.datePickerYear = Selector('.v-date-picker-years').find('li').withText('2022');
         this.datePickerMonth = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText('Jan');
         this.datePickerDay = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText('1');
-        
+        this.cancelContactButton = Selector('#cancelContactBtn');
+        this.saveContactButton = Selector('#editContactPostBtn');
     }
 
     async verifyPrincipalContact(schoolNumber){
@@ -300,6 +300,44 @@ class SchoolContactsPage {
     async clickSaveNewContactButton() {
         await t.click(this.saveNewContactButton);
         log.info('Save New Contact Button clicked.')
+    }
+
+    async verifyContactCardHasMissingContactInformationAlert(schoolContactID) {
+        let schoolContactCard = Selector(`#schoolContactCard-${schoolContactID}`);
+        await t.expect(schoolContactCard.exists).ok();
+        await t.expect(schoolContactCard.find('.missing-highlight').exists).ok();
+        await t.expect(schoolContactCard.find('.editField').exists).ok();
+        log.info('Verified that the School Contact Card has the Missing Contract Information Alert.');
+    }
+
+    async verifyContactCardDoesNotHaveMissingContactInformationAlert(schoolContactID) {
+        let schoolContactCard = Selector(`#schoolContactCard-${schoolContactID}`);
+        await t.expect(schoolContactCard.exists).ok();
+        await t.expect(schoolContactCard.find('.missing-highlight').exists).notOk();
+        await t.expect(schoolContactCard.find('.editField').exists).notOk();
+        log.info('Verified that the School Contact Card does not have the Missing Contract Information Alert.');
+    }
+
+    async clickMissingContactInformationEditLink(schoolContactID) {
+        let schoolContactCard = Selector(`#schoolContactCard-${schoolContactID}`);
+        await t.expect(schoolContactCard.exists).ok();
+        await t.click(schoolContactCard.find('.editField'));
+        log.info('Clicked the School Contact Card\'s Missing Contact Information edit link.');
+    }
+
+    async verifyEditContactSheetExists() {
+        await t.expect(this.editContactSheet.exists).ok();
+        log.info('Verified Edit Contact Sheet exists.');
+    }
+
+    async verifyEditContactSheetDoesNotExist() {
+        await t.expect(this.editContactSheet.exists).notOk();
+        log.info('Verified Edit Contact Sheet does not exist.');
+    }
+
+    async clickCancelContactEditButton() {
+        await t.click(this.cancelContactButton);
+        log.info('Clicked the Cancel Contact Edit Button.');
     }
 
     async clickEditContactButton() {

@@ -495,9 +495,8 @@ const instituteApiService = {
   async setupSchoolContact(school, contact){
     const data = await getToken();
     const token = data.access_token;
-    log.info('adding Automation Testing school principal contact')
-    return await restUtils.postData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
-
+    log.info('adding Automation Testing school principal contact');
+    return restUtils.postData(token, `${constants.institute_base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
   },
   
   async getSchoolIDBySchoolCodeAndDistrictID(schoolCode, districtID) {
