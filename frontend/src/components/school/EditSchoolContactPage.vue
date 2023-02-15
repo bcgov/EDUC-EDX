@@ -152,7 +152,7 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-end">
-      <PrimaryButton id="cancelNewContactBtn"
+      <PrimaryButton id="cancelContactBtn"
                      secondary text="Cancel"
                      @click.native="closeHandler"/>
       <PrimaryButton id="editContactPostBtn"

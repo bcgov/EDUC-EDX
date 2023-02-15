@@ -1,6 +1,6 @@
 <template>
   <span>
-    <v-card height="100%">
+    <v-card :id="`schoolContactCard-${contact.schoolContactId}`" class="schoolContactCard" height="100%">
       <v-card-title class="pb-0">
         <v-row no-gutters>
           <v-col>

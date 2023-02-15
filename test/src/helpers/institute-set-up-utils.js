@@ -1,8 +1,5 @@
-const {getToken} = require('./oauth-utils');
 const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest, clearSchoolContacts, setupSchoolContact} = require('../services/institute-api-service');
 const {verifyInstituteActivationCodes} = require('../services/edx-api-service');
-const constants = require('../config/constants');
-const restUtils = require('./rest-utils');
 import log from 'npmlog';
 
 const instituteSetupUtils = {
@@ -37,8 +34,9 @@ const instituteSetupUtils = {
 
     async addContactToSchool(school, contact) {
         log.info('addContactToSchool called.');
-        await setupSchoolContact(school, contact);
+        let newContact = await setupSchoolContact(school, contact);
         log.info('addContactToSchool completed.');
+        return newContact;
     },
 
     async clearSchoolContacts(school) {

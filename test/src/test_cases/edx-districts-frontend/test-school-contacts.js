@@ -174,10 +174,93 @@ test('add-new-school-contact-as-district-user', async t => {
 });
 
 test('view-school-contacts-as-district-user-and-edit', async t => {
+    let contactWithContactInformation = await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'VPRINCIPAL',
+        phoneNumber: '2505551234',
+        phoneExtension: null,
+        alternatePhoneNumber: null,
+        alternatePhoneExtension: null,
+        email: 'fci@example.org',
+        firstName: 'Full Contact',
+        lastName: 'Information',
+        effectiveDate: '1999-12-31T00:00:00',
+        expiryDate: null
+    });
+    let contactWithoutContactInformation = await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'VPRINCIPAL',
+        phoneNumber: null,
+        phoneExtension: null,
+        alternatePhoneNumber: null,
+        alternatePhoneExtension: null,
+        email: null,
+        firstName: 'No Contact',
+        lastName: 'Information',
+        effectiveDate: '1999-12-31T00:00:00',
+        expiryDate: null
+    });
+    let contactWithoutPhoneNumber = await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'VPRINCIPAL',
+        phoneNumber: null,
+        phoneExtension: null,
+        alternatePhoneNumber: null,
+        alternatePhoneExtension: null,
+        email: 'npi@example.org',
+        firstName: 'No Phone',
+        lastName: 'Information',
+        effectiveDate: '1999-12-31T00:00:00',
+        expiryDate: null
+    });
+    let contactWithoutEmailAddress = await addContactToSchool(instituteDetails.school, {
+        createUser: 'EDXAT',
+        updateUser: null,
+        createDate: null,
+        updateDate: null,
+        schoolContactId: null,
+        schoolId: instituteDetails.school.schoolId,
+        schoolContactTypeCode: 'VPRINCIPAL',
+        phoneNumber: '2505551234',
+        phoneExtension: null,
+        alternatePhoneNumber: null,
+        alternatePhoneExtension: null,
+        email: null,
+        firstName: 'No Email',
+        lastName: 'Information',
+        effectiveDate: '1999-12-31T00:00:00',
+        expiryDate: null
+    });
+
     await dashboard.clickDistrictUserSchoolContactsCard();
     await schoolList.clickSchoolContactsButton();
 
     await schoolContacts.verifyPrincipalContact(99998);
+
+    await schoolContacts.verifyContactCardDoesNotHaveMissingContactInformationAlert(contactWithContactInformation.schoolContactId);
+    await schoolContacts.verifyContactCardHasMissingContactInformationAlert(contactWithoutContactInformation.schoolContactId);
+    await schoolContacts.verifyEditContactSheetDoesNotExist();
+    await schoolContacts.clickMissingContactInformationEditLink(contactWithoutContactInformation.schoolContactId);
+    await schoolContacts.verifyEditContactSheetExists();
+    await schoolContacts.clickCancelContactEditButton();
+    await schoolContacts.verifyEditContactSheetDoesNotExist();
+    await schoolContacts.verifyContactCardDoesNotHaveMissingContactInformationAlert(contactWithoutPhoneNumber.schoolContactId);
+    await schoolContacts.verifyContactCardDoesNotHaveMissingContactInformationAlert(contactWithoutEmailAddress.schoolContactId);
 
     await schoolContacts.clickEditContactButton();
     await schoolContacts.editSchoolContact();
