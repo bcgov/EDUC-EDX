@@ -13,6 +13,7 @@ const {
   deleteSpecificEdxUser,
 } =  require('../../helpers/user-set-up-utils');
 
+const { deleteUserActivationCodes } = require('../../helpers/user-activation-utils');
 
 const loginPage = new LoginPage();
 const usersPage = new AccessUsersPage();
@@ -38,6 +39,7 @@ fixture `school-user-relink`
   .after(async () => {
     log.info('stage:', 'teardown');
     await deleteSetUpEdxUser();
+    await deleteUserActivationCodes(userToRelink.edxUserID);
     await deleteSpecificEdxUser(userToRelink.edxUserID);
   }).beforeEach(async t => {
     await loginPage.login(credentials.adminCredentials);
