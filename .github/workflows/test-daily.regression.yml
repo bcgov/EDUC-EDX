@@ -37,7 +37,7 @@ jobs:
         if: ${{ failure() }}
         with:
           name: Screenshot
-          path: /home/runner/work/EDUC-EDX/EDUC-EDX/test/src/screenshots/
+          path: /home/runner/work/EDUC-EDX/EDUC-EDX/test/src/
       - name: Rocket.Chat Notification
         uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@1.1.1
         if: failure()
