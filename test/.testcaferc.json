@@ -22,8 +22,8 @@
     "screenshots": {
         "path": "src/screenshots",
         "pathPattern": "${DATE}_${TIME}/test-${TEST_INDEX}/${USERAGENT}/${TEST}.png",
-        "takeOnFails": false,
-        "fullPage": false
+        "takeOnFails": true,
+        "fullPage": true
     },
     "filter": {
         "testGrep": "test-school-inbox.*"
