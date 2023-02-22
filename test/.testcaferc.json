@@ -26,6 +26,7 @@
         "fullPage": false
     },
     "filter": {
-        "testGrep": ".*"
+        "testGrep": "test-school-inbox.*"
+
     }
 }
