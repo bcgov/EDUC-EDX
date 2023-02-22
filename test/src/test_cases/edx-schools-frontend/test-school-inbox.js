@@ -66,6 +66,7 @@ test('test-school-inbox', async t => {
     await inbox.selectStatus('Open');
     // search
     await inbox.clickSearchButton();
+    await t.takeScreenshot();
     // check that our exchange is found by subject heading
     await confirmMessage(t);
     // select the date
