@@ -5,9 +5,10 @@
 </template>
 
 <script>
-import {AuthRoutes} from '@/utils/constants';
-import ApiService from '@/common/apiService';
-import {mapGetters} from 'vuex';
+import {AuthRoutes} from '../utils/constants';
+import ApiService from '../common/apiService';
+import { authStore } from '../store/modules/auth';
+import { mapState } from 'pinia';
 
 export default {
   data() {
@@ -20,7 +21,7 @@ export default {
 
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated']),
+    ...mapState(authStore, ['isAuthenticated']),
   },
   methods: {
 

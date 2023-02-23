@@ -62,9 +62,11 @@
 
 <script>
 
-import {mapState} from 'vuex';
+import { authStore } from '../store/modules/auth';
+import { appStore } from '../store/modules/app';
+import { mapState } from 'pinia';
 import ApiService from '../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
+import {ApiRoutes} from '../utils/constants';
 
 export default {
   name: 'InstituteSelection',
@@ -96,8 +98,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['activeSchoolsMap','activeDistrictsMap']),
-    ...mapState('auth', ['userInfo']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(authStore, ['userInfo']),
   },
   created() {
     this.isTableLoading = true;

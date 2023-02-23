@@ -166,12 +166,13 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {LocalDate} from '@js-joda/core';
@@ -219,7 +220,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
   },
   methods: {
     saveNewContactEffectiveDate(date) {

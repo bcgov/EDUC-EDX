@@ -1,7 +1,7 @@
-import document from '@/store/modules/document.js';
-import ApiService from '@/common/apiService';
+import ApiService from '../../common/apiService';
+import { defineStore } from 'pinia';
 
-export default {
+export const edxStore = defineStore('edx', {
   namespaced: true,
   state: () => ({
     statuses: [],
@@ -27,53 +27,51 @@ export default {
     fileRequirements: state => state.fileRequirements,
     secureExchangeStudents: state => state.secureExchangeStudents,
   },
-  mutations: {
-    setStatuses: (state, statuses) => {
+  actions: {
+    async setStatuses(state, statuses){
       state.statuses = statuses;
     },
-    setExchange: (state, exchange) => {
+    async setExchange(state, exchange){
       state.exchange = exchange;
     },
-    setExchangeSchoolIds(state, payload) {
+    async setExchangeSchoolIds(state, payload) {
       state.exchangeSchoolIds = payload;
     },
-    setSchoolRoles(state, payload){
+    async setSchoolRoles(state, payload){
       state.schoolRoles = JSON.parse(JSON.stringify(payload));
     },
-    setSchoolRolesCopy(state, payload){
+    async setSchoolRolesCopy(state, payload){
       state.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
     },
-    setDistrictRoles(state, payload){
+    async setDistrictRoles(state, payload){
       state.districtRoles = JSON.parse(JSON.stringify(payload));
     },
-    setDistrictRolesCopy(state, payload){
+    async setDistrictRolesCopy(state, payload){
       state.districtRolesCopy = JSON.parse(JSON.stringify(payload));
     },
-    setMinistryTeams: (state, ministryTeams) => {
+    async setMinistryTeams(state, ministryTeams){
       state.ministryTeams = ministryTeams;
     },
-    setSecureExchangeDocumentTypes(state, payload) {
+    async setSecureExchangeDocumentTypes(state, payload) {
       state.secureExchangeDocumentTypes = payload;
     },
-    setSecureExchangeDocuments(state, payload) {
+    async setSecureExchangeDocuments(state, payload) {
       state.secureExchangeDocuments = payload;
     },
-    deleteSecureExchangeDocumentByIndex(state, index) {
+    async deleteSecureExchangeDocumentByIndex(state, index) {
       if (index < state.secureExchangeDocuments.length) {
         state.secureExchangeDocuments.splice(index, 1);
       }
     },
-    setFileRequirements(state, payload) {
+    async setFileRequirements(state, payload) {
       state.fileRequirements = payload;
     },
-    setSecureExchangeStudents(state,payload){
+    async setSecureExchangeStudents(state,payload){
       state.secureExchangeStudents= payload;
     },
-    deleteSecureExchangeStudentsByID(state, payload) {
+    async deleteSecureExchangeStudentsByID(state, payload) {
       state.secureExchangeStudents = state.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
-    }
-  },
-  actions: {
+    },
     async getMinistryTeams({commit, state}) {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
         if (state.ministryTeams.length === 0) {
@@ -150,8 +148,5 @@ export default {
         }
       }
     },
-  },
-  modules: {
-    document,
   }
-};
+});

@@ -69,9 +69,9 @@
 </template>
 
 <script>
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
+import alertMixin from './mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from './utils/format';
+import {getStatusColor} from './utils/institute/status';
 
 export default {
   name: 'DistrictContact',

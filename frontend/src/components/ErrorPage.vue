@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { authStore } from '../store/modules/auth';
+import { mapActions } from 'pinia';
 export default {
   data() {
     return {
@@ -24,11 +25,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions('auth', ['loginErrorRedirect'])
+    ...mapActions(authStore, ['loginErrorRedirect'])
   },
   async created(){
     if(this.errorMessage === 'Unable_to_authenticate'){
-      this.loginErrorRedirect();
+      await this.loginErrorRedirect();
     }
   }
 };

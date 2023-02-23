@@ -156,11 +156,13 @@
   </v-row>
 </template>
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
-import alertMixin from '@/mixins/alertMixin';
-import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
+import alertMixin from '../../mixins/alertMixin';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 
 export default {
   name: 'AccessUserCard',
@@ -344,8 +346,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('edx', ['schoolRoles']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(edxStore, ['schoolRoles']),
+    ...mapState(authStore, ['userInfo']),
     isEDXInstituteAdminSelected() {
       return this.selectedRoles.includes(this.edxInstituteAdminRole);
     },

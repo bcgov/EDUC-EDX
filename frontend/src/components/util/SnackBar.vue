@@ -28,7 +28,8 @@
 
 <script>
 
-import {mapMutations, mapState} from 'vuex';
+import { appStore } from '../../store/modules/app';
+import { mapState } from 'pinia';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 
 export default {
@@ -42,7 +43,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['alertNotificationText', 'alertNotificationQueue', 'alertNotification']),
+    ...mapState(appStore, ['alertNotificationText', 'alertNotificationQueue', 'alertNotification']),
     hasNotificationsPending() {
       return this.alertNotificationQueue.length > 0;
     },

@@ -303,15 +303,16 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import PrimaryButton from '../util/PrimaryButton';
+import {ApiRoutes} from '../../utils/constants';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
-import alertMixin from '@/mixins/alertMixin';
-import DocumentUpload from '@/components/common/DocumentUpload';
-import AddStudent from '@/components/AddStudent';
-import PdfRenderer from '@/components/common/PdfRenderer';
-import ImageRenderer from '@/components/common/ImageRenderer';
-import {mapState} from 'vuex';
+import alertMixin from '../../mixins/alertMixin';
+import DocumentUpload from '../common/DocumentUpload.vue';
+import AddStudent from '../AddStudent.vue';
+import PdfRenderer from '../common/PdfRenderer.vue';
+import ImageRenderer from '../common/ImageRenderer.vue';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
 
 
 export default {
@@ -351,7 +352,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('auth', ['userInfo']),
+    ...mapState(authStore, ['userInfo']),
     loading() {
       return this.loadingCount !== 0;
     }

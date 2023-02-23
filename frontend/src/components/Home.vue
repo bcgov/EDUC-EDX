@@ -48,10 +48,11 @@
 </template>
 
 <script>
-import Login from './Login';
-import { mapGetters } from 'vuex';
-import DashboardTable from '@/components/DashboardTable';
-import {PAGE_TITLES} from '@/utils/constants';
+import Login from './Login.vue';
+import { authStore } from '../store/modules/auth';
+import { mapState } from 'pinia';
+import DashboardTable from '../components/DashboardTable.vue';
+import {PAGE_TITLES} from '../utils/constants';
 export default {
   name: 'home',
   components: {
@@ -59,7 +60,7 @@ export default {
     DashboardTable
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated', 'isLoading']),
+    ...mapState(authStore, ['isAuthenticated', 'isLoading']),
   },
   data(){
     return {

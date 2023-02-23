@@ -51,10 +51,9 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-// import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed';
-import alertMixin from '@/mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'PdfRenderer',

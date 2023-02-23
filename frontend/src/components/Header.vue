@@ -5,7 +5,7 @@
     <a tabindex="-1" href="/">
       <img
           tabindex="-1"
-          src="@/assets/images/bc-gov-logo.svg"
+          src="./assets/images/bc-gov-logo.svg"
           width="155"
           class="logo"
           alt="B.C. Government Logo"
@@ -49,8 +49,9 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-import {AuthRoutes , ApiRoutes} from '@/utils/constants';
+import { authStore } from '../store/modules/auth';
+import { mapState } from 'pinia';
+import {AuthRoutes , ApiRoutes} from '../utils/constants';
 
 export default {
   data() {
@@ -61,7 +62,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
     }

@@ -150,17 +150,17 @@
 </template>
 
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
-import DocumentUpload from '@/components/common/DocumentUpload';
-import {mapState} from 'vuex';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-
-import {
-  ApiRoutes,
-} from '@/utils/constants';
-import AddStudent from '@/components/AddStudent';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import DocumentUpload from '../common/DocumentUpload.vue';
+import { authStore } from '../../store/modules/auth';
+import { appStore } from '../../store/modules/app';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import { ApiRoutes } from '../../utils/constants';
+import AddStudent from '../AddStudent.vue';
 
 export default {
   name: 'NewMessagePage',
@@ -189,9 +189,9 @@ export default {
     };
   },
   computed: {
-    ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
-    ...mapState('app', ['schoolsMap', 'activeDistrictsMap']),
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(edxStore, ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
+    ...mapState(appStore, ['schoolsMap', 'activeDistrictsMap']),
   },
   created() {
     this.$store.dispatch('edx/getExchangeSchoolIds');

@@ -58,10 +58,11 @@
 </template>
 
 <script>
-import {getFileNameWithMaxNameLength, humanFileSize} from '@/utils/file';
-import { mapGetters } from 'vuex';
+import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 import {sortBy} from 'lodash';
-import PrimaryButton from '../util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {
   components: {PrimaryButton},
@@ -107,7 +108,7 @@ export default {
   }
   ,
   computed: {
-    ...mapGetters('edx',['secureExchangeDocumentTypes', 'fileRequirements']),
+    ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
     dataReady () {
       return this.validForm && this.file;
     },

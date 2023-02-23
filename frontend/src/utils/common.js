@@ -1,6 +1,6 @@
 'use strict';
 
-import {getDateFormatter} from '@/utils/format';
+import {getDateFormatter} from './format';
 import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
 const clone = require('rfdc')();

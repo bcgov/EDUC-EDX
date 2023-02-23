@@ -262,12 +262,14 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
-import PrimaryButton from '../util/PrimaryButton';
-import NewMessagePage from './NewMessagePage';
-import {mapState, mapGetters} from 'vuex';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '../../utils/constants';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import NewMessagePage from './NewMessagePage.vue';
+import { authStore } from '../../store/modules/auth';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
-import alertMixin from '@/mixins/alertMixin';
+import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'ExchangeInbox',
@@ -317,9 +319,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('edx', ['statuses']),
-    ...mapState('edx', ['ministryTeams']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(edxStore, ['statuses','ministryTeams']),
+    ...mapState(authStore, ['userInfo']),
     secureExchangeStatusCodes() {
       return this.statuses;
     },

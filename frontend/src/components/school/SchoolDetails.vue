@@ -540,18 +540,20 @@
 
 <script>
 
-import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters, mapState} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import {formatPhoneNumber, formatDate} from '@/utils/format';
-import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {formatPhoneNumber, formatDate} from '../../utils/format';
+import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '../../utils/institute/status';
 import {sanitizeUrl} from '@braintree/sanitize-url';
-import {deepCloneObject} from '@/utils/common';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
+import {deepCloneObject} from '../../utils/common';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -590,16 +592,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
-    ...mapState('institute', ['facilityTypeCodes']),
-    ...mapState('institute', ['schoolCategoryTypeCodes']),
-    ...mapState('institute', ['schoolOrganizationTypeCodes']),
-    ...mapState('institute', ['schoolNeighborhoodLearningCodes']),
-    ...mapState('institute', ['activeSchoolOrganizationTypeCodes']),
-    ...mapState('institute', ['activeSchoolNeighborhoodLearningCodes']),
-    ...mapState('institute', ['provinceCodes']),
-    ...mapState('institute', ['countryCodes']),
-    ...mapState('institute', ['gradeCodes']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
+    ...mapState(instituteStore, ['facilityTypeCodes']),
+    ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
+    ...mapState(instituteStore, ['schoolOrganizationTypeCodes']),
+    ...mapState(instituteStore, ['schoolNeighborhoodLearningCodes']),
+    ...mapState(instituteStore, ['activeSchoolOrganizationTypeCodes']),
+    ...mapState(instituteStore, ['activeSchoolNeighborhoodLearningCodes']),
+    ...mapState(instituteStore, ['provinceCodes']),
+    ...mapState(instituteStore, ['countryCodes']),
+    ...mapState(instituteStore, ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
     },

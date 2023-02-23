@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
 import 'viewerjs/dist/viewer.css';
 import Viewer from 'v-viewer';
 import Vue from 'vue';

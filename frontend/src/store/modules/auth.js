@@ -1,7 +1,6 @@
-import ApiService from '@/common/apiService';
-import AuthService from '@/common/authService';
-// import router from '@/router';
-// import { AuthRoutes } from '@/utils/constants';
+import ApiService from '../../common/apiService';
+import AuthService from '../../common/authService';
+import { defineStore } from 'pinia';
 
 function isFollowUpVisit({jwtToken}) {
   return !!jwtToken;
@@ -40,9 +39,9 @@ async function getInitialToken({commit}) {
   }
 }
 
-export default {
+export const authStore = defineStore('auth', {
   namespaced: true,
-  state: {
+  state: () => ({
     acronyms: [],
     isAuthenticated: false,
     userInfo: null,
@@ -50,7 +49,7 @@ export default {
     isLoading: true,
     loginError: false,
     jwtToken: localStorage.getItem('jwtToken'),
-  },
+  }),
   getters: {
     acronyms: state => state.acronyms,
     isAuthenticated: state => state.isAuthenticated,
@@ -60,9 +59,9 @@ export default {
     error: state => state.error,
     isLoading: state => state.isLoading,
   },
-  mutations: {
+  actions: {
     //sets Json web token and determines whether user is authenticated
-    setJwtToken: (state, token = null) => {
+    async setJwtToken(state, token = null){
       if (token) {
         state.isAuthenticated = true;
         state.jwtToken = token;
@@ -73,32 +72,26 @@ export default {
         localStorage.removeItem('jwtToken');
       }
     },
-
-    setUserInfo: (state, userInfo) => {
+    async setUserInfo(state, userInfo){
       if(userInfo){
         state.userInfo = userInfo;
       } else {
         state.userInfo = null;
       }
     },
-
-    setLoginError: (state) => {
+    async setLoginError(state){
       state.loginError = true;
     },
-
-    setError: (state, error) => {
+    async setError(state, error){
       state.error = error;
     },
-
-    setLoading: (state, isLoading) => {
+    async setLoading(state, isLoading){
       state.isLoading = isLoading;
-    }
-  },
-  actions: {
-    loginErrorRedirect(context){
+    },
+    async loginErrorRedirect(context){
       context.commit('setLoginError');
     },
-    logout(context) {
+    async logout(context) {
       context.commit('setJwtToken');
       context.commit('setUserInfo');
       // router.push(AuthRoutes.LOGOUT);
@@ -117,4 +110,4 @@ export default {
       }
     },
   }
-};
+});

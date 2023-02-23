@@ -639,7 +639,7 @@ async function activateEdxUser(req, res) {
     }
 
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
-    log.info('User Activation Sucessful');
+    log.info('User Activation Successful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
     getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);

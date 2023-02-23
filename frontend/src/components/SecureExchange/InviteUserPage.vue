@@ -101,13 +101,13 @@
 </template>
 
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-
-import {ApiRoutes} from '@/utils/constants';
-import {mapGetters} from 'vuex';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
 
 export default {
   name: 'InviteUserPage',
@@ -169,7 +169,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(authStore, ['userInfo']),
     instituteNameAndCode() {
       switch(this.instituteTypeCode) {
       case 'SCHOOL':

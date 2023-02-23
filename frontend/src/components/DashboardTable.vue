@@ -192,11 +192,13 @@
 <script>
 import omit from 'lodash/omit';
 import ApiService from '../common/apiService';
-import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
-import router from '@/router';
-import {mapGetters, mapState} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import {formatDateTime} from '@/utils/format';
+import {ApiRoutes, PAGE_TITLES} from '../utils/constants';
+import router from '../router';
+import { authStore } from '../store/modules/auth';
+import { appStore } from '../store/modules/app';
+import { mapState } from 'pinia';
+import alertMixin from '../mixins/alertMixin';
+import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
@@ -240,8 +242,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['activeSchoolsMap','activeDistrictsMap']),
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
     },

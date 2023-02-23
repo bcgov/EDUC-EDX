@@ -127,14 +127,17 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import Spinner from '@/components/common/Spinner';
-import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters, mapState} from 'vuex';
+import {ApiRoutes} from '../../utils/constants';
+import Spinner from '../common/Spinner.vue';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import { appStore } from '../../store/modules/app';
+import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatContactName} from '@/utils/format';
-import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '@/utils/institute/status';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatContactName} from '../../utils/format';
+import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '../../utils/institute/status';
 
 export default {
   name: 'SchoolListPage',
@@ -182,10 +185,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['userInfo']),
-    ...mapState('app', ['schoolsMap']),
-    ...mapState('institute', ['facilityTypeCodes']),
-    ...mapState('institute', ['schoolCategoryTypeCodes']),
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(appStore, ['schoolsMap']),
+    ...mapState(instituteStore, ['facilityTypeCodes']),
+    ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
 
     getSheetWidth(){
       switch (this.$vuetify.breakpoint.name) {

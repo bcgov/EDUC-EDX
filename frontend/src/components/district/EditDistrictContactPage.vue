@@ -167,14 +167,13 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import {formatDate} from '@/utils/format';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import {formatDate} from '../../utils/format';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
-
 import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {

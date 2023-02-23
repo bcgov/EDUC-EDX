@@ -97,15 +97,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {setEmptyInputParams} from '@/utils/common';
-import {isNotEmptyInputParams} from '@/utils/validation';
-import {ApiRoutes} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
-import PrimaryButton from '@/components/util/PrimaryButton';
-import AccessUserCard from './AccessUserCard';
-import Spinner from '@/components/common/Spinner';
-import ClipboardButton from '@/components/util/ClipboardButton';
-import InviteUserPage from '@/components/SecureExchange/InviteUserPage.vue';
+import {setEmptyInputParams} from '../../utils/common';
+import {isNotEmptyInputParams} from '../../utils/validation';
+import {ApiRoutes} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { appStore } from '../../store/modules/app';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import AccessUserCard from './AccessUserCard.vue';
+import Spinner from '../common/Spinner.vue';
+import ClipboardButton from '../util/ClipboardButton.vue';
+import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
 
 export default {
   name: 'AccessDistrictUsersPage',
@@ -234,9 +237,9 @@ export default {
     },
   },
   computed: {
-    ...mapState('app', ['districtsMap']),
-    ...mapState('edx', ['districtRoles','districtRolesCopy']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(appStore, ['districtsMap']),
+    ...mapState(edxStore, ['districtRoles','districtRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
   }
 };
 </script>

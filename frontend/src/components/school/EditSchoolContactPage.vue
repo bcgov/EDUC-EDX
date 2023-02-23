@@ -166,13 +166,13 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
 
 import PrimaryButton from '../util/PrimaryButton.vue';

@@ -20,15 +20,17 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters,mapState } from 'vuex';
+import { authStore } from './store/modules/auth';
+import { appStore } from './store/modules/app';
+import { mapState } from 'pinia';
 import HttpStatus from 'http-status-codes';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import ModalIdle from './components/ModalIdle';
-import MsieBanner from './components/MsieBanner';
+import Header from './components/Header.vue';
+import Footer from './components/Footer.vue';
+import ModalIdle from './components/ModalIdle.vue';
+import MsieBanner from './components/MsieBanner.vue';
 import StaticConfig from './common/staticConfig';
-import SnackBar from '@/components/util/SnackBar';
-import NavBar from '@/components/util/NavBar';
+import SnackBar from './components/util/SnackBar.vue';
+import NavBar from './components/util/NavBar.vue';
 
 export default {
   name: 'app',
@@ -44,8 +46,8 @@ export default {
     meta: StaticConfig.VUE_APP_META_DATA
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated', 'loginError', 'isLoading']),
-    ...mapState('app', ['pageTitle']),
+    ...mapState(authStore, ['isAuthenticated', 'loginError', 'isLoading']),
+    ...mapState(appStore, ['pageTitle']),
     isIE() {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }

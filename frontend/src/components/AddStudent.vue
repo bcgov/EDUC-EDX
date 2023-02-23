@@ -53,12 +53,13 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import alertMixin from '@/mixins/alertMixin';
-import PrimaryButton from './util/PrimaryButton';
-import {isValidPEN} from '@/utils/validation';
-import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
-import {mapState} from 'vuex';
+import ApiService from '../common/apiService';
+import alertMixin from '../mixins/alertMixin';
+import PrimaryButton from './util/PrimaryButton.vue';
+import {isValidPEN} from '../utils/validation';
+import {ApiRoutes, MINISTRY_NAME} from '../utils/constants';
+import { appStore } from '../store/modules/app';
+import { mapState } from 'pinia';
 
 export default {
   components: {PrimaryButton},
@@ -94,7 +95,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['schoolsMap']),
+    ...mapState(appStore, ['schoolsMap']),
     enableSearchButton() {
       return !(isValidPEN(this.penNumber));
     }

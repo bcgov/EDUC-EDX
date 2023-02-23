@@ -399,16 +399,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import PrimaryButton from '@/components/util/PrimaryButton';
-import {formatPhoneNumber} from '@/utils/format';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import {formatPhoneNumber} from '../../utils/format';
 import {sanitizeUrl} from '@braintree/sanitize-url';
-import {deepCloneObject} from '@/utils/common';
-import {mapGetters, mapState} from 'vuex';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
+import {deepCloneObject} from '../../utils/common';
+import { mapState } from 'pinia';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
+import ConfirmationDialog from '../../components/util/ConfirmationDialog.vue';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -438,8 +440,8 @@ export default {
     };
   },
   computed:{
-    ...mapState('institute', ['provinceCodes', 'countryCodes']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(instituteStore, ['provinceCodes', 'countryCodes']),
+    ...mapState(authStore, ['userInfo']),
     hasSamePhysicalAddress(){
       return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     }

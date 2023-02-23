@@ -107,12 +107,13 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import {PERMISSION} from '@/utils/constants/Permission';
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
+import {ApiRoutes} from '../../utils/constants';
+import {PERMISSION} from '../../utils/constants/Permission';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
 import { sortBy } from 'lodash';
 
 import PrimaryButton from '../util/PrimaryButton.vue';
@@ -152,7 +153,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
     }

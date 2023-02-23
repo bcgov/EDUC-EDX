@@ -70,9 +70,10 @@
 </template>
 
 <script>
-import {PAGE_TITLES} from '@/utils/constants';
-import { mapState } from 'vuex';
-import {PERMISSION} from '@/utils/constants/Permission';
+import {PAGE_TITLES} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import {PERMISSION} from '../../utils/constants/Permission';
 export default {
   name: 'navBar',
   props: {
@@ -89,8 +90,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('auth', ['isAuthenticated']),
-    ...mapState('auth', ['userInfo']),
+    ...mapState(authStore, ['isAuthenticated', 'userInfo']),
     navWidth () {
       switch (this.$vuetify.breakpoint.name) {
       case 'xs':

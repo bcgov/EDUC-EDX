@@ -1,8 +1,9 @@
-import ApiService from '@/common/apiService';
+import ApiService from '../../common/apiService';
+import { defineStore } from 'pinia';
 
-export default {
+export const instituteStore = defineStore('institute', {
   namespaced: true,
-  state: {
+  state: () => ({
     facilityTypeCodes: null,
     schoolCategoryTypeCodes: null,
     schoolOrganizationTypeCodes: null,
@@ -16,8 +17,8 @@ export default {
     activeSchoolNeighborhoodLearningCodes: null,
     activeGradeCodes: null,
     activeProvinceCodes: null,
-    activeCountryCodes: null,
-  },
+    activeCountryCodes: null
+  }),
   getters: {
     facilityTypeCodes: state => state.facilityTypeCodes,
     schoolCategoryTypeCodes: state => state.schoolCategoryTypeCodes,
@@ -34,51 +35,49 @@ export default {
     activeProvinceCodes: state => state.activeProvinceCodes,
     activeCountryCodes: state => state.activeCountryCodes,
   },
-  mutations: {
-    setFacilityTypeCodes: (state, facilityTypeCodes) => {
+  actions: {
+    async setFacilityTypeCodes(state, facilityTypeCodes) {
       state.facilityTypeCodes = facilityTypeCodes;
     },
-    setSchoolCategoryTypeCodes: (state, schoolCategoryTypeCodes) => {
+    async setSchoolCategoryTypeCodes(state, schoolCategoryTypeCodes) {
       state.schoolCategoryTypeCodes = schoolCategoryTypeCodes;
     },
-    setSchoolOrganizationTypeCodes: (state, schoolOrganizationTypeCodes) => {
+    async setSchoolOrganizationTypeCodes(state, schoolOrganizationTypeCodes) {
       state.schoolOrganizationTypeCodes = schoolOrganizationTypeCodes;
     },
-    setSchoolNeighborhoodLearningCodes: (state, schoolNeighborhoodLearningCodes) => {
+    async setSchoolNeighborhoodLearningCodes(state, schoolNeighborhoodLearningCodes) {
       state.schoolNeighborhoodLearningCodes = schoolNeighborhoodLearningCodes;
     },
-    setGradeCodes: (state, gradeCodes) => {
+    async setGradeCodes(state, gradeCodes) {
       state.gradeCodes = gradeCodes;
     },
-    setProvinceCodes: (state, provinceCodes) => {
+    async setProvinceCodes(state, provinceCodes) {
       state.provinceCodes = provinceCodes;
     },
-    setCountryCodes: (state, countryCodes) => {
+    async setCountryCodes(state, countryCodes) {
       state.countryCodes = countryCodes;
     },
-    setActiveFacilityTypeCodes: (state, activeFacilityTypeCodes) => {
+    async setActiveFacilityTypeCodes(state, activeFacilityTypeCodes) {
       state.activeFacilityTypeCodes = activeFacilityTypeCodes;
     },
-    setActiveSchoolCategoryTypeCodes: (state, activeSchoolCategoryTypeCodes) => {
+    async setActiveSchoolCategoryTypeCodes(state, activeSchoolCategoryTypeCodes) {
       state.activeSchoolCategoryTypeCodes = activeSchoolCategoryTypeCodes;
     },
-    setActiveSchoolOrganizationTypeCodes: (state, activeSchoolOrganizationTypeCodes) => {
+    async setActiveSchoolOrganizationTypeCodes(state, activeSchoolOrganizationTypeCodes) {
       state.activeSchoolOrganizationTypeCodes = activeSchoolOrganizationTypeCodes;
     },
-    setActiveSchoolNeighborhoodLearningCodes: (state, activeSchoolNeighborhoodLearningCodes) => {
+    async setActiveSchoolNeighborhoodLearningCodes(state, activeSchoolNeighborhoodLearningCodes) {
       state.activeSchoolNeighborhoodLearningCodes = activeSchoolNeighborhoodLearningCodes;
     },
-    setActiveGradeCodes: (state, activeGradeCodes) => {
+    async setActiveGradeCodes(state, activeGradeCodes) {
       state.activeGradeCodes = activeGradeCodes;
     },
-    setActiveProvinceCodes: (state, activeProvinceCodes) => {
+    async setActiveProvinceCodes(state, activeProvinceCodes) {
       state.activeProvinceCodes = activeProvinceCodes;
     },
-    setActiveCountryCodes: (state, activeCountryCodes) => {
+    async setActiveCountryCodes(state, activeCountryCodes) {
       state.activeCountryCodes = activeCountryCodes;
     },
-  },
-  actions: {
     async getFacilityTypeCodes({commit}) {
       const response = await ApiService.getFacilityTypeCodes();
       commit('setFacilityTypeCodes', response.data);
@@ -136,4 +135,4 @@ export default {
       commit('setActiveCountryCodes', response.data);
     },
   }
-};
+});
