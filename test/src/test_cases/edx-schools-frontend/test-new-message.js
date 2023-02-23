@@ -1,6 +1,3 @@
-/**
- * Tests to run against the school inbox page
- */
 import { base_url, student_penList, credentials } from '../../config/constants';
 import { getToken } from '../../helpers/oauth-utils';
 
@@ -31,37 +28,28 @@ fixture `school-inbox-new-message`
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
       const token = data.access_token;
-      // make sure there are no artifact messages from previous runs
       await inbox.deleteMessagesBySubject(testExchangeSubject, token);
     }).catch((error => {
       log.error('Failure during test setup: ' + error);
     }));
   })
   .after(async () => {
-    // find all test automation artifacts produced and remove them
-    log.info('Performing tear-down operation');
+    log.info('phase:', 'Tear-down');
     const data = await getToken();
     await inbox.deleteMessagesBySubject(testExchangeSubject, data.access_token);
     await deleteSetUpEdxUser();
 
   })
   .beforeEach(async t => {
-    // log in as studentAdmin
     await loginPage.login(credentials.adminCredentials);
     await t.resizeWindow(1920, 1080)
   })
   .afterEach(async t => {
-    // logout
     await t.navigateTo(base_url + '/logout');
   });
 
 test('test-send-new-message-with-students', async t => {
-<<<<<<< HEAD
-  // navigate to /inbox, expect title
-  if(await instituteSelectionPage.isInstituteSelectionPage()){
-=======
   if (await instituteSelectionPage.isInstituteSelectionPage()) {
->>>>>>> 0ab18d1 (you see a missed formatting, you squash it)
     await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle(schoolTitle);
   }
 
@@ -109,14 +97,12 @@ test('test-send-new-message-with-attachment', async t => {
   await inbox.createANewMessage(testExchangeSubject);
   await inbox.clickAttachFileButton();
 
-  //attach document
   await documentUpload.clickDocumentTypeSelect();
   await documentUpload.selectDocumentTypeByName('Canadian Citizenship Card')
   await documentUpload.uploadDocument('../../uploads/BC.jpg');
   await documentUpload.clickUploadButton();
   await inbox.clickNewMessagePostButton();
 
-  //find the message
   await inbox.clickFiltersToggle();
   await inbox.inputSubject('Created by test automation');
   await inbox.selectContactName('PEN Team');
@@ -124,7 +110,6 @@ test('test-send-new-message-with-attachment', async t => {
   await inbox.clickSearchButton();
   await inbox.clickNthTableRow(0);
 
-  //verify message detail
   await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
 });
 

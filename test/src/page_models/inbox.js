@@ -130,7 +130,6 @@ class Inbox {
 
   async createANewMessage(testExchangeSubject) {
     await this.clickNewMessageButton();
-    // create new message
     await this.inputSubjectTextField(testExchangeSubject);
     await this.inputNewMessage('This is a super awesome message.');
     await this.clickAndSelectTeamNameFieldByText('PEN Team');

@@ -1,8 +1,5 @@
 import { Selector } from 'testcafe';
 
-/**
- * Represents the UserActivation page
- */
 class UserActivation {
 
   constructor() {
