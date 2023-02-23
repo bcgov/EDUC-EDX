@@ -21,22 +21,22 @@ class InviteUserPage {
 
   async setFirstName(name) {
     await t.typeText(this.firstNameInput, name);
-    log.info('First name input');
+    log.info('input:', 'First name input');
   }
 
   async setLastName(name) {
     await t.typeText(this.lastNameInput, name);
-    log.info('Last name input');
+    log.info('input:', 'Last name input');
   }
 
   async setEmail(email) {
     await t.typeText(this.emailInput, email);
-    log.info('Email input')
+    log.info('input:', 'Email input');
   }
 
   async clickInviteBtn() {
     await t.click(this.inviteBtn());
-    log.info('Invite button clicked');
+    log.info('click:', 'Invite button clicked');
   }
 
 }

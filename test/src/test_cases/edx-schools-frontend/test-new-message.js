@@ -30,7 +30,7 @@ fixture `school-inbox-new-message`
       const token = data.access_token;
       await inbox.deleteMessagesBySubject(testExchangeSubject, token);
     }).catch((error => {
-      log.error('Failure during test setup: ' + error);
+      log.error('error:', 'Failure during test setup: ' + error);
     }));
   })
   .after(async () => {
@@ -38,7 +38,6 @@ fixture `school-inbox-new-message`
     const data = await getToken();
     await inbox.deleteMessagesBySubject(testExchangeSubject, data.access_token);
     await deleteSetUpEdxUser();
-
   })
   .beforeEach(async t => {
     await loginPage.login(credentials.adminCredentials);
@@ -84,7 +83,7 @@ test('test-send-new-message-with-students', async t => {
   await addStudent.clickCancelAddStudentButton();
 
   await inbox.clickNewMessagePostButton();
-  log.info('Message created.');
+  log.info('pass:', 'Message created.');
 });
 
 test('test-send-new-message-with-attachment', async t => {

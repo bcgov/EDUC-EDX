@@ -39,56 +39,56 @@ class Inbox {
 
   async clickNewMessagePostButton() {
     await t.click(this.newMessagePostBtn());
-    log.info('New message Post button clicked');
+    log.info('click:', 'New message Post button clicked');
   }
 
   async clickCancelSubmitButton() {
     await t.click(this.cancelMessage());
-    log.info('Cancel message button clicked');
+    log.info('click:', 'Cancel message button clicked');
   }
 
   async clickNewMessageButton() {
     await t.click(this.newMessageButton);
-    log.info('New message button clicked');
+    log.info('click:', 'New message button clicked');
   }
 
   async selectMessageDate() {
     await t.click(this.messageDateFilter());
     await t.click(this.messageDateNumber());
-    log.info('Message date selected');
+    log.info('click:', 'Message date selected');
   }
 
   async clickFiltersToggle() {
     await t.click(this.filtersToggle);
-    log.info('Filters toggle selected');
+    log.info('click:', 'Filters toggle selected');
   }
 
   async inputSubject(text) {
     await t.typeText(this.subjectInput, text);
-    log.info('Input subject');
+    log.info('input:', 'Subject entered');
   }
 
   async clickAndSelectTeamNameFieldByText(name) {
     await t.click(this.schoolNameTextField).wait(100);
-    log.info('Select team option clicked');
+    log.info('click:', 'Select team option clicked');
     await t.expect(this.selectionBox.exists).ok();
     await t.click(this.selectionBox.find('div.row').withText(name));
-    log.info(`Clicked team name option ${name}`);
+    log.info('click:', `Clicked team name option ${name}`);
   }
 
   async inputSubjectTextField(text) {
     await t.typeText(this.subjectTextField, text);
-    log.info('Subject input');
+    log.info('input:', 'Subject input');
   }
 
   async inputNewMessage(text) {
     await t.typeText(this.newMessageTextArea, text);
-    log.info('Message input');
+    log.info('input:', 'Message input');
   }
 
   async inputMessageId(text) {
     await t.typeText(this.messageIdInput, text);
-    log.info('Input message id');
+    log.info('input:', 'Input message id');
   }
 
   async selectStatus(status) {
@@ -105,27 +105,27 @@ class Inbox {
 
   async clickSearchButton() {
     await t.click(this.searchButton);
-    log.info('Search button clicked');
+    log.info('click:', 'Search button clicked');
   }
 
   async clickClearSearchButton() {
     await t.click(this.clearSearchButton);
-    log.info('Clear search button clicked');
+    log.info('click:', 'Clear search button clicked');
   }
 
   async clickNextPage() {
     await t.click(this.nextPageButton);
-    log.info('Next page selected');
+    log.info('click:', 'Next page selected');
   }
 
   async clickPreviousPage() {
     await t.click(this.previousPageButton);
-    log.info('Previous page selected');
+    log.info('click:', 'Previous page selected');
   }
 
   async clickNthTableRow(index) {
     await t.click((Selector('tr')).nth(index))
-    log.info(`row ${index} was clicked`)
+    log.info('click:', `Row ${index} was clicked`)
   }
 
   async createANewMessage(testExchangeSubject) {
@@ -133,22 +133,22 @@ class Inbox {
     await this.inputSubjectTextField(testExchangeSubject);
     await this.inputNewMessage('This is a super awesome message.');
     await this.clickAndSelectTeamNameFieldByText('PEN Team');
-    log.info('New Message Details input');
+    log.info('input', 'New message details input');
   }
 
   async clickOnAddStudentButtonInNewMessage() {
     await t.expect(this.addStudentButton.visible).ok().click(this.addStudentButton);
-    log.info('Add Student Button Clicked');
+    log.info('click:', 'Add Student Button Clicked');
   }
 
   async studentAddedToNewMessageWithPen(pen) {
     await t.expect(this.newMessageStudentChips.withExactText(pen).exists).ok();
-    log.info('Student details added to the New Message');
+    log.info('pass:', 'Student details added to the new message');
   }
 
   async clickAttachFileButton() {
     await t.click(this.attachFileButton());
-    log.info("attach file button clicked");
+    log.info('click:', "Attach file button clicked");
   }
 
   /**
@@ -181,7 +181,7 @@ class Inbox {
     if (response != null) {
       for (const element of response.content) {
         await deleteSecureExchange(token, element.secureExchangeID);
-        log.info('Removing message by subject: ' + subject);
+        log.info('database:', 'Removing message by subject: ' + subject);
       }
     }
   }
