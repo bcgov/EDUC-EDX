@@ -61,6 +61,13 @@ class AccessUsersPage {
     log.info('Verified search school dropdown exists');
   }
 
+  async verifySchoolSelectDropdownIsEmpty() {
+    await t
+    .click(this.selectSchoolDropdown)
+    .expect(this.selectSchoolDropdown.value).eql("")
+    log.info('Verified search school dropdown is empty');
+  }
+
   async selectSchoolFromDropdown(schoolName) {
     await t
     .click(this.selectSchoolDropdown)
