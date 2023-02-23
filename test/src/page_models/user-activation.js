@@ -1,4 +1,4 @@
-import {Selector} from 'testcafe';
+import { Selector } from 'testcafe';
 
 /**
  * Represents the UserActivation page

@@ -1,10 +1,9 @@
-import {Selector, t} from 'testcafe';
-import {findAllPaginated, deleteSecureExchange} from '../services/edx-api-service';
+import { Selector, t } from 'testcafe';
+import { findAllPaginated, deleteSecureExchange } from '../services/edx-api-service';
 import log from 'npmlog';
 
-/**
- * Represents the inbox page
- */
+const now = new Date();
+
 class Inbox {
 
   constructor() {
@@ -21,8 +20,10 @@ class Inbox {
     this.previousPageButton = Selector('button[aria-label="Previous page"]');
     this.paginationIndication = Selector('div.v-data-footer__pagination');
     this.messageDateFilter = Selector('#messageDateTextField');
-    const now = new Date();
-    this.messageDateNumber = Selector('div').child('.v-date-picker-table').find('.v-btn__content').withText(now.getDate().toString());
+    this.messageDateNumber = Selector('div')
+      .child('.v-date-picker-table')
+      .find('.v-btn__content')
+      .withText(now.getDate().toString());
     this.messageIdInput = Selector('#messageIdInput');
     this.schoolNameTextField = Selector('#schoolNameTxtField').parent('div[role="button"]');
     this.subjectTextField = Selector('#subjectTxtField');
@@ -152,8 +153,8 @@ class Inbox {
   }
 
   /**
-   * Returns a response object containing any
-   * messages by subject
+   * Returns a response object containing any messages by subject
+   *
    * @param subject
    * @param token
    * @returns {Promise<*>}
@@ -161,7 +162,8 @@ class Inbox {
   async findMessagesBySubject(subject, token) {
     let params = {
       params: {
-        searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation": "like_ignore_case", "valueType": "STRING"}]'
+        searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation":' +
+          ' "like_ignore_case", "valueType": "STRING"}]'
       }
     };
     return await findAllPaginated(token, params);
@@ -169,8 +171,8 @@ class Inbox {
   }
 
   /**
-   * Given a subject, will delete messages from the api
-   * which contain that subject
+   * Given a subject, will delete messages from the api which contain that subject
+   *
    * @param subject
    * @param token
    * @returns {Promise<void>}

@@ -1,17 +1,21 @@
 /**
  * Tests to run against the school inbox page
  */
-import {base_url, student_penList, credentials} from '../../config/constants';
-import {getToken} from '../../helpers/oauth-utils';
+import { base_url, student_penList, credentials } from '../../config/constants';
+import { getToken } from '../../helpers/oauth-utils';
 
 import log from 'npmlog';
 import Inbox from '../../page_models/inbox';
-import InstituteSelectionPage from "../../page_models/institute-selection-page";
+import InstituteSelectionPage from '../../page_models/institute-selection-page';
 import DocumentUploadPage  from '../../page_models/common/documentUploadPage';
 import MessageDisplay from '../../page_models/message-display';
 import AddStudent from '../../page_models/common/addStudent';
 import LoginPage from '../../page_models/login-page';
-const {setUpEdxSchoolUserWithAllAvailableRoles,deleteSetUpEdxUser} =  require('../../helpers/user-set-up-utils');
+
+const {
+  setUpEdxSchoolUserWithAllAvailableRoles,
+  deleteSetUpEdxUser
+} =  require('../../helpers/user-set-up-utils');
 
 const testExchangeSubject = 'Created by test automation';
 const inbox = new Inbox();
@@ -22,7 +26,7 @@ const loginPage = new LoginPage();
 const instituteSelectionPage = new InstituteSelectionPage();
 const schoolTitle = 'Camosun College';
 
-fixture`school-inbox-new-message`
+fixture `school-inbox-new-message`
   .before(async () => {
     await setUpEdxSchoolUserWithAllAvailableRoles(['99998'])
     getToken().then(async (data) => {
@@ -45,14 +49,19 @@ fixture`school-inbox-new-message`
     // log in as studentAdmin
     await loginPage.login(credentials.adminCredentials);
     await t.resizeWindow(1920, 1080)
-  }).afterEach(async t => {
-  // logout
-  await t.navigateTo(base_url + '/logout');
-});
+  })
+  .afterEach(async t => {
+    // logout
+    await t.navigateTo(base_url + '/logout');
+  });
 
 test('test-send-new-message-with-students', async t => {
+<<<<<<< HEAD
   // navigate to /inbox, expect title
   if(await instituteSelectionPage.isInstituteSelectionPage()){
+=======
+  if (await instituteSelectionPage.isInstituteSelectionPage()) {
+>>>>>>> 0ab18d1 (you see a missed formatting, you squash it)
     await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle(schoolTitle);
   }
 
@@ -70,13 +79,19 @@ test('test-send-new-message-with-students', async t => {
   await inbox.studentAddedToNewMessageWithPen(penArr[0]);
 
   await inbox.clickOnAddStudentButtonInNewMessage();
-  await addStudent.assertAlertMessageAtAddStudent('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+  await addStudent.assertAlertMessageAtAddStudent(
+    'Additional students should only be added if the details are relevant to this request.' +
+    ' Requests for separate students should be sent in a new message.'
+  );
   await addStudent.testValidPENInput(penArr[1]);
   await addStudent.clickAddStudentButton();
   await inbox.studentAddedToNewMessageWithPen(penArr[1]);
 
   await inbox.clickOnAddStudentButtonInNewMessage();
-  await addStudent.assertAlertMessageAtAddStudent('Additional students should only be added if the details are relevant to this request. Requests for separate students should be sent in a new message.');
+  await addStudent.assertAlertMessageAtAddStudent(
+    'Additional students should only be added if the details are relevant to this request. ' +
+    'Requests for separate students should be sent in a new message.'
+  );
   await addStudent.testNonExistingPENInput(penArr[2]);
   await addStudent.clickCancelAddStudentButton();
 
@@ -85,9 +100,10 @@ test('test-send-new-message-with-students', async t => {
 });
 
 test('test-send-new-message-with-attachment', async t => {
-  if(await instituteSelectionPage.isInstituteSelectionPage()){
+  if (await instituteSelectionPage.isInstituteSelectionPage()) {
     await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle(schoolTitle);
   }
+
   await t.navigateTo(base_url + '/inbox');
 
   await inbox.createANewMessage(testExchangeSubject);

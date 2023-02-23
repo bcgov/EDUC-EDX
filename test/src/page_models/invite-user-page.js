@@ -1,4 +1,4 @@
-import {Selector, t} from 'testcafe';
+import { Selector, t } from 'testcafe';
 import log from 'npmlog'
 
 class InviteUserPage {
@@ -12,19 +12,19 @@ class InviteUserPage {
     this.inviteBtn=Selector('#newUserInvitePostBtn');
   }
 
-  async selectRole(roleName){
+  async selectRole(roleName) {
     await t.click(this.rolesSelector).wait(10);
     await t.expect(this.rolesSelectorBox.exists).ok();
     await t.click(this.rolesSelectorBox.find('div').withExactText(roleName));
     await t.click(this.emailInput());
   }
 
-  async setFirstName(name){
+  async setFirstName(name) {
     await t.typeText(this.firstNameInput, name);
     log.info('First name input');
   }
 
-  async setLastName(name){
+  async setLastName(name) {
     await t.typeText(this.lastNameInput, name);
     log.info('Last name input');
   }
