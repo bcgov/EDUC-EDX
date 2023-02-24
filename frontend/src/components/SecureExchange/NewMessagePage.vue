@@ -194,8 +194,8 @@ export default {
     ...mapState(appStore, ['schoolsMap', 'activeDistrictsMap']),
   },
   created() {
-    this.$store.dispatch('edx/getExchangeSchoolIds');
-    this.$store.dispatch('edx/getMinistryTeams');
+    edxStore().getExchangeSchoolIds();
+    edxStore().getMinistryTeams();
     //ensure uploaded messages are cleared out
     this.clearSecureExchangeDocuments();
     //ensure selected students are cleared out

@@ -17,15 +17,14 @@
           hide-default-header
           :headers="schoolHeaders"
           mobile-breakpoint="0"
-          sort-by="displayName"
           hide-default-footer
           :loading="isTableLoading"
         >
-          <template v-slot:item.mincode="{ item }">
-            <v-row @click="selectSchool(item.schoolID)" style="cursor: pointer;">
+          <template v-slot:item="{ item }">
+            <v-row @click="selectSchool(item.value.schoolID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
-                <h3 class="mt-1 mb-1" style="color: black;">{{item.displayName}}</h3>
-                <h3 style="color: grey;">{{item.mincode}}</h3>
+                <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
+                <h3 style="color: grey;">{{item.value.mincode}}</h3>
               </v-col>
             </v-row>
           </template>
@@ -40,15 +39,14 @@
             hide-default-header
             :headers="districtHeaders"
             mobile-breakpoint="0"
-            sort-by="displayName"
             hide-default-footer
             :loading="isTableLoading"
         >
-          <template v-slot:item.districtNumber="{ item }">
-            <v-row @click="selectDistrict(item.districtID)" style="cursor: pointer;">
+          <template v-slot:item="{ item }">
+            <v-row @click="selectDistrict(item.value.districtID)" style="cursor: pointer;">
               <v-col cols="7" md="10">
-                <h3 class="mt-1 mb-1" style="color: black;">{{item.displayName}}</h3>
-                <h3 style="color: grey;">{{item.districtNumber}}</h3>
+                <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
+                <h3 style="color: grey;">{{item.value.districtNumber}}</h3>
               </v-col>
             </v-row>
           </template>
@@ -103,7 +101,7 @@ export default {
   },
   created() {
     this.isTableLoading = true;
-    this.$store.dispatch('app/getInstitutesData').finally(() => {
+    appStore().getInstitutesData().finally(() => {
       this.isTableLoading = false;
       const schoolsMap = this.activeSchoolsMap;
       this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {

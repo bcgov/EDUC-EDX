@@ -20,7 +20,7 @@
     <div v-if="authStore().isAuthenticated && dataReady">
       <v-menu name="user_options" offset-y>
         <template v-slot:activator="{ on }">
-          <v-chip tabindex="0" v-on="on" pill color="#003366" dark>
+          <v-chip tabindex="0" pill color="#003366" dark>
             <v-avatar left color="info">
               {{ authStore().userInfo.displayName[0] }}
             </v-avatar>
@@ -78,8 +78,6 @@ export default {
     hasBothSchoolAndDistrict(){
       return this.userInfo?.userDistrictIDs?.length>0 && this.userInfo?.userSchoolIDs?.length > 0;
     }
-
-
   }
 };
 </script>

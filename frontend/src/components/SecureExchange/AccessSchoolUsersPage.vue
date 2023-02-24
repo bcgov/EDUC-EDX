@@ -190,26 +190,26 @@ export default {
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {
-      await this.$store.dispatch('edx/getSchoolExchangeRoles');
+      await edxStore().getSchoolExchangeRoles();
     }
     if(this.schoolsMap.size === 0) {
-      await this.$store.dispatch('app/getInstitutesData');
+      await appStore().getInstitutesData();
     }
   },
   created() {
-    this.$store.dispatch('auth/getUserInfo').then(() => {
+    authStore().getUserInfo().then(() => {
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.isDistrictUser = false;
         this.schoolID = this.userInfo.activeInstituteIdentifier;
         this.getPrimaryEdxActivationCodeSchool();
         this.getUsersData();
-        this.$store.dispatch('app/getInstitutesData').then(() => {
+        appStore().getInstitutesData().then(() => {
           this.setupSchoolFields();
           this.loading = false;
         });
       }else{
         this.isDistrictUser = true;
-        this.$store.dispatch('app/getInstitutesData').then(() => {
+        appStore().getInstitutesData().then(() => {
           this.setupSchoolFields();
           this.loading = false;
         });

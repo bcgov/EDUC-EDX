@@ -251,6 +251,7 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const aStore = authStore();
+  const apStore = appStore();
   // this section is to set page title in vue store
   if (to.meta.requiresAuth) {
     aStore.getJwtToken().then(() => {
@@ -264,9 +265,9 @@ router.beforeEach((to, _from, next) => {
             next('/unauthorized');
           }else if (to && to.meta) {
             if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
-              appStore.commit('setPageTitle',to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
+              apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
             }else{
-              appStore.commit('setPageTitle',to.meta.pageTitle);
+              apStore.setPageTitle(to.meta.pageTitle);
             }
           }
           next();
@@ -287,9 +288,9 @@ router.beforeEach((to, _from, next) => {
       next();
     }
     if (to && to.meta) {
-      appStore.commit('setPageTitle',to.meta.pageTitle);
+      apStore.setPageTitle(to.meta.pageTitle);
     } else {
-      appStore.commit('setPageTitle','');
+      apStore.setPageTitle('');;
     }
     next();
   }

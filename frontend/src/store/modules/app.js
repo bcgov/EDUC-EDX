@@ -18,62 +18,62 @@ export const appStore = defineStore('app', {
     districtsMapObjectSorted: state => Object.values(Object.fromEntries(state.districtsMap)).map(v => v.toUpperCase()).sort(),
   },
   actions: {
-    async setPageTitle(state, pageTitle){
-      state.pageTitle = pageTitle;
+    async setPageTitle(pageTitle){
+      this.pageTitle = pageTitle;
     },
-    async setSchools(state, schoolsResponse) {
-      state.schoolsMap = new Map();
+    async setSchools(schoolsResponse) {
+      this.schoolsMap = new Map();
       schoolsResponse.forEach(element => {
-        state.schoolsMap.set(element.schoolID, element);
+        this.schoolsMap.set(element.schoolID, element);
       });
     },
-    async setActiveSchools(state, activeSchoolsResponse) {
-      state.activeSchoolsMap = new Map();
+    async setActiveSchools(activeSchoolsResponse) {
+      this.activeSchoolsMap = new Map();
       activeSchoolsResponse.forEach(element => {
-        state.activeSchoolsMap.set(element.schoolID, element);
+        this.activeSchoolsMap.set(element.schoolID, element);
       });
     },
-    async setActiveDistricts(state, activeDistrictsResponse) {
-      state.activeDistrictsMap = new Map();
+    async setActiveDistricts(activeDistrictsResponse) {
+      this.activeDistrictsMap = new Map();
       activeDistrictsResponse.forEach(element => {
-        state.activeDistrictsMap.set(element.districtID, element);
+        this.activeDistrictsMap.set(element.districtID, element);
       });
     },
-    async setAlertNotificationText(state, alertNotificationText){
-      state.alertNotificationText = alertNotificationText;
+    async setAlertNotificationText(alertNotificationText){
+      this.alertNotificationText = alertNotificationText;
     },
-    async setAlertNotification(state, alertNotification){
-      state.alertNotification = alertNotification;
+    async setAlertNotification(alertNotification){
+      this.alertNotification = alertNotification;
     },
-    async addAlertNotification(state, text) {
-      state.alertNotificationQueue.push(text);
-      if (!state.alertNotification) {
-        state.alertNotification = true;
+    async addAlertNotification(text) {
+      this.alertNotificationQueue.push(text);
+      if (!this.alertNotification) {
+        this.alertNotification = true;
       }
     },
-    async setDistricts(state, districtList) {
-      state.districtsMap = new Map();
+    async setDistricts(districtList) {
+      this.districtsMap = new Map();
       districtList.forEach(element => {
-        state.districtsMap.set(element.districtID, element);
+        this.districtsMap.set(element.districtID, element);
       });
     },
-    async getInstitutesData({ commit, state}) {
+    async getInstitutesData() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
-        if(state.schoolsMap.size === 0) {
+        if(this.schoolsMap.size === 0) {
           const response = await ApiService.getSchools();
-          commit('setSchools', response.data);
+          await this.setSchools(response.data);
         }
-        if (state.activeSchoolsMap.size === 0) {
+        if (this.activeSchoolsMap.size === 0) {
           const response = await ApiService.getActiveSchools();
-          commit('setActiveSchools', response.data);
+          await this.setActiveSchools(response.data);
         }
-        if(state.districtsMap.size === 0) {
+        if(this.districtsMap.size === 0) {
           const response = await ApiService.getDistricts();
-          commit('setDistricts', response.data);
+          await this.setDistricts(response.data);
         }
-        if (state.activeDistrictsMap.size === 0) {
+        if (this.activeDistrictsMap.size === 0) {
           const response = await ApiService.getActiveDistricts();
-          commit('setActiveDistricts', response.data);
+          await this.setActiveDistricts(response.data);
         }
       }
     },

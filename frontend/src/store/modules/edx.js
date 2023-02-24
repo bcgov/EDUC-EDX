@@ -18,80 +18,79 @@ export const edxStore = defineStore('edx', {
     secureExchangeStudents:[]
   }),
   getters: {
-    statuses: state => state.statuses,
-    exchange: state => state.exchange,
-    secureExchangeID: state => state.exchange.secureExchangeID,
-    ministryTeams: state => state.ministryTeams,
-    secureExchangeDocumentTypes: state => state.secureExchangeDocumentTypes,
-    secureExchangeDocuments: state => state.secureExchangeDocuments,
-    fileRequirements: state => state.fileRequirements,
-    secureExchangeStudents: state => state.secureExchangeStudents,
+    statusesGet: state => state.statuses,
+    exchangeGet: state => state.exchange,
+    secureExchangeIDGet: state => state.exchange.secureExchangeID,
+    ministryTeamsGet: state => state.ministryTeams,
+    secureExchangeDocumentTypesGet: state => state.secureExchangeDocumentTypes,
+    secureExchangeDocumentsGet: state => state.secureExchangeDocuments,
+    fileRequirementsGet: state => state.fileRequirements,
+    secureExchangeStudentsGet: state => state.secureExchangeStudents,
   },
   actions: {
-    async setStatuses(state, statuses){
-      state.statuses = statuses;
+    async setStatuses(statuses){
+      this.statuses = statuses;
     },
-    async setExchange(state, exchange){
-      state.exchange = exchange;
+    async setExchange(exchange){
+      this.exchange = exchange;
     },
-    async setExchangeSchoolIds(state, payload) {
-      state.exchangeSchoolIds = payload;
+    async setExchangeSchoolIds(payload) {
+      this.exchangeSchoolIds = payload;
     },
-    async setSchoolRoles(state, payload){
-      state.schoolRoles = JSON.parse(JSON.stringify(payload));
+    async setSchoolRoles(payload){
+      this.schoolRoles = JSON.parse(JSON.stringify(payload));
     },
-    async setSchoolRolesCopy(state, payload){
-      state.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
+    async setSchoolRolesCopy(payload){
+      this.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
     },
-    async setDistrictRoles(state, payload){
-      state.districtRoles = JSON.parse(JSON.stringify(payload));
+    async setDistrictRoles(payload){
+      this.districtRoles = JSON.parse(JSON.stringify(payload));
     },
-    async setDistrictRolesCopy(state, payload){
-      state.districtRolesCopy = JSON.parse(JSON.stringify(payload));
+    async setDistrictRolesCopy(payload){
+      this.districtRolesCopy = JSON.parse(JSON.stringify(payload));
     },
-    async setMinistryTeams(state, ministryTeams){
-      state.ministryTeams = ministryTeams;
+    async setMinistryTeams(ministryTeams){
+      this.ministryTeams = ministryTeams;
     },
-    async setSecureExchangeDocumentTypes(state, payload) {
-      state.secureExchangeDocumentTypes = payload;
+    async setSecureExchangeDocumentTypes(payload) {
+      this.secureExchangeDocumentTypes = payload;
     },
-    async setSecureExchangeDocuments(state, payload) {
-      state.secureExchangeDocuments = payload;
+    async setSecureExchangeDocuments(payload) {
+      this.secureExchangeDocuments = payload;
     },
-    async deleteSecureExchangeDocumentByIndex(state, index) {
-      if (index < state.secureExchangeDocuments.length) {
-        state.secureExchangeDocuments.splice(index, 1);
+    async deleteSecureExchangeDocumentByIndex(index) {
+      if (index < this.secureExchangeDocuments.length) {
+        this.secureExchangeDocuments.splice(index, 1);
       }
     },
-    async setFileRequirements(state, payload) {
-      state.fileRequirements = payload;
+    async setFileRequirements(payload) {
+      this.fileRequirements = payload;
     },
-    async setSecureExchangeStudents(state,payload){
-      state.secureExchangeStudents= payload;
+    async setSecureExchangeStudents(payload){
+      this.secureExchangeStudents= payload;
     },
-    async deleteSecureExchangeStudentsByID(state, payload) {
-      state.secureExchangeStudents = state.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
+    async deleteSecureExchangeStudentsByID(payload) {
+      this.secureExchangeStudents = this.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
     },
-    async getMinistryTeams({commit, state}) {
+    async getMinistryTeams() {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.ministryTeams.length === 0) {
+        if (this.ministryTeams.length === 0) {
           const response = await ApiService.getMinistryTeamCodes();
-          commit('setMinistryTeams', response.data);
+          await this.setMinistryTeams(response.data);
         }
       }
     },
-    async getExchangeStatusCodes({commit, state}) {
+    async getExchangeStatusCodes() {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.statuses.length === 0) {
-          ApiService.getExchangeStatuses().then(response => {
-            commit('setStatuses', response.data);
-          });
+        if (this.statuses.length === 0) {
+          const response = await ApiService.getExchangeStatuses();
+          await this.setStatuses(response.data);
         }
       }
     },
-    async getExchangeSchoolIds({ commit, state}) {
+    async getExchangeSchoolIds() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if(state.exchangeSchoolIds.length === 0) {
+        if(this.exchangeSchoolIds.length === 0) {
           const query = {
             params: {
               permissionCode : 'SECURE_EXCHANGE',
@@ -99,52 +98,51 @@ export const edxStore = defineStore('edx', {
           };
 
           const response = await ApiService.getEdxExchangeSchoolIds(query);
-          commit('setExchangeSchoolIds', response.data);
+          await this.setExchangeSchoolIds(response.data);
         }
       }
     },
-    async getSchoolExchangeRoles({ commit, state}) {
+    async getSchoolExchangeRoles() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.schoolRoles.length === 0) {
+        if (this.schoolRoles.length === 0) {
           const params = {
             params: {
               instituteType:'SCHOOL'
             }
           };
           const response = await ApiService.getEdxRoles(params);
-          commit('setSchoolRoles', response.data);
-          commit('setSchoolRolesCopy', response.data);
+          await this.setSchoolRoles(response.data);
+          await this.setSchoolRolesCopy(response.data);
         }
       }
     },
-    async getDistrictExchangeRoles({ commit, state}) {
+    async getDistrictExchangeRoles() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.districtRoles.length === 0) {
+        if (this.districtRoles.length === 0) {
           const params = {
             params: {
               instituteType:'DISTRICT'
             }
           };
           const response = await ApiService.getEdxRoles(params);
-          commit('setDistrictRoles', response.data);
-          commit('setDistrictRolesCopy', response.data);
-
+          await this.setDistrictRoles(response.data);
+          await this.setDistrictRolesCopy(response.data);
         }
       }
     },
-    async getSecureExchangeDocumentTypes({ commit, state}) {
+    async getSecureExchangeDocumentTypes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.secureExchangeDocumentTypes.length === 0) {
+        if (this.secureExchangeDocumentTypes.length === 0) {
           const response = await ApiService.getSecureExchangeDocumentTypes();
-          commit('setSecureExchangeDocumentTypes', response.data);
+          await this.setSecureExchangeDocumentTypes(response.data);
         }
       }
     },
-    async getFileRequirements({ commit, state}) {
+    async getFileRequirements() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if(state.fileRequirements.length === 0) {
+        if(this.fileRequirements.length === 0) {
           const response = await ApiService.getFileRequirements();
-          commit('setFileRequirements', response.data);
+          await this.setFileRequirements(response.data);
         }
       }
     },

@@ -621,31 +621,31 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+    instituteStore().getFacilityTypeCodes().then(() => {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+    instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolOrganizationTypeCodes').then(() => {
+    instituteStore().getSchoolOrganizationTypeCodes().then(() => {
       this.schoolOrganizationTypes = this.schoolOrganizationTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolNeighborhoodLearningCodes').then(() => {
+    instituteStore().getSchoolNeighborhoodLearningCodes().then(() => {
       this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
     });
-    this.$store.dispatch('institute/getAllActiveSchoolOrganizationTypeCodes').then(() => {
+    instituteStore().getAllActiveSchoolOrganizationTypeCodes().then(() => {
       this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
     });
-    this.$store.dispatch('institute/getAllActiveSchoolNeighborhoodLearningCodes').then(() => {
+    instituteStore().getAllActiveSchoolNeighborhoodLearningCodes().then(() => {
       this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
     });
-    this.$store.dispatch('institute/getGradeCodes').then(() => {
+    instituteStore().getGradeCodes().then(() => {
       this.schoolGradeTypes = this.gradeCodes;
     });
-    this.$store.dispatch('institute/getProvinceCodes').then(() => {
+    instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
     });
-    this.$store.dispatch('institute/getCountryCodes').then(() => {
+    instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;
     });
     this.getThisSchoolsDetails();

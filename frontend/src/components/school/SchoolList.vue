@@ -138,6 +138,7 @@ import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import {formatPhoneNumber, formatContactName} from '../../utils/format';
 import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '../../utils/institute/status';
+import {edxStore} from '../../store/modules/edx';
 
 export default {
   name: 'SchoolListPage',
@@ -201,12 +202,12 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getInstitutesData');
-    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+    edxStore().getMinistryTeams();
+    appStore().getInstitutesData();
+    instituteStore().getFacilityTypeCodes().then(() => {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+    instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
     });
 

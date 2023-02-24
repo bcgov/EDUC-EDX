@@ -447,10 +447,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('institute/getProvinceCodes').then(() => {
+    instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province =>  province.provinceCode === 'BC' || province.provinceCode === 'YT');
     });
-    this.$store.dispatch('institute/getCountryCodes').then(() => {
+    instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;
     });
     this.getDistrict();

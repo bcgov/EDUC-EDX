@@ -98,8 +98,8 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch('edx/getSecureExchangeDocumentTypes');
-    await this.$store.dispatch('edx/getFileRequirements');
+    await edxStore().getSecureExchangeDocumentTypes();
+    await edxStore.getFileRequirements();
 
     this.getFileRules().catch(e => {
       console.log(e);

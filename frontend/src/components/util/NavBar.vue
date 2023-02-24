@@ -6,7 +6,6 @@
           clipped
           app
           color="#E9EBEF"
-          :style="`margin-top: ${$vuetify.application.top + $vuetify.application.bar}px`"
           :width="navWidth"
           temporary>
     <v-list>
@@ -16,10 +15,10 @@
             class="menuRow"
             :id="stripWhitespace(item.title + `MenuBtn`)">
           <router-link :to="{ name: item.link }"  :target="item.newTab ? '_blank' : '_self'" class="router">
-            <v-list-item-content>
+            <v-list-item>
               <v-list-item-title v-if="item.link === $route.name" class="menuItem"><strong>{{item.title}}</strong></v-list-item-title>
               <v-list-item-title v-else class="menuItem">{{item.title}}</v-list-item-title>
-            </v-list-item-content>
+            </v-list-item>
           </router-link>
       </v-list-item>
       <v-list-group
@@ -33,9 +32,9 @@
               @click="setActive(item)"
       >
         <template v-slot:activator>
-          <v-list-item-content>
+          <v-list-item>
             <v-list-item-title v-text="item.title" class="menuItem"></v-list-item-title>
-          </v-list-item-content>
+          </v-list-item>
           <v-icon color="#003366" v-if="!item.active">$plus</v-icon>
           <v-icon color="#003366" v-else>$minus</v-icon>
         </template>
@@ -47,10 +46,10 @@
                 :id="stripWhitespace(subItem.title) + `MenuBtn`"
         >
           <router-link :to="{ name: subItem.link }" :target="subItem.newTab ? '_blank' : '_self'" class="router">
-            <v-list-item-content>
+            <v-list-item>
               <v-list-item-title v-if="subItem.link === $route.name" class="menuItem"><strong>{{ subItem.title }}</strong></v-list-item-title>
               <v-list-item-title v-else v-text="subItem.title" class="menuItem"></v-list-item-title>
-            </v-list-item-content>
+            </v-list-item>
           </router-link>
         </v-list-item>
       </v-list-group>

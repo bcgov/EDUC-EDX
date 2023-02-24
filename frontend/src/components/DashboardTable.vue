@@ -361,7 +361,7 @@ export default {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
             let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
-            if (thisContactLastUpdated !== null) {
+            if (thisContactLastUpdated !== null && this.schoolContactsLastUpdateDate) {
               if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
                 this.schoolContactsLastUpdateDate = thisContactLastUpdated;
               }
@@ -407,7 +407,7 @@ export default {
       router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     isSchoolActive(){
-      this.$store.dispatch('app/getInstitutesData').finally(() => {
+      appStore().getInstitutesData().finally(() => {
         this.isTableLoading = false;
         const schoolsMap = this.activeSchoolsMap;
         this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
@@ -420,7 +420,7 @@ export default {
       return this.activeUserSchools.length > 0;
     },
     isDistrictActive(){
-      this.$store.dispatch('app/getInstitutesData').finally(() => {
+      appStore().getInstitutesData().finally(() => {
         this.isTableLoading = false;
         const districtMap = this.activeDistrictsMap;
         this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {

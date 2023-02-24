@@ -270,6 +270,7 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
+import {appStore} from '../../store/modules/app';
 
 export default {
   name: 'ExchangeInbox',
@@ -341,9 +342,9 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('edx/getExchangeStatusCodes');
-    this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getInstitutesData');
+    edxStore().getExchangeStatusCodes();
+    edxStore().getMinistryTeams();
+    appStore().getInstitutesData();
     this.headerSearchParams.secureExchangeStatusCode = ['OPEN'];
     this.getExchanges();
   },

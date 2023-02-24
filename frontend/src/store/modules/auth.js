@@ -2,8 +2,8 @@ import ApiService from '../../common/apiService';
 import AuthService from '../../common/authService';
 import { defineStore } from 'pinia';
 
-function isFollowUpVisit() {
-  return !!this.jwtToken;
+function isFollowUpVisit(jwtToken) {
+  return !!jwtToken;
 }
 
 function isExpiredToken(jwtToken) {
@@ -13,83 +13,57 @@ function isExpiredToken(jwtToken) {
   return payload.exp <= now;
 }
 
-async function refreshToken() {
-  if (isExpiredToken(this.jwtToken)) {
-    await this.logout();
-    return;
-  }
-
-  const response = await AuthService.refreshAuthToken(getters.jwtToken);
-  if (response.jwtFrontend) {
-    await this.setJwtToken(response.jwtFrontend);
-    ApiService.setAuthHeader(response.jwtFrontend);
-  } else {
-    throw 'No jwtFrontend';
-  }
-}
-
-async function getInitialToken() {
-  const response = await AuthService.getAuthToken();
-
-  if (response.jwtFrontend) {
-    await this.setJwtToken(response.jwtFrontend);
-    ApiService.setAuthHeader(response.jwtFrontend);
-  } else {
-    throw 'No jwtFrontend';
-  }
-}
-
 export const authStore = defineStore('auth', {
   namespaced: true,
   state: () => ({
-    acronymsState: [],
-    isAuthenticatedState: false,
-    userInfoState: null,
-    errorState: false,
-    isLoadingState: true,
-    loginErrorState: false,
-    jwtTokenState: localStorage.getItem('jwtToken'),
+    acronyms: [],
+    isAuthenticated: false,
+    userInfo: null,
+    error: false,
+    isLoading: true,
+    loginError: false,
+    jwtToken: localStorage.getItem('jwtToken'),
   }),
   getters: {
-    acronyms: state => state.acronyms,
-    isAuthenticated: state => state.isAuthenticated,
-    jwtToken: state => state.jwtToken,
-    userInfo: state => state.userInfo,
-    loginError: state => state.loginError,
-    error: state => state.error,
-    isLoading: state => state.isLoading,
+    acronymsGet: state => state.acronyms,
+    isAuthenticatedGet: state => state.isAuthenticated,
+    jwtTokenGet: state => state.jwtToken,
+    userInfoGet: state => state.userInfo,
+    loginErrorGet: state => state.loginError,
+    errorGet: state => state.error,
+    isLoadingGet: state => state.isLoading,
   },
   actions: {
     //sets Json web token and determines whether user is authenticated
     async setJwtToken(token = null){
       if (token) {
-        this.isAuthenticatedState = true;
-        this.jwtTokenState = token;
+        this.isAuthenticated = true;
+        this.jwtToken = token;
         localStorage.setItem('jwtToken', token);
       } else {
-        this.isAuthenticatedState = false;
-        this.jwtTokenState = null;
+        this.isAuthenticated = false;
+        this.jwtToken = null;
         localStorage.removeItem('jwtToken');
       }
     },
     async setUserInfo(userInfo){
       if(userInfo){
-        this.userInfoState = userInfo;
+        this.userInfo = userInfo;
       } else {
-        this.userInfoState = null;
+        this.userInfo = null;
       }
     },
     async setLoginError(){
-      this.loginErrorState = true;
+      this.loginError = true;
     },
     async setError(error){
-      this.errorState = error;
+      this.error = error;
     },
     async setLoading(isLoading){
-      this.isLoadingState = isLoading;
+      this.isLoading = isLoading;
     },
     async loginErrorRedirect(){
-      this.loginErrorState = true;
+      this.loginError = true;
     },
     async logout() {
       await this.setJwtToken();
@@ -97,15 +71,33 @@ export const authStore = defineStore('auth', {
     },
     async getUserInfo(){
       const userInfoRes = await ApiService.getUserInfo();
-      this.userInfoState = userInfoRes.data;
+      this.userInfo = userInfoRes.data;
     },
     //retrieves the json web token from local storage. If not in local storage, retrieves it from API
     async getJwtToken() {
-      this.errorState = false;
-      if (isFollowUpVisit()) {
-        await refreshToken();
+      await this.setError(false);
+      if (isFollowUpVisit(this.jwtToken)) {
+        if (isExpiredToken(this.jwtToken)) {
+          await this.logout();
+          return;
+        }
+
+        const response = await AuthService.refreshAuthToken(this.jwtToken);
+        if (response.jwtFrontend) {
+          await this.setJwtToken(response.jwtFrontend);
+          ApiService.setAuthHeader(response.jwtFrontend);
+        } else {
+          throw 'No jwtFrontend';
+        }
       } else {  //inital login and redirect
-        await getInitialToken();
+        const response = await AuthService.getAuthToken();
+
+        if (response.jwtFrontend) {
+          await this.setJwtToken(response.jwtFrontend);
+          ApiService.setAuthHeader(response.jwtFrontend);
+        } else {
+          throw 'No jwtFrontend';
+        }
       }
     },
   }

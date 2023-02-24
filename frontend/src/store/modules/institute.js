@@ -20,119 +20,119 @@ export const instituteStore = defineStore('institute', {
     activeCountryCodes: null
   }),
   getters: {
-    facilityTypeCodes: state => state.facilityTypeCodes,
-    schoolCategoryTypeCodes: state => state.schoolCategoryTypeCodes,
-    schoolOrganizationTypeCodes: state => state.schoolOrganizationTypeCodes,
-    schoolNeighborhoodLearningCodes: state => state.schoolNeighborhoodLearningCodes,
-    gradeCodes: state => state.gradeCodes,
-    provinceCodes: state => state.provinceCodes,
-    countryCodes: state => state.countryCodes,
-    activeFacilityTypeCodes: state => state.activeFacilityTypeCodes,
-    activeSchoolCategoryTypeCodes: state => state.activeSchoolCategoryTypeCodes,
-    activeSchoolOrganizationTypeCodes: state => state.activeSchoolOrganizationTypeCodes,
-    activeSchoolNeighborhoodLearningCodes: state => state.activeSchoolNeighborhoodLearningCodes,
-    activeGradeCodes: state => state.activeGradeCodes,
-    activeProvinceCodes: state => state.activeProvinceCodes,
-    activeCountryCodes: state => state.activeCountryCodes,
+    facilityTypeCodesGet: state => state.facilityTypeCodes,
+    schoolCategoryTypeCodesGet: state => state.schoolCategoryTypeCodes,
+    schoolOrganizationTypeCodesGet: state => state.schoolOrganizationTypeCodes,
+    schoolNeighborhoodLearningCodesGet: state => state.schoolNeighborhoodLearningCodes,
+    gradeCodesGet: state => state.gradeCodes,
+    provinceCodesGet: state => state.provinceCodes,
+    countryCodesGet: state => state.countryCodes,
+    activeFacilityTypeCodesGet: state => state.activeFacilityTypeCodes,
+    activeSchoolCategoryTypeCodesGet: state => state.activeSchoolCategoryTypeCodes,
+    activeSchoolOrganizationTypeCodesGet: state => state.activeSchoolOrganizationTypeCodes,
+    activeSchoolNeighborhoodLearningCodesGet: state => state.activeSchoolNeighborhoodLearningCodes,
+    activeGradeCodesGet: state => state.activeGradeCodes,
+    activeProvinceCodesGet: state => state.activeProvinceCodes,
+    activeCountryCodesGet: state => state.activeCountryCodes,
   },
   actions: {
-    async setFacilityTypeCodes(state, facilityTypeCodes) {
-      state.facilityTypeCodes = facilityTypeCodes;
+    async setFacilityTypeCodes(facilityTypeCodes) {
+      this.facilityTypeCodes = facilityTypeCodes;
     },
-    async setSchoolCategoryTypeCodes(state, schoolCategoryTypeCodes) {
-      state.schoolCategoryTypeCodes = schoolCategoryTypeCodes;
+    async setSchoolCategoryTypeCodes(schoolCategoryTypeCodes) {
+      this.schoolCategoryTypeCodes = schoolCategoryTypeCodes;
     },
-    async setSchoolOrganizationTypeCodes(state, schoolOrganizationTypeCodes) {
-      state.schoolOrganizationTypeCodes = schoolOrganizationTypeCodes;
+    async setSchoolOrganizationTypeCodes(schoolOrganizationTypeCodes) {
+      this.schoolOrganizationTypeCodes = schoolOrganizationTypeCodes;
     },
-    async setSchoolNeighborhoodLearningCodes(state, schoolNeighborhoodLearningCodes) {
-      state.schoolNeighborhoodLearningCodes = schoolNeighborhoodLearningCodes;
+    async setSchoolNeighborhoodLearningCodes(schoolNeighborhoodLearningCodes) {
+      this.schoolNeighborhoodLearningCodes = schoolNeighborhoodLearningCodes;
     },
-    async setGradeCodes(state, gradeCodes) {
-      state.gradeCodes = gradeCodes;
+    async setGradeCodes(gradeCodes) {
+      this.gradeCodes = gradeCodes;
     },
-    async setProvinceCodes(state, provinceCodes) {
-      state.provinceCodes = provinceCodes;
+    async setProvinceCodes(provinceCodes) {
+      this.provinceCodes = provinceCodes;
     },
-    async setCountryCodes(state, countryCodes) {
-      state.countryCodes = countryCodes;
+    async setCountryCodes(countryCodes) {
+      this.countryCodes = countryCodes;
     },
-    async setActiveFacilityTypeCodes(state, activeFacilityTypeCodes) {
-      state.activeFacilityTypeCodes = activeFacilityTypeCodes;
+    async setActiveFacilityTypeCodes(activeFacilityTypeCodes) {
+      this.activeFacilityTypeCodes = activeFacilityTypeCodes;
     },
-    async setActiveSchoolCategoryTypeCodes(state, activeSchoolCategoryTypeCodes) {
-      state.activeSchoolCategoryTypeCodes = activeSchoolCategoryTypeCodes;
+    async setActiveSchoolCategoryTypeCodes(activeSchoolCategoryTypeCodes) {
+      this.activeSchoolCategoryTypeCodes = activeSchoolCategoryTypeCodes;
     },
-    async setActiveSchoolOrganizationTypeCodes(state, activeSchoolOrganizationTypeCodes) {
-      state.activeSchoolOrganizationTypeCodes = activeSchoolOrganizationTypeCodes;
+    async setActiveSchoolOrganizationTypeCodes(activeSchoolOrganizationTypeCodes) {
+      this.activeSchoolOrganizationTypeCodes = activeSchoolOrganizationTypeCodes;
     },
-    async setActiveSchoolNeighborhoodLearningCodes(state, activeSchoolNeighborhoodLearningCodes) {
-      state.activeSchoolNeighborhoodLearningCodes = activeSchoolNeighborhoodLearningCodes;
+    async setActiveSchoolNeighborhoodLearningCodes(activeSchoolNeighborhoodLearningCodes) {
+      this.activeSchoolNeighborhoodLearningCodes = activeSchoolNeighborhoodLearningCodes;
     },
-    async setActiveGradeCodes(state, activeGradeCodes) {
-      state.activeGradeCodes = activeGradeCodes;
+    async setActiveGradeCodes(activeGradeCodes) {
+      this.activeGradeCodes = activeGradeCodes;
     },
-    async setActiveProvinceCodes(state, activeProvinceCodes) {
-      state.activeProvinceCodes = activeProvinceCodes;
+    async setActiveProvinceCodes(activeProvinceCodes) {
+      this.activeProvinceCodes = activeProvinceCodes;
     },
-    async setActiveCountryCodes(state, activeCountryCodes) {
-      state.activeCountryCodes = activeCountryCodes;
+    async setActiveCountryCodes(activeCountryCodes) {
+      this.activeCountryCodes = activeCountryCodes;
     },
-    async getFacilityTypeCodes({commit}) {
+    async getFacilityTypeCodes() {
       const response = await ApiService.getFacilityTypeCodes();
-      commit('setFacilityTypeCodes', response.data);
+      await this.setFacilityTypeCodes(response.data);
     },
-    async getSchoolCategoryTypeCodes({commit}) {
+    async getSchoolCategoryTypeCodes() {
       const response = await ApiService.getSchoolCategoryTypeCodes();
-      commit('setSchoolCategoryTypeCodes', response.data);
+      await this.setSchoolCategoryTypeCodes(response.data);
     },
-    async getSchoolOrganizationTypeCodes({commit}) {
+    async getSchoolOrganizationTypeCodes() {
       const response = await ApiService.getSchoolOrganizationTypeCodes();
-      commit('setSchoolOrganizationTypeCodes', response.data);
+      await this.setSchoolOrganizationTypeCodes(response.data);
     },
-    async getSchoolNeighborhoodLearningCodes({commit}) {
-      const reponse = await ApiService.getSchoolNeighborhoodLearningCodes();
-      commit('setSchoolNeighborhoodLearningCodes', reponse.data);
+    async getSchoolNeighborhoodLearningCodes() {
+      const response = await ApiService.getSchoolNeighborhoodLearningCodes();
+      await this.setSchoolNeighborhoodLearningCodes(response.data);
     },
-    async getGradeCodes({commit}) {
+    async getGradeCodes() {
       const response = await ApiService.getGradeCodes();
-      commit('setGradeCodes', response.data);
+      await this.setGradeCodes(response.data);
     },
-    async getProvinceCodes({commit}) {
+    async getProvinceCodes() {
       const response = await ApiService.getProvinceCodes();
-      commit('setProvinceCodes', response.data);
+      await this.setProvinceCodes(response.data);
     },
-    async getCountryCodes({commit}) {
+    async getCountryCodes() {
       const response = await ApiService.getCountryCodes();
-      commit('setCountryCodes', response.data);
+      await this.setCountryCodes(response.data);
     },
-    async getAllActiveFacilityTypeCodes({commit}) {
+    async getAllActiveFacilityTypeCodes() {
       const response = await ApiService.getAllActiveFacilityTypeCodes();
-      commit('setActiveFacilityTypeCodes', response.data);
+      await this.setActiveFacilityTypeCodes(response.data);
     },
-    async getAllActiveSchoolCategoryTypeCodes({commit}) {
+    async getAllActiveSchoolCategoryTypeCodes() {
       const response = await ApiService.getAllActiveSchoolCategoryTypeCodes();
-      commit('setActiveSchoolCategoryTypeCodes', response.data);
+      await this.setActiveSchoolCategoryTypeCodes(response.data);
     },
-    async getAllActiveSchoolOrganizationTypeCodes({commit}) {
+    async getAllActiveSchoolOrganizationTypeCodes() {
       const response = await ApiService.getAllActiveSchoolOrganizationTypeCodes();
-      commit('setActiveSchoolOrganizationTypeCodes', response.data);
+      await this.setActiveSchoolOrganizationTypeCodes(response.data);
     },
-    async getAllActiveSchoolNeighborhoodLearningCodes({commit}) {
+    async getAllActiveSchoolNeighborhoodLearningCodes() {
       const reponse = await ApiService.getAllActiveSchoolNeighborhoodLearningCodes();
-      commit('setActiveSchoolNeighborhoodLearningCodes', reponse.data);
+      await this.setActiveSchoolNeighborhoodLearningCodes(response.data);
     },
-    async getAllActiveGradeCodes({commit}) {
+    async getAllActiveGradeCodes() {
       const response = await ApiService.getAllActiveSchoolGradeCodes();
-      commit('setActiveGradeCodes', response.data);
+      await this.setActiveGradeCodes(response.data);
     },
-    async getAllActiveProvinceCodes({commit}) {
+    async getAllActiveProvinceCodes() {
       const response = await ApiService.getAllActiveInstituteProvinceCodes();
-      commit('setActiveProvinceCodes', response.data);
+      await this.setActiveProvinceCodes(response.data);
     },
-    async getAllActiveCountryCodes({commit}) {
+    async getAllActiveCountryCodes() {
       const response = await ApiService.getAllActiveInstituteCountryCodes();
-      commit('setActiveCountryCodes', response.data);
+      await this.setActiveCountryCodes(response.data);
     },
   }
 });

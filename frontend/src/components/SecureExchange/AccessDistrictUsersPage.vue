@@ -132,14 +132,14 @@ export default {
   },
   async beforeMount() {
     if (this.districtRoles.length === 0) {
-      await this.$store.dispatch('edx/getDistrictExchangeRoles');
+      await edxStore().getDistrictExchangeRoles();
     }
     if(this.districtsMap.size === 0) {
-      await this.$store.dispatch('app/getInstitutesData');
+      await appStore().getInstitutesData();
     }
   },
   created() {
-    this.$store.dispatch('auth/getUserInfo').then(() => {
+    authStore().getUserInfo().then(() => {
       this.districtID = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
       this.getDistrictInformation();
