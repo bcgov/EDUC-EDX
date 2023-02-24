@@ -1,15 +1,18 @@
 import { Selector, t } from 'testcafe';
 import log from 'npmlog'
 
-class InviteUserPage {
+import FormWithFields from './common/formWithFields';
+
+class InviteUserPage extends FormWithFields {
 
   constructor() {
+    super('#newUserInvitePostBtn');
     this.firstNameInput = Selector('#newUserFirstName');
     this.lastNameInput = Selector('#newUserLastName');
     this.emailInput = Selector('#newUserEmail');
     this.rolesSelector = Selector('#instituteNewUserRolesSelect').parent('div[role="button"]');
     this.rolesSelectorBox = Selector('div[role="listbox"]');
-    this.inviteBtn=Selector('#newUserInvitePostBtn');
+    this.inviteBtn = Selector('#newUserInvitePostBtn');
   }
 
   async selectRole(roleName) {
@@ -35,7 +38,7 @@ class InviteUserPage {
   }
 
   async clickInviteBtn() {
-    await t.click(this.inviteBtn());
+    await t.click(this.inviteBtn);
     log.info('click:', 'Invite button clicked');
   }
 

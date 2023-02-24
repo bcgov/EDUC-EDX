@@ -1,3 +1,4 @@
+import log from 'npmlog';
 import { base_url, credentials } from '../../config/constants';
 import InviteUserPage from '../../page_models/invite-user-page';
 import AccessUsersPage from '../../page_models/access-users-page';
@@ -62,3 +63,52 @@ test('test-school-user-activation-invite', async t => {
 
   await snackBar.verifySnackBarText('Success! The request is being processed.');
 });
+
+test('test-school-user-invite-form-validation', async t => {
+  const { firstNameInput, lastNameInput, emailInput, rolesSelector } = newUserInvitePage;
+
+  log.info('test:', 'test-new-message-form-validation')
+
+  await t.navigateTo(base_url);
+
+  if (await instituteSelectionPage.isInstituteSelectionPage()) {
+    await instituteSelectionPage.clickItemFromSchoolDashboardBasedOnTitle('Camosun College');
+  }
+
+  await menu.clickHamburgerMenu();
+  await menu.clickAdministrationMenuOption();
+  await menu.clickSchoolUserManagementSubMenuLink();
+  await accessUsersPage.clickNewUserButton();
+
+  log.info('phase 1:', 'All fields should be invalid, the post button should be disabled.');
+  await newUserInvitePage.verifyFieldIsInvalid(firstNameInput, 'First name');
+  await newUserInvitePage.verifyFieldIsInvalid(lastNameInput, 'Last name');
+  await newUserInvitePage.verifyFieldIsInvalid(emailInput, 'Email');
+  await newUserInvitePage.verifyFieldIsInvalid(rolesSelector, 'Role');
+  await newUserInvitePage.verifySubmitIsDisabled();
+
+  log.info('phase 2:', 'Ensure email field does not accept bogus input');
+  await newUserInvitePage.setEmail('notAnEmail');
+  await newUserInvitePage.verifyFieldIsInvalid(emailInput, 'Email');
+  await newUserInvitePage.clearTextField(emailInput);
+
+  log.info('phase 3:', 'Validate all fields and verify we can post');
+  await newUserInvitePage.setFirstName('Valid');
+  await newUserInvitePage.setLastName('LastName');
+  await newUserInvitePage.setEmail('test@testing.ca');
+  await newUserInvitePage.selectRole('Secure Exchange');
+
+  await newUserInvitePage.verifyFieldIsValid(firstNameInput, 'First name');
+  await newUserInvitePage.verifyFieldIsValid(lastNameInput, 'Last name');
+  await newUserInvitePage.verifyFieldIsValid(emailInput, 'Email');
+  await newUserInvitePage.verifyFieldIsValid(rolesSelector, 'Role');
+  await newUserInvitePage.verifySubmitIsEnabled();
+
+  log.info('phase 4:', 'Re-invalidate fields and make sure validators catch it.');
+  await newUserInvitePage.clearTextField(firstNameInput, 'First name');
+  await newUserInvitePage.clearTextField(lastNameInput, 'Last name');
+  await newUserInvitePage.clearTextField(emailInput, 'Email');
+  await newUserInvitePage.selectRole('Secure Exchange');
+  await newUserInvitePage.verifySubmitIsDisabled();
+});
+
