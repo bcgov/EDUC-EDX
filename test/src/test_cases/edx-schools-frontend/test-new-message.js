@@ -121,7 +121,7 @@ test('test-new-message-form-validation', async t => {
   await inbox.verifyFieldIsInvalid(inbox.schoolNameTextField, 'To');
   await inbox.verifyFieldIsInvalid(inbox.subjectTextField, 'Subject');
   await inbox.verifyFieldIsInvalid(inbox.newMessageTextArea, 'Message');
-  await inbox.verifyPostMessageButtonIsDisabled();
+  await inbox.verifySubmitIsDisabled();
 
   log.info('phase 2:', 'Validate all fields and verify we can post');
   await inbox.clickAndSelectTeamNameFieldByText('PEN Team');
@@ -130,14 +130,14 @@ test('test-new-message-form-validation', async t => {
   await inbox.verifyFieldIsValid(inbox.schoolNameTextField, 'To');
   await inbox.verifyFieldIsValid(inbox.subjectTextField, 'Subject');
   await inbox.verifyFieldIsValid(inbox.newMessageTextArea, 'Message');
-  await inbox.verifyPostMessageButtonIsEnabled();
+  await inbox.verifySubmitIsEnabled();
 
   log.info('phase 3:', 'Re-invalidate fields and make sure validators catch it.');
   await inbox.clearSubjectTextField();
   await inbox.clearMessageTextField();
   await inbox.verifyFieldIsInvalid(inbox.subjectTextField, 'Subject');
   await inbox.verifyFieldIsInvalid(inbox.newMessageTextArea, 'Message');
-  await inbox.verifyPostMessageButtonIsDisabled();
+  await inbox.verifySubmitIsDisabled();
 
 });
 

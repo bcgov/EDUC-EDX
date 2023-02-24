@@ -1,12 +1,13 @@
 import { Selector, t } from 'testcafe';
 import { findAllPaginated, deleteSecureExchange } from '../services/edx-api-service';
+import FormWithFields from './common/formWithFields';
 import log from 'npmlog';
 
 const now = new Date();
 
-class Inbox {
-
+class Inbox extends FormWithFields {
   constructor() {
+    super('#newMessagePostBtn');
     this.navTitle = Selector('#navTitle');
     this.newMessageButton = Selector('#newMessageBtn');
     this.filtersToggle = Selector('#filterid');
@@ -50,38 +51,6 @@ class Inbox {
   async clickNewMessageButton() {
     await t.click(this.newMessageButton);
     log.info('click:', 'New message button clicked');
-  }
-
-  /**
-   * Test a field to see if its parent v-input wrapper does not have an error class.
-   *
-   * @param {Selector} field - The message Selector field to test
-   * @param {string} name - A name for the npmlog
-   */
-  async verifyFieldIsValid(field, name) {
-    await t.expect(field.parent('div.v-input').hasClass('error--text')).notOk();
-    log.info('pass:', name ? `${name} field is valid` : 'field is valid');
-  }
-
-  /**
-   * Test a field to see if its parent v-input wrapper has an error class.
-   *
-   * @param {Selector} field - The message Selector field to test
-   * @param {string} name - A name for the npmlog
-   */
-  async verifyFieldIsInvalid(field, name) {
-    await t.expect(field.parent('div.v-input').hasClass('error--text')).ok();
-    log.info('pass:', name ? `${name} field is invalid` : 'field is invalid');
-  }
-
-  async verifyPostMessageButtonIsDisabled() {
-    await t.expect(this.newMessagePostBtn.hasAttribute('disabled')).ok();
-    log.info('pass:', 'The post message button is disabled');
-  }
-
-  async verifyPostMessageButtonIsEnabled() {
-    await t.expect(this.newMessagePostBtn.hasAttribute('disabled')).notOk();
-    log.info('pass:', 'The post message button is disabled');
   }
 
   async selectMessageDate() {
