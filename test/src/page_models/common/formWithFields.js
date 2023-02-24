@@ -8,8 +8,6 @@ class FormWithFields {
   }
 
   /**
-   * Test a field to see if its parent v-input wrapper does not have an error class.
-   *
    * @param {Selector} field - The message Selector field to test
    * @param {string} name - A name for the npmlog
    */
@@ -19,8 +17,6 @@ class FormWithFields {
   }
 
   /**
-   * Test a field to see if its parent v-input wrapper has an error class.
-   *
    * @param {Selector} field - The message Selector field to test
    * @param {string} name - A name for the npmlog
    */
