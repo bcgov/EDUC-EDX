@@ -87,16 +87,6 @@ class Inbox extends FormWithFields {
     log.info('input:', 'Message input');
   }
 
-  async clearMessageTextField() {
-    await t.selectText(this.newMessageTextArea).pressKey('delete');
-    log.info('input:', 'Cleared message field');
-  }
-
-  async clearSubjectTextField() {
-    await t.selectText(this.subjectTextField).pressKey('delete');
-    log.info('input:', 'Cleared subject field');
-  }
-
   async inputMessageId(text) {
     await t.typeText(this.messageIdInput, text);
     log.info('input:', 'Input message id');

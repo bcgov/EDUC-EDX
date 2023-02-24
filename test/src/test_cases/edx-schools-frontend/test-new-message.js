@@ -133,8 +133,8 @@ test('test-new-message-form-validation', async t => {
   await inbox.verifySubmitIsEnabled();
 
   log.info('phase 3:', 'Re-invalidate fields and make sure validators catch it.');
-  await inbox.clearSubjectTextField();
-  await inbox.clearMessageTextField();
+  await inbox.clearTextField(inbox.subjectTextField, 'Subject');
+  await inbox.clearTextField(inbox.newMessageTextArea, 'Message');
   await inbox.verifyFieldIsInvalid(inbox.subjectTextField, 'Subject');
   await inbox.verifyFieldIsInvalid(inbox.newMessageTextArea, 'Message');
   await inbox.verifySubmitIsDisabled();
