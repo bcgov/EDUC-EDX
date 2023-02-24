@@ -112,6 +112,32 @@ test('test-send-new-message-with-attachment', async t => {
   await messageDisplay.verifyTimelineAttachmentByText('BC.jpg');
 });
 
+test('test-new-message-form-validation', async t => {
+  log.info('test:', 'test-new-message-form-validation')
+  await t.navigateTo(base_url + '/inbox');
 
+  log.info('phase 1:', 'All fields should be invalid, the post button should be disabled.');
+  await inbox.clickNewMessageButton();
+  await inbox.verifyFieldIsInvalid(inbox.schoolNameTextField, 'To');
+  await inbox.verifyFieldIsInvalid(inbox.subjectTextField, 'Subject');
+  await inbox.verifyFieldIsInvalid(inbox.newMessageTextArea, 'Message');
+  await inbox.verifyPostMessageButtonIsDisabled();
 
+  log.info('phase 2:', 'Validate all fields and verify we can post');
+  await inbox.clickAndSelectTeamNameFieldByText('PEN Team');
+  await inbox.inputSubjectTextField('A valid subject');
+  await inbox.inputNewMessage('This should validate the message text area');
+  await inbox.verifyFieldIsValid(inbox.schoolNameTextField, 'To');
+  await inbox.verifyFieldIsValid(inbox.subjectTextField, 'Subject');
+  await inbox.verifyFieldIsValid(inbox.newMessageTextArea, 'Message');
+  await inbox.verifyPostMessageButtonIsEnabled();
+
+  log.info('phase 3:', 'Re-invalidate fields and make sure validators catch it.');
+  await inbox.clearSubjectTextField();
+  await inbox.clearMessageTextField();
+  await inbox.verifyFieldIsInvalid(inbox.subjectTextField, 'Subject');
+  await inbox.verifyFieldIsInvalid(inbox.newMessageTextArea, 'Message');
+  await inbox.verifyPostMessageButtonIsDisabled();
+
+});
 

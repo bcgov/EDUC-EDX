@@ -52,6 +52,38 @@ class Inbox {
     log.info('click:', 'New message button clicked');
   }
 
+  /**
+   * Test a field to see if its parent v-input wrapper does not have an error class.
+   *
+   * @param {Selector} field - The message Selector field to test
+   * @param {string} name - A name for the npmlog
+   */
+  async verifyFieldIsValid(field, name) {
+    await t.expect(field.parent('div.v-input').hasClass('error--text')).notOk();
+    log.info('pass:', name ? `${name} field is valid` : 'field is valid');
+  }
+
+  /**
+   * Test a field to see if its parent v-input wrapper has an error class.
+   *
+   * @param {Selector} field - The message Selector field to test
+   * @param {string} name - A name for the npmlog
+   */
+  async verifyFieldIsInvalid(field, name) {
+    await t.expect(field.parent('div.v-input').hasClass('error--text')).ok();
+    log.info('pass:', name ? `${name} field is invalid` : 'field is invalid');
+  }
+
+  async verifyPostMessageButtonIsDisabled() {
+    await t.expect(this.newMessagePostBtn.hasAttribute('disabled')).ok();
+    log.info('pass:', 'The post message button is disabled');
+  }
+
+  async verifyPostMessageButtonIsEnabled() {
+    await t.expect(this.newMessagePostBtn.hasAttribute('disabled')).notOk();
+    log.info('pass:', 'The post message button is disabled');
+  }
+
   async selectMessageDate() {
     await t.click(this.messageDateFilter());
     await t.click(this.messageDateNumber());
@@ -84,6 +116,16 @@ class Inbox {
   async inputNewMessage(text) {
     await t.typeText(this.newMessageTextArea, text);
     log.info('input:', 'Message input');
+  }
+
+  async clearMessageTextField() {
+    await t.selectText(this.newMessageTextArea).pressKey('delete');
+    log.info('input:', 'Cleared message field');
+  }
+
+  async clearSubjectTextField() {
+    await t.selectText(this.subjectTextField).pressKey('delete');
+    log.info('input:', 'Cleared subject field');
   }
 
   async inputMessageId(text) {
