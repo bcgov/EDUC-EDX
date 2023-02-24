@@ -2,8 +2,8 @@ import ApiService from '../../common/apiService';
 import AuthService from '../../common/authService';
 import { defineStore } from 'pinia';
 
-function isFollowUpVisit({jwtToken}) {
-  return !!jwtToken;
+function isFollowUpVisit() {
+  return !!this.jwtToken;
 }
 
 function isExpiredToken(jwtToken) {
@@ -13,26 +13,26 @@ function isExpiredToken(jwtToken) {
   return payload.exp <= now;
 }
 
-async function refreshToken({getters, commit, dispatch}) {
-  if (isExpiredToken(getters.jwtToken)) {
-    dispatch('logout');
+async function refreshToken() {
+  if (isExpiredToken(this.jwtToken)) {
+    await this.logout();
     return;
   }
 
   const response = await AuthService.refreshAuthToken(getters.jwtToken);
   if (response.jwtFrontend) {
-    commit('setJwtToken', response.jwtFrontend);
+    await this.setJwtToken(response.jwtFrontend);
     ApiService.setAuthHeader(response.jwtFrontend);
   } else {
     throw 'No jwtFrontend';
   }
 }
 
-async function getInitialToken({commit}) {
+async function getInitialToken() {
   const response = await AuthService.getAuthToken();
 
   if (response.jwtFrontend) {
-    commit('setJwtToken', response.jwtFrontend);
+    await this.setJwtToken(response.jwtFrontend);
     ApiService.setAuthHeader(response.jwtFrontend);
   } else {
     throw 'No jwtFrontend';
@@ -42,13 +42,13 @@ async function getInitialToken({commit}) {
 export const authStore = defineStore('auth', {
   namespaced: true,
   state: () => ({
-    acronyms: [],
-    isAuthenticated: false,
-    userInfo: null,
-    error: false,
-    isLoading: true,
-    loginError: false,
-    jwtToken: localStorage.getItem('jwtToken'),
+    acronymsState: [],
+    isAuthenticatedState: false,
+    userInfoState: null,
+    errorState: false,
+    isLoadingState: true,
+    loginErrorState: false,
+    jwtTokenState: localStorage.getItem('jwtToken'),
   }),
   getters: {
     acronyms: state => state.acronyms,
@@ -61,52 +61,51 @@ export const authStore = defineStore('auth', {
   },
   actions: {
     //sets Json web token and determines whether user is authenticated
-    async setJwtToken(state, token = null){
+    async setJwtToken(token = null){
       if (token) {
-        state.isAuthenticated = true;
-        state.jwtToken = token;
+        this.isAuthenticatedState = true;
+        this.jwtTokenState = token;
         localStorage.setItem('jwtToken', token);
       } else {
-        state.isAuthenticated = false;
-        state.jwtToken = null;
+        this.isAuthenticatedState = false;
+        this.jwtTokenState = null;
         localStorage.removeItem('jwtToken');
       }
     },
-    async setUserInfo(state, userInfo){
+    async setUserInfo(userInfo){
       if(userInfo){
-        state.userInfo = userInfo;
+        this.userInfoState = userInfo;
       } else {
-        state.userInfo = null;
+        this.userInfoState = null;
       }
     },
-    async setLoginError(state){
-      state.loginError = true;
+    async setLoginError(){
+      this.loginErrorState = true;
     },
-    async setError(state, error){
-      state.error = error;
+    async setError(error){
+      this.errorState = error;
     },
-    async setLoading(state, isLoading){
-      state.isLoading = isLoading;
+    async setLoading(isLoading){
+      this.isLoadingState = isLoading;
     },
-    async loginErrorRedirect(context){
-      context.commit('setLoginError');
+    async loginErrorRedirect(){
+      this.loginErrorState = true;
     },
-    async logout(context) {
-      context.commit('setJwtToken');
-      context.commit('setUserInfo');
-      // router.push(AuthRoutes.LOGOUT);
+    async logout() {
+      await this.setJwtToken();
+      await this.setUserInfo();
     },
-    async getUserInfo({commit}){
+    async getUserInfo(){
       const userInfoRes = await ApiService.getUserInfo();
-      commit('setUserInfo', userInfoRes.data);
+      this.userInfoState = userInfoRes.data;
     },
     //retrieves the json web token from local storage. If not in local storage, retrieves it from API
-    async getJwtToken(context) {
-      context.commit('setError', false);
-      if (isFollowUpVisit(context.getters)) {
-        await refreshToken(context);
+    async getJwtToken() {
+      this.errorState = false;
+      if (isFollowUpVisit()) {
+        await refreshToken();
       } else {  //inital login and redirect
-        await getInitialToken(context);
+        await getInitialToken();
       }
     },
   }

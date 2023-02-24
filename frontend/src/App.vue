@@ -22,7 +22,7 @@
 <script>
 import { authStore } from './store/modules/auth';
 import { appStore } from './store/modules/app';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import HttpStatus from 'http-status-codes';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
@@ -59,11 +59,10 @@ export default {
     };
   },
   methods: {
-    ...mapMutations('auth', ['setLoading']),
-    ...mapActions('auth', ['getJwtToken', 'getUserInfo', 'logout']),
+    ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
   },
   async created() {
-    this.setLoading(true);
+    await this.setLoading(true);
     this.getJwtToken().then(() =>
       Promise.all([this.getUserInfo()])
     ).catch(e => {

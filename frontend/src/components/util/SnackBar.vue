@@ -29,7 +29,7 @@
 <script>
 
 import { appStore } from '../../store/modules/app';
-import { mapState } from 'pinia';
+import {mapActions, mapState} from 'pinia';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 
 export default {
@@ -69,7 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('app', ['setAlertNotificationText', 'setAlertNotification']),
+    ...mapActions(appStore, ['setAlertNotificationText', 'setAlertNotification']),
     setAlertType(alertType) {
       if(!alertType) {
         alertType = '';

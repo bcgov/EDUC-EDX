@@ -34,7 +34,7 @@
                                     {{ item.teamName }}
                                   </div>
                                   <div class="body-2" style="color: black;"
-                                       :style="{'max-width': $vuetify.breakpoint.smAndDown ? '30em' : '36em'}">
+                                       :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}">
                                     {{ item.description }}
                                   </div>
                                 </v-col>

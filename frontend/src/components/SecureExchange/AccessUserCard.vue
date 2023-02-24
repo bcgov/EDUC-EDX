@@ -216,7 +216,7 @@ export default {
       this.selectedRoles = [this.edxInstituteAdminRole];
     },
     getButtonWidth() {
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
       case 'md':

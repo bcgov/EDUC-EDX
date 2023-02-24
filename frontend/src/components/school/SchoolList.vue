@@ -191,7 +191,7 @@ export default {
     ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
 
     getSheetWidth(){
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
         return 60;

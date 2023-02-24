@@ -57,13 +57,13 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar v-if="hasAnyItems" app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.breakpoint.mdAndUp}">
+  <v-app-bar v-if="hasAnyItems" app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
     <v-app-bar-nav-icon id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
       <p class="ma-0 pl-4 pr-2 hidden-sm-and-down">Menu</p>
     </v-app-bar-nav-icon>
-    <v-toolbar-title id="navTitle" class="nav-title" :class="{'ml-4': $vuetify.breakpoint.mdAndUp, 'pl-1': $vuetify.breakpoint.smAndDown}">{{ title }}</v-toolbar-title>
+    <v-toolbar-title id="navTitle" class="nav-title" :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}">{{ title }}</v-toolbar-title>
     <v-spacer></v-spacer>
   </v-app-bar>
 </div>
@@ -92,7 +92,7 @@ export default {
   computed: {
     ...mapState(authStore, ['isAuthenticated', 'userInfo']),
     navWidth () {
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
         return '50%';
       case 'sm':

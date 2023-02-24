@@ -58,7 +58,7 @@
                        class="mt-0 pt-0 filterButton"
                 >
                   <v-icon color="#003366" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
-                  <span v-if="$vuetify.breakpoint.mdAndUp" class="ml-1">{{ filterText }}</span>
+                  <span v-if="$vuetify.display.mdAndUp" class="ml-1">{{ filterText }}</span>
                 </v-btn>
               </template>
             </v-expansion-panel-header>
@@ -74,7 +74,7 @@
                     clearable
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
+                <v-col cols="12" md="4" :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}">
                   <v-menu
                       id="messageDate"
                       ref="messageDateFilter"
@@ -144,7 +144,7 @@
                     clearable
                   ></v-select>
                 </v-col>
-                <v-col cols="12" md="4" class="pt-0" :class="{'pl-12 pr-12': $vuetify.breakpoint.mdAndUp}">
+                <v-col cols="12" md="4" class="pt-0" :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}">
                   <v-text-field
                       id="messageIdInput"
                       class="pt-0 mt-0"
@@ -331,7 +331,7 @@ export default {
       return this.ministryTeams;
     },
     getSheetWidth(){
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
         return 60;
@@ -416,7 +416,7 @@ export default {
     },
     getSubject(subject) {
       if (subject.length > 16) {
-        switch (this.$vuetify.breakpoint.name) {
+        switch (this.$vuetify.display.name) {
         case 'xs':
         case 'sm':
           return this.getContentString(subject, 15);
@@ -439,7 +439,7 @@ export default {
     getLatestComment(item) {
       let content = item.commentsList.reduce((a, b) => (a.createDate > b.createDate ? a : b)).content;
       if (content.length > 25) {
-        switch (this.$vuetify.breakpoint.name) {
+        switch (this.$vuetify.display.name) {
         case 'xs':
         case 'sm':
           return this.getContentString(content, 30);

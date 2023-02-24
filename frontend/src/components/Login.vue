@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      appTitle: process.env.VUE_APP_TITLE,
+      appTitle: import.meta.env.VUE_APP_TITLE,
       authRoutes: AuthRoutes
     };
   },
