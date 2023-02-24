@@ -9,7 +9,7 @@ class FormWithFields {
 
   /**
    * @param {Selector} field - The message Selector field to test
-   * @param {string} name - A name for the npmlog
+   * @param {string} [name] - A name for the npmlog
    */
   async verifyFieldIsValid(field, name) {
     await t.expect(field.parent("div.v-input").hasClass("error--text")).notOk();
@@ -18,7 +18,7 @@ class FormWithFields {
 
   /**
    * @param {Selector} field - The message Selector field to test
-   * @param {string} name - A name for the npmlog
+   * @param {string} [name] - A name for the npmlog
    */
   async verifyFieldIsInvalid(field, name) {
     await t.expect(field.parent("div.v-input").hasClass("error--text")).ok();
