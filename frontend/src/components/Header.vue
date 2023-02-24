@@ -5,7 +5,7 @@
     <a tabindex="-1" href="/">
       <img
           tabindex="-1"
-          src="./assets/images/bc-gov-logo.svg"
+          src="../assets/images/bc-gov-logo.svg"
           width="155"
           class="logo"
           alt="B.C. Government Logo"
@@ -17,14 +17,14 @@
 
 
     <v-spacer></v-spacer>
-    <div v-if="isAuthenticated && dataReady">
+    <div v-if="authStore().isAuthenticated && dataReady">
       <v-menu name="user_options" offset-y>
         <template v-slot:activator="{ on }">
           <v-chip tabindex="0" v-on="on" pill color="#003366" dark>
             <v-avatar left color="info">
-              {{ userInfo.displayName[0] }}
+              {{ authStore().userInfo.displayName[0] }}
             </v-avatar>
-            <span class="display-name">{{ userInfo.displayName }}</span>
+            <span class="display-name">{{ authStore().userInfo.displayName }}</span>
           </v-chip>
         </template>
         <v-list dark color="#003366">
@@ -41,9 +41,9 @@
       </v-menu>
 
     </div>
-    <div v-else-if="isAuthenticated && !dataReady">
-      <v-skeleton-loader type="chip">
-      </v-skeleton-loader>
+    <div v-else-if="authStore().isAuthenticated && !dataReady">
+<!--      <v-skeleton-loader type="chip">-->
+<!--      </v-skeleton-loader>-->
     </div>
   </v-system-bar>
 </template>
@@ -68,6 +68,7 @@ export default {
     }
   },
   methods: {
+    authStore,
     hasSeveralSchools() {
       return this.userInfo?.userSchoolIDs?.length > 1;
     },
