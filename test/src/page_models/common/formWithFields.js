@@ -26,6 +26,16 @@ class FormWithFields {
   }
 
   /**
+   * @param {Selector} field - The message Selector field to test
+   * @param {string} text - Text to type into field
+   * @param {string} [name] - A name for the npmlog
+   */
+  async typeTextInField(field, text, name) {
+    await t.typeText(field, text);
+    log.info('input:', name ? `Text entered into ${name} field` : 'Text entered into field');
+  }
+
+  /**
    * @param {Selector} field - The field to clear
    * @param {string} [name] - A name for the npmlog
    */
