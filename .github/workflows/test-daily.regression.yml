@@ -33,7 +33,7 @@ jobs:
           CONTACT_IDENTIFIER: ${{secrets.AT_CONTACT_IDENTIFIER}}
           INSTITUTE_API_URL: ${{ secrets.INSTITUTE_API_URL}}
 #      - name: Upload Failure Screenshot
-#        uses: actions/upload-artifact@v2
+#        uses: actions/upload-artifact@v3
 #        if: ${{ failure() }}
 #        with:
 #          name: Screenshot
