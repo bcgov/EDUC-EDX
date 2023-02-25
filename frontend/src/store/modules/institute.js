@@ -119,7 +119,7 @@ export const instituteStore = defineStore('institute', {
       await this.setActiveSchoolOrganizationTypeCodes(response.data);
     },
     async getAllActiveSchoolNeighborhoodLearningCodes() {
-      const reponse = await ApiService.getAllActiveSchoolNeighborhoodLearningCodes();
+      const response = await ApiService.getAllActiveSchoolNeighborhoodLearningCodes();
       await this.setActiveSchoolNeighborhoodLearningCodes(response.data);
     },
     async getAllActiveGradeCodes() {

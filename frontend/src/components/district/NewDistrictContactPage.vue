@@ -123,7 +123,6 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -153,7 +152,6 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
                     ></v-text-field>
                   </template>
                   <v-date-picker

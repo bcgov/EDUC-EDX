@@ -101,11 +101,11 @@ export function getStatusAuthorityOrSchool(authorityOrSchool) {
     parsedCloseDate = new LocalDateTime.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   }
 
-  if (parsedOpenDate <= currentDate && parsedCloseDate === null) {
+  if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate === null) {
     return 'Open';
-  } else if (parsedOpenDate > currentDate) {
+  } else if (parsedOpenDate.isBefore(currentDate)) {
     return 'Opening';
-  } else if (parsedOpenDate <= currentDate && parsedCloseDate > currentDate) {
+  } else if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate.isAfter(currentDate)) {
     return 'Closing';
   }
 

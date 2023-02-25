@@ -361,8 +361,8 @@ export default {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
             let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
-            if (thisContactLastUpdated !== null && this.schoolContactsLastUpdateDate) {
-              if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
+            if (thisContactLastUpdated !== null) {
+              if (thisContactLastUpdated.isAfter(this.schoolContactsLastUpdateDate)) {
                 this.schoolContactsLastUpdateDate = thisContactLastUpdated;
               }
             }

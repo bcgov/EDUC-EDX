@@ -32,15 +32,14 @@
             <h2 class="subjectHeading">{{ school.mincode }} - {{ school.displayName }}</h2>
           </v-col>
           <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-            <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" @click.native="redirectToSchoolContacts"></PrimaryButton>
-            <PrimaryButton id="schoolDetailsEditButton" icon-left class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
-                           v-if="canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
+            <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" :clickAction="redirectToSchoolContacts"></PrimaryButton>
+            <PrimaryButton id="schoolDetailsEditButton" class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
+                           v-if="canEditSchoolDetails()" :clickAction="toggleEdit"></PrimaryButton>
           </v-col>
           <v-col v-else cols="6" class="d-flex justify-end">
-            <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel"
-                           @click.native="cancelClicked"></PrimaryButton>
-            <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!schoolDetailsFormValid"
-                           @click.native="updateSchoolDetails"></PrimaryButton>
+            <PrimaryButton class="mr-2" secondary id="cancelButton" width="6em" text="Cancel" :clickAction="cancelClicked"></PrimaryButton>
+            <PrimaryButton id="saveButton" width="6em" text="Save" :disabled="!schoolDetailsFormValid"
+                           :clickAction="updateSchoolDetails"></PrimaryButton>
           </v-col>
         </v-row>
         <v-row class="d-flex justify-start">
@@ -454,7 +453,7 @@
                                       <v-select
                                           id="physicalAddressProvince"
                                           :items="this.provinceCodeValues"
-                                          item-text="label"
+                                          item-title="label"
                                           item-value="provinceCode"
                                           v-model="getPhysicalAddressCopy()[0].provinceCode"
                                           dense
@@ -644,6 +643,7 @@ export default {
     });
     instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
+      console.log(JSON.stringify(this.provinceCodeValues));
     });
     instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;

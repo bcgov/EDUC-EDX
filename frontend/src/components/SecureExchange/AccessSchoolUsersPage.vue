@@ -133,7 +133,7 @@
                       item-text="schoolCodeName"
                       item-value="schoolID"
                     ></v-autocomplete>
-                    <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                    <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
                   </v-col>
                 </v-row>
               </v-card-text>

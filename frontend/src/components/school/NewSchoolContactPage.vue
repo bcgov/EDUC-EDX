@@ -110,8 +110,7 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
                   <v-date-picker
                       v-model="newContact.effectiveDate"
@@ -137,8 +136,7 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
                   <v-date-picker
                       v-model="newContact.expiryDate"

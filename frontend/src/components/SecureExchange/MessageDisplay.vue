@@ -60,7 +60,7 @@
                 <a class="mt-5 ml-1" @click="backButtonClick">Return to Inbox</a>
               </v-col>
               <v-col class="d-flex justify-end">
-                <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" v-on:click="clickMarkAsButton" :loading="loadingReadStatus">
+                <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" click.native="clickMarkAsButton" :loading="loadingReadStatus">
                   <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
                   <v-icon v-else>mdi-email-open-outline</v-icon>
                   <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>

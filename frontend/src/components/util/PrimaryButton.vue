@@ -12,7 +12,7 @@
            :width="width"
            :loading="loading"
            v-bind="bind"
-           v-on="on"
+           v-on:click="clickAction"
     >
       <v-icon class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
       <span class="ml-1">{{ text }}</span>
@@ -23,6 +23,7 @@
 <script>
 export default {
   name: 'PrimaryButton',
+  inheritAttrs: false,
   props: {
     id: {
       type: String
@@ -57,8 +58,8 @@ export default {
     bind: {
       type: Object
     },
-    on: {
-      type: Object
+    clickAction: {
+      type: Function
     },
     largeIcon: {
       type: Boolean,

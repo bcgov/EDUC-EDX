@@ -83,7 +83,6 @@
                                  @click.native.stop="openSchoolContacts(item.schoolId)"
                                  class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
-                                 v-on="on"
                           >
                             <v-icon color="#003366" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
                           </v-btn>
