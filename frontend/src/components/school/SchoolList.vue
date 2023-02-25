@@ -14,14 +14,14 @@
             id="name-text-field"
             label="School Code & Name"
             item-value="schoolID"
-            item-text="schoolCodeName"
+            item-title="schoolCodeName"
             :items="schoolSearchNames"
             v-model="schoolCodeNameFilter"
             clearable>
           </v-autocomplete>
         </v-col>
         <v-col cols="12" md="2" class="d-flex justify-start">
-          <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-text="name"
+          <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-title="name"
                     item-value="code" label="Status"></v-select>
         </v-col>
         <v-col cols="12" md="3" class="d-flex justify-start">
@@ -30,7 +30,7 @@
             clearable
             :items="schoolFacilityTypes"
             v-model="schoolFacilityTypeFilter"
-            item-text="label"
+            item-title="label"
             item-value="facilityTypeCode" label="Facility Type"></v-select>
         </v-col>
         <v-col cols="12" md="2" class="mt-6  d-flex justify-end">

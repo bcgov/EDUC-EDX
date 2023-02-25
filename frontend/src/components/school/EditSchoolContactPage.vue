@@ -23,7 +23,7 @@
                 :rules="[rules.required()]"
                 v-model="editContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
                 label="School Contact Type"/>

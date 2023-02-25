@@ -182,7 +182,7 @@
                     }}</span>
                   <v-select v-else :items="schoolActiveOrganizationTypes"
                             item-value="schoolOrganizationCode"
-                            item-text="label"
+                            item-title="label"
                             v-model="schoolDetailsCopy.schoolOrganizationCode"
                             single
                             dense
@@ -203,7 +203,7 @@
                   <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
                   <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
                             item-value="neighborhoodLearningTypeCode"
-                            item-text="label"
+                            item-title="label"
                             v-model="schoolDetailsCopy.neighborhoodLearning"
                             multiple
                             dense
@@ -308,7 +308,7 @@
                       <v-select
                           id="mailAddressProvince"
                           :items="this.provinceCodeValues"
-                          item-text="label"
+                          item-title="label"
                           item-value="provinceCode"
                           v-model="getMailingAddressCopy()[0].provinceCode"
                           dense
@@ -330,7 +330,7 @@
                       <v-select
                           id="mailAddressCountry"
                           :items="this.countryCodeValues"
-                          item-text="label"
+                          item-title="label"
                           item-value="countryCode"
                           :rules="[rules.required()]"
                           v-model="getMailingAddressCopy()[0].countryCode"
@@ -475,7 +475,7 @@
                                       <v-select
                                           id="physicalAddressCountry"
                                           :items="this.countryCodeValues"
-                                          item-text="label"
+                                          item-title="label"
                                           item-value="countryCode"
                                           v-model="getPhysicalAddressCopy()[0].countryCode"
                                           dense
@@ -643,7 +643,6 @@ export default {
     });
     instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
-      console.log(JSON.stringify(this.provinceCodeValues));
     });
     instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;

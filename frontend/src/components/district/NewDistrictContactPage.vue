@@ -20,7 +20,7 @@
                 :rules="[rules.required()]"
                 v-model="newContact.districtContactTypeCode"
                 :items="districtContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="districtContactTypeCode"
                 label="District Contact Type"

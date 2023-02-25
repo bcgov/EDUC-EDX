@@ -45,7 +45,7 @@
                               id="instituteNewUserRolesSelect"
                               :items="userRoles"
                               item-value='edxRoleCode'
-                              item-text='label'
+                              item-title='label'
                               item-disabled="disabled"
                               v-model='edxActivationRoleCodes'
                               :menu-props="{ maxHeight: '400' }"

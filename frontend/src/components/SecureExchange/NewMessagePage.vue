@@ -22,7 +22,7 @@
                               v-model="assignedMinistryTeam"
                               :items="this.ministryTeams"
                               :rules="requiredRules"
-                              item-text="teamName"
+                              item-title="teamName"
                               class="pt-0"
                               item-value="ministryOwnershipTeamId"
                               label="To"

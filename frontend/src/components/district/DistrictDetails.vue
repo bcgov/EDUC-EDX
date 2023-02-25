@@ -179,7 +179,7 @@
                       <v-select
                         id="mailAddressProvince"
                         :items="this.provinceCodeValues"
-                        item-text="label"
+                        item-title="label"
                         item-value="provinceCode"
                         v-model="getMailingAddressCopy()[0].provinceCode"
                         dense
@@ -201,7 +201,7 @@
                       <v-select
                         id="mailAddressCountry"
                         :items="this.countryCodeValues"
-                        item-text="label"
+                        item-title="label"
                         item-value="countryCode"
                         :rules="[rules.required()]"
                         v-model="getMailingAddressCopy()[0].countryCode"
@@ -315,7 +315,7 @@
                                       <v-select
                                         id="physicalAddressProvince"
                                         :items="this.provinceCodeValues"
-                                        item-text="label"
+                                        item-title="label"
                                         item-value="provinceCode"
                                         v-model="getPhysicalAddressCopy()[0].provinceCode"
                                         dense
@@ -337,7 +337,7 @@
                                       <v-select
                                         id="physicalAddressCountry"
                                         :items="this.countryCodeValues"
-                                        item-text="label"
+                                        item-title="label"
                                         item-value="countryCode"
                                         v-model="getPhysicalAddressCopy()[0].countryCode"
                                         dense
