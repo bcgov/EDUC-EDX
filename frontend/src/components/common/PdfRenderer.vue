@@ -7,18 +7,18 @@
         <v-card>
           <v-card-title class="px-0 pb-0 pt-5">
             <v-list-item>
-              <v-list-item-content class="pt-0 pl-2">
+              <v-list-item-title class="pt-0 pl-2">
                 <slot name="headLine">
                   <v-list-item-title class="headline">
                     Document Viewer
                   </v-list-item-title>
                 </slot>
-              </v-list-item-content>
-              <v-list-item-icon class="my-0">
+              </v-list-item-title>
+              <v-list-item-action class="my-0">
                 <v-btn id="closePDFRendererModalBtn" text icon @click="PDFRenderDialog=false">
                   <v-icon large color="#38598A">mdi-close</v-icon>
                 </v-btn>
-              </v-list-item-icon>
+              </v-list-item-action>
             </v-list-item>
           </v-card-title>
           <v-spacer/>

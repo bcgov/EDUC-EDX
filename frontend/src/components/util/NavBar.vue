@@ -143,7 +143,7 @@ export default {
       this.hasAnyItems = this.items.filter(obj => obj.authorized).length > 0;
     },
     hasRequiredPermission(permission){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0;
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     setActive(item) {
       let index = this.items.findIndex(obj => obj.title === item.title);

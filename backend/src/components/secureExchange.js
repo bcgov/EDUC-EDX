@@ -529,6 +529,7 @@ async function createSecureExchangeStudent(req, res) {
       return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
+    console.log('Access RToken: ' + JSON.stringify(secureExchangeStudent));
     const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`, req.session?.correlationID);
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {

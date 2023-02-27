@@ -13,6 +13,7 @@
             required
             :rules="requiredRules"
             outlined
+            item-title="text"
             class="pb-0 mb-0"
             :eager="eager"
             :items="documentTypes"
@@ -99,7 +100,7 @@ export default {
   },
   async created() {
     await edxStore().getSecureExchangeDocumentTypes();
-    await edxStore.getFileRequirements();
+    await edxStore().getFileRequirements();
 
     this.getFileRules().catch(e => {
       console.log(e);
