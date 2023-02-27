@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <v-container fluid class="full-height" v-if="!isAuthenticated && !isLoading">
+  <v-container fluid v-if="!authStore().isAuthenticated && !authStore().isLoading">
     <!-- login article -->
     <article name="login-banner">
       <v-row align="center" justify="center" style="margin-right: 0;margin-left: 0">
@@ -9,7 +9,7 @@
     </article>
   </v-container>
 
-  <v-container fluid class="full-height" v-else-if="isLoading">
+  <v-container fluid class="full-height" v-else-if="authStore().isLoading">
     <article id="progress-display-container" class="top-banner full-height">
       <v-row align="center" justify="center">
         <v-progress-circular
@@ -25,7 +25,7 @@
   <v-container fluid v-else class="d-flex justify-center">
     <v-row>
       <v-col cols="12" class="d-flex justify-center">
-        <DashboardTable v-if="isAuthenticated && !isLoadingExchange" :title="PAGE_TITLES.EXCHANGE" colour="#CED6E2"
+        <DashboardTable v-if="authStore().isAuthenticated && !isLoadingExchange" :title="PAGE_TITLES.EXCHANGE" colour="#CED6E2"
                          :tableData="exchangeData" id="schoolInboxCard"></DashboardTable>
         <v-container v-else-if="isLoadingExchange" class="tile-size" fluid>
           <article class="top-banner full-height">
@@ -68,6 +68,9 @@ export default {
       isLoadingExchange: true,
       PAGE_TITLES: PAGE_TITLES
     };
+  },
+  methods: {
+    authStore
   },
   mounted()  {
     this.exchangeData.push({

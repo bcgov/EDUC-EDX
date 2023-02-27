@@ -7,19 +7,34 @@ import router from './router';
 import 'regenerator-runtime/runtime';
 import {createPinia} from 'pinia';
 import moment from 'moment';
-import * as styles from 'vuetify/styles';
+import * as colors from 'vuetify/lib/util/colors'
+import styles from 'vuetify/styles';
 import * as labs from 'vuetify/labs/components';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
+const myCustomLightTheme = {
+  dark: false,
+  colors: {
+    primary: '#1976d2',
+  }
+}
+
 const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'myCustomLightTheme',
+    themes: {
+      myCustomLightTheme,
+    }
+  },
   components: {
     ...labs,
     ...components,
     ...directives,
     ...styles,
+    ...colors,
     VueDatePicker
   },
 });

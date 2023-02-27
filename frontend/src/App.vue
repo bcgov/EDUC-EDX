@@ -3,9 +3,9 @@
     <MsieBanner v-if="isIE"/>
     <Header/>
     <SnackBar></SnackBar>
-    <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
+    <NavBar v-if="pageTitle && authStore().isAuthenticated" :title="pageTitle"/>
     <v-main fluid class="align-start">
-      <ModalIdle v-if="isAuthenticated"/>
+      <ModalIdle v-if="authStore().isAuthenticated"/>
       <router-view/>
     </v-main>
     <Footer/>
@@ -45,13 +45,8 @@ export default {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }
   },
-  data() {
-    return {
-      bannerEnvironment: StaticConfig.BANNER_ENVIRONMENT,
-      bannerColor: StaticConfig.BANNER_COLOR
-    };
-  },
   methods: {
+    authStore,
     ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
   },
   async created() {
