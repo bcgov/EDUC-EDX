@@ -7,6 +7,7 @@ import router from './router';
 import 'regenerator-runtime/runtime';
 import {createPinia} from 'pinia';
 import moment from 'moment';
+import * as styles from 'vuetify/styles';
 import * as labs from 'vuetify/labs/components';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives'
@@ -18,6 +19,7 @@ const vuetify = createVuetify({
     ...labs,
     ...components,
     ...directives,
+    ...styles,
     VueDatePicker
   },
 });

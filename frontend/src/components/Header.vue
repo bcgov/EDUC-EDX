@@ -1,5 +1,5 @@
 <template>
-  <v-system-bar app absolute color="rgb(0, 51, 102)" height="56rem" class="sysBar"
+  <v-system-bar window absolute color="rgb(0, 51, 102)" class="sysBar" style="height: auto;"
                 :class="{'pl-2': $vuetify.display.smAndDown, 'pl-10': $vuetify.display.mdAndUp, 'pr-2': $vuetify.display.smAndDown, 'pr-10': $vuetify.display.mdAndUp} ">
     <!-- Navbar content -->
     <a tabindex="-1" href="/">
@@ -14,7 +14,6 @@
     <a tabindex="-1" href="/">
       <v-toolbar-title><h3 class="mainTitle" style="color:white">{{ appTitle }}</h3></v-toolbar-title>
     </a>
-
 
     <v-spacer></v-spacer>
     <div v-if="authStore().isAuthenticated && dataReady">

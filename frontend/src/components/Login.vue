@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="full-height px-0">
+  <v-container>
     <article id="login-banner" class="top-banner">
       <v-row align="center" justify="center">
         <v-card class="login-card">

@@ -56,7 +56,7 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar v-if="hasAnyItems" app absolute elevation="0" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
+  <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
     <v-app-bar-nav-icon id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
@@ -65,6 +65,12 @@
     <v-toolbar-title id="navTitle" class="nav-title" :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}">{{ title }}</v-toolbar-title>
     <v-spacer></v-spacer>
   </v-app-bar>
+  <v-app-bar v-if="bannerColor !== ''"
+             style="color:white"
+             :color="bannerColor"
+             absolute
+             density="compact"
+  ><div><h3 class="envBanner">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
 </div>
 </template>
 
@@ -73,6 +79,7 @@ import {PAGE_TITLES} from '../../utils/constants';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
 import {PERMISSION} from '../../utils/constants/Permission';
+import StaticConfig from '../../common/staticConfig';
 export default {
   name: 'navBar',
   props: {
@@ -85,7 +92,9 @@ export default {
     return {
       drawer: null,
       items: [],
-      hasAnyItems: false
+      hasAnyItems: false,
+      bannerEnvironment: StaticConfig.BANNER_ENVIRONMENT,
+      bannerColor: StaticConfig.BANNER_COLOR
     };
   },
   computed: {
@@ -161,9 +170,6 @@ export default {
 };
 </script>
 <style scoped>
-  #navBar {
-    z-index: 7;
-  }
   .router {
     width: 100%;
   }

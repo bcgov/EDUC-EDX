@@ -5,15 +5,8 @@
     <SnackBar></SnackBar>
     <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
     <v-main fluid class="align-start">
-    <v-app-bar v-if="bannerColor !== ''"
-               style="color:white;"
-               :color="bannerColor"
-               sticky
-               dense
-               height="20rem"
-    ><div><h3 class="envBanner">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
-    <ModalIdle v-if="isAuthenticated"/>
-    <router-view/>
+      <ModalIdle v-if="isAuthenticated"/>
+      <router-view/>
     </v-main>
     <Footer/>
   </v-app>
@@ -128,14 +121,6 @@ h1 {
   color: #712024;
   background-color: #f7d8da !important;
   border-color: #eeaaad !important;
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-  margin-top: auto !important;
-  margin-bottom: auto !important;
 }
 
 @media screen and (max-width: 370px) {
