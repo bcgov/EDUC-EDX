@@ -82,7 +82,7 @@
                   id="edxUserActivationSubmitBtn"
                   text="Submit"
                   :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
-                  @click.native="activateEdxUser"
+                  :clickAction="activateEdxUser"
               ></PrimaryButton>
             </v-col>
           </v-row>

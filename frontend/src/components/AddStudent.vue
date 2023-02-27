@@ -28,7 +28,7 @@
         </v-text-field>
         <PrimaryButton width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
                        :loading="isSearchingStudent"
-                       @click.native="searchStudentForGivenPEN"/>
+                       :clickAction="searchStudentForGivenPEN"/>
       </v-row>
     </v-form>
     <v-row no-gutters v-if="showStudentDetails">
@@ -45,9 +45,9 @@
     </v-row>
     <v-row class="justify-end pr-2 pt-2" >
       <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-2"
-                     @click.native="closeForm"></PrimaryButton>
+                     :clickAction="closeForm"></PrimaryButton>
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
-                     text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
+                     text="Add" width="7rem" :clickAction="addStudentToMessage"></PrimaryButton>
     </v-row>
   </v-card>
 </template>

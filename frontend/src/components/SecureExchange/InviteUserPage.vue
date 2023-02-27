@@ -86,10 +86,10 @@
               </v-row>
               <v-row class="py-4 justify-end">
                 <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
-                               @click.native="navigateToList"></PrimaryButton>
+                               :clickAction="navigateToList"></PrimaryButton>
                 <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm"
                                :loading="processing"
-                               @click.native="sendNewUserInvite"></PrimaryButton>
+                               :clickAction="sendNewUserInvite"></PrimaryButton>
               </v-row>
             </v-col>
           </v-row>

@@ -14,13 +14,13 @@
               icon="mdi-plus"
               id="newMessageBtn"
               text="New Message"
-              @click.native="newMessageSheet = !newMessageSheet"
+              :clickAction="openNewMessageSheet"
             ></PrimaryButton>
           </v-col>
         </v-row>
         <v-expansion-panels flat style="border-radius: 6px">
           <v-expansion-panel id="filtersToggle" @click="onExpansionPanelClick" style="background: #ebedef">
-            <v-expansion-panel-header class="pt-0 pb-0" disable-icon-rotate>
+            <v-expansion-panel-title class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                   @click.native.stop
                   color="#003366"
@@ -61,8 +61,8 @@
                   <span v-if="$vuetify.display.mdAndUp" class="ml-1">{{ filterText }}</span>
                 </v-btn>
               </template>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field
@@ -96,13 +96,13 @@
                           v-bind="attrs"
                       ></v-text-field>
                     </template>
-                    <v-date-picker
-                        v-model="messageDate"
-                        :active-picker.sync="activeMessageDatePicker"
-                        :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-                        min="2022-01-01"
-                        @change="saveMessageDate"
-                    ></v-date-picker>
+                    <VueDatePicker
+                      v-model="messageDate"
+                      :active-picker.sync="activeMessageDatePicker"
+                      :max-date="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                      min-date="2022-01-01"
+                      @change="saveMessageDate"
+                    ></VueDatePicker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" md="4">
@@ -169,12 +169,12 @@
               </v-row>
               <v-row no-gutters class="justify-end mt-n2">
                 <v-col cols="12" class="d-flex justify-end">
-                  <PrimaryButton class="mr-3" id="search-clear" :secondary="true" @click.native="clearSearch"
+                  <PrimaryButton class="mr-3" id="search-clear" :secondary="true" :clickAction="clearSearch"
                                  text="Clear"></PrimaryButton>
-                  <PrimaryButton @click.native="filterRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
+                  <PrimaryButton :clickAction="filterRequests" :loading="loadingTable" :disabled="!searchEnabled" id="searchButton" text="Search"></PrimaryButton>
                 </v-col>
               </v-row>
-            </v-expansion-panel-content>
+            </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
         <v-row>
@@ -194,33 +194,33 @@
                 mobile-breakpoint="0"
             >
 
-              <template v-slot:item.secureExchangeStatusCode="{ item }">
-                  <v-row @click="openExchange(item.secureExchangeID)" style="cursor: pointer;">
+              <template v-slot:item="{ item }">
+                  <v-row @click="openExchange(item.value.secureExchangeID)" style="cursor: pointer;">
                     <v-col cols="8" lg="7" xl="9" class="pb-0 pt-0">
                       <v-row class="mb-n4">
                         <v-col cols="12" class="pb-2 pt-2 pr-0">
-                          <span class="subjectHeading" :style="{color: item.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item) }}</span>
+                          <span class="subjectHeading" :style="{color: item.value.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.value.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item.value) }}</span>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" class="pb-1 pr-0">
                           <span class="ministryLine" style="color: black">{{
-                              getMinistryTeamName(item.ministryOwnershipTeamID)
-                            }} - {{ item.createDate }}</span>
+                              getMinistryTeamName(item.value.ministryOwnershipTeamID)
+                            }} - {{ item.value.createDate }}</span>
                         </v-col>
                       </v-row>
                     </v-col>
                     <v-col cols="4" lg="5" xl="3" style="text-align: end" class="pb-0 pt-0">
                       <v-row>
                         <v-col class="pb-1">
-                          <v-icon class="pb-1" :color="getStatusColor(item.secureExchangeStatusCode)" right dark>
+                          <v-icon class="pb-1" :color="getStatusColor(item.value.secureExchangeStatusCode)" right dark>
                             mdi-circle-medium
                           </v-icon>
-                          <span class="statusCodeLabel">{{ item.secureExchangeStatusCode }}</span>
+                          <span class="statusCodeLabel">{{ item.value.secureExchangeStatusCode }}</span>
                           <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
                             mdi-pound
                           </v-icon>
-                          <span class="statusCodeLabel">{{ item.sequenceNumber }}</span>
+                          <span class="statusCodeLabel">{{ item.value.sequenceNumber }}</span>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -234,11 +234,13 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-bottom-sheet
+    <v-navigation-drawer
       v-model="newMessageSheet"
       inset
       no-click-animation
       scrollable
+      location="bottom"
+      temporary
       persistent
     >
       <v-card
@@ -254,7 +256,7 @@
           </NewMessagePage>
         </v-card-text>
       </v-card>
-    </v-bottom-sheet>
+    </v-navigation-drawer>
   </v-container>
 </template>
 
@@ -270,13 +272,16 @@ import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import {appStore} from '../../store/modules/app';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   name: 'ExchangeInbox',
   mixins: [alertMixin],
   components: {
     PrimaryButton,
-    NewMessagePage
+    NewMessagePage,
+    VueDatePicker
   },
   data() {
     return {
@@ -466,6 +471,9 @@ export default {
     },
     backButtonClick() {
       this.$router.push({name: 'home'});
+    },
+    openNewMessageSheet(){
+      this.newMessageSheet = !this.newMessageSheet;
     },
     getExchanges() {
       this.loadingTable = true;

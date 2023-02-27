@@ -140,8 +140,8 @@
           </v-col>
         </v-row>
         <v-row class="py-4 justify-end pr-3">
-          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" @click.native="navigateToList"></PrimaryButton>
-          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" @click.native="sendNewMessage"></PrimaryButton>
+          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" :clickAction="navigateToList"></PrimaryButton>
+          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" :clickAction="sendNewMessage"></PrimaryButton>
         </v-row>
       </v-col>
     </v-row>
@@ -251,27 +251,27 @@ export default {
         });
     },
     async uploadDocument(document) {
-      this.$store.commit('edx/setSecureExchangeDocuments', [...this.secureExchangeDocuments, document]);
+      await edxStore().setSecureExchangeDocuments([...this.secureExchangeDocuments, document]);
     },
     async addSecureExchangeStudent(secureExchangeStudent) {
       const found =this.secureExchangeStudents.some(el =>el.studentID === secureExchangeStudent.studentID);
       if(!found){
-        this.$store.commit('edx/setSecureExchangeStudents', [...this.secureExchangeStudents, secureExchangeStudent]);
+        await edxStore().setSecureExchangeStudents([...this.secureExchangeStudents, secureExchangeStudent]);
       }
 
     },
     removeDocumentByIndex(index) {
       //since we don't have a unique UUID to identify the document to remove, we will use the index
-      this.$store.commit('edx/deleteSecureExchangeDocumentByIndex', index);
+      edxStore().deleteSecureExchangeDocumentByIndex(index);
     },
     removeSecureExchangeStudentByID(secureExchangeStudent) {
-      this.$store.commit('edx/deleteSecureExchangeStudentsByID', secureExchangeStudent);
+      edxStore().deleteSecureExchangeStudentsByID(secureExchangeStudent);
     },
     clearSecureExchangeDocuments() {
-      this.$store.commit('edx/setSecureExchangeDocuments', []);
+      edxStore().setSecureExchangeDocuments([]);
     },
     clearSecureExchangeStudents() {
-      this.$store.commit('edx/setSecureExchangeStudents', []);
+      edxStore().setSecureExchangeStudents([]);
     },
     showOptions() {
       this.expandAttachFile = false;

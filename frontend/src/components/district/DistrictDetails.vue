@@ -24,12 +24,12 @@
               <h2 id="districtName">{{ district.districtNumber }} - {{ district.displayName }}</h2>
             </v-col>
             <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-              <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View District Contacts" @click.native="redirectToDistrictContacts"></PrimaryButton>
-              <PrimaryButton id="editButton" icon-left width="6em" icon="mdi-pencil" text="Edit" :disabled="!canEditDistrict()" @click.native="toggleEdit"></PrimaryButton>
+              <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View District Contacts" :clickAction="redirectToDistrictContacts"></PrimaryButton>
+              <PrimaryButton id="editButton" icon-left width="6em" icon="mdi-pencil" text="Edit" :disabled="!canEditDistrict()" :clickAction="toggleEdit"></PrimaryButton>
             </v-col>
             <v-col v-else cols="6" class="d-flex justify-end">
-              <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel" @click.native="cancelClicked"></PrimaryButton>
-              <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!districtFormValid" @click.native="saveDistrict"></PrimaryButton>
+              <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel" :clickAction="cancelClicked"></PrimaryButton>
+              <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!districtFormValid" :clickAction="saveDistrict"></PrimaryButton>
             </v-col>
           </v-row>
           <v-row class="d-flex justify-start">

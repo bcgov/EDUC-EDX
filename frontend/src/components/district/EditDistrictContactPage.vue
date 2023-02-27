@@ -153,11 +153,11 @@
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelChangesToDistrictContactButton"
                      secondary text="Cancel"
-                     @click.native="cancelEditDistrictContactPage"/>
+                     :clickAction="cancelEditDistrictContactPage"/>
       <PrimaryButton id="saveChangesToDistrictContactButton"
                      text="Save"
                      width="7rem"
-                     @click.native="saveDistrictContact"
+                     :clickAction="saveDistrictContact"
                      :disabled="!isFormValid"
                      :loading="processing"/>
     </v-card-actions>

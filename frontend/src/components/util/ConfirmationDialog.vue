@@ -19,8 +19,8 @@
       </v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
-        <PrimaryButton id="rejectBtn" secondary :text="options.rejectText || 'Cancel'" @click.native="cancel"></PrimaryButton>
-        <PrimaryButton id="resolveBtn" :text="options.resolveText || 'Yes'" :disabled="options.resolveDisabled" @click.native="agree"></PrimaryButton>
+        <PrimaryButton id="rejectBtn" secondary :text="options.rejectText || 'Cancel'" :clickAction="cancel"></PrimaryButton>
+        <PrimaryButton id="resolveBtn" :text="options.resolveText || 'Yes'" :disabled="options.resolveDisabled" :clickAction="agree"></PrimaryButton>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -48,9 +48,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <PrimaryButton id="cancelUploadButton" secondary text="Cancel"
-                       @click.native="closeForm"></PrimaryButton>
+                       :clickAction="closeForm"></PrimaryButton>
         <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"
-                       text="Upload" width="7rem" @click.native="submitRequest"></PrimaryButton>
+                       text="Upload" width="7rem" :clickAction="submitRequest"></PrimaryButton>
       </v-card-actions>
 
 

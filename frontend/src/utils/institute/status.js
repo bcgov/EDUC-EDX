@@ -15,11 +15,11 @@ const getContactStatus = function (contact) {
     parsedExpiryDate = new LocalDateTime.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   }
 
-  if (parsedExpiryDate === null && parsedEffectiveDate < currentDate) {
+  if (parsedExpiryDate === null && parsedEffectiveDate.isBefore(currentDate)) {
     status = 'Active';
-  } else if (parsedEffectiveDate > currentDate) {
+  } else if (parsedEffectiveDate.isAfter(currentDate)) {
     status = 'Pending Start Date';
-  } else if (parsedExpiryDate > currentDate) {
+  } else if (parsedExpiryDate.isBefore(currentDate)) {
     status = 'Pending End Date';
   }
   return status;

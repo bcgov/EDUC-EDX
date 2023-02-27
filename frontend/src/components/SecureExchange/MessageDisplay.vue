@@ -108,8 +108,8 @@
                 </v-textarea>
               </v-card-text>
               <v-row class="py-4 justify-end pt-0 pr-16 mr-10">
-                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" @click.native="hideNewMessageField"></PrimaryButton>
-                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="loading" @click.native="sendNewExchangeComment"></PrimaryButton>
+                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" :clickAction="hideNewMessageField"></PrimaryButton>
+                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="loading" :clickAction="sendNewExchangeComment"></PrimaryButton>
               </v-row>
             </v-row>
             <v-row v-if="isNewAttachmentDisplayed">

@@ -10,12 +10,15 @@ import moment from 'moment';
 import * as labs from 'vuetify/labs/components';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const vuetify = createVuetify({
   components: {
     ...labs,
     ...components,
-    ...directives
+    ...directives,
+    VueDatePicker
   },
 });
 const pinia = createPinia();

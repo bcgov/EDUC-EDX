@@ -34,8 +34,8 @@
             item-value="facilityTypeCode" label="Facility Type"></v-select>
         </v-col>
         <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
-          <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-          <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" @click.native="searchButtonClick"
+          <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
+          <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" :clickAction="searchButtonClick"
                          :disabled="!searchEnabled()"/>
         </v-col>
       </v-row>

@@ -107,7 +107,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
                                text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" @click.native="clickRemoveButton(user)"></PrimaryButton>
+                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -129,7 +129,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
                                text="Cancel" class="mr-2" secondary :on="{click: clickRelinkButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
-                               @click.native="clickActionRelinkButton(user)"></PrimaryButton>
+                               :clickAction="clickActionRelinkButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>

@@ -112,10 +112,11 @@
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.effectiveDate"
-                      :active-picker.sync="newContactEffectiveDatePicker"
-                      @change="saveNewContactEffectiveDate"/>
+                  <VueDatePicker
+                    v-model="newContact.effectiveDate"
+                    :active-picker.sync="newContactEffectiveDatePicker"
+                    @change="saveNewContactEffectiveDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
               <v-col cols="6">
@@ -138,10 +139,11 @@
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.expiryDate"
-                      :active-picker.sync="newContactExpiryDatePicker"
-                      @change="saveNewContactExpiryDate"/>
+                  <VueDatePicker
+                    v-model="newContact.expiryDate"
+                    :active-picker.sync="newContactExpiryDatePicker"
+                    @change="saveNewContactExpiryDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -152,11 +154,11 @@
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelNewContactBtn"
                      secondary text="Cancel"
-                     @click.native="closeNewContactPage"/>
+                     :clickAction="closeNewContactPage"/>
       <PrimaryButton id="newContactPostBtn"
                      text="Save"
                      width="7rem"
-                     @click.native="addNewSchoolContact"
+                     :clickAction="addNewSchoolContact"
                      :disabled="!isFormValid"
                      :loading="processing"/>
     </v-card-actions>
@@ -171,7 +173,8 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
-
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {LocalDate} from '@js-joda/core';
 
@@ -190,6 +193,7 @@ export default {
   },
   components: {
     PrimaryButton,
+    VueDatePicker
   },
   mounted() {
     this.validateForm();
@@ -251,8 +255,9 @@ export default {
     resetForm() {
       this.$refs.newContactForm.reset();
     },
-    validateForm() {
-      this.isFormValid = this.$refs.newContactForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.newContactForm.validate();
+      this.isFormValid = valid.valid;
     },
     isNumber,
   },
