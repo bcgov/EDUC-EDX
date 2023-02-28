@@ -1,5 +1,5 @@
 <template>
-  <v-system-bar window absolute color="rgb(0, 51, 102)" class="sysBar" style="height: auto;"
+  <v-app-bar absolute color="rgb(0, 51, 102)" class="sysBar"
                 :class="{'pl-2': $vuetify.display.smAndDown, 'pl-10': $vuetify.display.mdAndUp, 'pr-2': $vuetify.display.smAndDown, 'pr-10': $vuetify.display.mdAndUp} ">
     <!-- Navbar content -->
     <a tabindex="-1" href="/">
@@ -44,7 +44,7 @@
 <!--      <v-skeleton-loader type="chip">-->
 <!--      </v-skeleton-loader>-->
     </div>
-  </v-system-bar>
+  </v-app-bar>
 </template>
 
 <script>
@@ -55,7 +55,7 @@ import {AuthRoutes , ApiRoutes} from '../utils/constants';
 export default {
   data() {
     return {
-      appTitle: import.meta.env.VUE_APP_TITLE,
+      appTitle: 'Education Data Exchange',
       authRoutes: AuthRoutes,
       apiRoutes: ApiRoutes
     };
@@ -67,6 +67,9 @@ export default {
     }
   },
   methods: {
+    getName(){
+
+    },
     authStore,
     hasSeveralSchools() {
       return this.userInfo?.userSchoolIDs?.length > 1;
@@ -84,6 +87,11 @@ export default {
 .gov-header .v-icon{
   padding-left: 10px;
 }
+
+.mainTitle {
+  font-size: 1.2rem;
+}
+
 a {
   text-decoration: none;
 }
@@ -96,7 +104,6 @@ a {
 }
 .sysBar {
   border-bottom: 2px solid rgb(252, 186, 25) !important;
-  z-index: 8;
 }
 .gov-header .v-btn,
 .v-btn--active.title:before,

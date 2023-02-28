@@ -56,7 +56,7 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pt-2 pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
+  <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
     <v-app-bar-nav-icon class="ml-n5" style="color: white" id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
