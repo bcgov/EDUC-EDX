@@ -159,8 +159,7 @@
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                    mdi-domain
+                  <v-icon icon="mdi-domain" aria-hidden="false" color="rgb(0, 51, 102)" size="100">
                   </v-icon>
                 </div>
               </v-col>

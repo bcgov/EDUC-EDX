@@ -5,7 +5,7 @@
         <v-row class="pt-0">
           <v-col class="mt-1 d-flex justify-start">
             <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-            <a class="pt-1 ml-1" @click="backButtonClick">Return to Dashboard</a>
+            <a class="ml-1" @click="backButtonClick">Return to Dashboard</a>
           </v-col>
           <v-col class='d-flex justify-end'>
             <PrimaryButton
@@ -19,7 +19,7 @@
           </v-col>
         </v-row>
         <v-expansion-panels flat style="border-radius: 6px">
-          <v-expansion-panel id="filtersToggle" @click="onExpansionPanelClick" style="background: #ebedef">
+          <v-expansion-panel id="filtersToggle" v-on:click="onExpansionPanelClick" style="background: #ebedef">
             <v-expansion-panel-title class="pt-0 pb-0" disable-icon-rotate>
               <v-radio-group
                   @click.native.stop
@@ -53,12 +53,12 @@
               <template v-slot:actions>
                 <v-btn id="filterid"
                        title="filter"
-                       color="#003366"
-                       outlined
+                       color="#ebedef"
+                       flat
                        class="mt-0 pt-0 filterButton"
                 >
-                  <v-icon color="#003366" class="ml-n1" :nudge-down="4" right dark>mdi-filter-outline</v-icon>
-                  <span v-if="$vuetify.display.mdAndUp" class="ml-1">{{ filterText }}</span>
+                  <v-icon color="#003366" class="ml-n1" :nudge-down="4" right dark icon="mdi-filter-outline"></v-icon>
+                  <span style="color: #003366" v-if="$vuetify.display.mdAndUp" class="ml-1">{{ filterText }}</span>
                 </v-btn>
               </template>
             </v-expansion-panel-title>
@@ -391,7 +391,7 @@ export default {
       }
     },
     onExpansionPanelClick(event) {
-      if (event.currentTarget.classList.contains('v-expansion-panel-header--active')) {
+      if (this.filterText !== 'More Filters') {
         this.filterText = 'More Filters';
         this.statusRadioGroupEnabled = true;
         this.statusRadioGroup = 'statusFilterActive';

@@ -14,8 +14,8 @@
            v-bind="bind"
            v-on:click="clickAction"
     >
-      <v-icon class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
-      <span class="ml-1">{{ text }}</span>
+      <v-icon color="white" class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
+      <span style="color: white" class="ml-1">{{ text }}</span>
     </v-btn>
   </v-hover>
 </template>

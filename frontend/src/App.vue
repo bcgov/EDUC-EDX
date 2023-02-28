@@ -66,6 +66,14 @@ export default {
 </script>
 
 <style>
+a{
+  color: #1976d2;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
 .envBanner {
   font-size: 0.8rem;
 }

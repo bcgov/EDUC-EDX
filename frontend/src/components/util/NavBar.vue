@@ -56,14 +56,13 @@
       </div>
     </v-list>
   </v-navigation-drawer>
-  <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
-    <v-app-bar-nav-icon id="menuBtn" @click="drawer=true">
+  <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pt-2 pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
+    <v-app-bar-nav-icon class="ml-n5" style="color: white" id="menuBtn" @click="drawer=true">
       <v-icon v-if="!drawer">$menu</v-icon>
       <v-icon v-else>$close</v-icon>
-      <p class="ma-0 pl-4 pr-2 hidden-sm-and-down">Menu</p>
+      <p class="ma-0 pl-3 pr-2 hidden-sm-and-down">Menu</p>
     </v-app-bar-nav-icon>
-    <v-toolbar-title id="navTitle" class="nav-title" :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}">{{ title }}</v-toolbar-title>
-    <v-spacer></v-spacer>
+    <v-toolbar-title id="navTitle" class="nav-title pl-6" :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}">{{ title }}</v-toolbar-title>
   </v-app-bar>
   <v-app-bar v-if="bannerColor !== ''"
              style="color:white"
@@ -203,6 +202,7 @@ export default {
 
   .nav-title {
     font-size: 1.4rem;
+    color: white;
   }
 
   @media screen and (max-width: 801px){

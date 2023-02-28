@@ -14,15 +14,19 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import '@mdi/font/css/materialdesignicons.css'
 
 const myCustomLightTheme = {
   dark: false,
   colors: {
-    primary: '#1976d2',
+    primary: '#1976d2'
   }
 }
 
 const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi'
+  },
   theme: {
     defaultTheme: 'myCustomLightTheme',
     themes: {
