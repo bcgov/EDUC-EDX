@@ -26,7 +26,7 @@
             <span class="display-name pl-1">{{ getName() }}</span>
           </v-chip>
         </template>
-        <v-list dark color="#003366">
+        <v-list dark style="background-color: #003366; color: white">
           <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.DASHBOARD'>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
