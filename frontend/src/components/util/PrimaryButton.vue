@@ -2,9 +2,9 @@
   <v-hover v-slot:default="{ hover }">
     <v-btn :id="id"
            :title="title||text"
-           :class="[(hover && !disabled) ? secondary ? 'button-hover white--text':'button-hover':'']"
+           :class="[(hover && !disabled) ? secondary ?  this.class + ' button-hover white--text': this.class + ' button-hover':  this.class + '']"
            color="#003366"
-           :outlined="secondary"
+           :variant="secondary ? 'outlined' : 'elevated'"
            :small="short"
            :disabled="disabled"
            :dark="!disabled"
@@ -14,8 +14,8 @@
            v-bind="bind"
            v-on:click="clickAction"
     >
-      <v-icon color="white" class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
-      <span style="color: white" class="ml-1">{{ text }}</span>
+      <v-icon :color="secondary ? '#003366': 'white'" class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
+      <span :style="secondary ? 'color: #003366': 'color: white'" class="ml-1">{{ text }}</span>
     </v-btn>
   </v-hover>
 </template>
@@ -25,6 +25,9 @@ export default {
   name: 'PrimaryButton',
   inheritAttrs: false,
   props: {
+    class:{
+      type: String
+    },
     id: {
       type: String
     },
