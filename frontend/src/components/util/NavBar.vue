@@ -69,7 +69,7 @@
              :color="bannerColor"
              absolute
              density="compact"
-  ><div><h3 class="envBanner">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
+  ><div><h3 class="envBanner pl-5">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
 </div>
 </template>
 

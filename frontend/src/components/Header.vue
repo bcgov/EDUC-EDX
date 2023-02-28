@@ -18,12 +18,12 @@
     <v-spacer></v-spacer>
     <div v-if="authStore().isAuthenticated && dataReady">
       <v-menu name="user_options" offset-y>
-        <template v-slot:activator="{ on }">
-          <v-chip tabindex="0" pill color="#003366" dark>
+        <template v-slot:activator="{ props }">
+          <v-chip v-bind="props" tabindex="0" pill color="#003366" dark>
             <v-avatar left color="info">
-              {{ authStore().userInfo.displayName[0] }}
+              {{ getName()[0] }}
             </v-avatar>
-            <span class="display-name">{{ authStore().userInfo.displayName }}</span>
+            <span class="display-name pl-1">{{ getName() }}</span>
           </v-chip>
         </template>
         <v-list dark color="#003366">
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     getName(){
-
+      return this.userInfo?.displayName;
     },
     authStore,
     hasSeveralSchools() {
@@ -90,6 +90,10 @@ export default {
 
 .mainTitle {
   font-size: 1.2rem;
+}
+
+.display-name{
+  color: white;
 }
 
 a {
