@@ -6,11 +6,11 @@
       <v-form ref="editContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
-            <v-alert color="#003366" dense text type="info">
-              <p>School contacts will be
+            <v-alert color="#E9EBEF" dense text type="info">
+              <p style="color: #003366">School contacts will be
                 <strong>available to the public as of start date.</strong>
               </p>
-              <p class="mb-1">
+              <p style="color: #003366" class="mb-1">
                 Please be sure to review the new contact details carefully before saving.
               </p>
             </v-alert>
@@ -293,4 +293,9 @@ export default {
     font-size: medium !important;
     font-weight: bolder !important;
   }
+
+  :deep(.mdi-information){
+    color: #003366;
+  }
+
 </style>
