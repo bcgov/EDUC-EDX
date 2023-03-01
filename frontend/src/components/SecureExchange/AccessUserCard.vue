@@ -67,7 +67,7 @@
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
-          <v-list-item-group
+          <v-list-group
             v-model="selectedRoles"
             @change="selectedRolesChanged"
             v-else
@@ -85,13 +85,11 @@
                   ></v-checkbox>
                 </v-list-item-action>
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-                  <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
-                </v-list-item-content>
+                <v-list-item-title>{{ newrole.label }}</v-list-item-title>
+                <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
               </template>
             </v-list-item>
-          </v-list-item-group>
+          </v-list-group>
         </v-card-text>
         <Transition name="bounce">
           <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">

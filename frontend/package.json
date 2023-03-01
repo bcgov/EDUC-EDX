@@ -5,7 +5,7 @@
   "description": "EDX UI.",
   "scripts": {
     "serve": "vite --host",
-    "build": "vue-cli-service build",
+    "build": "vite build",
     "test:unit": "vue-cli-service test:unit",
     "local:e2e": "testcafe chrome ./tests/e2e/testCases",
     "local:e2e:headless": "testcafe chrome:headless ./tests/e2e/testCases",
@@ -121,57 +121,6 @@
         "always"
       ]
     }
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "reporters": [
-      "default",
-      "jest-junit"
-    ],
-    "clearMocks": true,
-    "setupFiles": [
-      "<rootDir>/node_modules/regenerator-runtime/runtime.js",
-      "<rootDir>/tests/unit/setup.js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue",
-      "jsx"
-    ],
-    "transform": {
-      "^.+\\.(js|jsx)?$": "babel-jest",
-      ".*\\.(vue)$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!vue-loading-spinner)"
-    ],
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1",
-      "^.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
-    },
-    "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
-    ],
-    "testURL": "http://localhost/",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ],
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.{js,vue}",
-      "!src/main.js",
-      "!src/plugins/*.*",
-      "!src/router.js",
-      "!tests/e2e/student-form.js",
-      "!src/common/staticConfig.js"
-    ],
-    "testResultsProcessor": "jest-sonar-reporter"
-  },
-  "jestSonar": {
-    "reportPath": "coverage"
   },
   "engines": {
     "node": ">= 6.0.0",

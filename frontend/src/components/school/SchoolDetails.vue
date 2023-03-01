@@ -869,6 +869,7 @@ export default {
 .divider {
   border-color: #FCBA19;
   border-width: unset;
+  opacity: unset;
 }
 
 .containerSetup{

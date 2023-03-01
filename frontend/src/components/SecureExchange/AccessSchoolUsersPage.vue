@@ -25,14 +25,14 @@
               </v-icon>Primary Activation Code:
               {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
             </v-chip>
-            <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
+            <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="mdi-content-copy" class="color: white"></ClipboardButton>
           </v-col>
         </v-row>
         <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="4" class="mt-6">
             <v-text-field density="compact" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="4" class="mt-6">
             <v-select density="compact"  id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-title="label"
                       item-value="edxRoleCode" label="Role"></v-select>
           </v-col>
@@ -60,7 +60,7 @@
                                      secondary
                                      icon-left
                                      text="Add New User"
-                                     :clickAction="newUserInviteSheet = !newUserInviteSheet"/>
+                                     :clickAction="openInviteUserSheet"/>
                     </v-col>
                   </v-row>
                 </v-card>
@@ -69,10 +69,11 @@
           </v-col>
         </v-row>
 
-        <v-bottom-sheet
+        <v-navigation-drawer
           v-model="newUserInviteSheet"
           inset
           no-click-animation
+          location="bottom"
           scrollable
           persistent
         >
@@ -97,7 +98,7 @@
               </InviteUserPage>
             </v-card-text>
           </v-card>
-        </v-bottom-sheet>
+        </v-navigation-drawer>
       </div>
       <div v-else>
         <v-row>
@@ -303,6 +304,9 @@ export default {
     closeNewUserModal(){
       edxStore().setSchoolRoles(JSON.parse(JSON.stringify(this.schoolRolesCopy)));
       this.newUserInviteSheet = false;
+    },
+    openInviteUserSheet(){
+      this.newUserInviteSheet = !this.newUserInviteSheet;
     },
     setupSchoolList(){
       for(const school of this.activeSchoolsMap.values()){

@@ -8,21 +8,18 @@
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
         <v-row v-if="activeUserSchools.length>0">
-          <v-col><h2>School Dashboard</h2></v-col>
+          <v-col class="mb-3"><h2>School Dashboard</h2></v-col>
         </v-row>
         <v-data-table v-if="activeUserSchools.length>0"
                       id="schools-dashboard-items"
           :items="activeUserSchools"
-          class="elevation-1"
-          hide-default-header
-          :headers="schoolHeaders"
-          mobile-breakpoint="0"
-          hide-default-footer
           :loading="isTableLoading"
+          items-per-page="-1"
+          class="elevation-1"
         >
           <template v-slot:item="{ item }">
-            <v-row @click="selectSchool(item.value.schoolID)" style="cursor: pointer;">
-              <v-col cols="7" md="10">
+            <v-row no-gutters @click="selectSchool(item.value.schoolID)" style="cursor: pointer;">
+              <v-col class="pa-1">
                 <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
                 <h3 style="color: grey;">{{item.value.mincode}}</h3>
               </v-col>
@@ -30,21 +27,17 @@
           </template>
         </v-data-table>
         <v-row v-if="activeUserDistricts.length>0">
-          <v-col class="mt-6"><h2>District Dashboard</h2></v-col>
+          <v-col class="mt-6 mb-3"><h2>District Dashboard</h2></v-col>
         </v-row>
         <v-data-table v-if="activeUserDistricts.length>0"
                       id="schools-district-items"
             :items="activeUserDistricts"
             class="elevation-1"
-            hide-default-header
-            :headers="districtHeaders"
-            mobile-breakpoint="0"
-            hide-default-footer
             :loading="isTableLoading"
         >
           <template v-slot:item="{ item }">
-            <v-row @click="selectDistrict(item.value.districtID)" style="cursor: pointer;">
-              <v-col cols="7" md="10">
+            <v-row no-gutters @click="selectDistrict(item.value.districtID)" style="cursor: pointer;">
+              <v-col class="pa-1">
                 <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
                 <h3 style="color: grey;">{{item.value.districtNumber}}</h3>
               </v-col>
@@ -151,5 +144,11 @@ export default {
 .full-height{
   height: 50%;
 }
+
+:deep(.v-data-table-footer) {
+  display: none;
+}
+
+
 </style>
 
