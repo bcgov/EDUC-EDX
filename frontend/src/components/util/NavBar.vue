@@ -199,6 +199,14 @@ header /deep/ .v-toolbar__content {
   background-color: #E9EBEF;
 }
 
+:deep(.subMenuRow > div.v-list-item__append > i){
+  display: none;
+}
+
+:deep(.subMenuRow > div.v-list-item__content > a > div > div.v-list-item__append > i){
+  display: none;
+}
+
 .nav-title {
   font-size: 1.4rem;
   color: white;
