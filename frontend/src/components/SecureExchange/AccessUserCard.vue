@@ -103,9 +103,9 @@
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
-                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :clickAction="clickDeleteButton"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)"></PrimaryButton>
+                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)" ></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -125,7 +125,7 @@
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :on="{click: clickRelinkButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2" secondary :clickAction="clickRelinkButton"></PrimaryButton>
                 <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
                                :clickAction="clickActionRelinkButton(user)"></PrimaryButton>
               </v-col>
@@ -142,9 +142,9 @@
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2" secondary :clickAction="clickEditButton"></PrimaryButton>
                 <PrimaryButton :id="`user-save-action-button-${user.edxUserID}`" text="Save"
-                               :disabled="!minimumRolesSelected" :on="{click: clickSaveButton}"></PrimaryButton>
+                               :disabled="!minimumRolesSelected" :clickAction="clickSaveButton"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -238,6 +238,7 @@ export default {
       this.setUserRolesAsSelected();
     },
     clickDeleteButton() {
+      console.log('Clicked delete');
       this.editState = false;
       this.relinkState = false;
       this.deleteState = !this.deleteState;
@@ -273,29 +274,30 @@ export default {
         });
     },
     clickRemoveButton(userToRemove) {
-      const payload = {
-        params:{
-          userToRemove: userToRemove.edxUserID
-        }
-      };
-      if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
-        payload.params.schoolID = userSchool.schoolID;
-        payload.params.userSchoolID = userSchool.edxUserSchoolID;
-      } else {
-        const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
-        payload.params.districtID = this.instituteCode;
-        payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
-      }
-      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
-        .then(() => {
-          this.setSuccessAlert('User has been removed.');
-        }).catch(error => {
-          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
-          console.log(error);
-        }).finally(() => {
-          this.$emit('refresh');
-        });
+      // const payload = {
+      //   params:{
+      //     userToRemove: userToRemove.edxUserID
+      //   }
+      // };
+      // if (this.instituteTypeCode === 'SCHOOL') {
+      //   const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+      //   payload.params.schoolID = userSchool.schoolID;
+      //   payload.params.userSchoolID = userSchool.edxUserSchoolID;
+      // } else {
+      //   const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+      //   payload.params.districtID = this.instituteCode;
+      //   payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
+      // }
+      // ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
+      //   .then(() => {
+      //     this.setSuccessAlert('User has been removed.');
+      //   }).catch(error => {
+      //     this.setFailureAlert('An error occurred while removing a user. Please try again later.');
+      //     console.log(error);
+      //   }).finally(() => {
+      //     this.$emit('refresh');
+      //   });
+      console.log('AttemptRemoved' + JSON.stringify(userToRemove));
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {

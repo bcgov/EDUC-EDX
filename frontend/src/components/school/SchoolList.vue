@@ -14,7 +14,6 @@
             id="name-text-field"
             label="School Code & Name"
             variant="underlined"
-            density="compact"
             item-value="schoolID"
             item-title="schoolCodeName"
             :items="schoolSearchNames"
@@ -29,7 +28,6 @@
             :items="schoolStatus"
             v-model="schoolStatusFilter"
             variant="underlined"
-            density="compact"
             item-title="name"
             item-value="code"
             label="Status"></v-select>
@@ -39,13 +37,12 @@
             id="status-select-field"
             clearable
             variant="underlined"
-            density="compact"
             :items="schoolFacilityTypes"
             v-model="schoolFacilityTypeFilter"
             item-title="label"
             item-value="facilityTypeCode" label="Facility Type"></v-select>
         </v-col>
-        <v-col cols="12" md="2" class="d-flex justify-end">
+        <v-col cols="12" md="2" class="mt-2 d-flex justify-end">
           <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
           <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" :clickAction="searchButtonClick"
                          :disabled="!searchEnabled()"/>
@@ -187,11 +184,11 @@ export default {
       schools: [],
       schoolSearchNames: [],
       schoolStatus: [],
-      schoolCodeNameFilter: '',
-      schoolStatusFilter: '',
+      schoolCodeNameFilter: null,
+      schoolStatusFilter: null,
       schoolFacilityTypes: [],
       schoolCategoryTypes: [],
-      schoolFacilityTypeFilter: '',
+      schoolFacilityTypeFilter: null,
       loadingSchools: true,
     };
   },
@@ -352,9 +349,9 @@ export default {
           || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
     },
     clearButtonClick() {
-      this.schoolCodeNameFilter = '';
-      this.schoolStatusFilter = '';
-      this.schoolFacilityTypeFilter = '';
+      this.schoolCodeNameFilter = null;
+      this.schoolStatusFilter = null;
+      this.schoolFacilityTypeFilter = null;
 
       this.headerSearchParams.schoolNumber = '';
       this.headerSearchParams.status = '';
