@@ -25,7 +25,7 @@
         </v-col>
         <v-col class="d-flex justify-end">
           <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" :clickAction="redirectToDistrictDetails"></PrimaryButton>
-          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" :clickAction="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" :clickAction="openNewContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="districtContactType in districtContactTypes" :key="districtContactType.code">
@@ -36,7 +36,7 @@
         </v-row>
         <v-row v-if="!districtContactType.publiclyAvailable">
           <v-col>
-            <v-alert :id="`publiclyAvailableAlert${districtContactType.label}`" color="#003366" dense text type="info">Contacts of this type are only available to the ministry and not available to public.</v-alert>
+            <v-alert :id="`publiclyAvailableAlert${districtContactType.label}`" color="#E9EBEF" dense text type="info"><p style="color: #003366">Contacts of this type are only available to the ministry and not available to public.</p></v-alert>
           </v-col>
         </v-row>
         <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
@@ -51,10 +51,12 @@
         </v-row>
       </div>
     </template>
-    <v-bottom-sheet
+    <v-navigation-drawer
         v-model="newContactSheet"
         inset
         no-click-animation
+        location="bottom"
+        style="width: 50%; height: 75%; left: 25%;"
         scrollable
         persistent>
       <NewDistrictContactPage
@@ -64,11 +66,13 @@
           @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
           @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
       />
-    </v-bottom-sheet>
-    <v-bottom-sheet
+    </v-navigation-drawer>
+    <v-navigation-drawer
         v-model="editContactSheet"
         inset
         no-click-animation
+        location="bottom"
+        style="width: 50%; height: 75%; left: 25%;"
         scrollable
         persistent>
       <EditDistrictContactPage
@@ -78,7 +82,7 @@
           :districtID="this.$route.params.districtID"
           :closeHandler="() => editContactSheet = false"
           :onSuccessHandler="contactEditSuccess"/>
-    </v-bottom-sheet>
+    </v-navigation-drawer>
   </v-container>
 </template>
 
@@ -182,6 +186,9 @@ export default {
       this.editContact = contact;
       this.editContactSheet = !this.editContactSheet;
     },
+    openNewContactSheet(){
+      this.newContactSheet = !this.newContactSheet;
+    },
     contactEditSuccess() {
       this.getThisDistrictsContacts();
     },
@@ -197,8 +204,8 @@ export default {
 
 <style scoped>
 
-.v-dialog__content >>> .v-bottom-sheet {
-  width: 30% !important;
+:deep(.mdi-information){
+  color: #003366;
 }
 
 @media screen and (max-width: 950px){

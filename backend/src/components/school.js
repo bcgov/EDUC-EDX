@@ -203,10 +203,7 @@ async function getSchoolsPaginated(req, res){
     return Promise.reject('getSchoolsPaginated error: User activeInstituteIdentifier does not exist in session');
   }
 
-  let parsedParams = '';
-  if (req.query.searchParams) {
-    parsedParams = JSON.parse(req.query.searchParams);
-  }
+  let parsedParams = req.query.searchParams;
 
   const schoolSearchCriteria = [{
     condition: null,

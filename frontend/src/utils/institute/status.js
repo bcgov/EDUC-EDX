@@ -57,7 +57,7 @@ export function isExpired(expiryDate) {
     parsedExpiryDate = new LocalDateTime.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   }
 
-  if (expiryDate !== null && parsedExpiryDate < currentDate) {
+  if (expiryDate !== null && parsedExpiryDate.isBefore(currentDate)) {
     expired = true;
   }
 

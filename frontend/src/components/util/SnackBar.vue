@@ -6,7 +6,7 @@
       v-model="showSnackBar"
       :timeout="timeout"
       elevation="24"
-      top
+      location="top"
       centered
       :color="colour"
       transition="slide-y-transition"

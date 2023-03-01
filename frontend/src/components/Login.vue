@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <article id="login-banner" class="top-banner">
+  <v-container fluid class="full-height">
+    <article id="login-banner" >
       <v-row align="center" justify="center">
         <v-card class="login-card">
           <v-card-title class="gov-header">
@@ -9,11 +9,9 @@
           <v-card-text id="login_descriptor">
             Welcome to the Education Data Exchange!
           </v-card-text>
-          <v-card-actions>
-            <v-row align="center" justify="center">
-              <v-btn id="login-button" @click="clearStorage" :href="authRoutes.LOGIN_BCEID" class="ma-2" dark color='#003366'>Log In with Basic BCeID<v-icon>mdi-login</v-icon></v-btn>
-            </v-row>
-          </v-card-actions>
+          <v-row class="my-1" align="center" justify="center">
+            <v-btn id="login-button" variant="outlined" @click="clearStorage" :href="authRoutes.LOGIN_BCEID" class="ma-2">Log In with Basic BCeID<v-icon>mdi-login</v-icon></v-btn>
+          </v-row>
         </v-card>
       </v-row>
     </article>
@@ -50,5 +48,11 @@ export default {
 <style scoped>
   .full-height{
     height: 100%;
+  }
+
+  .login-card{
+    margin-top: 15rem;
+    background-color: #003366;
+    color: white;
   }
 </style>
