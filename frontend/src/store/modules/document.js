@@ -1,37 +1,35 @@
-import ApiService from '@/common/apiService';
-//import {getData, postData} from '@/store/modules/helpers';
+import { defineStore } from 'pinia';
+import ApiService from '../../common/apiService';
 
-export default {
-  state: {
-    documentTypeCodes: null,
-    unsubmittedDocuments: [],
-  },
+export const documentStore = defineStore('document', {
+  state: () => ({
+    documentTypeCodesState: null,
+    unsubmittedDocumentsState: [],
+  }),
   getters: {
-    documentTypeCodes: state => state.documentTypeCodes,
-    unsubmittedDocuments: state => state.unsubmittedDocuments,
-  },
-  mutations: {
-    setDocumentTypeCodes: (state, documentTypeCodes) => {
-      state.documentTypeCodes = documentTypeCodes;
-    },
-    setUnsubmittedDocuments: (state, unsubmittedDocuments) => {
-      state.unsubmittedDocuments = unsubmittedDocuments || [];
-    },
-    setUploadedDocument: (state, document) => {
-      state.unsubmittedDocuments = [...state.unsubmittedDocuments, document];
-    },
+    documentTypeCodes: state => state.documentTypeCodesState,
+    unsubmittedDocuments: state => state.unsubmittedDocumentsState,
   },
   actions: {
-    async getDocumentTypeCodes({commit}) {
-      const response = await ApiService.getDocumentTypeCodes();
-      commit('setDocumentTypeCodes', response.data);
+    async setDocumentTypeCodes(documentTypeCodes){
+      this.documentTypeCodesState = documentTypeCodes;
     },
-    async deleteFile({commit, getters}, {secureExchangeID, documentID}){
-      await ApiService.deleteDocument(secureExchangeID, documentID);
-      const documents = getters.unsubmittedDocuments.filter(document => document.documentID !== documentID);
-      commit('setUnsubmittedDocuments', documents);
+    async setUnsubmittedDocuments(unsubmittedDocuments){
+      this.unsubmittedDocumentsState = unsubmittedDocuments || [];
     },
-    //getFileRequirements: () => getData(ApiService.getFileRequirements),
-    //uploadFile: (_context, fileData) => postData(ApiService.uploadFile, _context, fileData),
+    async setUploadedDocument(document){
+      this.unsubmittedDocumentsState = [...this.unsubmittedDocumentsState, document];
+    },
+    async getDocumentTypeCodes({rootGetters}) {
+      if(!this.documentTypeCodes) {
+        const response = await ApiService.getDocumentTypeCodes(rootGetters.requestType);
+        this.documentTypeCodes = response.data;
+      }
+    },
+    async deleteFile({getters, rootGetters}, {requestID, documentID}){
+      await ApiService.deleteDocument(requestID, documentID, rootGetters.requestType);
+      const documents = this.unsubmittedDocumentsState.filter(document => document.documentID !== documentID);
+      this.unsubmittedDocuments = documents;
+    }
   }
-};
+});

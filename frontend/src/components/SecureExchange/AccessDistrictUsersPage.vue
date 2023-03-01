@@ -20,12 +20,12 @@
         <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
-        <v-select id="roleName-select-field" clearable :items="districtRoles" v-model="searchFilter.roleName" item-text="label"
+        <v-select id="roleName-select-field" clearable :items="districtRoles" v-model="searchFilter.roleName" item-title="label"
                   item-value="edxRoleCode" label="Role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
-        <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
+        <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
+        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" :clickAction="searchButtonClick"
                        :disabled="searchEnabled()"/>
       </v-col>
     </v-row>
@@ -47,7 +47,7 @@
                                  secondary
                                  icon-left
                                  text="Add New User"
-                                 @click.native="newUserInviteSheet = !newUserInviteSheet"/>
+                                 :clickAction="newUserInviteSheet = !newUserInviteSheet"/>
                 </v-col>
               </v-row>
             </v-card>
@@ -97,15 +97,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {setEmptyInputParams} from '@/utils/common';
-import {isNotEmptyInputParams} from '@/utils/validation';
-import {ApiRoutes} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
-import PrimaryButton from '@/components/util/PrimaryButton';
-import AccessUserCard from './AccessUserCard';
-import Spinner from '@/components/common/Spinner';
-import ClipboardButton from '@/components/util/ClipboardButton';
-import InviteUserPage from '@/components/SecureExchange/InviteUserPage.vue';
+import {setEmptyInputParams} from '../../utils/common';
+import {isNotEmptyInputParams} from '../../utils/validation';
+import {ApiRoutes} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { appStore } from '../../store/modules/app';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import AccessUserCard from './AccessUserCard.vue';
+import Spinner from '../common/Spinner.vue';
+import ClipboardButton from '../util/ClipboardButton.vue';
+import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
 
 export default {
   name: 'AccessDistrictUsersPage',
@@ -129,14 +132,14 @@ export default {
   },
   async beforeMount() {
     if (this.districtRoles.length === 0) {
-      await this.$store.dispatch('edx/getDistrictExchangeRoles');
+      await edxStore().getDistrictExchangeRoles();
     }
     if(this.districtsMap.size === 0) {
-      await this.$store.dispatch('app/getInstitutesData');
+      await appStore().getInstitutesData();
     }
   },
   created() {
-    this.$store.dispatch('auth/getUserInfo').then(() => {
+    authStore().getUserInfo().then(() => {
       this.districtID = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
       this.getDistrictInformation();
@@ -211,7 +214,7 @@ export default {
       return !isNotEmptyInputParams(this.searchFilter);
     },
     updateUserRoles(newValue){
-      this.$store.commit('edx/setDistrictRoles', newValue);
+      edxStore().setDistrictRoles(newValue);
     },
     getChipColor(){
       if(this.primaryEdxActivationCode){
@@ -220,7 +223,7 @@ export default {
       return 'secondary';
     },
     closeNewUserModal(){
-      this.$store.commit('edx/setDistrictRoles', JSON.parse(JSON.stringify(this.districtRolesCopy)));
+      edxStore().setDistrictRoles(JSON.parse(JSON.stringify(this.districtRolesCopy)));
       this.newUserInviteSheet = false; // close the modal window.
     },
     getPrimaryEdxActivationCodeDistrict() {
@@ -234,9 +237,9 @@ export default {
     },
   },
   computed: {
-    ...mapState('app', ['districtsMap']),
-    ...mapState('edx', ['districtRoles','districtRolesCopy']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(appStore, ['districtsMap']),
+    ...mapState(edxStore, ['districtRoles','districtRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
   }
 };
 </script>

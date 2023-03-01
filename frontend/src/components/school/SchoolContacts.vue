@@ -39,13 +39,13 @@
                          secondary id="viewDetailsButton"
                          icon="mdi-domain"
                          text="View School Details"
-                         @click.native="redirectToSchoolDetails"/>
+                         :clickAction="redirectToSchoolDetails"/>
           <PrimaryButton v-if="canEditSchoolContacts()"
                          id="addSchoolContactBtn"
                          class="mr-0 mb-3"
                          icon="mdi-plus-thick"
                          text="New Contact"
-                         @click.native="newContactSheet = !newContactSheet"/>
+                         :clickAction="openNewContactSheet"/>
         </v-col>
       </v-row>
       <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
@@ -74,9 +74,11 @@
       </div>
     </template>
     <!--    new contact sheet -->
-    <v-bottom-sheet
+    <v-navigation-drawer
         v-model="newContactSheet"
         inset
+        location="bottom"
+        temporary
         no-click-animation
         scrollable
         persistent>
@@ -86,10 +88,12 @@
           :schoolID="this.$route.params.schoolID"
           @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
           @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"/>
-    </v-bottom-sheet>
-    <v-bottom-sheet
+    </v-navigation-drawer>
+    <v-navigation-drawer
         v-model="editContactSheet"
         inset
+        location="bottom"
+        temporary
         no-click-animation
         scrollable
         persistent>
@@ -100,19 +104,20 @@
           :schoolID="this.$route.params.schoolID"
           :closeHandler="() => editContactSheet = false"
           :onSuccessHandler="() => contactEditSuccess()"/>
-    </v-bottom-sheet>
+    </v-navigation-drawer>
   </v-container>
 </template>
 
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import {PERMISSION} from '@/utils/constants/Permission';
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
+import {ApiRoutes} from '../../utils/constants';
+import {PERMISSION} from '../../utils/constants/Permission';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
 import { sortBy } from 'lodash';
 
 import PrimaryButton from '../util/PrimaryButton.vue';
@@ -152,7 +157,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
     }
@@ -224,6 +229,9 @@ export default {
       let permissions = this.userInfo?.activeInstitutePermissions;
       if (permissions === undefined) return false;
       return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+    },
+    openNewContactSheet(){
+      this.newContactSheet = !this.newContactSheet
     },
     contactEditSuccess() {
       this.getThisSchoolsContacts();

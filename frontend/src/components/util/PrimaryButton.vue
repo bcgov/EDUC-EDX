@@ -2,9 +2,9 @@
   <v-hover v-slot:default="{ hover }">
     <v-btn :id="id"
            :title="title||text"
-           :class="[(hover && !disabled) ? secondary ? 'button-hover white--text':'button-hover':'']"
-           color="#003366"
-           :outlined="secondary"
+           :class="[(hover && !disabled) ? secondary ?  this.class + ' button-hover white--text': this.class + ' button-hover':  this.class + '']"
+           :color="disabled ? '' : '#003366'"
+           :variant="secondary ? 'outlined' : 'elevated'"
            :small="short"
            :disabled="disabled"
            :dark="!disabled"
@@ -12,10 +12,10 @@
            :width="width"
            :loading="loading"
            v-bind="bind"
-           v-on="on"
+           v-on:click="clickAction"
     >
-      <v-icon class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
-      <span class="ml-1">{{ text }}</span>
+      <v-icon :color="secondary ? '#003366': 'white'" class="ml-n1 mr-1" v-if="icon" :nudge-down="4" :large="largeIcon" right dark>{{ icon }}</v-icon>
+      <span :style="getButtonTextStyle()" class="ml-1">{{ text }}</span>
     </v-btn>
   </v-hover>
 </template>
@@ -23,7 +23,11 @@
 <script>
 export default {
   name: 'PrimaryButton',
+  inheritAttrs: false,
   props: {
+    class:{
+      type: String
+    },
     id: {
       type: String
     },
@@ -57,8 +61,8 @@ export default {
     bind: {
       type: Object
     },
-    on: {
-      type: Object
+    clickAction: {
+      type: Function
     },
     largeIcon: {
       type: Boolean,
@@ -67,8 +71,20 @@ export default {
     title:{
       type: String,
     }
+  },
+  methods: {
+    getButtonTextStyle(){
+      if(this.secondary){
+        return 'color: #003366'
+      }else if(!this.disabled){
+        return 'color: white';
+      }
+      return '';
+    }
   }
 };
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -14,14 +14,14 @@
             id="name-text-field"
             label="School Code & Name"
             item-value="schoolID"
-            item-text="schoolCodeName"
+            item-title="schoolCodeName"
             :items="schoolSearchNames"
             v-model="schoolCodeNameFilter"
             clearable>
           </v-autocomplete>
         </v-col>
         <v-col cols="12" md="2" class="d-flex justify-start">
-          <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-text="name"
+          <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-title="name"
                     item-value="code" label="Status"></v-select>
         </v-col>
         <v-col cols="12" md="3" class="d-flex justify-start">
@@ -30,12 +30,12 @@
             clearable
             :items="schoolFacilityTypes"
             v-model="schoolFacilityTypeFilter"
-            item-text="label"
+            item-title="label"
             item-value="facilityTypeCode" label="Facility Type"></v-select>
         </v-col>
         <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
-          <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-          <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" @click.native="searchButtonClick"
+          <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
+          <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" :clickAction="searchButtonClick"
                          :disabled="!searchEnabled()"/>
         </v-col>
       </v-row>
@@ -83,7 +83,6 @@
                                  @click.native.stop="openSchoolContacts(item.schoolId)"
                                  class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
-                                 v-on="on"
                           >
                             <v-icon color="#003366" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
                           </v-btn>
@@ -127,14 +126,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import Spinner from '@/components/common/Spinner';
-import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters, mapState} from 'vuex';
+import {ApiRoutes} from '../../utils/constants';
+import Spinner from '../common/Spinner.vue';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import { appStore } from '../../store/modules/app';
+import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatContactName} from '@/utils/format';
-import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '@/utils/institute/status';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatContactName} from '../../utils/format';
+import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '../../utils/institute/status';
+import {edxStore} from '../../store/modules/edx';
 
 export default {
   name: 'SchoolListPage',
@@ -182,13 +185,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['userInfo']),
-    ...mapState('app', ['schoolsMap']),
-    ...mapState('institute', ['facilityTypeCodes']),
-    ...mapState('institute', ['schoolCategoryTypeCodes']),
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(appStore, ['schoolsMap']),
+    ...mapState(instituteStore, ['facilityTypeCodes']),
+    ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
 
     getSheetWidth(){
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
         return 60;
@@ -198,12 +201,12 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('edx/getMinistryTeams');
-    this.$store.dispatch('app/getInstitutesData');
-    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+    edxStore().getMinistryTeams();
+    appStore().getInstitutesData();
+    instituteStore().getFacilityTypeCodes().then(() => {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+    instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
     });
 

@@ -24,12 +24,12 @@
               <h2 id="districtName">{{ district.districtNumber }} - {{ district.displayName }}</h2>
             </v-col>
             <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-              <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View District Contacts" @click.native="redirectToDistrictContacts"></PrimaryButton>
-              <PrimaryButton id="editButton" icon-left width="6em" icon="mdi-pencil" text="Edit" :disabled="!canEditDistrict()" @click.native="toggleEdit"></PrimaryButton>
+              <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View District Contacts" :clickAction="redirectToDistrictContacts"></PrimaryButton>
+              <PrimaryButton id="editButton" icon-left width="6em" icon="mdi-pencil" text="Edit" :disabled="!canEditDistrict()" :clickAction="toggleEdit"></PrimaryButton>
             </v-col>
             <v-col v-else cols="6" class="d-flex justify-end">
-              <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel" @click.native="cancelClicked"></PrimaryButton>
-              <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!districtFormValid" @click.native="saveDistrict"></PrimaryButton>
+              <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel" :clickAction="cancelClicked"></PrimaryButton>
+              <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!districtFormValid" :clickAction="saveDistrict"></PrimaryButton>
             </v-col>
           </v-row>
           <v-row class="d-flex justify-start">
@@ -179,7 +179,7 @@
                       <v-select
                         id="mailAddressProvince"
                         :items="this.provinceCodeValues"
-                        item-text="label"
+                        item-title="label"
                         item-value="provinceCode"
                         v-model="getMailingAddressCopy()[0].provinceCode"
                         dense
@@ -201,7 +201,7 @@
                       <v-select
                         id="mailAddressCountry"
                         :items="this.countryCodeValues"
-                        item-text="label"
+                        item-title="label"
                         item-value="countryCode"
                         :rules="[rules.required()]"
                         v-model="getMailingAddressCopy()[0].countryCode"
@@ -315,7 +315,7 @@
                                       <v-select
                                         id="physicalAddressProvince"
                                         :items="this.provinceCodeValues"
-                                        item-text="label"
+                                        item-title="label"
                                         item-value="provinceCode"
                                         v-model="getPhysicalAddressCopy()[0].provinceCode"
                                         dense
@@ -337,7 +337,7 @@
                                       <v-select
                                         id="physicalAddressCountry"
                                         :items="this.countryCodeValues"
-                                        item-text="label"
+                                        item-title="label"
                                         item-value="countryCode"
                                         v-model="getPhysicalAddressCopy()[0].countryCode"
                                         dense
@@ -399,16 +399,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import PrimaryButton from '@/components/util/PrimaryButton';
-import {formatPhoneNumber} from '@/utils/format';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import {formatPhoneNumber} from '../../utils/format';
 import {sanitizeUrl} from '@braintree/sanitize-url';
-import {deepCloneObject} from '@/utils/common';
-import {mapGetters, mapState} from 'vuex';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
+import {deepCloneObject} from '../../utils/common';
+import { mapState } from 'pinia';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
+import ConfirmationDialog from '../../components/util/ConfirmationDialog.vue';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -438,17 +440,17 @@ export default {
     };
   },
   computed:{
-    ...mapState('institute', ['provinceCodes', 'countryCodes']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(instituteStore, ['provinceCodes', 'countryCodes']),
+    ...mapState(authStore, ['userInfo']),
     hasSamePhysicalAddress(){
       return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     }
   },
   created() {
-    this.$store.dispatch('institute/getProvinceCodes').then(() => {
+    instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province =>  province.provinceCode === 'BC' || province.provinceCode === 'YT');
     });
-    this.$store.dispatch('institute/getCountryCodes').then(() => {
+    instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;
     });
     this.getDistrict();

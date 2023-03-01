@@ -24,8 +24,8 @@
           <v-chip color="#F4B183">Pending End Date</v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" @click.native="redirectToDistrictDetails"></PrimaryButton>
-          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" @click.native="newContactSheet = !newContactSheet"></PrimaryButton>
+          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" :clickAction="redirectToDistrictDetails"></PrimaryButton>
+          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" :clickAction="newContactSheet = !newContactSheet"></PrimaryButton>
         </v-col>
       </v-row>
       <div v-for="districtContactType in districtContactTypes" :key="districtContactType.code">
@@ -85,16 +85,17 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import PrimaryButton from '../util/PrimaryButton';
-import NewDistrictContactPage from './NewDistrictContactPage';
-import EditDistrictContactPage from './EditDistrictContactPage';
-import DistrictContact from './DistrictContact';
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import { isExpired } from '@/utils/institute/status';
+import {ApiRoutes} from '../../utils/constants';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import NewDistrictContactPage from './NewDistrictContactPage.vue';
+import EditDistrictContactPage from './EditDistrictContactPage.vue';
+import DistrictContact from './DistrictDetails.vue';
+import { mapState } from 'pinia';
+import { authStore } from '../../store/modules/auth';
+import alertMixin from '../../mixins/alertMixin';
+import { isExpired } from '../../utils/institute/status';
 import {sortBy} from 'lodash';
-import {PERMISSION} from '@/utils/constants/Permission';
+import {PERMISSION} from '../../utils/constants/Permission';
 
 export default {
   name: 'DistrictContactsPage',
@@ -122,7 +123,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
     },

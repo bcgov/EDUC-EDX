@@ -3,32 +3,27 @@
     <MsieBanner v-if="isIE"/>
     <Header/>
     <SnackBar></SnackBar>
-    <NavBar v-if="pageTitle && isAuthenticated" :title="pageTitle"/>
+    <NavBar v-if="pageTitle && authStore().isAuthenticated" :title="pageTitle"/>
     <v-main fluid class="align-start">
-    <v-app-bar v-if="bannerColor !== ''"
-               style="color:white;"
-               :color="bannerColor"
-               sticky
-               dense
-               height="20rem"
-    ><div><h3 class="envBanner">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
-    <ModalIdle v-if="isAuthenticated"/>
-    <router-view/>
+      <ModalIdle v-if="authStore().isAuthenticated"/>
+      <router-view/>
     </v-main>
     <Footer/>
   </v-app>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters,mapState } from 'vuex';
+import { authStore } from './store/modules/auth';
+import { appStore } from './store/modules/app';
+import { mapState, mapActions } from 'pinia';
 import HttpStatus from 'http-status-codes';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import ModalIdle from './components/ModalIdle';
-import MsieBanner from './components/MsieBanner';
+import Header from './components/Header.vue';
+import Footer from './components/Footer.vue';
+import ModalIdle from './components/ModalIdle.vue';
+import MsieBanner from './components/MsieBanner.vue';
 import StaticConfig from './common/staticConfig';
-import SnackBar from '@/components/util/SnackBar';
-import NavBar from '@/components/util/NavBar';
+import SnackBar from './components/util/SnackBar.vue';
+import NavBar from './components/util/NavBar.vue';
 
 export default {
   name: 'app',
@@ -44,24 +39,18 @@ export default {
     meta: StaticConfig.VUE_APP_META_DATA
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated', 'loginError', 'isLoading']),
-    ...mapState('app', ['pageTitle']),
+    ...mapState(authStore, ['isAuthenticated', 'loginError', 'isLoading']),
+    ...mapState(appStore, ['pageTitle']),
     isIE() {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }
   },
-  data() {
-    return {
-      bannerEnvironment: StaticConfig.BANNER_ENVIRONMENT,
-      bannerColor: StaticConfig.BANNER_COLOR
-    };
-  },
   methods: {
-    ...mapMutations('auth', ['setLoading']),
-    ...mapActions('auth', ['getJwtToken', 'getUserInfo', 'logout']),
+    authStore,
+    ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
   },
   async created() {
-    this.setLoading(true);
+    await this.setLoading(true);
     this.getJwtToken().then(() =>
       Promise.all([this.getUserInfo()])
     ).catch(e => {
@@ -77,6 +66,14 @@ export default {
 </script>
 
 <style>
+a{
+  color: #1976d2;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
 .envBanner {
   font-size: 0.8rem;
 }
@@ -127,14 +124,6 @@ h1 {
   color: #712024;
   background-color: #f7d8da !important;
   border-color: #eeaaad !important;
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-  margin-top: auto !important;
-  margin-bottom: auto !important;
 }
 
 @media screen and (max-width: 370px) {

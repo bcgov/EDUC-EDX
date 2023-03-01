@@ -159,8 +159,7 @@
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                    mdi-domain
+                  <v-icon icon="mdi-domain" aria-hidden="false" color="rgb(0, 51, 102)" size="100">
                   </v-icon>
                 </div>
               </v-col>
@@ -192,11 +191,13 @@
 <script>
 import omit from 'lodash/omit';
 import ApiService from '../common/apiService';
-import {ApiRoutes, PAGE_TITLES} from '@/utils/constants';
-import router from '@/router';
-import {mapGetters, mapState} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import {formatDateTime} from '@/utils/format';
+import {ApiRoutes, PAGE_TITLES} from '../utils/constants';
+import router from '../router';
+import { authStore } from '../store/modules/auth';
+import { appStore } from '../store/modules/app';
+import { mapState } from 'pinia';
+import alertMixin from '../mixins/alertMixin';
+import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
@@ -240,8 +241,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['activeSchoolsMap','activeDistrictsMap']),
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
     },
@@ -359,8 +360,8 @@ export default {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
             let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
 
-            if (thisContactLastUpdated !== null) {
-              if (thisContactLastUpdated > this.schoolContactsLastUpdateDate) {
+            if (thisContactLastUpdated !== null && this.schoolContactsLastUpdateDate) {
+              if (thisContactLastUpdated.isAfter(this.schoolContactsLastUpdateDate)) {
                 this.schoolContactsLastUpdateDate = thisContactLastUpdated;
               }
             }
@@ -405,7 +406,7 @@ export default {
       router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     isSchoolActive(){
-      this.$store.dispatch('app/getInstitutesData').finally(() => {
+      appStore().getInstitutesData().finally(() => {
         this.isTableLoading = false;
         const schoolsMap = this.activeSchoolsMap;
         this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
@@ -418,7 +419,7 @@ export default {
       return this.activeUserSchools.length > 0;
     },
     isDistrictActive(){
-      this.$store.dispatch('app/getInstitutesData').finally(() => {
+      appStore().getInstitutesData().finally(() => {
         this.isTableLoading = false;
         const districtMap = this.activeDistrictsMap;
         this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {

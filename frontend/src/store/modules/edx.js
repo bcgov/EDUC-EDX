@@ -1,7 +1,7 @@
-import document from '@/store/modules/document.js';
-import ApiService from '@/common/apiService';
+import ApiService from '../../common/apiService';
+import { defineStore } from 'pinia';
 
-export default {
+export const edxStore = defineStore('edx', {
   namespaced: true,
   state: () => ({
     statuses: [],
@@ -18,82 +18,79 @@ export default {
     secureExchangeStudents:[]
   }),
   getters: {
-    statuses: state => state.statuses,
-    exchange: state => state.exchange,
-    secureExchangeID: state => state.exchange.secureExchangeID,
-    ministryTeams: state => state.ministryTeams,
-    secureExchangeDocumentTypes: state => state.secureExchangeDocumentTypes,
-    secureExchangeDocuments: state => state.secureExchangeDocuments,
-    fileRequirements: state => state.fileRequirements,
-    secureExchangeStudents: state => state.secureExchangeStudents,
-  },
-  mutations: {
-    setStatuses: (state, statuses) => {
-      state.statuses = statuses;
-    },
-    setExchange: (state, exchange) => {
-      state.exchange = exchange;
-    },
-    setExchangeSchoolIds(state, payload) {
-      state.exchangeSchoolIds = payload;
-    },
-    setSchoolRoles(state, payload){
-      state.schoolRoles = JSON.parse(JSON.stringify(payload));
-    },
-    setSchoolRolesCopy(state, payload){
-      state.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
-    },
-    setDistrictRoles(state, payload){
-      state.districtRoles = JSON.parse(JSON.stringify(payload));
-    },
-    setDistrictRolesCopy(state, payload){
-      state.districtRolesCopy = JSON.parse(JSON.stringify(payload));
-    },
-    setMinistryTeams: (state, ministryTeams) => {
-      state.ministryTeams = ministryTeams;
-    },
-    setSecureExchangeDocumentTypes(state, payload) {
-      state.secureExchangeDocumentTypes = payload;
-    },
-    setSecureExchangeDocuments(state, payload) {
-      state.secureExchangeDocuments = payload;
-    },
-    deleteSecureExchangeDocumentByIndex(state, index) {
-      if (index < state.secureExchangeDocuments.length) {
-        state.secureExchangeDocuments.splice(index, 1);
-      }
-    },
-    setFileRequirements(state, payload) {
-      state.fileRequirements = payload;
-    },
-    setSecureExchangeStudents(state,payload){
-      state.secureExchangeStudents= payload;
-    },
-    deleteSecureExchangeStudentsByID(state, payload) {
-      state.secureExchangeStudents = state.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
-    }
+    statusesGet: state => state.statuses,
+    exchangeGet: state => state.exchange,
+    secureExchangeIDGet: state => state.exchange.secureExchangeID,
+    ministryTeamsGet: state => state.ministryTeams,
+    secureExchangeDocumentTypesGet: state => state.secureExchangeDocumentTypes,
+    secureExchangeDocumentsGet: state => state.secureExchangeDocuments,
+    fileRequirementsGet: state => state.fileRequirements,
+    secureExchangeStudentsGet: state => state.secureExchangeStudents,
   },
   actions: {
-    async getMinistryTeams({commit, state}) {
+    async setStatuses(statuses){
+      this.statuses = statuses;
+    },
+    async setExchange(exchange){
+      this.exchange = exchange;
+    },
+    async setExchangeSchoolIds(payload) {
+      this.exchangeSchoolIds = payload;
+    },
+    async setSchoolRoles(payload){
+      this.schoolRoles = JSON.parse(JSON.stringify(payload));
+    },
+    async setSchoolRolesCopy(payload){
+      this.schoolRolesCopy = JSON.parse(JSON.stringify(payload));
+    },
+    async setDistrictRoles(payload){
+      this.districtRoles = JSON.parse(JSON.stringify(payload));
+    },
+    async setDistrictRolesCopy(payload){
+      this.districtRolesCopy = JSON.parse(JSON.stringify(payload));
+    },
+    async setMinistryTeams(ministryTeams){
+      this.ministryTeams = ministryTeams;
+    },
+    async setSecureExchangeDocumentTypes(payload) {
+      this.secureExchangeDocumentTypes = payload;
+    },
+    async setSecureExchangeDocuments(payload) {
+      this.secureExchangeDocuments = payload;
+    },
+    async deleteSecureExchangeDocumentByIndex(index) {
+      if (index < this.secureExchangeDocuments.length) {
+        this.secureExchangeDocuments.splice(index, 1);
+      }
+    },
+    async setFileRequirements(payload) {
+      this.fileRequirements = payload;
+    },
+    async setSecureExchangeStudents(payload){
+      this.secureExchangeStudents= payload;
+    },
+    async deleteSecureExchangeStudentsByID(payload) {
+      this.secureExchangeStudents = this.secureExchangeStudents.filter(secureExchangeStudent => secureExchangeStudent.studentID !== payload.studentID);
+    },
+    async getMinistryTeams() {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.ministryTeams.length === 0) {
+        if (this.ministryTeams.length === 0) {
           const response = await ApiService.getMinistryTeamCodes();
-          commit('setMinistryTeams', response.data);
+          await this.setMinistryTeams(response.data);
         }
       }
     },
-    async getExchangeStatusCodes({commit, state}) {
+    async getExchangeStatusCodes() {
       if (localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.statuses.length === 0) {
-          ApiService.getExchangeStatuses().then(response => {
-            commit('setStatuses', response.data);
-          });
+        if (this.statuses.length === 0) {
+          const response = await ApiService.getExchangeStatuses();
+          await this.setStatuses(response.data);
         }
       }
     },
-    async getExchangeSchoolIds({ commit, state}) {
+    async getExchangeSchoolIds() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if(state.exchangeSchoolIds.length === 0) {
+        if(this.exchangeSchoolIds.length === 0) {
           const query = {
             params: {
               permissionCode : 'SECURE_EXCHANGE',
@@ -101,57 +98,53 @@ export default {
           };
 
           const response = await ApiService.getEdxExchangeSchoolIds(query);
-          commit('setExchangeSchoolIds', response.data);
+          await this.setExchangeSchoolIds(response.data);
         }
       }
     },
-    async getSchoolExchangeRoles({ commit, state}) {
+    async getSchoolExchangeRoles() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.schoolRoles.length === 0) {
+        if (this.schoolRoles.length === 0) {
           const params = {
             params: {
               instituteType:'SCHOOL'
             }
           };
           const response = await ApiService.getEdxRoles(params);
-          commit('setSchoolRoles', response.data);
-          commit('setSchoolRolesCopy', response.data);
+          await this.setSchoolRoles(response.data);
+          await this.setSchoolRolesCopy(response.data);
         }
       }
     },
-    async getDistrictExchangeRoles({ commit, state}) {
+    async getDistrictExchangeRoles() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.districtRoles.length === 0) {
+        if (this.districtRoles.length === 0) {
           const params = {
             params: {
               instituteType:'DISTRICT'
             }
           };
           const response = await ApiService.getEdxRoles(params);
-          commit('setDistrictRoles', response.data);
-          commit('setDistrictRolesCopy', response.data);
-
+          await this.setDistrictRoles(response.data);
+          await this.setDistrictRolesCopy(response.data);
         }
       }
     },
-    async getSecureExchangeDocumentTypes({ commit, state}) {
+    async getSecureExchangeDocumentTypes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if (state.secureExchangeDocumentTypes.length === 0) {
+        if (this.secureExchangeDocumentTypes.length === 0) {
           const response = await ApiService.getSecureExchangeDocumentTypes();
-          commit('setSecureExchangeDocumentTypes', response.data);
+          await this.setSecureExchangeDocumentTypes(response.data);
         }
       }
     },
-    async getFileRequirements({ commit, state}) {
+    async getFileRequirements() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
-        if(state.fileRequirements.length === 0) {
+        if(this.fileRequirements.length === 0) {
           const response = await ApiService.getFileRequirements();
-          commit('setFileRequirements', response.data);
+          await this.setFileRequirements(response.data);
         }
       }
     },
-  },
-  modules: {
-    document,
   }
-};
+});

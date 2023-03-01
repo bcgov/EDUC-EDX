@@ -23,7 +23,7 @@
                 :rules="[rules.required()]"
                 v-model="editContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
                 label="School Contact Type"/>
@@ -110,13 +110,13 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="editContact.effectiveDate"
-                      :active-picker.sync="editContactEffectiveDatePicker"
-                      @change="saveEditContactEffectiveDate"/>
+                  <VueDatePicker
+                    v-model="editContact.effectiveDate"
+                    :active-picker.sync="editContactEffectiveDatePicker"
+                    @change="saveEditContactEffectiveDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
               <v-col cols="6">
@@ -137,13 +137,13 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="editContact.expiryDate"
-                      :active-picker.sync="editContactExpiryDatePicker"
-                      @change="saveEditContactExpiryDate"/>
+                  <VueDatePicker
+                    v-model="editContact.expiryDate"
+                    :active-picker.sync="editContactExpiryDatePicker"
+                    @change="saveEditContactExpiryDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -154,11 +154,11 @@
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelContactBtn"
                      secondary text="Cancel"
-                     @click.native="closeHandler"/>
+                     :clickAction="closeHandler"/>
       <PrimaryButton id="editContactPostBtn"
                      text="Save"
                      width="7rem"
-                     @click.native="saveSchoolContact"
+                     :clickAction="saveSchoolContact"
                      :disabled="!isFormValid"
                      :loading="processing"/>
     </v-card-actions>
@@ -166,14 +166,16 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 import PrimaryButton from '../util/PrimaryButton.vue';
 
@@ -181,7 +183,8 @@ export default {
   name: 'EditSchoolContactPage',
   mixins: [alertMixin],
   components: {
-    PrimaryButton
+    PrimaryButton,
+    VueDatePicker
   },
   props: {
     schoolContactTypes: {
@@ -264,8 +267,9 @@ export default {
     saveEditContactEffectiveDate(date) {
       this.$refs.editContactEffectiveDateFilter.save(date);
     },
-    validateForm() {
-      this.isFormValid = this.$refs.editContactForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.editContactForm.validate();
+      this.isFormValid = valid.valid;
     },
     formatPhoneNumber,
     getStatusColor,

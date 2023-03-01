@@ -67,7 +67,7 @@
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
-          <v-list-item-group
+          <v-list-group
             v-model="selectedRoles"
             @change="selectedRolesChanged"
             v-else
@@ -85,13 +85,11 @@
                   ></v-checkbox>
                 </v-list-item-action>
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-                  <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
-                </v-list-item-content>
+                <v-list-item-title>{{ newrole.label }}</v-list-item-title>
+                <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
               </template>
             </v-list-item>
-          </v-list-item-group>
+          </v-list-group>
         </v-card-text>
         <Transition name="bounce">
           <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
@@ -107,7 +105,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
                                text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" @click.native="clickRemoveButton(user)"></PrimaryButton>
+                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -129,7 +127,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
                                text="Cancel" class="mr-2" secondary :on="{click: clickRelinkButton}"></PrimaryButton>
                 <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
-                               @click.native="clickActionRelinkButton(user)"></PrimaryButton>
+                               :clickAction="clickActionRelinkButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -156,11 +154,13 @@
   </v-row>
 </template>
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
-import alertMixin from '@/mixins/alertMixin';
-import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
+import alertMixin from '../../mixins/alertMixin';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 
 export default {
   name: 'AccessUserCard',
@@ -214,7 +214,7 @@ export default {
       this.selectedRoles = [this.edxInstituteAdminRole];
     },
     getButtonWidth() {
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
       case 'md':
@@ -344,8 +344,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('edx', ['schoolRoles']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(edxStore, ['schoolRoles']),
+    ...mapState(authStore, ['userInfo']),
     isEDXInstituteAdminSelected() {
       return this.selectedRoles.includes(this.edxInstituteAdminRole);
     },

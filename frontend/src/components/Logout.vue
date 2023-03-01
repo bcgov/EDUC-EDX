@@ -22,6 +22,7 @@
 
 <script>
 import { AuthRoutes } from '../utils/constants';
+import {authStore} from '../store/modules/auth';
 export default {
   name: 'Logout',
 
@@ -31,11 +32,11 @@ export default {
     };
   },
   mounted() {
-    this.$store.commit('auth/setJwtToken');
+    authStore().setJwtToken();
   },
   methods: {
     clearStorage() {
-      this.$store.commit('auth/setJwtToken');
+      authStore().setJwtToken();
     }
   }
 };

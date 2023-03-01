@@ -45,7 +45,7 @@
                               id="instituteNewUserRolesSelect"
                               :items="userRoles"
                               item-value='edxRoleCode'
-                              item-text='label'
+                              item-title='label'
                               item-disabled="disabled"
                               v-model='edxActivationRoleCodes'
                               :menu-props="{ maxHeight: '400' }"
@@ -62,7 +62,7 @@
                               <span :style="edxAdminUserCodeSelected ? 'color: black; font-weight: bold' : ''">{{ message }}</span>
                             </template>
                             <template v-slot:item="{ item, on, attrs }">
-                              <v-list-item :disabled="item.disabled" @input="disableRoles" :value="item.edxRoleCode" v-bind="attrs" v-on="on">
+                              <v-list-item :disabled="item.disabled" @input="disableRoles" :value="item.edxRoleCode" v-bind="attrs">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-action class="mt-0 mb-2 mr-3">
                                     <v-checkbox
@@ -86,10 +86,10 @@
               </v-row>
               <v-row class="py-4 justify-end">
                 <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
-                               @click.native="navigateToList"></PrimaryButton>
+                               :clickAction="navigateToList"></PrimaryButton>
                 <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm"
                                :loading="processing"
-                               @click.native="sendNewUserInvite"></PrimaryButton>
+                               :clickAction="sendNewUserInvite"></PrimaryButton>
               </v-row>
             </v-col>
           </v-row>
@@ -101,13 +101,13 @@
 </template>
 
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-
-import {ApiRoutes} from '@/utils/constants';
-import {mapGetters} from 'vuex';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
 
 export default {
   name: 'InviteUserPage',
@@ -169,7 +169,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(authStore, ['userInfo']),
     instituteNameAndCode() {
       switch(this.instituteTypeCode) {
       case 'SCHOOL':

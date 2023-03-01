@@ -146,7 +146,7 @@ async function getExchangesPaginated(req) {
   let criteria = [];
   let parsedParams = '';
   if (req.query.searchParams) {
-    parsedParams = JSON.parse(req.query.searchParams);
+    parsedParams = req.query.searchParams;
     if (parsedParams.studentPEN) {
       let studentDetail = await getData(accessToken, config.get('student:apiEndpoint') + '/?pen=' + parsedParams.studentPEN);
       if (studentDetail[0]) {
@@ -529,6 +529,7 @@ async function createSecureExchangeStudent(req, res) {
       return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
+    console.log('Access RToken: ' + JSON.stringify(secureExchangeStudent));
     const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`, req.session?.correlationID);
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
@@ -639,7 +640,7 @@ async function activateEdxUser(req, res) {
     }
 
     const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
-    log.info('User Activation Sucessful');
+    log.info('User Activation Successful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
     getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);

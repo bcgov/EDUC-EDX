@@ -15,11 +15,11 @@ const getContactStatus = function (contact) {
     parsedExpiryDate = new LocalDateTime.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   }
 
-  if (parsedExpiryDate === null && parsedEffectiveDate < currentDate) {
+  if (parsedExpiryDate === null && parsedEffectiveDate.isBefore(currentDate)) {
     status = 'Active';
-  } else if (parsedEffectiveDate > currentDate) {
+  } else if (parsedEffectiveDate.isAfter(currentDate)) {
     status = 'Pending Start Date';
-  } else if (parsedExpiryDate > currentDate) {
+  } else if (parsedExpiryDate.isBefore(currentDate)) {
     status = 'Pending End Date';
   }
   return status;
@@ -101,11 +101,11 @@ export function getStatusAuthorityOrSchool(authorityOrSchool) {
     parsedCloseDate = new LocalDateTime.parse(closedDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   }
 
-  if (parsedOpenDate <= currentDate && parsedCloseDate === null) {
+  if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate === null) {
     return 'Open';
-  } else if (parsedOpenDate > currentDate) {
+  } else if (parsedOpenDate.isBefore(currentDate)) {
     return 'Opening';
-  } else if (parsedOpenDate <= currentDate && parsedCloseDate > currentDate) {
+  } else if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate.isAfter(currentDate)) {
     return 'Closing';
   }
 

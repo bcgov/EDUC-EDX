@@ -3,7 +3,7 @@
   <v-container class="containerSetup" fluid>
     <v-row v-if="!loading && editing" class="d-flex justify-center">
       <v-col>
-        <v-alert id="nonEditableAlert" color="#003366" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
+        <v-alert style="color: rgb(0, 51, 102)" id="nonEditableAlert" color="#E9EBEF" class="pa-5 mb-0" icon="mdi-help-circle-outline" dense text type="info">
           <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
@@ -32,15 +32,14 @@
             <h2 class="subjectHeading">{{ school.mincode }} - {{ school.displayName }}</h2>
           </v-col>
           <v-col v-if="!editing" cols="6" class="d-flex justify-end">
-            <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" @click.native="redirectToSchoolContacts"></PrimaryButton>
-            <PrimaryButton id="schoolDetailsEditButton" icon-left class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
-                           v-if="canEditSchoolDetails()" @click.native="toggleEdit"></PrimaryButton>
+            <PrimaryButton class="mr-2 mb-3" secondary id="viewContactsButton" icon="mdi-account-multiple-outline" text="View School Contacts" :clickAction="redirectToSchoolContacts"></PrimaryButton>
+            <PrimaryButton id="schoolDetailsEditButton" class="mr-0 mb-3" icon="mdi-pencil" text="Edit"
+                           v-if="canEditSchoolDetails()" :clickAction="toggleEdit"></PrimaryButton>
           </v-col>
           <v-col v-else cols="6" class="d-flex justify-end">
-            <PrimaryButton class="mr-2" secondary id="cancelButton" icon-left width="6em" text="Cancel"
-                           @click.native="cancelClicked"></PrimaryButton>
-            <PrimaryButton id="saveButton" icon-left width="6em" text="Save" :disabled="!schoolDetailsFormValid"
-                           @click.native="updateSchoolDetails"></PrimaryButton>
+            <PrimaryButton class="mr-2" secondary id="cancelButton" width="6em" text="Cancel" :clickAction="cancelClicked"></PrimaryButton>
+            <PrimaryButton id="saveButton" width="6em" text="Save" :disabled="!schoolDetailsFormValid"
+                           :clickAction="updateSchoolDetails"></PrimaryButton>
           </v-col>
         </v-row>
         <v-row class="d-flex justify-start">
@@ -183,7 +182,7 @@
                     }}</span>
                   <v-select v-else :items="schoolActiveOrganizationTypes"
                             item-value="schoolOrganizationCode"
-                            item-text="label"
+                            item-title="label"
                             v-model="schoolDetailsCopy.schoolOrganizationCode"
                             single
                             dense
@@ -204,7 +203,7 @@
                   <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
                   <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
                             item-value="neighborhoodLearningTypeCode"
-                            item-text="label"
+                            item-title="label"
                             v-model="schoolDetailsCopy.neighborhoodLearning"
                             multiple
                             dense
@@ -309,7 +308,7 @@
                       <v-select
                           id="mailAddressProvince"
                           :items="this.provinceCodeValues"
-                          item-text="label"
+                          item-title="label"
                           item-value="provinceCode"
                           v-model="getMailingAddressCopy()[0].provinceCode"
                           dense
@@ -331,7 +330,7 @@
                       <v-select
                           id="mailAddressCountry"
                           :items="this.countryCodeValues"
-                          item-text="label"
+                          item-title="label"
                           item-value="countryCode"
                           :rules="[rules.required()]"
                           v-model="getMailingAddressCopy()[0].countryCode"
@@ -454,7 +453,7 @@
                                       <v-select
                                           id="physicalAddressProvince"
                                           :items="this.provinceCodeValues"
-                                          item-text="label"
+                                          item-title="label"
                                           item-value="provinceCode"
                                           v-model="getPhysicalAddressCopy()[0].provinceCode"
                                           dense
@@ -476,7 +475,7 @@
                                       <v-select
                                           id="physicalAddressCountry"
                                           :items="this.countryCodeValues"
-                                          item-text="label"
+                                          item-title="label"
                                           item-value="countryCode"
                                           v-model="getPhysicalAddressCopy()[0].countryCode"
                                           dense
@@ -540,18 +539,20 @@
 
 <script>
 
-import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters, mapState} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import {formatPhoneNumber, formatDate} from '@/utils/format';
-import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '@/utils/institute/status';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import { authStore } from '../../store/modules/auth';
+import { instituteStore } from '../../store/modules/institute';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {formatPhoneNumber, formatDate} from '../../utils/format';
+import {getStatusColorAuthorityOrSchool,getStatusAuthorityOrSchool} from '../../utils/institute/status';
 import {sanitizeUrl} from '@braintree/sanitize-url';
-import {deepCloneObject} from '@/utils/common';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
+import {deepCloneObject} from '../../utils/common';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -590,16 +591,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
-    ...mapState('institute', ['facilityTypeCodes']),
-    ...mapState('institute', ['schoolCategoryTypeCodes']),
-    ...mapState('institute', ['schoolOrganizationTypeCodes']),
-    ...mapState('institute', ['schoolNeighborhoodLearningCodes']),
-    ...mapState('institute', ['activeSchoolOrganizationTypeCodes']),
-    ...mapState('institute', ['activeSchoolNeighborhoodLearningCodes']),
-    ...mapState('institute', ['provinceCodes']),
-    ...mapState('institute', ['countryCodes']),
-    ...mapState('institute', ['gradeCodes']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
+    ...mapState(instituteStore, ['facilityTypeCodes']),
+    ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
+    ...mapState(instituteStore, ['schoolOrganizationTypeCodes']),
+    ...mapState(instituteStore, ['schoolNeighborhoodLearningCodes']),
+    ...mapState(instituteStore, ['activeSchoolOrganizationTypeCodes']),
+    ...mapState(instituteStore, ['activeSchoolNeighborhoodLearningCodes']),
+    ...mapState(instituteStore, ['provinceCodes']),
+    ...mapState(instituteStore, ['countryCodes']),
+    ...mapState(instituteStore, ['gradeCodes']),
     dataReady: function () {
       return this.userInfo;
     },
@@ -619,31 +620,31 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('institute/getFacilityTypeCodes').then(() => {
+    instituteStore().getFacilityTypeCodes().then(() => {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolCategoryTypeCodes').then(() => {
+    instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolOrganizationTypeCodes').then(() => {
+    instituteStore().getSchoolOrganizationTypeCodes().then(() => {
       this.schoolOrganizationTypes = this.schoolOrganizationTypeCodes;
     });
-    this.$store.dispatch('institute/getSchoolNeighborhoodLearningCodes').then(() => {
+    instituteStore().getSchoolNeighborhoodLearningCodes().then(() => {
       this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
     });
-    this.$store.dispatch('institute/getAllActiveSchoolOrganizationTypeCodes').then(() => {
+    instituteStore().getAllActiveSchoolOrganizationTypeCodes().then(() => {
       this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
     });
-    this.$store.dispatch('institute/getAllActiveSchoolNeighborhoodLearningCodes').then(() => {
+    instituteStore().getAllActiveSchoolNeighborhoodLearningCodes().then(() => {
       this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
     });
-    this.$store.dispatch('institute/getGradeCodes').then(() => {
+    instituteStore().getGradeCodes().then(() => {
       this.schoolGradeTypes = this.gradeCodes;
     });
-    this.$store.dispatch('institute/getProvinceCodes').then(() => {
+    instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
     });
-    this.$store.dispatch('institute/getCountryCodes').then(() => {
+    instituteStore().getCountryCodes().then(() => {
       this.countryCodeValues = this.countryCodes;
     });
     this.getThisSchoolsDetails();
@@ -868,6 +869,7 @@ export default {
 .divider {
   border-color: #FCBA19;
   border-width: unset;
+  opacity: unset;
 }
 
 .containerSetup{

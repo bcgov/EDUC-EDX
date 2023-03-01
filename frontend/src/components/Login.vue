@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="full-height px-0">
+  <v-container>
     <article id="login-banner" class="top-banner">
       <v-row align="center" justify="center">
         <v-card class="login-card">
@@ -21,8 +21,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import { AuthRoutes } from '@/utils/constants';
+import { authStore } from '../store/modules/auth';
+import { mapState } from 'pinia';
+import { AuthRoutes } from '../utils/constants';
 
 export default {
   name: 'Login',
@@ -31,16 +32,16 @@ export default {
   },
   data() {
     return {
-      appTitle: process.env.VUE_APP_TITLE,
+      appTitle: 'Education Data Exchange',
       authRoutes: AuthRoutes
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated']),
+    ...mapState(authStore, ['isAuthenticated']),
   },
   methods: {
     clearStorage() {
-      this.$store.commit('auth/setJwtToken');
+      authStore().setJwtToken();
     }
   }
 };
