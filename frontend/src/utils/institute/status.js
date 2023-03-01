@@ -73,10 +73,10 @@ export function isContactCurrent(contact) {
   const currentTimestamp = LocalDateTime.now();
   const parsedEffectiveDate = new LocalDateTime.parse(contact.effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
   const parsedExpiryDate = contact.expiryDate ? new LocalDateTime.parse(contact.expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')) : null;
-  if (parsedEffectiveDate > currentTimestamp) {
+  if (parsedEffectiveDate.isAfter(currentTimestamp)) {
     return false;
   }
-  return parsedExpiryDate == null || parsedExpiryDate > currentTimestamp;
+  return parsedExpiryDate == null || parsedExpiryDate.isAfter(currentTimestamp);
 }
 
 /**

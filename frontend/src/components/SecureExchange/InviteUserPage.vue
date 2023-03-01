@@ -71,9 +71,9 @@
                                         color="primary"
                                     ></v-checkbox>
                                   </v-list-item-action>
-                                  <v-list-item-content>
+                                  <v-list-item-title>
                                     <v-list-item-title>{{ item.label }}</v-list-item-title>
-                                  </v-list-item-content>
+                                  </v-list-item-title>
                                 </template>
                               </v-list-item>
                             </template>
@@ -261,8 +261,9 @@ export default {
           this.processing = false;
         });
     },
-    validateForm() {
-      this.isValidForm = this.$refs.newUserForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.newUserForm.validate();
+      this.isFormValid = valid.valid;
     },
   }
 };

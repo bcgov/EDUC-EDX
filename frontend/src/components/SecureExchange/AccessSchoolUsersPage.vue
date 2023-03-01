@@ -30,10 +30,10 @@
         </v-row>
         <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
           <v-col cols="12" md="4" class="mt-6">
-            <v-text-field density="compact" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+            <v-text-field variant="underlined" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
           </v-col>
           <v-col cols="12" md="4" class="mt-6">
-            <v-select density="compact"  id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-title="label"
+            <v-select variant="underlined" id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-title="label"
                       item-value="edxRoleCode" label="Role"></v-select>
           </v-col>
           <v-col cols="12" md="4" :class="['text-right']">
@@ -113,7 +113,7 @@
           <v-col class="d-flex justify-center">
             <v-card min-width="55em" color="#F2F2F2">
               <v-card-title>
-                <v-row justify="center">
+                <v-row class="mt-0" justify="center">
                   <v-col class="d-flex justify-center">
                     <strong>Search a school below to manage their EDX Access</strong>
                   </v-col>
@@ -124,17 +124,17 @@
                   <v-col class="mx-2 d-flex justify-center">
                     <v-autocomplete
                       id='selectInstituteName'
-                      class="pt-0 mt-n1"
-                      prepend-inner-icon="mdi-account-box-outline"
+                      variant="underlined"
                       v-model="instituteCode"
                       :items="schoolSearchNames"
                       color="#003366"
                       :label="instituteTypeLabel"
+                      single-line
                       clearable
                       item-title="schoolCodeName"
                       item-value="schoolID"
                     ></v-autocomplete>
-                    <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                    <PrimaryButton class="ml-4 mt-3" id="manageSchoolButton" text="Manage School Access" :clickAction="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -186,7 +186,7 @@ export default {
       },
       primaryEdxActivationCode: null,
       instituteCode: '',
-      instituteTypeLabel: 'Schools'
+      instituteTypeLabel: 'School'
     };
   },
   async beforeMount() {

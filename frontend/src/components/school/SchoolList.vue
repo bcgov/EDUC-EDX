@@ -8,11 +8,13 @@
         <a class="ml-1" @click="backButtonClick">Return to Dashboard</a>
       </v-col>
       </v-row>
-      <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3">
+      <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3 pt-4">
         <v-col cols="12" md="5" class="d-flex justify-start">
           <v-autocomplete
             id="name-text-field"
             label="School Code & Name"
+            variant="underlined"
+            density="compact"
             item-value="schoolID"
             item-title="schoolCodeName"
             :items="schoolSearchNames"
@@ -21,19 +23,29 @@
           </v-autocomplete>
         </v-col>
         <v-col cols="12" md="2" class="d-flex justify-start">
-          <v-select id="status-select-field" clearable :items="schoolStatus" v-model="schoolStatusFilter" item-title="name"
-                    item-value="code" label="Status"></v-select>
+          <v-select
+            id="status-select-field"
+            clearable
+            :items="schoolStatus"
+            v-model="schoolStatusFilter"
+            variant="underlined"
+            density="compact"
+            item-title="name"
+            item-value="code"
+            label="Status"></v-select>
         </v-col>
         <v-col cols="12" md="3" class="d-flex justify-start">
           <v-select
             id="status-select-field"
             clearable
+            variant="underlined"
+            density="compact"
             :items="schoolFacilityTypes"
             v-model="schoolFacilityTypeFilter"
             item-title="label"
             item-value="facilityTypeCode" label="Facility Type"></v-select>
         </v-col>
-        <v-col cols="12" md="2" class="mt-6  d-flex justify-end">
+        <v-col cols="12" md="2" class="d-flex justify-end">
           <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
           <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" :clickAction="searchButtonClick"
                          :disabled="!searchEnabled()"/>
@@ -44,7 +56,6 @@
           <v-data-table
               :items-per-page.sync="pageSize"
               :page.sync="pageNumber"
-              :headers="headers"
               :footer-props="{
                     'items-per-page-options': itemsPerPageOptions
                   }"
@@ -56,31 +67,31 @@
               mobile-breakpoint="0"
           >
 
-            <template v-slot:item.secureExchangeStatusCode="{ item }">
-              <v-row class="schoolDetailsRow" style="cursor: pointer;" @click="openSchool(item.schoolId)">
+            <template v-slot:item="{ item }">
+              <v-row no-gutters class="schoolDetailsRow" style="cursor: pointer;" @click="openSchool(item.value.schoolId)">
                 <v-col class="pb-0 pt-0">
                   <v-row class="mb-n4">
                     <v-col cols="6">
-                      <span class="subjectHeading">{{ item.mincode }} - {{ item.displayName }}</span>
+                      <span class="subjectHeading">{{ item.value.mincode }} - {{ item.value.displayName }}</span>
                     </v-col>
                     <v-col cols="2" class="ml-n8">
-                      <v-icon class="ml-0 mb-1" :color="getStatusColorAuthorityOrSchool(item.status)" right dark>
+                      <v-icon class="ml-0 mb-1" :color="getStatusColorAuthorityOrSchool(item.value.status)" right dark>
                         mdi-circle-medium
                       </v-icon>
-                      <span class="statusCodeLabel">{{ item.status }}</span>
+                      <span class="statusCodeLabel">{{ item.value.status }}</span>
                     </v-col>
                     <v-col class="d-flex ml-n8">
                       <v-icon class="mb-3 mr-1" aria-hidden="false">
                         mdi-account-outline
                       </v-icon>
-                      <span class="principalName statusCodeLabel" style="color: black">{{item.principalsName}}</span>
+                      <span class="principalName statusCodeLabel" style="color: black">{{item.value.principalsName}}</span>
                     </v-col>
                     <v-col class="d-flex justify-end" cols="1">
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn color="#003366"
                                  outlined
-                                 @click.native.stop="openSchoolContacts(item.schoolId)"
+                                 @click.native.stop="openSchoolContacts(item.value.schoolId)"
                                  class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
                           >
@@ -94,20 +105,20 @@
                   <v-row>
                     <v-col cols="6" class="mt-n4">
                       <span class="ministryLine mt-n5" style="color: black">{{
-                          item.schoolCategory
-                        }} | {{ item.facilityType }}</span>
+                          item.value.schoolCategory
+                        }} | {{ item.value.facilityType }}</span>
                     </v-col>
                     <v-col cols="2" class="mt-n2 ml-n8">
                       <v-icon class="mb-1" aria-hidden="false">
                         mdi-phone-outline
                       </v-icon>
-                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.phoneNumber) }}</span>
+                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.value.phoneNumber) }}</span>
                     </v-col>
                     <v-col cols="4" class="d-flex mt-n2 ml-n8">
                       <v-icon class="ml-0 mr-1 mb-1" aria-hidden="false">
                         mdi-at
                       </v-icon>
-                      <span class="statusCodeLabel centerSpan">{{ item.email }}</span>
+                      <span class="statusCodeLabel centerSpan">{{ item.value.email }}</span>
                     </v-col>
                   </v-row>
                 </v-col>

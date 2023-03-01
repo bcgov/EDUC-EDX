@@ -12,15 +12,15 @@
           </v-icon>Primary Activation Code:
           {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
         </v-chip>
-        <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
+        <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="mdi-content-copy" class="color: white"></ClipboardButton>
       </v-col>
     </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-      <v-col cols="12" md="4">
-        <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+      <v-col class="mt-3"  cols="12" md="4">
+        <v-text-field variant="underlined" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
-        <v-select id="roleName-select-field" clearable :items="districtRoles" v-model="searchFilter.roleName" item-title="label"
+      <v-col class="mt-3" cols="12" md="4">
+        <v-select variant="underlined" id="roleName-select-field" clearable :items="districtRoles" v-model="searchFilter.roleName" item-title="label"
                   item-value="edxRoleCode" label="Role"></v-select>
       </v-col>
       <v-col cols="12" md="4" :class="['text-right']">
@@ -47,7 +47,7 @@
                                  secondary
                                  icon-left
                                  text="Add New User"
-                                 :clickAction="newUserInviteSheet = !newUserInviteSheet"/>
+                                 :clickAction="openNewUserSheet"/>
                 </v-col>
               </v-row>
             </v-card>
@@ -61,9 +61,11 @@
       </v-col>
     </v-row>
 
-    <v-bottom-sheet
+    <v-navigation-drawer
         v-model="newUserInviteSheet"
         inset
+        location="bottom"
+        style="width: 50%; height: 47%; left: 25%;"
         no-click-animation
         scrollable
         persistent
@@ -89,7 +91,7 @@
           </InviteUserPage>
         </v-card-text>
       </v-card>
-    </v-bottom-sheet>
+    </v-navigation-drawer>
   </v-container>
 
 </template>
@@ -225,6 +227,9 @@ export default {
     closeNewUserModal(){
       edxStore().setDistrictRoles(JSON.parse(JSON.stringify(this.districtRolesCopy)));
       this.newUserInviteSheet = false; // close the modal window.
+    },
+    openNewUserSheet(){
+      this.newUserInviteSheet = !this.newUserInviteSheet;
     },
     getPrimaryEdxActivationCodeDistrict() {
       ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/DISTRICT/${this.districtID}`)
