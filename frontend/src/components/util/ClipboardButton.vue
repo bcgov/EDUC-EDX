@@ -6,12 +6,13 @@
           color="#38598A"
           :disabled="disabled"
           :dark="!disabled"
+          size="30"
           icon
           v-bind="attrs"
           @click.native.stop="copy(copyText)"
           :title="`Copy ${copyText} to the clipboard.`"
       >
-        <v-icon v-if="icon" :class="iconStyle" small>
+        <v-icon style="color: white" v-if="icon" :class="iconStyle" size="18">
           {{ icon }}
         </v-icon>
       </v-btn>

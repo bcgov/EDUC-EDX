@@ -28,7 +28,7 @@
         </v-text-field>
         <PrimaryButton width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
                        :loading="isSearchingStudent"
-                       @click.native="searchStudentForGivenPEN"/>
+                       :clickAction="searchStudentForGivenPEN"/>
       </v-row>
     </v-form>
     <v-row no-gutters v-if="showStudentDetails">
@@ -45,20 +45,21 @@
     </v-row>
     <v-row class="justify-end pr-2 pt-2" >
       <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-2"
-                     @click.native="closeForm"></PrimaryButton>
+                     :clickAction="closeForm"></PrimaryButton>
       <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
-                     text="Add" width="7rem" @click.native="addStudentToMessage"></PrimaryButton>
+                     text="Add" width="7rem" :clickAction="addStudentToMessage"></PrimaryButton>
     </v-row>
   </v-card>
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import alertMixin from '@/mixins/alertMixin';
-import PrimaryButton from './util/PrimaryButton';
-import {isValidPEN} from '@/utils/validation';
-import {ApiRoutes, MINISTRY_NAME} from '@/utils/constants';
-import {mapState} from 'vuex';
+import ApiService from '../common/apiService';
+import alertMixin from '../mixins/alertMixin';
+import PrimaryButton from './util/PrimaryButton.vue';
+import {isValidPEN} from '../utils/validation';
+import {ApiRoutes, MINISTRY_NAME} from '../utils/constants';
+import { appStore } from '../store/modules/app';
+import { mapState } from 'pinia';
 
 export default {
   components: {PrimaryButton},
@@ -94,7 +95,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['schoolsMap']),
+    ...mapState(appStore, ['schoolsMap']),
     enableSearchButton() {
       return !(isValidPEN(this.penNumber));
     }

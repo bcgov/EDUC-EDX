@@ -25,20 +25,20 @@
               </v-icon>Primary Activation Code:
               {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
             </v-chip>
-            <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="$copy"></ClipboardButton>
+            <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="mdi-content-copy" class="color: white"></ClipboardButton>
           </v-col>
         </v-row>
         <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-          <v-col cols="12" md="4">
-            <v-text-field id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+          <v-col cols="12" md="4" class="mt-6">
+            <v-text-field variant="underlined" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-select id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-text="label"
+          <v-col cols="12" md="4" class="mt-6">
+            <v-select variant="underlined" id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-title="label"
                       item-value="edxRoleCode" label="Role"></v-select>
           </v-col>
           <v-col cols="12" md="4" :class="['text-right']">
-            <PrimaryButton id="user-search-button" text="Clear" secondary @click.native="clearButtonClick"/>
-            <PrimaryButton id="user-clear-button" text="Search" class="ml-2" @click.native="searchButtonClick"
+            <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
+            <PrimaryButton id="user-clear-button" text="Search" class="ml-2" :clickAction="searchButtonClick"
                            :disabled="searchEnabled()"/>
           </v-col>
         </v-row>
@@ -60,7 +60,7 @@
                                      secondary
                                      icon-left
                                      text="Add New User"
-                                     @click.native="newUserInviteSheet = !newUserInviteSheet"/>
+                                     :clickAction="openInviteUserSheet"/>
                     </v-col>
                   </v-row>
                 </v-card>
@@ -69,10 +69,11 @@
           </v-col>
         </v-row>
 
-        <v-bottom-sheet
+        <v-navigation-drawer
           v-model="newUserInviteSheet"
           inset
           no-click-animation
+          location="bottom"
           scrollable
           persistent
         >
@@ -97,7 +98,7 @@
               </InviteUserPage>
             </v-card-text>
           </v-card>
-        </v-bottom-sheet>
+        </v-navigation-drawer>
       </div>
       <div v-else>
         <v-row>
@@ -112,7 +113,7 @@
           <v-col class="d-flex justify-center">
             <v-card min-width="55em" color="#F2F2F2">
               <v-card-title>
-                <v-row justify="center">
+                <v-row class="mt-0" justify="center">
                   <v-col class="d-flex justify-center">
                     <strong>Search a school below to manage their EDX Access</strong>
                   </v-col>
@@ -123,17 +124,17 @@
                   <v-col class="mx-2 d-flex justify-center">
                     <v-autocomplete
                       id='selectInstituteName'
-                      class="pt-0 mt-n1"
-                      prepend-inner-icon="mdi-account-box-outline"
+                      variant="underlined"
                       v-model="instituteCode"
                       :items="schoolSearchNames"
                       color="#003366"
                       :label="instituteTypeLabel"
+                      single-line
                       clearable
-                      item-text="schoolCodeName"
+                      item-title="schoolCodeName"
                       item-value="schoolID"
                     ></v-autocomplete>
-                    <PrimaryButton class="ml-4" id="manageSchoolButton" text="Manage School Access" v-on:click.native="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                    <PrimaryButton class="ml-4 mt-3" id="manageSchoolButton" text="Manage School Access" :clickAction="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -149,15 +150,18 @@
 <script>
 
 import ApiService from '../../common/apiService';
-import {setEmptyInputParams} from '@/utils/common';
-import {isNotEmptyInputParams} from '@/utils/validation';
-import {ApiRoutes} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
-import PrimaryButton from '@/components/util/PrimaryButton';
-import AccessUserCard from './AccessUserCard';
-import InviteUserPage from '@/components/SecureExchange/InviteUserPage';
-import Spinner from '@/components/common/Spinner';
-import ClipboardButton from '@/components/util/ClipboardButton';
+import {setEmptyInputParams} from '../../utils/common';
+import {isNotEmptyInputParams} from '../../utils/validation';
+import {ApiRoutes} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { appStore } from '../../store/modules/app';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import AccessUserCard from './AccessUserCard.vue';
+import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
+import Spinner from '../common/Spinner.vue';
+import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
 
 export default {
@@ -182,31 +186,31 @@ export default {
       },
       primaryEdxActivationCode: null,
       instituteCode: '',
-      instituteTypeLabel: 'Schools'
+      instituteTypeLabel: 'School'
     };
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {
-      await this.$store.dispatch('edx/getSchoolExchangeRoles');
+      await edxStore().getSchoolExchangeRoles();
     }
     if(this.schoolsMap.size === 0) {
-      await this.$store.dispatch('app/getInstitutesData');
+      await appStore().getInstitutesData();
     }
   },
   created() {
-    this.$store.dispatch('auth/getUserInfo').then(() => {
+    authStore().getUserInfo().then(() => {
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.isDistrictUser = false;
         this.schoolID = this.userInfo.activeInstituteIdentifier;
         this.getPrimaryEdxActivationCodeSchool();
         this.getUsersData();
-        this.$store.dispatch('app/getInstitutesData').then(() => {
+        appStore().getInstitutesData().then(() => {
           this.setupSchoolFields();
           this.loading = false;
         });
       }else{
         this.isDistrictUser = true;
-        this.$store.dispatch('app/getInstitutesData').then(() => {
+        appStore().getInstitutesData().then(() => {
           this.setupSchoolFields();
           this.loading = false;
         });
@@ -281,7 +285,7 @@ export default {
       return !isNotEmptyInputParams(this.searchFilter);
     },
     updateUserRoles(newValue){
-      this.$store.commit('edx/setSchoolRoles', newValue);
+      edxStore().setDistrictRoles(newValue);
     },
     getChipColor(){
       if(this.primaryEdxActivationCode){
@@ -298,8 +302,11 @@ export default {
       }
     },
     closeNewUserModal(){
-      this.$store.commit('edx/setSchoolRoles', JSON.parse(JSON.stringify(this.schoolRolesCopy)));
+      edxStore().setSchoolRoles(JSON.parse(JSON.stringify(this.schoolRolesCopy)));
       this.newUserInviteSheet = false;
+    },
+    openInviteUserSheet(){
+      this.newUserInviteSheet = !this.newUserInviteSheet;
     },
     setupSchoolList(){
       for(const school of this.activeSchoolsMap.values()){
@@ -325,9 +332,9 @@ export default {
     },
   },
   computed: {
-    ...mapState('app', ['schoolsMap', 'activeSchoolsMap']),
-    ...mapState('edx', ['schoolRoles','schoolRolesCopy']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(appStore, ['schoolsMap', 'activeSchoolsMap']),
+    ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
 
   }
 };

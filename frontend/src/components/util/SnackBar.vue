@@ -6,7 +6,7 @@
       v-model="showSnackBar"
       :timeout="timeout"
       elevation="24"
-      top
+      location="top"
       centered
       :color="colour"
       transition="slide-y-transition"
@@ -28,7 +28,8 @@
 
 <script>
 
-import {mapMutations, mapState} from 'vuex';
+import { appStore } from '../../store/modules/app';
+import {mapActions, mapState} from 'pinia';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 
 export default {
@@ -42,7 +43,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('app', ['alertNotificationText', 'alertNotificationQueue', 'alertNotification']),
+    ...mapState(appStore, ['alertNotificationText', 'alertNotificationQueue', 'alertNotification']),
     hasNotificationsPending() {
       return this.alertNotificationQueue.length > 0;
     },
@@ -68,7 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('app', ['setAlertNotificationText', 'setAlertNotification']),
+    ...mapActions(appStore, ['setAlertNotificationText', 'setAlertNotification']),
     setAlertType(alertType) {
       if(!alertType) {
         alertType = '';

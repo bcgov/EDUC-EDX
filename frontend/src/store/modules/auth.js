@@ -1,9 +1,8 @@
-import ApiService from '@/common/apiService';
-import AuthService from '@/common/authService';
-// import router from '@/router';
-// import { AuthRoutes } from '@/utils/constants';
+import ApiService from '../../common/apiService';
+import AuthService from '../../common/authService';
+import { defineStore } from 'pinia';
 
-function isFollowUpVisit({jwtToken}) {
+function isFollowUpVisit(jwtToken) {
   return !!jwtToken;
 }
 
@@ -14,35 +13,9 @@ function isExpiredToken(jwtToken) {
   return payload.exp <= now;
 }
 
-async function refreshToken({getters, commit, dispatch}) {
-  if (isExpiredToken(getters.jwtToken)) {
-    dispatch('logout');
-    return;
-  }
-
-  const response = await AuthService.refreshAuthToken(getters.jwtToken);
-  if (response.jwtFrontend) {
-    commit('setJwtToken', response.jwtFrontend);
-    ApiService.setAuthHeader(response.jwtFrontend);
-  } else {
-    throw 'No jwtFrontend';
-  }
-}
-
-async function getInitialToken({commit}) {
-  const response = await AuthService.getAuthToken();
-
-  if (response.jwtFrontend) {
-    commit('setJwtToken', response.jwtFrontend);
-    ApiService.setAuthHeader(response.jwtFrontend);
-  } else {
-    throw 'No jwtFrontend';
-  }
-}
-
-export default {
+export const authStore = defineStore('auth', {
   namespaced: true,
-  state: {
+  state: () => ({
     acronyms: [],
     isAuthenticated: false,
     userInfo: null,
@@ -50,71 +23,82 @@ export default {
     isLoading: true,
     loginError: false,
     jwtToken: localStorage.getItem('jwtToken'),
-  },
+  }),
   getters: {
-    acronyms: state => state.acronyms,
-    isAuthenticated: state => state.isAuthenticated,
-    jwtToken: state => state.jwtToken,
-    userInfo: state => state.userInfo,
-    loginError: state => state.loginError,
-    error: state => state.error,
-    isLoading: state => state.isLoading,
+    acronymsGet: state => state.acronyms,
+    isAuthenticatedGet: state => state.isAuthenticated,
+    jwtTokenGet: state => state.jwtToken,
+    userInfoGet: state => state.userInfo,
+    loginErrorGet: state => state.loginError,
+    errorGet: state => state.error,
+    isLoadingGet: state => state.isLoading,
   },
-  mutations: {
+  actions: {
     //sets Json web token and determines whether user is authenticated
-    setJwtToken: (state, token = null) => {
+    async setJwtToken(token = null){
       if (token) {
-        state.isAuthenticated = true;
-        state.jwtToken = token;
+        this.isAuthenticated = true;
+        this.jwtToken = token;
         localStorage.setItem('jwtToken', token);
       } else {
-        state.isAuthenticated = false;
-        state.jwtToken = null;
+        this.isAuthenticated = false;
+        this.jwtToken = null;
         localStorage.removeItem('jwtToken');
       }
     },
-
-    setUserInfo: (state, userInfo) => {
+    async setUserInfo(userInfo){
       if(userInfo){
-        state.userInfo = userInfo;
+        this.userInfo = userInfo;
       } else {
-        state.userInfo = null;
+        this.userInfo = null;
       }
     },
-
-    setLoginError: (state) => {
-      state.loginError = true;
+    async setLoginError(){
+      this.loginError = true;
     },
-
-    setError: (state, error) => {
-      state.error = error;
+    async setError(error){
+      this.error = error;
     },
-
-    setLoading: (state, isLoading) => {
-      state.isLoading = isLoading;
-    }
-  },
-  actions: {
-    loginErrorRedirect(context){
-      context.commit('setLoginError');
+    async setLoading(isLoading){
+      this.isLoading = isLoading;
     },
-    logout(context) {
-      context.commit('setJwtToken');
-      context.commit('setUserInfo');
-      // router.push(AuthRoutes.LOGOUT);
+    async loginErrorRedirect(){
+      this.loginError = true;
     },
-    async getUserInfo({commit}){
+    async logout() {
+      await this.setJwtToken();
+      await this.setUserInfo();
+    },
+    async getUserInfo(){
       const userInfoRes = await ApiService.getUserInfo();
-      commit('setUserInfo', userInfoRes.data);
+      this.userInfo = userInfoRes.data;
     },
     //retrieves the json web token from local storage. If not in local storage, retrieves it from API
-    async getJwtToken(context) {
-      context.commit('setError', false);
-      if (isFollowUpVisit(context.getters)) {
-        await refreshToken(context);
+    async getJwtToken() {
+      await this.setError(false);
+      if (isFollowUpVisit(this.jwtToken)) {
+        if (isExpiredToken(this.jwtToken)) {
+          await this.logout();
+          return;
+        }
+
+        const response = await AuthService.refreshAuthToken(this.jwtToken);
+        if (response.jwtFrontend) {
+          await this.setJwtToken(response.jwtFrontend);
+          ApiService.setAuthHeader(response.jwtFrontend);
+        } else {
+          throw 'No jwtFrontend';
+        }
       } else {  //inital login and redirect
-        await getInitialToken(context);
+        const response = await AuthService.getAuthToken();
+
+        if (response.jwtFrontend) {
+          await this.setJwtToken(response.jwtFrontend);
+          ApiService.setAuthHeader(response.jwtFrontend);
+        } else {
+          throw 'No jwtFrontend';
+        }
       }
     },
   }
-};
+});

@@ -1,16 +1,5 @@
-//const path = require('path');
-const webpack = require('webpack');
-
 module.exports = {
   configureWebpack: {
-    node: {
-      global: false
-    },
-    plugins: [
-      new webpack.DefinePlugin({
-        global: 'window'
-      })
-    ],
     module: {
       rules: [
         {
@@ -49,7 +38,7 @@ module.exports = {
           (acc, ctx) => ({
             ...acc,
             [ctx]: {
-              target: process.env.VUE_APP_API_ROOT,
+              target: import.meta.env.VUE_APP_API_ROOT,
               changeOrigin: true,
               ws: false
             }
@@ -58,6 +47,6 @@ module.exports = {
         ),
       }
   },
-  transpileDependencies: ['vuetify'],
+  transpileDependencies: ['vuetify', 'vue-meta'],
   publicPath: '/'
 };

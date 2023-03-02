@@ -1,45 +1,35 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import VueMeta from 'vue-meta';
+import {createRouter, createWebHistory} from 'vue-router';
+import Home from './components/Home.vue';
+import Logout from './components/Logout.vue';
+import UserActivationLinkError from './components/UserActivationLinkError.vue';
+import SessionExpired from './components/SessionExpired.vue';
+import ErrorPage from './components/ErrorPage.vue';
+import LoginError from './components/LoginError.vue';
+import Unauthorized from './components/common/Unauthorized.vue';
+import {authStore} from './store/modules/auth';
+import {appStore} from './store/modules/app';
+import Login from './components/Login.vue';
+import BackendSessionExpired from './components/BackendSessionExpired.vue';
+import {PAGE_TITLES} from './utils/constants';
+import MessageDisplay from './components/SecureExchange/MessageDisplay.vue';
+import ExchangePage from './components/SecureExchange/ExchangeInbox.vue';
+import NewMessagePage from './components/SecureExchange/NewMessagePage.vue';
+import RouterView from './components/RouterView.vue';
+import AccessSchoolUsersPage from './components/SecureExchange/AccessSchoolUsersPage.vue';
+import InstituteSelection from './components/InstituteSelection.vue';
+import ActivateEdxUserAccount from './components/common/ActivateEdxUserAccount.vue';
+import SchoolListPage from './components/school/SchoolList.vue';
+import SchoolContactsPage from './components/school/SchoolContacts.vue';
+import SchoolDetailsPage from './components/school/SchoolDetails.vue';
+import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
+import DistrictDetails from './components/district/DistrictDetails.vue';
+import DistrictContactsPage from './components/district/DistrictContacts.vue';
 
-import moment from 'moment';
-
-import Home from '@/components/Home.vue';
-import Logout from './components/Logout';
-import UserActivationLinkError from './components/UserActivationLinkError';
-import SessionExpired from './components/SessionExpired';
-import ErrorPage from '@/components/ErrorPage.vue';
-import LoginError from '@/components/LoginError.vue';
-import Unauthorized from '@/components/common/Unauthorized.vue';
-import authStore from './store/modules/auth';
-import store from './store/index';
-import Login from '@/components/Login.vue';
-import BackendSessionExpired from '@/components/BackendSessionExpired';
-import {PAGE_TITLES} from '@/utils/constants';
-import MessageDisplay from './components/SecureExchange/MessageDisplay';
-import ExchangePage from './components/SecureExchange/ExchangeInbox';
-import NewMessagePage from './components/SecureExchange/NewMessagePage';
-import RouterView from './components/RouterView';
-import AccessSchoolUsersPage from '@/components/SecureExchange/AccessSchoolUsersPage';
-import InstituteSelection from '@/components/InstituteSelection.vue';
-import ActivateEdxUserAccount from '@/components/common/ActivateEdxUserAccount';
-import SchoolListPage from '@/components/school/SchoolList';
-import SchoolContactsPage from '@/components/school/SchoolContacts';
-import SchoolDetailsPage from '@/components/school/SchoolDetails';
-import AccessDistrictUsersPage from '@/components/SecureExchange/AccessDistrictUsersPage';
-import DistrictDetails from '@/components/district/DistrictDetails';
-import DistrictContactsPage from '@/components/district/DistrictContacts';
-
-
-Vue.prototype.moment = moment;
-
-Vue.use(VueRouter);
-Vue.use(VueMeta);
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(),
+  base: import.meta.env.BASE_URL,
   routes: [
     {
       path: '/',
@@ -152,7 +142,7 @@ const router = new VueRouter({
       }
     },
     {
-      path: '*',
+      path: '/:catchAll(.*)',
       name: 'notfound',
       redirect: '/',
       meta: {
@@ -260,22 +250,24 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, _from, next) => {
+  const aStore = authStore();
+  const apStore = appStore();
   // this section is to set page title in vue store
   if (to.meta.requiresAuth) {
-    store.dispatch('auth/getJwtToken').then(() => {
-      if (!authStore.state.isAuthenticated) {
+    aStore.getJwtToken().then(() => {
+      if (!aStore.isAuthenticated) {
         next('/token-expired');
       } else {
-        store.dispatch('auth/getUserInfo').then(() => {
-          if (to.meta.permission && (authStore.state.userInfo?.userSchoolIDs?.length > 0 || authStore.state.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(authStore.state.userInfo,'activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+        aStore.getUserInfo().then(() => {
+          if (to.meta.permission && (aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/institute-selection');
-          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(authStore.state.userInfo,'activeInstitutePermissions') || authStore.state.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
-            if(authStore.state.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
-              store.commit('app/setPageTitle',to.meta.pageTitle + ' | ' + authStore.state.userInfo.activeInstituteTitle);
+            if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
+              apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
             }else{
-              store.commit('app/setPageTitle',to.meta.pageTitle);
+              apStore.setPageTitle(to.meta.pageTitle);
             }
           }
           next();
@@ -284,7 +276,7 @@ router.beforeEach((to, _from, next) => {
         });
       }
     }).catch(() => {
-      if (!authStore.state.userInfo) {
+      if (!aStore.userInfo) {
         next('/login');
       }else{
         next('/token-expired');
@@ -292,13 +284,13 @@ router.beforeEach((to, _from, next) => {
     });
   }
   else{
-    if (!authStore.state.userInfo) {
+    if (!aStore.userInfo) {
       next();
     }
     if (to && to.meta) {
-      store.commit('app/setPageTitle',to.meta.pageTitle);
+      apStore.setPageTitle(to.meta.pageTitle);
     } else {
-      store.commit('app/setPageTitle','');
+      apStore.setPageTitle('');;
     }
     next();
   }

@@ -11,7 +11,6 @@
            :text="true"
            :min-width="minWidth"
            v-bind="bind"
-           v-on="on"
     >
       <v-icon v-if="icon" :class="[iconStyle, 'mr-1']" left>{{ icon }}</v-icon>
       <strong>{{ text }}</strong>

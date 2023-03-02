@@ -19,7 +19,7 @@
                 :rules="[rules.required()]"
                 v-model="editContact.districtContactTypeCode"
                 :items="districtContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="districtContactTypeCode"
                 label="District Contact Type"/>
@@ -111,8 +111,7 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
                   <v-date-picker
                       v-model="editContact.effectiveDate"
@@ -138,8 +137,7 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
                   <v-date-picker
                       v-model="editContact.expiryDate"
@@ -155,11 +153,11 @@
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelChangesToDistrictContactButton"
                      secondary text="Cancel"
-                     @click.native="cancelEditDistrictContactPage"/>
+                     :clickAction="cancelEditDistrictContactPage"/>
       <PrimaryButton id="saveChangesToDistrictContactButton"
                      text="Save"
                      width="7rem"
-                     @click.native="saveDistrictContact"
+                     :clickAction="saveDistrictContact"
                      :disabled="!isFormValid"
                      :loading="processing"/>
     </v-card-actions>
@@ -167,14 +165,13 @@
 </template>
 
 <script>
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
-import {formatDate} from '@/utils/format';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import {formatDate} from '../../utils/format';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
-
 import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {

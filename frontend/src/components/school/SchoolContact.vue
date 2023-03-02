@@ -76,8 +76,8 @@
 </template>
 
 <script>
-import {formatPhoneNumber, formatDate, formatContactName} from '@/utils/format';
-import {getStatusColor} from '@/utils/institute/status';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
 
 export default {
   name: 'SchoolContact',

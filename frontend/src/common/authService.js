@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthRoutes } from '@/utils/constants.js';
+import { AuthRoutes } from '../utils/constants.js';
 
 export default {
 

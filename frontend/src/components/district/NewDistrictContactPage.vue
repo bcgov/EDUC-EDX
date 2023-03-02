@@ -20,7 +20,7 @@
                 :rules="[rules.required()]"
                 v-model="newContact.districtContactTypeCode"
                 :items="districtContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="districtContactTypeCode"
                 label="District Contact Type"
@@ -123,7 +123,6 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -153,7 +152,6 @@
                         clearable
                         readonly
                         v-bind="attrs"
-                        v-on="on"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -169,20 +167,21 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-end">
-      <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" @click.native="closeNewContactPage"></PrimaryButton>
-      <PrimaryButton id="newContactPostBtn" text="Save" width="7rem" @click.native="addNewDistrictContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
+      <PrimaryButton id="cancelNewContactBtn" secondary text="Cancel" :clickAction="closeNewContactPage"></PrimaryButton>
+      <PrimaryButton id="newContactPostBtn" text="Save" width="7rem" :clickAction="addNewDistrictContact" :disabled="!isFormValid" :loading="processing"></PrimaryButton>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import PrimaryButton from '../util/PrimaryButton';
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
 import {LocalDate} from '@js-joda/core';
 
 export default {
@@ -229,7 +228,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
   },
   methods: {
     saveNewContactEffectiveDate(date) {

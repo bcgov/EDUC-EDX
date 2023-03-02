@@ -82,7 +82,7 @@
                   id="edxUserActivationSubmitBtn"
                   text="Submit"
                   :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
-                  @click.native="activateEdxUser"
+                  :clickAction="activateEdxUser"
               ></PrimaryButton>
             </v-col>
           </v-row>
@@ -93,10 +93,10 @@
 </template>
 
 <script>
-import PrimaryButton from '../util/PrimaryButton';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import alertMixin from '@/mixins/alertMixin';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'ActivateEdxUserAccount.vue',

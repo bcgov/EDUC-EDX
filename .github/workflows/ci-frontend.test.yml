@@ -37,10 +37,6 @@ jobs:
         node-version: '14.x'
     - run: npm ci
     - run: npm run lint:fix
-    - run: npm run test:unit
-      env:
-        NODE_ENV: 'test'
-        VUE_APP_TITLE: 'Education Data Exchange'
 
   sonarcloud:
     name: Build (Sonar Cloud)

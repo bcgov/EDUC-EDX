@@ -6,11 +6,11 @@
       <v-form ref="newContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
-            <v-alert color="#003366" dense text type="info">
-              <p>School contacts will be
+            <v-alert color="#E9EBEF" dense text type="info">
+              <p style="color: #003366">School contacts will be
                 <strong>available to the public as of start date.</strong>
               </p>
-              <p class="mb-1">
+              <p style="color: #003366" class="mb-1">
                 Please be sure to review the new contact details carefully before saving.
               </p>
             </v-alert>
@@ -23,7 +23,7 @@
                 :rules="[rules.required()]"
                 v-model="newContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
-                item-text="label"
+                item-title="label"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
                 label="School Contact Type"/>
@@ -110,13 +110,13 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.effectiveDate"
-                      :active-picker.sync="newContactEffectiveDatePicker"
-                      @change="saveNewContactEffectiveDate"/>
+                  <VueDatePicker
+                    v-model="newContact.effectiveDate"
+                    :active-picker.sync="newContactEffectiveDatePicker"
+                    @change="saveNewContactEffectiveDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
               <v-col cols="6">
@@ -137,13 +137,13 @@
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
-                        v-bind="attrs"
-                        v-on="on"/>
+                        v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.expiryDate"
-                      :active-picker.sync="newContactExpiryDatePicker"
-                      @change="saveNewContactExpiryDate"/>
+                  <VueDatePicker
+                    v-model="newContact.expiryDate"
+                    :active-picker.sync="newContactExpiryDatePicker"
+                    @change="saveNewContactExpiryDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -154,11 +154,11 @@
     <v-card-actions class="justify-end">
       <PrimaryButton id="cancelNewContactBtn"
                      secondary text="Cancel"
-                     @click.native="closeNewContactPage"/>
+                     :clickAction="closeNewContactPage"/>
       <PrimaryButton id="newContactPostBtn"
                      text="Save"
                      width="7rem"
-                     @click.native="addNewSchoolContact"
+                     :clickAction="addNewSchoolContact"
                      :disabled="!isFormValid"
                      :loading="processing"/>
     </v-card-actions>
@@ -166,13 +166,15 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-import {ApiRoutes} from '@/utils/constants';
-import * as Rules from '@/utils/institute/formRules';
-import {isNumber} from '@/utils/institute/formInput';
-
+import { authStore } from '../../store/modules/auth';
+import { mapState } from 'pinia';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import * as Rules from '../../utils/institute/formRules';
+import {isNumber} from '../../utils/institute/formInput';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {LocalDate} from '@js-joda/core';
 
@@ -191,6 +193,7 @@ export default {
   },
   components: {
     PrimaryButton,
+    VueDatePicker
   },
   mounted() {
     this.validateForm();
@@ -219,7 +222,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
   },
   methods: {
     saveNewContactEffectiveDate(date) {
@@ -252,8 +255,9 @@ export default {
     resetForm() {
       this.$refs.newContactForm.reset();
     },
-    validateForm() {
-      this.isFormValid = this.$refs.newContactForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.newContactForm.validate();
+      this.isFormValid = valid.valid;
     },
     isNumber,
   },
@@ -277,5 +281,9 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
+  }
+
+  :deep(.mdi-information){
+    color: #003366;
   }
 </style>

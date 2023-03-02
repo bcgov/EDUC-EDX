@@ -1,11 +1,11 @@
 <template>
-  <v-system-bar app absolute color="rgb(0, 51, 102)" height="56rem" class="sysBar"
-                :class="{'pl-2': $vuetify.breakpoint.smAndDown, 'pl-10': $vuetify.breakpoint.mdAndUp, 'pr-2': $vuetify.breakpoint.smAndDown, 'pr-10': $vuetify.breakpoint.mdAndUp} ">
+  <v-app-bar absolute color="rgb(0, 51, 102)" class="sysBar"
+                :class="{'pl-2': $vuetify.display.smAndDown, 'pl-10': $vuetify.display.mdAndUp, 'pr-2': $vuetify.display.smAndDown, 'pr-10': $vuetify.display.mdAndUp} ">
     <!-- Navbar content -->
     <a tabindex="-1" href="/">
       <img
           tabindex="-1"
-          src="@/assets/images/bc-gov-logo.svg"
+          src="../assets/images/bc-gov-logo.svg"
           width="155"
           class="logo"
           alt="B.C. Government Logo"
@@ -15,19 +15,18 @@
       <v-toolbar-title><h3 class="mainTitle" style="color:white">{{ appTitle }}</h3></v-toolbar-title>
     </a>
 
-
     <v-spacer></v-spacer>
-    <div v-if="isAuthenticated && dataReady">
+    <div v-if="authStore().isAuthenticated && dataReady">
       <v-menu name="user_options" offset-y>
-        <template v-slot:activator="{ on }">
-          <v-chip tabindex="0" v-on="on" pill color="#003366" dark>
+        <template v-slot:activator="{ props }">
+          <v-chip v-bind="props" tabindex="0" pill color="#003366" dark>
             <v-avatar left color="info">
-              {{ userInfo.displayName[0] }}
+              {{ getName()[0] }}
             </v-avatar>
-            <span class="display-name">{{ userInfo.displayName }}</span>
+            <span class="display-name pl-1">{{ getName() }}</span>
           </v-chip>
         </template>
-        <v-list dark color="#003366">
+        <v-list dark style="background-color: #003366; color: white">
           <v-list-item style="min-height: 4vh" id="home_button" :href='authRoutes.DASHBOARD'>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
@@ -41,32 +40,37 @@
       </v-menu>
 
     </div>
-    <div v-else-if="isAuthenticated && !dataReady">
-      <v-skeleton-loader type="chip">
-      </v-skeleton-loader>
+    <div v-else-if="authStore().isAuthenticated && !dataReady">
+<!--      <v-skeleton-loader type="chip">-->
+<!--      </v-skeleton-loader>-->
     </div>
-  </v-system-bar>
+  </v-app-bar>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-import {AuthRoutes , ApiRoutes} from '@/utils/constants';
+import { authStore } from '../store/modules/auth';
+import { mapState } from 'pinia';
+import {AuthRoutes , ApiRoutes} from '../utils/constants';
 
 export default {
   data() {
     return {
-      appTitle: process.env.VUE_APP_TITLE,
+      appTitle: 'Education Data Exchange',
       authRoutes: AuthRoutes,
       apiRoutes: ApiRoutes
     };
   },
   computed: {
-    ...mapGetters('auth', ['isAuthenticated','userInfo']),
+    ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
     }
   },
   methods: {
+    getName(){
+      return this.userInfo?.displayName;
+    },
+    authStore,
     hasSeveralSchools() {
       return this.userInfo?.userSchoolIDs?.length > 1;
     },
@@ -76,8 +80,6 @@ export default {
     hasBothSchoolAndDistrict(){
       return this.userInfo?.userDistrictIDs?.length>0 && this.userInfo?.userSchoolIDs?.length > 0;
     }
-
-
   }
 };
 </script>
@@ -85,6 +87,15 @@ export default {
 .gov-header .v-icon{
   padding-left: 10px;
 }
+
+.mainTitle {
+  font-size: 1.2rem;
+}
+
+.display-name{
+  color: white;
+}
+
 a {
   text-decoration: none;
 }
@@ -97,7 +108,6 @@ a {
 }
 .sysBar {
   border-bottom: 2px solid rgb(252, 186, 25) !important;
-  z-index: 8;
 }
 .gov-header .v-btn,
 .v-btn--active.title:before,

@@ -13,6 +13,7 @@
             required
             :rules="requiredRules"
             outlined
+            item-title="text"
             class="pb-0 mb-0"
             :eager="eager"
             :items="documentTypes"
@@ -48,9 +49,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <PrimaryButton id="cancelUploadButton" secondary text="Cancel"
-                       @click.native="closeForm"></PrimaryButton>
+                       :clickAction="closeForm"></PrimaryButton>
         <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"
-                       text="Upload" width="7rem" @click.native="submitRequest"></PrimaryButton>
+                       text="Upload" width="7rem" :clickAction="submitRequest"></PrimaryButton>
       </v-card-actions>
 
 
@@ -58,10 +59,11 @@
 </template>
 
 <script>
-import {getFileNameWithMaxNameLength, humanFileSize} from '@/utils/file';
-import { mapGetters } from 'vuex';
+import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 import {sortBy} from 'lodash';
-import PrimaryButton from '../util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton.vue';
 
 export default {
   components: {PrimaryButton},
@@ -97,8 +99,8 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch('edx/getSecureExchangeDocumentTypes');
-    await this.$store.dispatch('edx/getFileRequirements');
+    await edxStore().getSecureExchangeDocumentTypes();
+    await edxStore().getFileRequirements();
 
     this.getFileRules().catch(e => {
       console.log(e);
@@ -107,7 +109,7 @@ export default {
   }
   ,
   computed: {
-    ...mapGetters('edx',['secureExchangeDocumentTypes', 'fileRequirements']),
+    ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
     dataReady () {
       return this.validForm && this.file;
     },

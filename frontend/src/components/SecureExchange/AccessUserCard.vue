@@ -67,7 +67,7 @@
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
-          <v-list-item-group
+          <v-list-group
             v-model="selectedRoles"
             @change="selectedRolesChanged"
             v-else
@@ -85,13 +85,11 @@
                   ></v-checkbox>
                 </v-list-item-action>
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-                  <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
-                </v-list-item-content>
+                <v-list-item-title>{{ newrole.label }}</v-list-item-title>
+                <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
               </template>
             </v-list-item>
-          </v-list-item-group>
+          </v-list-group>
         </v-card-text>
         <Transition name="bounce">
           <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
@@ -105,9 +103,9 @@
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
-                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :on="{click: clickDeleteButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :clickAction="clickDeleteButton"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" @click.native="clickRemoveButton(user)"></PrimaryButton>
+                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)" ></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -127,9 +125,9 @@
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :on="{click: clickRelinkButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2" secondary :clickAction="clickRelinkButton"></PrimaryButton>
                 <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
-                               @click.native="clickActionRelinkButton(user)"></PrimaryButton>
+                               :clickAction="clickActionRelinkButton(user)"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -144,9 +142,9 @@
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
                 <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :on="{click: clickEditButton}"></PrimaryButton>
+                               text="Cancel" class="mr-2" secondary :clickAction="clickEditButton"></PrimaryButton>
                 <PrimaryButton :id="`user-save-action-button-${user.edxUserID}`" text="Save"
-                               :disabled="!minimumRolesSelected" :on="{click: clickSaveButton}"></PrimaryButton>
+                               :disabled="!minimumRolesSelected" :clickAction="clickSaveButton"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -156,11 +154,13 @@
   </v-row>
 </template>
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
-import alertMixin from '@/mixins/alertMixin';
-import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '@/utils/constants';
-import {mapGetters, mapState} from 'vuex';
+import alertMixin from '../../mixins/alertMixin';
+import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '../../utils/constants';
+import { authStore } from '../../store/modules/auth';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
 
 export default {
   name: 'AccessUserCard',
@@ -214,7 +214,7 @@ export default {
       this.selectedRoles = [this.edxInstituteAdminRole];
     },
     getButtonWidth() {
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.display.name) {
       case 'xs':
       case 'sm':
       case 'md':
@@ -238,6 +238,7 @@ export default {
       this.setUserRolesAsSelected();
     },
     clickDeleteButton() {
+      console.log('Clicked delete');
       this.editState = false;
       this.relinkState = false;
       this.deleteState = !this.deleteState;
@@ -273,29 +274,30 @@ export default {
         });
     },
     clickRemoveButton(userToRemove) {
-      const payload = {
-        params:{
-          userToRemove: userToRemove.edxUserID
-        }
-      };
-      if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
-        payload.params.schoolID = userSchool.schoolID;
-        payload.params.userSchoolID = userSchool.edxUserSchoolID;
-      } else {
-        const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
-        payload.params.districtID = this.instituteCode;
-        payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
-      }
-      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
-        .then(() => {
-          this.setSuccessAlert('User has been removed.');
-        }).catch(error => {
-          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
-          console.log(error);
-        }).finally(() => {
-          this.$emit('refresh');
-        });
+      // const payload = {
+      //   params:{
+      //     userToRemove: userToRemove.edxUserID
+      //   }
+      // };
+      // if (this.instituteTypeCode === 'SCHOOL') {
+      //   const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+      //   payload.params.schoolID = userSchool.schoolID;
+      //   payload.params.userSchoolID = userSchool.edxUserSchoolID;
+      // } else {
+      //   const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+      //   payload.params.districtID = this.instituteCode;
+      //   payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
+      // }
+      // ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
+      //   .then(() => {
+      //     this.setSuccessAlert('User has been removed.');
+      //   }).catch(error => {
+      //     this.setFailureAlert('An error occurred while removing a user. Please try again later.');
+      //     console.log(error);
+      //   }).finally(() => {
+      //     this.$emit('refresh');
+      //   });
+      console.log('AttemptRemoved' + JSON.stringify(userToRemove));
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {
@@ -344,8 +346,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('edx', ['schoolRoles']),
-    ...mapGetters('auth', ['userInfo']),
+    ...mapState(edxStore, ['schoolRoles']),
+    ...mapState(authStore, ['userInfo']),
     isEDXInstituteAdminSelected() {
       return this.selectedRoles.includes(this.edxInstituteAdminRole);
     },

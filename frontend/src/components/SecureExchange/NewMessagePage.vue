@@ -22,7 +22,7 @@
                               v-model="assignedMinistryTeam"
                               :items="this.ministryTeams"
                               :rules="requiredRules"
-                              item-text="teamName"
+                              item-title="teamName"
                               class="pt-0"
                               item-value="ministryOwnershipTeamId"
                               label="To"
@@ -34,7 +34,7 @@
                                     {{ item.teamName }}
                                   </div>
                                   <div class="body-2" style="color: black;"
-                                       :style="{'max-width': $vuetify.breakpoint.smAndDown ? '30em' : '36em'}">
+                                       :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}">
                                     {{ item.description }}
                                   </div>
                                 </v-col>
@@ -140,8 +140,8 @@
           </v-col>
         </v-row>
         <v-row class="py-4 justify-end pr-3">
-          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" @click.native="navigateToList"></PrimaryButton>
-          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" @click.native="sendNewMessage"></PrimaryButton>
+          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" :clickAction="navigateToList"></PrimaryButton>
+          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" :clickAction="sendNewMessage"></PrimaryButton>
         </v-row>
       </v-col>
     </v-row>
@@ -150,17 +150,17 @@
 </template>
 
 <script>
-import PrimaryButton from '@/components/util/PrimaryButton';
-import DocumentUpload from '@/components/common/DocumentUpload';
-import {mapState} from 'vuex';
-import ConfirmationDialog from '@/components/util/ConfirmationDialog';
-import alertMixin from '@/mixins/alertMixin';
-import ApiService from '@/common/apiService';
-
-import {
-  ApiRoutes,
-} from '@/utils/constants';
-import AddStudent from '@/components/AddStudent';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import DocumentUpload from '../common/DocumentUpload.vue';
+import { authStore } from '../../store/modules/auth';
+import { appStore } from '../../store/modules/app';
+import { edxStore } from '../../store/modules/edx';
+import { mapState } from 'pinia';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import { ApiRoutes } from '../../utils/constants';
+import AddStudent from '../AddStudent.vue';
 
 export default {
   name: 'NewMessagePage',
@@ -189,13 +189,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('auth', ['userInfo']),
-    ...mapState('edx', ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
-    ...mapState('app', ['schoolsMap', 'activeDistrictsMap']),
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(edxStore, ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
+    ...mapState(appStore, ['schoolsMap', 'activeDistrictsMap']),
   },
   created() {
-    this.$store.dispatch('edx/getExchangeSchoolIds');
-    this.$store.dispatch('edx/getMinistryTeams');
+    edxStore().getExchangeSchoolIds();
+    edxStore().getMinistryTeams();
     //ensure uploaded messages are cleared out
     this.clearSecureExchangeDocuments();
     //ensure selected students are cleared out
@@ -251,27 +251,27 @@ export default {
         });
     },
     async uploadDocument(document) {
-      this.$store.commit('edx/setSecureExchangeDocuments', [...this.secureExchangeDocuments, document]);
+      await edxStore().setSecureExchangeDocuments([...this.secureExchangeDocuments, document]);
     },
     async addSecureExchangeStudent(secureExchangeStudent) {
       const found =this.secureExchangeStudents.some(el =>el.studentID === secureExchangeStudent.studentID);
       if(!found){
-        this.$store.commit('edx/setSecureExchangeStudents', [...this.secureExchangeStudents, secureExchangeStudent]);
+        await edxStore().setSecureExchangeStudents([...this.secureExchangeStudents, secureExchangeStudent]);
       }
 
     },
     removeDocumentByIndex(index) {
       //since we don't have a unique UUID to identify the document to remove, we will use the index
-      this.$store.commit('edx/deleteSecureExchangeDocumentByIndex', index);
+      edxStore().deleteSecureExchangeDocumentByIndex(index);
     },
     removeSecureExchangeStudentByID(secureExchangeStudent) {
-      this.$store.commit('edx/deleteSecureExchangeStudentsByID', secureExchangeStudent);
+      edxStore().deleteSecureExchangeStudentsByID(secureExchangeStudent);
     },
     clearSecureExchangeDocuments() {
-      this.$store.commit('edx/setSecureExchangeDocuments', []);
+      edxStore().setSecureExchangeDocuments([]);
     },
     clearSecureExchangeStudents() {
-      this.$store.commit('edx/setSecureExchangeStudents', []);
+      edxStore().setSecureExchangeStudents([]);
     },
     showOptions() {
       this.expandAttachFile = false;
