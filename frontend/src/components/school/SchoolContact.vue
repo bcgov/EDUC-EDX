@@ -1,6 +1,9 @@
 <template>
   <span>
-    <v-card :id="`schoolContactCard-${contact.schoolContactId}`" class="schoolContactCard" height="100%">
+    <v-card
+      :id="`schoolContactCard-${contact.schoolContactId}`"
+      class="schoolContactCard"
+      height="100%">
       <v-card-title class="pb-0">
         <v-row no-gutters>
           <v-col>
@@ -12,25 +15,26 @@
                 <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
               </v-col>
               <v-col cols="4" class="d-flex justify-end">
-                  <v-btn id="editContactButton"
-                         title="Edit"
-                         color="white"
-                         width="0.5em"
-                         min-width="0.5em"
-                         depressed
-                         v-if="canEditSchoolContact"
-                         @click="handleOpenEditor"
-                         small
-                         class="mr-2">
-                    <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
-                  </v-btn>
+                <v-btn
+                  id="editContactButton"
+                  class="mr-2"
+                  title="Edit"
+                  width="0.5em"
+                  v-if="canEditSchoolContact"
+                  @click="handleOpenEditor"
+                  color="white"
+                  min-width="0.5em"
+                  small
+                  depressed>
+                  <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
+                </v-btn>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col v-if="!contact.email && !contact.phoneNumber" cols="12" class="pt-1">
                 <p class="missing-highlight">
                   <v-icon size="x-large" color="#ff5252" dark>mdi-alert</v-icon>
-                    Missing contact details
+                  Missing contact details
                 </p>
                 <a class="editField" @click="handleOpenEditor">+ email or phone</a>
               </v-col>
@@ -39,14 +43,14 @@
               </v-col>
               <v-col v-if="contact.phoneNumber" cols="12" class="pt-1">
                 <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span>
-                <span v-if="contact.phoneExtension"> ext. {{contact.phoneExtension}}</span>
+                <span v-if="contact.phoneExtension"> ext. {{ contact.phoneExtension }}</span>
               </v-col>
               <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
                 <span id="contactAlternatePhoneNumber">
                   {{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)
                 </span>
                 <span v-if="contact.alternatePhoneExtension">
-                  ext. {{contact.alternatePhoneExtension}}
+                  ext. {{ contact.alternatePhoneExtension }}
                 </span>
               </v-col>
             </v-row>
@@ -60,7 +64,7 @@
               mdi-calendar-today
             </v-icon>
             <span id="contactEffectiveAndExpiryDate">
-              {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate)}}
+              {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate) }}
             </span>
           </v-col>
           <v-col cols="12" class="pt-1" v-else>
@@ -76,8 +80,8 @@
 </template>
 
 <script>
-import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
-import {getStatusColor} from '../../utils/institute/status';
+import { formatPhoneNumber, formatDate, formatContactName } from '../../utils/format';
+import { getStatusColor } from '../../utils/institute/status';
 
 export default {
   name: 'SchoolContact',
@@ -113,9 +117,11 @@ export default {
   color: rgb(0, 51, 102);
   vertical-align: super;
 }
+
 .editField:hover {
   text-decoration: underline;
 }
+
 .missing-highlight {
   color: #ff5252;
   word-break: break-word;
