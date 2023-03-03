@@ -13,6 +13,7 @@ createTestCafe('localhost', 1337, 1338)
             "src/test_cases/edx-new-user-invite/",
             "src/test_cases/edx-user-relink/",
             "src/test_cases/edx-schools-frontend/test-new-message.js",
+            "src/test_cases/edx-user-activation/test-activate-edx-user-form-validation.js",
             "src/test_cases/edx-user-activation/school/",
             "src/test_cases/edx-user-activation/district/",
             "src/test_cases/edx-districts-frontend/test-district-contacts.js",
