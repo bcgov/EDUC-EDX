@@ -92,7 +92,7 @@
                                  class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
                           >
-                            <v-icon color="#003366" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
+                            <v-icon color="white" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
                           </v-btn>
                         </template>
                         <span>View Contacts</span>

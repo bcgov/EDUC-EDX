@@ -6,9 +6,9 @@
       <v-form ref="editContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
-            <v-alert color="#003366" dense text type="info">
-              <p>District contacts will be <strong>available to the public as of start date</strong>.</p>
-              <p class="mb-1">Please be sure to review the new contact details carefully before saving.</p>
+            <v-alert color="#E9EBEF" dense text type="info">
+              <p style="color: #003366">District contacts will be <strong>available to the public as of start date</strong>.</p>
+              <p style="color: #003366" class="mb-1">Please be sure to review the new contact details carefully before saving.</p>
             </v-alert>
           </v-col>
         </v-row>
@@ -113,11 +113,12 @@
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="editContact.effectiveDate"
-                      :active-picker.sync="editContactEffectiveDatePicker"
-                      @change="saveEditContactEffectiveDate"/>
                 </v-menu>
+                <VueDatePicker
+                  v-model="editContact.effectiveDate"
+                  :active-picker.sync="editContactEffectiveDatePicker"
+                  @change="saveEditContactEffectiveDate"
+                ></VueDatePicker>
               </v-col>
               <v-col cols="6">
                 <v-menu
@@ -139,10 +140,12 @@
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <v-date-picker
-                      v-model="editContact.expiryDate"
-                      :active-picker.sync="editContactExpiryDatePicker"
-                      @change="saveEditContactExpiryDate"/>
+                  <VueDatePicker
+                    :enable-time-picker="false"
+                    v-model="editContact.expiryDate"
+                    :active-picker.sync="editContactExpiryDatePicker"
+                    @change="saveEditContactExpiryDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -173,12 +176,15 @@ import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
 import PrimaryButton from '../util/PrimaryButton.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   name: 'EditDistrictContactPage',
   mixins: [alertMixin],
   components: {
-    PrimaryButton
+    PrimaryButton,
+    VueDatePicker
   },
   props: {
     districtContactTypes: {
@@ -256,8 +262,9 @@ export default {
     resetForm(){
       this.$refs.editContactForm.reset();
     },
-    validateForm() {
-      this.isFormValid = this.$refs.editContactForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.editContactForm.validate();
+      this.isFormValid = valid.valid;
     },
     isNumber,
   },

@@ -6,7 +6,7 @@
           <v-col>
             <v-row no-gutters>
               <v-col cols="8" class="justify-start">
-                <v-icon class="pb-1" small :color="getStatusColor(contact)" left dark>
+                <v-icon class="pb-1 mr-2" size="15" :color="getStatusColor(contact)" left dark>
                   mdi-circle
                 </v-icon>
                 <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
@@ -23,7 +23,7 @@
                        small
                        class="mr-2"
                 >
-                  <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
+                  <v-icon color="#003366" dark>mdi-pencil</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -69,9 +69,9 @@
 </template>
 
 <script>
-import alertMixin from './mixins/alertMixin';
-import {formatPhoneNumber, formatDate, formatContactName} from './utils/format';
-import {getStatusColor} from './utils/institute/status';
+import alertMixin from '../../mixins/alertMixin';
+import {formatPhoneNumber, formatDate, formatContactName} from '../../utils/format';
+import {getStatusColor} from '../../utils/institute/status';
 
 export default {
   name: 'DistrictContact',

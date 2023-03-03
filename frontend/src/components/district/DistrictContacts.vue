@@ -56,6 +56,7 @@
         inset
         no-click-animation
         location="bottom"
+        temporary
         style="width: 50%; height: 75%; left: 25%;"
         scrollable
         persistent>
@@ -73,6 +74,7 @@
         no-click-animation
         location="bottom"
         style="width: 50%; height: 75%; left: 25%;"
+        temporary
         scrollable
         persistent>
       <EditDistrictContactPage
@@ -93,7 +95,7 @@ import {ApiRoutes} from '../../utils/constants';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import NewDistrictContactPage from './NewDistrictContactPage.vue';
 import EditDistrictContactPage from './EditDistrictContactPage.vue';
-import DistrictContact from './DistrictDetails.vue';
+import DistrictContact from './DistrictContact.vue';
 import { mapState } from 'pinia';
 import { authStore } from '../../store/modules/auth';
 import alertMixin from '../../mixins/alertMixin';

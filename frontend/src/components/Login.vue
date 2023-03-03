@@ -2,7 +2,7 @@
   <v-container fluid class="full-height">
     <article id="login-banner" >
       <v-row align="center" justify="center">
-        <v-card class="login-card">
+        <v-card variant="elevated" elevation="8" class="login-card">
           <v-card-title class="gov-header">
             <h4 id="login_text">Log In</h4>
           </v-card-title>

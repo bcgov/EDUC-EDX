@@ -67,29 +67,56 @@
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
-          <v-list-group
-            v-model="selectedRoles"
-            @change="selectedRolesChanged"
+<!--          <v-list-->
+<!--            v-model="selectedRoles"-->
+<!--            @change="selectedRolesChanged"-->
+<!--            style="background-color: #e7ebf0"-->
+<!--            v-else-->
+<!--          >-->
+<!--              <v-list-item :disabled="roleDisabled(newrole)" v-for="newrole in instituteRoles" :key="newrole.edxRoleCode"-->
+<!--                           :value="newrole.edxRoleCode">-->
+<!--                <template v-slot:default="{ active }">-->
+<!--                  <v-list-item-action>-->
+<!--                    <v-row no-gutters>-->
+<!--                      <v-col>-->
+<!--                        <v-checkbox-->
+<!--                          :id="`${newrole.edxRoleCode.toLowerCase()}-role-checkbox-${user.edxUserID}`"-->
+<!--                          :disabled="roleDisabled(newrole)"-->
+<!--                          :input-value="active"-->
+<!--                          class="mb-n10 ml-n2"-->
+<!--                          color="primary"-->
+<!--                          :label="newrole.label"-->
+<!--                        >-->
+<!--                        </v-checkbox>-->
+<!--                        <div class="ml-8 mt-2" style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>-->
+<!--                      </v-col>-->
+<!--                    </v-row>-->
+<!--                  </v-list-item-action>-->
+<!--                </template>-->
+<!--              </v-list-item>-->
+<!--          </v-list>-->
+          <v-list
             v-else
-            multiple
-          >
-            <v-list-item :disabled="roleDisabled(newrole)" v-for="newrole in instituteRoles" :key="newrole.edxRoleCode"
-                         :value="newrole.edxRoleCode">
-              <template v-slot:default="{ active, }">
-                <v-list-item-action class="mt-0 mb-2 mr-3">
-                  <v-checkbox
-                    :id="`${newrole.edxRoleCode.toLowerCase()}-role-checkbox-${user.edxUserID}`"
-                    :disabled="roleDisabled(newrole)"
-                    :input-value="active"
-                    color="primary"
-                  ></v-checkbox>
-                </v-list-item-action>
+            lines="three"
+            select-strategy="classic"
+            style="background-color: #e7ebf0">
+            <div  v-for="newrole in instituteRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
+              <v-list-item :disabled="roleDisabled(newrole)" :value="newrole">
+                <template v-slot:prepend="{ isActive }">
+                  <v-list-item-action>
+                    <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                  </v-list-item-action>
+                </template>
 
                 <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-                <div style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>
-              </template>
-            </v-list-item>
-          </v-list-group>
+
+                <v-list-item-subtitle v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">
+                  EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.
+                </v-list-item-subtitle>
+              </v-list-item>
+            </div>
+          </v-list>
+
         </v-card-text>
         <Transition name="bounce">
           <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
@@ -105,7 +132,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
                                text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :clickAction="clickDeleteButton"></PrimaryButton>
                 <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton(user)" ></PrimaryButton>
+                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton" ></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -127,7 +154,7 @@
                 <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
                                text="Cancel" class="mr-2" secondary :clickAction="clickRelinkButton"></PrimaryButton>
                 <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
-                               :clickAction="clickActionRelinkButton(user)"></PrimaryButton>
+                               :clickAction="clickActionRelinkButton"></PrimaryButton>
               </v-col>
             </v-row>
           </v-card-text>
@@ -238,7 +265,6 @@ export default {
       this.setUserRolesAsSelected();
     },
     clickDeleteButton() {
-      console.log('Clicked delete');
       this.editState = false;
       this.relinkState = false;
       this.deleteState = !this.deleteState;
@@ -248,18 +274,18 @@ export default {
       this.deleteState = false;
       this.relinkState = !this.relinkState;
     },
-    clickActionRelinkButton(userToRelink) {
+    clickActionRelinkButton() {
       const payload = {
         params:{
-          userToRelink: userToRelink.edxUserID,
+          userToRelink: this.user.edxUserID,
         }
       };
       if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = userToRelink.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+        const userSchool = this.user.edxUserSchools.find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = this.instituteCode;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
-        const userDistrict = userToRelink.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+        const userDistrict = this.user.edxUserDistricts.find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
@@ -273,31 +299,30 @@ export default {
           setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
         });
     },
-    clickRemoveButton(userToRemove) {
-      // const payload = {
-      //   params:{
-      //     userToRemove: userToRemove.edxUserID
-      //   }
-      // };
-      // if (this.instituteTypeCode === 'SCHOOL') {
-      //   const userSchool = userToRemove.edxUserSchools.find(school => school.schoolID === this.instituteCode);
-      //   payload.params.schoolID = userSchool.schoolID;
-      //   payload.params.userSchoolID = userSchool.edxUserSchoolID;
-      // } else {
-      //   const userDistrict = userToRemove.edxUserDistricts.find(district => district.districtID === this.instituteCode);
-      //   payload.params.districtID = this.instituteCode;
-      //   payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
-      // }
-      // ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
-      //   .then(() => {
-      //     this.setSuccessAlert('User has been removed.');
-      //   }).catch(error => {
-      //     this.setFailureAlert('An error occurred while removing a user. Please try again later.');
-      //     console.log(error);
-      //   }).finally(() => {
-      //     this.$emit('refresh');
-      //   });
-      console.log('AttemptRemoved' + JSON.stringify(userToRemove));
+    clickRemoveButton() {
+      const payload = {
+        params:{
+          userToRemove: this.user.edxUserID
+        }
+      };
+      if (this.instituteTypeCode === 'SCHOOL') {
+        const userSchool = this.user.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+        payload.params.schoolID = userSchool.schoolID;
+        payload.params.userSchoolID = userSchool.edxUserSchoolID;
+      } else {
+        const userDistrict = this.user.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+        payload.params.districtID = this.instituteCode;
+        payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
+      }
+      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
+        .then(() => {
+          this.setSuccessAlert('User has been removed.');
+        }).catch(error => {
+          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
+          console.log(error);
+        }).finally(() => {
+          this.$emit('refresh');
+        });
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {
@@ -367,6 +392,11 @@ export default {
 <style scoped>
 .bounce-enter-active {
   animation: bounce-in 0.2s;
+}
+
+.actionButton{
+  background-color: #003366;
+  color: white;
 }
 
 .bounce-leave-active {
