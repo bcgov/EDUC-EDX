@@ -134,7 +134,7 @@ class Inbox extends FormWithFields {
     await this.inputSubjectTextField(testExchangeSubject);
     await this.inputNewMessage('This is a super awesome message.');
     await this.clickAndSelectTeamNameFieldByText('PEN Team');
-    log.info('input', 'New message details input');
+    log.info('input:', 'New message details input');
   }
 
   async clickOnAddStudentButtonInNewMessage() {
