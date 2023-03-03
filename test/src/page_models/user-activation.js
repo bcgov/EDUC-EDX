@@ -1,11 +1,10 @@
-import {Selector} from 'testcafe';
+import { Selector } from 'testcafe';
+import FormWithFields from './common/formWithFields';
 
-/**
- * Represents the UserActivation page
- */
-class UserActivation {
+class UserActivation extends FormWithFields {
 
   constructor() {
+    super('#edxUserActivationSubmitBtn');
     this.mincodeInput = Selector('#instituteIdentifierTextField');
     this.primaryActivationCodeInput = Selector('#primaryEdxCodeTextField');
     this.personalActivationCodeInput = Selector('#personalActivationCodeTextField');
