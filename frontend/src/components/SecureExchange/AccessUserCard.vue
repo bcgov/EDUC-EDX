@@ -374,6 +374,10 @@ export default {
   animation: bounce-in 0.2s;
 }
 
+i{
+  color: #003366;
+}
+
 .v-list-item-title{
   color: #003366;
 }

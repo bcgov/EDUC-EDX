@@ -78,10 +78,6 @@ a:hover {
   font-size: 0.8rem;
 }
 
-i{
-  color: #003366;
-}
-
 .v-application {
   font-family: 'BCSans', Verdana, Arial, sans-serif !important;
 }
