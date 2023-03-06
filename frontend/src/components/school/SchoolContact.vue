@@ -4,76 +4,70 @@
       :id="`schoolContactCard-${contact.schoolContactId}`"
       class="schoolContactCard"
       height="100%">
-      <v-card-title class="pb-0">
+      <v-card-title>
         <v-row no-gutters>
-          <v-col>
-            <v-row no-gutters>
-              <v-col cols="8" class="justify-start">
-                <v-icon class="pb-1" small :color="getStatusColor(contact)" left dark>
-                  mdi-circle
-                </v-icon>
-                <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
-              </v-col>
-              <v-col cols="4" class="d-flex justify-end">
-                <v-btn
-                  id="editContactButton"
-                  class="mr-2"
-                  title="Edit"
-                  width="0.5em"
-                  v-if="canEditSchoolContact"
-                  @click="handleOpenEditor"
-                  color="white"
-                  min-width="0.5em"
-                  small
-                  depressed>
-                  <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <v-row no-gutters>
-              <v-col v-if="!contact.email && !contact.phoneNumber" cols="12" class="pt-1">
-                <p class="missing-highlight">
-                  <v-icon size="x-large" color="#ff5252" dark>mdi-alert</v-icon>
-                  Missing contact details
-                </p>
-                <a class="editField" @click="handleOpenEditor">+ email or phone</a>
-              </v-col>
-              <v-col v-if="contact.email" cols="12" class="pt-1">
-                <span id="contactEmail"> {{ contact.email }}</span>
-              </v-col>
-              <v-col v-if="contact.phoneNumber" cols="12" class="pt-1">
-                <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span>
-                <span v-if="contact.phoneExtension"> ext. {{ contact.phoneExtension }}</span>
-              </v-col>
-              <v-col cols="12" class="pt-1" v-if="contact.alternatePhoneNumber">
-                <span id="contactAlternatePhoneNumber">
-                  {{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)
-                </span>
-                <span v-if="contact.alternatePhoneExtension">
-                  ext. {{ contact.alternatePhoneExtension }}
-                </span>
-              </v-col>
-            </v-row>
+          <v-col cols="8">
+            <v-icon
+              icon="mdi-circle"
+              class="pb-1"
+              size="x-small"
+              :color="getStatusColor(contact)"
+              start />
+              <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
+          </v-col>
+          <v-col cols="4" class="d-flex justify-end">
+            <v-btn
+              id="editContactButton"
+              title="Edit"
+              width="0.5em"
+              v-if="canEditSchoolContact"
+              @click="handleOpenEditor"
+              color="white"
+              min-width="0.5em">
+              <v-icon icon="mdi-pencil" size="x-large" color="#003366" dark />
+            </v-btn>
           </v-col>
         </v-row>
       </v-card-title>
-      <v-card-text class="pt-2">
-        <v-row no-gutters>
-          <v-col cols="12" class="pt-1" v-if="contact.expiryDate">
-            <v-icon aria-hidden="false">
-              mdi-calendar-today
-            </v-icon>
-            <span id="contactEffectiveAndExpiryDate">
+      <v-card-text class="pb-0">
+        <v-list density="compact">
+          <v-list-item v-if="!contact.email && !contact.phoneNumber" class="missing-highlight pl-0">
+            <v-icon icon="mdi-alert" size="x-large" color="#ff5252" dark />
+            Missing contact details
+            <br>
+            <a class="editField" @click="handleOpenEditor">Add email or phone</a>
+          </v-list-item>
+          <v-list-item v-if="contact.email" cols="12" class="pl-0">
+            <v-icon icon="mdi-email" start />
+            <span id="contactEmail"> {{ contact.email }}</span>
+          </v-list-item>
+          <v-list-item v-if="contact.phoneNumber" cols="12" class="pl-0">
+            <v-icon icon="mdi-phone" start />
+            <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span>
+            <span v-if="contact.phoneExtension"> ext. {{ contact.phoneExtension }}</span>
+          </v-list-item>
+          <v-list-item cols="12" class="pl-0" v-if="contact.alternatePhoneNumber">
+            <v-icon icon="mdi-phone" start />
+            <span id="contactAlternatePhoneNumber">
+              {{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)
+            </span>
+            <span v-if="contact.alternatePhoneExtension">
+              ext. {{ contact.alternatePhoneExtension }}
+            </span>
+          </v-list-item>
+          <v-list-item cols="12" class="pl-0" v-if="contact.expiryDate">
+            <v-icon icon="mdi-calendar-today" size="small" aria-hidden="false" start />
+            <span id="contactEffectiveAndExpiryDate" class="text-caption">
               {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate) }}
             </span>
-          </v-col>
-          <v-col cols="12" class="pt-1" v-else>
-            <v-icon aria-hidden="false">
-              mdi-calendar-today
-            </v-icon>
-            <span id="contactEffectiveDate"> {{ formatDate(contact.effectiveDate) }}</span>
-          </v-col>
-        </v-row>
+          </v-list-item>
+          <v-list-item cols="12" class="pl-0" v-else>
+            <v-icon icon="mdi-calendar-today" size="small" aria-hidden="false" start />
+            <span id="contactEffectiveDate" class="text-caption">
+             {{ formatDate(contact.effectiveDate) }}
+            </span>
+          </v-list-item>
+        </v-list>
       </v-card-text>
     </v-card>
   </span>
@@ -111,6 +105,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 .editField {
   font-size: 16px;
