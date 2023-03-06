@@ -4,18 +4,18 @@
       :id="`schoolContactCard-${contact.schoolContactId}`"
       class="schoolContactCard pb-8"
       height="100%">
-      <v-card-title>
+      <v-card-title class="text-wrap">
         <v-row no-gutters>
-          <v-col cols="8">
+          <v-col cols="10">
             <v-icon
               icon="mdi-circle"
               class="pb-1"
               size="x-small"
               :color="getStatusColor(contact)"
               start />
-              <strong style="word-break: break-word;">{{ formatContactName(contact) }}</strong>
+              <strong>{{ formatContactName(contact) }}</strong>
           </v-col>
-          <v-col cols="4" class="d-flex justify-end">
+          <v-col cols="2" class="d-flex justify-end">
             <v-btn
               id="editContactButton"
               title="Edit"
