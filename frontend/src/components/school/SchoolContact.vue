@@ -2,7 +2,7 @@
   <span>
     <v-card
       :id="`schoolContactCard-${contact.schoolContactId}`"
-      class="schoolContactCard"
+      class="schoolContactCard pb-8"
       height="100%">
       <v-card-title>
         <v-row no-gutters>
@@ -37,16 +37,16 @@
             <br>
             <a class="editField" @click="handleOpenEditor">Add email or phone</a>
           </v-list-item>
-          <v-list-item v-if="contact.email" cols="12" class="pl-0">
+          <v-list-item v-if="contact.email" class="pl-0">
             <v-icon icon="mdi-email" start />
             <span id="contactEmail"> {{ contact.email }}</span>
           </v-list-item>
-          <v-list-item v-if="contact.phoneNumber" cols="12" class="pl-0">
+          <v-list-item v-if="contact.phoneNumber" class="pl-0">
             <v-icon icon="mdi-phone" start />
             <span id="contactPhoneNumber">{{ formatPhoneNumber(contact.phoneNumber) }}</span>
             <span v-if="contact.phoneExtension"> ext. {{ contact.phoneExtension }}</span>
           </v-list-item>
-          <v-list-item cols="12" class="pl-0" v-if="contact.alternatePhoneNumber">
+          <v-list-item class="pl-0" v-if="contact.alternatePhoneNumber">
             <v-icon icon="mdi-phone" start />
             <span id="contactAlternatePhoneNumber">
               {{ formatPhoneNumber(contact.alternatePhoneNumber) }} (alt.)
@@ -55,19 +55,21 @@
               ext. {{ contact.alternatePhoneExtension }}
             </span>
           </v-list-item>
-          <v-list-item cols="12" class="pl-0" v-if="contact.expiryDate">
+        </v-list>
+        <div class="date-container">
+          <div class="pl-0 text-right" v-if="contact.expiryDate">
             <v-icon icon="mdi-calendar-today" size="small" aria-hidden="false" start />
             <span id="contactEffectiveAndExpiryDate" class="text-caption">
               {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate) }}
             </span>
-          </v-list-item>
-          <v-list-item cols="12" class="pl-0" v-else>
+          </div>
+          <div class="pl-0 text-right" v-else>
             <v-icon icon="mdi-calendar-today" size="small" aria-hidden="false" start />
             <span id="contactEffectiveDate" class="text-caption">
              {{ formatDate(contact.effectiveDate) }}
             </span>
-          </v-list-item>
-        </v-list>
+          </div>
+        </div>
       </v-card-text>
     </v-card>
   </span>
@@ -121,5 +123,10 @@ export default {
   color: #ff5252;
   word-break: break-word;
   font-size: 16px;
+}
+.schoolContactCard { position: relative; }
+.schoolContactCard .date-container {
+  position: absolute;
+  bottom: 1rem; right: 1rem;
 }
 </style>
