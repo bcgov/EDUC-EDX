@@ -31,11 +31,11 @@
       </v-card-title>
       <v-card-text class="pb-0">
         <v-list density="compact">
-          <v-list-item v-if="!contact.email && !contact.phoneNumber" class="missing-highlight pl-0">
-            <v-icon icon="mdi-alert" size="x-large" color="#ff5252" dark />
-            Missing contact details
-            <br>
-            <a class="editField" @click="handleOpenEditor">Add email or phone</a>
+          <v-list-item v-if="!contact.email && !contact.phoneNumber" class="pl-0">
+            <a class="missing-highlight" @click="handleOpenEditor">
+              <v-icon icon="mdi-alert" size="x-large" color="#ff5252" start />
+              <span>Add missing email or phone</span>
+            </a>
           </v-list-item>
           <v-list-item v-if="contact.email" class="pl-0">
             <v-icon icon="mdi-email" start />
@@ -121,9 +121,8 @@ export default {
 
 .missing-highlight {
   color: #ff5252;
-  word-break: break-word;
-  font-size: 16px;
 }
+.missing-highlight span:hover { text-decoration: underline; }
 .schoolContactCard { position: relative; }
 .schoolContactCard .date-container {
   position: absolute;
