@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="full-height px-0 pt-0">
+  <v-container fluid class="full-height px-0 pt-0 mt-4">
     <v-form ref="newUserForm" v-model="isValidForm">
       <v-row class="d-flex justify-center">
 
@@ -44,37 +44,25 @@
                           <v-select
                               id="instituteNewUserRolesSelect"
                               :items="userRoles"
-                              item-value='edxRoleCode'
-                              item-title='label'
-                              item-disabled="disabled"
-                              v-model='edxActivationRoleCodes'
-                              :menu-props="{ maxHeight: '400' }"
-                              label="Roles"
-                              multiple
-                              :hint="rolesHint"
-                              persistent-hint
-                              class="pt-0"
-                              @input="disableRoles"
-                              required
-                              :rules="requireRoleRules"
+                              item-value="edxRoleCode"
+                              item-title="label"
+                              v-model="edxActivationRoleCodes"
+                              v-on:update:modelValue="disableRoles"
                           >
-                            <template v-slot:message="{ message, key }">
-                              <span :style="edxAdminUserCodeSelected ? 'color: black; font-weight: bold' : ''">{{ message }}</span>
-                            </template>
                             <template v-slot:item="{ item, on, attrs }">
-                              <v-list-item :disabled="item.disabled" @input="disableRoles" :value="item.edxRoleCode" v-bind="attrs">
-                                <template v-slot:default="{ active }">
-                                  <v-list-item-action class="mt-0 mb-2 mr-3">
-                                    <v-checkbox
-                                        :disabled="item.disabled"
-                                        :input-value="active"
-                                        color="primary"
-                                    ></v-checkbox>
+                              <v-list-item v-on:click="disableRoles" :disabled="item.raw.disabled" :value="item.raw.edxRoleCode">
+                                {{item}}
+                                <template v-slot:prepend="{ isActive }">
+                                  <v-list-item-action start>
+                                    <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
                                   </v-list-item-action>
-                                  <v-list-item-title>
-                                    <v-list-item-title>{{ item.label }}</v-list-item-title>
-                                  </v-list-item-title>
                                 </template>
+
+                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+
+                                <v-list-item-subtitle>
+                                  Auto-update apps at any time. Data charges may apply
+                                </v-list-item-subtitle>
                               </v-list-item>
                             </template>
                           </v-select>
@@ -195,6 +183,7 @@ export default {
       this.$emit('access-user:cancelMessage');
     },
     disableRoles() {
+      console.log('ABC' + JSON.stringify(this.edxActivationRoleCodes));
       if (this.edxAdminUserCode === '') {
         for (const element of this.userRoles) {
           if ((this.instituteTypeCode === 'SCHOOL' && element.edxRoleCode === 'EDX_SCHOOL_ADMIN')

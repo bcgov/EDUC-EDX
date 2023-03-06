@@ -73,6 +73,7 @@
           v-model="newUserInviteSheet"
           inset
           no-click-animation
+          style="width: 50%; height: max-content; left: 25%;"
           location="bottom"
           scrollable
           persistent
@@ -181,8 +182,8 @@ export default {
       isDistrictUser: false,
       schoolSearchNames: [],
       searchFilter: {
-        name: '',
-        roleName: ''
+        name: null,
+        roleName: null
       },
       primaryEdxActivationCode: null,
       instituteCode: '',

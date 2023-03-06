@@ -67,41 +67,16 @@
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
-<!--          <v-list-->
-<!--            v-model="selectedRoles"-->
-<!--            @change="selectedRolesChanged"-->
-<!--            style="background-color: #e7ebf0"-->
-<!--            v-else-->
-<!--          >-->
-<!--              <v-list-item :disabled="roleDisabled(newrole)" v-for="newrole in instituteRoles" :key="newrole.edxRoleCode"-->
-<!--                           :value="newrole.edxRoleCode">-->
-<!--                <template v-slot:default="{ active }">-->
-<!--                  <v-list-item-action>-->
-<!--                    <v-row no-gutters>-->
-<!--                      <v-col>-->
-<!--                        <v-checkbox-->
-<!--                          :id="`${newrole.edxRoleCode.toLowerCase()}-role-checkbox-${user.edxUserID}`"-->
-<!--                          :disabled="roleDisabled(newrole)"-->
-<!--                          :input-value="active"-->
-<!--                          class="mb-n10 ml-n2"-->
-<!--                          color="primary"-->
-<!--                          :label="newrole.label"-->
-<!--                        >-->
-<!--                        </v-checkbox>-->
-<!--                        <div class="ml-8 mt-2" style="color: black; font-weight: bold" v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.</div>-->
-<!--                      </v-col>-->
-<!--                    </v-row>-->
-<!--                  </v-list-item-action>-->
-<!--                </template>-->
-<!--              </v-list-item>-->
-<!--          </v-list>-->
           <v-list
             v-else
-            lines="three"
+            lines="two"
+            v-model:selected="selectedRoles"
+            v-on:update:selected="selectedRolesChanged"
+            return-object
             select-strategy="classic"
             style="background-color: #e7ebf0">
-            <div  v-for="newrole in instituteRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
-              <v-list-item :disabled="roleDisabled(newrole)" :value="newrole">
+            <div v-for="newrole in instituteRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
+              <v-list-item :disabled="roleDisabled(newrole)" :value="newrole.edxRoleCode">
                 <template v-slot:prepend="{ isActive }">
                   <v-list-item-action>
                     <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
@@ -110,13 +85,15 @@
 
                 <v-list-item-title>{{ newrole.label }}</v-list-item-title>
 
-                <v-list-item-subtitle v-if="isEDXInstituteAdminSelected && newrole.edxRoleCode === edxInstituteAdminRole">
+                <v-list-item-subtitle v-if="newrole.edxRoleCode === edxInstituteAdminRole">
                   EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.
+                </v-list-item-subtitle>
+                <v-list-item-subtitle v-else>
+                  {{newrole.roleDescription}}
                 </v-list-item-subtitle>
               </v-list-item>
             </div>
           </v-list>
-
         </v-card-text>
         <Transition name="bounce">
           <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
@@ -235,10 +212,13 @@ export default {
       return this.isEDXInstituteAdminSelected;
     },
     selectedRolesChanged() {
+      console.log('Update' + this.selectedRoles);
       if (!this.isEDXInstituteAdminSelected) {
         return;
       }
+      console.log('Roles: ' + this.selectedRoles);
       this.selectedRoles = [this.edxInstituteAdminRole];
+      console.log('Roles2: ' + this.selectedRoles);
     },
     getButtonWidth() {
       switch (this.$vuetify.display.name) {
@@ -392,6 +372,10 @@ export default {
 <style scoped>
 .bounce-enter-active {
   animation: bounce-in 0.2s;
+}
+
+.v-list-item-title{
+  color: #003366;
 }
 
 .actionButton{

@@ -65,7 +65,7 @@
         v-model="newUserInviteSheet"
         inset
         location="bottom"
-        style="width: 50%; height: 47%; left: 25%;"
+        style="width: 50%; height: max-content; left: 25%;"
         no-click-animation
         scrollable
         persistent

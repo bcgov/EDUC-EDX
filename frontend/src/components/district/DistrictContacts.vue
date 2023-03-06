@@ -57,7 +57,7 @@
         no-click-animation
         location="bottom"
         temporary
-        style="width: 50%; height: 75%; left: 25%;"
+        style="width: 50%; height: max-content; left: 25%;"
         scrollable
         persistent>
       <NewDistrictContactPage
@@ -73,7 +73,7 @@
         inset
         no-click-animation
         location="bottom"
-        style="width: 50%; height: 75%; left: 25%;"
+        style="width: 50%; height: max-content; left: 25%;"
         temporary
         scrollable
         persistent>
