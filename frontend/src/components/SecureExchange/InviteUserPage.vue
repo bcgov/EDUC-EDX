@@ -16,12 +16,14 @@
                           <v-text-field id="newUserFirstName"
                                         label="First Name"
                                         v-model.trim="firstName"
+                                        variant="underlined"
                                         class="pt-0"
                                         maxlength="255"
                                         :rules="requiredRules"
                           ></v-text-field>
                           <v-text-field id="newUserLastName"
                                         label="Last Name"
+                                        variant="underlined"
                                         v-model.trim="lastName"
                                         maxlength="255"
                                         :rules="requiredRules"
@@ -29,7 +31,8 @@
                           <v-text-field id="newUserEmail"
                                         label="Email"
                                         v-model.trim="email"
-                                        class="pt-0"
+                                        variant="underlined"
+                                        class="pt-0 pb-2"
                                         :rules="emailRules"
                                         maxlength="255"
                                         :hint="emailHint"
@@ -37,34 +40,52 @@
                           <v-text-field id="newUserInstituteType"
                                         :label="instituteTypeLabel"
                                         v-model="instituteNameAndCode"
+                                        variant="underlined"
                                         :disabled=true
                                         class="pt-0"
                                         :rules="requiredRules"
                           ></v-text-field>
                           <v-select
-                              id="instituteNewUserRolesSelect"
-                              :items="userRoles"
-                              item-value="edxRoleCode"
-                              item-title="label"
-                              v-model="edxActivationRoleCodes"
-                              v-on:update:modelValue="disableRoles"
+                            id="instituteNewUserRolesSelect"
+                            v-model="edxActivationRoleCodes"
+                            variant="underlined"
+                            label="Role(s)"
+                            :hint="rolesHint"
+                            persistent-hint
+                            required
+                            :rules="requireRoleRules"
+                            class="mb-3 mt-0 pt-0"
                           >
-                            <template v-slot:item="{ item, on, attrs }">
-                              <v-list-item v-on:click="disableRoles" :disabled="item.raw.disabled" :value="item.raw.edxRoleCode">
-                                {{item}}
-                                <template v-slot:prepend="{ isActive }">
-                                  <v-list-item-action start>
-                                    <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
-                                  </v-list-item-action>
-                                </template>
-
-                                <v-list-item-title>{{ item.title }}</v-list-item-title>
-
-                                <v-list-item-subtitle>
-                                  Auto-update apps at any time. Data charges may apply
-                                </v-list-item-subtitle>
-                              </v-list-item>
+                            <template v-slot:no-data>
                             </template>
+                            <template v-slot:selection="{item, index}">
+                              {{getRoleNameFromCode(item, index)}}
+                            </template>
+                            <template v-slot:append-item>
+                              <v-list
+                                lines="two"
+                                v-model:selected="edxActivationRoleCodes"
+                                v-on:update:selected="disableRoles"
+                                return-object
+                                select-strategy="classic">
+                                <div v-for="newrole in userRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
+                                  <v-list-item :disabled="newrole.disabled" :value="newrole.edxRoleCode">
+                                    <template v-slot:prepend="{ isActive }">
+                                      <v-list-item-action>
+                                        <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                                      </v-list-item-action>
+                                    </template>
+
+                                    <v-list-item-title>{{ newrole.label }}</v-list-item-title>
+
+                                    <v-list-item-subtitle>
+                                      {{newrole.roleDescription}}
+                                    </v-list-item-subtitle>
+                                  </v-list-item>
+                                </div>
+                              </v-list>
+                            </template>
+
                           </v-select>
                         </v-card-text>
                       </v-col>
@@ -182,8 +203,13 @@ export default {
     navigateToList() {
       this.$emit('access-user:cancelMessage');
     },
+    getRoleNameFromCode(role, index){
+      if(index != 0){
+        return ', ' + this.userRoles.filter(userRole => userRole.edxRoleCode === role.value)[0].label;
+      }
+      return this.userRoles.filter(userRole => userRole.edxRoleCode === role.value)[0].label;
+    },
     disableRoles() {
-      console.log('ABC' + JSON.stringify(this.edxActivationRoleCodes));
       if (this.edxAdminUserCode === '') {
         for (const element of this.userRoles) {
           if ((this.instituteTypeCode === 'SCHOOL' && element.edxRoleCode === 'EDX_SCHOOL_ADMIN')
@@ -264,5 +290,4 @@ export default {
   text-transform: none;
   font-weight: bolder;
 }
-
 </style>

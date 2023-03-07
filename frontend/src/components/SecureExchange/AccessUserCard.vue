@@ -212,13 +212,10 @@ export default {
       return this.isEDXInstituteAdminSelected;
     },
     selectedRolesChanged() {
-      console.log('Update' + this.selectedRoles);
       if (!this.isEDXInstituteAdminSelected) {
         return;
       }
-      console.log('Roles: ' + this.selectedRoles);
       this.selectedRoles = [this.edxInstituteAdminRole];
-      console.log('Roles2: ' + this.selectedRoles);
     },
     getButtonWidth() {
       switch (this.$vuetify.display.name) {

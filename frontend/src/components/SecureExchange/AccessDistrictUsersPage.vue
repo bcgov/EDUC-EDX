@@ -126,8 +126,8 @@ export default {
       filteredUsers: [],
       roleMap:undefined,
       searchFilter: {
-        name: '',
-        roleName: ''
+        name: null,
+        roleName: null
       },
       primaryEdxActivationCode: null
     };
