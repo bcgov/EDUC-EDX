@@ -6,7 +6,7 @@
       <v-form ref="newContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
-            <v-alert color="#E9EBEF" dense text type="info">
+            <v-alert color="#E9EBEF" dense type="info">
               <p style="color: #003366">School contacts will be
                 <strong>available to the public as of start date.</strong>
               </p>
@@ -24,6 +24,7 @@
                 v-model="newContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
                 item-title="label"
+                variant="underlined"
                 class="pt-0"
                 item-value="schoolContactTypeCode"
                 label="School Contact Type"/>
@@ -31,12 +32,14 @@
                 id='newContactFirstNameInput'
                 v-model="newContact.firstName"
                 class="pt-0"
+                variant="underlined"
                 :maxlength="255"
                 label="First Name"/>
             <v-text-field
                 id='newContactLastNameInput'
                 :rules="[rules.required()]"
                 v-model="newContact.lastName"
+                variant="underlined"
                 class="pt-0"
                 :maxlength="255"
                 label="Last Name"/>
@@ -44,6 +47,7 @@
                 id='newContactEmailInput'
                 :rules="[rules.required(), rules.email()]"
                 v-model="newContact.email"
+                variant="underlined"
                 class="pt-0"
                 :maxlength="255"
                 label="Email"/>
@@ -53,6 +57,7 @@
                     id='newContactPhoneNumberInput'
                     :rules="[rules.required(), rules.phoneNumber()]"
                     v-model="newContact.phoneNumber"
+                    variant="underlined"
                     class="pt-0"
                     :maxlength="10"
                     label="Phone Number"
@@ -63,6 +68,7 @@
                     id='newContactPhoneExtensionInput'
                     :rules="[rules.number()]"
                     v-model="newContact.phoneExtension"
+                    variant="underlined"
                     :maxlength="10"
                     class="pt-0"
                     label="Ext."
@@ -76,6 +82,7 @@
                     :rules="[rules.phoneNumber()]"
                     v-model="newContact.alternatePhoneNumber"
                     class="pt-0"
+                    variant="underlined"
                     :maxlength="10"
                     label="Alt. Phone Number"
                     @keypress="isNumber($event)"/>
@@ -85,6 +92,7 @@
                     id='newContactAltPhoneExtensionInput'
                     :rules="[rules.number()]"
                     v-model="newContact.alternatePhoneExtension"
+                    variant="underlined"
                     class="pt-0"
                     :maxlength="10"
                     label="Alt. Phone Ext."
@@ -106,6 +114,7 @@
                         :rules="[rules.required()]"
                         class="pt-0 mt-0"
                         v-model="newContact.effectiveDate"
+                        variant="underlined"
                         label="Start Date"
                         prepend-inner-icon="mdi-calendar"
                         clearable
@@ -133,6 +142,7 @@
                         :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
                         class="pt-0 mt-0"
                         v-model="newContact.expiryDate"
+                        variant="underlined"
                         label="End Date"
                         prepend-inner-icon="mdi-calendar"
                         clearable

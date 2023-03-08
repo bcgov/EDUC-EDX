@@ -7,9 +7,9 @@
       <v-form ref="newContactForm" v-model="isFormValid">
         <v-row class="d-flex justify-center">
           <v-col>
-            <v-alert color="#003366" dense text type="info">
-              <p>District contacts will be <strong>available to the public as of start date</strong>.</p>
-              <p class="mb-1">Please be sure to review the new contact details carefully before saving.</p>
+            <v-alert color="#E9EBEF" dense type="info">
+              <p style="color: #003366">District contacts will be <strong>available to the public as of start date</strong>.</p>
+              <p class="mb-1" style="color: #003366">Please be sure to review the new contact details carefully before saving.</p>
             </v-alert>
           </v-col>
         </v-row>
@@ -20,6 +20,7 @@
                 :rules="[rules.required()]"
                 v-model="newContact.districtContactTypeCode"
                 :items="districtContactTypes"
+                variant="underlined"
                 item-title="label"
                 class="pt-0"
                 item-value="districtContactTypeCode"
@@ -29,6 +30,7 @@
                 id='newContactFirstNameInput'
                 v-model="newContact.firstName"
                 class="pt-0"
+                variant="underlined"
                 :maxlength="255"
                 label="First Name"
             />
@@ -37,6 +39,7 @@
                 :rules="[rules.required()]"
                 v-model="newContact.lastName"
                 class="pt-0"
+                variant="underlined"
                 :maxlength="255"
                 label="Last Name"
             />
@@ -44,6 +47,7 @@
                           v-model="newContact.jobTitle"
                           label="Title"
                           type="text"
+                          variant="underlined"
                           maxlength="255"
             />
             <v-text-field
@@ -51,6 +55,7 @@
                 :rules="[rules.required(), rules.email()]"
                 v-model="newContact.email"
                 class="pt-0"
+                variant="underlined"
                 :maxlength="255"
                 label="Email"
             />
@@ -61,6 +66,7 @@
                     :rules="[rules.required(), rules.phoneNumber()]"
                     v-model="newContact.phoneNumber"
                     class="pt-0"
+                    variant="underlined"
                     :maxlength="10"
                     label="Phone Number"
                     @keypress="isNumber($event)"
@@ -72,6 +78,7 @@
                     :rules="[rules.number()]"
                     v-model="newContact.phoneExtension"
                     :maxlength="10"
+                    variant="underlined"
                     class="pt-0"
                     label="Ext."
                     @keypress="isNumber($event)"
@@ -85,6 +92,7 @@
                     :rules="[rules.phoneNumber()]"
                     v-model="newContact.alternatePhoneNumber"
                     class="pt-0"
+                    variant="underlined"
                     :maxlength="10"
                     label="Alt. Phone Number"
                     @keypress="isNumber($event)"
@@ -96,6 +104,7 @@
                     :rules="[rules.number()]"
                     v-model="newContact.alternatePhoneExtension"
                     class="pt-0"
+                    variant="underlined"
                     :maxlength="10"
                     label="Alt. Phone Ext."
                     @keypress="isNumber($event)"
@@ -119,17 +128,18 @@
                         class="pt-0 mt-0"
                         v-model="newContact.effectiveDate"
                         label="Start Date"
+                        variant="underlined"
                         prepend-inner-icon="mdi-calendar"
                         clearable
                         readonly
                         v-bind="attrs"
                     ></v-text-field>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.effectiveDate"
-                      :active-picker.sync="newContactEffectiveDatePicker"
-                      @change="saveNewContactEffectiveDate"
-                  ></v-date-picker>
+                  <VueDatePicker
+                    v-model="newContact.effectiveDate"
+                    :active-picker.sync="newContactEffectiveDatePicker"
+                    @change="saveNewContactEffectiveDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
               <v-col cols="6">
@@ -146,6 +156,7 @@
                         id="newContactExpiryDateTextField"
                         :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
                         class="pt-0 mt-0"
+                        variant="underlined"
                         v-model="newContact.expiryDate"
                         label="End Date"
                         prepend-inner-icon="mdi-calendar"
@@ -154,11 +165,11 @@
                         v-bind="attrs"
                     ></v-text-field>
                   </template>
-                  <v-date-picker
-                      v-model="newContact.expiryDate"
-                      :active-picker.sync="newContactExpiryDatePicker"
-                      @change="saveNewContactExpiryDate"
-                  ></v-date-picker>
+                  <VueDatePicker
+                    v-model="newContact.expiryDate"
+                    :active-picker.sync="newContactExpiryDatePicker"
+                    @change="saveNewContactExpiryDate"
+                  ></VueDatePicker>
                 </v-menu>
               </v-col>
             </v-row>
@@ -183,6 +194,8 @@ import {ApiRoutes} from '../../utils/constants';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
 import {LocalDate} from '@js-joda/core';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   name: 'NewDistrictContactPage',
@@ -199,6 +212,7 @@ export default {
   },
   components: {
     PrimaryButton,
+    VueDatePicker
   },
   mounted() {
     this.validateForm();
@@ -261,8 +275,9 @@ export default {
     resetForm() {
       this.$refs.newContactForm.reset();
     },
-    validateForm() {
-      this.isFormValid = this.$refs.newContactForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.newContactForm.validate();
+      this.isFormValid = valid.valid;
     },
     isNumber,
   },
@@ -283,5 +298,9 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
+  }
+
+  :deep(.mdi-information){
+    color: #003366;
   }
 </style>
