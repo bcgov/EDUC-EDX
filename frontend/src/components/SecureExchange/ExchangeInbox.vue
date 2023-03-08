@@ -68,7 +68,7 @@
                       <v-text-field
                         class="pt-0 mt-0"
                         id="subjectInput"
-                        density="compact"
+                        variant="underlined"
                         v-model="subjectFilter"
                         label="Subject"
                         prepend-inner-icon="mdi-book-open-variant"
@@ -90,7 +90,7 @@
                             id="messageDateTextField"
                             class="pt-0 mt-0"
                             v-model="messageDate"
-                            density="compact"
+                            variant="underlined"
                             label="Message Date"
                             prepend-inner-icon="mdi-calendar"
                             clearable
@@ -109,27 +109,27 @@
                     </v-col>
                     <v-col cols="12" md="4">
                       <v-select
-                        v-model="statusSelectFilter"
                         id="statusSelector"
+                        v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
-                        density="compact"
-                        item-title="label"
-                        class="pt-0 mt-0"
-                        item-value="secureExchangeStatusCode"
                         prepend-inner-icon="mdi-circle-medium"
                         label="Status"
-                        single-line
-                        clearable
+                        variant="underlined"
+                        :menu-props="{
+                            closeOnClick: true,
+                            closeOnContentClick: true,
+                        }"
                       >
-                        <template v-slot:item="{ item }">
-                          <v-row>
-                            <v-col cols="12" class="pr-0">
-                              <v-icon :color="getStatusColor(item.label)">
-                                mdi-circle-medium
-                              </v-icon>
-                              <span class="body-2">{{ item.label }}</span>
-                            </v-col>
-                          </v-row>
+                        <template v-slot:selection="{ item, index }">
+                          {{ item.value.label }}
+                        </template>
+
+                        <template v-slot:item="{ item, index }">
+                          <v-list-item v-on:click="selectItem(item)">
+                            <v-icon :color="getStatusColor(item.value.label)" icon="mdi-circle-medium">
+                            </v-icon>
+                            <span>{{ item.raw.label }}</span>
+                          </v-list-item>
                         </template>
                       </v-select>
                     </v-col>
@@ -139,7 +139,7 @@
                         id="contactNameSelect"
                         v-model="contactNameFilter"
                         label="Contact Name"
-                        density="compact"
+                        variant="underlined"
                         item-title="teamName"
                         item-value="ministryOwnershipTeamId"
                         :items="ministryContactName"
@@ -150,7 +150,7 @@
                     <v-col cols="12" md="4" class="pt-0" :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}">
                       <v-text-field
                         id="messageIdInput"
-                        density="compact"
+                        variant="underlined"
                         class="pt-0 mt-0"
                         v-model="messageIDFilter"
                         label="Message ID"
@@ -163,7 +163,7 @@
                     <v-col cols="12" md="4" class="pt-0">
                       <v-text-field
                         class="pt-0 mt-0"
-                        density="compact"
+                        variant="underlined"
                         v-model="studentIDFilter"
                         label="Student PEN"
                         prepend-inner-icon="mdi-account"
@@ -338,7 +338,7 @@ export default {
       return this.statuses;
     },
     searchEnabled(){
-      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || (this.studentIDFilter !== '' && this.studentIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || this.secureExchangeStatusCodes.some(item => item.secureExchangeStatusCode === this.statusSelectFilter);
+      return (this.subjectFilter !== '' && this.subjectFilter !== null) || (this.messageIDFilter !== '' && this.messageIDFilter !== null) || (this.studentIDFilter !== '' && this.studentIDFilter !== null) || this.messageDate !== null || (this.contactNameFilter !== '' && this.contactNameFilter !== null) || (this.statusSelectFilter !== '' && this.statusSelectFilter !== null);
     },
     ministryContactName() {
       return this.ministryTeams;
@@ -361,6 +361,10 @@ export default {
     this.getExchanges();
   },
   methods: {
+    selectItem(item){
+      this.statusSelectFilter = [];
+      this.statusSelectFilter.push(item.raw);
+    },
     openExchange(secureExchangeID){
       this.$router.push({name: 'viewExchange', params: {secureExchangeID: secureExchangeID}});
     },
@@ -386,19 +390,19 @@ export default {
       this.pageNumber = 1;
     },
     clearSearch(runSearch = true){
-      this.subjectFilter = '';
+      this.subjectFilter = null;
       this.messageDate = null;
       this.messageDateFilter = null;
-      this.statusSelectFilter = '';
-      this.contactNameFilter = '';
-      this.messageIDFilter ='';
-      this.studentIDFilter = '';
+      this.statusSelectFilter = null;
+      this.contactNameFilter = null;
+      this.messageIDFilter =null;
+      this.studentIDFilter = null;
       if(runSearch){
         this.setFilterStatusAll();
         this.getExchanges();
       }
     },
-    onExpansionPanelClick(event) {
+    onExpansionPanelClick() {
       if (this.filterText !== 'More Filters') {
         this.filterText = 'More Filters';
         this.statusRadioGroupEnabled = true;
@@ -496,7 +500,7 @@ export default {
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       this.headerSearchParams.studentPEN = this.studentIDFilter;
       if(this.statusSelectFilter !== null && this.statusSelectFilter !== '') {
-        this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter];
+        this.headerSearchParams.secureExchangeStatusCode = [this.statusSelectFilter[0].secureExchangeStatusCode];
       }
 
       ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL, {
@@ -544,26 +548,6 @@ export default {
   font-weight: bolder !important;
 }
 
-.tableRow {
-  cursor: pointer;
-}
-
-.unread {
-  font-weight: bold;
-}
-
-.v-data-table >>> .v-data-table__wrapper {
-  overflow-x: hidden;
-}
-
-.filterButton.v-btn--outlined {
-  border: thin solid #ebedef;
-}
-
-.v-radio >>> .v-icon {
-  color: #003366;
-}
-
 .activeRadio {
   color: #003366;
 }
@@ -594,11 +578,6 @@ export default {
 
   .ministryLine{
     font-size: inherit;
-  }
-}
-@media screen and (max-width: 950px){
-  .v-dialog__content /deep/ .v-bottom-sheet {
-    width: 60% !important;
   }
 }
 
