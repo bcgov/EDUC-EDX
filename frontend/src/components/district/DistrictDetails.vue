@@ -33,55 +33,55 @@
             </v-col>
           </v-row>
           <v-row class="d-flex justify-start">
-            <v-col class="d-flex">
+            <v-col class="d-flex" :class="editing ? 'mt-5': ''">
               <v-icon class="pb-1" :color="getStatusColor()" right dark>
                 mdi-circle-medium
               </v-icon>
               <span v-if="!editing">{{getStatusText()}}</span>
-              <span v-else class="mt-5">{{getStatusText()}}</span>
+              <span v-else>{{getStatusText()}}</span>
             </v-col>
             <v-col class="d-flex">
-              <v-icon class="mb-1 mr-1" aria-hidden="false">
+              <v-icon v-if="!editing" class="mr-1" aria-hidden="false">
                 mdi-phone-outline
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.phoneNumber" class="ml-n1">{{ formatPhoneNumber(district.phoneNumber) }}</span>
                 <a v-if="showEditLinks(district.phoneNumber)" class="editField" @click="toggleEdit">+Phone</a>
               </div>
-              <v-text-field variant="underlined" id="districtPhone" v-else class="py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="districtCopy.phoneNumber">
+              <v-text-field prepend-icon="mdi-phone-outline" variant="underlined" id="districtPhone" v-else class="py-0" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="districtCopy.phoneNumber">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
-              <v-icon class="mb-1 mr-1" aria-hidden="false">
+              <v-icon v-if="!editing" class="mb-1 mr-1" aria-hidden="false">
                 mdi-at
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.email" class="ml-n1">{{ district.email }}</span>
                 <a v-if="showEditLinks(district.email)" class="editField" @click="toggleEdit">+Email</a>
               </div>
-              <v-text-field variant="underlined" id="districtEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
+              <v-text-field prepend-icon="mdi-at" variant="underlined" id="districtEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="districtCopy.email">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
-              <v-icon class="mb-1 mr-1" aria-hidden="false">
+              <v-icon v-if="!editing" class="mb-1 mr-1" aria-hidden="false">
                 mdi-fax
               </v-icon>
               <div v-if="!editing">
                 <span v-if="district.faxNumber" class="ml-n1">{{ formatPhoneNumber(district.faxNumber) }}</span>
                 <a v-if="showEditLinks(district.faxNumber)" class="editField" @click="toggleEdit">+Fax</a>
               </div>
-              <v-text-field variant="underlined" v-else class="py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
+              <v-text-field prepend-icon="mdi-fax" variant="underlined" v-else class="py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="districtCopy.faxNumber">
               </v-text-field>
             </v-col>
             <v-col class="d-flex">
-              <v-icon class="mb-1 mr-1" aria-hidden="false">
+              <v-icon v-if="!editing" class="mb-1 mr-1" aria-hidden="false">
                 mdi-web
               </v-icon>
               <div v-if="!editing">
                 <a v-if="cleanWebsiteUrl" :href="cleanWebsiteUrl" target="_blank">{{ cleanWebsiteUrl }}</a>
                 <a v-if="showEditLinks(cleanWebsiteUrl)" class="editField" @click="toggleEdit">+Website</a>
               </div>
-              <v-text-field variant="underlined" v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="districtCopy.website">
+              <v-text-field prepend-icon="mdi-web" variant="underlined" v-if="editing" class="py-0" :rules="[rules.website()]" :maxlength="255" v-model="districtCopy.website">
               </v-text-field>
             </v-col>
           </v-row>
@@ -573,6 +573,11 @@ export default {
   border-color: #FCBA19;
   border-width: unset;
   opacity: unset;
+}
+
+:deep(div.v-input__prepend > i){
+  margin-top: 5px;
+  margin-right: -10px;
 }
 
 .fontItalic{
