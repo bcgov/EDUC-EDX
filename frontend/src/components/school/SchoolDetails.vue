@@ -52,8 +52,8 @@
                 <v-icon class="ml-n1 pr-3" :color="getStatusColorAuthorityOrSchool(school.status)" dark>
                   mdi-circle-medium
                 </v-icon>
-            <span v-if="!editing">{{ school.status }}</span>
-            <span v-else>{{ school.status }}</span>
+                <span v-if="!editing">{{ school.status }}</span>
+                <span v-else>{{ school.status }}</span>
               </v-col>
               <v-col class="d-flex">
                 <v-icon v-if="!editing" class="mr-1" aria-hidden="false">
@@ -65,7 +65,7 @@
                 </div>
                 <v-text-field prepend-icon="mdi-phone-outline" single-line variant="underlined" id="schoolDetailsPhoneNumber" v-else class="shrink" @keypress="isNumber($event)" required :maxlength="10" :rules="[rules.required(), rules.phoneNumber()]" v-model="schoolDetailsCopy.phoneNumber"/>
               </v-col>
-          <v-col class="d-flex">
+              <v-col class="d-flex">
                 <v-icon v-if="!editing" class="mr-1" aria-hidden="false">
                   mdi-at
                 </v-icon>
@@ -75,7 +75,7 @@
                 </div>
                 <v-text-field prepend-icon="mdi-at" variant="underlined" id="schoolDetailsEmail" v-else class="py-0" required :rules="[rules.required(), rules.email()]" :maxlength="255" v-model="schoolDetailsCopy.email"/>
               </v-col>
-          <v-col class="d-flex">
+              <v-col class="d-flex">
                 <v-icon v-if="!editing" class="mr-1" aria-hidden="false">
                   mdi-fax
                 </v-icon>
@@ -85,7 +85,7 @@
                 </div>
                 <v-text-field prepend-icon="mdi-fax" variant="underlined" id="schoolDetailsFaxNumber" v-else class="shrink py-0" @keypress="isNumber($event)" :rules="[rules.phoneNumber('Fax number must be valid')]" :maxlength="10" v-model="schoolDetailsCopy.faxNumber"/>
               </v-col>
-          <v-col class="d-flex">
+              <v-col class="d-flex">
                 <v-icon v-if="!editing" class="mr-1" aria-hidden="false">
                   mdi-web
                 </v-icon>
@@ -113,7 +113,7 @@
                 <span style="color: grey">Open Date</span>
               </v-col>
             </v-row>
-            <v-row>
+            <v-row no-gutters class="pt-2">
               <v-col cols="10" class="d-flex justify-start">
                 <span class="ministryLine" style="color: black">{{ formatDate(school.openedDate) || '-' }}</span>
               </v-col>
@@ -125,7 +125,7 @@
                 <span style="color: grey">Close Date</span>
               </v-col>
             </v-row>
-            <v-row>
+            <v-row no-gutters class="pt-2">
               <v-col cols="10" class="d-flex justify-start">
                 <span class="ministryLine" style="color: black">{{ formatDate(school.closedDate) || '-' }}</span>
               </v-col>
@@ -137,7 +137,7 @@
                   <span style="color: grey">Facility Type</span>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row no-gutters class="pt-2">
                 <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{school.facilityType}}</span>
                 </v-col>
@@ -149,33 +149,33 @@
                   <span style="color: grey">School Category</span>
                 </v-col>
             </v-row>
-            <v-row>
+            <v-row no-gutters class="pt-2">
                 <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{ school.schoolCategory }}</span>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
-          <v-row class="d-flex justify-start pt-2">
+          <v-row class="d-flex justify-start pt-7">
             <v-col cols="4" lg="3" class="pb-0 pt-0">
               <v-row no-gutters>
-                <v-col cols="10" class="pr-0">
+                <v-col cols="10" class="pr-0" :class="editing ? 'mb-n5': ''">
                   <span style="color: grey">Grades Offered</span>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row no-gutters class="pt-2">
                 <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{ getGradesOffered(school.grades) }}</span>
                 </v-col>
               </v-row>
             </v-col>
             <v-col cols="4" lg="3" class="pb-0 pt-0">
-              <v-row no-gutters class="">
-                <v-col cols="10" class="d-flex justify-start">
+              <v-row>
+                <v-col cols="10" class="d-flex justify-start" :class="editing ? 'mb-n5': ''">
                   <span style="color: grey">School Organization</span>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row no-gutters class="pt-2">
                 <v-col cols="10" class="d-flex justify-start">
                   <span v-if="!editing" class="ministryLine" style="color: black">{{
                       getSchoolOrganization(school)
@@ -195,11 +195,11 @@
             </v-col>
             <v-col cols="4" lg="3" class="pb-0 pt-0">
               <v-row no-gutters class="d-flex justify-start">
-                <v-col cols="10" class="d-flex justify-start">
+                <v-col cols="10" class="d-flex justify-start" :class="editing ? 'mb-n5': ''">
                   <span style="color: grey">NLC Activity</span>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row no-gutters class="pt-2">
                 <v-col cols="10" class="d-flex justify-start">
                   <span v-if="!editing" class="ministryLine" style="color: black">{{ getNLCActivity(school) }}</span>
                   <v-select v-else :items="schoolActiveNeighborhoodLearningTypes"
@@ -273,7 +273,7 @@
                   </v-row>
                   <v-row class="ml-7" no-gutters>
                     <v-col cols="8">
-                      <v-text-field variant="underlined" label="Line 2" id="mailAddressLine2" class="shrink mt-n5 mb-3" :maxlength="255"
+                      <v-text-field variant="underlined" label="Line 2" id="mailAddressLine2" class="shrink mt-n3 mb-3" :maxlength="255"
                                     v-model="getMailingAddressCopy()[0].addressLine2">
                       </v-text-field>
                     </v-col>
