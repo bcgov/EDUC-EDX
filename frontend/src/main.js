@@ -12,8 +12,6 @@ import styles from 'vuetify/styles';
 import * as labs from 'vuetify/labs/components';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives'
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
 import '@mdi/font/css/materialdesignicons.css'
 
 const myCustomLightTheme = {
@@ -38,8 +36,7 @@ const vuetify = createVuetify({
     ...components,
     ...directives,
     ...styles,
-    ...colors,
-    VueDatePicker
+    ...colors
   },
 });
 const pinia = createPinia();
