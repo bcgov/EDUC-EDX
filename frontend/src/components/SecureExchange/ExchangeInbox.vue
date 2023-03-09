@@ -89,23 +89,24 @@
                           <v-text-field
                             id="messageDateTextField"
                             class="pt-0 mt-0"
-                            v-model="messageDate"
+                            v-model="messageDateMoment"
                             variant="underlined"
                             label="Message Date"
                             prepend-inner-icon="mdi-calendar"
+                            v-on:click="openMessageDatePicker"
                             clearable
                             readonly
                             v-bind="attrs"
                           ></v-text-field>
                         </template>
-                        <VueDatePicker
-                          v-model="messageDate"
-                          :active-picker.sync="activeMessageDatePicker"
-                          :max-date="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-                          min-date="2022-01-01"
-                          @change="saveMessageDate"
-                        ></VueDatePicker>
                       </v-menu>
+                      <VueDatePicker
+                        ref="messageDatePicker"
+                        v-model="messageDate"
+                        :enable-time-picker="false"
+                        format="yyyy-MM-dd"
+                        @update:model-value="saveMessageDate"
+                      ></VueDatePicker>
                     </v-col>
                     <v-col cols="12" md="4">
                       <v-select
@@ -282,6 +283,7 @@ import alertMixin from '../../mixins/alertMixin';
 import {appStore} from '../../store/modules/app';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import moment from 'moment';
 
 export default {
   name: 'ExchangeInbox',
@@ -300,6 +302,7 @@ export default {
       messageDateFilter: false,
       activeMessageDatePicker: null,
       messageDate: null,
+      messageDateMoment: null,
       subjectFilter: '',
       filterText: 'More Filters',
       contactNameFilter: '',
@@ -365,6 +368,9 @@ export default {
       this.statusSelectFilter = [];
       this.statusSelectFilter.push(item.raw);
     },
+    openMessageDatePicker(){
+      this.$refs.messageDatePicker.openMenu();
+    },
     openExchange(secureExchangeID){
       this.$router.push({name: 'viewExchange', params: {secureExchangeID: secureExchangeID}});
     },
@@ -392,6 +398,7 @@ export default {
     clearSearch(runSearch = true){
       this.subjectFilter = null;
       this.messageDate = null;
+      this.messageDateMoment = null;
       this.messageDateFilter = null;
       this.statusSelectFilter = null;
       this.contactNameFilter = null;
@@ -421,8 +428,8 @@ export default {
       }
 
     },
-    saveMessageDate(date) {
-      this.$refs.messageDateFilter.save(date);
+    saveMessageDate() {
+      this.messageDateMoment = moment(this.messageDate).format('YYYY-MM-DD').toString();
     },
     getStatusColor(status) {
       if (status === 'Open') {
@@ -495,7 +502,7 @@ export default {
       };
 
       this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
+      this.headerSearchParams.createDate = this.messageDateMoment === null ? null : [this.messageDateMoment];
       this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       this.headerSearchParams.studentPEN = this.studentIDFilter;
@@ -550,6 +557,19 @@ export default {
 
 .activeRadio {
   color: #003366;
+}
+
+:deep(.dp__input_wrap){
+  height: 0;
+  width: 0;
+}
+
+:deep(.dp__input){
+  display: none;
+}
+
+:deep(.dp__icon){
+  display: none;
 }
 
 .subjectHeading {
