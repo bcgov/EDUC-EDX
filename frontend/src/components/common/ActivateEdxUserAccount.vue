@@ -177,7 +177,6 @@ export default {
           setTimeout(() => this.$router.push('/'), 1000);
         })
         .catch(error => {
-          console.log('Here2 Marco' + JSON.stringify(error));
           this.showActivationSnackBar=false;
           if (error?.response?.status === 429) {
             this.showActivationSnackBar=true;
