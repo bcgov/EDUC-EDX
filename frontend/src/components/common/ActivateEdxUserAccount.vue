@@ -12,7 +12,7 @@
                       <v-snackbar id="activationSnackBar"
                 v-model="showActivationSnackBar"
                 elevation="24"
-                top
+                location="top"
                 centered
                 color="error"
                 transition="slide-y-transition"
@@ -45,6 +45,7 @@
               <v-text-field id="instituteIdentifierTextField"
                   v-model="instituteSpecificCode"
                   :rules="instituteSpecificCodeRules && requiredRules"
+                  variant="underlined"
                   :hint="createInstituteSpecificCodeHint"
                   :label="createInstituteSpecificCodeLabel"
               ></v-text-field>
@@ -56,6 +57,7 @@
               <v-text-field
                   id="primaryEdxCodeTextField"
                   :rules="requiredRules"
+                  variant="underlined"
                   v-model="primaryEdxCode"
                  :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
                   :label="`${instituteTypeLabel}'s Primary Activation Code`"
@@ -68,6 +70,7 @@
               <v-text-field
                   id="personalActivationCodeTextField"
                   :rules="requiredRules"
+                  variant="underlined"
                   v-model="personalActivationCode"
                   label="Personal Activation Code"
                   hint="Please enter the personal activation code you have received in your EDX invite email"
@@ -189,8 +192,9 @@ export default {
           this.submissionInProgress = false;
         });
     },
-    validateForm() {
-      this.isValidForm = this.$refs.edxUserActivationForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.edxUserActivationForm.validate();
+      this.isFormValid = valid.valid;
     },
   },
 };
