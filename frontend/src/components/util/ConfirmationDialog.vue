@@ -84,4 +84,8 @@ export default {
   .dialog-subtitle {
     font-size: 1rem;
   }
+
+  :deep(.v-toolbar-title__placeholder){
+    overflow: visible;
+  }
 </style>
