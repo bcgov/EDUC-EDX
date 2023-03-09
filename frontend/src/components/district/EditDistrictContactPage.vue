@@ -231,14 +231,10 @@ export default {
   },
   mounted() {
     let clonedContact = cloneDeep(this.contact);
-    console.log('Picker ' + this.pickerFormat);
     clonedContact.effectiveDateMoment = formatDate(clonedContact.effectiveDate, this.from, this.pickerFormat);
     clonedContact.expiryDateMoment = formatDate(clonedContact.expiryDate, this.from, this.pickerFormat);
-
     clonedContact.effectiveDate = new Date(moment(clonedContact.effectiveDateMoment));
     clonedContact.expiryDate = new Date(moment(clonedContact.expiryDateMoment));
-
-    console.log('Cloned ' + clonedContact.effectiveDateMoment);
     this.editContact = clonedContact;
     this.validateForm();
   },
