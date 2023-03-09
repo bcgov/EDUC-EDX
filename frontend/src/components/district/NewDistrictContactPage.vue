@@ -126,21 +126,26 @@
                         id="newContactEffectiveDateTextField"
                         :rules="[rules.required()]"
                         class="pt-0 mt-0"
-                        v-model="newContact.effectiveDate"
+                        v-model="newContact.effectiveDateMoment"
                         label="Start Date"
                         variant="underlined"
                         prepend-inner-icon="mdi-calendar"
+                        v-on:click:clear="clearEffectiveDate"
+                        v-on:click="openEffectiveDatePicker"
                         clearable
                         readonly
                         v-bind="attrs"
                     ></v-text-field>
                   </template>
-                  <VueDatePicker
-                    v-model="newContact.effectiveDate"
-                    :active-picker.sync="newContactEffectiveDatePicker"
-                    @change="saveNewContactEffectiveDate"
-                  ></VueDatePicker>
                 </v-menu>
+                <VueDatePicker
+                  ref="effectiveDatePicker"
+                  :rules="[rules.required()]"
+                  v-model="newContact.effectiveDate"
+                  :enable-time-picker="false"
+                  format="yyyy-MM-dd"
+                  @update:model-value="saveNewContactEffectiveDate"
+                ></VueDatePicker>
               </v-col>
               <v-col cols="6">
                 <v-menu
@@ -154,23 +159,28 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="newContactExpiryDateTextField"
-                        :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
+                        :rules="[rules.endDateRule(newContact.effectiveDateMoment, newContact.expiryDateMoment)]"
                         class="pt-0 mt-0"
                         variant="underlined"
-                        v-model="newContact.expiryDate"
+                        v-model="newContact.expiryDateMoment"
                         label="End Date"
                         prepend-inner-icon="mdi-calendar"
+                        v-on:click:clear="clearExpiryDate"
+                        v-on:click="openExpiryDatePicker"
                         clearable
                         readonly
                         v-bind="attrs"
                     ></v-text-field>
                   </template>
-                  <VueDatePicker
-                    v-model="newContact.expiryDate"
-                    :active-picker.sync="newContactExpiryDatePicker"
-                    @change="saveNewContactExpiryDate"
-                  ></VueDatePicker>
                 </v-menu>
+                <VueDatePicker
+                  ref="expiryDatePicker"
+                  :rules="[rules.required()]"
+                  v-model="newContact.expiryDate"
+                  :enable-time-picker="false"
+                  format="yyyy-MM-dd"
+                  @update:model-value="saveNewContactExpiryDate"
+                ></VueDatePicker>
               </v-col>
             </v-row>
           </v-col>
@@ -196,6 +206,7 @@ import {isNumber} from '../../utils/institute/formInput';
 import {LocalDate} from '@js-joda/core';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import moment from 'moment/moment';
 
 export default {
   name: 'NewDistrictContactPage',
@@ -245,18 +256,44 @@ export default {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
   },
   methods: {
-    saveNewContactEffectiveDate(date) {
-      this.$refs.newContactEffectiveDateFilter.save(date);
+    clearEffectiveDate(){
+      this.newContact.effectiveDateMoment = null;
+      this.newContact.effectiveDate = null;
+      this.validateForm();
     },
-    saveNewContactExpiryDate(date) {
-      this.$refs.newContactExpiryDateFilter.save(date);
+    clearExpiryDate(){
+      this.newContact.expiryDateMoment = null;
+      this.newContact.expiryDate = null;
+      this.validateForm();
+    },
+    saveNewContactExpiryDate() {
+      this.newContact.expiryDateMoment = moment(this.newContact.expiryDate).format('YYYY-MM-DD').toString();
+      this.validateForm();
+    },
+    saveNewContactEffectiveDate() {
+      this.newContact.effectiveDateMoment = moment(this.newContact.effectiveDate).format('YYYY-MM-DD').toString();
+      this.validateForm();
     },
     closeNewContactPage() {
       this.resetForm();
       this.$emit('newDistrictContact:closeNewDistrictContactPage');
     },
+    openEffectiveDatePicker(){
+      this.$refs.effectiveDatePicker.openMenu();
+    },
+    openExpiryDatePicker(){
+      this.$refs.expiryDatePicker.openMenu();
+    },
     addNewDistrictContact() {
       this.processing = true;
+
+      if(this.newContact.effectiveDateMoment) {
+        this.newContact.effectiveDate = this.newContact.effectiveDateMoment;
+      }
+
+      if(this.newContact.expiryDateMoment) {
+        this.newContact.expiryDate = this.newContact.expiryDateMoment;
+      }
 
       ApiService.apiAxios.post(`${ApiRoutes.district.BASE_URL}/${this.districtID}/contact`, this.newContact)
         .then(() => {
@@ -298,6 +335,19 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
+  }
+
+  :deep(.dp__input_wrap){
+    height: 0;
+    width: 0;
+  }
+
+  :deep(.dp__input){
+    display: none;
+  }
+
+  :deep(.dp__icon){
+    display: none;
   }
 
   :deep(.mdi-information){
