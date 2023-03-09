@@ -290,11 +290,11 @@ export default {
     openExpiryDatePicker(){
       this.$refs.expiryDatePicker.openMenu();
     },
-    saveEditContactExpiryDate(date) {
+    saveEditContactExpiryDate() {
       this.editContact.expiryDateMoment = moment(this.editContact.expiryDate).format('YYYY-MM-DD').toString();
       this.validateForm();
     },
-    saveEditContactEffectiveDate(date) {
+    saveEditContactEffectiveDate() {
       this.editContact.effectiveDateMoment = moment(this.editContact.effectiveDate).format('YYYY-MM-DD').toString();
       this.validateForm();
     },

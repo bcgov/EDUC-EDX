@@ -113,20 +113,25 @@
                         id="editContactEffectiveDateTextField"
                         :rules="[rules.required()]"
                         class="pt-0 mt-0"
-                        v-model="editContact.effectiveDate"
+                        v-model="editContact.effectiveDateMoment"
                         variant="underlined"
                         label="Start Date"
                         prepend-inner-icon="mdi-calendar"
+                        v-on:click:clear="clearEffectiveDate"
+                        v-on:click="openEffectiveDatePicker"
                         clearable
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <VueDatePicker
-                    v-model="editContact.effectiveDate"
-                    :active-picker.sync="editContactEffectiveDatePicker"
-                    @change="saveEditContactEffectiveDate"
-                  ></VueDatePicker>
                 </v-menu>
+                <VueDatePicker
+                  ref="effectiveDatePicker"
+                  :rules="[rules.required()]"
+                  v-model="editContact.effectiveDate"
+                  :enable-time-picker="false"
+                  format="yyyy-MM-dd"
+                  @update:model-value="saveEditContactEffectiveDate"
+                ></VueDatePicker>
               </v-col>
               <v-col cols="6">
                 <v-menu
@@ -139,22 +144,27 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         id="editContactExpiryDateTextField"
-                        :rules="[rules.endDateRule(editContact.effectiveDate, editContact.expiryDate)]"
+                        :rules="[rules.endDateRule(editContact.effectiveDateMoment, editContact.expiryDateMoment)]"
                         class="pt-0 mt-0"
-                        v-model="editContact.expiryDate"
+                        v-model="editContact.expiryDateMoment"
                         variant="underlined"
                         label="End Date"
                         prepend-inner-icon="mdi-calendar"
+                        v-on:click:clear="clearExpiryDate"
+                        v-on:click="openExpiryDatePicker"
                         clearable
                         readonly
                         v-bind="attrs"/>
                   </template>
-                  <VueDatePicker
-                    v-model="editContact.expiryDate"
-                    :active-picker.sync="editContactExpiryDatePicker"
-                    @change="saveEditContactExpiryDate"
-                  ></VueDatePicker>
                 </v-menu>
+                <VueDatePicker
+                  ref="expiryDatePicker"
+                  :rules="[rules.required()]"
+                  v-model="editContact.expiryDate"
+                  :enable-time-picker="false"
+                  format="yyyy-MM-dd"
+                  @update:model-value="saveEditContactExpiryDate"
+                ></VueDatePicker>
               </v-col>
             </v-row>
           </v-col>
@@ -188,6 +198,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
 import PrimaryButton from '../util/PrimaryButton.vue';
+import moment from 'moment/moment';
 
 export default {
   name: 'EditSchoolContactPage',
@@ -219,16 +230,19 @@ export default {
     }
   },
   mounted() {
+    let clonedContact = cloneDeep(this.contact);
+    clonedContact.effectiveDateMoment = formatDate(clonedContact.effectiveDate, this.from, this.pickerFormat);
+    clonedContact.expiryDateMoment = formatDate(clonedContact.expiryDate, this.from, this.pickerFormat);
+    clonedContact.effectiveDate = new Date(moment(clonedContact.effectiveDateMoment));
+    clonedContact.expiryDate = new Date(moment(clonedContact.expiryDateMoment));
+    this.editContact = clonedContact;
     this.validateForm();
   },
   data() {
-    let clonedContact = cloneDeep(this.contact);
-    let from ='uuuu-MM-dd\'T\'HH:mm:ss';
-    let pickerFormat = 'uuuu-MM-dd';
-    clonedContact.effectiveDate = formatDate(clonedContact.effectiveDate, from, pickerFormat);
-    clonedContact.expiryDate = formatDate(clonedContact.expiryDate, from, pickerFormat);
     return {
       processing: false,
+      from: 'uuuu-MM-dd\'T\'HH:mm:ss',
+      pickerFormat: 'uuuu-MM-dd',
       school: {},
       isFormValid: false,
       expandEdit: false,
@@ -236,7 +250,7 @@ export default {
       ecFormValid: false,
       effDateMenu: false,
       expDateMenu: false,
-      editContact: clonedContact,
+      editContact: '',
       rules: Rules,
       editContactExpiryDatePicker: null,
       editContactEffectiveDatePicker: null,
@@ -247,6 +261,14 @@ export default {
       this.processing = true;
       this.validateEditContactForm();
       this.editContact.schoolID = this.schoolID;
+
+      if(this.editContact.effectiveDateMoment) {
+        this.editContact.effectiveDate = this.editContact.effectiveDateMoment;
+      }
+
+      if(this.editContact.expiryDateMoment) {
+        this.editContact.expiryDate = this.editContact.expiryDateMoment;
+      }
 
       ApiService.apiAxios.post(`${ApiRoutes.school.UPDATE_SCHOOL_CONTACT_URL}`, this.editContact)
         .then(() => {
@@ -268,14 +290,32 @@ export default {
       this.expandEdit = !this.expandEdit;
       this.$refs.editContactForm.reset();
     },
+    openEffectiveDatePicker(){
+      this.$refs.effectiveDatePicker.openMenu();
+    },
+    openExpiryDatePicker(){
+      this.$refs.expiryDatePicker.openMenu();
+    },
+    clearEffectiveDate(){
+      this.editContact.effectiveDateMoment = null;
+      this.editContact.effectiveDate = null;
+      this.validateForm();
+    },
+    clearExpiryDate(){
+      this.editContact.expiryDateMoment = null;
+      this.editContact.expiryDate = null;
+      this.validateForm();
+    },
     validateEditContactForm(){
       this.$refs.editContactForm.validate();
     },
-    saveEditContactExpiryDate(date) {
-      this.$refs.editContactExpiryDateFilter.save(date);
+    saveEditContactExpiryDate() {
+      this.editContact.expiryDateMoment = moment(this.editContact.expiryDate).format('YYYY-MM-DD').toString();
+      this.validateForm();
     },
-    saveEditContactEffectiveDate(date) {
-      this.$refs.editContactEffectiveDateFilter.save(date);
+    saveEditContactEffectiveDate() {
+      this.editContact.effectiveDateMoment = moment(this.editContact.effectiveDate).format('YYYY-MM-DD').toString();
+      this.validateForm();
     },
     async validateForm() {
       const valid = await this.$refs.editContactForm.validate();
@@ -302,6 +342,19 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
+  }
+
+  :deep(.dp__input_wrap){
+    height: 0px;
+    width: 0px;
+  }
+
+  :deep(.dp__input){
+    display: none;
+  }
+
+  :deep(.dp__icon){
+    display: none;
   }
 
   :deep(.mdi-information){
