@@ -17,8 +17,8 @@
           items-per-page="-1"
           class="elevation-1"
         >
-          <template v-slot:item="{ item }">
-            <v-row no-gutters @click="selectSchool(item.value.schoolID)" style="cursor: pointer;">
+          <template v-slot:item="{ item, index }">
+            <v-row no-gutters class="pl-2 hoverTable" @click="selectSchool(item.value.schoolID)" :style="(index + 1) === activeUserSchools.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'">
               <v-col class="pa-1">
                 <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
                 <h3 style="color: grey;">{{item.value.mincode}}</h3>
@@ -33,10 +33,11 @@
                       id="schools-district-items"
             :items="activeUserDistricts"
             class="elevation-1"
+            items-per-page="-1"
             :loading="isTableLoading"
         >
-          <template v-slot:item="{ item }">
-            <v-row no-gutters @click="selectDistrict(item.value.districtID)" style="cursor: pointer;">
+          <template v-slot:item="{ item, index }">
+            <v-row no-gutters class="pl-2 hoverTable" @click="selectDistrict(item.value.districtID)" :style="(index + 1) === activeUserDistricts.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'">
               <v-col class="pa-1">
                 <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
                 <h3 style="color: grey;">{{item.value.districtNumber}}</h3>
@@ -141,6 +142,12 @@ export default {
   align-items: center;
   display: flex;
 }
+
+.hoverTable:hover{
+  background-color: #e8e8e8;
+  cursor: pointer;
+}
+
 .full-height{
   height: 50%;
 }
