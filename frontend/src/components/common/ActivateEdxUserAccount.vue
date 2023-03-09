@@ -172,10 +172,12 @@ export default {
       }
       ApiService.apiAxios.post(ApiRoutes.edx.USER_ACTIVATION, body)
         .then(() => {
+          console.log('Here1 Marco');
           this.setSuccessAlert('User Activation Completed Successfully. Redirecting to your Dashboard...');
           setTimeout(() => this.$router.push('/'), 1000);
         })
         .catch(error => {
+          console.log('Here2 Marco' + JSON.stringify(error));
           this.showActivationSnackBar=false;
           if (error?.response?.status === 429) {
             this.showActivationSnackBar=true;
