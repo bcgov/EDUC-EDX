@@ -19,9 +19,15 @@
     <template v-if="!loading">
       <v-row cols="2">
         <v-col class="d-flex justify-start">
-          <v-chip class="mr-3" color="#A9D18E">Active</v-chip>
-          <v-chip class="mr-3" color="#9DC3E6">Pending Start Date</v-chip>
-          <v-chip color="#F4B183">Pending End Date</v-chip>
+          <v-chip variant="elevated" class="text-black mr-3" color="#A9D18E">
+            Active
+          </v-chip>
+          <v-chip variant="elevated" class="text-black mr-3" color="#9DC3E6">
+            Pending Start Date
+          </v-chip>
+          <v-chip variant="elevated" class="text-black" color="#F4B183">
+            Pending End Date
+          </v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
           <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" :clickAction="redirectToDistrictDetails"></PrimaryButton>
