@@ -63,7 +63,13 @@
               hide-default-header
               mobile-breakpoint="0"
           >
-
+            <template v-slot:no-data>
+              <v-row no-gutters>
+                <v-col class="d-flex justify-center">
+                  There are no schools.
+                </v-col>
+              </v-row>
+            </template>
             <template v-slot:item="{ item, index }">
               <v-row no-gutters class="hoverTable pt-1"  @click="openSchool(item.value.schoolId)" style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);">
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
@@ -122,9 +128,6 @@
                 </v-col>
               </v-row>
             </template>
-
-            <template v-slot:no-data>There are no schools.</template>
-
           </v-data-table>
         </v-col>
       </v-row>
