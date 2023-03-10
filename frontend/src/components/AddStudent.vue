@@ -16,25 +16,28 @@
         ref="form"
         v-model="validForm"
     >
-      <v-row row d-flex nowrap align="center" justify="center" class="px-2">
-        <v-text-field class="pr-5"
-                      clearable
-                      v-model="penNumber"
-                      placeholder="Enter a Student's PEN"
-                      :rules="penRules"
-                      maxlength="9"
-                      counter="9"
-                      id="studentPenTextField">
-        </v-text-field>
-        <PrimaryButton width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
-                       :loading="isSearchingStudent"
-                       :clickAction="searchStudentForGivenPEN"/>
+      <v-row>
+        <v-col class="d-flex justify-center px-2" style="min-width: 50em">
+          <v-text-field class="pr-5"
+                        clearable
+                        variant="underlined"
+                        v-model="penNumber"
+                        placeholder="Enter a Student's PEN"
+                        :rules="penRules"
+                        maxlength="9"
+                        counter="9"
+                        id="studentPenTextField">
+          </v-text-field>
+          <PrimaryButton class="mt-2" width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
+                         :loading="isSearchingStudent"
+                         :clickAction="searchStudentForGivenPEN"/>
+        </v-col>
       </v-row>
     </v-form>
     <v-row no-gutters v-if="showStudentDetails">
       <v-icon x-large v-if="showStudentDetails" class="pr-2">mdi-account-box-outline</v-icon>
       <div v-if="showStudentDetailsForMinistryStaff" :class="['d-flex', 'flex-column']">
-      <span class="pt-2 pl-0 pb-2" >Student details will be available for ministry staff. </span>
+      <span class="pt-0 pl-0 pb-2" >Student details will be available for ministry staff. </span>
       </div>
         <div v-if="showStudentDetails" :class="['d-flex', 'flex-column']">
           <strong>{{ this.student['studentName'] }}</strong>

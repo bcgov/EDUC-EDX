@@ -6,32 +6,38 @@
           ref="form"
           v-model="validForm"
       >
-        <v-select
-            color="#003366"
-            id="uploadDocumentTypeCodeSelect"
-            v-model="documentTypeCode"
-            required
-            :rules="requiredRules"
-            outlined
-            item-title="text"
-            class="pb-0 mb-0"
-            :eager="eager"
-            :items="documentTypes"
-            label="Document Type"
-        ></v-select>
-        <v-file-input
-            color="#003366"
-            class="pt-0"
-            id="selectFileInput"
-            :accept="fileAccept"
-            :disabled="hasReadOnlyRoleAccess()"
-            :rules="fileRules"
-            placeholder="Select your file"
-            hint="JPEG, PNG, and PDF files supported"
-            :error-messages="fileInputError"
-            @change="selectFile"
-            @click="$event.target.value=''"
-        ></v-file-input>
+        <v-row style="min-width: 50em">
+          <v-col>
+            <v-select
+              color="#003366"
+              id="uploadDocumentTypeCodeSelect"
+              v-model="documentTypeCode"
+              required
+              variant="underlined"
+              :rules="requiredRules"
+              outlined
+              item-title="text"
+              class="pb-0 mb-0"
+              :eager="eager"
+              :items="documentTypes"
+              label="Document Type"
+            ></v-select>
+            <v-file-input
+              id="selectFileInput"
+              color="#003366"
+              variant="underlined"
+              :accept="fileAccept"
+              :disabled="hasReadOnlyRoleAccess()"
+              hint="JPEG, PNG, and PDF files supported"
+              :error-messages="fileInputError"
+              placeholder="Select your file"
+              :rules="fileRules"
+              v-model="uploadFileValue"
+            >
+            </v-file-input>
+          </v-col>
+        </v-row>
+
         <!--^^^ @click event to solve issue when adding 2 files with the same name back to back-->
         <!--https://stackoverflow.com/questions/54124977/vuejs-input-file-selection-event-not-firing-upon-selecting-the-same-file-->
       </v-form>
@@ -64,6 +70,7 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import {sortBy} from 'lodash';
 import PrimaryButton from '../util/PrimaryButton.vue';
+import { ref } from 'vue';
 
 export default {
   components: {PrimaryButton},
@@ -82,14 +89,12 @@ export default {
       validForm: true,
       fileInputError: [],
       documentTypeCode: null,
-      file: null,
+      uploadFileValue: ref([]),
       active: false,
       buttonKey: 0,
-
       alert: false,
       alertMessage: null,
       alertType: null
-
     };
   },
   watch: {
@@ -111,7 +116,7 @@ export default {
   computed: {
     ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
     dataReady () {
-      return this.validForm && this.file;
+      return this.validForm && this.uploadFileValue;
     },
     documentTypes() {
       return sortBy(this.secureExchangeDocumentTypes, ['displayOrder'])
@@ -129,7 +134,7 @@ export default {
     resetForm() {
       this.$refs.form.reset();
       this.fileInputError = [];
-      this.file = null;
+      this.uploadFileValue = null;
       this.alert = false;
       this.active = false;
       this.alertMessage = null;
@@ -146,8 +151,8 @@ export default {
       this.alert = true;
     },
     selectFile(file) {
-      this.file = file;
-      if(!this.file && !this.active) {
+      this.uploadFileValue = file;
+      if(!this.uploadFileValue && !this.active) {
         this.fileInputError = 'Required';
       } else {
         this.fileInputError = [];
@@ -160,13 +165,13 @@ export default {
     submitRequest() {
       if(this.dataReady){
         try {
-          if(this.file.name && this.file.name.match('^[\\u0080-\\uFFFF\\w,\\s-_]+\\.[A-Za-z]{3,4}$')){
+          if(this.uploadFileValue[0].name && this.uploadFileValue[0].name.match('^[\\u0080-\\uFFFF\\w,\\s-_]+\\.[A-Za-z]{3,4}$')){
             this.active = true;
             const reader = new FileReader();
             reader.onload = this.uploadFile;
             reader.onabort = this.handleFileReadErr;
             reader.onerror = this.handleFileReadErr;
-            reader.readAsBinaryString(this.file);
+            reader.readAsBinaryString(this.uploadFileValue[0]);
           }else{
             this.active = false;
             this.setErrorAlert('Please remove spaces and special characters from file name and try uploading again.');
@@ -183,9 +188,9 @@ export default {
     },
     async uploadFile(env) {
       let document = {
-        fileName: getFileNameWithMaxNameLength(this.file.name),
-        fileExtension: this.file.type,
-        fileSize: this.file.size,
+        fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
+        fileExtension: this.uploadFileValue[0].type,
+        fileSize: this.uploadFileValue[0].size,
         documentTypeCode: this.documentTypeCode,
         documentData: btoa(env.target.result)
       };
@@ -206,8 +211,12 @@ export default {
     async getFileRules() {
       const maxSize = this.fileRequirements.maxSize;
       this.fileRules = [
-        value => !value || value.size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`,
-        value => !value || this.fileRequirements.extensions.includes(value.type) || `File formats should be ${this.fileFormats}.`,
+        value => {
+          return !value || !value.length || value[0].size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`
+        },
+        value => {
+          return !value || !value.length || this.fileRequirements.extensions.includes(value[0].type) || `File formats should be ${this.fileFormats}.`
+        }
       ];
       this.fileAccept = this.fileRequirements.extensions.join();
       this.fileFormats = this.makefileFormatList(this.fileRequirements.extensions);

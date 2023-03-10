@@ -69,14 +69,7 @@
             </v-row>
             <v-divider class="divider"></v-divider>
             <v-row>
-              <v-speed-dial id="editOptionsMenu" v-if="isEditable() && shouldDisplaySpeedDial" v-model="editOptionsOpen" top left direction="right">
-                <template v-slot:activator>
-                  <v-btn id="editOptionsMenuBtn" class="ml-4" fab dark color="#003366">
-                    <v-icon v-if="editOptionsOpen" dark large>mdi-close</v-icon>
-                    <v-icon v-else dark large>mdi-plus</v-icon>
-                  </v-btn>
-                </template>
-                <v-card>
+              <v-col class="mt-2">
                   <v-btn id="newMessageToConvBtn" small @click="displayMessageField">
                     <v-icon color="#003366">mdi-email-outline</v-icon>
                     <span style="color: #003366" class="ml-1">Message</span>
@@ -89,8 +82,7 @@
                     <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
                     <span style="color: #003366" class="ml-1">Student</span>
                   </v-btn>
-                </v-card>
-              </v-speed-dial>
+              </v-col>
             </v-row>
             <v-row v-if="isNewMessageDisplayed">
               <v-card-text id="newMessageCardText" class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10">

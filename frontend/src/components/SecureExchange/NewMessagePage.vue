@@ -8,43 +8,50 @@
               <v-col>
                 <v-card id="newMessageCard" flat outlined>
                   <v-row>
-                    <v-col class="pb-0">
+                    <v-col class="pb-0 pt-8">
                       <v-card-text id="newMessageCardText" class="pb-0 pt-0">
                         <v-form ref="newMessageForm" v-model="isValidForm">
                           <v-text-field
-                              :value="getFromName()"
+                              :model-value="getFromName()"
                               label="From"
                               class="pt-0"
+                              variant="underlined"
                               readonly
                           ></v-text-field>
                           <v-select
-                              id='schoolNameTxtField'
-                              v-model="assignedMinistryTeam"
-                              :items="this.ministryTeams"
-                              :rules="requiredRules"
-                              item-title="teamName"
-                              class="pt-0"
-                              item-value="ministryOwnershipTeamId"
-                              label="To"
+                            id="schoolNameTxtField"
+                            v-model="assignedMinistryTeam"
+                            :items="this.ministryTeams"
+                            item-value="ministryOwnershipTeamId"
+                            item-title="teamName"
+                            label="To"
+                            variant="underlined"
+                            :menu-props="{
+                            closeOnClick: true,
+                            closeOnContentClick: true,
+                            }"
                           >
-                            <template v-slot:item="{ item }">
-                              <v-row>
-                                <v-col cols="12" class="pr-0">
-                                  <div class="body-2" style="color: black;font-weight: bolder">
-                                    {{ item.teamName }}
-                                  </div>
-                                  <div class="body-2" style="color: black;"
-                                       :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}">
-                                    {{ item.description }}
-                                  </div>
-                                </v-col>
-                              </v-row>
+                            <template v-slot:item="{ item, index }">
+                              <v-list-item v-on:click="selectItem(item)">
+                                <v-row no-gutters>
+                                  <v-col cols="12" class="pr-0">
+                                    <div class="body-2" style="color: black;font-weight: bolder">
+                                      {{ item.title }}
+                                    </div>
+                                    <div class="body-2" style="color: black;"
+                                         :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}">
+                                      {{ item.raw.description }}
+                                    </div>
+                                  </v-col>
+                                </v-row>
+                              </v-list-item>
                             </template>
                           </v-select>
                           <v-text-field
                               v-model="subject"
                               id='subjectTxtField'
                               label="Subject"
+                              variant="underlined"
                               :rules="requiredRules"
                               maxlength="255"
                               class="pt-0"
@@ -55,6 +62,7 @@
                               :rules="requiredRules"
                               rows="8"
                               label="Message"
+                              variant="underlined"
                               no-resize
                               maxlength="4000"
                               class="pt-0"
@@ -64,7 +72,7 @@
                       </v-card-text>
                     </v-col>
                   </v-row>
-                  <v-row class="ml-6" no-gutters>
+                  <v-row class="ml-6 mt-5" no-gutters>
                     <v-col cols="4" v-for="(document, index) in secureExchangeDocuments" :key="index" class="d-flex px-0 pb-2">
                       <v-chip :id="`documentChip-${index}`" :class="['ma-1']"   close @click:close="removeDocumentByIndex(index)">
                         <v-avatar left>
@@ -85,8 +93,8 @@
                       <v-btn id="attachFileID"
                              title="Attach File"
                              color="#1A5A96"
-                             outlined
-                             class="addButton pl-0 pr-2"
+                             variant="outlined"
+                             class="addButton pl-2 pr-2"
                              @click="showAttachFilePanel"
                       >
                         <v-icon color="#1A5A96" class="mr-0" right dark>mdi-paperclip</v-icon>
@@ -95,8 +103,8 @@
                       <v-btn id="addStudentID"
                              title="Add Student"
                              color="#1A5A96"
-                             outlined
-                             class="addButton pl-0 pr-2 ml-1"
+                             variant="outlined"
+                             class="addButton pl-2 pr-2 ml-1"
                              @click="showAddStudentPanel"
                       >
                         <v-icon color="#1A5A96" class="mr-0" right dark>
@@ -108,12 +116,8 @@
                   </v-row>
                   <!--pop out for attaching files-->
                   <v-row no-gutters>
-                    <v-col>
-                      <v-expand-transition
-                          max-width="30rem"
-                          max-height="50rem"
-                          xl="2" lg="2" md="2" xs="2" sm="2"
-                      >
+                    <v-col class="d-flex justify-center px-2 pb-2 pt-2">
+                      <v-expand-transition>
                         <DocumentUpload
                             v-show="expandAttachFile"
                             @close:form="showOptions"
@@ -202,6 +206,9 @@ export default {
     this.clearSecureExchangeStudents();
   },
   methods: {
+    selectItem(item){
+      this.assignedMinistryTeam = item.value;
+    },
     updateAdditionalStudentAddWarning(newValue){
       this.additionalStudentAddWarningMessage = newValue;
     },
@@ -297,8 +304,9 @@ export default {
       this.expandAddStudent = true;
       this.shouldShowOptions = false;
     },
-    validateForm() {
-      this.isValidForm = this.$refs.newMessageForm.validate();
+    async validateForm() {
+      const valid = await this.$refs.newMessageForm.validate();
+      this.isFormValid = valid.valid;
     },
   }
 };
