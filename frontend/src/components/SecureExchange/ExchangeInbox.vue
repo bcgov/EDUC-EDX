@@ -200,6 +200,13 @@
                 :server-items-length="totalRequests"
                 class="elevation-1"
             >
+              <template v-slot:no-data>
+                <v-row no-gutters>
+                  <v-col class="d-flex justify-center">
+                    There are no messages.
+                  </v-col>
+                </v-row>
+              </template>
               <template v-slot:item="{ item }">
                   <v-row class="hoverTable pl-3 pt-1 pb-1 pr-3" no-gutters @click="openExchange(item.value.secureExchangeID)" style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);">
                     <v-col cols="8" lg="7" xl="9" class="pb-0 pt-0">
@@ -236,9 +243,6 @@
                     </v-col>
                   </v-row>
               </template>
-
-              <template v-slot:no-data>There are no messages.</template>
-
             </v-data-table>
           </v-col>
         </v-row>
