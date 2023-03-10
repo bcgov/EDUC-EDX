@@ -25,7 +25,7 @@ const getContactStatus = function (contact) {
     status = 'Active';
   } else if (parsedEffectiveDate.isAfter(currentDate)) {
     status = 'Pending Start Date';
-  } else if (parsedExpiryDate.isBefore(currentDate)) {
+  } else if (parsedExpiryDate.isAfter(currentDate)) {
     status = 'Pending End Date';
   }
 
