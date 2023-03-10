@@ -8,11 +8,17 @@ const getContactStatus = function (contact) {
   let expiryDate = contact.expiryDate;
   let status = null;
 
-  const parsedEffectiveDate = new LocalDateTime.parse(effectiveDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+  const parsedEffectiveDate = new LocalDateTime.parse(
+    effectiveDate,
+    DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')
+  );
 
   let parsedExpiryDate = null;
   if (expiryDate) {
-    parsedExpiryDate = new LocalDateTime.parse(expiryDate, DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    parsedExpiryDate = new LocalDateTime.parse(
+      expiryDate,
+      DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss')
+    );
   }
 
   if (parsedExpiryDate === null && parsedEffectiveDate.isBefore(currentDate)) {
@@ -22,6 +28,7 @@ const getContactStatus = function (contact) {
   } else if (parsedExpiryDate.isBefore(currentDate)) {
     status = 'Pending End Date';
   }
+
   return status;
 };
 
@@ -33,6 +40,7 @@ const getContactStatus = function (contact) {
  */
 export function getStatusColor(contact) {
   let status = getContactStatus(contact);
+
   if (status === 'Active') {
     return '#A9D18E';
   } else if (status === 'Pending Start Date'){
