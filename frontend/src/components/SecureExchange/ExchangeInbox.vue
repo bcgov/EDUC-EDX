@@ -218,7 +218,7 @@
                     </v-col>
                     <v-col cols="4" lg="5" xl="3" style="text-align: end" class="pb-0 pt-0">
                       <v-row no-gutters>
-                        <v-col class="pb-1">
+                        <v-col class="pb-1 pt-2">
                           <v-icon class="pb-1" :color="getStatusColor(item.value.secureExchangeStatusCode)" right dark>
                             mdi-circle-medium
                           </v-icon>
