@@ -20,7 +20,6 @@
           <v-col>
             <v-select
                 id='editContactDropdown'
-                :rules="[rules.required()]"
                 v-model="editContact.schoolContactTypeCode"
                 :items="schoolContactTypes"
                 variant="underlined"
@@ -126,7 +125,6 @@
                 </v-menu>
                 <VueDatePicker
                   ref="effectiveDatePicker"
-                  :rules="[rules.required()]"
                   v-model="editContact.effectiveDate"
                   :enable-time-picker="false"
                   format="yyyy-MM-dd"
@@ -159,7 +157,6 @@
                 </v-menu>
                 <VueDatePicker
                   ref="expiryDatePicker"
-                  :rules="[rules.required()]"
                   v-model="editContact.expiryDate"
                   :enable-time-picker="false"
                   format="yyyy-MM-dd"
@@ -306,9 +303,6 @@ export default {
       this.editContact.expiryDate = null;
       this.validateForm();
     },
-    validateEditContactForm(){
-      this.$refs.editContactForm.validate();
-    },
     saveEditContactExpiryDate() {
       this.editContact.expiryDateMoment = moment(this.editContact.expiryDate).format('YYYY-MM-DD').toString();
       this.validateForm();
@@ -320,6 +314,7 @@ export default {
     async validateForm() {
       const valid = await this.$refs.editContactForm.validate();
       this.isFormValid = valid.valid;
+      console.log('Validating' + JSON.stringify(valid));
     },
     formatPhoneNumber,
     getStatusColor,
@@ -329,7 +324,7 @@ export default {
   watch: {
     'editContact.effectiveDate': {
       handler() {
-        this.validateEditContactForm();
+        this.validateForm();
       }
     }
   }

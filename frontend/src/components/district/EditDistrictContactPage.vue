@@ -16,7 +16,6 @@
           <v-col>
             <v-select
                 id='editContactDropdown'
-                :rules="[rules.required()]"
                 v-model="editContact.districtContactTypeCode"
                 :items="districtContactTypes"
                 item-title="label"
