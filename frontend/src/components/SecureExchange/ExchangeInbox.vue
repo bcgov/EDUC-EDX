@@ -199,19 +199,16 @@
                 :loading="loadingTable"
                 :server-items-length="totalRequests"
                 class="elevation-1"
-
-                mobile-breakpoint="0"
             >
-
               <template v-slot:item="{ item }">
-                  <v-row no-gutters @click="openExchange(item.value.secureExchangeID)" style="cursor: pointer;">
+                  <v-row class="hoverTable pl-3 pt-1 pb-1 pr-3" no-gutters @click="openExchange(item.value.secureExchangeID)" style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);">
                     <v-col cols="8" lg="7" xl="9" class="pb-0 pt-0">
-                      <v-row no-gutters class="mb-n4">
+                      <v-row no-gutters class="mb-n1">
                         <v-col cols="12" class="pb-2 pt-2 pr-0">
                           <span class="subjectHeading" :style="{color: item.value.isReadByExchangeContact ? 'black': '#1f7cef'}">{{ getSubject(item.value.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item.value) }}</span>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row no-gutters>
                         <v-col cols="12" class="pb-1 pr-0">
                           <span class="ministryLine" style="color: black">{{
                               getMinistryTeamName(item.value.ministryOwnershipTeamID)
@@ -226,6 +223,10 @@
                             mdi-circle-medium
                           </v-icon>
                           <span class="statusCodeLabel">{{ item.value.secureExchangeStatusCode }}</span>
+                        </v-col>
+                      </v-row>
+                      <v-row no-gutters>
+                        <v-col class="pb-1">
                           <v-icon style="margin-bottom: 0.15em" color="grey darken-3" right size="medium" dark>
                             mdi-pound
                           </v-icon>
@@ -576,6 +577,11 @@ export default {
   font-size: large;
   cursor: pointer;
   font-weight: bold;
+}
+
+.hoverTable:hover{
+  background-color: #e8e8e8;
+  cursor: pointer;
 }
 
 .ministryLine {

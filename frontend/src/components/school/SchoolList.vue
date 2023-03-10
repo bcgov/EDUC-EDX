@@ -64,10 +64,10 @@
               mobile-breakpoint="0"
           >
 
-            <template v-slot:item="{ item }">
-              <v-row no-gutters class="schoolDetailsRow" style="cursor: pointer;" @click="openSchool(item.value.schoolId)">
-                <v-col class="pb-0 pt-0">
-                  <v-row class="mb-n4">
+            <template v-slot:item="{ item, index }">
+              <v-row no-gutters class="hoverTable pt-1"  @click="openSchool(item.value.schoolId)" style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
+                  <v-row no-gutters class="mb-n1">
                     <v-col cols="6">
                       <span class="subjectHeading">{{ item.value.mincode }} - {{ item.value.displayName }}</span>
                     </v-col>
@@ -83,14 +83,15 @@
                       </v-icon>
                       <span class="principalName statusCodeLabel" style="color: black">{{item.value.principalsName}}</span>
                     </v-col>
-                    <v-col class="d-flex justify-end" cols="1">
+                    <v-col class="d-flex justify-end mr-4" cols="1">
                       <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
+                        <template v-slot:activator="{ props }">
                           <v-btn color="#003366"
                                  outlined
                                  @click.native.stop="openSchoolContacts(item.value.schoolId)"
                                  class="schoolContactsButton mt-0 pt-0 filterButton"
                                  style="text-transform: initial"
+                                 v-bind="props"
                           >
                             <v-icon color="white" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
                           </v-btn>
@@ -99,19 +100,19 @@
                       </v-tooltip>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col cols="6" class="mt-n4">
-                      <span class="ministryLine mt-n5" style="color: black">{{
+                  <v-row no-gutters>
+                    <v-col cols="6">
+                      <span class="ministryLine" style="color: black">{{
                           item.value.schoolCategory
                         }} | {{ item.value.facilityType }}</span>
                     </v-col>
-                    <v-col cols="2" class="mt-n2 ml-n8">
+                    <v-col cols="2" class="ml-n8">
                       <v-icon class="mb-1" aria-hidden="false">
                         mdi-phone-outline
                       </v-icon>
                       <span class="statusCodeLabel">{{ formatPhoneNumber(item.value.phoneNumber) }}</span>
                     </v-col>
-                    <v-col cols="4" class="d-flex mt-n2 ml-n8">
+                    <v-col cols="4" class="d-flex ml-n8">
                       <v-icon class="ml-0 mr-1 mb-1" aria-hidden="false">
                         mdi-at
                       </v-icon>
@@ -437,6 +438,11 @@ export default {
 
 .v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
   display: none;
+}
+
+.hoverTable:hover{
+  background-color: #e8e8e8;
+  cursor: pointer;
 }
 
 .filterButton.v-btn--outlined {
