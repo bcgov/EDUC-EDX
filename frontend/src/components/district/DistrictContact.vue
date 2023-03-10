@@ -128,6 +128,6 @@ export default {
 .districtContactCard { position: relative; }
 .districtContactCard .date-container {
   position: absolute;
-  bottom: 1rem; right: 1rem;
+  bottom: 1rem; left: 1rem;
 }
 </style>
