@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
     <div style="width: 100%;">
-      <v-row class="pt-0"
+      <v-row class="pt-7"
              :class="{'mr-0 ml-0': $vuetify.display.smAndDown, 'mr-3 ml-3': $vuetify.display.mdAndUp}">
         <v-col cols="12 pt-0">
           <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :document-id="this.documentId"></PdfRenderer>
@@ -32,13 +32,13 @@
               <v-col class="pb-0 pt-0 d-flex justify-end">
                 <v-row>
                   <v-col class="pb-0 d-flex justify-end">
-                    <v-card outlined color="transparent" class="mr-5">
-                      <v-row>
+                    <v-card variant="outlined" color="transparent" class="mr-5">
+                      <v-row no-gutters>
                         <v-col class="pb-0">
                           <v-icon class="ml-n1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" dark>
                             mdi-circle-medium
                           </v-icon>
-                          <span id="messageDisplayStatusCode" class="ml-n1">{{ secureExchange.secureExchangeStatusCode }}</span>
+                          <span id="messageDisplayStatusCode" style="color: black" class="ml-n1">{{ secureExchange.secureExchangeStatusCode }}</span>
                         </v-col>
                       </v-row>
                       <v-row no-gutters>
@@ -46,7 +46,7 @@
                           <v-icon color="grey darken-3" size="medium" dark>
                             mdi-pound
                           </v-icon>
-                          <span id="messageDisplaySequenceNumber">{{ secureExchange.sequenceNumber }}</span>
+                          <span id="messageDisplaySequenceNumber" style="color: black">{{ secureExchange.sequenceNumber }}</span>
                         </v-col>
                       </v-row>
                     </v-card>
@@ -663,7 +663,8 @@ export default {
 
 .divider {
   border-color: #FCBA19;
-  border-width: medium;
+  border-width: unset;
+  opacity: unset;
 }
 .plainBtn {
   background-color: white !important;
