@@ -82,7 +82,7 @@
             id="newUserInviteVCard"
             v-if="newUserInviteSheet"
             class="information-window-v-card">
-            <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
+            <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User for {{schoolName + ' (' + schoolMincode + ')'}}</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <InviteUserPage
