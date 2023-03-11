@@ -50,15 +50,15 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-data-table
-              :items-per-page.sync="pageSize"
-              :page.sync="pageNumber"
+          <v-data-table-server
+              v-model:items-per-page="pageSize"
+              v-model:page="pageNumber"
+              v-model:items="schools"
+              v-model:items-length="totalSchools"
               :footer-props="{
                     'items-per-page-options': itemsPerPageOptions
                   }"
-              :items="schools"
               :loading="loadingTable"
-              :server-items-length="totalSchools"
               class="elevation-1"
               hide-default-header
               mobile-breakpoint="0"
@@ -128,7 +128,7 @@
                 </v-col>
               </v-row>
             </template>
-          </v-data-table>
+          </v-data-table-server>
         </v-col>
       </v-row>
     </div>
@@ -295,7 +295,6 @@ export default {
           this.schools.push(school);
         }
         this.totalSchools = response.data.totalElements;
-
       }).catch(error => {
         //to do add the alert framework for error or success
         console.error(error);
@@ -364,6 +363,7 @@ export default {
       this.getSchoolList();
     },
     searchButtonClick() {
+      console.log('This ' + this.pageSize);
       this.resetPageNumber();
       this.getSchoolList();
     },
