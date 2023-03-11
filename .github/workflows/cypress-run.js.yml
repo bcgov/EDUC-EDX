@@ -1,0 +1,29 @@
+name: Run Cypress Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    # Cypress Docker image with Chrome v91
+    # and Firefox v89 pre-installed
+    container: cypress/browsers:node14.19.0-chrome100-ff99-edge
+    steps:
+      - uses: actions/checkout@v1
+      - name: cypress.env.json
+        run: |
+              echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+      - uses: cypress-io/github-action@v4
+        with:
+          browser: chrome
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
