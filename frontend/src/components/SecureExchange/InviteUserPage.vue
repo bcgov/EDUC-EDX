@@ -37,14 +37,6 @@
                                         maxlength="255"
                                         :hint="emailHint"
                           ></v-text-field>
-                          <v-text-field id="newUserInstituteType"
-                                        :label="instituteTypeLabel"
-                                        v-model="instituteNameAndCode"
-                                        variant="underlined"
-                                        :disabled=true
-                                        class="pt-0"
-                                        :rules="requiredRules"
-                          ></v-text-field>
                           <v-select
                             id="instituteNewUserRolesSelect"
                             v-model="edxActivationRoleCodes"

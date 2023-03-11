@@ -163,7 +163,7 @@
                   <span style="color: grey">Grades Offered</span>
                 </v-col>
               </v-row>
-              <v-row no-gutters class="pt-7">
+              <v-row no-gutters :class="editing ? 'pt-7': 'pt-2'">
                 <v-col cols="10" class="d-flex justify-start">
                   <span class="ministryLine" style="color: black">{{ getGradesOffered(school.grades) }}</span>
                 </v-col>
