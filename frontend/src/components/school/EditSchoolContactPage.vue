@@ -256,7 +256,7 @@ export default {
   methods: {
     async saveSchoolContact() {
       this.processing = true;
-      this.validateEditContactForm();
+      this.validateForm();
       this.editContact.schoolID = this.schoolID;
 
       if(this.editContact.effectiveDateMoment) {

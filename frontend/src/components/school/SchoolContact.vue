@@ -126,6 +126,6 @@ export default {
 .schoolContactCard { position: relative; }
 .schoolContactCard .date-container {
   position: absolute;
-  bottom: 1rem; right: 1rem;
+  bottom: 1rem; left: 1rem;
 }
 </style>
