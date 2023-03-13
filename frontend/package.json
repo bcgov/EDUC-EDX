@@ -83,7 +83,7 @@
     },
     "parser": "vue-eslint-parser",
     "parserOptions": {
-      "ecmaVersion": 2020,
+      "ecmaVersion": 2022,
       "sourceType": "module"
     },
     "rules": {
@@ -97,6 +97,12 @@
       "eol-last": [
         "error",
         "always"
+      ],
+      "selector-pseudo-element-no-unknown": [
+        true,
+        {
+          "ignorePseudoClasses": ["deep"]
+        }
       ],
       "indent": [
         "error",
