@@ -1,123 +1,202 @@
 <template>
-  <v-container class="containerSetup" fluid>
-    <Spinner flat v-if="loadingSchools"/>
+  <v-container
+    class="containerSetup"
+    fluid
+  >
+    <Spinner
+      v-if="loadingSchools"
+      flat
+    />
     <div v-else>
       <v-row>
-      <v-col class="mt-1 d-flex justify-start">
-        <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-        <a class="ml-1" @click="backButtonClick">Return to Dashboard</a>
-      </v-col>
+        <v-col class="mt-1 d-flex justify-start">
+          <v-icon
+            small
+            color="#1976d2"
+          >
+            mdi-arrow-left
+          </v-icon>
+          <a
+            class="ml-1"
+            @click="backButtonClick"
+          >Return to Dashboard</a>
+        </v-col>
       </v-row>
-      <v-row style="background: rgb(235, 237, 239);border-radius: 8px;" class="px-3 pt-4">
-        <v-col cols="12" md="5" class="d-flex justify-start">
+      <v-row
+        style="background: rgb(235, 237, 239);border-radius: 8px;"
+        class="px-3 pt-4"
+      >
+        <v-col
+          cols="12"
+          md="5"
+          class="d-flex justify-start"
+        >
           <v-autocomplete
             id="name-text-field"
+            v-model="schoolCodeNameFilter"
             label="School Code & Name"
             variant="underlined"
             item-value="schoolID"
             item-title="schoolCodeName"
             :items="schoolSearchNames"
-            v-model="schoolCodeNameFilter"
-            clearable>
-          </v-autocomplete>
+            clearable
+          />
         </v-col>
-        <v-col cols="12" md="2" class="d-flex justify-start">
+        <v-col
+          cols="12"
+          md="2"
+          class="d-flex justify-start"
+        >
           <v-select
             id="status-select-field"
-            clearable
             v-model="schoolStatusFilter"
+            clearable
             :items="schoolStatus"
             item-title="name"
             item-value="code"
             label="Status"
             variant="underlined"
             :menu-props="{
-                closeOnClick: true,
-                closeOnContentClick: true,
+              closeOnClick: true,
+              closeOnContentClick: true,
             }"
           >
-            <template v-slot:selection="{ item, index }">
+            <template #selection="{ item, index }">
               {{ item.title }}
             </template>
 
-            <template v-slot:item="{ item, index }">
-              <v-list-item v-on:click="selectItem(item)">
-                <v-icon :color="getStatusColor(item.title)" icon="mdi-circle-medium">
-                </v-icon>
+            <template #item="{ item, index }">
+              <v-list-item @click="selectItem(item)">
+                <v-icon
+                  :color="getStatusColor(item.title)"
+                  icon="mdi-circle-medium"
+                />
                 <span>{{ item.title }}</span>
               </v-list-item>
             </template>
           </v-select>
-
         </v-col>
-        <v-col cols="12" md="3" class="d-flex justify-start">
+        <v-col
+          cols="12"
+          md="3"
+          class="d-flex justify-start"
+        >
           <v-select
             id="status-select-field"
+            v-model="schoolFacilityTypeFilter"
             clearable
             variant="underlined"
             :items="schoolFacilityTypes"
-            v-model="schoolFacilityTypeFilter"
             item-title="label"
-            item-value="facilityTypeCode" label="Facility Type"></v-select>
+            item-value="facilityTypeCode"
+            label="Facility Type"
+          />
         </v-col>
-        <v-col cols="12" md="2" class="mt-2 d-flex justify-end">
-          <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
-          <PrimaryButton class="ml-3" width="8em" id="user-clear-button" text="Search" :clickAction="searchButtonClick"
-                         :disabled="!searchEnabled()"/>
+        <v-col
+          cols="12"
+          md="2"
+          class="mt-2 d-flex justify-end"
+        >
+          <PrimaryButton
+            id="user-search-button"
+            text="Clear"
+            secondary
+            :click-action="clearButtonClick"
+          />
+          <PrimaryButton
+            id="user-clear-button"
+            class="ml-3"
+            width="8em"
+            text="Search"
+            :click-action="searchButtonClick"
+            :disabled="!searchEnabled()"
+          />
         </v-col>
       </v-row>
       <v-row>
         <v-col>
           <v-data-table-server
-              v-model:items-per-page="pageSize"
-              v-model:page="pageNumber"
-              v-model:items="schools"
-              v-model:items-length="totalSchools"
-              :footer-props="{
-                    'items-per-page-options': itemsPerPageOptions
-                  }"
-              :loading="loadingTable"
-              class="elevation-1"
-              hide-default-header
-              mobile-breakpoint="0"
+            v-model:items-per-page="pageSize"
+            v-model:page="pageNumber"
+            v-model:items="schools"
+            v-model:items-length="totalSchools"
+            :footer-props="{
+              'items-per-page-options': itemsPerPageOptions
+            }"
+            :loading="loadingTable"
+            class="elevation-1"
+            hide-default-header
+            mobile-breakpoint="0"
           >
-            <template v-slot:no-data>
+            <template #no-data>
               <v-row no-gutters>
                 <v-col class="d-flex justify-center">
                   There are no schools.
                 </v-col>
               </v-row>
             </template>
-            <template v-slot:item="{ item, index }">
-              <v-row no-gutters class="hoverTable pt-1"  @click="openSchool(item.value.schoolId)" style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);">
+            <template #item="{ item, index }">
+              <v-row
+                no-gutters
+                class="hoverTable pt-1"
+                style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
+                @click="openSchool(item.value.schoolId)"
+              >
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
-                  <v-row no-gutters class="mb-n1">
+                  <v-row
+                    no-gutters
+                    class="mb-n1"
+                  >
                     <v-col cols="6">
                       <span class="subjectHeading">{{ item.value.mincode }} - {{ item.value.displayName }}</span>
                     </v-col>
-                    <v-col cols="2" class="ml-n8">
-                      <v-icon class="ml-0 mb-1" :color="getStatusColorAuthorityOrSchool(item.value.status)" right dark>
+                    <v-col
+                      cols="2"
+                      class="ml-n8"
+                    >
+                      <v-icon
+                        class="ml-0 mb-1"
+                        :color="getStatusColorAuthorityOrSchool(item.value.status)"
+                        right
+                        dark
+                      >
                         mdi-circle-medium
                       </v-icon>
                       <span class="statusCodeLabel">{{ item.value.status }}</span>
                     </v-col>
                     <v-col class="d-flex ml-n8">
-                      <v-icon class="mb-3 mr-1" aria-hidden="false">
+                      <v-icon
+                        class="mb-3 mr-1"
+                        aria-hidden="false"
+                      >
                         mdi-account-outline
                       </v-icon>
-                      <span class="principalName statusCodeLabel" style="color: black">{{item.value.principalsName}}</span>
+                      <span
+                        class="principalName statusCodeLabel"
+                        style="color: black"
+                      >{{ item.value.principalsName }}</span>
                     </v-col>
-                    <v-col class="d-flex justify-end mr-4" cols="1">
+                    <v-col
+                      class="d-flex justify-end mr-4"
+                      cols="1"
+                    >
                       <v-tooltip bottom>
-                        <template v-slot:activator="{ props }">
-                          <v-btn color="#003366"
-                                 outlined
-                                 @click.native.stop="openSchoolContacts(item.value.schoolId)"
-                                 class="schoolContactsButton mt-0 pt-0 filterButton"
-                                 style="text-transform: initial"
-                                 v-bind="props"
+                        <template #activator="{ props }">
+                          <v-btn
+                            color="#003366"
+                            outlined
+                            class="schoolContactsButton mt-0 pt-0 filterButton"
+                            style="text-transform: initial"
+                            v-bind="props"
+                            @click.stop.prevent="openSchoolContacts(item.value.schoolId)"
                           >
-                            <v-icon color="white" style="margin-top: 0.07em" dark>mdi-account-multiple-outline</v-icon>
+                            <v-icon
+                              color="white"
+                              style="margin-top: 0.07em"
+                              dark
+                            >
+                              mdi-account-multiple-outline
+                            </v-icon>
                           </v-btn>
                         </template>
                         <span>View Contacts</span>
@@ -126,18 +205,33 @@
                   </v-row>
                   <v-row no-gutters>
                     <v-col cols="6">
-                      <span class="ministryLine" style="color: black">{{
-                          item.value.schoolCategory
-                        }} | {{ item.value.facilityType }}</span>
+                      <span
+                        class="ministryLine"
+                        style="color: black"
+                      >{{
+                        item.value.schoolCategory
+                      }} | {{ item.value.facilityType }}</span>
                     </v-col>
-                    <v-col cols="2" class="ml-n8">
-                      <v-icon class="mb-1" aria-hidden="false">
+                    <v-col
+                      cols="2"
+                      class="ml-n8"
+                    >
+                      <v-icon
+                        class="mb-1"
+                        aria-hidden="false"
+                      >
                         mdi-phone-outline
                       </v-icon>
                       <span class="statusCodeLabel">{{ formatPhoneNumber(item.value.phoneNumber) }}</span>
                     </v-col>
-                    <v-col cols="4" class="d-flex ml-n8">
-                      <v-icon class="ml-0 mr-1 mb-1" aria-hidden="false">
+                    <v-col
+                      cols="4"
+                      class="d-flex ml-n8"
+                    >
+                      <v-icon
+                        class="ml-0 mr-1 mb-1"
+                        aria-hidden="false"
+                      >
                         mdi-at
                       </v-icon>
                       <span class="statusCodeLabel centerSpan">{{ item.value.email }}</span>
@@ -171,10 +265,10 @@ import {edxStore} from '../../store/modules/edx';
 
 export default {
   name: 'SchoolListPage',
-  mixins: [alertMixin],
   components: {
     PrimaryButton,Spinner
   },
+  mixins: [alertMixin],
   data() {
     return {
       statusRadioGroup: 'statusFilterActive',
@@ -218,7 +312,6 @@ export default {
     ...mapState(appStore, ['schoolsMap']),
     ...mapState(instituteStore, ['facilityTypeCodes']),
     ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
-
     getSheetWidth(){
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -228,6 +321,14 @@ export default {
         return 30;
       }
     },
+  },
+  watch: {
+    pageSize() {
+      this.getSchoolList();
+    },
+    pageNumber() {
+      this.getSchoolList();
+    }
   },
   created() {
     edxStore().getMinistryTeams();
@@ -400,50 +501,11 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'home'});
     },
-  },
-  watch: {
-    pageSize() {
-      this.getSchoolList();
-    },
-    pageNumber() {
-      this.getSchoolList();
-    }
   }
 };
 </script>
 
 <style scoped>
-
-.sheetHeader{
-  background-color: #003366;
-  color: white;
-  font-size: medium !important;
-  font-weight: bolder !important;
-}
-
-.tableRow {
-  cursor: pointer;
-}
-
-.unread {
-  font-weight: bold;
-}
-
-.v-data-table >>> .v-data-table__wrapper {
-  overflow-x: hidden;
-}
-
-.filterButton.v-btn--outlined {
-  border: thin solid #003366 !important;
-}
-
-.v-radio >>> .v-icon {
-  color: #003366;
-}
-
-.activeRadio {
-  color: #003366;
-}
 
 .subjectHeading {
   font-size: large;
@@ -460,26 +522,14 @@ export default {
   font-size: large;
 }
 
-.v-dialog__content >>> .v-bottom-sheet {
-  width: 30% !important;
-}
-
 .centerSpan {
   display: inline-flex;
   align-items: center;
 }
 
-.v-expansion-panel-header:not(.v-expansion-panel-header--mousedown):focus::before {
-  display: none;
-}
-
 .hoverTable:hover{
   background-color: #e8e8e8;
   cursor: pointer;
-}
-
-.filterButton.v-btn--outlined {
-  border: thin solid #ebedef;
 }
 
 @media screen and (max-width: 801px){
@@ -493,11 +543,6 @@ export default {
 
   .ministryLine{
     font-size: inherit;
-  }
-}
-@media screen and (max-width: 950px){
-  .v-dialog__content /deep/ .v-bottom-sheet {
-    width: 60% !important;
   }
 }
 
