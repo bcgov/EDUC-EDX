@@ -68,6 +68,7 @@
         style="width: 50%; height: max-content; left: 25%;"
         no-click-animation
         scrollable
+        temporary
         persistent
     >
       <v-card

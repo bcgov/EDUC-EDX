@@ -76,6 +76,7 @@
           style="width: 50%; height: max-content; left: 25%;"
           location="bottom"
           scrollable
+          temporary
           persistent
         >
           <v-card
