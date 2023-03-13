@@ -7,7 +7,7 @@
             <v-row class="pl-4">
               <v-col cols="4">
                 <div v-if="unreadExchangeCount > 0">
-                  <v-badge bordered top color="rgb(0, 51, 102)" circle offset-x="23" offset-y="30">
+                  <v-badge bordered top color="rgb(0, 51, 102)" circle offset-x="10" offset-y="18">
                     <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
                       mdi-email-outline
                     </v-icon>
