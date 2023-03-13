@@ -3,7 +3,7 @@
     <v-card-title class="pb-8"><h3>Document Upload</h3></v-card-title>
     <v-card-text>
       <v-form
-          ref="form"
+          ref="documentForm"
           v-model="validForm"
       >
         <v-row style="min-width: 50em">
@@ -86,10 +86,10 @@ export default {
       requiredRules: [v => !!v || 'Required'],
       fileRules: [],
       filesAccept: '',
-      validForm: true,
+      validForm: false,
       fileInputError: [],
       documentTypeCode: null,
-      uploadFileValue: ref([]),
+      uploadFileValue: null,
       active: false,
       buttonKey: 0,
       alert: false,
@@ -107,15 +107,12 @@ export default {
     await edxStore().getSecureExchangeDocumentTypes();
     await edxStore().getFileRequirements();
 
-    this.getFileRules().catch(e => {
-      console.log(e);
-      this.setErrorAlert('Error obtaining file requirements occurred. You can upload files later.');
-    });
-  }
-  ,
+    this.getFileRules();
+    await this.validateForm();
+  },
   computed: {
     ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
-    dataReady () {
+    dataReady() {
       return this.validForm && this.uploadFileValue;
     },
     documentTypes() {
@@ -132,13 +129,14 @@ export default {
       this.$emit('close:form');
     },
     resetForm() {
-      this.$refs.form.reset();
+      this.$refs.documentForm.reset();
       this.fileInputError = [];
       this.uploadFileValue = null;
       this.alert = false;
       this.active = false;
       this.alertMessage = null;
       this.documentTypeCode = null;
+      this.validateForm();
     },
     setSuccessAlert() {
       this.alertMessage = 'File upload successful.';
@@ -158,9 +156,6 @@ export default {
         this.fileInputError = [];
         this.alert = false;
       }
-    },
-    validate() {
-      this.$refs.form.validate();
     },
     submitRequest() {
       if(this.dataReady){
@@ -186,6 +181,10 @@ export default {
       this.active = false;
       this.setErrorAlert('Sorry, an unexpected error seems to have occurred. Try uploading your files later.');
     },
+    async validateForm() {
+      const valid = await this.$refs.documentForm.validate();
+      this.isFormValid = valid.valid;
+    },
     async uploadFile(env) {
       let document = {
         fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
@@ -208,14 +207,20 @@ export default {
         return extensions.join(', ');
       }
     },
-    async getFileRules() {
+    getFileRules() {
       const maxSize = this.fileRequirements.maxSize;
       this.fileRules = [
         value => {
-          return !value || !value.length || value[0].size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`
+          if(value){
+            return true;
+          }
+          return 'Required';
         },
         value => {
-          return !value || !value.length || this.fileRequirements.extensions.includes(value[0].type) || `File formats should be ${this.fileFormats}.`
+          return !value || !value.length || value[0].size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`;
+        },
+        value => {
+          return !value || !value.length || this.fileRequirements.extensions.includes(value[0].type) || `File formats should be ${this.fileFormats}.`;
         }
       ];
       this.fileAccept = this.fileRequirements.extensions.join();

@@ -1,6 +1,5 @@
 <template>
   <v-card class="add-student">
-
     <v-alert
         id="addStudentAlert"
         dense
@@ -13,7 +12,7 @@
       {{ alertMessage }}
     </v-alert>
     <v-form
-        ref="form"
+        ref="studentForm"
         v-model="validForm"
     >
       <v-row>
@@ -22,7 +21,7 @@
                         clearable
                         variant="underlined"
                         v-model="penNumber"
-                        placeholder="Enter a Student's PEN"
+                        label="Student's PEN"
                         :rules="penRules"
                         maxlength="9"
                         counter="9"
@@ -89,13 +88,16 @@ export default {
       showStudentDetailsForMinistryStaff:false,
       penNumber: null,
       validForm: false,
-      penRules: [v => (!v || isValidPEN(v))],
+      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v))],
       studentExist: false,
       student: {},
       alert: false,
       alertMessage: null,
       alertType: null
     };
+  },
+  mounted() {
+    this.validateForm();
   },
   computed: {
     ...mapState(appStore, ['schoolsMap']),
@@ -117,7 +119,6 @@ export default {
       if(!newVal){
         this.$emit('updateAdditionalStudentAddWarning','');
       }
-
     },
     penNumber(newVal) {
       if (!(isValidPEN(newVal))) {
@@ -141,6 +142,10 @@ export default {
       this.alertMessage = alertMessage;
       this.alertType = 'bootstrap-info';
       this.alert = true;
+    },
+    async validateForm() {
+      const valid = this.$refs.studentForm.validate();
+      this.isFormValid = valid.valid;
     },
     searchStudentForGivenPEN() {
       this.isSearchingStudent = true;
@@ -190,12 +195,10 @@ export default {
       this.$emit('close:form');
     },
     resetForm() {
-      this.$refs.form.reset();
+      this.$refs.studentForm.reset();
       this.alert = false;
       this.alertMessage = null;
-    },
-    validate() {
-      this.$refs.form.validate();
+      this.validateForm();
     },
     addStudentToMessage() {
       let secureExchangeStudent = {
