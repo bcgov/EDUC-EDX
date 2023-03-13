@@ -24,6 +24,7 @@
                             :items="this.ministryTeams"
                             item-value="ministryOwnershipTeamId"
                             item-title="teamName"
+                            :rules="requiredRules"
                             label="To"
                             variant="underlined"
                             :menu-props="{
