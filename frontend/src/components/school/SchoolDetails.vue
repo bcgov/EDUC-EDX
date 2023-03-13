@@ -677,16 +677,16 @@ export default {
         }
       }
     },
-    getGradesOffered(rawGrades){
+    getGradesOffered(rawGrades) {
       let gradeList = [];
-      for(const grade of rawGrades){
-        gradeList.push(this.schoolGradeTypes.find((facility) => facility.schoolGradeCode === grade.schoolGradeCode).label.replaceAll('Grade ', ''));
-      }
-      let onlyNumbers = gradeList.filter(Number);
-      let onlyLetters = gradeList.filter(x => !onlyNumbers.includes(x));
 
-      onlyNumbers = onlyNumbers.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-      gradeList = onlyNumbers.concat(onlyLetters);
+      for (const grade of this.schoolGradeTypes) {
+        let schoolGradeType = rawGrades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode);
+        if (schoolGradeType) {
+          gradeList.push(grade.label.replaceAll('Grade ', ''));
+        }
+      }
+
       return gradeList.toString().replace(/,/g, ', ');
     },
     getSchoolOrganization(school){
