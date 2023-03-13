@@ -111,7 +111,7 @@ export function getStatusAuthorityOrSchool(authorityOrSchool) {
 
   if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate === null) {
     return 'Open';
-  } else if (parsedOpenDate.isBefore(currentDate)) {
+  } else if (parsedOpenDate.isAfter(currentDate)) {
     return 'Opening';
   } else if (parsedOpenDate.isBefore(currentDate) && parsedCloseDate.isAfter(currentDate)) {
     return 'Closing';

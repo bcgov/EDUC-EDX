@@ -25,12 +25,30 @@
           <v-select
             id="status-select-field"
             clearable
-            :items="schoolStatus"
             v-model="schoolStatusFilter"
-            variant="underlined"
+            :items="schoolStatus"
             item-title="name"
             item-value="code"
-            label="Status"></v-select>
+            label="Status"
+            variant="underlined"
+            :menu-props="{
+                closeOnClick: true,
+                closeOnContentClick: true,
+            }"
+          >
+            <template v-slot:selection="{ item, index }">
+              {{ item.title }}
+            </template>
+
+            <template v-slot:item="{ item, index }">
+              <v-list-item v-on:click="selectItem(item)">
+                <v-icon :color="getStatusColor(item.title)" icon="mdi-circle-medium">
+                </v-icon>
+                <span>{{ item.title }}</span>
+              </v-list-item>
+            </template>
+          </v-select>
+
         </v-col>
         <v-col cols="12" md="3" class="d-flex justify-start">
           <v-select
@@ -159,7 +177,6 @@ export default {
   },
   data() {
     return {
-      statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
       headers: [
@@ -273,7 +290,7 @@ export default {
       if(!this.schoolStatusFilter){
         this.headerSearchParams.status = 'NotClosed';
       }else{
-        this.headerSearchParams.status = this.schoolStatusFilter;
+        this.headerSearchParams.status = this.schoolStatusFilter[0].code;
       }
 
       this.headerSearchParams.type = this.schoolFacilityTypeFilter;
@@ -351,6 +368,20 @@ export default {
       return (this.schoolCodeNameFilter !== '' && this.schoolCodeNameFilter !== null) || (this.schoolStatusFilter !== '' && this.schoolStatusFilter !== null)
           || this.schoolFacilityTypeFilter !== '' && this.schoolFacilityTypeFilter !== null;
     },
+    getStatusColor(status) {
+      if (status === 'Open') {
+        return 'green';
+      } else if (status === 'Opening') {
+        return 'blue';
+      } else if (status === 'Closing') {
+        return 'red';
+      }
+    },
+    selectItem(item){
+
+      this.schoolStatusFilter = [];
+      this.schoolStatusFilter.push(item.raw);
+    },
     clearButtonClick() {
       this.schoolCodeNameFilter = null;
       this.schoolStatusFilter = null;
@@ -363,7 +394,6 @@ export default {
       this.getSchoolList();
     },
     searchButtonClick() {
-      console.log('This ' + this.pageSize);
       this.resetPageNumber();
       this.getSchoolList();
     },
