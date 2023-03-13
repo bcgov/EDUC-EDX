@@ -6,8 +6,7 @@
   "scripts": {
     "serve": "vite --host",
     "build": "vite build",
-    "lint:fix": "vue-cli-service lint --fix",
-    "lint": "vue-cli-service lint --no-fix"
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.2",
@@ -84,7 +83,7 @@
     },
     "parser": "vue-eslint-parser",
     "parserOptions": {
-      "ecmaVersion": 9,
+      "ecmaVersion": 2020,
       "sourceType": "module"
     },
     "rules": {
