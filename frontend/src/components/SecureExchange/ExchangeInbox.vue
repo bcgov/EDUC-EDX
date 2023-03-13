@@ -189,16 +189,19 @@
 
         <v-row>
           <v-col>
-            <v-data-table
-                :items-per-page.sync="pageSize"
-                :page.sync="pageNumber"
+            <v-data-table-server
+                v-model:items-per-page="pageSize"
+                v-model:page="pageNumber"
+                v-model:items="requests"
+                v-model:items-length="totalRequests"
                 :footer-props="{
-                      'items-per-page-options': itemsPerPageOptions
-                    }"
-                :items="requests"
+                    'items-per-page-options': itemsPerPageOptions
+                  }"
                 :loading="loadingTable"
-                :server-items-length="totalRequests"
                 class="elevation-1"
+                hide-default-header
+                mobile-breakpoint="0"
+
             >
               <template v-slot:no-data>
                 <v-row no-gutters>
@@ -243,7 +246,7 @@
                     </v-col>
                   </v-row>
               </template>
-            </v-data-table>
+            </v-data-table-server>
           </v-col>
         </v-row>
       </v-col>
@@ -290,11 +293,13 @@ import {appStore} from '../../store/modules/app';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import moment from 'moment';
+import Spinner from '../common/Spinner.vue';
 
 export default {
   name: 'ExchangeInbox',
   mixins: [alertMixin],
   components: {
+    Spinner,
     PrimaryButton,
     NewMessagePage,
     VueDatePicker
