@@ -6,10 +6,10 @@
           <v-row no-gutters>
             <v-col>
               <v-row no-gutters>
-                <v-col cols="10">
-                  <strong>{{ `${user.firstName} ${user.lastName}` }}</strong>
+                <v-col cols="9">
+                  <span style="white-space: break-spaces"><strong>{{ `${user.firstName} ${user.lastName}` }}</strong></span>
                 </v-col>
-                <v-col cols="2" class="d-flex justify-end" v-if="isNotSameEdxUser()">
+                <v-col cols="3" class="d-flex justify-end" v-if="isNotSameEdxUser()">
                   <v-btn :id="`user-edit-button-${user.edxUserID}`"
                          title="Edit"
                          color="white"
