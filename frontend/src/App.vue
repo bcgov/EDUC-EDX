@@ -1,14 +1,20 @@
 <template>
   <v-app id="app">
-    <MsieBanner v-if="isIE"/>
-    <Header/>
-    <SnackBar></SnackBar>
-    <NavBar v-if="pageTitle && authStore().isAuthenticated" :title="pageTitle"/>
-    <v-main fluid class="align-start">
-      <ModalIdle v-if="authStore().isAuthenticated"/>
-      <router-view/>
+    <MsieBanner v-if="isIE" />
+    <Header />
+    <SnackBar />
+    <NavBar
+      v-if="pageTitle && authStore().isAuthenticated"
+      :title="pageTitle"
+    />
+    <v-main
+      fluid
+      class="align-start"
+    >
+      <ModalIdle v-if="authStore().isAuthenticated" />
+      <router-view />
     </v-main>
-    <Footer/>
+    <Footer />
   </v-app>
 </template>
 
@@ -26,7 +32,7 @@ import SnackBar from './components/util/SnackBar.vue';
 import NavBar from './components/util/NavBar.vue';
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     Header,
     Footer,

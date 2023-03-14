@@ -1,42 +1,68 @@
 <template>
-    <v-stepper class="mainCard" v-model="stepCount" v-if="dataReady">
-      <v-row align-content="center" class="flex-grow-0 pb-5">
-        <v-card style="margin-right: 1.4rem;margin-left: 1.4rem" height="100%" width="100%" elevation=0 color="#036"
-                class="white--text">
-          <v-card-title class="py-3 pl-5"><h1>{{titles[stepCount-1]}}</h1></v-card-title>
-        </v-card>
-      </v-row>
+  <v-stepper
+    v-if="dataReady"
+    v-model="stepCount"
+    class="mainCard"
+  >
+    <v-row
+      align-content="center"
+      class="flex-grow-0 pb-5"
+    >
+      <v-card
+        style="margin-right: 1.4rem;margin-left: 1.4rem"
+        height="100%"
+        width="100%"
+        elevation="0"
+        color="#036"
+        class="white--text"
+      >
+        <v-card-title class="py-3 pl-5">
+          <h1>{{ titles[stepCount-1] }}</h1>
+        </v-card-title>
+      </v-card>
+    </v-row>
 
-      <v-stepper-header class="mx-3">
-        <template v-for="n in steps">
-          <v-stepper-step
-            :key="`${n}-step`"
-            :complete="stepCount > n"
-            :step="n"
-          >
-            Step {{ n }}
-          </v-stepper-step>
+    <v-stepper-header class="mx-3">
+      <template
+        v-for="n in steps"
+        :key="`${n}-step`"
+      >
+        <v-stepper-step
+          :complete="stepCount > n"
+          :step="n"
+        >
+          Step {{ n }}
+        </v-stepper-step>
 
-          <v-divider
-            v-if="n !== steps"
-            :key="n"
-          ></v-divider>
-        </template>
-      </v-stepper-header>
+        <v-divider
+          v-if="n !== steps"
+          :key="n"
+        />
+      </template>
+    </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content v-for="index in 4" :step="index" :key="index" class="px-0">
-          <router-view v-if="stepCount===index" @next="nextStep" @back="previousStep"></router-view>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+    <v-stepper-items>
+      <v-stepper-content
+        v-for="index in 4"
+        :key="index"
+        :step="index"
+        class="px-0"
+      >
+        <router-view
+          v-if="stepCount===index"
+          @next="nextStep"
+          @back="previousStep"
+        />
+      </v-stepper-content>
+    </v-stepper-items>
+  </v-stepper>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'requestStepper',
+  name: 'RequestStepper',
   props: {
     steps: {
       type: Number,

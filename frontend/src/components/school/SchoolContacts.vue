@@ -1,78 +1,131 @@
 <template>
-  <v-container class="containerSetup" fluid>
+  <v-container
+    class="containerSetup"
+    fluid
+  >
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
-            class="mt-16"
-            :size="70"
-            :width="7"
-            color="primary"
-            indeterminate
-            :active="loading"/>
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="loading"
+        />
       </v-col>
     </v-row>
     <template v-if="!loading">
       <v-row>
         <v-col class="mt-1 d-flex justify-start">
-          <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-          <a v-if="isDistrictUser()" class="ml-1" @click="backButtonClick">Return to School List</a>
-          <a v-else class="ml-1" @click="backButtonClick">Return to Dashboard</a>
+          <v-icon
+            small
+            color="#1976d2"
+          >
+            mdi-arrow-left
+          </v-icon>
+          <a
+            v-if="isDistrictUser()"
+            class="ml-1"
+            @click="backButtonClick"
+          >Return to School List</a>
+          <a
+            v-else
+            class="ml-1"
+            @click="backButtonClick"
+          >Return to Dashboard</a>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" class="d-flex justify-start">
+        <v-col
+          cols="12"
+          class="d-flex justify-start"
+        >
           <v-row no-gutters>
             <v-col cols="12">
-              <h2 class="subjectHeading">{{school.mincode}} - {{school.displayName}}</h2>
+              <h2 class="subjectHeading">
+                {{ school.mincode }} - {{ school.displayName }}
+              </h2>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
       <v-row cols="2">
         <v-col class="d-flex justify-start">
-          <v-chip variant="elevated" class="text-black mr-3" color="#A9D18E">
+          <v-chip
+            variant="elevated"
+            class="text-black mr-3"
+            color="#A9D18E"
+          >
             Active
           </v-chip>
-          <v-chip variant="elevated" class="text-black mr-3" color="#9DC3E6">
+          <v-chip
+            variant="elevated"
+            class="text-black mr-3"
+            color="#9DC3E6"
+          >
             Pending Start Date
           </v-chip>
-          <v-chip variant="elevated" class="text-black" color="#F4B183">
+          <v-chip
+            variant="elevated"
+            class="text-black"
+            color="#F4B183"
+          >
             Pending End Date
           </v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton class="mr-2 mb-3"
-                         secondary id="viewDetailsButton"
-                         icon="mdi-domain"
-                         text="View School Details"
-                         :clickAction="redirectToSchoolDetails"/>
-          <PrimaryButton v-if="canEditSchoolContacts()"
-                         id="addSchoolContactBtn"
-                         class="mr-0 mb-3"
-                         icon="mdi-plus-thick"
-                         text="New Contact"
-                         :clickAction="openNewContactSheet"/>
+          <PrimaryButton
+            id="viewDetailsButton"
+            class="mr-2 mb-3"
+            secondary
+            icon="mdi-domain"
+            text="View School Details"
+            :click-action="redirectToSchoolDetails"
+          />
+          <PrimaryButton
+            v-if="canEditSchoolContacts()"
+            id="addSchoolContactBtn"
+            class="mr-0 mb-3"
+            icon="mdi-plus-thick"
+            text="New Contact"
+            :click-action="openNewContactSheet"
+          />
         </v-col>
       </v-row>
-      <div v-for="schoolContactType in schoolContactTypes" :key="schoolContactType.code">
+      <div
+        v-for="schoolContactType in schoolContactTypes"
+        :key="schoolContactType.code"
+      >
         <v-row>
           <v-col>
-            <h2 style="color:#1A5A96">{{schoolContactType.label}}</h2>
+            <h2 style="color:#1A5A96">
+              {{ schoolContactType.label }}
+            </h2>
           </v-col>
         </v-row>
-        <v-row cols="2" v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)">
-          <v-col cols="5"
-                 lg="4"
-                 v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
-                 :key="contact.schoolId">
+        <v-row
+          v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)"
+          cols="2"
+        >
+          <v-col
+            v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
+            :key="contact.schoolId"
+            cols="5"
+            lg="4"
+          >
             <SchoolContact
-              :handleOpenEditor="() => openEditContactSheet(contact)"
+              :handle-open-editor="() => openEditContactSheet(contact)"
               :contact="contact"
-              :schoolID="$route.params.schoolID"
-              :canEditSchoolContact="canEditSchoolContacts()"/>
+              :school-i-d="$route.params.schoolID"
+              :can-edit-school-contact="canEditSchoolContacts()"
+            />
           </v-col>
         </v-row>
-        <v-row cols="2" v-else>
+        <v-row
+          v-else
+          cols="2"
+        >
           <v-col>
             <p>No contacts of this type have been listed.</p>
           </v-col>
@@ -81,37 +134,41 @@
     </template>
     <!--    new contact sheet -->
     <v-navigation-drawer
-        v-model="newContactSheet"
-        inset
-        location="bottom"
-        temporary
-        style="width: 50%; height: max-content; left: 25%;"
-        no-click-animation
-        scrollable
-        persistent>
+      v-model="newContactSheet"
+      inset
+      location="bottom"
+      temporary
+      style="width: 50%; height: max-content; left: 25%;"
+      no-click-animation
+      scrollable
+      persistent
+    >
       <NewSchoolContactPage
-          v-if="newContactSheet"
-          :schoolContactTypes="this.schoolContactTypes"
-          :schoolID="this.$route.params.schoolID"
-          @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
-          @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"/>
+        v-if="newContactSheet"
+        :school-contact-types="schoolContactTypes"
+        :school-i-d="$route.params.schoolID"
+        @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
+        @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"
+      />
     </v-navigation-drawer>
     <v-navigation-drawer
-        v-model="editContactSheet"
-        inset
-        location="bottom"
-        temporary
-        no-click-animation
-        scrollable
-        style="width: 50%; height: max-content; left: 25%;"
-        persistent>
+      v-model="editContactSheet"
+      inset
+      location="bottom"
+      temporary
+      no-click-animation
+      scrollable
+      style="width: 50%; height: max-content; left: 25%;"
+      persistent
+    >
       <EditSchoolContactPage
-          v-if="editContactSheet"
-          :contact="editContact"
-          :schoolContactTypes="this.schoolContactTypes"
-          :schoolID="this.$route.params.schoolID"
-          :closeHandler="() => editContactSheet = false"
-          :onSuccessHandler="() => contactEditSuccess()"/>
+        v-if="editContactSheet"
+        :contact="editContact"
+        :school-contact-types="schoolContactTypes"
+        :school-i-d="$route.params.schoolID"
+        :close-handler="() => editContactSheet = false"
+        :on-success-handler="() => contactEditSuccess()"
+      />
     </v-navigation-drawer>
   </v-container>
 </template>
@@ -140,13 +197,13 @@ function isExpired(contact) {
 
 export default {
   name: 'SchoolContactsPage',
-  mixins: [alertMixin],
   components: {
     PrimaryButton,
     NewSchoolContactPage,
     EditSchoolContactPage,
     SchoolContact
   },
+  mixins: [alertMixin],
   props: {
     schoolID: {
       type: String,
@@ -239,7 +296,7 @@ export default {
       return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
     },
     openNewContactSheet(){
-      this.newContactSheet = !this.newContactSheet
+      this.newContactSheet = !this.newContactSheet;
     },
     contactEditSuccess() {
       this.getThisSchoolsContacts();

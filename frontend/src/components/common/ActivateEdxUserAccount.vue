@@ -1,24 +1,31 @@
 <template>
   <v-container fluid>
-    <v-form :disabled="isEdxUserActivationFormDisabled" ref="edxUserActivationForm" v-model="isValidForm">
-
+    <v-form
+      ref="edxUserActivationForm"
+      v-model="isValidForm"
+      :disabled="isEdxUserActivationFormDisabled"
+    >
       <v-row class="pt-2 d-flex justify-center">
-        <v-col cols="9" md="4">
+        <v-col
+          cols="9"
+          md="4"
+        >
           <v-row>
             <v-col class="pb-0">
               <span class="header-text"><strong>Activate EDX Account</strong></span>
             </v-col>
           </v-row>
-                      <v-snackbar id="activationSnackBar"
-                v-model="showActivationSnackBar"
-                elevation="24"
-                location="top"
-                centered
-                color="error"
-                transition="slide-y-transition"
-                >
-              {{activationErrorMessage}}
-            </v-snackbar>
+          <v-snackbar
+            id="activationSnackBar"
+            v-model="showActivationSnackBar"
+            elevation="24"
+            location="top"
+            centered
+            color="error"
+            transition="slide-y-transition"
+          >
+            {{ activationErrorMessage }}
+          </v-snackbar>
           <v-row>
             <v-col cols="12">
               <v-card color="#CED6E2">
@@ -27,14 +34,20 @@
                     mdi-information-outline
                   </v-icon>
                   To activate your Edx user account, you will need to enter the following:
-                  <br/>
-                  <v-icon class="pl-12">mdi-circle-small</v-icon>
-                  Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{instituteIdentifierLabel}}</strong>
-                  <br/>
-                  <v-icon class="pl-12">mdi-circle-small</v-icon>
+                  <br>
+                  <v-icon class="pl-12">
+                    mdi-circle-small
+                  </v-icon>
+                  Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{ instituteIdentifierLabel }}</strong>
+                  <br>
+                  <v-icon class="pl-12">
+                    mdi-circle-small
+                  </v-icon>
                   Your <strong>{{ instituteTypeLabel }}'s Primary Activation Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
-                  <br/>
-                  <v-icon class="pl-12">mdi-circle-small</v-icon>
+                  <br>
+                  <v-icon class="pl-12">
+                    mdi-circle-small
+                  </v-icon>
                   Your <strong>Personal Activation Code</strong> from your EDX invite email
                 </v-card-text>
               </v-card>
@@ -42,51 +55,53 @@
           </v-row>
           <v-row class="d-flex justify-center">
             <v-col cols="5">
-              <v-text-field id="instituteIdentifierTextField"
-                  v-model="instituteSpecificCode"
-                  :rules="instituteSpecificCodeRules && requiredRules"
-                  variant="underlined"
-                  :hint="createInstituteSpecificCodeHint"
-                  :label="createInstituteSpecificCodeLabel"
-              ></v-text-field>
-            </v-col>
-
-          </v-row>
-          <v-row class="d-flex justify-center">
-            <v-col cols="5">
               <v-text-field
-                  id="primaryEdxCodeTextField"
-                  :rules="requiredRules"
-                  variant="underlined"
-                  v-model="primaryEdxCode"
-                 :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
-                  :label="`${instituteTypeLabel}'s Primary Activation Code`"
-              >
-              </v-text-field>
+                id="instituteIdentifierTextField"
+                v-model="instituteSpecificCode"
+                :rules="instituteSpecificCodeRules && requiredRules"
+                variant="underlined"
+                :hint="createInstituteSpecificCodeHint"
+                :label="createInstituteSpecificCodeLabel"
+              />
             </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
             <v-col cols="5">
               <v-text-field
-                  id="personalActivationCodeTextField"
-                  :rules="requiredRules"
-                  variant="underlined"
-                  v-model="personalActivationCode"
-                  label="Personal Activation Code"
-                  hint="Please enter the personal activation code you have received in your EDX invite email"
-              ></v-text-field>
+                id="primaryEdxCodeTextField"
+                v-model="primaryEdxCode"
+                :rules="requiredRules"
+                variant="underlined"
+                :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
+                :label="`${instituteTypeLabel}'s Primary Activation Code`"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="d-flex justify-center">
+            <v-col cols="5">
+              <v-text-field
+                id="personalActivationCodeTextField"
+                v-model="personalActivationCode"
+                :rules="requiredRules"
+                variant="underlined"
+                label="Personal Activation Code"
+                hint="Please enter the personal activation code you have received in your EDX invite email"
+              />
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" class="d-flex justify-center">
+            <v-col
+              cols="12"
+              class="d-flex justify-center"
+            >
               <PrimaryButton
-                  :loading="submissionInProgress"
-                  :large-icon=true
-                  id="edxUserActivationSubmitBtn"
-                  text="Submit"
-                  :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
-                  :clickAction="activateEdxUser"
-              ></PrimaryButton>
+                id="edxUserActivationSubmitBtn"
+                :loading="submissionInProgress"
+                :large-icon="true"
+                text="Submit"
+                :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
+                :click-action="activateEdxUser"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -103,8 +118,8 @@ import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'ActivateEdxUserAccount.vue',
-  mixins: [alertMixin],
   components: {PrimaryButton},
+  mixins: [alertMixin],
   props:{
     instituteTypeLabel:{
       type:String,
@@ -118,9 +133,6 @@ export default {
       type:String,
       required:true
     },
-  },
-  mounted() {
-    this.validateForm();
   },
   data() {
     return {
@@ -150,6 +162,9 @@ export default {
       }
       return `${this.instituteTypeLabel} ${this.instituteIdentifierLabel}`;
     }
+  },
+  mounted() {
+    this.validateForm();
   },
   methods: {
     validateInstituteSpecificCode(v) {

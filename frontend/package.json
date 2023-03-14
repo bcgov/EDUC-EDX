@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vite --host",
     "build": "vite build",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --ext vue,js,ts,tsx src --fix"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.2",
@@ -99,7 +99,7 @@
         "always"
       ],
       "selector-pseudo-element-no-unknown": [
-        true,
+        0,
         {
           "ignorePseudoClasses": ["deep"]
         }

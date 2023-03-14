@@ -1,52 +1,106 @@
 <template>
-  <v-container class="containerSetup" fluid>
+  <v-container
+    class="containerSetup"
+    fluid
+  >
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
-            class="mt-16"
-            :size="70"
-            :width="7"
-            color="primary"
-            indeterminate
-            :active="loading"
-        ></v-progress-circular>
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="loading"
+        />
       </v-col>
     </v-row>
     <div style="width: 100%;">
-      <v-row class="pt-7"
-             :class="{'mr-0 ml-0': $vuetify.display.smAndDown, 'mr-3 ml-3': $vuetify.display.mdAndUp}">
+      <v-row
+        class="pt-7"
+        :class="{'mr-0 ml-0': $vuetify.display.smAndDown, 'mr-3 ml-3': $vuetify.display.mdAndUp}"
+      >
         <v-col cols="12 pt-0">
-          <PdfRenderer  :dialog="pdfRenderDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :document-id="this.documentId"></PdfRenderer>
-          <ImageRenderer  :dialog="imageRendererDialog" @closeDialog="closeDialog" :request-id="this.secureExchangeID" :image-id="this.imageId"></ImageRenderer>
+          <PdfRenderer
+            :dialog="pdfRenderDialog"
+            :request-id="secureExchangeID"
+            :document-id="documentId"
+            @closeDialog="closeDialog"
+          />
+          <ImageRenderer
+            :dialog="imageRendererDialog"
+            :request-id="secureExchangeID"
+            :image-id="imageId"
+            @closeDialog="closeDialog"
+          />
           <div v-if="!loading && secureExchange">
             <v-row>
               <v-col class="pb-0 pt-0 d-flex justify-start">
                 <v-row>
-                  <v-col cols="12" class="pb-0 pt-2 pr-0" style="text-align: left">
-                    <h2 id="messageDisplaySubjectHeading" class="subjectHeading">{{ secureExchange.subject }}</h2>
-                    <div id="messageDisplayMinistryOwnershipTeamName" class="ministryOwnershipTeamName">{{ secureExchange.ministryOwnershipTeamName }}</div>
-                    <div id="messageDisplayCreateDate" class="createDate" style="color: black">{{ secureExchange.createDate }}</div>
+                  <v-col
+                    cols="12"
+                    class="pb-0 pt-2 pr-0"
+                    style="text-align: left"
+                  >
+                    <h2
+                      id="messageDisplaySubjectHeading"
+                      class="subjectHeading"
+                    >
+                      {{ secureExchange.subject }}
+                    </h2>
+                    <div
+                      id="messageDisplayMinistryOwnershipTeamName"
+                      class="ministryOwnershipTeamName"
+                    >
+                      {{ secureExchange.ministryOwnershipTeamName }}
+                    </div>
+                    <div
+                      id="messageDisplayCreateDate"
+                      class="createDate"
+                      style="color: black"
+                    >
+                      {{ secureExchange.createDate }}
+                    </div>
                   </v-col>
                 </v-row>
               </v-col>
               <v-col class="pb-0 pt-0 d-flex justify-end">
                 <v-row>
                   <v-col class="pb-0 d-flex justify-end">
-                    <v-card variant="outlined" color="transparent" class="mr-5">
+                    <v-card
+                      variant="outlined"
+                      color="transparent"
+                      class="mr-5"
+                    >
                       <v-row no-gutters>
                         <v-col class="pb-0">
-                          <v-icon class="ml-n1" :color="getStatusColor(secureExchange.secureExchangeStatusCode)" dark>
+                          <v-icon
+                            class="ml-n1"
+                            :color="getStatusColor(secureExchange.secureExchangeStatusCode)"
+                            dark
+                          >
                             mdi-circle-medium
                           </v-icon>
-                          <span id="messageDisplayStatusCode" style="color: black" class="ml-n1">{{ secureExchange.secureExchangeStatusCode }}</span>
+                          <span
+                            id="messageDisplayStatusCode"
+                            style="color: black"
+                            class="ml-n1"
+                          >{{ secureExchange.secureExchangeStatusCode }}</span>
                         </v-col>
                       </v-row>
                       <v-row no-gutters>
                         <v-col>
-                          <v-icon color="grey darken-3" size="medium" dark>
+                          <v-icon
+                            color="grey darken-3"
+                            size="medium"
+                            dark
+                          >
                             mdi-pound
                           </v-icon>
-                          <span id="messageDisplaySequenceNumber" style="color: black">{{ secureExchange.sequenceNumber }}</span>
+                          <span
+                            id="messageDisplaySequenceNumber"
+                            style="color: black"
+                          >{{ secureExchange.sequenceNumber }}</span>
                         </v-col>
                       </v-row>
                     </v-card>
@@ -56,102 +110,219 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-7 d-flex justify-start">
-                <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-                <a class="ml-1" @click="backButtonClick">Return to Inbox</a>
+                <v-icon
+                  small
+                  color="#1976d2"
+                >
+                  mdi-arrow-left
+                </v-icon>
+                <a
+                  class="ml-1"
+                  @click="backButtonClick"
+                >Return to Inbox</a>
               </v-col>
               <v-col class="d-flex justify-end">
-                <v-btn :disabled="!isEditable()"   id="markAsButton" class="my-4" click.native="clickMarkAsButton" :loading="loadingReadStatus">
-                  <v-icon v-if="secureExchange.isReadByExchangeContact">mdi-email-outline</v-icon>
-                  <v-icon v-else>mdi-email-open-outline</v-icon>
-                  <span class="ml-1 markAsSpan">{{`MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
+                <v-btn
+                  id="markAsButton"
+                  :disabled="!isEditable()"
+                  class="my-4"
+                  click.native="clickMarkAsButton"
+                  :loading="loadingReadStatus"
+                >
+                  <v-icon v-if="secureExchange.isReadByExchangeContact">
+                    mdi-email-outline
+                  </v-icon>
+                  <v-icon v-else>
+                    mdi-email-open-outline
+                  </v-icon>
+                  <span class="ml-1 markAsSpan">{{ `MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
                 </v-btn>
               </v-col>
             </v-row>
-            <v-divider class="divider"></v-divider>
+            <v-divider class="divider" />
             <v-row>
               <v-col class="mt-2">
-                  <v-btn id="newMessageToConvBtn" small @click="displayMessageField">
-                    <v-icon color="#003366">mdi-email-outline</v-icon>
-                    <span style="color: #003366" class="ml-1">Message</span>
-                  </v-btn>
-                  <v-btn id="addAttachmentConvButton" small @click="displayAttachmentPanel">
-                    <v-icon color="#003366">mdi-paperclip</v-icon>
-                    <span style="color: #003366" class="ml-1">Attachment</span>
-                  </v-btn>
-                  <v-btn id="addStudentConvButton" small @click="displayStudentPanel">
-                    <v-icon color="#003366">mdi-emoticon-happy-outline</v-icon>
-                    <span style="color: #003366" class="ml-1">Student</span>
-                  </v-btn>
+                <v-btn
+                  id="newMessageToConvBtn"
+                  small
+                  @click="displayMessageField"
+                >
+                  <v-icon color="#003366">
+                    mdi-email-outline
+                  </v-icon>
+                  <span
+                    style="color: #003366"
+                    class="ml-1"
+                  >Message</span>
+                </v-btn>
+                <v-btn
+                  id="addAttachmentConvButton"
+                  small
+                  @click="displayAttachmentPanel"
+                >
+                  <v-icon color="#003366">
+                    mdi-paperclip
+                  </v-icon>
+                  <span
+                    style="color: #003366"
+                    class="ml-1"
+                  >Attachment</span>
+                </v-btn>
+                <v-btn
+                  id="addStudentConvButton"
+                  small
+                  @click="displayStudentPanel"
+                >
+                  <v-icon color="#003366">
+                    mdi-emoticon-happy-outline
+                  </v-icon>
+                  <span
+                    style="color: #003366"
+                    class="ml-1"
+                  >Student</span>
+                </v-btn>
               </v-col>
             </v-row>
             <v-row v-if="isNewMessageDisplayed">
-              <v-card-text id="newMessageCardText" class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10">
-                <v-textarea id="newMessageToConvTextArea"
-                            outlined
-                            solo
-                            label="New Message..."
-                            auto-grow
-                            v-model="newMessage"
-                            rows="8"
-                            maxlength="4000"
-                            class="pt-0"
-                            ref="newMessageToConvTextArea"
-                >
-                </v-textarea>
+              <v-card-text
+                id="newMessageCardText"
+                class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10"
+              >
+                <v-textarea
+                  id="newMessageToConvTextArea"
+                  ref="newMessageToConvTextArea"
+                  v-model="newMessage"
+                  outlined
+                  solo
+                  label="New Message..."
+                  auto-grow
+                  rows="8"
+                  maxlength="4000"
+                  class="pt-0"
+                />
               </v-card-text>
               <v-row class="py-4 justify-end pt-0 pr-16 mr-10">
-                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2" :clickAction="hideNewMessageField"></PrimaryButton>
-                <PrimaryButton id="newMessagePostBtn" text="Send" width="8rem" :disabled="!newMessage" :loading="loading" :clickAction="sendNewExchangeComment"></PrimaryButton>
+                <PrimaryButton
+                  id="cancelMessage"
+                  secondary
+                  text="Cancel"
+                  class="mr-2"
+                  :click-action="hideNewMessageField"
+                />
+                <PrimaryButton
+                  id="newMessagePostBtn"
+                  text="Send"
+                  width="8rem"
+                  :disabled="!newMessage"
+                  :loading="loading"
+                  :click-action="sendNewExchangeComment"
+                />
               </v-row>
             </v-row>
             <v-row v-if="isNewAttachmentDisplayed">
               <v-col class="d-flex justify-center">
                 <DocumentUpload
-                    style="min-width: 40em"
-                    :small-file-extension="false"
-                    :check-file-rules="true"
-                    @close:form="hideAttachmentPanel"
-                    @upload="upload">
-                </DocumentUpload>
+                  style="min-width: 40em"
+                  :small-file-extension="false"
+                  :check-file-rules="true"
+                  @close:form="hideAttachmentPanel"
+                  @upload="upload"
+                />
               </v-col>
             </v-row>
-            <v-row v-if="isNewStudentDisplayed" id="addStudentDialog">
+            <v-row
+              v-if="isNewStudentDisplayed"
+              id="addStudentDialog"
+            >
               <v-col class="d-flex justify-center">
-                <AddStudent @addStudent="sendNewSecureExchangeStudent" @close:form="hideStudentPanel" :schoolID="userInfo.activeInstituteIdentifier" :additionalStudentAddWarning="addStudentWarningMessage" @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage">
-                </AddStudent>
+                <AddStudent
+                  :school-i-d="userInfo.activeInstituteIdentifier"
+                  :additional-student-add-warning="addStudentWarningMessage"
+                  @addStudent="sendNewSecureExchangeStudent"
+                  @close:form="hideStudentPanel"
+                  @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage"
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-timeline v-if="secureExchange.activities.length > 0" side="end">
-                  <v-timeline-item v-for="(activity,index) in secureExchange.activities" :key="activity.secureExchangeCommentID" dot-color="white" icon-color="#003366" :icon="getActivityIcon(activity)" large>
-                    <template v-slot:opposite>
-                      <div class="activityTitle">{{ activity.title }}</div>
-                      <v-spacer></v-spacer>
-                      <div class="activityDisplayDate">{{ activity.displayDate }}</div>
+                <v-timeline
+                  v-if="secureExchange.activities.length > 0"
+                  side="end"
+                >
+                  <v-timeline-item
+                    v-for="(activity,index) in secureExchange.activities"
+                    :key="activity.secureExchangeCommentID"
+                    dot-color="white"
+                    icon-color="#003366"
+                    :icon="getActivityIcon(activity)"
+                    large
+                  >
+                    <template #opposite>
+                      <div class="activityTitle">
+                        {{ activity.title }}
+                      </div>
+                      <v-spacer />
+                      <div class="activityDisplayDate">
+                        {{ activity.displayDate }}
+                      </div>
                     </template>
                     <v-card v-if="activity.type === 'message'">
-                      <v-card-text class="activityContent">{{ activity.content }}</v-card-text>
+                      <v-card-text class="activityContent">
+                        {{ activity.content }}
+                      </v-card-text>
                     </v-card>
                     <v-card v-if="activity.type === 'document'">
                       <v-row no-gutters>
-                        <v-card-text class="mt-n2 pb-0" :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}">
-                          <router-link v-if="isEditable() && isPdf(activity)" :to="{ path: documentUrl(activity) }" target="_blank">{{ activity.fileName }}</router-link>
-                          <a @click="showDocModal(activity)" v-else-if="isEditable()">
+                        <v-card-text
+                          class="mt-n2 pb-0"
+                          :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
+                        >
+                          <router-link
+                            v-if="isEditable() && isPdf(activity)"
+                            :to="{ path: documentUrl(activity) }"
+                            target="_blank"
+                          >
+                            {{ activity.fileName }}
+                          </router-link>
+                          <a
+                            v-else-if="isEditable()"
+                            @click="showDocModal(activity)"
+                          >
                             {{ activity.fileName }}
                           </a>
-                          <span v-else style="color: grey">
-                              {{ activity.fileName }}
-                            </span>
+                          <span
+                            v-else
+                            style="color: grey"
+                          >
+                            {{ activity.fileName }}
+                          </span>
                         </v-card-text>
-                        <v-card-text v-if="activity.documentType.label !== 'Other'" class="pt-0 pb-3">{{ activity.documentType.label }}</v-card-text>
-                        <v-btn class="ml-12 mb-2 mr-1 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveDoc(index)" v-show="isOpenDocIndex !== index" :disabled="!isEditable()">
+                        <v-card-text
+                          v-if="activity.documentType.label !== 'Other'"
+                          class="pt-0 pb-3"
+                        >
+                          {{ activity.documentType.label }}
+                        </v-card-text>
+                        <v-btn
+                          v-show="isOpenDocIndex !== index"
+                          class="ml-12 mb-2 mr-1 pl-0 pr-0 plainBtn"
+                          bottom
+                          right
+                          absolute
+                          elevation="0"
+                          :disabled="!isEditable()"
+                          @click="toggleRemoveDoc(index)"
+                        >
                           <v-icon>mdi-delete-forever-outline</v-icon>
                         </v-btn>
                       </v-row>
                       <v-expand-transition>
-                        <div v-show="isOpenDocIndex === index" class="greyBackground">
-                          <v-divider></v-divider>
+                        <div
+                          v-show="isOpenDocIndex === index"
+                          class="greyBackground"
+                        >
+                          <v-divider />
 
                           <v-card-text style="background-color: #e7ebf0;">
                             <v-row no-gutters>
@@ -166,10 +337,18 @@
                             </v-row>
                             <v-row no-gutters>
                               <v-col class="mt-3 d-flex justify-end">
-                                <v-btn class="mr-2" outlined @click="closeDocIndex()">
+                                <v-btn
+                                  class="mr-2"
+                                  outlined
+                                  @click="closeDocIndex()"
+                                >
                                   No
                                 </v-btn>
-                                <v-btn dark color="#003366" @click="removeAttachment(activity.documentID)">
+                                <v-btn
+                                  dark
+                                  color="#003366"
+                                  @click="removeAttachment(activity.documentID)"
+                                >
                                   Yes
                                 </v-btn>
                               </v-col>
@@ -181,68 +360,124 @@
                     <v-card v-if="activity.type === 'student'">
                       <v-card-text>
                         <v-row v-if="activity.studentPEN">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>PEN: </span>
                           </v-col>
-                          <v-col class="studentPenRaw pt-0" cols="9" >{{ activity.studentPEN }}</v-col>
+                          <v-col
+                            class="studentPenRaw pt-0"
+                            cols="9"
+                          >
+                            {{ activity.studentPEN }}
+                          </v-col>
                         </v-row>
                         <v-row v-if="activity.studentLocalID">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Local ID: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentLocalID }}</span>
                           </v-col>
                         </v-row>
                         <v-row v-if="activity.studentSurname">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Surname: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentSurname }}</span>
                           </v-col>
                         </v-row>
                         <v-row v-if="activity.studentGiven">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Given Name: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentGiven }}</span>
                           </v-col>
                         </v-row>
                         <v-row v-if="activity.studentMiddle">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Middle Name: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentMiddle }}</span>
                           </v-col>
                         </v-row>
                         <v-row v-if="activity.studentDOB">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Birth Date: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentDOB }}</span>
                           </v-col>
                         </v-row>
                         <v-row v-if="activity.studentGender">
-                          <v-col class="pt-0" cols="3">
+                          <v-col
+                            class="pt-0"
+                            cols="3"
+                          >
                             <span>Gender: </span>
                           </v-col>
-                          <v-col class="pt-0" cols="9">
+                          <v-col
+                            class="pt-0"
+                            cols="9"
+                          >
                             <span>{{ activity.studentGender }}</span>
                           </v-col>
                         </v-row>
                       </v-card-text>
                       <v-row>
-                        <v-btn class="ml-12 mr-1 mb-2 pl-0 pr-0 plainBtn" bottom right absolute elevation="0" @click="toggleRemoveStudent(index)" v-show="isOpenStudentIndex !== index" :disabled="!isEditable()">
+                        <v-btn
+                          v-show="isOpenStudentIndex !== index"
+                          class="ml-12 mr-1 mb-2 pl-0 pr-0 plainBtn"
+                          bottom
+                          right
+                          absolute
+                          elevation="0"
+                          :disabled="!isEditable()"
+                          @click="toggleRemoveStudent(index)"
+                        >
                           <v-icon>mdi-delete-forever-outline</v-icon>
                         </v-btn>
                       </v-row>
                       <v-expand-transition>
-                        <div v-show="isOpenStudentIndex === index" class="greyBackground">
-                          <v-divider></v-divider>
+                        <div
+                          v-show="isOpenStudentIndex === index"
+                          class="greyBackground"
+                        >
+                          <v-divider />
                           <v-card-text style="background-color: #e7ebf0;">
                             <v-row no-gutters>
                               <v-col class="d-flex justify-start">
@@ -256,10 +491,18 @@
                             </v-row>
                             <v-row no-gutters>
                               <v-col class="mt-3 d-flex justify-end">
-                                <v-btn class="mr-2" outlined @click="closeStudentIndex()">
+                                <v-btn
+                                  class="mr-2"
+                                  outlined
+                                  @click="closeStudentIndex()"
+                                >
                                   No
                                 </v-btn>
-                                <v-btn dark color="#003366" @click="removeStudent(activity.secureExchangeStudentId)">
+                                <v-btn
+                                  dark
+                                  color="#003366"
+                                  @click="removeStudent(activity.secureExchangeStudentId)"
+                                >
                                   Yes
                                 </v-btn>
                               </v-col>
@@ -296,8 +539,8 @@ import { mapState } from 'pinia';
 
 export default {
   name: 'MessageDisplay',
-  mixins: [alertMixin],
   components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer, PdfRenderer },
+  mixins: [alertMixin],
   props: {
     secureExchangeID: {
       type: String,
@@ -368,7 +611,7 @@ export default {
     },
     isPdf(document){
       return (
-          'fileName' in document &&
+        'fileName' in document &&
           typeof document.fileName === 'string' &&
           document.fileName.toLowerCase().endsWith('.pdf')
       );
@@ -426,33 +669,33 @@ export default {
     getExchange() {
       this.loadingCount += 1;
       return ApiService.apiAxios.get(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}`)
-          .then(response => {
-            this.secureExchange = response.data;
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while getting the details of the message. Please try again later.');
-          })
-          .finally(() => {
-            this.loadingCount -= 1;
-            if (this.isEditable()) {
-              this.disableAnchorTagDocumentName = false;
-            }
-          });
+        .then(response => {
+          this.secureExchange = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while getting the details of the message. Please try again later.');
+        })
+        .finally(() => {
+          this.loadingCount -= 1;
+          if (this.isEditable()) {
+            this.disableAnchorTagDocumentName = false;
+          }
+        });
     },
     setIsReadByExchangeContact(isRead) {
       this.loadingReadStatus = true;
       let readStatus = isRead ? 'read' : 'unread';
       ApiService.apiAxios.put(`${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/markAs/${readStatus}`)
-          .then(() => {
-            this.secureExchange.isReadByExchangeContact = isRead;
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to set the read state of the Secure Exchange. Please try again later.');
-          }).finally(() => {
-        this.loadingReadStatus = false;
-      });
+        .then(() => {
+          this.secureExchange.isReadByExchangeContact = isRead;
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to set the read state of the Secure Exchange. Please try again later.');
+        }).finally(() => {
+          this.loadingReadStatus = false;
+        });
     },
     clickMarkAsButton() {
       this.setIsReadByExchangeContact(false);
@@ -470,14 +713,14 @@ export default {
     },
     getActivityIcon(activity) {
       switch (activity.type) {
-        case 'message':
-          return 'mdi-email-outline';
-        case 'document':
-          return 'mdi-paperclip';
-        case 'student':
-          return 'mdi-emoticon-happy-outline';
-        default:
-          return '';
+      case 'message':
+        return 'mdi-email-outline';
+      case 'document':
+        return 'mdi-paperclip';
+      case 'student':
+        return 'mdi-emoticon-happy-outline';
+      default:
+        return '';
       }
     },
     getNumberOfDays(start) {
@@ -502,20 +745,20 @@ export default {
         content: this.newMessage,
       };
       ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/comments`, payload)
-          .then(() => {
-            this.setSuccessAlert('Success! The message has been sent.');
-            this.messageSent();
-            this.getExchange();
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while sending message. Please try again later.');
-          })
-          .finally(() => {
-            this.loadingCount -= 1;
-            this.isNewMessageDisplayed = false;
-            this.resetNewMessageForm();
-          });
+        .then(() => {
+          this.setSuccessAlert('Success! The message has been sent.');
+          this.messageSent();
+          this.getExchange();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while sending message. Please try again later.');
+        })
+        .finally(() => {
+          this.loadingCount -= 1;
+          this.isNewMessageDisplayed = false;
+          this.resetNewMessageForm();
+        });
     },
     closeAllIndexes(){
       this.closeDocIndex();
@@ -550,42 +793,42 @@ export default {
     removeAttachment(documentID) {
       this.loadingCount += 1;
       ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/documents/${documentID}`)
-          .then((response) => {
-            this.getExchange();
-            if(response.status === 200){
-              this.setSuccessAlert('Success! The document has been removed.');
-            } else{
-              this.setFailureAlert('Error! The document was not removed.');
-            }
-            this.closeDocIndex();
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the attachment from the Secure Exchange. Please try again later.');
-          })
-          .finally(() => {
-            this.loadingCount -= 1;
-          });
+        .then((response) => {
+          this.getExchange();
+          if(response.status === 200){
+            this.setSuccessAlert('Success! The document has been removed.');
+          } else{
+            this.setFailureAlert('Error! The document was not removed.');
+          }
+          this.closeDocIndex();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the attachment from the Secure Exchange. Please try again later.');
+        })
+        .finally(() => {
+          this.loadingCount -= 1;
+        });
     },
     removeStudent(studentID) {
       this.loadingCount += 1;
       ApiService.apiAxios.delete(ApiRoutes.edx.EXCHANGE_URL + `/${this.secureExchangeID}/removeStudent/${studentID}`)
-          .then((response) => {
-            this.getExchange();
-            if(response.status === 200){
-              this.setSuccessAlert('Success! The student has been removed.');
-            } else{
-              this.setFailureAlert('Error! The student was not removed.');
-            }
-            this.closeStudentIndex();
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the student from the Secure Exchange. Please try again later.');
-          })
-          .finally(() => {
-            this.loadingCount -= 1;
-          });
+        .then((response) => {
+          this.getExchange();
+          if(response.status === 200){
+            this.setSuccessAlert('Success! The student has been removed.');
+          } else{
+            this.setFailureAlert('Error! The student was not removed.');
+          }
+          this.closeStudentIndex();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while removing the student from the Secure Exchange. Please try again later.');
+        })
+        .finally(() => {
+          this.loadingCount -= 1;
+        });
     },
     backButtonClick() {
       this.$router.push({name: 'inbox'});
@@ -596,18 +839,18 @@ export default {
         studentID: student.studentID
       };
       ApiService.apiAxios.post(`${ApiRoutes.edx.EXCHANGE_URL}/${this.secureExchangeID}/students`, payload)
-          .then(() => {
-            this.setSuccessAlert('Success! The student has been added to the Secure Exchange.');
-            this.getExchange();
-          })
-          .catch(error => {
-            console.error(error);
-            this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while adding the student to the Secure Exchange. Please try again later.');
-          })
-          .finally(() => {
-            this.loadingCount -= 1;
-            this.isNewStudentDisplayed = false;
-          });
+        .then(() => {
+          this.setSuccessAlert('Success! The student has been added to the Secure Exchange.');
+          this.getExchange();
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while adding the student to the Secure Exchange. Please try again later.');
+        })
+        .finally(() => {
+          this.loadingCount -= 1;
+          this.isNewStudentDisplayed = false;
+        });
     }
   }
 };

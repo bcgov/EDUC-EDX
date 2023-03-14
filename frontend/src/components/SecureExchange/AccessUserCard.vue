@@ -1,7 +1,10 @@
 <template>
   <v-row style="height: 100%">
     <v-col>
-      <v-card height="100%" :id="`edxUser-${user.edxUserID}`">
+      <v-card
+        :id="`edxUser-${user.edxUserID}`"
+        height="100%"
+      >
         <v-card-title class="pb-0">
           <v-row no-gutters>
             <v-col>
@@ -9,77 +12,120 @@
                 <v-col cols="9">
                   <span style="white-space: break-spaces"><strong>{{ `${user.firstName} ${user.lastName}` }}</strong></span>
                 </v-col>
-                <v-col cols="3" class="d-flex justify-end" v-if="isNotSameEdxUser()">
-                  <v-btn :id="`user-edit-button-${user.edxUserID}`"
-                         title="Edit"
-                         color="white"
-                         width="0.5em"
-                         min-width="0.5em"
-                         depressed
-                         @click="clickEditButton"
-                         small
-                         class="mr-2"
+                <v-col
+                  v-if="isNotSameEdxUser()"
+                  cols="3"
+                  class="d-flex justify-end"
+                >
+                  <v-btn
+                    :id="`user-edit-button-${user.edxUserID}`"
+                    title="Edit"
+                    color="white"
+                    width="0.5em"
+                    min-width="0.5em"
+                    depressed
+                    small
+                    class="mr-2"
+                    @click="clickEditButton"
                   >
-                    <v-icon size="x-large" color="#003366" dark>mdi-pencil</v-icon>
+                    <v-icon
+                      size="x-large"
+                      color="#003366"
+                      dark
+                    >
+                      mdi-pencil
+                    </v-icon>
                   </v-btn>
-                  <v-btn :id="`user-remove-button-${user.edxUserID}`"
-                         title="Remove"
-                         color="white"
-                         width="0.5em"
-                         min-width="0.5em"
-                         depressed
-                         @click="clickDeleteButton"
-                         small
-                         class="mr-2"
+                  <v-btn
+                    :id="`user-remove-button-${user.edxUserID}`"
+                    title="Remove"
+                    color="white"
+                    width="0.5em"
+                    min-width="0.5em"
+                    depressed
+                    small
+                    class="mr-2"
+                    @click="clickDeleteButton"
                   >
-                    <v-icon size="x-large" color="#003366" dark>mdi-delete</v-icon>
+                    <v-icon
+                      size="x-large"
+                      color="#003366"
+                      dark
+                    >
+                      mdi-delete
+                    </v-icon>
                   </v-btn>
-                  <v-btn :id="`user-relink-button-${user.edxUserID}`"
-                         title="Re-Link"
-                         color="white"
-                         width="0.5em"
-                         min-width="0.5em"
-                         depressed
-                         @click="clickRelinkButton"
-                         small
+                  <v-btn
+                    :id="`user-relink-button-${user.edxUserID}`"
+                    title="Re-Link"
+                    color="white"
+                    width="0.5em"
+                    min-width="0.5em"
+                    depressed
+                    small
+                    @click="clickRelinkButton"
                   >
-                    <v-icon size="x-large" color="#003366" dark>mdi-backup-restore</v-icon>
+                    <v-icon
+                      size="x-large"
+                      color="#003366"
+                      dark
+                    >
+                      mdi-backup-restore
+                    </v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
               <v-row no-gutters>
-                <v-col cols="12" class="pt-1">
+                <v-col
+                  cols="12"
+                  class="pt-1"
+                >
                   <span>{{ user.email }}</span>
                 </v-col>
               </v-row>
               <v-row no-gutters>
-                <v-col cols="12" class="pt-1">
-                </v-col>
+                <v-col
+                  cols="12"
+                  class="pt-1"
+                />
               </v-row>
             </v-col>
           </v-row>
         </v-card-title>
-        <v-card-text class="pt-2"
-                     :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]">
+        <v-card-text
+          class="pt-2"
+          :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
+        >
           <v-chip-group v-if="!editState">
-            <v-chip v-for="role in userRoles"
-                    :key="role.edxRoleCode" disabled>
+            <v-chip
+              v-for="role in userRoles"
+              :key="role.edxRoleCode"
+              disabled
+            >
               {{ getRoleLabel(role) }}
             </v-chip>
           </v-chip-group>
           <v-list
             v-else
-            lines="two"
             v-model:selected="selectedRoles"
-            v-on:update:selected="selectedRolesChanged"
+            lines="two"
             return-object
             select-strategy="classic"
-            style="background-color: #e7ebf0">
-            <div v-for="newrole in instituteRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
-              <v-list-item :disabled="roleDisabled(newrole)" :value="newrole.edxRoleCode">
-                <template v-slot:prepend="{ isActive }">
+            style="background-color: #e7ebf0"
+            @update:selected="selectedRolesChanged"
+          >
+            <div
+              v-for="newrole in instituteRoles"
+              :key="newrole.edxRoleCode"
+              :value="newrole.edxRoleCode"
+            >
+              <v-list-item
+                :disabled="roleDisabled(newrole)"
+                :value="newrole.edxRoleCode"
+              >
+                <template #prepend="{ isActive }">
                   <v-list-item-action>
-                    <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                    <v-checkbox-btn :model-value="isActive" />
                   </v-list-item-action>
                 </template>
 
@@ -89,33 +135,50 @@
                   EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
-                  {{newrole.roleDescription}}
+                  {{ newrole.roleDescription }}
                 </v-list-item-subtitle>
               </v-list-item>
             </div>
           </v-list>
         </v-card-text>
         <Transition name="bounce">
-          <v-card-text style="background-color: #e7ebf0;" v-if="deleteState" class="deleteEdxUserConfirmationDialog">
+          <v-card-text
+            v-if="deleteState"
+            style="background-color: #e7ebf0;"
+            class="deleteEdxUserConfirmationDialog"
+          >
             <v-row no-gutters>
               <v-col class="d-flex justify-center">
                 <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to remove this users access for the {{
-                    instituteTypeLabel.toLowerCase()
-                  }}?</span>
+                  instituteTypeLabel.toLowerCase()
+                }}?</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
-                <PrimaryButton width="5em" :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
-                               text="Cancel" class="mr-2 cancelUserDeleteButton" secondary :clickAction="clickDeleteButton"></PrimaryButton>
-                <PrimaryButton :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
-                               text="Remove" class="confirmUserDeleteButton" :clickAction="clickRemoveButton" ></PrimaryButton>
+                <PrimaryButton
+                  :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
+                  width="5em"
+                  text="Cancel"
+                  class="mr-2 cancelUserDeleteButton"
+                  secondary
+                  :click-action="clickDeleteButton"
+                />
+                <PrimaryButton
+                  :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
+                  text="Remove"
+                  class="confirmUserDeleteButton"
+                  :click-action="clickRemoveButton"
+                />
               </v-col>
             </v-row>
           </v-card-text>
         </Transition>
         <Transition name="bounce">
-          <v-card-text style="background-color: #e7ebf0;" v-if="relinkState">
+          <v-card-text
+            v-if="relinkState"
+            style="background-color: #e7ebf0;"
+          >
             <v-row no-gutters>
               <v-col class="d-flex justify-center">
                 <span style="font-size: medium; font-weight: bold; color: black">Re-linking an account will remove the current user and resend the activation code so that the user can set up EDX access with their new credential.</span>
@@ -123,32 +186,63 @@
             </v-row>
             <v-row no-gutters>
               <v-col class="pt-3 d-flex justify-start">
-                <span :id="`userRelinkWarningText-${user.edxUserID}`" style="font-size: medium; font-weight: bold; color: black">Are you sure you want to re-link this account?</span>
+                <span
+                  :id="`userRelinkWarningText-${user.edxUserID}`"
+                  style="font-size: medium; font-weight: bold; color: black"
+                >Are you sure you want to re-link this account?</span>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-3 d-flex justify-end">
-                <PrimaryButton width="5em" :id="`user-cancel-relink-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :clickAction="clickRelinkButton"></PrimaryButton>
-                <PrimaryButton :id="`user-relink-action-button-${user.edxUserID}`" text="Re-Link"
-                               :clickAction="clickActionRelinkButton"></PrimaryButton>
+                <PrimaryButton
+                  :id="`user-cancel-relink-button-${user.edxUserID}`"
+                  width="5em"
+                  text="Cancel"
+                  class="mr-2"
+                  secondary
+                  :click-action="clickRelinkButton"
+                />
+                <PrimaryButton
+                  :id="`user-relink-action-button-${user.edxUserID}`"
+                  text="Re-Link"
+                  :click-action="clickActionRelinkButton"
+                />
               </v-col>
             </v-row>
           </v-card-text>
         </Transition>
         <Transition name="bounce">
-          <v-card-text class="pt-0" style="background-color: #e7ebf0;" v-if="editState">
-            <v-row v-if="!minimumRolesSelected" no-gutters>
+          <v-card-text
+            v-if="editState"
+            class="pt-0"
+            style="background-color: #e7ebf0;"
+          >
+            <v-row
+              v-if="!minimumRolesSelected"
+              no-gutters
+            >
               <v-col class="mt-0 d-flex justify-start">
-                <p style="font-weight: bolder;color: black;">Please select at least one role for {{ user.firstName }}.</p>
+                <p style="font-weight: bolder;color: black;">
+                  Please select at least one role for {{ user.firstName }}.
+                </p>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col class="mt-0 d-flex justify-end">
-                <PrimaryButton width="5em" :id="`user-cancel-edit-button-${user.edxUserID}`"
-                               text="Cancel" class="mr-2" secondary :clickAction="clickEditButton"></PrimaryButton>
-                <PrimaryButton :id="`user-save-action-button-${user.edxUserID}`" text="Save"
-                               :disabled="!minimumRolesSelected" :clickAction="clickSaveButton"></PrimaryButton>
+                <PrimaryButton
+                  :id="`user-cancel-edit-button-${user.edxUserID}`"
+                  width="5em"
+                  text="Cancel"
+                  class="mr-2"
+                  secondary
+                  :click-action="clickEditButton"
+                />
+                <PrimaryButton
+                  :id="`user-save-action-button-${user.edxUserID}`"
+                  text="Save"
+                  :disabled="!minimumRolesSelected"
+                  :click-action="clickSaveButton"
+                />
               </v-col>
             </v-row>
           </v-card-text>

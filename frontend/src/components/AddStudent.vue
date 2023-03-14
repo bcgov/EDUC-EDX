@@ -1,55 +1,90 @@
 <template>
   <v-card class="add-student">
     <v-alert
-        id="addStudentAlert"
-        dense
-        outlined
-        dismissible
-        v-model="alert"
-        :class="alertType"
-        class="mb-3"
+      id="addStudentAlert"
+      v-model="alert"
+      dense
+      outlined
+      dismissible
+      :class="alertType"
+      class="mb-3"
     >
       {{ alertMessage }}
     </v-alert>
     <v-form
-        ref="studentForm"
-        v-model="validForm"
+      ref="studentForm"
+      v-model="validForm"
     >
       <v-row>
-        <v-col class="d-flex justify-center px-2" style="min-width: 50em">
-          <v-text-field class="pr-5"
-                        clearable
-                        variant="underlined"
-                        v-model="penNumber"
-                        label="Student's PEN"
-                        :rules="penRules"
-                        maxlength="9"
-                        counter="9"
-                        id="studentPenTextField">
-          </v-text-field>
-          <PrimaryButton class="mt-2" width="7rem" :disabled="enableSearchButton" id="searchPenBtn" text="Search"
-                         :loading="isSearchingStudent"
-                         :clickAction="searchStudentForGivenPEN"/>
+        <v-col
+          class="d-flex justify-center px-2"
+          style="min-width: 50em"
+        >
+          <v-text-field
+            id="studentPenTextField"
+            v-model="penNumber"
+            class="pr-5"
+            clearable
+            variant="underlined"
+            label="Student's PEN"
+            :rules="penRules"
+            maxlength="9"
+            counter="9"
+          />
+          <PrimaryButton
+            id="searchPenBtn"
+            class="mt-2"
+            width="7rem"
+            :disabled="enableSearchButton"
+            text="Search"
+            :loading="isSearchingStudent"
+            :click-action="searchStudentForGivenPEN"
+          />
         </v-col>
       </v-row>
     </v-form>
-    <v-row no-gutters v-if="showStudentDetails">
-      <v-icon x-large v-if="showStudentDetails" class="pr-2">mdi-account-box-outline</v-icon>
-      <div v-if="showStudentDetailsForMinistryStaff" :class="['d-flex', 'flex-column']">
-      <span class="pt-0 pl-0 pb-2" >Student details will be available for ministry staff. </span>
+    <v-row
+      v-if="showStudentDetails"
+      no-gutters
+    >
+      <v-icon
+        v-if="showStudentDetails"
+        x-large
+        class="pr-2"
+      >
+        mdi-account-box-outline
+      </v-icon>
+      <div
+        v-if="showStudentDetailsForMinistryStaff"
+        :class="['d-flex', 'flex-column']"
+      >
+        <span class="pt-0 pl-0 pb-2">Student details will be available for ministry staff. </span>
       </div>
-        <div v-if="showStudentDetails" :class="['d-flex', 'flex-column']">
-          <strong>{{ this.student['studentName'] }}</strong>
-          <span>{{ this.student['studentLocalID'] }}</span>
-          <span>{{ this.student['studentDoB'] }}</span>
-          <span>{{ this.student['studentGender'] }}</span>
-        </div>
+      <div
+        v-if="showStudentDetails"
+        :class="['d-flex', 'flex-column']"
+      >
+        <strong>{{ student['studentName'] }}</strong>
+        <span>{{ student['studentLocalID'] }}</span>
+        <span>{{ student['studentDoB'] }}</span>
+        <span>{{ student['studentGender'] }}</span>
+      </div>
     </v-row>
-    <v-row class="justify-end pr-2 pt-2" >
-      <PrimaryButton id="cancelAddStudentBtn" secondary text="Cancel" class="mr-2"
-                     :clickAction="closeForm"></PrimaryButton>
-      <PrimaryButton :disabled="!studentExist" id="addStudentToNewMessageBtn"
-                     text="Add" width="7rem" :clickAction="addStudentToMessage"></PrimaryButton>
+    <v-row class="justify-end pr-2 pt-2">
+      <PrimaryButton
+        id="cancelAddStudentBtn"
+        secondary
+        text="Cancel"
+        class="mr-2"
+        :click-action="closeForm"
+      />
+      <PrimaryButton
+        id="addStudentToNewMessageBtn"
+        :disabled="!studentExist"
+        text="Add"
+        width="7rem"
+        :click-action="addStudentToMessage"
+      />
     </v-row>
   </v-card>
 </template>

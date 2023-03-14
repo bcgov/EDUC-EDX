@@ -1,20 +1,45 @@
 <template>
   <v-row class="d-flex justify-center">
-    <v-col md="5" sm="10">
+    <v-col
+      md="5"
+      sm="10"
+    >
       <v-row no-gutters>
         <v-col cols="6">
-          <v-card id="secureMessageInboxCard" class="mt-0 mb-5" width="22em"  outlined rounded @click="redirectToInbox()">
+          <v-card
+            id="secureMessageInboxCard"
+            class="mt-0 mb-5"
+            width="22em"
+            outlined
+            rounded
+            @click="redirectToInbox()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div v-if="unreadExchangeCount > 0">
-                  <v-badge bordered top color="rgb(0, 51, 102)" circle offset-x="10" offset-y="18">
-                    <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                  <v-badge
+                    bordered
+                    top
+                    color="rgb(0, 51, 102)"
+                    circle
+                    offset-x="10"
+                    offset-y="18"
+                  >
+                    <v-icon
+                      aria-hidden="false"
+                      color="rgb(0, 51, 102)"
+                      size="100"
+                    >
                       mdi-email-outline
                     </v-icon>
                   </v-badge>
                 </div>
-                <div v-else >
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                <div v-else>
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  >
                     mdi-email-outline
                   </v-icon>
                 </div>
@@ -22,24 +47,40 @@
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ title }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ title }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{exchangeCount}} messages, {{unreadExchangeCount}} unread</span>
+                    <span>{{ exchangeCount }} messages, {{ unreadExchangeCount }} unread</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card id="districtDetailsCard" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictDetails()">
+        <v-col
+          v-if="isLoggedInDistrictUser && isDistrictActive"
+          cols="6"
+        >
+          <v-card
+            id="districtDetailsCard"
+            width="22em"
+            class="mt-0 mb-5"
+            outlined
+            rounded
+            @click="redirectToDistrictDetails()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  >
                     mdi-domain
                   </v-icon>
                 </div>
@@ -47,7 +88,9 @@
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ PAGE_TITLES.DISTRICT_DETAILS }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.DISTRICT_DETAILS }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -57,19 +100,33 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{districtLastUpdateDate}}</span>
+                    <span>{{ districtLastUpdateDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card id="districtContactsCard" width="22em"  class="mt-0 mb-5" outlined rounded @click="redirectToDistrictContacts()">
+        <v-col
+          v-if="isLoggedInDistrictUser && isDistrictActive"
+          cols="6"
+        >
+          <v-card
+            id="districtContactsCard"
+            width="22em"
+            class="mt-0 mb-5"
+            outlined
+            rounded
+            @click="redirectToDistrictContacts()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  >
                     mdi-account-multiple-outline
                   </v-icon>
                 </div>
@@ -77,7 +134,9 @@
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ PAGE_TITLES.DISTRICT_CONTACTS }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.DISTRICT_CONTACTS }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -87,19 +146,33 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{districtContactsLastUpdateDate}}</span>
+                    <span>{{ districtContactsLastUpdateDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
-          <v-card id="schoolContactsCard" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolContacts()">
+        <v-col
+          v-if="isLoggedInSchoolUser && isSchoolActive"
+          cols="6"
+        >
+          <v-card
+            id="schoolContactsCard"
+            class="mt-0 mb-5"
+            width="22em"
+            outlined
+            rounded
+            @click="redirectToSchoolContacts()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  >
                     mdi-account-multiple-outline
                   </v-icon>
                 </div>
@@ -107,7 +180,9 @@
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOL_CONTACTS }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.SCHOOL_CONTACTS }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -117,19 +192,33 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{schoolContactsLastUpdateDate}}</span>
+                    <span>{{ schoolContactsLastUpdateDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInDistrictUser && isDistrictActive" cols="6">
-          <v-card width="22em" id="districtUserSchoolContactsCard" class="mt-0 mb-5" outlined rounded @click="redirectToSchools()">
+        <v-col
+          v-if="isLoggedInDistrictUser && isDistrictActive"
+          cols="6"
+        >
+          <v-card
+            id="districtUserSchoolContactsCard"
+            width="22em"
+            class="mt-0 mb-5"
+            outlined
+            rounded
+            @click="redirectToSchools()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon aria-hidden="false" color="rgb(0, 51, 102)" size="100">
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  >
                     mdi-library
                   </v-icon>
                 </div>
@@ -137,7 +226,9 @@
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOLS }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.SCHOOLS }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -147,26 +238,42 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{schoolsLastUpdateDate}}</span>
+                    <span>{{ schoolsLastUpdateDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="isLoggedInSchoolUser && isSchoolActive" cols="6">
-          <v-card id="schoolDetailsCard" class="mt-0 mb-5" width="22em" outlined rounded @click="redirectToSchoolDetails()">
+        <v-col
+          v-if="isLoggedInSchoolUser && isSchoolActive"
+          cols="6"
+        >
+          <v-card
+            id="schoolDetailsCard"
+            class="mt-0 mb-5"
+            width="22em"
+            outlined
+            rounded
+            @click="redirectToSchoolDetails()"
+          >
             <v-row class="pl-4">
               <v-col cols="4">
                 <div>
-                  <v-icon icon="mdi-domain" aria-hidden="false" color="rgb(0, 51, 102)" size="100">
-                  </v-icon>
+                  <v-icon
+                    icon="mdi-domain"
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  />
                 </div>
               </v-col>
               <v-col class="mt-2">
                 <v-row no-gutters>
                   <v-col>
-                    <h4 class="dashboard-title">{{ PAGE_TITLES.SCHOOL_DETAILS }}</h4>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.SCHOOL_DETAILS }}
+                    </h4>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -176,7 +283,7 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col>
-                    <span>{{schoolLastUpdateDate}}</span>
+                    <span>{{ schoolLastUpdateDate }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -185,7 +292,6 @@
         </v-col>
       </v-row>
     </v-col>
-
   </v-row>
 </template>
 <script>
@@ -202,7 +308,9 @@ import {isEmpty, omitBy} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
-  name: 'DashboardTable.vue',
+  name: 'DashboardTable',
+  components: {
+  },
   mixins: [alertMixin],
   props: {
     tableData: {
@@ -216,8 +324,6 @@ export default {
     colour: {
       type: String
     }
-  },
-  components: {
   },
   data() {
     return {

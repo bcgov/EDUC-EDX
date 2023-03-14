@@ -1,66 +1,159 @@
 <template>
   <v-container>
-    <Spinner flat v-if="loading"/>
+    <Spinner
+      v-if="loading"
+      flat
+    />
     <div v-else>
-      <div v-if="this.schoolID">
+      <div v-if="schoolID">
         <v-row>
-          <v-col cols="12" class="d-flex justify-start">
+          <v-col
+            cols="12"
+            class="d-flex justify-start"
+          >
             <v-row no-gutters>
               <v-col cols="12">
-                <h2 class="subjectHeading">{{schoolName}} - {{schoolMincode}}</h2>
+                <h2 class="subjectHeading">
+                  {{ schoolName }} - {{ schoolMincode }}
+                </h2>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
         <v-row>
           <v-col class="mt-1 d-flex justify-start">
-            <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
-            <a v-if="isDistrictUser" class="ml-1 mt-1" @click="backButtonClick">Return to School User Management</a>
-            <a v-else class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+            <v-icon
+              class="mt-1"
+              small
+              color="#1976d2"
+            >
+              mdi-arrow-left
+            </v-icon>
+            <a
+              v-if="isDistrictUser"
+              class="ml-1 mt-1"
+              @click="backButtonClick"
+            >Return to School User Management</a>
+            <a
+              v-else
+              class="ml-1 mt-1"
+              @click="backButtonClick"
+            >Return to Dashboard</a>
           </v-col>
           <v-col class="d-flex justify-end">
-            <v-chip id="primaryEdxActivationCode" :color="getChipColor()">
+            <v-chip
+              id="primaryEdxActivationCode"
+              :color="getChipColor()"
+            >
               <v-icon left>
                 mdi-shield-key-outline
               </v-icon>Primary Activation Code:
-              {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
+              {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
             </v-chip>
-            <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="mdi-content-copy" class="color: white"></ClipboardButton>
+            <ClipboardButton
+              v-if="primaryEdxActivationCode"
+              id="copyPrimaryEdxActivationCodeButton"
+              :copy-text="primaryEdxActivationCode.activationCode"
+              icon="mdi-content-copy"
+              class="color: white"
+            />
           </v-col>
         </v-row>
         <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-          <v-col cols="12" md="4" class="mt-6">
-            <v-text-field variant="underlined" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+          <v-col
+            cols="12"
+            md="4"
+            class="mt-6"
+          >
+            <v-text-field
+              id="name-text-field"
+              v-model="searchFilter.name"
+              variant="underlined"
+              label="Name"
+              clearable
+            />
           </v-col>
-          <v-col cols="12" md="4" class="mt-6">
-            <v-select variant="underlined" id="roleName-select-field" clearable :items="schoolRoles" v-model="searchFilter.roleName" item-title="label"
-                      item-value="edxRoleCode" label="Role"></v-select>
+          <v-col
+            cols="12"
+            md="4"
+            class="mt-6"
+          >
+            <v-select
+              id="roleName-select-field"
+              v-model="searchFilter.roleName"
+              variant="underlined"
+              clearable
+              :items="schoolRoles"
+              item-title="label"
+              item-value="edxRoleCode"
+              label="Role"
+            />
           </v-col>
-          <v-col cols="12" md="4" :class="['text-right']">
-            <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
-            <PrimaryButton id="user-clear-button" text="Search" class="ml-2" :clickAction="searchButtonClick"
-                           :disabled="searchEnabled()"/>
+          <v-col
+            cols="12"
+            md="4"
+            :class="['text-right']"
+          >
+            <PrimaryButton
+              id="user-search-button"
+              text="Clear"
+              secondary
+              :click-action="clearButtonClick"
+            />
+            <PrimaryButton
+              id="user-clear-button"
+              text="Search"
+              class="ml-2"
+              :click-action="searchButtonClick"
+              :disabled="searchEnabled()"
+            />
           </v-col>
         </v-row>
         <!--  user info -->
-        <Spinner v-if="loadingUsers"/>
-        <v-row class="d-flex align-stretch" v-else>
-          <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
-            <AccessUserCard @refresh="getUsersData" :userRoles="getCurrentUserSchoolRoles(user)" :user="user" :institute-code="schoolID" :institute-roles="schoolRoles" institute-type-code="SCHOOL" institute-type-label="School"></AccessUserCard>
+        <Spinner v-if="loadingUsers" />
+        <v-row
+          v-else
+          class="d-flex align-stretch"
+        >
+          <v-col
+            v-for="user in filteredUsers"
+            :key="user.digitalID"
+            xl="4"
+            cols="6"
+            class="pb-0"
+          >
+            <AccessUserCard
+              :user-roles="getCurrentUserSchoolRoles(user)"
+              :user="user"
+              :institute-code="schoolID"
+              :institute-roles="schoolRoles"
+              institute-type-code="SCHOOL"
+              institute-type-label="School"
+              @refresh="getUsersData"
+            />
           </v-col>
-          <v-col xl="4" cols="6" class="pb-0">
+          <v-col
+            xl="4"
+            cols="6"
+            class="pb-0"
+          >
             <v-row style="height: 100%;">
               <v-col style="min-height: 184px">
                 <v-card height="100%">
-                  <v-row style="height: 100%;" no-gutters>
+                  <v-row
+                    style="height: 100%;"
+                    no-gutters
+                  >
                     <v-col class="d-flex align-center justify-center">
-                      <PrimaryButton icon="mdi-plus"
-                                     :large-icon=true
-                                     id="new-user-button"
-                                     secondary
-                                     icon-left
-                                     text="Add New User"
-                                     :clickAction="openInviteUserSheet"/>
+                      <PrimaryButton
+                        id="new-user-button"
+                        icon="mdi-plus"
+                        :large-icon="true"
+                        secondary
+                        icon-left
+                        text="Add New User"
+                        :click-action="openInviteUserSheet"
+                      />
                     </v-col>
                   </v-row>
                 </v-card>
@@ -80,24 +173,29 @@
           persistent
         >
           <v-card
-            id="newUserInviteVCard"
             v-if="newUserInviteSheet"
-            class="information-window-v-card">
-            <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User for {{schoolName + ' (' + schoolMincode + ')'}}</v-card-title>
-            <v-divider></v-divider>
+            id="newUserInviteVCard"
+            class="information-window-v-card"
+          >
+            <v-card-title
+              id="newUserInviteVCardTitle"
+              class="sheetHeader pt-1 pb-1"
+            >
+              New User for {{ schoolName + ' (' + schoolMincode + ')' }}
+            </v-card-title>
+            <v-divider />
             <v-card-text>
               <InviteUserPage
-                :userRoles="schoolRoles"
+                :user-roles="schoolRoles"
                 :institute-code="schoolID"
                 institute-type-code="SCHOOL"
-                instituteTypeLabel="School"
-                :schoolName="schoolName"
-                :schoolMincode="schoolMincode"
+                institute-type-label="School"
+                :school-name="schoolName"
+                :school-mincode="schoolMincode"
                 @access-user:messageSent="closeNewUserModal"
                 @access-user:updateRoles="updateUserRoles"
                 @access-user:cancelMessage="closeNewUserModal"
-              >
-              </InviteUserPage>
+              />
             </v-card-text>
           </v-card>
         </v-navigation-drawer>
@@ -105,17 +203,34 @@
       <div v-else>
         <v-row>
           <v-col class="d-flex justify-center">
-            <v-card flat min-width="55em">
-              <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-              <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+            <v-card
+              flat
+              min-width="55em"
+            >
+              <v-icon
+                small
+                color="#1976d2"
+              >
+                mdi-arrow-left
+              </v-icon>
+              <a
+                class="ml-1 mt-1"
+                @click="backButtonClick"
+              >Return to Dashboard</a>
             </v-card>
           </v-col>
         </v-row>
         <v-row>
           <v-col class="d-flex justify-center">
-            <v-card min-width="55em" color="#F2F2F2">
+            <v-card
+              min-width="55em"
+              color="#F2F2F2"
+            >
               <v-card-title>
-                <v-row class="mt-0" justify="center">
+                <v-row
+                  class="mt-0"
+                  justify="center"
+                >
                   <v-col class="d-flex justify-center">
                     <strong>Search a school below to manage their EDX Access</strong>
                   </v-col>
@@ -125,9 +240,9 @@
                 <v-row justify="center">
                   <v-col class="mx-2 d-flex justify-center">
                     <v-autocomplete
-                      id='selectInstituteName'
-                      variant="underlined"
+                      id="selectInstituteName"
                       v-model="instituteCode"
+                      variant="underlined"
                       :items="schoolSearchNames"
                       color="#003366"
                       :label="instituteTypeLabel"
@@ -135,8 +250,14 @@
                       clearable
                       item-title="schoolCodeName"
                       item-value="schoolID"
-                    ></v-autocomplete>
-                    <PrimaryButton class="ml-4 mt-3" id="manageSchoolButton" text="Manage School Access" :clickAction="manageSchoolButtonClicked" :disabled="!instituteCode"></PrimaryButton>
+                    />
+                    <PrimaryButton
+                      id="manageSchoolButton"
+                      class="ml-4 mt-3"
+                      text="Manage School Access"
+                      :click-action="manageSchoolButtonClicked"
+                      :disabled="!instituteCode"
+                    />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -146,7 +267,6 @@
       </div>
     </div>
   </v-container>
-
 </template>
 
 <script>

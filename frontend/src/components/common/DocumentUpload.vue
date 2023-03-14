@@ -1,17 +1,19 @@
 <template>
   <v-card class="document-upload">
-    <v-card-title class="pb-8"><h3>Document Upload</h3></v-card-title>
+    <v-card-title class="pb-8">
+      <h3>Document Upload</h3>
+    </v-card-title>
     <v-card-text>
       <v-form
-          ref="documentForm"
-          v-model="validForm"
+        ref="documentForm"
+        v-model="validForm"
       >
         <v-row style="min-width: 50em">
           <v-col>
             <v-select
-              color="#003366"
               id="uploadDocumentTypeCodeSelect"
               v-model="documentTypeCode"
+              color="#003366"
               required
               variant="underlined"
               :rules="requiredRules"
@@ -21,9 +23,10 @@
               :eager="eager"
               :items="documentTypes"
               label="Document Type"
-            ></v-select>
+            />
             <v-file-input
               id="selectFileInput"
+              v-model="uploadFileValue"
               color="#003366"
               variant="underlined"
               :accept="fileAccept"
@@ -32,9 +35,7 @@
               :error-messages="fileInputError"
               placeholder="Select your file"
               :rules="fileRules"
-              v-model="uploadFileValue"
-            >
-            </v-file-input>
+            />
           </v-col>
         </v-row>
 
@@ -42,25 +43,34 @@
         <!--https://stackoverflow.com/questions/54124977/vuejs-input-file-selection-event-not-firing-upon-selecting-the-same-file-->
       </v-form>
       <v-alert
-          dense
-          outlined
-          dismissible
-          v-model="alert"
-          :class="alertType"
-          class="mb-3"
+        v-model="alert"
+        dense
+        outlined
+        dismissible
+        :class="alertType"
+        class="mb-3"
       >
         {{ alertMessage }}
       </v-alert>
     </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <PrimaryButton id="cancelUploadButton" secondary text="Cancel"
-                       :clickAction="closeForm"></PrimaryButton>
-        <PrimaryButton :key="buttonKey" :loading="active" :disabled="!dataReady" id="upload_form"
-                       text="Upload" width="7rem" :clickAction="submitRequest"></PrimaryButton>
-      </v-card-actions>
-
-
+    <v-card-actions>
+      <v-spacer />
+      <PrimaryButton
+        id="cancelUploadButton"
+        secondary
+        text="Cancel"
+        :click-action="closeForm"
+      />
+      <PrimaryButton
+        id="upload_form"
+        :key="buttonKey"
+        :loading="active"
+        :disabled="!dataReady"
+        text="Upload"
+        width="7rem"
+        :click-action="submitRequest"
+      />
+    </v-card-actions>
   </v-card>
 </template>
 

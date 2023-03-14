@@ -1,8 +1,10 @@
 <template>
   <div
     @mouseover="pause = true"
-    @mouseleave="pause = false">
-    <v-snackbar id="mainSnackBar"
+    @mouseleave="pause = false"
+  >
+    <v-snackbar
+      id="mainSnackBar"
       v-model="showSnackBar"
       :timeout="timeout"
       elevation="24"
@@ -11,8 +13,9 @@
       :color="colour"
       transition="slide-y-transition"
       class="snackbar"
-    >{{ alertNotificationText }}
-      <template v-slot:action="{ attrs }">
+    >
+      {{ alertNotificationText }}
+      <template #action="{ attrs }">
         <v-btn
           text
           color="white"

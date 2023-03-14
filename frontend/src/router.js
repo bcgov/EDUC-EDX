@@ -290,7 +290,7 @@ router.beforeEach((to, _from, next) => {
     if (to && to.meta) {
       apStore.setPageTitle(to.meta.pageTitle);
     } else {
-      apStore.setPageTitle('');;
+      apStore.setPageTitle('');
     }
     next();
   }

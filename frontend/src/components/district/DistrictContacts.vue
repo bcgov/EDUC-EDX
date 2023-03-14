@@ -1,56 +1,123 @@
 <template>
-  <v-container class="containerSetup" fluid>
+  <v-container
+    class="containerSetup"
+    fluid
+  >
     <v-col class="mt-1 d-flex justify-start">
-      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-      <a class="ml-1" @click="backButtonClick">Return to Dashboard</a>
+      <v-icon
+        small
+        color="#1976d2"
+      >
+        mdi-arrow-left
+      </v-icon>
+      <a
+        class="ml-1"
+        @click="backButtonClick"
+      >Return to Dashboard</a>
     </v-col>
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
-            class="mt-16"
-            :size="70"
-            :width="7"
-            color="primary"
-            indeterminate
-            :active="loading"
-        ></v-progress-circular>
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="loading"
+        />
       </v-col>
     </v-row>
     <template v-if="!loading">
       <v-row cols="2">
         <v-col class="d-flex justify-start">
-          <v-chip variant="elevated" class="text-black mr-3" color="#A9D18E">
+          <v-chip
+            variant="elevated"
+            class="text-black mr-3"
+            color="#A9D18E"
+          >
             Active
           </v-chip>
-          <v-chip variant="elevated" class="text-black mr-3" color="#9DC3E6">
+          <v-chip
+            variant="elevated"
+            class="text-black mr-3"
+            color="#9DC3E6"
+          >
             Pending Start Date
           </v-chip>
-          <v-chip variant="elevated" class="text-black" color="#F4B183">
+          <v-chip
+            variant="elevated"
+            class="text-black"
+            color="#F4B183"
+          >
             Pending End Date
           </v-chip>
         </v-col>
         <v-col class="d-flex justify-end">
-          <PrimaryButton class="mr-2 mb-3" secondary id="viewDetailsButton" icon="mdi-domain" text="View District Details" :clickAction="redirectToDistrictDetails"></PrimaryButton>
-          <PrimaryButton width="12em" icon="mdi-plus-thick" id="newContactButton" text="New Contact" :clickAction="openNewContactSheet"></PrimaryButton>
+          <PrimaryButton
+            id="viewDetailsButton"
+            class="mr-2 mb-3"
+            secondary
+            icon="mdi-domain"
+            text="View District Details"
+            :click-action="redirectToDistrictDetails"
+          />
+          <PrimaryButton
+            id="newContactButton"
+            width="12em"
+            icon="mdi-plus-thick"
+            text="New Contact"
+            :click-action="openNewContactSheet"
+          />
         </v-col>
       </v-row>
-      <div v-for="districtContactType in districtContactTypes" :key="districtContactType.code">
+      <div
+        v-for="districtContactType in districtContactTypes"
+        :key="districtContactType.code"
+      >
         <v-row>
           <v-col>
-            <h2 style="color:#1A5A96">{{districtContactType.label}}</h2>
+            <h2 style="color:#1A5A96">
+              {{ districtContactType.label }}
+            </h2>
           </v-col>
         </v-row>
         <v-row v-if="!districtContactType.publiclyAvailable">
           <v-col>
-            <v-alert :id="`publiclyAvailableAlert${districtContactType.label}`" color="#E9EBEF" dense text type="info"><p style="color: #003366">Contacts of this type are only available to the ministry and not available to public.</p></v-alert>
+            <v-alert
+              :id="`publiclyAvailableAlert${districtContactType.label}`"
+              color="#E9EBEF"
+              dense
+              text
+              type="info"
+            >
+              <p style="color: #003366">
+                Contacts of this type are only available to the ministry and not available to public.
+              </p>
+            </v-alert>
           </v-col>
         </v-row>
-        <v-row cols="2" v-if="districtContacts.has(districtContactType.districtContactTypeCode)">
-          <v-col cols="5" lg="4" v-for="contact in districtContacts.get(districtContactType.districtContactTypeCode)" :key="contact.schoolId">
-            <DistrictContact :contact="contact" :districtID="$route.params.districtID" :canEditDistrictContact="canEditDistrictContact" :handleOpenEditor="() => openEditContactSheet(contact)" />
+        <v-row
+          v-if="districtContacts.has(districtContactType.districtContactTypeCode)"
+          cols="2"
+        >
+          <v-col
+            v-for="contact in districtContacts.get(districtContactType.districtContactTypeCode)"
+            :key="contact.schoolId"
+            cols="5"
+            lg="4"
+          >
+            <DistrictContact
+              :contact="contact"
+              :district-i-d="$route.params.districtID"
+              :can-edit-district-contact="canEditDistrictContact"
+              :handle-open-editor="() => openEditContactSheet(contact)"
+            />
           </v-col>
         </v-row>
-        <v-row cols="2" v-else>
+        <v-row
+          v-else
+          cols="2"
+        >
           <v-col>
             <p>No contacts of this type have been listed.</p>
           </v-col>
@@ -58,38 +125,41 @@
       </div>
     </template>
     <v-navigation-drawer
-        v-model="newContactSheet"
-        inset
-        no-click-animation
-        location="bottom"
-        temporary
-        style="width: 50%; height: max-content; left: 25%;"
-        scrollable
-        persistent>
+      v-model="newContactSheet"
+      inset
+      no-click-animation
+      location="bottom"
+      temporary
+      style="width: 50%; height: max-content; left: 25%;"
+      scrollable
+      persistent
+    >
       <NewDistrictContactPage
-          v-if="newContactSheet"
-          :districtContactTypes="this.districtContactTypes"
-          :districtID="this.$route.params.districtID"
-          @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
-          @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
+        v-if="newContactSheet"
+        :district-contact-types="districtContactTypes"
+        :district-i-d="$route.params.districtID"
+        @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
+        @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
       />
     </v-navigation-drawer>
     <v-navigation-drawer
-        v-model="editContactSheet"
-        inset
-        no-click-animation
-        location="bottom"
-        style="width: 50%; height: max-content; left: 25%;"
-        temporary
-        scrollable
-        persistent>
+      v-model="editContactSheet"
+      inset
+      no-click-animation
+      location="bottom"
+      style="width: 50%; height: max-content; left: 25%;"
+      temporary
+      scrollable
+      persistent
+    >
       <EditDistrictContactPage
-          v-if="editContactSheet"
-          :contact="editContact"
-          :districtContactTypes="this.districtContactTypes"
-          :districtID="this.$route.params.districtID"
-          :closeHandler="() => editContactSheet = false"
-          :onSuccessHandler="contactEditSuccess"/>
+        v-if="editContactSheet"
+        :contact="editContact"
+        :district-contact-types="districtContactTypes"
+        :district-i-d="$route.params.districtID"
+        :close-handler="() => editContactSheet = false"
+        :on-success-handler="contactEditSuccess"
+      />
     </v-navigation-drawer>
   </v-container>
 </template>
@@ -111,13 +181,13 @@ import {PERMISSION} from '../../utils/constants/Permission';
 
 export default {
   name: 'DistrictContactsPage',
-  mixins: [alertMixin],
   components: {
     PrimaryButton,
     NewDistrictContactPage,
     EditDistrictContactPage,
     DistrictContact
   },
+  mixins: [alertMixin],
   props: {
     districtID: {
       type: String,

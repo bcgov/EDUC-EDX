@@ -1,42 +1,59 @@
 <template>
-  <v-container fluid class="full-height px-0 pt-0 mt-4">
-    <v-form ref="newUserForm" v-model="isValidForm">
+  <v-container
+    fluid
+    class="full-height px-0 pt-0 mt-4"
+  >
+    <v-form
+      ref="newUserForm"
+      v-model="isValidForm"
+    >
       <v-row class="d-flex justify-center">
-
-        <v-col class="pt-0" cols="11">
+        <v-col
+          class="pt-0"
+          cols="11"
+        >
           <v-row>
             <v-col class="pr-0 pb-0">
               <v-row>
                 <v-col>
-                  <v-card id="newUserCard" flat outlined>
+                  <v-card
+                    id="newUserCard"
+                    flat
+                    outlined
+                  >
                     <v-row>
                       <v-col class="pb-0">
-                        <v-card-text id="newUserCardText" class="pb-0 pt-0">
-
-                          <v-text-field id="newUserFirstName"
-                                        label="First Name"
-                                        v-model.trim="firstName"
-                                        variant="underlined"
-                                        class="pt-0"
-                                        maxlength="255"
-                                        :rules="requiredRules"
-                          ></v-text-field>
-                          <v-text-field id="newUserLastName"
-                                        label="Last Name"
-                                        variant="underlined"
-                                        v-model.trim="lastName"
-                                        maxlength="255"
-                                        :rules="requiredRules"
-                          ></v-text-field>
-                          <v-text-field id="newUserEmail"
-                                        label="Email"
-                                        v-model.trim="email"
-                                        variant="underlined"
-                                        class="pt-0 pb-2"
-                                        :rules="emailRules"
-                                        maxlength="255"
-                                        :hint="emailHint"
-                          ></v-text-field>
+                        <v-card-text
+                          id="newUserCardText"
+                          class="pb-0 pt-0"
+                        >
+                          <v-text-field
+                            id="newUserFirstName"
+                            v-model.trim="firstName"
+                            label="First Name"
+                            variant="underlined"
+                            class="pt-0"
+                            maxlength="255"
+                            :rules="requiredRules"
+                          />
+                          <v-text-field
+                            id="newUserLastName"
+                            v-model.trim="lastName"
+                            label="Last Name"
+                            variant="underlined"
+                            maxlength="255"
+                            :rules="requiredRules"
+                          />
+                          <v-text-field
+                            id="newUserEmail"
+                            v-model.trim="email"
+                            label="Email"
+                            variant="underlined"
+                            class="pt-0 pb-2"
+                            :rules="emailRules"
+                            maxlength="255"
+                            :hint="emailHint"
+                          />
                           <v-select
                             id="instituteNewUserRolesSelect"
                             v-model="edxActivationRoleCodes"
@@ -48,36 +65,42 @@
                             :rules="requireRoleRules"
                             class="mb-3 mt-0 pt-0"
                           >
-                            <template v-slot:no-data>
+                            <template #no-data />
+                            <template #selection="{item, index}">
+                              {{ getRoleNameFromCode(item, index) }}
                             </template>
-                            <template v-slot:selection="{item, index}">
-                              {{getRoleNameFromCode(item, index)}}
-                            </template>
-                            <template v-slot:append-item>
+                            <template #append-item>
                               <v-list
-                                lines="two"
                                 v-model:selected="edxActivationRoleCodes"
-                                v-on:update:selected="disableRoles"
+                                lines="two"
                                 return-object
-                                select-strategy="classic">
-                                <div v-for="newrole in userRoles" :key="newrole.edxRoleCode" :value="newrole.edxRoleCode">
-                                  <v-list-item :disabled="newrole.disabled" :value="newrole.edxRoleCode">
-                                    <template v-slot:prepend="{ isActive }">
+                                select-strategy="classic"
+                                @update:selected="disableRoles"
+                              >
+                                <div
+                                  v-for="newrole in userRoles"
+                                  :key="newrole.edxRoleCode"
+                                  :value="newrole.edxRoleCode"
+                                >
+                                  <v-list-item
+                                    :disabled="newrole.disabled"
+                                    :value="newrole.edxRoleCode"
+                                  >
+                                    <template #prepend="{ isActive }">
                                       <v-list-item-action>
-                                        <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                                        <v-checkbox-btn :model-value="isActive" />
                                       </v-list-item-action>
                                     </template>
 
                                     <v-list-item-title>{{ newrole.label }}</v-list-item-title>
 
                                     <v-list-item-subtitle>
-                                      {{newrole.roleDescription}}
+                                      {{ newrole.roleDescription }}
                                     </v-list-item-subtitle>
                                   </v-list-item>
                                 </div>
                               </v-list>
                             </template>
-
                           </v-select>
                         </v-card-text>
                       </v-col>
@@ -86,17 +109,27 @@
                 </v-col>
               </v-row>
               <v-row class="py-4 justify-end">
-                <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-2"
-                               :clickAction="navigateToList"></PrimaryButton>
-                <PrimaryButton id="newUserInvitePostBtn" text="Invite" width="8rem" :disabled="!isValidForm"
-                               :loading="processing"
-                               :clickAction="sendNewUserInvite"></PrimaryButton>
+                <PrimaryButton
+                  id="cancelMessage"
+                  secondary
+                  text="Cancel"
+                  class="mr-2"
+                  :click-action="navigateToList"
+                />
+                <PrimaryButton
+                  id="newUserInvitePostBtn"
+                  text="Invite"
+                  width="8rem"
+                  :disabled="!isValidForm"
+                  :loading="processing"
+                  :click-action="sendNewUserInvite"
+                />
               </v-row>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
+      <ConfirmationDialog ref="confirmationDialog" />
     </v-form>
   </v-container>
 </template>
@@ -112,11 +145,11 @@ import { mapState } from 'pinia';
 
 export default {
   name: 'InviteUserPage',
-  mixins: [alertMixin],
   components: {
     PrimaryButton,
     ConfirmationDialog,
   },
+  mixins: [alertMixin],
   props: {
     userRoles: {
       type: Array,
@@ -151,9 +184,6 @@ export default {
       required: true
     }
   },
-  mounted() {
-    this.validateForm();
-  },
   data() {
     return {
       firstName: '',
@@ -168,6 +198,9 @@ export default {
       rolesHint: 'Pick the roles to be assigned to the new user',
       emailHint: 'Valid Email Required'
     };
+  },
+  mounted() {
+    this.validateForm();
   },
   computed: {
     ...mapState(authStore, ['userInfo']),

@@ -1,54 +1,86 @@
 <!--suppress ALL -->
 <template>
-  <v-container fluid class="full-height">
+  <v-container
+    fluid
+    class="full-height"
+  >
     <v-row>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-col cols="6">
         <v-row>
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
         <v-row v-if="activeUserSchools.length>0">
-          <v-col class="mb-3"><h2>School Dashboard</h2></v-col>
+          <v-col class="mb-3">
+            <h2>School Dashboard</h2>
+          </v-col>
         </v-row>
-        <v-data-table v-if="activeUserSchools.length>0"
-                      id="schools-dashboard-items"
+        <v-data-table
+          v-if="activeUserSchools.length>0"
+          id="schools-dashboard-items"
           :items="activeUserSchools"
           :loading="isTableLoading"
           items-per-page="-1"
           class="elevation-1"
         >
-          <template v-slot:item="{ item, index }">
-            <v-row no-gutters class="pl-2 hoverTable" @click="selectSchool(item.value.schoolID)" :style="(index + 1) === activeUserSchools.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'">
+          <template #item="{ item, index }">
+            <v-row
+              no-gutters
+              class="pl-2 hoverTable"
+              :style="(index + 1) === activeUserSchools.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'"
+              @click="selectSchool(item.value.schoolID)"
+            >
               <v-col class="pa-1">
-                <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
-                <h3 style="color: grey;">{{item.value.mincode}}</h3>
+                <h3
+                  class="mt-1 mb-1"
+                  style="color: black;"
+                >
+                  {{ item.value.displayName }}
+                </h3>
+                <h3 style="color: grey;">
+                  {{ item.value.mincode }}
+                </h3>
               </v-col>
             </v-row>
           </template>
         </v-data-table>
         <v-row v-if="activeUserDistricts.length>0">
-          <v-col class="mt-6 mb-3"><h2>District Dashboard</h2></v-col>
+          <v-col class="mt-6 mb-3">
+            <h2>District Dashboard</h2>
+          </v-col>
         </v-row>
-        <v-data-table v-if="activeUserDistricts.length>0"
-                      id="schools-district-items"
-            :items="activeUserDistricts"
-            class="elevation-1"
-            items-per-page="-1"
-            :loading="isTableLoading"
+        <v-data-table
+          v-if="activeUserDistricts.length>0"
+          id="schools-district-items"
+          :items="activeUserDistricts"
+          class="elevation-1"
+          items-per-page="-1"
+          :loading="isTableLoading"
         >
-          <template v-slot:item="{ item, index }">
-            <v-row no-gutters class="pl-2 hoverTable" @click="selectDistrict(item.value.districtID)" :style="(index + 1) === activeUserDistricts.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'">
+          <template #item="{ item, index }">
+            <v-row
+              no-gutters
+              class="pl-2 hoverTable"
+              :style="(index + 1) === activeUserDistricts.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'"
+              @click="selectDistrict(item.value.districtID)"
+            >
               <v-col class="pa-1">
-                <h3 class="mt-1 mb-1" style="color: black;">{{item.value.displayName}}</h3>
-                <h3 style="color: grey;">{{item.value.districtNumber}}</h3>
+                <h3
+                  class="mt-1 mb-1"
+                  style="color: black;"
+                >
+                  {{ item.value.displayName }}
+                </h3>
+                <h3 style="color: grey;">
+                  {{ item.value.districtNumber }}
+                </h3>
               </v-col>
             </v-row>
           </template>
         </v-data-table>
       </v-col>
-      <v-spacer></v-spacer>
+      <v-spacer />
     </v-row>
-
   </v-container>
 </template>
 

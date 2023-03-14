@@ -25,11 +25,6 @@ export const documentStore = defineStore('document', {
         const response = await ApiService.getDocumentTypeCodes(rootGetters.requestType);
         this.documentTypeCodes = response.data;
       }
-    },
-    async deleteFile({getters, rootGetters}, {requestID, documentID}){
-      await ApiService.deleteDocument(requestID, documentID, rootGetters.requestType);
-      const documents = this.unsubmittedDocumentsState.filter(document => document.documentID !== documentID);
-      this.unsubmittedDocuments = documents;
     }
   }
 });

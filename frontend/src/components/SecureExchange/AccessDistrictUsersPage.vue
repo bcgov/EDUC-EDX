@@ -2,52 +2,132 @@
   <v-container>
     <v-row>
       <v-col class="mt-1 d-flex justify-start">
-        <v-icon class="mt-1" small color="#1976d2">mdi-arrow-left</v-icon>
-        <a class="ml-1 mt-1" @click="backButtonClick">Return to Dashboard</a>
+        <v-icon
+          class="mt-1"
+          small
+          color="#1976d2"
+        >
+          mdi-arrow-left
+        </v-icon>
+        <a
+          class="ml-1 mt-1"
+          @click="backButtonClick"
+        >Return to Dashboard</a>
       </v-col>
       <v-col class="d-flex justify-end">
-        <v-chip id="primaryEdxActivationCode" :color="getChipColor()">
+        <v-chip
+          id="primaryEdxActivationCode"
+          :color="getChipColor()"
+        >
           <v-icon left>
             mdi-shield-key-outline
           </v-icon>Primary Activation Code:
-          {{ this.primaryEdxActivationCode ? this.primaryEdxActivationCode.activationCode : `Code Not Found` }}
+          {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
         </v-chip>
-        <ClipboardButton id="copyPrimaryEdxActivationCodeButton" v-if="this.primaryEdxActivationCode" :copyText="this.primaryEdxActivationCode.activationCode" icon="mdi-content-copy" class="color: white"></ClipboardButton>
+        <ClipboardButton
+          v-if="primaryEdxActivationCode"
+          id="copyPrimaryEdxActivationCodeButton"
+          :copy-text="primaryEdxActivationCode.activationCode"
+          icon="mdi-content-copy"
+          class="color: white"
+        />
       </v-col>
     </v-row>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
-      <v-col class="mt-3"  cols="12" md="4">
-        <v-text-field variant="underlined" id="name-text-field" label="Name" v-model="searchFilter.name" clearable></v-text-field>
+      <v-col
+        class="mt-3"
+        cols="12"
+        md="4"
+      >
+        <v-text-field
+          id="name-text-field"
+          v-model="searchFilter.name"
+          variant="underlined"
+          label="Name"
+          clearable
+        />
       </v-col>
-      <v-col class="mt-3" cols="12" md="4">
-        <v-select variant="underlined" id="roleName-select-field" clearable :items="districtRoles" v-model="searchFilter.roleName" item-title="label"
-                  item-value="edxRoleCode" label="Role"></v-select>
+      <v-col
+        class="mt-3"
+        cols="12"
+        md="4"
+      >
+        <v-select
+          id="roleName-select-field"
+          v-model="searchFilter.roleName"
+          variant="underlined"
+          clearable
+          :items="districtRoles"
+          item-title="label"
+          item-value="edxRoleCode"
+          label="Role"
+        />
       </v-col>
-      <v-col cols="12" md="4" :class="['text-right']">
-        <PrimaryButton id="user-search-button" text="Clear" secondary :clickAction="clearButtonClick"/>
-        <PrimaryButton id="user-clear-button" text="Search" class="ml-2" :clickAction="searchButtonClick"
-                       :disabled="searchEnabled()"/>
+      <v-col
+        cols="12"
+        md="4"
+        :class="['text-right']"
+      >
+        <PrimaryButton
+          id="user-search-button"
+          text="Clear"
+          secondary
+          :click-action="clearButtonClick"
+        />
+        <PrimaryButton
+          id="user-clear-button"
+          text="Search"
+          class="ml-2"
+          :click-action="searchButtonClick"
+          :disabled="searchEnabled()"
+        />
       </v-col>
     </v-row>
     <!--  user info -->
-    <Spinner v-if="loadingUsers"/>
-    <v-row class="d-flex align-stretch" v-else-if="filteredUsers.length">
-      <v-col xl="4" cols="6" class="pb-0" v-for="user in filteredUsers" :key="user.digitalID">
-        <AccessUserCard @refresh="getUsersData" :userRoles="getCurrentUserDistrictRoles(user)" :user="user" :institute-code="districtID" :institute-roles="districtRoles" institute-type-code="DISTRICT" institute-type-label="District"></AccessUserCard>
+    <Spinner v-if="loadingUsers" />
+    <v-row
+      v-else-if="filteredUsers.length"
+      class="d-flex align-stretch"
+    >
+      <v-col
+        v-for="user in filteredUsers"
+        :key="user.digitalID"
+        xl="4"
+        cols="6"
+        class="pb-0"
+      >
+        <AccessUserCard
+          :user-roles="getCurrentUserDistrictRoles(user)"
+          :user="user"
+          :institute-code="districtID"
+          :institute-roles="districtRoles"
+          institute-type-code="DISTRICT"
+          institute-type-label="District"
+          @refresh="getUsersData"
+        />
       </v-col>
-      <v-col xl="4" cols="6" class="pb-0">
+      <v-col
+        xl="4"
+        cols="6"
+        class="pb-0"
+      >
         <v-row style="height: 100%;">
           <v-col style="min-height: 184px">
             <v-card height="100%">
-              <v-row style="height: 100%;" no-gutters>
+              <v-row
+                style="height: 100%;"
+                no-gutters
+              >
                 <v-col class="d-flex align-center justify-center">
-                  <PrimaryButton icon="mdi-plus"
-                                 :large-icon=true
-                                 id="new-user-button"
-                                 secondary
-                                 icon-left
-                                 text="Add New User"
-                                 :clickAction="openNewUserSheet"/>
+                  <PrimaryButton
+                    id="new-user-button"
+                    icon="mdi-plus"
+                    :large-icon="true"
+                    secondary
+                    icon-left
+                    text="Add New User"
+                    :click-action="openNewUserSheet"
+                  />
                 </v-col>
               </v-row>
             </v-card>
@@ -55,46 +135,50 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row  v-else>
+    <v-row v-else>
       <v-col class="d-flex justify-center">
         No users found
       </v-col>
     </v-row>
 
     <v-navigation-drawer
-        v-model="newUserInviteSheet"
-        inset
-        location="bottom"
-        style="width: 50%; height: max-content; left: 25%;"
-        no-click-animation
-        scrollable
-        temporary
-        persistent
+      v-model="newUserInviteSheet"
+      inset
+      location="bottom"
+      style="width: 50%; height: max-content; left: 25%;"
+      no-click-animation
+      scrollable
+      temporary
+      persistent
     >
       <v-card
-          id="newUserInviteVCard"
-          v-if="newUserInviteSheet"
-          class="information-window-v-card">
-        <v-card-title id="newUserInviteVCardTitle" class="sheetHeader pt-1 pb-1">New User</v-card-title>
-        <v-divider></v-divider>
+        v-if="newUserInviteSheet"
+        id="newUserInviteVCard"
+        class="information-window-v-card"
+      >
+        <v-card-title
+          id="newUserInviteVCardTitle"
+          class="sheetHeader pt-1 pb-1"
+        >
+          New User
+        </v-card-title>
+        <v-divider />
         <v-card-text>
           <InviteUserPage
-              :userRoles="districtRoles"
-              :institute-code="districtID"
-              institute-type-code="DISTRICT"
-              instituteTypeLabel="District"
-              :districtName="districtName"
-              :districtNumber="districtNumber"
-              @access-user:messageSent="closeNewUserModal"
-              @access-user:updateRoles="updateUserRoles"
-              @access-user:cancelMessage="closeNewUserModal"
-          >
-          </InviteUserPage>
+            :user-roles="districtRoles"
+            :institute-code="districtID"
+            institute-type-code="DISTRICT"
+            institute-type-label="District"
+            :district-name="districtName"
+            :district-number="districtNumber"
+            @access-user:messageSent="closeNewUserModal"
+            @access-user:updateRoles="updateUserRoles"
+            @access-user:cancelMessage="closeNewUserModal"
+          />
         </v-card-text>
       </v-card>
     </v-navigation-drawer>
   </v-container>
-
 </template>
 
 <script>

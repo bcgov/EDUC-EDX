@@ -1,74 +1,139 @@
 <template>
   <div class="mb-1">
-
     <v-navigation-drawer
       v-model="drawer"
       clipped
       app
       color="#E9EBEF"
       :width="navWidth"
-      temporary>
+      temporary
+    >
       <v-list>
-        <div v-for="(item) in items.filter(obj => obj.authorized)" v-bind:key="item.title">
-          <v-list-item v-if="!item.items"
-                       :key="item.title+`1`"
-                       class="menuRow"
-                       :id="stripWhitespace(item.title + `MenuBtn`)">
-            <router-link :to="{ name: item.link }"  :target="item.newTab ? '_blank' : '_self'" class="router">
+        <div
+          v-for="(item) in items.filter(obj => obj.authorized)"
+          :key="item.title"
+        >
+          <v-list-item
+            v-if="!item.items"
+            :id="stripWhitespace(item.title + `MenuBtn`)"
+            :key="item.title+`1`"
+            class="menuRow"
+          >
+            <router-link
+              :to="{ name: item.link }"
+              :target="item.newTab ? '_blank' : '_self'"
+              class="router"
+            >
               <v-list-item>
-                <v-list-item-title v-if="item.link === $route.name" class="menuItem"><strong>{{item.title}}</strong></v-list-item-title>
-                <v-list-item-title v-else class="menuItem">{{item.title}}</v-list-item-title>
+                <v-list-item-title
+                  v-if="item.link === $route.name"
+                  class="menuItem"
+                >
+                  <strong>{{ item.title }}</strong>
+                </v-list-item-title>
+                <v-list-item-title
+                  v-else
+                  class="menuItem"
+                >
+                  {{ item.title }}
+                </v-list-item-title>
               </v-list-item>
             </router-link>
           </v-list-item>
           <v-list-group
             v-else
+            :id="stripWhitespace(item.title) + `MenuBtn`"
             :key="item.title"
             no-action
             active-class="active"
             class="groupMenu"
-            :id="stripWhitespace(item.title) + `MenuBtn`"
             append-icon=""
             @click="setActive(item)"
           >
-            <template v-slot:activator>
+            <template #activator>
               <v-list-item>
-                <v-list-item-title v-text="item.title" class="menuItem ml-4"></v-list-item-title>
+                <v-list-item-title
+                  class="menuItem ml-4"
+                  v-text="item.title"
+                />
               </v-list-item>
               <v-list-item
                 v-for="subItem in item.items.filter(obj => obj.authorized)"
+                :id="stripWhitespace(subItem.title) + `MenuBtn`"
                 :key="subItem.title"
                 class="subMenuRow pl-9"
-                :id="stripWhitespace(subItem.title) + `MenuBtn`"
               >
-                <router-link :to="{ name: subItem.link }" :target="subItem.newTab ? '_blank' : '_self'" class="router">
+                <router-link
+                  :to="{ name: subItem.link }"
+                  :target="subItem.newTab ? '_blank' : '_self'"
+                  class="router"
+                >
                   <v-list-item>
-                    <v-list-item-title v-if="subItem.link === $route.name" class="menuItem"><strong>{{ subItem.title }}</strong></v-list-item-title>
-                    <v-list-item-title v-else v-text="subItem.title" class="menuItem"></v-list-item-title>
+                    <v-list-item-title
+                      v-if="subItem.link === $route.name"
+                      class="menuItem"
+                    >
+                      <strong>{{ subItem.title }}</strong>
+                    </v-list-item-title>
+                    <v-list-item-title
+                      v-else
+                      class="menuItem"
+                      v-text="subItem.title"
+                    />
                   </v-list-item>
                 </router-link>
               </v-list-item>
             </template>
-
-
           </v-list-group>
         </div>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar absolute v-if="hasAnyItems" color="#38598A" :dark="true" id="navBar" class="pl-4 pr-8" :class="{'pl-16': $vuetify.display.mdAndUp}">
-      <v-app-bar-nav-icon class="ml-n5" style="color: white" id="menuBtn" @click="drawer=true">
-        <v-icon v-if="!drawer">$menu</v-icon>
-        <v-icon v-else>$close</v-icon>
-        <p class="ma-0 pl-3 pr-2 hidden-sm-and-down">Menu</p>
+    <v-app-bar
+      v-if="hasAnyItems"
+      id="navBar"
+      absolute
+      color="#38598A"
+      :dark="true"
+      class="pl-4 pr-8"
+      :class="{'pl-16': $vuetify.display.mdAndUp}"
+    >
+      <v-app-bar-nav-icon
+        id="menuBtn"
+        class="ml-n5"
+        style="color: white"
+        @click="drawer=true"
+      >
+        <v-icon v-if="!drawer">
+          $menu
+        </v-icon>
+        <v-icon v-else>
+          $close
+        </v-icon>
+        <p class="ma-0 pl-3 pr-2 hidden-sm-and-down">
+          Menu
+        </p>
       </v-app-bar-nav-icon>
-      <v-toolbar-title id="navTitle" class="nav-title pl-6" :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}">{{ title }}</v-toolbar-title>
+      <v-toolbar-title
+        id="navTitle"
+        class="nav-title pl-6"
+        :class="{'ml-4': $vuetify.display.mdAndUp, 'pl-1': $vuetify.display.smAndDown}"
+      >
+        {{ title }}
+      </v-toolbar-title>
     </v-app-bar>
-    <v-app-bar v-if="bannerColor !== ''"
-               style="color:white"
-               :color="bannerColor"
-               absolute
-               density="compact"
-    ><div><h3 class="envBanner pl-5">{{ bannerEnvironment }} Environment</h3></div></v-app-bar>
+    <v-app-bar
+      v-if="bannerColor !== ''"
+      style="color:white"
+      :color="bannerColor"
+      absolute
+      density="compact"
+    >
+      <div>
+        <h3 class="envBanner pl-5">
+          {{ bannerEnvironment }} Environment
+        </h3>
+      </div>
+    </v-app-bar>
   </div>
 </template>
 
@@ -79,7 +144,7 @@ import { mapState } from 'pinia';
 import {PERMISSION} from '../../utils/constants/Permission';
 import StaticConfig from '../../common/staticConfig';
 export default {
-  name: 'navBar',
+  name: 'NavBar',
   props: {
     title: {
       type: String,

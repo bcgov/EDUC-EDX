@@ -1,8 +1,9 @@
 <template>
   <v-row justify="center">
     <v-col>
-      <v-dialog v-model="PDFRenderDialog"
-                max-width="80%"
+      <v-dialog
+        v-model="PDFRenderDialog"
+        max-width="80%"
       >
         <v-card>
           <v-card-title class="px-0 pb-0 pt-5">
@@ -15,38 +16,48 @@
                 </slot>
               </v-list-item-title>
               <v-list-item-action class="my-0">
-                <v-btn id="closePDFRendererModalBtn" text icon @click="PDFRenderDialog=false">
-                  <v-icon large color="#38598A">mdi-close</v-icon>
+                <v-btn
+                  id="closePDFRendererModalBtn"
+                  text
+                  icon
+                  @click="PDFRenderDialog=false"
+                >
+                  <v-icon
+                    large
+                    color="#38598A"
+                  >
+                    mdi-close
+                  </v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
           </v-card-title>
-          <v-spacer/>
+          <v-spacer />
           <v-card style="min-height: 740px">
             <v-card-text>
-              <v-row v-if="isLoading"
-                     class="fill-height ma-0"
-                     align="center"
-                     justify="center"
+              <v-row
+                v-if="isLoading"
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
               >
                 <v-progress-circular
                   :size="70"
                   :width="7"
                   color="primary"
                   indeterminate
-                ></v-progress-circular>
+                />
               </v-row>
-              <v-spacer></v-spacer>
-              <v-row justify="center" v-if="!isLoading">
-                <!--                <vue-pdf-embed style="width: 100%" v-if="!isLoading" :source="arrayBuffer" />-->
-              </v-row>
+              <v-spacer />
+              <v-row
+                v-if="!isLoading"
+                justify="center"
+              />
             </v-card-text>
           </v-card>
         </v-card>
-
       </v-dialog>
     </v-col>
-
   </v-row>
 </template>
 
@@ -58,17 +69,6 @@ import alertMixin from '../../mixins/alertMixin';
 export default {
   name: 'PdfRenderer',
   mixins: [alertMixin],
-  // components: {
-  //   VuePdfEmbed
-  // },
-  data() {
-    return {
-      arrayBuffer: undefined,
-      isLoading: true,
-      PDFRenderDialog: false,
-      documentID: ''
-    };
-  },
   props: {
     dialog: {
       type: Boolean,
@@ -82,6 +82,17 @@ export default {
       type: String,
       required: true
     }
+  },
+  // components: {
+  //   VuePdfEmbed
+  // },
+  data() {
+    return {
+      arrayBuffer: undefined,
+      isLoading: true,
+      PDFRenderDialog: false,
+      documentID: ''
+    };
   },
   watch: {
     dialog(newValue) {

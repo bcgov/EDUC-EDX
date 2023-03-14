@@ -1,46 +1,71 @@
 <template>
-  <v-container fluid class="full-height px-0 pt-0">
+  <v-container
+    fluid
+    class="full-height px-0 pt-0"
+  >
     <v-row class="d-flex justify-center">
-      <v-col class="pt-0" cols="11">
+      <v-col
+        class="pt-0"
+        cols="11"
+      >
         <v-row>
           <v-col class="pr-0 pb-0">
             <v-row>
               <v-col>
-                <v-card id="newMessageCard" flat outlined>
+                <v-card
+                  id="newMessageCard"
+                  flat
+                  outlined
+                >
                   <v-row>
                     <v-col class="pb-0 pt-8">
-                      <v-card-text id="newMessageCardText" class="pb-0 pt-0">
-                        <v-form ref="newMessageForm" v-model="isValidForm">
+                      <v-card-text
+                        id="newMessageCardText"
+                        class="pb-0 pt-0"
+                      >
+                        <v-form
+                          ref="newMessageForm"
+                          v-model="isValidForm"
+                        >
                           <v-text-field
-                              :model-value="getFromName()"
-                              label="From"
-                              class="pt-0"
-                              variant="underlined"
-                              readonly
-                          ></v-text-field>
+                            :model-value="getFromName()"
+                            label="From"
+                            class="pt-0"
+                            variant="underlined"
+                            readonly
+                          />
                           <v-select
                             id="schoolNameTxtField"
                             v-model="assignedMinistryTeam"
-                            :items="this.ministryTeams"
+                            :items="ministryTeams"
                             item-value="ministryOwnershipTeamId"
                             item-title="teamName"
                             :rules="requiredRules"
                             label="To"
                             variant="underlined"
                             :menu-props="{
-                            closeOnClick: true,
-                            closeOnContentClick: true,
+                              closeOnClick: true,
+                              closeOnContentClick: true,
                             }"
                           >
-                            <template v-slot:item="{ item, index }">
-                              <v-list-item v-on:click="selectItem(item)">
+                            <template #item="{ item, index }">
+                              <v-list-item @click="selectItem(item)">
                                 <v-row no-gutters>
-                                  <v-col cols="12" class="pr-0">
-                                    <div class="body-2" style="color: black;font-weight: bolder">
+                                  <v-col
+                                    cols="12"
+                                    class="pr-0"
+                                  >
+                                    <div
+                                      class="body-2"
+                                      style="color: black;font-weight: bolder"
+                                    >
                                       {{ item.title }}
                                     </div>
-                                    <div class="body-2" style="color: black;"
-                                         :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}">
+                                    <div
+                                      class="body-2"
+                                      style="color: black;"
+                                      :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}"
+                                    >
                                       {{ item.raw.description }}
                                     </div>
                                   </v-col>
@@ -49,70 +74,105 @@
                             </template>
                           </v-select>
                           <v-text-field
-                              v-model="subject"
-                              id='subjectTxtField'
-                              label="Subject"
-                              variant="underlined"
-                              :rules="requiredRules"
-                              maxlength="255"
-                              class="pt-0"
-                          ></v-text-field>
+                            id="subjectTxtField"
+                            v-model="subject"
+                            label="Subject"
+                            variant="underlined"
+                            :rules="requiredRules"
+                            maxlength="255"
+                            class="pt-0"
+                          />
                           <v-textarea
-                              id="newMessageTextArea"
-                              v-model="newMessage"
-                              :rules="requiredRules"
-                              rows="8"
-                              label="Message"
-                              variant="underlined"
-                              no-resize
-                              maxlength="4000"
-                              class="pt-0"
-                              ref="newMessageTextArea">
-                          </v-textarea>
+                            id="newMessageTextArea"
+                            ref="newMessageTextArea"
+                            v-model="newMessage"
+                            :rules="requiredRules"
+                            rows="8"
+                            label="Message"
+                            variant="underlined"
+                            no-resize
+                            maxlength="4000"
+                            class="pt-0"
+                          />
                         </v-form>
                       </v-card-text>
                     </v-col>
                   </v-row>
-                  <v-row class="ml-6 mt-5" no-gutters>
-                    <div v-for="(document, index) in secureExchangeDocuments" :key="index">
-                      <v-col  class="d-flex justify-start px-0 pb-2">
-                        <v-chip :id="`documentChip-${index}`" :class="['ma-1']"   close @click:close="removeDocumentByIndex(index)">
+                  <v-row
+                    class="ml-6 mt-5"
+                    no-gutters
+                  >
+                    <div
+                      v-for="(document, index) in secureExchangeDocuments"
+                      :key="index"
+                    >
+                      <v-col class="d-flex justify-start px-0 pb-2">
+                        <v-chip
+                          :id="`documentChip-${index}`"
+                          :class="['ma-1']"
+                          close
+                          @click:close="removeDocumentByIndex(index)"
+                        >
                           <v-avatar left>
                             <v-icon>mdi-paperclip</v-icon>
                           </v-avatar>
-                          {{abbreviateFileName(document.fileName)}}</v-chip>
+                          {{ abbreviateFileName(document.fileName) }}
+                        </v-chip>
                       </v-col>
                     </div>
-                    <div v-for="(secureExchangeStudent, index) in secureExchangeStudents" :key="secureExchangeStudent.studentID">
+                    <div
+                      v-for="(secureExchangeStudent, index) in secureExchangeStudents"
+                      :key="secureExchangeStudent.studentID"
+                    >
                       <v-col class="d-flex justify-start px-0 pb-2">
-                        <v-chip :id="`studentChip-${index}`" :class="['ma-1']"  close @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)">
+                        <v-chip
+                          :id="`studentChip-${index}`"
+                          :class="['ma-1']"
+                          close
+                          @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)"
+                        >
                           <v-avatar left>
                             <v-icon>mdi-account-circle</v-icon>
                           </v-avatar>
-                          {{secureExchangeStudent.pen}}</v-chip>
+                          {{ secureExchangeStudent.pen }}
+                        </v-chip>
                       </v-col>
                     </div>
                   </v-row>
                   <v-row v-if="shouldShowOptions">
                     <v-col class="d-flex justify-end mr-3 pt-0">
-                      <v-btn id="attachFileID"
-                             title="Attach File"
-                             color="#1A5A96"
-                             variant="outlined"
-                             class="addButton pl-2 pr-2"
-                             @click="showAttachFilePanel"
+                      <v-btn
+                        id="attachFileID"
+                        title="Attach File"
+                        color="#1A5A96"
+                        variant="outlined"
+                        class="addButton pl-2 pr-2"
+                        @click="showAttachFilePanel"
                       >
-                        <v-icon color="#1A5A96" class="mr-0" right dark>mdi-paperclip</v-icon>
+                        <v-icon
+                          color="#1A5A96"
+                          class="mr-0"
+                          right
+                          dark
+                        >
+                          mdi-paperclip
+                        </v-icon>
                         <span class="ml-1">Attach File</span>
                       </v-btn>
-                      <v-btn id="addStudentID"
-                             title="Add Student"
-                             color="#1A5A96"
-                             variant="outlined"
-                             class="addButton pl-2 pr-2 ml-1"
-                             @click="showAddStudentPanel"
+                      <v-btn
+                        id="addStudentID"
+                        title="Add Student"
+                        color="#1A5A96"
+                        variant="outlined"
+                        class="addButton pl-2 pr-2 ml-1"
+                        @click="showAddStudentPanel"
                       >
-                        <v-icon color="#1A5A96" class="mr-0" right dark>
+                        <v-icon
+                          color="#1A5A96"
+                          class="mr-0"
+                          right
+                          dark
+                        >
                           mdi-account-multiple-plus-outline
                         </v-icon>
                         <span class="ml-1">Add Student</span>
@@ -124,21 +184,20 @@
                     <v-col class="d-flex justify-center px-2 pb-2 pt-2">
                       <v-expand-transition>
                         <DocumentUpload
-                            v-show="expandAttachFile"
-                            @close:form="showOptions"
-                            @upload="uploadDocument"
-                        ></DocumentUpload>
+                          v-show="expandAttachFile"
+                          @close:form="showOptions"
+                          @upload="uploadDocument"
+                        />
                       </v-expand-transition>
                       <v-expand-transition>
                         <AddStudent
-                            v-show="expandAddStudent"
-                            @close:form="showOptions"
-                            @addStudent="addSecureExchangeStudent"
-                         :schoolID="userInfo.activeInstituteIdentifier"
-                         :additionalStudentAddWarning="additionalStudentAddWarningMessage"
-                            @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
-                        >
-                        </AddStudent>
+                          v-show="expandAddStudent"
+                          :school-i-d="userInfo.activeInstituteIdentifier"
+                          :additional-student-add-warning="additionalStudentAddWarningMessage"
+                          @close:form="showOptions"
+                          @addStudent="addSecureExchangeStudent"
+                          @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
+                        />
                       </v-expand-transition>
                     </v-col>
                   </v-row>
@@ -149,12 +208,25 @@
           </v-col>
         </v-row>
         <v-row class="py-4 justify-end pr-3">
-          <PrimaryButton id="cancelMessage" secondary text="Cancel" class="mr-1" :clickAction="navigateToList"></PrimaryButton>
-          <PrimaryButton id="newMessagePostBtn" text="Send" width="7rem" :disabled="!isValidForm" :loading="processing" :clickAction="sendNewMessage"></PrimaryButton>
+          <PrimaryButton
+            id="cancelMessage"
+            secondary
+            text="Cancel"
+            class="mr-1"
+            :click-action="navigateToList"
+          />
+          <PrimaryButton
+            id="newMessagePostBtn"
+            text="Send"
+            width="7rem"
+            :disabled="!isValidForm"
+            :loading="processing"
+            :click-action="sendNewMessage"
+          />
         </v-row>
       </v-col>
     </v-row>
-    <ConfirmationDialog ref="confirmationDialog"></ConfirmationDialog>
+    <ConfirmationDialog ref="confirmationDialog" />
   </v-container>
 </template>
 
@@ -173,16 +245,13 @@ import AddStudent from '../AddStudent.vue';
 
 export default {
   name: 'NewMessagePage',
-  mixins: [alertMixin],
   components: {
     AddStudent,
     PrimaryButton,
     ConfirmationDialog,
     DocumentUpload
   },
-  mounted() {
-    this.validateForm();
-  },
+  mixins: [alertMixin],
   data() {
     return {
       newMessage: '',
@@ -196,6 +265,9 @@ export default {
       shouldShowOptions: true,
       additionalStudentAddWarningMessage:''
     };
+  },
+  mounted() {
+    this.validateForm();
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
