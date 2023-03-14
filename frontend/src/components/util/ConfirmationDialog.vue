@@ -26,7 +26,7 @@
             id="closeBtn"
             text
             icon
-            @click.native="cancel"
+            @click="cancel"
           >
             <v-icon color="#38598A">
               mdi-close

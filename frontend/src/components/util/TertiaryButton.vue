@@ -30,10 +30,12 @@ export default {
   name: 'TertiaryButton',
   props: {
     id: {
-      type: String
+      type: String,
+      default: null
     },
     text: {
-      type: String
+      type: String,
+      default: null
     },
     short: {
       type: Boolean,
@@ -45,24 +47,31 @@ export default {
     },
     to: {
       type: String,
+      default: null
     },
     width: {
       type: String,
+      default: null
     },
     icon: {
       type: String,
+      default: null
     },
     iconStyle: {
-      type: String
+      type: String,
+      default: null
     },
     minWidth: {
-      type: String
+      type: String,
+      default: null
     },
     bind: {
-      type: Object
+      type: Object,
+      default: null
     },
     on: {
-      type: Object
+      type: Object,
+      default: null
     },
   }
 };

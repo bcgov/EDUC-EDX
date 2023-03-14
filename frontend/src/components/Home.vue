@@ -91,15 +91,15 @@ export default {
     Login,
     DashboardTable
   },
-  computed: {
-    ...mapState(authStore, ['isAuthenticated', 'isLoading']),
-  },
   data(){
     return {
       exchangeData: [],
       isLoadingExchange: true,
       PAGE_TITLES: PAGE_TITLES
     };
+  },
+  computed: {
+    ...mapState(authStore, ['isAuthenticated', 'isLoading']),
   },
   mounted()  {
     this.exchangeData.push({

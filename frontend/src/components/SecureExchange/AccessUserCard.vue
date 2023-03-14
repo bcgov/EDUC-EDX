@@ -290,6 +290,7 @@ export default {
       required: true
     },
   },
+  emits: ['refresh'],
   data() {
     return {
       editState: false,
@@ -297,6 +298,22 @@ export default {
       relinkState: false,
       selectedRoles: []
     };
+  },
+  computed: {
+    ...mapState(edxStore, ['schoolRoles']),
+    ...mapState(authStore, ['userInfo']),
+    isEDXInstituteAdminSelected() {
+      return this.selectedRoles.includes(this.edxInstituteAdminRole);
+    },
+    minimumRolesSelected() {
+      return this.selectedRoles.length > 0;
+    },
+    edxInstituteAdminRole() {
+      if (this.instituteTypeCode === 'SCHOOL') {
+        return 'EDX_SCHOOL_ADMIN';
+      }
+      return 'EDX_DISTRICT_ADMIN';
+    }
   },
   methods: {
     roleDisabled(role) {
@@ -440,22 +457,6 @@ export default {
     isNotSameEdxUser() {
       return this.userInfo.edxUserID !== this.user.edxUserID;
     },
-  },
-  computed: {
-    ...mapState(edxStore, ['schoolRoles']),
-    ...mapState(authStore, ['userInfo']),
-    isEDXInstituteAdminSelected() {
-      return this.selectedRoles.includes(this.edxInstituteAdminRole);
-    },
-    minimumRolesSelected() {
-      return this.selectedRoles.length > 0;
-    },
-    edxInstituteAdminRole() {
-      if (this.instituteTypeCode === 'SCHOOL') {
-        return 'EDX_SCHOOL_ADMIN';
-      }
-      return 'EDX_DISTRICT_ADMIN';
-    }
   }
 };
 </script>

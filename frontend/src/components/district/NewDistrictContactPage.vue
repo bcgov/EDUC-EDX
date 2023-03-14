@@ -255,6 +255,7 @@ export default {
       required: true
     }
   },
+  emits: ['new-district-contact:close-new-district-contact-page','new-district-contact:add-new-district-contact'],
   data() {
     return {
       isFormValid: false,
@@ -314,7 +315,7 @@ export default {
     },
     closeNewContactPage() {
       this.resetForm();
-      this.$emit('newDistrictContact:closeNewDistrictContactPage');
+      this.$emit('new-district-contact:close-new-district-contact-page');
     },
     openEffectiveDatePicker(){
       this.$refs.effectiveDatePicker.openMenu();
@@ -337,7 +338,7 @@ export default {
         .then(() => {
           this.setSuccessAlert('Success! The district contact has been created.');
           this.resetForm();
-          this.$emit('newDistrictContact:addNewDistrictContact');
+          this.$emit('new-district-contact:add-new-district-contact');
         })
         .catch(error => {
           this.setFailureAlert('An error occurred while sending message. Please try again later.');

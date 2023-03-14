@@ -171,9 +171,9 @@
             institute-type-label="District"
             :district-name="districtName"
             :district-number="districtNumber"
-            @access-user:messageSent="closeNewUserModal"
-            @access-user:updateRoles="updateUserRoles"
-            @access-user:cancelMessage="closeNewUserModal"
+            @access-user:message-sent="closeNewUserModal"
+            @access-user:update-roles="updateUserRoles"
+            @access-user:cancel-message="closeNewUserModal"
           />
         </v-card-text>
       </v-card>
@@ -216,6 +216,11 @@ export default {
       },
       primaryEdxActivationCode: null
     };
+  },
+  computed: {
+    ...mapState(appStore, ['districtsMap']),
+    ...mapState(edxStore, ['districtRoles','districtRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
   },
   async beforeMount() {
     if (this.districtRoles.length === 0) {
@@ -325,11 +330,6 @@ export default {
           console.log(e);
         });
     },
-  },
-  computed: {
-    ...mapState(appStore, ['districtsMap']),
-    ...mapState(edxStore, ['districtRoles','districtRolesCopy']),
-    ...mapState(authStore, ['userInfo']),
   }
 };
 </script>

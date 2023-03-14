@@ -117,7 +117,7 @@ import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
 
 export default {
-  name: 'ActivateEdxUserAccount.vue',
+  name: 'ActivateEdxUserAccount',
   components: {PrimaryButton},
   mixins: [alertMixin],
   props:{

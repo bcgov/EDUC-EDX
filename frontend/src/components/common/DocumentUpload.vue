@@ -80,7 +80,6 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import {sortBy} from 'lodash';
 import PrimaryButton from '../util/PrimaryButton.vue';
-import { ref } from 'vue';
 
 export default {
   components: {PrimaryButton},
@@ -90,6 +89,7 @@ export default {
       default: false
     },
   },
+  emits: ['close:form', 'upload'],
   data() {
     return {
       fileAccept: '.pdf,.png,.jpg',
@@ -107,6 +107,16 @@ export default {
       alertType: null
     };
   },
+  computed: {
+    ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
+    dataReady() {
+      return this.validForm && this.uploadFileValue;
+    },
+    documentTypes() {
+      return sortBy(this.secureExchangeDocumentTypes, ['displayOrder'])
+        .map(code => ({text: code.label, value: code.secureExchangeDocumentTypeCode}));
+    }
+  },
   watch: {
     dataReady() {
       //force re-renders of the button to solve the color issue
@@ -119,16 +129,6 @@ export default {
 
     this.getFileRules();
     await this.validateForm();
-  },
-  computed: {
-    ...mapState(edxStore,['secureExchangeDocumentTypes', 'fileRequirements']),
-    dataReady() {
-      return this.validForm && this.uploadFileValue;
-    },
-    documentTypes() {
-      return sortBy(this.secureExchangeDocumentTypes, ['displayOrder'])
-        .map(code => ({text: code.label, value: code.secureExchangeDocumentTypeCode}));
-    }
   },
   methods: {
     hasReadOnlyRoleAccess() {

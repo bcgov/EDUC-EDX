@@ -138,8 +138,8 @@
         v-if="newContactSheet"
         :district-contact-types="districtContactTypes"
         :district-i-d="$route.params.districtID"
-        @newDistrictContact:closeNewDistrictContactPage="newContactSheet = !newContactSheet"
-        @newDistrictContact:addNewDistrictContact="newDistrictContactAdded"
+        @new-district-contact:close-new-district-contact-page="newContactSheet = !newContactSheet"
+        @new-district-contact:add-new-district-contact="newDistrictContactAdded"
       />
     </v-navigation-drawer>
     <v-navigation-drawer
@@ -191,7 +191,8 @@ export default {
   props: {
     districtID: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
   },
   data() {

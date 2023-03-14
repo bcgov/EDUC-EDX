@@ -19,12 +19,11 @@ export default {
       routes: AuthRoutes
     };
   },
-  async mounted() {
-    await this.checkAndLogoutUserOnSessionExpiry();
-
-  },
   computed: {
     ...mapState(authStore, ['isAuthenticated']),
+  },
+  async mounted() {
+    await this.checkAndLogoutUserOnSessionExpiry();
   },
   methods: {
 

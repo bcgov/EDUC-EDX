@@ -25,13 +25,13 @@
             :dialog="pdfRenderDialog"
             :request-id="secureExchangeID"
             :document-id="documentId"
-            @closeDialog="closeDialog"
+            @close-dialog="closeDialog"
           />
           <ImageRenderer
             :dialog="imageRendererDialog"
             :request-id="secureExchangeID"
             :image-id="imageId"
-            @closeDialog="closeDialog"
+            @close-dialog="closeDialog"
           />
           <div v-if="!loading && secureExchange">
             <v-row>
@@ -238,9 +238,9 @@
                 <AddStudent
                   :school-i-d="userInfo.activeInstituteIdentifier"
                   :additional-student-add-warning="addStudentWarningMessage"
-                  @addStudent="sendNewSecureExchangeStudent"
+                  @add-student="sendNewSecureExchangeStudent"
                   @close:form="hideStudentPanel"
-                  @updateAdditionalStudentAddWarning="updateAddStudentWarningMessage"
+                  @update-additional-student-add-warning="updateAddStudentWarningMessage"
                 />
               </v-col>
             </v-row>

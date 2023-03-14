@@ -51,13 +51,12 @@
                     :disabled="!statusRadioGroupEnabled"
                     direction="horizontal"
                     inline
-                    @click.native.stop
                   >
                     <v-radio
                       label="Active Only"
                       color="#003366"
                       value="statusFilterActive"
-                      @click.native="statusFilterActiveClicked"
+                      @click.stop.prevent="statusFilterActiveClicked"
                     >
                       <template #label>
                         <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">Active Only</span>
@@ -67,7 +66,7 @@
                       label="All"
                       color="#003366"
                       value="statusFilterAll"
-                      @click.native="filterRequests"
+                      @click="filterRequests"
                     >
                       <template #label>
                         <span :class="{ 'activeRadio' : statusRadioGroupEnabled }">All</span>
@@ -388,8 +387,8 @@
         <v-divider />
         <v-card-text>
           <NewMessagePage    
-            @secure-exchange:messageSent="messageSent"
-            @secure-exchange:cancelMessage="newMessageSheet = false"
+            @secure-exchange:message-sent="messageSent"
+            @secure-exchange:cancel-message="newMessageSheet = false"
           />
         </v-card-text>
       </v-card>
@@ -412,12 +411,10 @@ import {appStore} from '../../store/modules/app';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import moment from 'moment';
-import Spinner from '../common/Spinner.vue';
 
 export default {
   name: 'ExchangeInbox',
   components: {
-    Spinner,
     PrimaryButton,
     NewMessagePage,
     VueDatePicker

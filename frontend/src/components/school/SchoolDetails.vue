@@ -19,7 +19,6 @@
             class="pa-5 mb-0"
             icon="mdi-help-circle-outline"
             dense
-            text
             type="info"
           >
             <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
@@ -162,14 +161,15 @@
               <v-text-field
                 v-else
                 id="schoolDetailsPhoneNumber"
+                v-model="schoolDetailsCopy.phoneNumber"
                 prepend-icon="mdi-phone-outline"
                 single-line
-                v-model="schoolDetailsCopy.phoneNumber"
                 variant="underlined"
                 class="shrink"
                 required
                 :maxlength="10"
-:rules="[rules.required(), rules.phoneNumber()]" @keypress="isNumber($event)"
+                :rules="[rules.required(), rules.phoneNumber()]"
+                @keypress="isNumber($event)"
               />
             </v-col>
             <v-col class="d-flex">
@@ -904,7 +904,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
-                                    @click.native="clickSameAsAddressButton"
+                                    @click="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>
@@ -957,7 +957,8 @@ export default {
   props: {
     schoolID: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
   },
   data() {

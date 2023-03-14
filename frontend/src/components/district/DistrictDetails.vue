@@ -130,14 +130,14 @@
               <v-text-field
                 v-else
                 id="districtPhone"
+                v-model="districtCopy.phoneNumber"
                 prepend-icon="mdi-phone-outline"
                 variant="underlined"
-                v-model="districtCopy.phoneNumber"
                 class="py-0"
                 required
                 :maxlength="10"
                 :rules="[rules.required(), rules.phoneNumber()]"
-@keypress="isNumber($event)"
+                @keypress="isNumber($event)"
               />
             </v-col>
             <v-col class="d-flex">
@@ -599,7 +599,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
-                                    @click.native="clickSameAsAddressButton"
+                                    @click="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>

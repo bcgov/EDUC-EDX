@@ -51,10 +51,6 @@ export default {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }
   },
-  methods: {
-    authStore,
-    ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
-  },
   async created() {
     await this.setLoading(true);
     this.getJwtToken().then(() =>
@@ -67,6 +63,10 @@ export default {
     }).finally(() => {
       this.setLoading(false);
     });
+  },
+  methods: {
+    authStore,
+    ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
   }
 };
 </script>

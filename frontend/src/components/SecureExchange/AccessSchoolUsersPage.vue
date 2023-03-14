@@ -192,9 +192,9 @@
                 institute-type-label="School"
                 :school-name="schoolName"
                 :school-mincode="schoolMincode"
-                @access-user:messageSent="closeNewUserModal"
-                @access-user:updateRoles="updateUserRoles"
-                @access-user:cancelMessage="closeNewUserModal"
+                @access-user:message-sent="closeNewUserModal"
+                @access-user:update-roles="updateUserRoles"
+                @access-user:cancel-message="closeNewUserModal"
               />
             </v-card-text>
           </v-card>
@@ -310,6 +310,11 @@ export default {
       instituteCode: '',
       instituteTypeLabel: 'School'
     };
+  },
+  computed: {
+    ...mapState(appStore, ['schoolsMap', 'activeSchoolsMap']),
+    ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {
@@ -452,12 +457,6 @@ export default {
           }
         });
     },
-  },
-  computed: {
-    ...mapState(appStore, ['schoolsMap', 'activeSchoolsMap']),
-    ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
-    ...mapState(authStore, ['userInfo']),
-
   }
 };
 </script>

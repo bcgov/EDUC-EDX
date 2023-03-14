@@ -116,6 +116,7 @@ export default {
       default: ''
     }
   },
+  emits: ['close:form','add-student','update-additional-student-add-warning'],
   data() {
     return {
       isSearchingStudent: false,
@@ -130,9 +131,6 @@ export default {
       alertMessage: null,
       alertType: null
     };
-  },
-  mounted() {
-    this.validateForm();
   },
   computed: {
     ...mapState(appStore, ['schoolsMap']),
@@ -152,7 +150,7 @@ export default {
     },
     alert(newVal){
       if(!newVal){
-        this.$emit('updateAdditionalStudentAddWarning','');
+        this.$emit('update-additional-student-add-warning','');
       }
     },
     penNumber(newVal) {
@@ -166,6 +164,9 @@ export default {
         }
       }
     },
+  },
+  mounted() {
+    this.validateForm();
   },
   methods: {
     setErrorAlert(alertMessage) {
@@ -240,7 +241,7 @@ export default {
         studentID: this.student['studentID'],
         pen: this.student['pen']
       };
-      this.$emit('addStudent', secureExchangeStudent);
+      this.$emit('add-student', secureExchangeStudent);
       this.resetForm();
       this.$emit('close:form');
     },

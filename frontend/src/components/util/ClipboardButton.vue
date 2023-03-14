@@ -34,7 +34,8 @@ export default {
   name: 'ClipboardButton',
   props: {
     id: {
-      type: String
+      type: String,
+      default: null
     },
     disabled: {
       type: Boolean,
@@ -42,12 +43,15 @@ export default {
     },
     icon: {
       type: String,
+      default: null
     },
     iconStyle: {
-      type: String
+      type: String,
+      default: null
     },
     copyText: {
-      type: String
+      type: String,
+      default: null
     },
   },
   data() {

@@ -40,13 +40,16 @@ export default {
   inheritAttrs: false,
   props: {
     class:{
-      type: String
+      type: String,
+      default: null
     },
     id: {
-      type: String
+      type: String,
+      default: null
     },
     text: {
-      type: String
+      type: String,
+      default: null
     },
     short: {
       type: Boolean,
@@ -62,21 +65,27 @@ export default {
     },
     to: {
       type: String,
+      default: null
     },
     width: {
       type: String,
+      default: null
     },
     loading: {
-      type: Boolean
+      type: Boolean,
+      default: null
     },
     icon: {
-      type: String
+      type: String,
+      default: null
     },
     bind: {
-      type: Object
+      type: Object,
+      default: null
     },
     clickAction: {
-      type: Function
+      type: Function,
+      default: null
     },
     largeIcon: {
       type: Boolean,
@@ -84,6 +93,7 @@ export default {
     },
     title:{
       type: String,
+      default: null
     }
   },
   methods: {

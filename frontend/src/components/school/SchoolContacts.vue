@@ -147,8 +147,8 @@
         v-if="newContactSheet"
         :school-contact-types="schoolContactTypes"
         :school-i-d="$route.params.schoolID"
-        @newSchoolContact:closeNewSchoolContactPage="newContactSheet = !newContactSheet"
-        @newSchoolContact:addNewSchoolContact="newSchoolContactAdded"
+        @new-school-contact:close-new-school-contact-page="newContactSheet = !newContactSheet"
+        @new-school-contact:add-new-school-contact="newSchoolContactAdded"
       />
     </v-navigation-drawer>
     <v-navigation-drawer
@@ -207,7 +207,8 @@ export default {
   props: {
     schoolID: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
   },
   data() {

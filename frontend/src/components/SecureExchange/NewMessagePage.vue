@@ -195,8 +195,8 @@
                           :school-i-d="userInfo.activeInstituteIdentifier"
                           :additional-student-add-warning="additionalStudentAddWarningMessage"
                           @close:form="showOptions"
-                          @addStudent="addSecureExchangeStudent"
-                          @updateAdditionalStudentAddWarning="updateAdditionalStudentAddWarning"
+                          @add-student="addSecureExchangeStudent"
+                          @update-additional-student-add-warning="updateAdditionalStudentAddWarning"
                         />
                       </v-expand-transition>
                     </v-col>
@@ -252,6 +252,7 @@ export default {
     DocumentUpload
   },
   mixins: [alertMixin],
+  emits: ['secure-exchange:cancel-message','secure-exchange:message-sent'],
   data() {
     return {
       newMessage: '',
@@ -266,13 +267,13 @@ export default {
       additionalStudentAddWarningMessage:''
     };
   },
-  mounted() {
-    this.validateForm();
-  },
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(edxStore, ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
     ...mapState(appStore, ['schoolsMap', 'activeDistrictsMap']),
+  },
+  mounted() {
+    this.validateForm();
   },
   created() {
     edxStore().getExchangeSchoolIds();
@@ -290,7 +291,7 @@ export default {
       this.additionalStudentAddWarningMessage = newValue;
     },
     navigateToList() {
-      this.$emit('secure-exchange:cancelMessage');
+      this.$emit('secure-exchange:cancel-message');
     },
     getFromName() {
       if(this.userInfo.activeInstituteType === 'DISTRICT') {
@@ -306,7 +307,7 @@ export default {
       this.assignedMinistryTeam = null;
       this.newMessage = '';
       this.requiredRules = [v => !!v?.trim() || 'Required'];
-      this.$emit('secure-exchange:messageSent');
+      this.$emit('secure-exchange:message-sent');
       this.clearSecureExchangeDocuments();
       this.clearSecureExchangeStudents();
       this.additionalStudentAddWarningMessage='';

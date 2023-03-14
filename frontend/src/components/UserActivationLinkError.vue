@@ -62,7 +62,7 @@
 <script>
 
 export default {
-  name: 'UserActivationLinkError.vue',
+  name: 'UserActivationLinkError',
   data() {
     return {
       errorMessage: undefined

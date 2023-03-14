@@ -38,6 +38,7 @@ export default {
       required: true
     }
   },
+  emits: ['close-dialog'],
   data() {
     return {
       src: undefined,
@@ -83,7 +84,7 @@ export default {
       });
     },
     closeDialog(){
-      this.$emit('closeDialog');
+      this.$emit('close-dialog');
     }
   },
 };

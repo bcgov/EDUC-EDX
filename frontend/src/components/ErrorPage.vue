@@ -38,21 +38,18 @@ export default {
       errorMessage: this.$route.query.message
     };
   },
-  methods: {
-    ...mapActions(authStore, ['loginErrorRedirect'])
-  },
   async created(){
     if(this.errorMessage === 'Unable_to_authenticate'){
       await this.loginErrorRedirect();
     }
+  },
+  methods: {
+    ...mapActions(authStore, ['loginErrorRedirect'])
   }
 };
 </script>
 
 <style scoped>
-  .v-icon{
-    padding-left: 10px;
-  }
   .error-card{
     margin-top: 5%;
     min-width: 30%;
@@ -60,15 +57,8 @@ export default {
   .gov-header{
     color: #003366;
   }
-  .v-btn{
-    text-transform: none
-  }
   .blue-back{
     background-color: aliceblue;
     height: 100%;
-  }
-  .detail-text{
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 0.875rem;
   }
 </style>

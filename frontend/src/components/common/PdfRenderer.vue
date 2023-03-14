@@ -83,6 +83,7 @@ export default {
       required: true
     }
   },
+  emits: ['close-dialog'],
   // components: {
   //   VuePdfEmbed
   // },
@@ -100,7 +101,7 @@ export default {
     },
     PDFRenderDialog(newValue) {
       if(!newValue && this.dialog) {
-        this.$emit('closeDialog');
+        this.$emit('close-dialog');
       }
     },
     documentId(newValue) {

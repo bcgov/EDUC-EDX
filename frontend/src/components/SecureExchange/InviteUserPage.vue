@@ -161,19 +161,23 @@ export default {
     },
     schoolName: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
     schoolMincode: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
     districtName: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
     districtNumber: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
     instituteTypeLabel: {
       type: String,
@@ -184,6 +188,7 @@ export default {
       required: true
     }
   },
+  emits: ['access-user:message-sent','access-user:cancel-message','access-user:update-roles'],
   data() {
     return {
       firstName: '',
@@ -198,9 +203,6 @@ export default {
       rolesHint: 'Pick the roles to be assigned to the new user',
       emailHint: 'Valid Email Required'
     };
-  },
-  mounted() {
-    this.validateForm();
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
@@ -224,9 +226,12 @@ export default {
       return this.edxActivationRoleCodes.includes(this.edxAdminUserCode);
     }
   },
+  mounted() {
+    this.validateForm();
+  },
   methods: {
     navigateToList() {
-      this.$emit('access-user:cancelMessage');
+      this.$emit('access-user:cancel-message');
     },
     getRoleNameFromCode(role, index){
       if(index != 0){
@@ -263,11 +268,11 @@ export default {
         });
         this.rolesHint = 'Pick the roles to be assigned to the new user';
       }
-      this.$emit('access-user:updateRoles', newRoles);
+      this.$emit('access-user:update-roles', newRoles);
     },
     messageSent() {
       this.requiredRules = [v => !!v?.trim() || 'Required'];
-      this.$emit('access-user:messageSent');
+      this.$emit('access-user:message-sent');
     },
     sendNewUserInvite() {
       this.processing = true;

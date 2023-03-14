@@ -246,6 +246,7 @@ export default {
       required: true
     }
   },
+  emits: ['new-school-contact:close-new-school-contact-page', 'new-school-contact:add-new-school-contact'],
   data() {
     return {
       isFormValid: false,
@@ -269,11 +270,22 @@ export default {
       newContactExpiryDatePicker: null
     };
   },
-  mounted() {
-    this.validateForm();
-  },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
+  },
+  watch: {
+    /**
+     * Watching effective date to valid form because we need to cross validate expiry and
+     * effective date fields.
+     */
+    'newContact.effectiveDate': {
+      handler() {
+        this.validateForm();
+      }
+    }
+  },
+  mounted() {
+    this.validateForm();
   },
   methods: {
     clearEffectiveDate(){
@@ -296,7 +308,7 @@ export default {
     },
     closeNewContactPage() {
       this.resetForm();
-      this.$emit('newSchoolContact:closeNewSchoolContactPage');
+      this.$emit('new-school-contact:close-new-school-contact-page');
     },
     openEffectiveDatePicker(){
       this.$refs.effectiveDatePicker.openMenu();
@@ -320,7 +332,7 @@ export default {
         .then(() => {
           this.setSuccessAlert('Success! The school contact has been created.');
           this.resetForm();
-          this.$emit('newSchoolContact:addNewSchoolContact');
+          this.$emit('new-school-contact:add-new-school-contact');
         })
         .catch(error => {
           this.setFailureAlert('An error occurred while sending message. Please try again later.');
@@ -338,17 +350,6 @@ export default {
       this.isFormValid = valid.valid;
     },
     isNumber,
-  },
-  watch: {
-    /**
-     * Watching effective date to valid form because we need to cross validate expiry and
-     * effective date fields.
-     */
-    'newContact.effectiveDate': {
-      handler() {
-        this.validateForm();
-      }
-    }
   }
 };
 </script>
