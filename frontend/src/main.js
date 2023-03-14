@@ -12,6 +12,8 @@ import * as labs from 'vuetify/labs/components';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import '@mdi/font/css/materialdesignicons.css';
+import 'viewerjs/dist/viewer.css';
+import component from 'v-viewer';
 
 const myCustomLightTheme = {
   dark: false,
@@ -42,7 +44,5 @@ const pinia = createPinia();
 
 const newApp = createApp(App);
 
-// newApp.use(Viewer);
-
 newApp.provide('$moment', moment);
-newApp.use(router).use(createMetaManager()).use(pinia).use(vuetify).mount('#app');
+newApp.use(router).use(createMetaManager()).use(pinia).use(vuetify).use(component).mount('#app');

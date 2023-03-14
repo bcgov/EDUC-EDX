@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       src: undefined,
-      isLoading: false,
+      isLoading: true,
       documentID: ''
     };
   },

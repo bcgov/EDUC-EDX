@@ -34,7 +34,7 @@
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "testcafe": "^2.2.0",
-    "v-viewer": "^1.6.4",
+    "v-viewer": "^3.0.11",
     "vite": "^4.1.4",
     "vue": "^3.2.47",
     "vue-clipboard2": "^0.3.3",
