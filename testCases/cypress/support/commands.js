@@ -37,7 +37,6 @@ Cypress.Commands.add('login', () => {
 
 Cypress.Commands.add('getAccessToken', () => {
   cy.log('< Get Token')
-  cy.log(Cypress.env('CLIENT_ID'))
   debugger
   cy.request({
     method: 'POST',
