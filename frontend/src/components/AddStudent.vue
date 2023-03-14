@@ -17,7 +17,7 @@
     >
       <v-row>
         <v-col
-          class="d-flex justify-center px-2"
+          class="d-flex justify-center px-5"
           style="min-width: 50em"
         >
           <v-text-field

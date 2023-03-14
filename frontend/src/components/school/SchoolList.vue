@@ -86,7 +86,7 @@
             v-model="schoolFacilityTypeFilter"
             clearable
             variant="underlined"
-            :items="schoolFacilityTypes"
+            :items="schoolActiveFacilityTypes"
             item-title="label"
             item-value="facilityTypeCode"
             label="Facility Type"
@@ -302,6 +302,7 @@ export default {
       schoolCodeNameFilter: null,
       schoolStatusFilter: null,
       schoolFacilityTypes: [],
+      schoolActiveFacilityTypes: [],
       schoolCategoryTypes: [],
       schoolFacilityTypeFilter: null,
       loadingSchools: true,
@@ -310,8 +311,7 @@ export default {
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['schoolsMap']),
-    ...mapState(instituteStore, ['facilityTypeCodes']),
-    ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
+    ...mapState(instituteStore, ['facilityTypeCodes','activeFacilityTypeCodes','schoolCategoryTypeCodes']),
     getSheetWidth(){
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -335,6 +335,9 @@ export default {
     appStore().getInstitutesData();
     instituteStore().getFacilityTypeCodes().then(() => {
       this.schoolFacilityTypes = this.facilityTypeCodes;
+    });
+    instituteStore().getAllActiveFacilityTypeCodes().then(() => {
+      this.schoolActiveFacilityTypes = this.activeFacilityTypeCodes;
     });
     instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
