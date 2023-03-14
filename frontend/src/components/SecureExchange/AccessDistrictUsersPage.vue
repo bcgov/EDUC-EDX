@@ -342,11 +342,6 @@ export default {
   font-weight: bolder !important;
 }
 
-.divider {
-  border-color: #FCBA19;
-  border-width: medium;
-}
-
 .searchBox {
   padding-left: 1em;
   padding-right: 1em;
@@ -354,20 +349,6 @@ export default {
   margin-right: 0;
   border-radius: 5px;
   background-color: #F2F2F2;
-}
-
-.card-hint {
-  color: #000 !important;
-  font-size: 1rem;
-}
-.v-dialog__content >>> .v-bottom-sheet {
-  width: 30% !important;
-}
-
-@media screen and (max-width: 950px){
-  .v-dialog__content /deep/ .v-bottom-sheet {
-    width: 60% !important;
-  }
 }
 
 </style>

@@ -335,14 +335,4 @@ export default {
   }
 }
 
-.v-dialog__content >>> .v-bottom-sheet {
-  width: 30% !important;
-}
-
-@media screen and (max-width: 950px){
-  .v-dialog__content /deep/ .v-bottom-sheet {
-    width: 60% !important;
-  }
-}
-
 </style>

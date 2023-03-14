@@ -544,9 +544,6 @@ export default {
 </script>
 
 <style scoped>
-.listCol {
-  align-self: center;
-}
 .dashboard-title {
   word-break: break-word;
   font-size: 20px;

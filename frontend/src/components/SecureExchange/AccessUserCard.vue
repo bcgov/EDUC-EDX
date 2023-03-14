@@ -462,10 +462,6 @@ export default {
 </script>
 
 <style scoped>
-.bounce-enter-active {
-  animation: bounce-in 0.2s;
-}
-
 i{
   color: #003366;
 }
