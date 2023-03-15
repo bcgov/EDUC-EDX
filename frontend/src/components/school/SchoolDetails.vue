@@ -1047,6 +1047,9 @@ export default {
     redirectToSchoolContacts(){
       this.$router.push({name: 'schoolContacts', params: {schoolID: this.school.schoolId}});
     },
+    setHasSamePhysicalFlag(){
+      this.sameAsMailingCheckbox = this.hasSamePhysicalAddress;
+    },
     getThisSchoolsDetails(){
       this.loading = true;
       this.school = '';
@@ -1169,6 +1172,7 @@ export default {
     },
     cancelClicked(){
       this.editing = false;
+      this.setHasSamePhysicalFlag();
     },
     async updateSchoolDetails() {
       const confirmation = await this.$refs.confirmSchoolDetailsUpdateAndSave.open('Confirm Updates to School Details', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Publish Changes', rejectText: 'Return to School Details'});
