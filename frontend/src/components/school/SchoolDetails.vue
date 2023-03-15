@@ -904,7 +904,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
-                                    @click="clickSameAsAddressButton"
+                                    @change="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>
@@ -1160,7 +1160,7 @@ export default {
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
     },
     async clickSameAsAddressButton() {
-      setTimeout(() => this.$refs.schoolDetailsForm.validate(), 100);
+      await this.$refs.schoolDetailsForm.validate();
     },
     async toggleEdit() {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
