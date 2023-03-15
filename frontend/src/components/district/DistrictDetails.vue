@@ -819,8 +819,7 @@ export default {
       this.$router.push({name: 'districtContacts', params: {districtID: this.districtID}});
     },
     async clickSameAsAddressButton(){
-      await this.$nextTick();
-      this.$refs.districtForm.validate();
+      setTimeout(() => this.$refs.districtForm.validate(), 100);
     },
     getMailingAddressItem(item){
       let mailingAddress = this.district.addresses.filter(address => address.addressTypeCode === 'MAILING');
