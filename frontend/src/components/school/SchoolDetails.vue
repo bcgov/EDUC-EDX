@@ -165,7 +165,6 @@
                 prepend-icon="mdi-phone-outline"
                 single-line
                 variant="underlined"
-                class="shrink"
                 required
                 :maxlength="10"
                 :rules="[rules.required(), rules.phoneNumber()]"
@@ -230,7 +229,7 @@
                 v-model="schoolDetailsCopy.faxNumber"
                 prepend-icon="mdi-fax"
                 variant="underlined"
-                class="shrink py-0"
+                class="py-0"
                 :rules="[rules.phoneNumber('Fax number must be valid')]"
                 :maxlength="10"
                 @keypress="isNumber($event)"
@@ -625,7 +624,7 @@
                         required
                         :rules="[rules.required()]"
                         :maxlength="255"
-                        class="shrink mt-n5 mb-3"
+                        class="mt-n5 mb-3"
                       />
                     </v-col>
                   </v-row>
@@ -639,7 +638,7 @@
                         v-model="getMailingAddressCopy()[0].addressLine2"
                         variant="underlined"
                         label="Line 2"
-                        class="shrink mt-n3 mb-3"
+                        class="mt-n5 mb-3"
                         :maxlength="255"
                       />
                     </v-col>
@@ -656,7 +655,7 @@
                         label="City"
                         required
                         :rules="[rules.required()]"
-                        class="shrink mt-n5 mb-3"
+                        class="mt-n5 mb-3"
                         :maxlength="255"
                       />
                     </v-col>
@@ -723,7 +722,7 @@
                         :maxlength="6"
                         required
                         :rules="[rules.required(), rules.postalCode()]"
-                        class="shrink mt-n5 mb-3"
+                        class="mt-n5 mb-3"
                       />
                     </v-col>
                   </v-row>
@@ -789,16 +788,14 @@
                     >
                       <span>Same as Mailing Address</span>
                     </v-col>
-                    <v-col
-                      v-else
-                      class="mt-8"
-                    >
+                    <v-col v-else>
                       <v-row no-gutters>
                         <v-col>
                           <v-row no-gutters>
                             <v-col>
                               <v-row
                                 v-if="!sameAsMailingCheckbox"
+                                class="mt-8"
                                 no-gutters
                               >
                                 <v-col>
@@ -812,7 +809,7 @@
                                         required
                                         :rules="[rules.required()]"
                                         :maxlength="255"
-                                        class="shrink mt-n5 mb-3"
+                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -824,7 +821,7 @@
                                         :maxlength="255"
                                         variant="underlined"
                                         label="Line 2"
-                                        class="shrink mt-n5 mb-3"
+                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -838,7 +835,7 @@
                                         :maxlength="255"
                                         variant="underlined"
                                         label="City"
-                                        class="shrink mt-n5 mb-3"
+                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -888,7 +885,7 @@
                                         required
                                         :rules="[rules.required(), rules.postalCode()]"
                                         :maxlength="6"
-                                        class="shrink mt-n5 mb-3"
+                                        class="mt-n5 mb-3"
                                         variant="underlined"
                                         label="Postal Code"
                                       />
