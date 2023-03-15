@@ -12,7 +12,7 @@ async function getStudentByPEN(req, res) {
         message: 'No access token'
       });
     }
-    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint') + '/', {params: {pen: req.query.pen}}, req.session?.correlationID);
+    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       const mincode = req.query.mincode;
       const studentMincode = result[0].mincode;
