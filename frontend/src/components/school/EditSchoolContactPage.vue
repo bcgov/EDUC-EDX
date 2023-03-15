@@ -347,7 +347,6 @@ export default {
     async validateForm() {
       const valid = await this.$refs.editContactForm.validate();
       this.isFormValid = valid.valid;
-      console.log('Validating' + JSON.stringify(valid));
     },
     formatPhoneNumber,
     getStatusColor,

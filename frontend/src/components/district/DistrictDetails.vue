@@ -599,7 +599,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
-                                    @click="clickSameAsAddressButton"
+                                    @change="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>
@@ -819,8 +819,7 @@ export default {
       this.$router.push({name: 'districtContacts', params: {districtID: this.districtID}});
     },
     async clickSameAsAddressButton(){
-      await this.$nextTick();
-      this.$refs.districtForm.validate();
+      await this.$refs.districtForm.validate();
     },
     getMailingAddressItem(item){
       let mailingAddress = this.district.addresses.filter(address => address.addressTypeCode === 'MAILING');
