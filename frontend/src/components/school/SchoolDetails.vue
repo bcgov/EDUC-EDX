@@ -1160,8 +1160,7 @@ export default {
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
     },
     async clickSameAsAddressButton() {
-      await this.$nextTick();
-      this.$refs.schoolDetailsForm.validate();
+      setTimeout(() => this.$refs.schoolDetailsForm.validate(), 100);
     },
     async toggleEdit() {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
