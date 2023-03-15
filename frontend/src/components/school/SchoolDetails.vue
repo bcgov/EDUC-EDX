@@ -904,6 +904,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
+                                    @click="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>
@@ -1010,11 +1011,6 @@ export default {
     },
     isOffshoreSchool(){
       return this.school.schoolCategoryCode === 'OFFSHORE';
-    }
-  },
-  watch: {
-    sameAsMailingCheckbox() {
-      this.$refs.schoolDetailsForm.validate();
     }
   },
   created() {
@@ -1162,6 +1158,9 @@ export default {
     },
     canEditSchoolDetails(){
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+    },
+    async clickSameAsAddressButton() {
+      setTimeout(() => this.$refs.schoolDetailsForm.validate(), 100);
     },
     async toggleEdit() {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);

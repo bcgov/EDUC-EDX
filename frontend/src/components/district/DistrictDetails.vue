@@ -599,6 +599,7 @@
                                     dense
                                     label="Same as Mailing Address"
                                     class="mt-n3 pt-0 ml-n3"
+                                    @click="clickSameAsAddressButton"
                                   />
                                 </v-col>
                               </v-row>
@@ -672,11 +673,6 @@ export default {
     ...mapState(authStore, ['userInfo']),
     hasSamePhysicalAddress(){
       return !this.district.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
-    }
-  },
-  watch: {
-    sameAsMailingCheckbox() {
-      this.$refs.districtForm.validate();
     }
   },
   created() {
@@ -821,6 +817,9 @@ export default {
     },
     redirectToDistrictContacts(){
       this.$router.push({name: 'districtContacts', params: {districtID: this.districtID}});
+    },
+    async clickSameAsAddressButton(){
+      setTimeout(() => this.$refs.districtForm.validate(), 100);
     },
     getMailingAddressItem(item){
       let mailingAddress = this.district.addresses.filter(address => address.addressTypeCode === 'MAILING');
