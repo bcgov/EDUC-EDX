@@ -126,8 +126,8 @@
                   id="markAsButton"
                   :disabled="!isEditable()"
                   class="my-4"
-                  click.native="clickMarkAsButton"
                   :loading="loadingReadStatus"
+                  @click="clickMarkAsButton"
                 >
                   <v-icon v-if="secureExchange.isReadByExchangeContact">
                     mdi-email-outline
@@ -249,6 +249,7 @@
                 <v-timeline
                   v-if="secureExchange.activities.length > 0"
                   side="end"
+                  truncate-line="both"
                 >
                   <v-timeline-item
                     v-for="(activity,index) in secureExchange.activities"
@@ -256,15 +257,18 @@
                     dot-color="white"
                     icon-color="#003366"
                     :icon="getActivityIcon(activity)"
-                    large
+                    size="large"
+                    width="100%"
                   >
                     <template #opposite>
-                      <div class="activityTitle">
-                        {{ activity.title }}
-                      </div>
-                      <v-spacer />
-                      <div class="activityDisplayDate">
-                        {{ activity.displayDate }}
+                      <div class="activityHeader">
+                        <div class="activityTitle">
+                          {{ activity.title }}
+                        </div>
+                        <v-spacer />
+                        <div class="activityDisplayDate">
+                          {{ activity.displayDate }}
+                        </div>
                       </div>
                     </template>
                     <v-card v-if="activity.type === 'message'">
@@ -861,8 +865,18 @@ export default {
   overflow-wrap: break-word;
 }
 
-.activityDisplayDate{
+.activityHeader {
+  text-align: right;
+}
+
+.activityTitle {
   font-size: medium;
+  font-weight: bold;
+}
+
+.activityDisplayDate{
+  font-size: small;
+  color: rgb(149, 149, 149);
 }
 
 .activityContent {
@@ -911,4 +925,9 @@ export default {
 .greyBackground {
   background-color: #f5f5f5;
 }
+
+.v-timeline--vertical.v-timeline--justify-auto {
+  grid-template-columns: minmax(min-content, 10em) min-content auto;
+}
+
 </style>
