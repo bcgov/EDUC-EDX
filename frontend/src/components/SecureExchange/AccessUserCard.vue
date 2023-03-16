@@ -77,19 +77,25 @@
             <v-col
               cols="12"
               class="pt-1"
-            >
-              <span>{{ user.email }}</span>
-            </v-col>
-          </v-row>
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              class="pt-1"
             />
           </v-row>
         </v-col>
       </v-row>
     </v-card-title>
+    <v-card-text class="pb-0">
+      <v-list density="compact">
+        <v-list-item
+          v-if="user.email"
+          class="pl-0"
+        >
+          <v-icon
+            icon="mdi-email"
+            start
+          />
+          <span id="user-email"> {{ user.email }}</span>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
     <v-card-text
       class="pt-2"
       :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
@@ -458,15 +464,11 @@ export default {
 </script>
 
 <style scoped>
-i{
+.v-list-item-title {
   color: #003366;
 }
 
-.v-list-item-title{
-  color: #003366;
-}
-
-.actionButton{
+.actionButton {
   background-color: #003366;
   color: white;
 }
