@@ -60,6 +60,15 @@
             </a>
           </v-list-item>
           <v-list-item
+            v-if="contact.jobTitle"
+            class="pl-0"
+          >
+            <v-icon
+              icon="mdi-account"
+              start
+            />
+            <span id="contactEmail"> {{ contact.jobTitle }}</span>
+          </v-list-item><v-list-item
             v-if="contact.email"
             class="pl-0"
           >
