@@ -8,7 +8,9 @@
         <v-col>
           <v-row no-gutters>
             <v-col cols="9">
-              <span style="white-space: break-spaces"><strong>{{ `${user.firstName} ${user.lastName}` }}</strong></span>
+              <span style="white-space: break-spaces">
+                <strong>{{ `${user.firstName} ${user.lastName}` }}</strong>
+              </span>
             </v-col>
             <v-col
               v-if="isNotSameEdxUser()"
@@ -136,7 +138,8 @@
             <v-list-item-title>{{ newrole.label }}</v-list-item-title>
 
             <v-list-item-subtitle v-if="newrole.edxRoleCode === edxInstituteAdminRole">
-              EDX {{ instituteTypeLabel }} Admin users will be set up with all {{ instituteTypeLabel.toLowerCase() }} roles.
+              EDX {{ instituteTypeLabel }} Admin users will be set up with all
+              {{ instituteTypeLabel.toLowerCase() }} roles.
             </v-list-item-subtitle>
             <v-list-item-subtitle v-else>
               {{ newrole.roleDescription }}
@@ -153,9 +156,10 @@
       >
         <v-row no-gutters>
           <v-col class="d-flex justify-center">
-            <span style="font-size: medium; font-weight: bold; color: black">Are you sure you want to remove this users access for the {{
-              instituteTypeLabel.toLowerCase()
-            }}?</span>
+            <span style="font-size: medium; font-weight: bold; color: black">
+              Are you sure you want to remove this users access for the
+              {{ instituteTypeLabel.toLowerCase() }}?
+            </span>
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -185,7 +189,10 @@
       >
         <v-row no-gutters>
           <v-col class="d-flex justify-center">
-            <span style="font-size: medium; font-weight: bold; color: black">Re-linking an account will remove the current user and resend the activation code so that the user can set up EDX access with their new credential.</span>
+            <span style="font-size: medium; font-weight: bold; color: black">
+              Re-linking an account will remove the current user and resend the activation code so
+              that the user can set up EDX access with their new credential.
+            </span>
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -371,11 +378,13 @@ export default {
         }
       };
       if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = this.user.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+        const userSchool = this.user.edxUserSchools
+          .find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = this.instituteCode;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
-        const userDistrict = this.user.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+        const userDistrict = this.user.edxUserDistricts
+          .find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
@@ -383,7 +392,9 @@ export default {
         .then(() => {
           this.setSuccessAlert('User has been removed, email sent with instructions to re-link.');
         }).catch(error => {
-          this.setFailureAlert('An error occurred while re-linking a user. Please try again later.');
+          this.setFailureAlert(
+            'An error occurred while re-linking a user. Please try again later.'
+          );
           console.log(error);
         }).finally(() => {
           setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
@@ -396,11 +407,13 @@ export default {
         }
       };
       if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = this.user.edxUserSchools.find(school => school.schoolID === this.instituteCode);
+        const userSchool = this.user.edxUserSchools
+          .find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = userSchool.schoolID;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
-        const userDistrict = this.user.edxUserDistricts.find(district => district.districtID === this.instituteCode);
+        const userDistrict = this.user.edxUserDistricts
+          .find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
@@ -435,7 +448,9 @@ export default {
         .then(() => {
           this.setSuccessAlert('User roles have been updated.');
         }).catch(error => {
-          this.setFailureAlert('An error occurred while updating user roles. Please try again later.');
+          this.setFailureAlert(
+            'An error occurred while updating user roles. Please try again later.'
+          );
           console.log(error);
         }).finally(() => {
           this.$emit('refresh');
