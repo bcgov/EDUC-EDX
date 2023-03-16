@@ -68,7 +68,8 @@
               start
             />
             <span id="contactEmail"> {{ contact.jobTitle }}</span>
-          </v-list-item><v-list-item
+          </v-list-item>
+          <v-list-item
             v-if="contact.email"
             class="pl-0"
           >
