@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`edxUser-${user.edxUserID}`"
-    height="100%"
+    class="h-100"
   >
     <v-card-title class="pb-0">
       <v-row no-gutters>
