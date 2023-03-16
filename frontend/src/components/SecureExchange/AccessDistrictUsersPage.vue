@@ -111,28 +111,24 @@
         cols="6"
         class="pb-0"
       >
-        <v-row style="height: 100%;">
-          <v-col style="min-height: 184px">
-            <v-card height="100%">
-              <v-row
-                style="height: 100%;"
-                no-gutters
-              >
-                <v-col class="d-flex align-center justify-center">
-                  <PrimaryButton
-                    id="new-user-button"
-                    icon="mdi-plus"
-                    :large-icon="true"
-                    secondary
-                    icon-left
-                    text="Add New User"
-                    :click-action="openNewUserSheet"
-                  />
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
+        <v-card height="100%">
+          <v-row
+            style="height: 100%;"
+            no-gutters
+          >
+            <v-col class="d-flex align-center justify-center">
+              <PrimaryButton
+                id="new-user-button"
+                icon="mdi-plus"
+                :large-icon="true"
+                secondary
+                icon-left
+                text="Add New User"
+                :click-action="openNewUserSheet"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
     <v-row v-else>
