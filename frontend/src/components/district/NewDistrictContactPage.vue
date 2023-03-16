@@ -63,7 +63,7 @@
             <v-text-field
               id="newContactJobTitle"
               v-model="newContact.jobTitle"
-              label="Title"
+              label="Position Title"
               type="text"
               variant="underlined"
               maxlength="255"
