@@ -87,7 +87,8 @@
     <Spinner v-if="loadingUsers" />
     <v-row
       v-else-if="filteredUsers.length"
-      class="d-flex align-stretch"
+      class="d-flex"
+      align="stretch"
     >
       <v-col
         v-for="user in filteredUsers"
@@ -111,28 +112,26 @@
         cols="6"
         class="pb-0"
       >
-        <v-row style="height: 100%;">
-          <v-col style="min-height: 184px">
-            <v-card height="100%">
-              <v-row
-                style="height: 100%;"
-                no-gutters
-              >
-                <v-col class="d-flex align-center justify-center">
-                  <PrimaryButton
-                    id="new-user-button"
-                    icon="mdi-plus"
-                    :large-icon="true"
-                    secondary
-                    icon-left
-                    text="Add New User"
-                    :click-action="openNewUserSheet"
-                  />
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
+        <v-card class="add-new-user h-100">
+          <v-row
+            class="h-100"
+            align="center"
+            justify="center"
+            no-gutters
+          >
+            <v-col class="text-center">
+              <PrimaryButton
+                id="new-user-button"
+                icon="mdi-plus"
+                :large-icon="true"
+                secondary
+                icon-left
+                text="Add New User"
+                :click-action="openNewUserSheet"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -335,7 +334,8 @@ export default {
 </script>
 
 <style scoped>
-.sheetHeader{
+.add-new-user { min-height: 184px; }
+.sheetHeader {
   background-color: #003366;
   color: white;
   font-size: medium !important;
