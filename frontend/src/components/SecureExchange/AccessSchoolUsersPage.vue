@@ -435,6 +435,7 @@ export default {
       this.newUserInviteSheet = !this.newUserInviteSheet;
     },
     setupSchoolList(){
+      this.schoolSearchNames = [];
       for(const school of this.activeSchoolsMap.values()){
         let schoolItem = {
           schoolCodeName: school.schoolName + ' - ' + school.mincode,

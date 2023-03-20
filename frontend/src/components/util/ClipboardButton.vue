@@ -1,9 +1,10 @@
 <template>
   <v-tooltip
     v-model="showTooltip"
-    right
+    location="right"
+    :open-on-hover=false
   >
-    <template #activator="{ on, attrs }">
+    <template #activator="{ props }">
       <v-btn
         :id="id"
         color="#38598A"
@@ -11,7 +12,7 @@
         :dark="!disabled"
         size="30"
         icon
-        v-bind="attrs"
+        v-bind="props"
         :title="`Copy ${copyText} to the clipboard.`"
         @click.stop.prevent="copy(copyText)"
       >
