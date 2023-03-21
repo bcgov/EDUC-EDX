@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "lib": ["es5", "dom", "ES2015", "ES6", "ESNext"],
+        "types": ["cypress", "node", "mocha", "cypress-xpath"],
+        "allowJs": true,
+        "noImplicitAny": true,
+        "strict": true,
+        "module": "commonjs"
+    },
+    "include": ["./cypress/**/*.ts", "**/*.d.ts"],
+    "exclude": [],
+    "noEmit": true
+}

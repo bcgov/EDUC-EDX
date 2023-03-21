@@ -23,7 +23,6 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-
 Cypress.Commands.add('login', () => {
   
   // Replace with your app's login page URL
@@ -54,29 +53,4 @@ Cypress.Commands.add('getAccessToken', () => {
     // expect(res.status).to.eq(200)
   })
   cy.log('> Get Token')
-})
-
-Cypress.Commands.add('viewportPreset', (size = '') => {
-  switch (size) {
-    case 'samsung-s10-plus':
-      cy.viewport(412, 869)
-      break
-    case 'iphone-se': 
-      cy.viewport(375, 667)
-      break
-    case 'ipad-pro':
-      cy.viewport(1366, 1024)
-      break
-    case 'ms-surface':
-      cy.viewport(1280, 720)
-      break
-    case 'full-hd':
-      cy.viewport(1920, 1080)
-      break
-    case 'imac':
-      cy.viewport(2560, 1440)
-      break
-    default:
-      cy.viewport(Cypress.env('viewportWidth'), Cypress.env('viewportHeight'))
-  }
 })
