@@ -148,7 +148,7 @@ async function getExchangesPaginated(req) {
   if (req.query.searchParams) {
     parsedParams = req.query.searchParams;
     if (parsedParams.studentPEN) {
-      let studentDetail = await getData(accessToken, config.get('student:apiEndpoint') + '/?pen=' + parsedParams.studentPEN);
+      let studentDetail = await getData(accessToken, config.get('student:apiEndpoint') + '?pen=' + parsedParams.studentPEN);
       if (studentDetail[0]) {
         parsedParams.studentId = studentDetail[0].studentID;
         delete parsedParams.studentPEN;
