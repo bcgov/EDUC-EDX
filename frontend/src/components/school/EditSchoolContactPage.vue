@@ -29,7 +29,7 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row class="d-flex justify-center">
+        <v-row class="d-flex justify-center" dense>
           <v-col>
             <v-select
               id="editContactDropdown"
@@ -59,6 +59,14 @@
               label="Last Name"
             />
             <v-text-field
+                id="editContactJobTitleInput"
+                v-model="editContact.jobTitle"
+                variant="underlined"
+                class="pt-0"
+                :maxlength="255"
+                label="Position Title"
+            />
+            <v-text-field
               id="editContactEmailInput"
               v-model="editContact.email"
               :rules="[rules.required(), rules.email()]"
@@ -67,7 +75,7 @@
               :maxlength="255"
               label="Email"
             />
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-text-field
                   id="editContactPhoneNumberInput"
@@ -93,7 +101,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-text-field
                   id="editContactAltPhoneNumberInput"
@@ -119,7 +127,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-menu
                   id="editContactEffectiveDatePicker"

@@ -29,7 +29,7 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row class="d-flex justify-center">
+        <v-row class="d-flex justify-center" dense>
           <v-col>
             <v-select
               id="newContactDropdown"
@@ -60,6 +60,14 @@
               label="Last Name"
             />
             <v-text-field
+                id="newContactJobTitleInput"
+                v-model="newContact.lastName"
+                variant="underlined"
+                class="pt-0"
+                :maxlength="255"
+                label="Position Title"
+            />
+            <v-text-field
               id="newContactEmailInput"
               v-model="newContact.email"
               :rules="[rules.required(), rules.email()]"
@@ -68,7 +76,7 @@
               :maxlength="255"
               label="Email"
             />
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-text-field
                   id="newContactPhoneNumberInput"
@@ -94,7 +102,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-text-field
                   id="newContactAltPhoneNumberInput"
@@ -120,7 +128,7 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col cols="6">
                 <v-menu
                   id="newContactEffectiveDatePicker"

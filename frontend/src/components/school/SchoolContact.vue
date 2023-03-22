@@ -37,6 +37,9 @@
             />
           </v-btn>
         </v-col>
+        <v-col>
+          <strong>{{ contact.jobTitle }}</strong>
+        </v-col>
       </v-row>
     </v-card-title>
     <v-card-text class="pb-0">
