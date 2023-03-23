@@ -94,7 +94,7 @@ export default {
       this.$router.push({name: 'home'});
     },
     setActiveStep() {
-      const stepName = 'STEP-1'; //TODO: Load the current step from API
+      const stepName = 'STEP-1';
       const currentStep = this.steps.find(step => step.label === stepName);
       this.setCurrentStepInCollectionProcess(currentStep);
     }
