@@ -24,6 +24,10 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
+import SLDCollectionView from './components/sldCollection/SLDCollectionView.vue';
+import StepOneSchoolDetails from './components/sldCollection/StepOneSchoolDetails.vue';
+import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolContacts.vue';
+import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -242,6 +246,49 @@ const router = createRouter({
             requiresAuth: true,
             permission: 'SECURE_EXCHANGE'
           }
+        },
+        {
+          path: 'openCollectionDetails',
+          name: 'sldCollection',
+          component: SLDCollectionView,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.SLD,
+            requiresAuth: true,
+            permission: 'SECURE_EXCHANGE'
+          },
+          children: [
+            {
+              path: 'step-1',
+              name: 'step-1',
+              component: StepOneSchoolDetails,
+              meta: {
+                pageTitle: PAGE_TITLES.SLD,
+                requiresAuth: true,
+                permission: 'SECURE_EXCHANGE'
+              }
+            },
+            {
+              path: 'step-2',
+              name: 'step-2',
+              component: StepTwoSchoolContacts,
+              meta: {
+                pageTitle: PAGE_TITLES.SLD,
+                requiresAuth: true,
+                permission: 'SECURE_EXCHANGE'
+              }
+            },
+            {
+              path: 'step-3',
+              name: 'step-3',
+              component: StepThreeUploadData,
+              meta: {
+                pageTitle: PAGE_TITLES.SLD,
+                requiresAuth: true,
+                permission: 'SECURE_EXCHANGE'
+              }
+            }
+          ]
         }
       ]
     },
