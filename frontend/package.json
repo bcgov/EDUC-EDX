@@ -98,7 +98,7 @@
         "error",
         "always"
       ],
-      "selector-pseudo-element-no-unknown": [
+      "selector-pseudo-class-no-unknown": [
         0,
         {
           "ignorePseudoClasses": ["deep"]
