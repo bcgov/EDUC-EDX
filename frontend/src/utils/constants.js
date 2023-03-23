@@ -97,6 +97,7 @@ export const PAGE_TITLES = Object.freeze({
   SCHOOL_DETAILS:'School Details',
   DISTRICT_DETAILS:'District Details',
   DISTRICT_CONTACTS: 'District Contacts',
+  SLD:'Student Level Data (1701)',
 });
 
 
