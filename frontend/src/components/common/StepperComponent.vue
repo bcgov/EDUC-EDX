@@ -127,15 +127,6 @@ export default {
   color: grey;
 }
 
-.inactive {
- color: grey;
-}
-
-.active {
- color: rgb(56, 89, 138);
- font-weight: bold;
-}
-
 .circle {
     border-radius: 50%;
     width: 34px;
