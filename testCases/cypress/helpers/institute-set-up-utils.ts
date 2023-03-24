@@ -1,10 +1,10 @@
-//const {deleteInstituteSetUp,createDistrict,createSchool,createAuthorityWithContactToTest,createDistrictWithContactToTest,createSchoolWithContactToTest, clearSchoolContacts, setupSchoolContact} = require('../services/institute-api-service');
-import {OAuthUtil} from '../services/institute-api-service.cy';
+import {OAuthUtil} from '../services/OauthUtil.cy';
+import {instituteApiService} from '../services/institute-api-service.cy';
 class InstituteSetupUtils {
 
     async setUpDistrictAndSchool(){
         debugger
-        this.deleteInstituteSetUp();
+        await this.deleteInstituteSetUp();
         //const districtID = await createDistrict();
         console.log('AT district created');
         // const school = await createSchool(districtID);
@@ -15,6 +15,11 @@ class InstituteSetupUtils {
     async deleteInstituteSetUp(){
         const data =  new OAuthUtil();
         const token =  data.makeOAuthRequest();
+        const api =  new instituteApiService();
+        await api.getAllSchools();
+        debugger
+        await  api.getSchoolIDBySchoolCode('99998')
+
         //  const school =  await instituteApiService.getSchoolBySchoolDisplayName('EDX AT School');
 
     }

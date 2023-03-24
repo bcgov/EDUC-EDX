@@ -23,6 +23,10 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+let headers: any
+
+let requestBody: any = {}
+
 Cypress.Commands.add('login', () => {
   
   // Replace with your app's login page URL
@@ -53,4 +57,29 @@ Cypress.Commands.add('getAccessToken', () => {
     // expect(res.status).to.eq(200)
   })
   cy.log('> Get Token')
+})
+
+Cypress.Commands.add('makeAPIRequest', (endPoint: string, methodType: string, params: {} , payload: {}) => {
+  let body = {}
+  cy.getAccessToken().then(() => {
+    cy.wait(3000)
+    cy.get('@accessTokenResponse').then((res: any) => {
+      debugger
+      headers={
+        Authorization: `Bearer ${res.body.access_token}`,
+            'Content-Type': 'application/json'
+      }
+      if (methodType.toUpperCase() === 'PUT' || methodType.toUpperCase() === 'POST') {
+        body = payload
+      }
+      return cy.request({
+        url: endPoint,
+        method: methodType,
+        body: body,
+        headers: headers,
+        qs: params,
+        failOnStatusCode: false
+      })
+    })
+  })
 })

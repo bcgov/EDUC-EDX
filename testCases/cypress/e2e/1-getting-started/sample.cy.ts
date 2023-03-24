@@ -1,11 +1,11 @@
 import setupInstituteEntities from '../../helpers/institute-set-up-utils';
 
-
 describe('Sample Tests', () => {
     const instituteSetup = new setupInstituteEntities()
 
     beforeEach(() => {
         instituteSetup.setUpDistrictAndSchool();
+        //instituteSetup.setupInstituteEntities();
         // cy.fixture('auth').as('auth');
         // Cypress starts out with a blank slate for each test
         // so we must tell it to visit our website with the `cy.visit()` command.
