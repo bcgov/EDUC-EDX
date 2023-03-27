@@ -61,7 +61,7 @@
             />
             <v-text-field
                 id="newContactJobTitleInput"
-                v-model="newContact.lastName"
+                v-model="newContact.jobTitle"
                 variant="underlined"
                 class="pt-0"
                 :maxlength="255"
