@@ -73,7 +73,7 @@
           <v-col
             v-else
             cols="6"
-            class="d-flex justify-end"
+            class="d-flex justify-end mt-2"
           >
             <PrimaryButton
               id="cancelButton"
