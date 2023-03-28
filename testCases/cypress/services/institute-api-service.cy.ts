@@ -197,10 +197,8 @@ export class instituteApiService {
             log.info('District Deleted');
         }
 
-    },
+    },*/
     async getSchoolBySchoolDisplayName(displayName: string) {
-        const data = await getToken();
-        const token = data.access_token;
 
         const schoolSearchCriteria = [{
             condition: null,
@@ -221,13 +219,15 @@ export class instituteApiService {
             }
         };
         const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/paginated`;
-        const userSchoolResult = await restUtils.getData(token, url, schoolSearchParam);
-        return userSchoolResult?.content[0];
-    },
+        cy.makeAPIRequest(url, 'GET',schoolSearchParam,{}).then((res) => {
+            expect(res.status).to.be.equal(200)
+            response = res?.body?.content[0]
+            cy.log(response);
+        })
+        return await response;
+    }
 
     async getAuthorityIDByAuthorityNumber(authorityNumber: string) {
-        const data = await getToken();
-        const token = data.access_token;
 
         const authoritySearchCriteria = [{
             condition: null,
@@ -255,15 +255,17 @@ export class instituteApiService {
             }
         };
         const url = `${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}/paginated`;
-        const authorityResult = await restUtils.getData(token, url, authoritySearchParam);
-        return authorityResult?.content[0]?.independentAuthorityId;
-    },
+        cy.makeAPIRequest(url, 'GET',authoritySearchParam,{}).then((res) => {
+            expect(res.status).to.be.equal(200)
+            response = res?.body?.content[0]?.independentAuthorityId;
+            cy.log(response);
+        })
+        return await response;
+    }
 
     async createAuthorityWithContactToTest(){
-        const data =  new OAuthUtil();
-        const token =  data.makeOAuthRequest();
 
-        let authorityID = await instituteApiService.getAuthorityIDByAuthorityNumber('998');
+        let authorityID = await this.getAuthorityIDByAuthorityNumber('998');
 
         const authorityPayload = {
             createUser: 'EDXAT',
@@ -282,16 +284,26 @@ export class instituteApiService {
         };
         const url = `${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}`;
         if(!authorityID){
-            return await restUtils.postData(token, url, authorityPayload);
+            cy.makeAPIRequest(url, 'POST',{},authorityPayload).then((res) => {
+                expect(res.status).to.be.equal(200)
+                response = res?.body;
+                cy.log(response);
+            })
+            return await response;
         }
         authorityPayload.independentAuthorityId = authorityID;
 
-        let freshAuthority = await restUtils.putData(token, url + '/' + authorityID, authorityPayload);
-        await instituteApiService.setupAuthorityContact(freshAuthority);
-        return freshAuthority;
-    },
+        cy.makeAPIRequest(url + '/' + authorityID, 'PUT',{},authorityPayload).then((res) => {
+            expect(res.status).to.be.equal(200)
+            response = res?.body;
+            cy.log(response);
+        })
 
-    async setupAuthorityContact(authority: { independentAuthorityId: any; }){
+        //await this.setupAuthorityContact(response);
+        return response;
+    }
+
+    /*async setupAuthorityContact(authority: { independentAuthorityId: any; }){
         const data = await getToken();
         const token = data.access_token;
 
@@ -566,8 +578,8 @@ export class instituteApiService {
         const url = `${constants.institute_base_url}${SCHOOL_ENDPOINT}/paginated`;
         const userSchoolResult = await restUtils.getData(token, url, schoolSearchParam);
         return userSchoolResult?.content[0]?.schoolId;
-    },*/
-
+    },
+*/
 
 
 };
