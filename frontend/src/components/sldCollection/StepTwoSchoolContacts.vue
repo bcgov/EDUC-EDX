@@ -31,7 +31,7 @@
       justify="end"
     >
       <p class="form-hint">
-        A principal must be added
+        A principal with an active start date must be added
       </p>
     </v-row>
   </v-container>
