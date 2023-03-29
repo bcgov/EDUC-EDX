@@ -47,7 +47,7 @@
             </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="5">
+            <v-col cols="8">
               <v-text-field
                 id="instituteIdentifierTextField"
                 v-model="instituteSpecificCode"
@@ -59,7 +59,7 @@
             </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="5">
+            <v-col cols="8">
               <v-text-field
                 id="primaryEdxCodeTextField"
                 v-model="primaryEdxCode"
@@ -71,7 +71,7 @@
             </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="5">
+            <v-col cols="8">
               <v-text-field
                 id="personalActivationCodeTextField"
                 v-model="personalActivationCode"
