@@ -507,6 +507,37 @@
               </v-col>
             </v-row>
           </v-col>
+          <v-col
+            cols="4"
+            lg="3"
+            class="pb-0 pt-0"
+          >
+            <v-row
+              no-gutters
+              class="d-flex justify-start"
+            >
+              <v-col
+                cols="10"
+                class="d-flex justify-start"
+              >
+                <span style="color: grey">Reporting Requirement</span>
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="pt-2"
+            >
+              <v-col
+                cols="10"
+                class="d-flex justify-start"
+              >
+                <span
+                  class="ministryLine"
+                  style="color: black"
+                >{{ schoolReportingRequirementType.label || '' }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
         </v-row>
         <v-row class="d-flex justify-start mb-2">
           <v-col
@@ -950,6 +981,7 @@ export default {
       district: '',
       schoolFacilityTypes: [],
       schoolCategoryTypes: [],
+      schoolReportingRequirementTypes: [],
       schoolOrganizationTypes: [],
       schoolNeighborhoodLearningTypes: [],
       schoolActiveOrganizationTypes: [],
@@ -972,6 +1004,7 @@ export default {
     ...mapState(instituteStore, ['facilityTypeCodes']),
     ...mapState(instituteStore, ['schoolCategoryTypeCodes']),
     ...mapState(instituteStore, ['schoolOrganizationTypeCodes']),
+    ...mapState(instituteStore, ['schoolReportingRequirementTypeCodes']),
     ...mapState(instituteStore, ['schoolNeighborhoodLearningCodes']),
     ...mapState(instituteStore, ['activeSchoolOrganizationTypeCodes']),
     ...mapState(instituteStore, ['activeSchoolNeighborhoodLearningCodes']),
@@ -994,10 +1027,17 @@ export default {
     },
     isOffshoreSchool(){
       return this.school.schoolCategoryCode === 'OFFSHORE';
+    },
+    schoolReportingRequirementType() {
+      const code = this.school.schoolReportingRequirementCode;
+      const type = this.schoolReportingRequirementTypes
+        .find(rr => rr.schoolReportingRequirementCode === code);
+      if (type === undefined) return {};
+      return type;
     }
   },
   watch: {
-    schoolDetailsFormValid(value) {    
+    schoolDetailsFormValid(value) {
       if(value !== null && value !== undefined) {
         if(this.hasRequiredFieldValues() && value) {
           this.$emit('is-form-valid', true);
@@ -1016,6 +1056,9 @@ export default {
     });
     instituteStore().getSchoolOrganizationTypeCodes().then(() => {
       this.schoolOrganizationTypes = this.schoolOrganizationTypeCodes;
+    });
+    instituteStore().getSchoolReportingRequirementTypeCodes().then(() => {
+      this.schoolReportingRequirementTypes = this.schoolReportingRequirementTypeCodes;
     });
     instituteStore().getSchoolNeighborhoodLearningCodes().then(() => {
       this.schoolNeighborhoodLearningTypes = this.schoolNeighborhoodLearningCodes;
@@ -1099,14 +1142,14 @@ export default {
     },
     getGradesOffered(rawGrades) {
       let gradeList = [];
-  
+
       for (const grade of this.schoolGradeTypes) {
         let schoolGradeType = rawGrades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode);
         if (schoolGradeType) {
           gradeList.push(grade.label.replaceAll('Grade ', ''));
         }
       }
-  
+
       return gradeList.toString().replace(/,/g, ', ');
     },
     getSchoolOrganization(school){
