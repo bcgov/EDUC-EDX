@@ -29,26 +29,19 @@
           <v-row>
             <v-col cols="12">
               <v-card color="#CED6E2">
-                <v-card-text class="black--text">
-                  <v-icon>
-                    mdi-information-outline
-                  </v-icon>
-                  To activate your Edx user account, you will need to enter the following:
-                  <br>
-                  <v-icon class="pl-12">
-                    mdi-circle-small
-                  </v-icon>
-                  Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{ instituteIdentifierLabel }}</strong>
-                  <br>
-                  <v-icon class="pl-12">
-                    mdi-circle-small
-                  </v-icon>
-                  Your <strong>{{ instituteTypeLabel }}'s Primary Activation Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
-                  <br>
-                  <v-icon class="pl-12">
-                    mdi-circle-small
-                  </v-icon>
-                  Your <strong>Personal Activation Code</strong> from your EDX invite email
+                <v-card-text class="text-black">
+                  <p>To activate your Edx user account, you will need to enter the following:</p>
+                  <ul style="padding: revert;">
+                    <li>
+                      Your {{ instituteTypeLabel.toLowerCase() }}'s <strong>{{ instituteIdentifierLabel }}</strong>
+                    </li>
+                    <li>
+                      Your <strong>{{ instituteTypeLabel }}'s Primary Activation Code</strong> obtained from your {{ instituteTypeLabel.toLowerCase() }} administrator
+                    </li>
+                    <li>
+                      Your <strong>Personal Activation Code</strong> from your EDX invite email
+                    </li>
+                  </ul>
                 </v-card-text>
               </v-card>
             </v-col>
