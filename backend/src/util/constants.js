@@ -132,6 +132,7 @@ cacheKeys = {
   SCHOOL_CONTACT_TYPE_CODES: 'school_contactTypeCodes',
   DISTRICT_CONTACT_TYPE_CODES: 'district_contactTypeCodes',
   SCHOOL_ORGANIZATION_TYPES: 'school_organizationTypes',
+  SCHOOL_REPORTING_REQUIREMENT_CODES: 'institute_reportingRequirementCodes',
   SCHOOL_NEIGHBORHOOD_LEARNING_TYPES: 'school_neighborhoodTypes',
   SCHOOL_GRADE_TYPES: 'school_gradeTypes',
   EDX_SECURE_EXCHANGE_DOCUMENT_TYPES: 'edx_secureExchangeDocumentTypes',
