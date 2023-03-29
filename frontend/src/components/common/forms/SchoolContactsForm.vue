@@ -116,7 +116,7 @@
       inset
       location="bottom"
       temporary
-      style="width: 50%; height: max-content; left: 25%;"
+      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
       no-click-animation
       scrollable
       persistent
@@ -136,7 +136,7 @@
       temporary
       no-click-animation
       scrollable
-      style="width: 50%; height: max-content; left: 25%;"
+      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
       persistent
     >
       <EditSchoolContactPage
