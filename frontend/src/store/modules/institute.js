@@ -7,6 +7,7 @@ export const instituteStore = defineStore('institute', {
     facilityTypeCodes: null,
     schoolCategoryTypeCodes: null,
     schoolOrganizationTypeCodes: null,
+    schoolReportingRequirementTypeCodes: null,
     schoolNeighborhoodLearningCodes: null,
     gradeCodes: null,
     provinceCodes: null,
@@ -24,6 +25,7 @@ export const instituteStore = defineStore('institute', {
     schoolCategoryTypeCodesGet: state => state.schoolCategoryTypeCodes,
     schoolOrganizationTypeCodesGet: state => state.schoolOrganizationTypeCodes,
     schoolNeighborhoodLearningCodesGet: state => state.schoolNeighborhoodLearningCodes,
+    schoolReportingRequirementTypeCodesGet: state => state.schoolReportingRequirementTypeCodes,
     gradeCodesGet: state => state.gradeCodes,
     provinceCodesGet: state => state.provinceCodes,
     countryCodesGet: state => state.countryCodes,
@@ -44,6 +46,9 @@ export const instituteStore = defineStore('institute', {
     },
     async setSchoolOrganizationTypeCodes(schoolOrganizationTypeCodes) {
       this.schoolOrganizationTypeCodes = schoolOrganizationTypeCodes;
+    },
+    async setSchoolReportingRequirementTypeCodes(schoolReportingRequirementTypeCodes) {
+      this.schoolReportingRequirementTypeCodes = schoolReportingRequirementTypeCodes;
     },
     async setSchoolNeighborhoodLearningCodes(schoolNeighborhoodLearningCodes) {
       this.schoolNeighborhoodLearningCodes = schoolNeighborhoodLearningCodes;
@@ -89,6 +94,10 @@ export const instituteStore = defineStore('institute', {
     async getSchoolOrganizationTypeCodes() {
       const response = await ApiService.getSchoolOrganizationTypeCodes();
       await this.setSchoolOrganizationTypeCodes(response.data);
+    },
+    async getSchoolReportingRequirementTypeCodes() {
+      const response = await ApiService.getSchoolReportingRequirementTypeCodes();
+      await this.setSchoolReportingRequirementTypeCodes(response.data);
     },
     async getSchoolNeighborhoodLearningCodes() {
       const response = await ApiService.getSchoolNeighborhoodLearningCodes();
