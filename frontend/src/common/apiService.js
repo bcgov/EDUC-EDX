@@ -131,6 +131,9 @@ export default {
   getFacilityTypeCodes: getCodes(`${ApiRoutes.institute.FACILITY_TYPES_URL}`),
   getSchoolCategoryTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_CATEGORY_TYPES_URL}`),
   getSchoolOrganizationTypeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_ORGANIZATION_TYPES_URL}`),
+  getSchoolReportingRequirementTypeCodes: getCodes(
+    `${ApiRoutes.institute.SCHOOL_REPORTING_REQUIREMENT_TYPES_URL}`
+  ),
   getSchoolNeighborhoodLearningCodes: getCodes(`${ApiRoutes.institute.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES_URL}`),
   getGradeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_GRADE_TYPES_URL}`),
   getProvinceCodes: getCodes(`${ApiRoutes.institute.PROVINCE_CODES_URL}`),

@@ -97,6 +97,7 @@ nconf.defaults({
     facilityTypeURL: process.env.INSTITUTE_API_ENDPOINT + '/facility-codes',
     categoryCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/category-codes',
     organizationCodeURL: process.env.INSTITUTE_API_ENDPOINT + '/organization-codes',
+    reportingRequirementCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/reporting-requirement-codes',
     neighbourhoodLearningURL: process.env.INSTITUTE_API_ENDPOINT + '/neighborhood-learning-codes',
     gradeCodeURL: process.env.INSTITUTE_API_ENDPOINT + '/grade-codes',
     provinceCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/province-codes',
