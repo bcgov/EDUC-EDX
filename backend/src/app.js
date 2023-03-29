@@ -30,9 +30,12 @@ const studentRouter = require('./routes/student');
 const instituteRouter = require('./routes/institute');
 const configRouter = require('./routes/config');
 const promMid = require('express-prometheus-middleware');
-const messageSubscriber = require('./messaging/message-subscriber');
-messageSubscriber.init();
-messageSubscriber.callbacks();
+const messagePubSub = require('./messaging/message-pub-sub');
+messagePubSub.init().then(() => {
+  require('./messaging/handlers/saga-message-handler').subscribe();
+  require('./messaging/handlers/institute-update-handler').subscribe();
+  require('./messaging/handlers/institute-jetstream-subscriber').subscribe();
+}).catch((e) => log.error(e));
 //initialize app
 const app = express();
 app.set('trust proxy', 1);

@@ -19,7 +19,7 @@ const app = require('./app');
 const port = normalizePort(config.get('server:port'));
 app.set('port', port);
 const server = http.createServer(app);
-const NATS = require('./messaging/message-subscriber');
+const NATS = require('./messaging/message-pub-sub');
 if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to stop GitHub Actions test from hanging.
   const cacheService = require('./components/cache-service');
   cacheService.loadAllSchoolsToMap().then(() => {
