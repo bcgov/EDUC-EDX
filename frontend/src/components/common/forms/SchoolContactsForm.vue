@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-if="loading">
+    <v-row v-if="isLoading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
           class="mt-16"
@@ -8,11 +8,11 @@
           :width="7"
           color="primary"
           indeterminate
-          :active="loading"
+          :active="isLoading"
         />
       </v-col>
     </v-row>
-    <template v-if="!loading">
+    <template v-if="!isLoading">
       <v-row>
         <v-col
           cols="12"
@@ -209,7 +209,7 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
-    loading() {
+    isLoading() {
       return this.loadingCount !== 0;
     }
   },
