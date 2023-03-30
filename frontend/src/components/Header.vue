@@ -3,6 +3,7 @@
     absolute
     color="rgb(0, 51, 102)"
     class="sysBar"
+    style="z-index: 1002;"
     :class="{'pl-2': $vuetify.display.smAndDown, 'pl-10': $vuetify.display.mdAndUp, 'pr-2': $vuetify.display.smAndDown, 'pr-10': $vuetify.display.mdAndUp} "
   >
     <!-- Navbar content -->
