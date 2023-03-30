@@ -129,8 +129,8 @@
       inset
       no-click-animation
       location="bottom"
-      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
       temporary
+      style="width: 50%; height: max-content; left: 25%;"
       scrollable
       persistent
     >
@@ -147,7 +147,7 @@
       inset
       no-click-animation
       location="bottom"
-      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
+      style="width: 50%; height: max-content; left: 25%;"
       temporary
       scrollable
       persistent

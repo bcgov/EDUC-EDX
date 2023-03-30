@@ -93,6 +93,7 @@
       id="navBar"
       absolute
       color="#38598A"
+      style="z-index: 1001;"
       :dark="true"
       class="pl-4 pr-8"
       :class="{'pl-16': $vuetify.display.mdAndUp}"
@@ -123,7 +124,7 @@
     </v-app-bar>
     <v-app-bar
       v-if="bannerColor !== ''"
-      style="color:white"
+      style="color: white; z-index: 1000;"
       :color="bannerColor"
       absolute
       density="compact"
