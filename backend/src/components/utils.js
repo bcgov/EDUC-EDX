@@ -364,6 +364,13 @@ function checkEDXUserDistrictAdminPermission(req) {
   }
 }
 
+function checkEDXCollectionPermission(req) {
+  let permission = req.session.activeInstitutePermissions.includes('STUDENT_DATA_COLLECTION');
+  if (!permission) {
+    throw new Error('403');
+  }
+}
+
 function checkEDXUserAccess(req, instituteType, instituteIdentifier) {
   if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
     throw new Error('403');
@@ -445,7 +452,8 @@ const utils = {
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
-  logApiError
+  logApiError,
+  checkEDXCollectionPermission
 };
 
 module.exports = utils;
