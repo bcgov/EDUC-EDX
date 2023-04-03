@@ -290,6 +290,45 @@
             </v-row>
           </v-card>
         </v-col>
+        <v-col v-if="showSLDCard && isLoggedInSchoolUser"
+          cols="6"
+        >
+        <v-card
+            id="schoolDetailsCard"
+            class="mt-0 mb-5"
+            width="22em"
+            outlined
+            rounded
+            @click="openSLDCollection()"
+          >
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon
+                    icon="mdi-note-text-outline"
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  />
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.DATA_COLLECTION }}
+                    </h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{ collectionDetail }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
       </v-row>
     </v-col>
   </v-row>
@@ -304,7 +343,7 @@ import { appStore } from '../store/modules/app';
 import { mapState } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, capitalize} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
@@ -335,6 +374,7 @@ export default {
       districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
       districtContactsLastUpdateDate: '',
+      collectionDetail: '',
       schoolLastUpdateDate: '',
       activeUserSchools: [],
       activeUserDistricts:[],
@@ -365,9 +405,10 @@ export default {
     this.getExchangesCount();
 
     if(this.isLoggedInSchoolUser) {
+      this.getSLDCollectionBySchoolId();
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
-      this.isSchoolActive();
+      this.isSchoolActive();  
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
@@ -457,8 +498,28 @@ export default {
     redirectToSchools(){
       router.push('/schools');
     },
+    showSLDCard(){
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
+    },
+    openSLDCollection() {
+      router.push('/openCollectionDetails');
+    },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
+    },
+    getSLDCollectionBySchoolId() {
+        ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+          if(response.data) {
+            this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
+          } else {
+            this.collectionDetail = 'No open collections'
+          }
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loadingTable = false;
+        });
     },
     getSchoolContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
