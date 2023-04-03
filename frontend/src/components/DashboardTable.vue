@@ -290,10 +290,11 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="showSLDCard && isLoggedInSchoolUser"
+        <v-col
+          v-if="showSLDCard && isLoggedInSchoolUser"
           cols="6"
         >
-        <v-card
+          <v-card
             id="schoolDetailsCard"
             class="mt-0 mb-5"
             width="22em"
@@ -508,18 +509,18 @@ export default {
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
     },
     getSLDCollectionBySchoolId() {
-        ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
-          if(response.data) {
-            this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
-          } else {
-            this.collectionDetail = 'No open collections'
-          }
-        }).catch(error => {
-          console.error(error);
-          this.setFailureAlert(error.response?.data?.message || error.message);
-        }).finally(() => {
-          this.loadingTable = false;
-        });
+      ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+        if(response.data) {
+          this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
+        } else {
+          this.collectionDetail = 'No open collections';
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.loadingTable = false;
+      });
     },
     getSchoolContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'SCHOOL') {

@@ -1,6 +1,6 @@
 'use strict';
 const { getAccessToken, 
-  checkEDXCollectionPermission, postData, handleExceptionResponse, getData
+  checkEDXCollectionPermission, handleExceptionResponse, getData
 } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
