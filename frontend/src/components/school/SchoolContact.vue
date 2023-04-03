@@ -37,13 +37,20 @@
             />
           </v-btn>
         </v-col>
-        <v-col>
-          <strong>{{ contact.jobTitle }}</strong>
-        </v-col>
       </v-row>
     </v-card-title>
     <v-card-text class="pb-0">
       <v-list density="compact">
+        <v-list-item
+          v-if="contact.jobTitle"
+          class="pl-0"
+        >
+          <v-icon
+            icon="mdi-account"
+            start
+          />
+          <span id="contactEmail"> {{ contact.jobTitle }}</span>
+        </v-list-item>
         <v-list-item
           v-if="!contact.email && !contact.phoneNumber"
           class="pl-0"
