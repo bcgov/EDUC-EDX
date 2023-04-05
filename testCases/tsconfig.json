@@ -6,7 +6,8 @@
         "allowJs": true,
         "noImplicitAny": true,
         "strict": true,
-        "module": "commonjs"
+        "module": "commonjs",
+      "allowSyntheticDefaultImports": true
     },
     "include": ["./cypress/**/*.ts", "**/*.d.ts"],
     "exclude": [],
