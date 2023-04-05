@@ -21,6 +21,6 @@ class HealthCheckController {
 }
 
 const REDIS = require('../util/redis/redis-client');
-const NATS = require('../messaging/message-subscriber');
+const NATS = require('../messaging/message-pub-sub');
 const EXPRESS = require('express');
 module.exports = new HealthCheckController(REDIS, NATS, EXPRESS);

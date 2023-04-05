@@ -29,10 +29,14 @@ const districtRouter = require('./routes/districts');
 const studentRouter = require('./routes/student');
 const instituteRouter = require('./routes/institute');
 const configRouter = require('./routes/config');
+const sldRouter = require('./routes/sld');
 const promMid = require('express-prometheus-middleware');
-const messageSubscriber = require('./messaging/message-subscriber');
-messageSubscriber.init();
-messageSubscriber.callbacks();
+const messagePubSub = require('./messaging/message-pub-sub');
+messagePubSub.init().then(() => {
+  require('./messaging/handlers/saga-message-handler').subscribe();
+  require('./messaging/handlers/institute-update-handler').subscribe();
+  require('./messaging/handlers/institute-jetstream-subscriber').subscribe();
+}).catch((e) => log.error(e));
 //initialize app
 const app = express();
 app.set('trust proxy', 1);
@@ -174,6 +178,7 @@ apiRouter.use('/districts', districtRouter);
 apiRouter.use('/config',configRouter);
 apiRouter.use('/student', studentRouter);
 apiRouter.use('/institute',instituteRouter);
+apiRouter.use('/sld',sldRouter);
 
 //Handle 500 error
 app.use((err, _req, res, next) => {

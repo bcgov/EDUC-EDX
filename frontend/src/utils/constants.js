@@ -7,6 +7,7 @@ const instituteRoot = baseRoot + '/institute';
 const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
+const sldRoot = baseRoot + '/sld';
 
 let object;
 
@@ -34,6 +35,10 @@ export const ApiRoutes = Object.freeze({
     ALL_SCHOOLS_BY_CRIT: schoolRoot + '/allSchools',
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
     UPDATE_SCHOOL_CONTACT_URL: schoolRoot + '/update-contact'
+  },
+  sld: {
+    BASE_URL: sldRoot,
+    SLD_COLLECTION_BY_SCHOOL_ID: sldRoot + '/getCollectionBySchoolId'
   },
   district: {
     BASE_URL: districtRoot,
@@ -99,6 +104,7 @@ export const PAGE_TITLES = Object.freeze({
   DISTRICT_DETAILS:'District Details',
   DISTRICT_CONTACTS: 'District Contacts',
   SLD:'Student Level Data (1701)',
+  DATA_COLLECTION: 'Data Collections'
 });
 
 

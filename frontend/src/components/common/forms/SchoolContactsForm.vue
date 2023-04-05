@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-if="loading">
+    <v-row v-if="isLoading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
           class="mt-16"
@@ -8,11 +8,11 @@
           :width="7"
           color="primary"
           indeterminate
-          :active="loading"
+          :active="isLoading"
         />
       </v-col>
     </v-row>
-    <template v-if="!loading">
+    <template v-if="!isLoading">
       <v-row>
         <v-col
           cols="12"
@@ -116,7 +116,7 @@
       inset
       location="bottom"
       temporary
-      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
+      style="width: 50%; height: max-content; left: 25%;"
       no-click-animation
       scrollable
       persistent
@@ -136,7 +136,7 @@
       temporary
       no-click-animation
       scrollable
-      style="width: 50%; height: max-content; left: 25%; z-index: 2001;"
+      style="width: 50%; height: max-content; left: 25%;"
       persistent
     >
       <EditSchoolContactPage
@@ -150,9 +150,9 @@
     </v-navigation-drawer>
   </div>
 </template>
-  
+
 <script>
-  
+
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {PERMISSION} from '../../../utils/constants/Permission';
@@ -162,17 +162,17 @@ import alertMixin from '../../../mixins/alertMixin';
 import {formatPhoneNumber, formatDate, formatContactName} from '../../../utils/format';
 import {getStatusColor} from '../../../utils/institute/status';
 import { sortBy } from 'lodash';
-  
+
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import NewSchoolContactPage from '../../school/NewSchoolContactPage.vue';
 import EditSchoolContactPage from '../../school/EditSchoolContactPage.vue';
 import SchoolContact from '../../school/SchoolContact.vue';
-  
+
 // checks the expiry of a contact
 function isExpired(contact) {
   return (contact.expiryDate) ? new Date(contact.expiryDate) < new Date() : false;
 }
-  
+
 export default {
   name: 'SchoolContactsForm',
   components: {
@@ -209,7 +209,7 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
-    loading() {
+    isLoading() {
       return this.loadingCount !== 0;
     }
   },
@@ -302,27 +302,27 @@ export default {
   }
 };
 </script>
-  
+
   <style scoped>
-  
+
   .containerSetup{
     padding-right: 32em !important;
     padding-left: 32em !important;
   }
-  
+
   @media screen and (max-width: 1950px) {
     .containerSetup{
       padding-right: 20em !important;
       padding-left: 20em !important;
     }
   }
-  
+
   @media screen and (max-width: 1200px) {
     .containerSetup{
       padding-right: 4em !important;
       padding-left: 4em !important;
     }
   }
-  
+
   </style>
-  
+

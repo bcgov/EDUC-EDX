@@ -104,6 +104,10 @@ nconf.defaults({
     countryCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/country-codes',
     schoolContactTypeCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/school-contact-type-codes',
     districtContactTypeCodesURL: process.env.INSTITUTE_API_ENDPOINT + '/district-contact-type-codes'
+  },
+  sdc: {
+    rootURL: process.env.SDC_API_ENDPOINT,
+    collectionBySchoolIdURL: process.env.SDC_API_ENDPOINT + '/collection'
   }
 });
 module.exports = nconf;
