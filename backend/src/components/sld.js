@@ -12,7 +12,7 @@ async function getCollectionBySchoolId(req, res) {
       validateAccessToken(token, res);
       checkEDXCollectionPermission(req);
 
-      const data = await getData(token, `${config.get('sdc:collectionBySchoolIdURL')}/${req.params.schoolID}`, req.session?.correlationID);
+      const data = await getData(token, `${config.get('sdc:collectionBySchoolIdURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
       return res.status(HttpStatus.OK).json(data);
     }catch (e) {
       if(e?.status === 404){
@@ -21,7 +21,6 @@ async function getCollectionBySchoolId(req, res) {
         log.error('Error getting collection for this school', e.stack);
         return handleExceptionResponse(e, res);
       }
-      
     }
   }
 
