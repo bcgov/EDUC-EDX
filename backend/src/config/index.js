@@ -107,7 +107,7 @@ nconf.defaults({
   },
   sdc: {
     rootURL: process.env.SDC_API_ENDPOINT,
-    collectionBySchoolIdURL: process.env.SDC_API_ENDPOINT + '/collection'
+    collectionBySchoolIdURL: process.env.SDC_API_ENDPOINT + '/sdcSchoolCollection'
   }
 });
 module.exports = nconf;
