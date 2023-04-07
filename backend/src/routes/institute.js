@@ -21,15 +21,6 @@ router.get('/school-organization-types', passport.authenticate('jwt', {session: 
 router.get('/school-neighborhood-learning-types', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES, 'institute:neighbourhoodLearningURL'));
 router.get('/school-grade-types', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.SCHOOL_GRADE_TYPES, 'institute:gradeCodeURL'));
 router.get('/district-contact-types', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.DISTRICT_CONTACT_TYPE_CODES, 'institute:districtContactTypeCodesURL'));
-
-router.get(
-  '/reporting-requirement-codes',
-  passport.authenticate('jwt', {session: false}, undefined),
-  auth.isValidBackendToken(),
-  getCachedInstituteData(
-    constants.CACHE_KEYS.SCHOOL_REPORTING_REQUIREMENT_CODES,
-    'institute:reportingRequirementCodesURL'
-  )
-);
+router.get('/reporting-requirement-codes', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.SCHOOL_REPORTING_REQUIREMENT_CODES,'institute:reportingRequirementCodesURL'));
 
 module.exports = router;
