@@ -28,6 +28,7 @@ import SLDCollectionView from './components/sldCollection/SLDCollectionView.vue'
 import StepOneSchoolDetails from './components/sldCollection/StepOneSchoolDetails.vue';
 import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolContacts.vue';
 import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
+import SLDCollectionSummary from './components/sldCollection/SLDCollectionSummary.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -41,8 +42,7 @@ const router = createRouter({
       component: Home,
       meta: {
         pageTitle: PAGE_TITLES.DASHBOARD,
-        requiresAuth: true,
-        permission: 'SECURE_EXCHANGE'
+        requiresAuth: true
       },
 
     },
@@ -248,14 +248,25 @@ const router = createRouter({
           }
         },
         {
-          path: 'openCollectionDetails',
+          path: 'open-collection-summary',
+          name: 'sldCollectionSummary',
+          component: SLDCollectionSummary,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.SLD,
+            requiresAuth: true,
+            permission: 'STUDENT_DATA_COLLECTION'
+          },
+        },
+        {
+          path: 'open-collection-details/:schoolCollectionID',
           name: 'sldCollection',
           component: SLDCollectionView,
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.SLD,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            permission: 'STUDENT_DATA_COLLECTION'
           },
           children: [
             {
@@ -265,8 +276,9 @@ const router = createRouter({
               meta: {
                 pageTitle: PAGE_TITLES.SLD,
                 requiresAuth: true,
-                permission: 'SECURE_EXCHANGE'
-              }
+                permission: 'STUDENT_DATA_COLLECTION'
+              },
+              props: true
             },
             {
               path: 'step-2',
@@ -275,7 +287,7 @@ const router = createRouter({
               meta: {
                 pageTitle: PAGE_TITLES.SLD,
                 requiresAuth: true,
-                permission: 'SECURE_EXCHANGE'
+                permission: 'STUDENT_DATA_COLLECTION'
               }
             },
             {
@@ -285,7 +297,7 @@ const router = createRouter({
               meta: {
                 pageTitle: PAGE_TITLES.SLD,
                 requiresAuth: true,
-                permission: 'SECURE_EXCHANGE'
+                permission: 'STUDENT_DATA_COLLECTION'
               }
             }
           ]

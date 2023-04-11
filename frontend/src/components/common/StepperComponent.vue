@@ -81,7 +81,7 @@ export default {
     ...mapActions(useSldCollectionStore, ['setCurrentStepInCollectionProcess']),
     onStepClick(step) {
       this.setCurrentStepInCollectionProcess(step);
-      this.$router.push(step.route);
+      this.$router.push({name: step.route});
     },
     moveToNextStep() {
       const currentIndex = this.currentStepInCollectionProcess.index;
@@ -100,11 +100,11 @@ export default {
     setNextStepInProgressAndNavigate(currentIndex) {
       let nextStep = this.steps[currentIndex + 1];
       this.setCurrentStepInCollectionProcess(nextStep);
-      this.$router.push(nextStep.route);
+      this.$router.push({name: nextStep.route});
     },
     loadDefaultStep() {
       const stepToLoad = this.currentStepInCollectionProcess;
-      this.$router.push(stepToLoad.route);
+      this.$router.push({name: stepToLoad.route});
     }
   }
 };

@@ -12,7 +12,7 @@
     </v-row>
     <v-row class="d-flex justify-start">
       <v-col>
-        <p>September 2022 Collection</p>
+        <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
       </v-col>
     </v-row>
     <v-row class="d-flex justify-start">
@@ -67,7 +67,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-     
+    schoolCollectionID: {
+      type: String,
+      required: true,
+      default: null
+    }
   },
   data() {
     return {
@@ -76,7 +80,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess'])
+    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode'])
   },
   created() {
     this.steps = [...this.stepsInCollectionProcess];
@@ -93,7 +97,7 @@ export default {
     backToCollectionDashboard() {
       this.$router.push({name: 'home'});
     },
-    setActiveStep() {
+    setActiveStep() { 
       const stepName = 'STEP-1';
       const currentStep = this.steps.find(step => step.label === stepName);
       this.setCurrentStepInCollectionProcess(currentStep);

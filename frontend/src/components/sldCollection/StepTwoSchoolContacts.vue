@@ -51,12 +51,14 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+   
   },
   emits: ['next'],
   data() {
     return {
       isDisabled: false,
       type: 'SLD',
+      schoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
