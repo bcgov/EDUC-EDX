@@ -1,98 +1,100 @@
 <template>
-    <v-container 
-      class="containerSetup"
-      fluid
-    >
-      <v-row class="d-flex justify-start">
-        <v-col>
-          <h2 class="subjectHeading">
-            Open Collections
-          </h2>
-        </v-col>
-      </v-row>
-      <div class="border">
-        <v-row >
-            <v-col cols="4">
-            <DoughnutChart :incomingChartData="incomingChartData"></DoughnutChart>
+  <v-container 
+    class="containerSetup"
+    fluid
+  >
+    <v-row class="d-flex justify-start">
+      <v-col>
+        <h2 class="subjectHeading">
+          Open Collections
+        </h2>
+      </v-col>
+    </v-row>
+    <div class="border">
+      <v-row>
+        <v-col cols="4">
+          <DoughnutChart :incoming-chart-data="incomingChartData" />
         </v-col>
         <v-col cols="8">
-            <h2 class="subjectHeading">Student Level Data (1701)</h2>
-            <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
-
+          <h2 class="subjectHeading">
+            Student Level Data (1701)
+          </h2>
+          <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
         </v-col>
-        
-
       </v-row>
       <v-row justify="space-around">
-        <v-col cols="4" class="steps">
-           <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span> 
-        </v-col>
-        <v-col cols="8" class="navigate">
-            <a
-          class="ml-1"
-          @click="startCollection()"
-        >Continue</a>
-        <v-icon
-          small
-          color="#1976d2"
+        <v-col
+          cols="4"
+          class="steps"
         >
-          mdi-arrow-right
-        </v-icon>
+          <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span> 
         </v-col>
-
-
-        </v-row>
-      </div >
-
-    </v-container>
-  </template>
+        <v-col
+          cols="8"
+          class="navigate"
+        >
+          <a
+            class="ml-1"
+            @click="startCollection()"
+          >Continue</a>
+          <v-icon
+            small
+            color="#1976d2"
+          >
+            mdi-arrow-right
+          </v-icon>
+        </v-col>
+      </v-row>
+    </div>
+  </v-container>
+</template>
   
-  <script>
-  import alertMixin from '../../mixins/alertMixin';
-  import DoughnutChart from '../common/DoughnutChart.vue';
-  import { mapState } from 'pinia';
-  import { useSldCollectionStore } from '../../store/modules/sldCollection';
-  import router from '../../router';
+<script>
+import alertMixin from '../../mixins/alertMixin';
+import DoughnutChart from '../common/DoughnutChart.vue';
+import { mapState } from 'pinia';
+import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import router from '../../router';
 
-  export default {
-    name: 'SLDCollectionSummary',
-    components: {
-        DoughnutChart
-    },
-    mixins: [alertMixin],
-    props: {
-        schoolCollectionID: {
-            type: String,
-            required: false,
-            default: null
-        }
-    },
-    data() {
-      return {
-       noOfStepsCompleted: 0,
-       incomingChartData: null
-      };
-    },
-    computed: {
-        ...mapState(useSldCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess'])
-    },
-    created() {
-        this.calcuateStep();
-    },
-    methods: {
-        startCollection() {
-            router.push({name: 'sldCollection', params: {schoolCollectionID: this.schoolCollectionID}});
-        },
-        calcuateStep() {
-            if(this.currentStepInCollectionProcess?.index > 0) {
-                this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index + 1;
-            }
-            this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)]
-        }
-
+export default {
+  name: 'SLDCollectionSummary',
+  components: {
+    DoughnutChart
+  },
+  mixins: [alertMixin],
+  props: {
+    schoolCollectionID: {
+      type: String,
+      required: true,
+      default: null
     }
-  };
-  </script>
+  },
+  data() {
+    return {
+      noOfStepsCompleted: 0,
+      incomingChartData: null
+    };
+  },
+  computed: {
+    ...mapState(useSldCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess'])
+  },
+  created() {
+    this.calcuateStep();
+  },
+  methods: {
+    startCollection() {
+      router.push({name: 'sldCollection', params: {schoolCollectionID: this.schoolCollectionID}});
+    },
+    calcuateStep() {
+      if(this.currentStepInCollectionProcess?.index > 0) {
+        this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index + 1;
+      }
+      this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
+    }
+
+  }
+};
+</script>
     
     <style scoped>
   .containerSetup{

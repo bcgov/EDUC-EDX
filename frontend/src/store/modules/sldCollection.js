@@ -22,18 +22,24 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     setCollectionMetaData(sdcSchoolCollectionStatusCode, currentCollectionTypeCode) {
       this.currentCollectionTypeCode = currentCollectionTypeCode;
       switch(sdcSchoolCollectionStatusCode) {
-        case 'SCH_D_VRFD':
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-1');
-        case 'SCH_C_VRFD':
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-2');
-        case 'LOADED':
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-3');
-        case 'REVIEWED':
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-4');
-        case 'VERIFIED':
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-5');
-        default: 
-          this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-1');
+      case 'SCH_D_VRFD':
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-1');
+        break;
+      case 'SCH_C_VRFD':
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-2');
+        break;
+      case 'LOADED':
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-3');
+        break;
+      case 'REVIEWED':
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-4');
+        break;
+      case 'VERIFIED':
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-5');
+        break;
+      default: 
+        this.currentStepInCollectionProcess = this.stepsInCollectionProcess.find(step => step.label === 'STEP-1');
+        break;
       }
     }
   }

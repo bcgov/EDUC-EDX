@@ -67,7 +67,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-     
+    schoolCollectionID: {
+      type: String,
+      required: true,
+      default: null
+    }
   },
   data() {
     return {
