@@ -12,7 +12,7 @@
     </v-row>
     <v-row class="d-flex justify-start">
       <v-col>
-        <p>September 2022 Collection</p>
+        <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
       </v-col>
     </v-row>
     <v-row class="d-flex justify-start">
@@ -80,7 +80,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess'])
+    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode'])
   },
   created() {
     this.steps = [...this.stepsInCollectionProcess];
