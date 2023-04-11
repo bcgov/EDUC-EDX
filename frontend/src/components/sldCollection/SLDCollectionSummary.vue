@@ -63,11 +63,7 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-    schoolCollectionID: {
-      type: String,
-      required: true,
-      default: null
-    }
+    
   },
   data() {
     return {
@@ -76,7 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess'])
+    ...mapState(useSldCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess', 'schoolCollectionID'])
   },
   created() {
     this.calcuateStep();

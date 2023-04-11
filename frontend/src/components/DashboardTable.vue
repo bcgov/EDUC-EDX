@@ -291,7 +291,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="allowCollectionAccess && isLoggedInSchoolUser"
+          v-if="allowCollectionAccess() && isLoggedInSchoolUser"
           cols="6"
         >
           <v-card
@@ -377,7 +377,6 @@ export default {
       schoolContactsLastUpdateDate: '',
       districtContactsLastUpdateDate: '',
       collectionDetail: '',
-      schoolCollectionID: '',
       schoolLastUpdateDate: '',
       activeUserSchools: [],
       activeUserDistricts:[],
@@ -408,7 +407,7 @@ export default {
     this.getExchangesCount();
 
     if(this.isLoggedInSchoolUser) {
-      if(this.allowCollectionAccess) {
+      if(this.allowCollectionAccess()) {
         this.getSLDCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
@@ -423,7 +422,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSldCollectionStore, ['setCollectionMetaData']),
+    ...mapActions(useSldCollectionStore, ['setCollectionMetaData', 'setSchoolCollectionID']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -508,7 +507,7 @@ export default {
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
     },
     openSLDCollection() {
-      router.push({name: 'sldCollectionSummary', params: {schoolCollectionID: this.schoolCollectionID}});
+      router.push({name: 'sldCollectionSummary',});
     },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
@@ -518,7 +517,7 @@ export default {
         if(response.data) {
           this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode, capitalize(response.data.collectionTypeCode));
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
-          this.schoolCollectionID = response.data.sdcSchoolCollectionID;
+          this.setSchoolCollectionID(response.data.sdcSchoolCollectionID);
         } else {
           this.collectionDetail = 'No open collections';
         }

@@ -7,17 +7,22 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     currentStepInCollectionProcess: null,
     stepsInCollectionProcess: SLD_STEPS,
     currentCollectionTypeCode: null,
-    totalStepsInCollection: SLD_STEPS.length
+    totalStepsInCollection: SLD_STEPS.length,
+    schoolCollectionID: null
   }),
   getters: {
     getCurrentStepInCollectionProcess: state => state.currentStepInCollectionProcess,
     getStepsInCollectionProcess: state => state.stepsInCollectionProcess,
     getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
-    getTotalStepsInCollection: state => state.totalStepsInCollection
+    getTotalStepsInCollection: state => state.totalStepsInCollection,
+    getSchoolCollectionID: state => state.schoolCollectionID,
   },
   actions: {
     setCurrentStepInCollectionProcess(currentStepInCollectionProcess) {
       this.currentStepInCollectionProcess = currentStepInCollectionProcess;
+    },
+    setSchoolCollectionID(schoolCollectionID) {
+      this.schoolCollectionID = schoolCollectionID;
     },
     setCollectionMetaData(sdcSchoolCollectionStatusCode, currentCollectionTypeCode) {
       this.currentCollectionTypeCode = currentCollectionTypeCode;

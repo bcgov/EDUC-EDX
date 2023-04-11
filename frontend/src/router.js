@@ -42,8 +42,7 @@ const router = createRouter({
       component: Home,
       meta: {
         pageTitle: PAGE_TITLES.DASHBOARD,
-        requiresAuth: true,
-        permission: 'SECURE_EXCHANGE'
+        requiresAuth: true
       },
 
     },
@@ -249,7 +248,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'open-collection-summary/:schoolCollectionID',
+          path: 'open-collection-summary',
           name: 'sldCollectionSummary',
           component: SLDCollectionSummary,
           props: true,

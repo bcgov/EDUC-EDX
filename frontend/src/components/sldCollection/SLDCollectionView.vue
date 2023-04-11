@@ -97,7 +97,7 @@ export default {
     backToCollectionDashboard() {
       this.$router.push({name: 'home'});
     },
-    setActiveStep() {
+    setActiveStep() { //TODO: Remove after API to update step status
       const stepName = 'STEP-1';
       const currentStep = this.steps.find(step => step.label === stepName);
       this.setCurrentStepInCollectionProcess(currentStep);
