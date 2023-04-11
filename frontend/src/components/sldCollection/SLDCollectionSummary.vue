@@ -10,7 +10,7 @@
         </h2>
       </v-col>
     </v-row>
-    <div class="border">
+    <div v-if="isCollectionOpen()" class="border">
       <v-row>
         <v-col cols="4">
           <DoughnutChart :incoming-chart-data="incomingChartData" />
@@ -46,6 +46,9 @@
         </v-col>
       </v-row>
     </div>
+    <div v-else>
+        <p>Currently, there are no open collections.</p>
+    </div>
   </v-container>
 </template>
   
@@ -80,6 +83,9 @@ export default {
   methods: {
     startCollection() {
       router.push({name: 'sldCollection', params: {schoolCollectionID: this.schoolCollectionID}});
+    },
+    isCollectionOpen() {
+        return this.schoolCollectionID !== null
     },
     calcuateStep() {
       if(this.currentStepInCollectionProcess?.index > 0) {
