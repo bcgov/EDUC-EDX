@@ -291,7 +291,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="showSLDCard && isLoggedInSchoolUser"
+          v-if="allowCollectionAccess && isLoggedInSchoolUser"
           cols="6"
         >
           <v-card
@@ -341,11 +341,12 @@ import {ApiRoutes, PAGE_TITLES} from '../utils/constants';
 import router from '../router';
 import { authStore } from '../store/modules/auth';
 import { appStore } from '../store/modules/app';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import { useSldCollectionStore } from '../store/modules/sldCollection';
 
 export default {
   name: 'DashboardTable',
@@ -376,6 +377,7 @@ export default {
       schoolContactsLastUpdateDate: '',
       districtContactsLastUpdateDate: '',
       collectionDetail: '',
+      schoolCollectionID: '',
       schoolLastUpdateDate: '',
       activeUserSchools: [],
       activeUserDistricts:[],
@@ -406,7 +408,9 @@ export default {
     this.getExchangesCount();
 
     if(this.isLoggedInSchoolUser) {
-      this.getSLDCollectionBySchoolId();
+      if(this.allowCollectionAccess) {
+        this.getSLDCollectionBySchoolId();
+      }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
       this.isSchoolActive();  
@@ -419,6 +423,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useSldCollectionStore, ['setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -499,11 +504,11 @@ export default {
     redirectToSchools(){
       router.push('/schools');
     },
-    showSLDCard(){
+    allowCollectionAccess(){
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
     },
     openSLDCollection() {
-      router.push('/openCollectionDetails');
+      router.push({name: 'sldCollectionSummary', params: {schoolCollectionID: this.schoolCollectionID}});
     },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
@@ -511,7 +516,9 @@ export default {
     getSLDCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
+          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode, capitalize(response.data.collectionTypeCode));
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
+          this.schoolCollectionID = response.data.sdcSchoolCollectionID;
         } else {
           this.collectionDetail = 'No open collections';
         }

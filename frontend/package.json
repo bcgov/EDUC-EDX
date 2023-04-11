@@ -15,6 +15,7 @@
     "@mdi/font": "^7.1.96",
     "@vuepic/vue-datepicker": "^4.2.0",
     "axios": "^1.3.4",
+    "chart.js": "^4.2.1",
     "core-js": "^3.28.0",
     "cron": "^2.2.0",
     "cryptico-js": "^1.1.0",
@@ -37,6 +38,7 @@
     "v-viewer": "^3.0.11",
     "vite": "^4.1.4",
     "vue": "^3.2.47",
+    "vue-chartjs": "^5.2.0",
     "vue-clipboard2": "^0.3.3",
     "vue-meta": "^3.0.0-alpha.10",
     "vue-quick-chat": "^1.2.8",
@@ -44,9 +46,9 @@
     "vuetify": "3.1.8"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.19.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "axios-mock-adapter": "1.21.2",
-    "@babel/eslint-parser": "^7.19.1",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-vue": "^9.9.0",
@@ -101,7 +103,9 @@
       "selector-pseudo-class-no-unknown": [
         0,
         {
-          "ignorePseudoClasses": ["deep"]
+          "ignorePseudoClasses": [
+            "deep"
+          ]
         }
       ],
       "indent": [
