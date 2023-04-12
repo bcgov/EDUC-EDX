@@ -1025,6 +1025,31 @@ async function findPrimaryEdxActivationCode(req, res) {
   }
 }
 
+async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    const instituteType = req.params.instituteType.toUpperCase();
+    const payload = {
+      schoolID: instituteType === 'SCHOOL' ? req.params.instituteIdentifier : null,
+      districtID: instituteType === 'DISTRICT' ? req.params.instituteIdentifier : null
+    };
+
+    if(instituteType === 'SCHOOL'){
+      checkEDXUserAccessForSchoolAdminFunctions(req, req.params.instituteIdentifier);
+    }else{
+      checkEDXUserDistrictAdminPermission(req);
+      checkEDXUserAccess(req, instituteType, req.params.instituteIdentifier);
+    }
+
+    const result = await postData(token, payload, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'generateOrRegeneratePrimaryEdxActivationCode', 'Error occurred while attempting to generate a Primary Activation Code.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function checkSecureExchangeAccess(req, _res, secureExchange) {
   if (secureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || secureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
     throw new Error('403');
@@ -1061,5 +1086,6 @@ module.exports = {
   removeUserSchoolOrDistrictAccess,
   relinkUserAccess,
   findPrimaryEdxActivationCode,
-  removeSecureExchangeStudent
+  removeSecureExchangeStudent,
+  generateOrRegeneratePrimaryEdxActivationCode
 };
