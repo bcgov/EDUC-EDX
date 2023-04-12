@@ -38,6 +38,7 @@
     <v-row>
       <v-col cols="2">
         <StepperComponent
+          style="cursor: pointer"
           :steps="steps"
           :next-event="registerNextEvent"
           @on-navigation-complete="navigationCompleted()"
