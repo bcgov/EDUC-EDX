@@ -3,7 +3,62 @@
     class="containerSetup"
     fluid
   >
-    <div class="border">
+    <div v-if="hasFileAttached && fileLoaded" class="border">
+      <v-row>
+        <v-col class="mb-3 d-flex justify-center">
+          <h1>Upload Student Level Data</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-divider class="divider" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex justify-center">
+          <v-icon style="margin-top: 0.2em">
+            mdi-file
+          </v-icon>
+          <div style="margin-top: 0.3em" class="ml-2">{{fileName}}</div>
+          <v-btn
+            id="uploadAgainButton"
+            prepend-icon="mdi-file-upload"
+            @click="handleFileImport"
+            :loading="isReadingFile"
+            style="font-size: 16px;"
+            color="#1976d2"
+            class="ml-16"
+            variant="text">
+            Upload Replacement File
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else-if="hasFileAttached" class="border">
+      <v-row>
+        <v-col class="mb-3 d-flex justify-center">
+          <h1>Upload Student Level Data</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="mb-3 d-flex justify-center">
+          <h3>We're processing your collection, currently {{totalProcessed}} of {{totalStudents}} complete...</h3>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex justify-center">
+          <v-progress-circular
+            :size="128"
+            :width="12"
+            indeterminate
+            color="#38598a"
+          >
+            {{ progress }}%
+          </v-progress-circular>
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else-if="!hasFileAttached" class="border">
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
           <h1>Upload Student Level Data</h1>
@@ -17,9 +72,18 @@
             secondary
             icon="mdi-file-upload"
             text="Upload 1701 Submission"
-            :loading="isSelecting"
+            :loading="isReadingFile"
             :click-action="handleFileImport">
           </PrimaryButton>
+        </v-col>
+      </v-row>
+      <v-row v-if="fileUploadErrorMessage">
+        <v-col>
+          <v-alert
+            density="compact"
+            type="error"
+            :text="fileUploadErrorMessage"
+          ></v-alert>
         </v-col>
       </v-row>
       <v-row>
@@ -35,15 +99,7 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-file-input
-        id="selectFileInput"
-        style="display: none"
-        ref="uploader"
-        v-model="uploadFileValue"
-        :accept="fileAccept"
-      />
     </div>
-  
     <v-row justify="end">
       <PrimaryButton
         id="nextButton"
@@ -54,6 +110,14 @@
         :click-action="next"
       />
     </v-row>
+    <v-file-input
+      id="selectFileInput"
+      style="display: none"
+      ref="uploader"
+      :key="inputKey"
+      v-model="uploadFileValue"
+      :accept="fileAccept"
+    />
   </v-container>
 </template>
     
@@ -74,7 +138,7 @@ export default {
     sdcSchoolCollectionID: {
       type: String,
       required: false,
-      default: '8e2018f5-872a-1d6d-8187-2abe660c0050'
+      default: '8e1f2894-8771-1377-8187-7183d25a000f'
     },
   },
   emits: ['next'],
@@ -83,10 +147,21 @@ export default {
       fileAccept: '.txt',
       requiredRules: [v => !!v || 'Required'],
       fileRules: [],
-      isSelecting: false,
+      isReadingFile: false,
       uploadFileValue: null,
       fileInputError: [],
-      isDisabled: true
+      isDisabled: true,
+      sdcSchoolProgress: null,
+      hasFileAttached: false,
+      fileLoaded: false,
+      progress: 0,
+      processing: false,
+      fileName: null,
+      interval: null,
+      totalStudents: 0,
+      totalProcessed: 0,
+      fileUploadErrorMessage: null,
+      inputKey: 0
     };
   },
   computed: {
@@ -94,33 +169,42 @@ export default {
       return this.uploadFileValue;
     },
   },
-  created() {
-          
+  async mounted() {
+    await this.fireFileProgress();
   },
   methods: {
+    async fireFileProgress(){
+      await this.getFileProgress();
+      if(this.processing){
+        this.startPollingStatus();
+      }
+    },
     next() {
       this.$emit('next');
     },
+    async startPollingStatus() {
+      this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
+    },
     handleFileImport() {
-      this.isSelecting = true;
-
-      window.addEventListener('focus', () => {
-        this.isSelecting = false;
-      }, { once: true });
-
+      this.fileUploadErrorMessage = null;
+      this.uploadFileValue = null;
       this.$refs.uploader.click();
     },
     importFile() {
+      this.isReadingFile = true;
       let data = null;
+      this.inputKey++;
       if (!this.uploadFileValue) {
         data = 'No File Chosen';
+        this.isReadingFile = false;
+      }else{
+        var reader = new FileReader();
+        reader.readAsText(this.uploadFileValue[0]);
+        reader.onload = () => {
+          data = reader.result;
+          this.uploadFile(data);
+        };
       }
-      var reader = new FileReader();
-      reader.readAsText(this.uploadFileValue[0]);
-      reader.onload = () => {
-        data = reader.result;
-        this.uploadFile(data);
-      };
     },
     async uploadFile(fileAsString) {
       try{
@@ -130,17 +214,51 @@ export default {
         };
         await ApiService.apiAxios.post(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
+        await this.fireFileProgress();
       } catch (e) {
         console.error(e);
-        this.setFailureAlert(e.response?.data?.message || e.message);
+        this.fileUploadErrorMessage = 'The file could not be processed due to the following issue: ' + e.response.data;
       } finally {
-        this.isSelecting = false;
+        this.isReadingFile = false;
+      }
+    },
+    async getFileProgress() {
+      try{
+        await ApiService.apiAxios.get(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file').then(response => {
+          this.sdcSchoolProgress = response.data;
+          this.totalStudents = this.sdcSchoolProgress.totalStudents;
+          this.totalProcessed = this.sdcSchoolProgress.totalProcessed;
+          if(!this.sdcSchoolProgress.fileName){
+            //Show file upload section
+            this.hasFileAttached = false;
+            this.fileLoaded = false;
+            this.processing = false;
+          }else if(this.totalStudents === this.totalProcessed){
+            //Show summary
+            this.hasFileAttached = true;
+            this.fileLoaded = true;
+            this.processing = false;
+            this.fileName = this.sdcSchoolProgress.fileName;
+            clearInterval(this.interval);
+          }else{
+            //Show in progress
+            this.hasFileAttached = true;
+            this.fileLoaded = false;
+            this.processing = true;
+            this.progress = Math.floor(this.totalProcessed/this.totalStudents * 100);
+          }
+        });
+      } catch (e) {
+        clearInterval(this.interval);
+        console.error(e);
       }
     }
   },
   watch: {
     dataReady() {
-      this.importFile();
+      if(this.uploadFileValue){
+        this.importFile();
+      }
     },
   }
 };
@@ -151,6 +269,12 @@ export default {
     padding-right: 5em !important;
     padding-left: 5em !important;
   }
+
+ .divider {
+     border-color: rgba(42, 45, 38, 0.38);
+     border-width: 1px;
+     opacity: unset;
+ }
 
   .border {
     border: 2px solid grey;
