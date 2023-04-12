@@ -135,11 +135,6 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-    sdcSchoolCollectionID: {
-      type: String,
-      required: false,
-      default: '8e1f2894-8771-1377-8187-7183d25a000f'
-    },
   },
   emits: ['next'],
   data() {
@@ -161,7 +156,8 @@ export default {
       totalStudents: 0,
       totalProcessed: 0,
       fileUploadErrorMessage: null,
-      inputKey: 0
+      inputKey: 0,
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {

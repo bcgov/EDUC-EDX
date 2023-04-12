@@ -28,7 +28,7 @@ async function uploadFile(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
-    //await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
     const payload = {
       fileContents: req.body.fileContents,
@@ -53,7 +53,7 @@ async function getSdcFileProgress(req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
 
-    //await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
     const url = `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`;
     const data = await getData(token, url, req.session?.correlationID);
