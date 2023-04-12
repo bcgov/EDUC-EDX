@@ -19,16 +19,19 @@
           <v-icon style="margin-top: 0.2em">
             mdi-file
           </v-icon>
-          <div style="margin-top: 0.3em" class="ml-2">{{fileName}}</div>
+          <div style="margin-top: 0.3em" class="ml-2">
+            {{ fileName }}
+          </div>
           <v-btn
             id="uploadAgainButton"
             prepend-icon="mdi-file-upload"
-            @click="handleFileImport"
             :loading="isReadingFile"
             style="font-size: 16px;"
             color="#1976d2"
             class="ml-16"
-            variant="text">
+            variant="text"
+            @click="handleFileImport"
+          >
             Upload Replacement File
           </v-btn>
         </v-col>
@@ -42,19 +45,25 @@
       </v-row>
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
-          <h3>We're processing your collection, currently {{totalProcessed}} of {{totalStudents}} complete...</h3>
+          <span>We're processing your 1701 submission. Currently, {{ totalProcessed }} of {{ totalStudents }} student records have been processed...</span>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="d-flex justify-center">
-          <v-progress-circular
+        <v-col cols="6"
+               offset="3"
+               class="mb-n2 d-flex justify-center">
+          <v-progress-linear
             :size="128"
             :width="12"
             indeterminate
             color="#38598a"
           >
-            {{ progress }}%
-          </v-progress-circular>
+          </v-progress-linear>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6" offset="3" class="d-flex justify-end">
+          <span>{{ progress }}% complete</span>
         </v-col>
       </v-row>
     </div>
@@ -62,6 +71,15 @@
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
           <h1>Upload Student Level Data</h1>
+        </v-col>
+      </v-row>
+      <v-row v-if="fileUploadErrorMessage">
+        <v-col>
+          <v-alert
+            density="compact"
+            type="error"
+            :text="fileUploadErrorMessage"
+          ></v-alert>
         </v-col>
       </v-row>
       <v-row>
@@ -75,15 +93,6 @@
             :loading="isReadingFile"
             :click-action="handleFileImport">
           </PrimaryButton>
-        </v-col>
-      </v-row>
-      <v-row v-if="fileUploadErrorMessage">
-        <v-col>
-          <v-alert
-            density="compact"
-            type="error"
-            :text="fileUploadErrorMessage"
-          ></v-alert>
         </v-col>
       </v-row>
       <v-row>
@@ -111,9 +120,9 @@
       />
     </v-row>
     <v-file-input
+      ref="uploader"
       id="selectFileInput"
       style="display: none"
-      ref="uploader"
       :key="inputKey"
       v-model="uploadFileValue"
       :accept="fileAccept"
