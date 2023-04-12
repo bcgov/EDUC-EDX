@@ -203,7 +203,7 @@ export default {
         data = 'No File Chosen';
         this.isReadingFile = false;
       }else{
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(this.uploadFileValue[0]);
         reader.onload = () => {
           data = reader.result;
