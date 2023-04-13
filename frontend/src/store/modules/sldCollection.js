@@ -39,7 +39,7 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     async getSchoolCollection(schoolCollectionId) {
       if(this.schoolCollection == null) {
         const response = await ApiService.apiAxios.get(ApiRoutes.sld.BASE_URL + '/' + schoolCollectionId);
-        await this.setSchoolCollection(response.data);
+        this.setSchoolCollection(response.data);
         this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
       }
     },
