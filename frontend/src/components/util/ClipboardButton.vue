@@ -2,7 +2,7 @@
   <v-tooltip
     v-model="showTooltip"
     location="right"
-    :open-on-hover=false
+    :open-on-hover="false"
   >
     <template #activator="{ props }">
       <v-btn

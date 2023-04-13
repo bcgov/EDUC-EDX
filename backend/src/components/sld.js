@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -64,6 +64,44 @@ async function getSdcFileProgress(req, res) {
   }
 }
 
+async function updateSchoolCollection(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    const payload = req.body.schoolCollection;
+    payload.createDate = null;
+    payload.createUser = null;
+    payload.updateDate = null;
+    payload.updateUser = null;
+
+    payload.sdcSchoolCollectionStatusCode = req.body.status;
+    
+    const data = await putData(token, payload, `${config.get('sdc:collectionBySchoolIdURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error updating the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getSchoolCollectionById(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    const data = await getData(token, `${config.get('sdc:collectionBySchoolIdURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error retrieving the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
   const urlGetCollection = `${config.get('sdc:rootURL')}/sdcSchoolCollection/${sdcSchoolCollectionID}`;
   const sdcSchoolCollection = await getData(token, urlGetCollection, null);
@@ -87,5 +125,7 @@ function validateAccessToken(token, res) {
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
-  getSdcFileProgress
+  getSdcFileProgress,
+  updateSchoolCollection,
+  getSchoolCollectionById
 };

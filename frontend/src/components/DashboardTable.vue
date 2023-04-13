@@ -5,7 +5,7 @@
       sm="10"
     >
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col v-if="hasRequiredPermission('SECURE_EXCHANGE')" cols="6">
           <v-card
             id="secureMessageInboxCard"
             class="mt-0 mb-5"
@@ -291,7 +291,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="allowCollectionAccess() && isLoggedInSchoolUser"
+          v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
           cols="6"
         >
           <v-card
@@ -406,8 +406,8 @@ export default {
   created() {
     this.getExchangesCount();
 
-    if(this.isLoggedInSchoolUser) {
-      if(this.allowCollectionAccess()) {
+    if(this.isLoggedInSchoolUser) { 
+      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
         this.getSLDCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
@@ -422,7 +422,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSldCollectionStore, ['setCollectionMetaData', 'setSchoolCollectionID']),
+    ...mapActions(useSldCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -503,8 +503,8 @@ export default {
     redirectToSchools(){
       router.push('/schools');
     },
-    allowCollectionAccess(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
+    hasRequiredPermission(permission){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     openSLDCollection() {
       router.push({name: 'sldCollectionSummary',});
@@ -515,7 +515,8 @@ export default {
     getSLDCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
-          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode, capitalize(response.data.collectionTypeCode));
+          this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
           this.setSchoolCollectionID(response.data.sdcSchoolCollectionID);
         } else {

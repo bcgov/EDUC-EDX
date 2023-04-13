@@ -44,6 +44,8 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolDetailsForm from '../common/forms/SchoolDetailsForm.vue';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import ApiService from '../../common/apiService';
+import { ApiRoutes } from '../../utils/constants';
 
 export default {
   name: 'StepOneSchoolDetails',
@@ -53,14 +55,18 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-   
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    }
   },
   emits: ['next', 'previous'],
   data() {
     return {
       type: 'SLD',
       isDisabled: false,
-      schoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
@@ -70,7 +76,25 @@ export default {
   },
   methods: {
     next() {
-      this.$emit('next');
+      if(this.currentStepInCollectionProcess.isComplete) {
+        this.$emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    markStepAsComplete() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'SCH_D_VRFD'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+        });    
     },
     checkFormValidity(value) {
       this.isDisabled = !value;

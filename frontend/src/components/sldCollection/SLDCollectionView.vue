@@ -34,7 +34,19 @@
         <v-divider class="divider" />
       </v-col>
     </v-row>
-    <v-row class="mt-0">
+    <v-row class="mt-0" v-if="isLoading">
+      <v-col class="d-flex justify-center">
+        <v-progress-circular
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="isLoading"
+        />
+      </v-col>
+    </v-row> 
+    <v-row v-else>
       <v-col cols="2">
         <StepperComponent
           style="cursor: pointer"
@@ -45,6 +57,7 @@
       </v-col>
       <v-col>
         <router-view
+          :school-collection-object="schoolCollectionObject"
           @next="next"
         />
       </v-col>
@@ -76,15 +89,21 @@ export default {
   data() {
     return {
       steps: [],
-      registerNextEvent: false
+      registerNextEvent: false,
+      schoolCollectionObject: {},
+      isLoading: false,
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode'])
+    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection'])
   },
   created() {
+    this.isLoading = !this.isLoading;
     this.steps = [...this.stepsInCollectionProcess];
-    this.setActiveStep();
+    useSldCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+      this.schoolCollectionObject = this.schoolCollection;
+      this.isLoading = !this.isLoading;
+    });
   },
   methods: {
     ...mapActions(useSldCollectionStore, ['setCurrentStepInCollectionProcess']),
@@ -96,11 +115,6 @@ export default {
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'home'});
-    },
-    setActiveStep() { 
-      const stepName = 'STEP-1';
-      const currentStep = this.steps.find(step => step.label === stepName);
-      this.setCurrentStepInCollectionProcess(currentStep);
     }
   }
 };

@@ -39,14 +39,19 @@
           text="Generate"
           class="mt-n1 ml-2 pl-2 pr-2"
           :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
-        >
-        </PrimaryButton>
+        />
       </v-col>
     </v-row>
     <v-expand-transition>
-      <v-row :class="['d-sm-flex', 'align-center', 'searchBox']" class="px-2 mb-4" style="margin-right: 14em;margin-left: 14em;" id="generateNewPrimaryEdxActivationCodeDialog" v-if="this.doShowGenerateNewPrimaryEdxActivationCodeDialog">
+      <v-row
+        v-if="doShowGenerateNewPrimaryEdxActivationCodeDialog"
+        id="generateNewPrimaryEdxActivationCodeDialog"
+        :class="['d-sm-flex', 'align-center', 'searchBox']"
+        class="px-2 mb-4"
+        style="margin-right: 14em;margin-left: 14em;"
+      >
         <v-col>
-          <v-row no-gutters >
+          <v-row no-gutters>
             <v-col>
               <span>Generating a new Primary Activation Code for a district will replace the existing code for the district. The new code will have to be communicated to the district administrator.</span>
             </v-col>
@@ -58,8 +63,19 @@
           </v-row>
           <v-row no-gutters>
             <v-col class="d-flex justify-end">
-              <PrimaryButton id="closeGenerateNewPrimaryEdxActivationCodeDialogButton" text="No" secondary class="ml-2" :click-action="closeGenerateNewPrimaryEdxActivationCodeDialog"></PrimaryButton>
-              <PrimaryButton id="doGeneratePrimaryEdxActivationCodeButton" text="Yes" class="ml-2" :click-action="doGeneratePrimaryEdxActivationCode"></PrimaryButton>
+              <PrimaryButton
+                id="closeGenerateNewPrimaryEdxActivationCodeDialogButton"
+                text="No"
+                secondary
+                class="ml-2"
+                :click-action="closeGenerateNewPrimaryEdxActivationCodeDialog"
+              />
+              <PrimaryButton
+                id="doGeneratePrimaryEdxActivationCodeButton"
+                text="Yes"
+                class="ml-2"
+                :click-action="doGeneratePrimaryEdxActivationCode"
+              />
             </v-col>
           </v-row>
         </v-col>
