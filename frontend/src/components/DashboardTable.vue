@@ -5,7 +5,7 @@
       sm="10"
     >
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col v-if="canViewCard()" cols="6">
           <v-card
             id="secureMessageInboxCard"
             class="mt-0 mb-5"
@@ -154,7 +154,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive"
+          v-if="isLoggedInSchoolUser && isSchoolActive && canViewCard()"
           cols="6"
         >
           <v-card
@@ -246,7 +246,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive"
+          v-if="isLoggedInSchoolUser && isSchoolActive && canViewCard()"
           cols="6"
         >
           <v-card
@@ -505,6 +505,9 @@ export default {
     },
     allowCollectionAccess(){
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
+    },
+    canViewCard() {
+      return !(this.userInfo?.activeInstitutePermissions.length == 1 && this.allowCollectionAccess());
     },
     openSLDCollection() {
       router.push({name: 'sldCollectionSummary',});
