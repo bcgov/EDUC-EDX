@@ -3,9 +3,9 @@
     class="containerSetup"
     fluid
   >
-    <div class="border">
-      <v-row>
-        <v-col cols="4">
+    <div class="inner-border">
+      <v-row no>
+        <v-col cols="3">
           <div class="inner-border">
             <v-row>
               <v-col class="d-flex justify-center">
@@ -58,7 +58,7 @@
             <v-row no-gutters>
               <v-col class="ml-5">
                 <v-row no-gutters class="mt-1">
-                  <v-col cols="5" class="d-flex justify-start">
+                  <v-col cols="4" class="d-flex justify-start">
                     <v-text-field
                       id="penSearch"
                       placeholder="PEN"
@@ -85,7 +85,7 @@
             </v-row>
           </div>
         </v-col>
-        <v-col cols="8">
+        <v-col cols="9">
           <div class="inner-border">
             <v-row>
               <v-col cols="6">
@@ -106,7 +106,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-row>
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="PEN"
@@ -128,7 +128,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Birthdate"
@@ -150,7 +150,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Legal Surname"
@@ -172,7 +172,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Legal Given"
@@ -194,7 +194,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Legal Middle"
@@ -216,7 +216,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Grade"
@@ -238,7 +238,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Number of Courses"
@@ -260,7 +260,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Support Blocks"
@@ -282,7 +282,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Indigenous Ancestry"
@@ -304,7 +304,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Home Language"
@@ -326,7 +326,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-row class="mt-0">
+                    <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           label="Career Code"
@@ -351,7 +351,7 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-divider :thickness="1" inset color="black" class="border-opacity-75" vertical></v-divider>
+              <v-divider :thickness="1" inset color="black" class="border-opacity-75 mt-16" vertical></v-divider>
               <v-col>
                 <v-row>
                   <v-col class="d-flex justify-end">
@@ -365,6 +365,28 @@
                     />
                   </v-col>
                 </v-row>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <v-btn
+                  icon="mdi-arrow-left-circle-outline"
+                  size="35"
+                  class="mr-2"
+                  variant="text"
+                >
+                </v-btn>
+                <PrimaryButton
+                  id="saveAndRefreshButton"
+                  text="Save & Refresh List"
+                />
+                <v-btn
+                  icon="mdi-arrow-right-circle-outline"
+                  size="35"
+                  class="ml-2"
+                  variant="text"
+                >
+                </v-btn>
               </v-col>
             </v-row>
           </div>
