@@ -42,6 +42,8 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
 import {isContactCurrent} from '../../utils/institute/status';
+import ApiService from '../../common/apiService';
+import { ApiRoutes } from '../../utils/constants';
   
 export default {
   name: 'StepTwoSchoolContacts',
@@ -51,14 +53,18 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-   
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: {}
+    }
   },
   emits: ['next'],
   data() {
     return {
       isDisabled: false,
       type: 'SLD',
-      schoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
@@ -69,7 +75,18 @@ export default {
   },
   methods: {
     next() {
-      this.$emit('next');
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'SCH_C_VRFD'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+      .then(() => {
+        this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school contact details. Please try again later.');
+        });      
     },
     checkIfPrincipalContactExists(contacts) {
       let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));

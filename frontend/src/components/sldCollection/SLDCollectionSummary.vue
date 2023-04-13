@@ -88,8 +88,8 @@ export default {
         return this.schoolCollectionID !== null
     },
     calcuateStep() {
-      if(this.currentStepInCollectionProcess?.index > 0) {
-        this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index + 1;
+      if(this.currentStepInCollectionProcess?.index <= 4) {
+        this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index;
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
     }
