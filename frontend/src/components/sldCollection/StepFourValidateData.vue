@@ -26,7 +26,7 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col class="ml-5">
+              <v-col class="ml-5 mr-5">
                 <v-row>
                   <v-col class="d-flex justify-start">
                     <span>Warnings</span>
@@ -41,7 +41,7 @@
               </v-col>
             </v-row>
           </div>
-          <div style="background-color: #f6f5f5">
+          <div style="border-radius: 5px; background-color: #f6f5f5">
             <v-row>
               <v-col class="mx-4 mt-1">
                 <v-row>
@@ -67,22 +67,37 @@
                   </v-col>
                   <v-col class="d-flex justify-end">
                     <PrimaryButton
-                      id="cancelMessage"
+                      id="clearSearch"
                       secondary
+                      width="5em"
                       text="Clear"
                       class="mr-2"
                     />
                   </v-col>
                   <v-col>
                     <PrimaryButton
-                      id="cancelMessage"
+                      id="searchButton"
                       text="Search"
+                      width="6em"
                       class="mr-2"
                     />
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
+          </div>
+          <div>
+            <v-data-table-server
+              v-model:items-per-page="itemsPerPage"
+              :headers="headers"
+              :items-length="totalItems"
+              :items="serverItems"
+              :loading="loading"
+              class="mt-2"
+              item-title="name"
+              item-value="name"
+              @update:options="loadItems"
+            ></v-data-table-server>
           </div>
         </v-col>
         <v-col cols="9">
@@ -431,7 +446,20 @@ export default {
       postalCode: ' ',
       careerCode: ' ',
       programCodes: ' ',
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      itemsPerPage: 5,
+      headers: [
+        {
+          title: 'Dessert (100g serving)',
+          align: 'start',
+          sortable: false,
+          key: 'name',
+        },
+        { title: 'Calories', key: 'calories', align: 'end' }
+      ],
+      serverItems: [],
+      loading: true,
+      totalItems: 0
     };
   },
   methods: {
@@ -468,6 +496,10 @@ export default {
       padding-left: 3em !important;
     }
   }
+
+ :deep(.v-data-table-footer__items-per-page) {
+     display: none;
+ }
 
   .form-hint{
     color: rgb(56, 89, 138);
