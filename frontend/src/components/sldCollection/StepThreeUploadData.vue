@@ -245,6 +245,7 @@ export default {
             this.processing = false;
             this.fileName = this.sdcSchoolProgress.fileName;
             clearInterval(this.interval);
+            this.isDisabled = false;
           }else{
             //Show in progress
             this.hasFileAttached = true;
