@@ -28,6 +28,7 @@ import SLDCollectionView from './components/sldCollection/SLDCollectionView.vue'
 import StepOneSchoolDetails from './components/sldCollection/StepOneSchoolDetails.vue';
 import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolContacts.vue';
 import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
+import StepFourValidateData from './components/sldCollection/StepFourValidateData.vue';
 import SLDCollectionSummary from './components/sldCollection/SLDCollectionSummary.vue';
 
 // a comment for commit.
@@ -294,6 +295,16 @@ const router = createRouter({
               path: 'step-3',
               name: 'step-3',
               component: StepThreeUploadData,
+              meta: {
+                pageTitle: PAGE_TITLES.SLD,
+                requiresAuth: true,
+                permission: 'STUDENT_DATA_COLLECTION'
+              }
+            },
+            {
+              path: 'step-4',
+              name: 'step-4',
+              component: StepFourValidateData,
               meta: {
                 pageTitle: PAGE_TITLES.SLD,
                 requiresAuth: true,

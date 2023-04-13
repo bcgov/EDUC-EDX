@@ -26,7 +26,10 @@ export const SLD_STEPS = Object.freeze(
       index: 2,
       isComplete: false
     }, {
+      label: 'STEP-4',
       name: 'Review & Fix Data Issues',
+      route: 'step-4',
+      next: 'step-5',
       index: 3,
       isComplete: false
     }, {
