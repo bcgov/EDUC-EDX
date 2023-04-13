@@ -422,7 +422,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSldCollectionStore, ['setCollectionMetaData', 'setSchoolCollectionID']),
+    ...mapActions(useSldCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -515,7 +515,8 @@ export default {
     getSLDCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
-          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode, capitalize(response.data.collectionTypeCode));
+          this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
           this.setSchoolCollectionID(response.data.sdcSchoolCollectionID);
         } else {
