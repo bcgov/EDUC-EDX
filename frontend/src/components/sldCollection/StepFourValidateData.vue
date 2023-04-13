@@ -91,13 +91,73 @@
             <v-data-table-server
               v-model:items-per-page="itemsPerPage"
               :headers="headers"
-              :items-length="totalItems"
-              :items="serverItems"
+              :items-length="studentList.length"
+              :items="studentList"
               :loading="loading"
               class="mt-2"
               item-title="name"
               item-value="name"
-            ></v-data-table-server>
+            >
+              <template v-slot:headers>
+                <v-row no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                  <v-col cols="5" offset="1">
+                    <v-row>
+                      <v-col>
+                        <span class="headerVal">PEN</span>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="headerVal">Local ID</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-row>
+                      <v-col>
+                        <span class="headerVal">Legal Name</span>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="headerVal">Usual Name</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </template>
+              <template v-slot:item="{ item, index }">
+                <v-row class="hoverTable" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                  <v-col cols="1">
+                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value)">{{getIssueIcon(item.value)}}</v-icon>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="tableItemVal">{{item.value.pen}}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="tableItemVal">{{item.value.localID}}</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col>
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="tableItemVal">{{item.value.legalName}}</span>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col>
+                        <span class="tableItemVal">{{item.value.usualName}}</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-data-table-server>
           </div>
         </v-col>
         <v-col cols="9">
@@ -119,7 +179,7 @@
                     />
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="mt-6">
                   <v-col cols="12">
                     <v-row no-gutters>
                       <v-col>
@@ -381,7 +441,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col>
+                  <v-col class="pl-0 pr-6">
                     <v-timeline
                       v-if="studentIssues"
                       side="end"
@@ -398,7 +458,7 @@
                         size="large"
                         width="100%"
                       >
-                        <v-row>
+                        <v-row class="mt-n1">
                           <v-col>
                             <h3 :style="`color:` + getIssueIconColor(issue)">{{ issue.type }}</h3>
                           </v-col>
@@ -493,7 +553,7 @@ export default {
       careerCode: ' ',
       programCodes: ' ',
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       headers: [
         {
           title: 'PEN',
@@ -542,7 +602,50 @@ export default {
           ]
         },
       ],
-      serverItems: [],
+      studentList: [
+        {
+          pen: '123456789',
+          localID: '2468',
+          legalName: 'SMITH, EMILY ANNE',
+          usualName: 'SMITH, XX',
+          type: 'Error'
+        },
+        {
+          pen: '123456789',
+          localID: '2468',
+          legalName: 'SMITH, EMILY ANNE',
+          usualName: null,
+          type: 'Error'
+        },
+        {
+          pen: '852963741',
+          localID: '2356',
+          legalName: 'BROWN, JAKE',
+          usualName: null,
+          type: 'Error'
+        },
+        {
+          pen: '753951826',
+          localID: '7458',
+          legalName: 'ROSE, ADAM',
+          usualName: null,
+          type: 'Warning'
+        },
+        {
+          pen: '147321596',
+          localID: '9654',
+          legalName: 'SHARPE, MICHAEL',
+          usualName: null,
+          type: 'Warning'
+        },
+        {
+          pen: '789258741',
+          localID: '4018',
+          legalName: 'WILSON, FRANK',
+          usualName: null,
+          type: 'Warning'
+        },
+      ],
       loading: true,
       totalItems: 0
     };
@@ -606,10 +709,18 @@ export default {
      display: none;
  }
 
-  .form-hint{
-    color: rgb(56, 89, 138);
-    font-size: 14px;
-  }
+ .hoverTable:hover{
+     background-color: #e8e8e8;
+     cursor: pointer;
+ }
+
+ .headerVal{
+    color: #7f7f7f;
+ }
+
+ .tableItemVal{
+     font-size: small;
+ }
 </style>
 
 
