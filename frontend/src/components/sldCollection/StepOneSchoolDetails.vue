@@ -58,7 +58,7 @@ export default {
     schoolCollectionObject: {
       type: Object,
       required: true,
-      default: {}
+      default: null
     }
   },
   emits: ['next', 'previous'],
@@ -88,8 +88,8 @@ export default {
         status: 'SCH_D_VRFD'
       };
       ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
-      .then(() => {
-        this.$emit('next');
+        .then(() => {
+          this.$emit('next');
         })
         .catch(error => {
           console.error(error);

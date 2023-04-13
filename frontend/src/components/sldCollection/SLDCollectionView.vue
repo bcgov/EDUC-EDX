@@ -59,8 +59,8 @@
       </v-col>
       <v-col>
         <router-view
+          :school-collection-object="schoolCollectionObject"
           @next="next"
-          :schoolCollectionObject="schoolCollectionObject"
         />
       </v-col>
     </v-row>

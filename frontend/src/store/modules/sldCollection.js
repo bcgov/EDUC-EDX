@@ -61,7 +61,7 @@ export const useSldCollectionStore = defineStore('sldCollection', {
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-5'));
         break;
       default: 
-      this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
+        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
         break;
       }
       this.markStepsComplete();
