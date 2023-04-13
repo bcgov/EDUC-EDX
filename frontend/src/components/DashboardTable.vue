@@ -5,7 +5,7 @@
       sm="10"
     >
       <v-row no-gutters>
-        <v-col v-if="canViewCard()" cols="6">
+        <v-col v-if="hasRequiredPermission('SECURE_EXCHANGE')" cols="6">
           <v-card
             id="secureMessageInboxCard"
             class="mt-0 mb-5"
@@ -154,7 +154,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive && canViewCard()"
+          v-if="isLoggedInSchoolUser && isSchoolActive"
           cols="6"
         >
           <v-card
@@ -246,7 +246,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive && canViewCard()"
+          v-if="isLoggedInSchoolUser && isSchoolActive"
           cols="6"
         >
           <v-card
@@ -291,7 +291,7 @@
           </v-card>
         </v-col>
         <v-col
-          v-if="allowCollectionAccess() && isLoggedInSchoolUser"
+          v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
           cols="6"
         >
           <v-card
@@ -406,8 +406,8 @@ export default {
   created() {
     this.getExchangesCount();
 
-    if(this.isLoggedInSchoolUser) {
-      if(this.allowCollectionAccess()) {
+    if(this.isLoggedInSchoolUser) { 
+      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
         this.getSLDCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
@@ -503,11 +503,8 @@ export default {
     redirectToSchools(){
       router.push('/schools');
     },
-    allowCollectionAccess(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'STUDENT_DATA_COLLECTION').length > 0;
-    },
-    canViewCard() {
-      return !(this.userInfo?.activeInstitutePermissions.length == 1 && this.allowCollectionAccess());
+    hasRequiredPermission(permission){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     openSLDCollection() {
       router.push({name: 'sldCollectionSummary',});
