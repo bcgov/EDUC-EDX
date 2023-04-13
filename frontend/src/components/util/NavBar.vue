@@ -189,7 +189,7 @@ export default {
         {
           title: PAGE_TITLES.DASHBOARD,
           link: 'home',
-          authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT' || this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.EXCHANGE,

@@ -3,7 +3,10 @@
     class="containerSetup"
     fluid
   >
-    <div v-if="hasFileAttached && fileLoaded" class="border">
+    <div
+      v-if="hasFileAttached && fileLoaded"
+      class="border"
+    >
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
           <h1>Upload Student Level Data</h1>
@@ -19,7 +22,10 @@
           <v-icon style="margin-top: 0.2em">
             mdi-file
           </v-icon>
-          <div style="margin-top: 0.3em" class="ml-2">
+          <div
+            style="margin-top: 0.3em"
+            class="ml-2"
+          >
             {{ fileName }}
           </div>
           <v-btn
@@ -37,7 +43,10 @@
         </v-col>
       </v-row>
     </div>
-    <div v-else-if="hasFileAttached" class="border">
+    <div
+      v-else-if="hasFileAttached"
+      class="border"
+    >
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
           <h1>Upload Student Level Data</h1>
@@ -49,25 +58,33 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6"
-               offset="3"
-               class="mb-n2 d-flex justify-center">
+        <v-col
+          cols="6"
+          offset="3"
+          class="mb-n2 d-flex justify-center"
+        >
           <v-progress-linear
             :size="128"
             :width="12"
             indeterminate
             color="#38598a"
-          >
-          </v-progress-linear>
+          />
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6" offset="3" class="d-flex justify-end">
+        <v-col
+          cols="6"
+          offset="3"
+          class="d-flex justify-end"
+        >
           <span>{{ progress }}% complete</span>
         </v-col>
       </v-row>
     </div>
-    <div v-else-if="!hasFileAttached" class="border">
+    <div
+      v-else-if="!hasFileAttached"
+      class="border"
+    >
       <v-row>
         <v-col class="mb-3 d-flex justify-center">
           <h1>Upload Student Level Data</h1>
@@ -79,20 +96,23 @@
             density="compact"
             type="error"
             :text="fileUploadErrorMessage"
-          ></v-alert>
+          />
         </v-col>
       </v-row>
       <v-row>
         <v-col offset="4">
-          <span class="mr-3" style="font-weight: bold">Option 1:</span>
+          <span
+            class="mr-3"
+            style="font-weight: bold"
+          >Option 1:</span>
           <PrimaryButton
             id="uploadButton"
             secondary
             icon="mdi-file-upload"
             text="Upload 1701 Submission"
             :loading="isReadingFile"
-            :click-action="handleFileImport">
-          </PrimaryButton>
+            :click-action="handleFileImport"
+          />
         </v-col>
       </v-row>
       <v-row>
@@ -103,7 +123,11 @@
             </v-col>
             <v-col class="ml-n12">
               <span>Report a zero enrollment for the school. This should only be used if ...</span>
-              <v-checkbox-btn class="ml-n2" label="This school does not have a file for this collection." style="font-style: italic"></v-checkbox-btn>
+              <v-checkbox-btn
+                class="ml-n2"
+                label="This school does not have a file for this collection."
+                style="font-style: italic"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -120,11 +144,11 @@
       />
     </v-row>
     <v-file-input
-      ref="uploader"
       id="selectFileInput"
-      style="display: none"
+      ref="uploader"
       :key="inputKey"
       v-model="uploadFileValue"
+      style="display: none"
       :accept="fileAccept"
     />
   </v-container>
@@ -136,6 +160,8 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../utils/file';
+import { mapState } from 'pinia';
+import { useSldCollectionStore } from '../../store/modules/sldCollection';
     
 export default {
   name: 'StepThreeUploadData',
@@ -144,6 +170,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    }
   },
   emits: ['next'],
   data() {
@@ -170,8 +201,16 @@ export default {
     };
   },
   computed: {
+    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
     dataReady() {
       return this.uploadFileValue;
+    },
+  },
+  watch: {
+    dataReady() {
+      if(this.uploadFileValue){
+        this.importFile();
+      }
     },
   },
   async mounted() {
@@ -185,7 +224,25 @@ export default {
       }
     },
     next() {
-      this.$emit('next');
+      if(this.currentStepInCollectionProcess.isComplete) {
+        this.$emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    markStepAsComplete() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'LOADED'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+        });    
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
@@ -258,13 +315,6 @@ export default {
         console.error(e);
       }
     }
-  },
-  watch: {
-    dataReady() {
-      if(this.uploadFileValue){
-        this.importFile();
-      }
-    },
   }
 };
 </script>
