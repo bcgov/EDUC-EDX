@@ -76,6 +76,13 @@ export default {
   },
   methods: {
     next() {
+      if(this.currentStepInCollectionProcess.isComplete) {
+        this.$emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    markStepAsComplete() {
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
         status: 'SCH_D_VRFD'
@@ -87,7 +94,7 @@ export default {
         .catch(error => {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
-        });      
+        });    
     },
     checkFormValidity(value) {
       this.isDisabled = !value;

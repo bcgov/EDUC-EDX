@@ -136,6 +136,8 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../utils/file';
+import { mapState } from 'pinia';
+import { useSldCollectionStore } from '../../store/modules/sldCollection';
     
 export default {
   name: 'StepThreeUploadData',
@@ -144,6 +146,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: {}
+    }
   },
   emits: ['next'],
   data() {
@@ -170,6 +177,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
     dataReady() {
       return this.uploadFileValue;
     },
@@ -185,7 +193,25 @@ export default {
       }
     },
     next() {
-      this.$emit('next');
+      if(this.currentStepInCollectionProcess.isComplete) {
+        this.$emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    markStepAsComplete() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'LOADED'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+      .then(() => {
+        this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+        });    
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
