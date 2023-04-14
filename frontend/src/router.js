@@ -327,8 +327,12 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         aStore.getUserInfo().then(() => {
-          if (to.meta.permission && (aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
-            next('/institute-selection');
+          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions'))) {
+            if(to.fullPath === '/institute-selection'){
+              next();
+            }else{
+              next('/institute-selection');
+            }
           }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
@@ -337,8 +341,8 @@ router.beforeEach((to, _from, next) => {
             }else{
               apStore.setPageTitle(to.meta.pageTitle);
             }
+            next();
           }
-          next();
         }).catch(() => {
           next('error');
         });
