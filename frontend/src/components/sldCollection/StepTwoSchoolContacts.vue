@@ -31,7 +31,7 @@
       justify="end"
     >
       <p class="form-hint">
-        A principal with an active start date must be added
+        A principal with an active start date and contact information must be added
       </p>
     </v-row>
   </v-container>
@@ -99,7 +99,7 @@ export default {
     },
     checkIfPrincipalContactExists(contacts) {
       let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));
-      if(contact.length > 0) {
+      if(contact.length > 0 && (contact[0].phoneNumber || contact[0].email)) {
         this.isDisabled = false;
       } else {
         this.isDisabled = true;
