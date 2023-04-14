@@ -99,7 +99,6 @@ export default {
     },
     checkIfPrincipalContactExists(contacts) {
       let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));
-      console.log('Contact ' + JSON.stringify(contact[0]));
       if(contact.length > 0 && (contact[0].phoneNumber || contact[0].email)) {
         this.isDisabled = false;
       } else {
