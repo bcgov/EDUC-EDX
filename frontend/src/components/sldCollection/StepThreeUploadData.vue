@@ -3,8 +3,15 @@
     class="containerSetup"
     fluid
   >
+    <div v-if="initialLoad">
+      <v-row>
+        <v-col>
+          <Spinner></Spinner>
+        </v-col>
+      </v-row>
+    </div>
     <div
-      v-if="hasFileAttached && fileLoaded"
+      v-else-if="hasFileAttached && fileLoaded"
       class="border"
     >
       <v-row>
@@ -143,14 +150,20 @@
         :click-action="next"
       />
     </v-row>
-    <v-file-input
-      id="selectFileInput"
-      ref="uploader"
-      :key="inputKey"
-      v-model="uploadFileValue"
-      style="display: none"
-      :accept="fileAccept"
-    />
+    <v-form
+      ref="documentForm"
+      v-model="validForm"
+    >
+      <v-file-input
+        id="selectFileInput"
+        ref="uploader"
+        :rules="fileRules"
+        :key="inputKey"
+        style="display: none"
+        v-model="uploadFileValue"
+        :accept="fileAccept"
+      />
+    </v-form>
   </v-container>
 </template>
     
@@ -159,13 +172,15 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
-import {getFileNameWithMaxNameLength} from '../../utils/file';
+import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import Spinner from '../common/Spinner.vue';
     
 export default {
   name: 'StepThreeUploadData',
   components: {
+    Spinner,
     PrimaryButton
   },
   mixins: [alertMixin],
@@ -181,7 +196,14 @@ export default {
     return {
       fileAccept: '.txt',
       requiredRules: [v => !!v || 'Required'],
-      fileRules: [],
+      fileRules: [
+        value => {
+          let ret = !value || !value.length || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
+          if(ret !== true){
+            this.setFailureAlert(ret);
+          }
+          return ret;
+        }],
       isReadingFile: false,
       uploadFileValue: null,
       fileInputError: [],
@@ -191,23 +213,22 @@ export default {
       fileLoaded: false,
       progress: 0,
       processing: false,
+      initialLoad: true,
       fileName: null,
       interval: null,
       totalStudents: 0,
       totalProcessed: 0,
       fileUploadErrorMessage: null,
       inputKey: 0,
+      validForm: false,
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
     ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
-    dataReady() {
-      return this.uploadFileValue;
-    },
   },
   watch: {
-    dataReady() {
+    uploadFileValue() {
       if(this.uploadFileValue){
         this.importFile();
       }
@@ -247,25 +268,35 @@ export default {
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
     },
+    async validateForm() {
+      await this.$nextTick();
+      await this.$refs.documentForm.validate();
+    },
     handleFileImport() {
       this.fileUploadErrorMessage = null;
       this.uploadFileValue = null;
       this.$refs.uploader.click();
     },
-    importFile() {
-      this.isReadingFile = true;
-      let data = null;
-      this.inputKey++;
-      if (!this.uploadFileValue) {
-        data = 'No File Chosen';
-        this.isReadingFile = false;
-      }else{
-        let reader = new FileReader();
-        reader.readAsText(this.uploadFileValue[0]);
-        reader.onload = () => {
-          data = reader.result;
-          this.uploadFile(data);
-        };
+    async importFile() {
+      if(this.uploadFileValue) {
+        this.isReadingFile = true;
+        let data = null;
+
+        await this.validateForm();
+
+        if (!this.uploadFileValue[0] || !this.validForm) {
+          data = 'No File Chosen';
+          this.inputKey++;
+          this.isReadingFile = false;
+        } else {
+          let reader = new FileReader();
+          reader.readAsText(this.uploadFileValue[0]);
+          reader.onload = () => {
+            data = reader.result;
+            this.uploadFile(data);
+          };
+          this.inputKey++;
+        }
       }
     },
     async uploadFile(fileAsString) {
@@ -301,6 +332,7 @@ export default {
             this.fileLoaded = true;
             this.processing = false;
             this.fileName = this.sdcSchoolProgress.fileName;
+            this.isDisabled = false;
             clearInterval(this.interval);
             this.isDisabled = false;
           }else{
@@ -314,6 +346,8 @@ export default {
       } catch (e) {
         clearInterval(this.interval);
         console.error(e);
+      } finally {
+        this.initialLoad = false;
       }
     }
   }
