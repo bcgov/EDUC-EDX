@@ -5,7 +5,7 @@
       sm="10"
     >
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col v-if="hasRequiredPermission('SECURE_EXCHANGE')" cols="6">
           <v-card
             id="secureMessageInboxCard"
             class="mt-0 mb-5"
@@ -290,6 +290,46 @@
             </v-row>
           </v-card>
         </v-col>
+        <v-col
+          v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
+          cols="6"
+        >
+          <v-card
+            id="schoolDetailsCard"
+            class="mt-0 mb-5"
+            width="22em"
+            outlined
+            rounded
+            @click="openSLDCollection()"
+          >
+            <v-row class="pl-4">
+              <v-col cols="4">
+                <div>
+                  <v-icon
+                    icon="mdi-note-text-outline"
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    size="100"
+                  />
+                </div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-row no-gutters>
+                  <v-col>
+                    <h4 class="dashboard-title">
+                      {{ PAGE_TITLES.DATA_COLLECTION }}
+                    </h4>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col>
+                    <span>{{ collectionDetail }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
       </v-row>
     </v-col>
   </v-row>
@@ -301,11 +341,12 @@ import {ApiRoutes, PAGE_TITLES} from '../utils/constants';
 import router from '../router';
 import { authStore } from '../store/modules/auth';
 import { appStore } from '../store/modules/app';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, capitalize} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import { useSldCollectionStore } from '../store/modules/sldCollection';
 
 export default {
   name: 'DashboardTable',
@@ -335,6 +376,7 @@ export default {
       districtLastUpdateDate: '',
       schoolContactsLastUpdateDate: '',
       districtContactsLastUpdateDate: '',
+      collectionDetail: '',
       schoolLastUpdateDate: '',
       activeUserSchools: [],
       activeUserDistricts:[],
@@ -364,10 +406,13 @@ export default {
   created() {
     this.getExchangesCount();
 
-    if(this.isLoggedInSchoolUser) {
+    if(this.isLoggedInSchoolUser) { 
+      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
+        this.getSLDCollectionBySchoolId();
+      }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
-      this.isSchoolActive();
+      this.isSchoolActive();  
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
@@ -377,6 +422,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useSldCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -457,8 +503,31 @@ export default {
     redirectToSchools(){
       router.push('/schools');
     },
+    hasRequiredPermission(permission){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
+    },
+    openSLDCollection() {
+      router.push({name: 'sldCollectionSummary',});
+    },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
+    },
+    getSLDCollectionBySchoolId() {
+      ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+        if(response.data) {
+          this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
+          this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
+          this.setSchoolCollectionID(response.data.sdcSchoolCollectionID);
+        } else {
+          this.collectionDetail = 'No open collections';
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.loadingTable = false;
+      });
     },
     getSchoolContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'SCHOOL') {

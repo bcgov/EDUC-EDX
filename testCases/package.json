@@ -20,7 +20,12 @@
   "author": "James Sheasby Thomas (@RightSaidJames)",
   "license": "MIT",
   "devDependencies": {
+    "@types/faker": "^6.6.9",
     "cypress": "^11.0.0",
+    "date-and-time": "^0.14.2",
+    "faker": "^5.5.3",
+    "generate-password": "^1.7.0",
+    "http-status-codes": "^1.4.0",
     "typescript": "^4.9.5"
   }
 }

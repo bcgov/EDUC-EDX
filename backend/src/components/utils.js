@@ -171,8 +171,13 @@ async function postData(token, data, url, correlationID) {
 
     log.info('post Data Url', url);
     log.verbose('post Data Req', minify(data));
-    data.createUser = 'EDX';
-    data.updateUser = 'EDX';
+    if(!data.createUser){
+      data.createUser = 'EDX';
+    }
+    if(!data.updateUser){
+      data.updateUser = 'EDX';
+    }
+
     const response = await axios.post(url, data, postDataConfig);
 
     log.info(`post Data Status for url ${url} :: is :: `, response.status);
@@ -364,6 +369,13 @@ function checkEDXUserDistrictAdminPermission(req) {
   }
 }
 
+function checkEDXCollectionPermission(req) {
+  let permission = req.session.activeInstitutePermissions.includes('STUDENT_DATA_COLLECTION');
+  if (!permission) {
+    throw new Error('403');
+  }
+}
+
 function checkEDXUserAccess(req, instituteType, instituteIdentifier) {
   if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
     throw new Error('403');
@@ -445,7 +457,8 @@ const utils = {
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
-  logApiError
+  logApiError,
+  checkEDXCollectionPermission
 };
 
 module.exports = utils;

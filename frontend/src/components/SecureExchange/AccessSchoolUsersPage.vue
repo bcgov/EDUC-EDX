@@ -57,8 +57,56 @@
               icon="mdi-content-copy"
               class="color: white"
             />
+            <PrimaryButton
+              id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
+              short
+              secondary
+              icon="mdi-sync"
+              text="Generate"
+              class="mt-n1 ml-2 pl-2 pr-2"
+              :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
+            />
           </v-col>
         </v-row>
+        <v-expand-transition>
+          <v-row
+            v-if="doShowGenerateNewPrimaryEdxActivationCodeDialog"
+            id="generateNewPrimaryEdxActivationCodeDialog"
+            :class="['d-sm-flex', 'align-center', 'searchBox']"
+            class="px-2 mb-4"
+            style="margin-right: 14em;margin-left: 14em;"
+          >
+            <v-col>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Generating a new Primary Activation Code for a school will replace the existing code for the school. The new code will have to be communicated to the school administrator.</span>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <p>Are you sure that you want to generate a new Primary Activation Code?</p>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col class="d-flex justify-end">
+                  <PrimaryButton
+                    id="closeGenerateNewPrimaryEdxActivationCodeDialogButton"
+                    text="No"
+                    secondary
+                    class="ml-2"
+                    :click-action="closeGenerateNewPrimaryEdxActivationCodeDialog"
+                  />
+                  <PrimaryButton
+                    id="doGeneratePrimaryEdxActivationCodeButton"
+                    text="Yes"
+                    class="ml-2"
+                    :click-action="doGeneratePrimaryEdxActivationCode"
+                  />
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-expand-transition>
         <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
           <v-col
             cols="12"
@@ -284,10 +332,12 @@ import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
+import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'AccessSchoolUsersPage',
   components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
+  mixins: [alertMixin],
   data() {
     return {
       newUserInviteSheet: false,
@@ -307,7 +357,8 @@ export default {
       },
       primaryEdxActivationCode: null,
       instituteCode: '',
-      instituteTypeLabel: 'School'
+      instituteTypeLabel: 'School',
+      doShowGenerateNewPrimaryEdxActivationCodeDialog: false
     };
   },
   computed: {
@@ -433,6 +484,27 @@ export default {
     },
     openInviteUserSheet(){
       this.newUserInviteSheet = !this.newUserInviteSheet;
+    },
+    toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility() {
+      this.doShowGenerateNewPrimaryEdxActivationCodeDialog = !this.doShowGenerateNewPrimaryEdxActivationCodeDialog;
+    },
+    closeGenerateNewPrimaryEdxActivationCodeDialog() {
+      this.doShowGenerateNewPrimaryEdxActivationCodeDialog = false;
+    },
+    doGeneratePrimaryEdxActivationCode() {
+      this.generateOrRegeneratePrimaryEdxActivationCode();
+      this.closeGenerateNewPrimaryEdxActivationCodeDialog();
+    },
+    generateOrRegeneratePrimaryEdxActivationCode() {
+      ApiService.apiAxios.post(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/school/${this.schoolID}`)
+        .then(response => {
+          this.primaryEdxActivationCode = response.data;
+          this.setSuccessAlert(`The new Primary Activation Code is ${ this.primaryEdxActivationCode.activationCode }.`);
+        }).catch (e => {
+          this.primaryEdxActivationCode = null;
+          this.setFailureAlert('There was an error generating the Primary Activation code. Please try again.',);
+          console.log(e);
+        });
     },
     setupSchoolList(){
       this.schoolSearchNames = [];

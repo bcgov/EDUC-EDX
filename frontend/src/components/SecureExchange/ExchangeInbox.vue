@@ -372,7 +372,7 @@
       inset
       no-click-animation
       scrollable
-      style="width: 50%; height: max-content; left: 25%;z-index: 10000;"
+      style="width: 50%; height: max-content; left: 25%;z-index: 1999;"
       location="bottom"
       temporary
       persistent

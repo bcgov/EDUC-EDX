@@ -29,7 +29,10 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row class="d-flex justify-center" dense>
+        <v-row
+          class="d-flex justify-center"
+          dense
+        >
           <v-col>
             <v-select
               id="editContactDropdown"
@@ -59,12 +62,12 @@
               label="Last Name"
             />
             <v-text-field
-                id="editContactJobTitleInput"
-                v-model="editContact.jobTitle"
-                variant="underlined"
-                class="pt-0"
-                :maxlength="255"
-                label="Position Title"
+              id="editContactJobTitleInput"
+              v-model="editContact.jobTitle"
+              variant="underlined"
+              class="pt-0"
+              :maxlength="255"
+              label="Position Title"
             />
             <v-text-field
               id="editContactEmailInput"

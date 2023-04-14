@@ -10,12 +10,12 @@
         </h2>
       </v-col>
     </v-row>
-    <v-row class="d-flex justify-start">
+    <v-row no-gutters class="mt-1 d-flex justify-start">
       <v-col>
-        <p>September 2022 Collection</p>
+        <h4>{{ currentCollectionTypeCode }} 2022 Collection</h4>
       </v-col>
     </v-row>
-    <v-row class="d-flex justify-start">
+    <v-row no-gutters class="mt-2 mb-2 d-flex justify-start">
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
           small
@@ -29,15 +29,27 @@
         >Return to Data Collections</a>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col>
         <v-divider class="divider" />
       </v-col>
     </v-row>
-
-    <v-row>
+    <v-row class="mt-0" v-if="isLoading">
+      <v-col class="d-flex justify-center">
+        <v-progress-circular
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="isLoading"
+        />
+      </v-col>
+    </v-row> 
+    <v-row v-else>
       <v-col cols="2">
         <StepperComponent
+          style="cursor: pointer"
           :steps="steps"
           :next-event="registerNextEvent"
           @on-navigation-complete="navigationCompleted()"
@@ -45,6 +57,7 @@
       </v-col>
       <v-col>
         <router-view
+          :school-collection-object="schoolCollectionObject"
           @next="next"
         />
       </v-col>
@@ -67,20 +80,30 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-     
+    schoolCollectionID: {
+      type: String,
+      required: true,
+      default: null
+    }
   },
   data() {
     return {
       steps: [],
-      registerNextEvent: false
+      registerNextEvent: false,
+      schoolCollectionObject: {},
+      isLoading: false,
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess'])
+    ...mapState(useSldCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection'])
   },
   created() {
+    this.isLoading = !this.isLoading;
     this.steps = [...this.stepsInCollectionProcess];
-    this.setActiveStep();
+    useSldCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+      this.schoolCollectionObject = this.schoolCollection;
+      this.isLoading = !this.isLoading;
+    });
   },
   methods: {
     ...mapActions(useSldCollectionStore, ['setCurrentStepInCollectionProcess']),
@@ -92,11 +115,6 @@ export default {
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'home'});
-    },
-    setActiveStep() {
-      const stepName = 'STEP-1';
-      const currentStep = this.steps.find(step => step.label === stepName);
-      this.setCurrentStepInCollectionProcess(currentStep);
     }
   }
 };
