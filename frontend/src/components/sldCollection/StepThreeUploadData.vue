@@ -125,16 +125,17 @@
       <v-row>
         <v-col offset="4">
           <v-row>
-            <v-col cols="2">
+            <v-col>
               <span style="font-weight: bold">Option 2:</span>
-            </v-col>
-            <v-col class="ml-n12">
-              <span>Report a zero enrollment for the school. This should only be used if ...</span>
-              <v-checkbox-btn
-                class="ml-n2"
-                label="This school does not have a file for this collection."
-                style="font-style: italic"
-              />
+              <span class="ml-4">Report a zero enrollment for the school. This should only be used if ...</span>
+              <v-row>
+                <v-col style="padding-left: 6.5em">
+                  <v-checkbox-btn
+                    label="This school does not have a file for this collection."
+                    style="font-style: italic"
+                  />
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-col>

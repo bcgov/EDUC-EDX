@@ -10,6 +10,20 @@
         </h2>
       </v-col>
     </v-row>
+    <v-row no-gutters class="mt-2 mb-2 d-flex justify-start">
+      <v-col class="mt-1 d-flex justify-start">
+        <v-icon
+          small
+          color="#1976d2"
+        >
+          mdi-arrow-left
+        </v-icon>
+        <a
+          class="ml-1"
+          @click="backToDashboard()"
+        >Return to Dashboard</a>
+      </v-col>
+    </v-row>
     <div
       v-if="isCollectionOpen()"
       class="border"
@@ -86,6 +100,9 @@ export default {
   methods: {
     startCollection() {
       router.push({name: 'sldCollection', params: {schoolCollectionID: this.schoolCollectionID}});
+    },
+    backToDashboard() {
+      this.$router.push({name: 'home'});
     },
     isCollectionOpen() {
       return this.schoolCollectionID !== null;
