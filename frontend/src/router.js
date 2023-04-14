@@ -234,7 +234,6 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SCHOOL_CONTACTS,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
           }
         },
         {
@@ -245,7 +244,6 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SCHOOL_DETAILS,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
           }
         },
         {
