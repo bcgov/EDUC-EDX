@@ -114,7 +114,7 @@ export default {
       this.registerNextEvent = false;
     },
     backToCollectionDashboard() {
-      this.$router.push({name: 'home'});
+      this.$router.push({name: 'sldCollectionSummary'});
     }
   }
 };
