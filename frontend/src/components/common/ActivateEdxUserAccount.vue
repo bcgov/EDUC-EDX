@@ -180,7 +180,6 @@ export default {
       }
       ApiService.apiAxios.post(ApiRoutes.edx.USER_ACTIVATION, body)
         .then(() => {
-          console.log('Here1 Marco');
           this.setSuccessAlert('User Activation Completed Successfully. Redirecting to your Dashboard...');
           setTimeout(() => this.$router.push('/'), 1000);
         })

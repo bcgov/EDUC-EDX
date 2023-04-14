@@ -404,7 +404,9 @@ export default {
     },
   },
   created() {
-    this.getExchangesCount();
+    if(this.hasRequiredPermission('SECURE_EXCHANGE')) {
+      this.getExchangesCount();
+    }
 
     if(this.isLoggedInSchoolUser) { 
       if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
