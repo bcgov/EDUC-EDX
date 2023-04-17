@@ -21,6 +21,16 @@ function getDistrictByDistrictId(req, res) {
     return errorResponse(res);
   }
 }
+
+async function getAuthorityByID(req, res) {
+  try {
+    const authorityID = req.params.id;
+    return res.status(HttpStatus.OK).json(cacheService.getAuthorityJSONByAuthorityID(authorityID));
+  } catch (e) {
+    logApiError(e, 'getAuthorityByID', 'Error occurred while attempting to GET authority entity.');
+    return errorResponse(res);
+  }
+}
 function getSchools(req, res) {
   try {
     let schools = req.query.active === 'true' ? cacheService.getAllActiveSchoolsJSON() : cacheService.getAllSchoolsJSON();
@@ -47,9 +57,25 @@ function getCachedInstituteData(cacheKey,url){
   };
 }
 
+async function getCachedAuthorities(req, res) {
+  try {
+    if (req.query.refreshCache === 'true') {
+      await cacheService.loadAllAuthoritiesToMap();
+    }
+    const authorities = req.query.active === 'true' ? cacheService.getAllActiveAuthoritiesJSON() : cacheService.getAllAuthoritiesJSON();
+    return res.status(HttpStatus.OK).json(authorities);
+  } catch (e) {
+    logApiError(e, 'getCachedAuthorities', 'Error occurred while attempting to GET all authorities cached.');
+    return errorResponse(res);
+  }
+}
+
+
 module.exports = {
   getDistricts,
   getDistrictByDistrictId,
   getSchools,
-  getCachedInstituteData
+  getCachedInstituteData,
+  getCachedAuthorities,
+  getAuthorityByID
 };

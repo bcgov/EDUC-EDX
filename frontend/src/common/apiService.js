@@ -145,6 +145,8 @@ export default {
   getAllActiveSchoolGradeCodes: getCodes(`${ApiRoutes.institute.SCHOOL_GRADE_TYPES_URL}?active=true`),
   getAllActiveInstituteProvinceCodes: getCodes(`${ApiRoutes.institute.PROVINCE_CODES_URL}?active=true`),
   getAllActiveInstituteCountryCodes: getCodes(`${ApiRoutes.institute.COUNTRY_CODES_URL}?active=true`),
+  getAuthorities:getCodes(`${ApiRoutes.institute.AUTHORITY_DATA_URL}`),
+  getActiveAuthorities:getCodes(`${ApiRoutes.institute.AUTHORITY_DATA_URL}?active=true`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

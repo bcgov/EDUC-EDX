@@ -8,6 +8,8 @@ try {
     log.debug('Starting reload cache');
     try {
       await cacheService.loadAllSchoolsToMap();
+      await cacheService.loadAllDistrictsToMap();
+      await cacheService.loadAllAuthoritiesToMap();
       await cacheService.loadAllRolePermissionsToMap();
       await cacheService.loadAllDocumentTypeCodesToMap();
     } catch (e) {

@@ -5,7 +5,7 @@ const {getApiCredentials} = require('../components/auth');
 const {getData} = require('../components/utils');
 const retry = require('async-retry');
 const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
-const {generateDistrictObject, isDistrictActive} = require('./districtUtils');
+const {generateDistrictObject, isDistrictActive,generateAuthorityObject,isAuthorityActive} = require('./districtUtils');
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 let schoolMap = new Map();
@@ -16,6 +16,9 @@ let districtsNumber_ID_Map = new Map();
 let mincode_school_ID_Map = new Map();
 let activeSchools = [];
 let activeDistricts = [];
+let activeAuthorities = [];
+let authorities = [];
+let authoritiesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -58,6 +61,38 @@ const cacheService = {
   },
   getAllActiveSchoolsJSON() {
     return activeSchools;
+  },
+  async loadAllAuthoritiesToMap() {
+    log.debug('Loading all authorities during start up');
+    await retry(async () => {
+      const data = await getApiCredentials();
+      const authoritiesResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/authority`);
+      // reset the value.
+      authorities = [];
+      activeAuthorities = [];
+      authoritiesMap.clear();
+      if (authoritiesResponse && authoritiesResponse.length > 0) {
+        for (const authority of authoritiesResponse) {
+          const authorityData = generateAuthorityObject(authority);
+          authoritiesMap.set(authority.independentAuthorityId, authorityData);
+          authorities.push(authorityData);
+          if(isAuthorityActive(authorityData)){
+            activeAuthorities.push(authorityData);
+          }
+        }
+      }
+      log.info(`Loaded ${authoritiesMap.size} authorities.`);
+      log.info(`Loaded ${activeAuthorities.length} active authorities.`);
+    }, {
+      retries: 50
+    });
+
+  },
+  getAllActiveAuthoritiesJSON(){
+    return activeAuthorities;
+  },
+  getAllAuthoritiesJSON() {
+    return authorities;
   },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
@@ -114,6 +149,9 @@ const cacheService = {
   },
   getAllActiveDistrictsJSON(){
     return activeDistricts;
+  },
+  getAuthorityJSONByAuthorityID(authorityID) {
+    return authoritiesMap.get(authorityID);
   },
   getDistrictJSONByDistrictID(districtID) {
     return districtsMap.get(districtID);

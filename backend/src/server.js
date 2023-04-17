@@ -37,6 +37,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   }).catch((e) => {
     log.error('Error loading districtsMap data codes during boot .', e);
   });
+  cacheService.loadAllAuthoritiesToMap().then(() => {
+    log.info('Loaded authority data to memory');
+  }).catch((e) => {
+    log.error('Error loading authoritiesMap data codes during boot .', e);
+  });
   cacheService.loadAllDocumentTypeCodesToMap().then(() => {
     log.info('Loaded document type codes to memory');
   }).catch((e) => {
@@ -102,6 +107,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
 }
 
 require('./schedulers/saga-check-scheduler');
+const cacheService = require("./components/cache-service");
 
 /**
  * Listen on provided port, on all network interfaces.

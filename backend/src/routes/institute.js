@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const {getDistricts, getDistrictByDistrictId, getSchools, getCachedInstituteData} = require('../components/institute-cache');
+const {getDistricts, getDistrictByDistrictId, getSchools, getCachedInstituteData,getCachedAuthorities,getAuthorityByID} = require('../components/institute-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
 
@@ -22,5 +22,7 @@ router.get('/school-neighborhood-learning-types', passport.authenticate('jwt', {
 router.get('/school-grade-types', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.SCHOOL_GRADE_TYPES, 'institute:gradeCodeURL'));
 router.get('/district-contact-types', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.DISTRICT_CONTACT_TYPE_CODES, 'institute:districtContactTypeCodesURL'));
 router.get('/reporting-requirement-codes', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedInstituteData(constants.CACHE_KEYS.SCHOOL_REPORTING_REQUIREMENT_CODES,'institute:reportingRequirementCodesURL'));
+router.get('/authority', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedAuthorities);
+router.get('/authority/:id', passport.authenticate('jwt', {session: false}, undefined),  auth.isValidBackendToken(), getAuthorityByID);
 
 module.exports = router;
