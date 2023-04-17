@@ -92,14 +92,14 @@
             />
           </v-col>
         </v-row>
-        <v-row class="d-flex justify-start">
+        <v-row v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)" class="d-flex justify-start">
           <v-col class="d-flex">
-            <div
-              class="ministryOwnershipTeamName"
-              style="color: black"
-            >
-              {{ district.districtNumber }} - {{ district.name }}
-            </div>
+            <div class="ministryOwnershipTeamName"  style="color: black">{{district.districtNumber}} - {{district.name}}</div>
+          </v-col>
+        </v-row>
+        <v-row v-else class="d-flex justify-start">
+          <v-col class="d-flex">
+            <div class="ministryOwnershipTeamName"  style="color: black">{{authority.authorityNumber}} - {{authority.name}}</div>
           </v-col>
         </v-row>
         <v-row class="d-flex justify-start">
@@ -979,6 +979,7 @@ export default {
     return {
       school: '',
       district: '',
+      authority: '',
       schoolFacilityTypes: [],
       schoolCategoryTypes: [],
       schoolReportingRequirementTypes: [],
@@ -1098,6 +1099,9 @@ export default {
           this.school = response.data;
           this.populateExtraSchoolFields(this.school);
           this.getDistrictDetails(this.school.districtId);
+          if(this.school.independentAuthorityId){
+            this.getAuthorityDetails(this.school.independentAuthorityId);
+          }
           this.cleanWebsiteUrl = this.school.website ? sanitizeUrl(this.school.website) : '';
           this.$emit('is-form-valid', this.hasRequiredFieldValues());
         }).catch(error => {
@@ -1118,6 +1122,25 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    getAuthorityDetails(authorityId){
+      this.authority = '';
+      ApiService.apiAxios.get(ApiRoutes.institute.AUTHORITY_DATA_URL + '/'+ authorityId)
+          .then(response => {
+            this.authority = response.data;
+            this.populateExtraAuthorityFields(this.authority);
+          }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    populateExtraAuthorityFields(authority) {
+      authority.status = getStatusAuthorityOrSchool(authority);
+      if(authority.status === 'Closed' || authority.status === 'Closing') {
+        this.isSchoolStatusUpdateAllowed = false;
+      }
     },
     populateExtraSchoolFields(school){
       school.status = getStatusAuthorityOrSchool(school);
