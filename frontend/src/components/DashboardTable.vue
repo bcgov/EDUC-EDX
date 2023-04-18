@@ -295,7 +295,7 @@
           cols="6"
         >
           <v-card
-            id="schoolDetailsCard"
+            id="studentDataCollectionCard"
             class="mt-0 mb-5"
             width="22em"
             outlined
