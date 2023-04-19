@@ -3,12 +3,12 @@ import EdxActivationRole from "./EdxActivationRole";
 class EdxActivationCode {
   createUser: string | undefined;
   updateUser: string | undefined;
-  schoolID: null | undefined;
-  districtID: null | undefined;
+  schoolID: string | undefined;
+  districtID: string | undefined;
 
-  activationCode: null | undefined;
-  isPrimary: null | undefined;
-  expiryDate: null | undefined;
+  activationCode: string | undefined;
+  isPrimary: boolean | undefined;
+  expiryDate: any | undefined;
   firstName: string | undefined;
   lastName: string | undefined;
   email: string | undefined;
