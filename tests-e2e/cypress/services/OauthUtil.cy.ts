@@ -6,7 +6,6 @@ export class OAuthUtil {
                 expect(token_res.status).to.be.equal(200)
                 // @ts-ignore
                 return token_res.body.access_token
-
             })
         })
     }

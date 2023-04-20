@@ -40,7 +40,6 @@ Cypress.Commands.add('login', () => {
 
 Cypress.Commands.add('getAccessToken', () => {
   cy.log('< Get Token')
-  debugger
   cy.request({
     method: 'POST',
     url: Cypress.env('TOKEN_URL'),
@@ -62,9 +61,7 @@ Cypress.Commands.add('getAccessToken', () => {
 Cypress.Commands.add('makeAPIRequest', (endPoint: string, methodType: string, params: {} , payload: {}) => {
   let body = {}
   cy.getAccessToken().then(() => {
-    cy.wait(3000)
     cy.get('@accessTokenResponse').then((res: any) => {
-      debugger
       headers={
         Authorization: `Bearer ${res.body.access_token}`,
             'Content-Type': 'application/json'
