@@ -21,6 +21,7 @@ jobs:
         with:
           browser: chrome
           project: ./tests-e2e
+          working-directory: ./tests-e2e
 #      - name: Upload Failure Screenshot
 #        uses: actions/upload-artifact@v3
 #        if: ${{ failure() }}
