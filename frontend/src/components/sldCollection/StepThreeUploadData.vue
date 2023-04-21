@@ -158,11 +158,11 @@
       <v-file-input
         id="selectFileInput"
         ref="uploader"
-        :rules="fileRules"
         :key="inputKey"
-        style="display: none"
         v-model="uploadFileValue"
-        :accept="fileAccept"
+        :rules="fileRules"
+        style="display: none"
+        :accept="acceptableFileExtensions.join(',')"
       />
     </v-form>
   </v-container>
@@ -173,7 +173,7 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
-import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
+import {getFileNameWithMaxNameLength, humanFileSize, toBase64} from '../../utils/file';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
 import Spinner from '../common/Spinner.vue';
@@ -195,16 +195,26 @@ export default {
   emits: ['next'],
   data() {
     return {
-      fileAccept: '.txt',
+      acceptableFileExtensions: ['.std', '.ver'],
       requiredRules: [v => !!v || 'Required'],
       fileRules: [
         value => {
           let ret = !value || !value.length || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
-          if(ret !== true){
+          if (ret !== true) {
             this.setFailureAlert(ret);
           }
           return ret;
-        }],
+        },
+        value => {
+          const extension = `.${value[0].name.split('.')[1]}`;
+          const failMessage = 'File type invalid.  Files must be ".ver" or ".std".';
+          const foundValidExtension = this.acceptableFileExtensions.find(ext => ext === extension);
+
+          if (foundValidExtension !== undefined) return true;
+          this.setFailureAlert(failMessage);
+          return failMessage;
+        }
+      ],
       isReadingFile: false,
       uploadFileValue: null,
       fileInputError: [],
@@ -281,7 +291,6 @@ export default {
     async importFile() {
       if(this.uploadFileValue) {
         this.isReadingFile = true;
-
         await this.validateForm();
 
         if (!this.uploadFileValue[0] || !this.validForm) {
