@@ -17,10 +17,8 @@
   "keywords": [
     ""
   ],
-  "author": "James Sheasby Thomas (@RightSaidJames)",
   "license": "MIT",
   "devDependencies": {
-    "@types/faker": "^6.6.9",
     "axios": "^1.3.5",
     "cypress": "^11.0.0",
     "date-and-time": "^0.14.2",
