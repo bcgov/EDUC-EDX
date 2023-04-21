@@ -1,12 +1,12 @@
 <template>
-  <v-container 
+  <v-container
     class="containerSetup"
     fluid
   >
     <div v-if="initialLoad">
       <v-row>
         <v-col>
-          <Spinner></Spinner>
+          <Spinner />
         </v-col>
       </v-row>
     </div>
@@ -144,7 +144,7 @@
     <v-row justify="end">
       <PrimaryButton
         id="nextButton"
-        class="mr-2 mb-3"           
+        class="mr-2 mb-3"
         icon="mdi-check"
         text="Next"
         :disabled="isDisabled"
@@ -167,7 +167,7 @@
     </v-form>
   </v-container>
 </template>
-    
+
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
@@ -177,7 +177,7 @@ import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
 import Spinner from '../common/Spinner.vue';
-    
+
 export default {
   name: 'StepThreeUploadData',
   components: {
@@ -264,7 +264,7 @@ export default {
         .catch(error => {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
-        });    
+        });
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
@@ -354,7 +354,7 @@ export default {
   }
 };
 </script>
-      
+
 <style scoped>
  .containerSetup{
     padding-right: 5em !important;
@@ -386,7 +386,3 @@ export default {
     font-size: 14px;
   }
 </style>
-
-
-
-
