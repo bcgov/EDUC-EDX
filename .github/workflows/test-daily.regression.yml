@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 11 * * 1-5'
 
+env:
+  ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
+
 jobs:
   Regression:
     runs-on: ubuntu-latest
