@@ -5,7 +5,7 @@ module.exports = defineConfig({
   fixturesFolder: 'cypress/fixtures',
   screenshotsFolder: 'cypress/screenshots',
   videosFolder: 'cypress/videos',
-  video: false,
+  video: true,
   screenshotOnRunFailure: false,
   e2e: {
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
