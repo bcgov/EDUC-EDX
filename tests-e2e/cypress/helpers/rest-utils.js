@@ -1,8 +1,4 @@
-/**
- * REST utilities for interacting with RESTFUL apis
- * @type {{}}
- */
-import axios from "axios";
+const axios = require('axios');
 
 const lodash = require('lodash');
 
