@@ -8,11 +8,8 @@ jobs:
   Regression:
     runs-on: ubuntu-latest
     environment: dev
-    defaults:
-      run:
-        working-directory: test-e2e
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v1
         name: Checkout
       - name: cypress.env.json
         run: |
