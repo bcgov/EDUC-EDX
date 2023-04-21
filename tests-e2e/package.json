@@ -20,7 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "axios": "^1.2.0-alpha.1",
-    "cypress": "^11.0.0",
+    "cypress": "^12.10.0",
     "date-and-time": "^0.14.2",
     "faker": "^5.5.3",
     "generate-password": "^1.7.0",
