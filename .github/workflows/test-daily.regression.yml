@@ -19,7 +19,7 @@ jobs:
         name: Checkout
       - name: cypress.env.json
         run: |
-          echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+          echo '${{ secrets.CYPRESS_ENV_CI }}' > ./tests-e2e/cypress.env.json
       - uses: cypress-io/github-action@v5
         with:
           browser: chrome
