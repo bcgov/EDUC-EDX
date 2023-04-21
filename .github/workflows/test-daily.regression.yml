@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     # Cypress Docker image with Chrome v91
     # and Firefox v89 pre-installed
-    container: cypress/browsers:node14.19.0-chrome100-ff99-edge
     environment: dev
     steps:
       - uses: actions/checkout@v1
