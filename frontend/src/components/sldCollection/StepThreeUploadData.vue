@@ -281,30 +281,23 @@ export default {
     async importFile() {
       if(this.uploadFileValue) {
         this.isReadingFile = true;
-        let data = null;
 
         await this.validateForm();
 
         if (!this.uploadFileValue[0] || !this.validForm) {
-          data = 'No File Chosen';
           this.inputKey++;
           this.isReadingFile = false;
         } else {
-          let reader = new FileReader();
-          reader.readAsText(this.uploadFileValue[0]);
-          reader.onload = () => {
-            data = reader.result;
-            this.uploadFile(data);
-          };
+          this.uploadFile(this.uploadFileValue[0]);
           this.inputKey++;
         }
       }
     },
-    async uploadFile(fileAsString) {
-      try{
+    async uploadFile(fileBlob) {
+      try {
         let document = {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
-          fileContents: btoa(fileAsString)
+          fileContents: await toBase64(fileBlob)
         };
         await ApiService.apiAxios.post(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');

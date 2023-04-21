@@ -27,6 +27,21 @@ export function getFileExtension(fileName) {
   return fileName.slice((fileName.lastIndexOf('.') - 1 >>> 0) + 2);
 }
 
+/**
+ * Convert a file upload blob into a base64 string.
+ *
+ * @param {Blob} blob - the file blob
+ * @returns {Promise<string>} a base64 string
+ */
+export async function toBase64(blob) {
+  return new Promise((resolve, reject) => {
+    let r = new FileReader();
+    r.readAsText(blob);
+    r.onload = () => resolve(window.btoa(r.result));
+    r.onerror = e => reject(e);
+  });
+}
+
 export function getFileExtensionWithDot(fileName) {
   const extension = getFileExtension(fileName);
   return (extension.length > 0 ? ('.' + extension) : '');
