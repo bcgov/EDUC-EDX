@@ -1,15 +1,23 @@
 // @ts-ignore
-import {deleteData, getData, postData, putData} from "../helpers/rest-utils";
+import {RestUtils} from "../helpers/rest-utils-ts";
 
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
 const AUTHORITY_ENDPOINT=`/api/v1/institute/authority`;
 
-export class instituteApiService {
+
+export class InstituteApiService {
+    config: any;
+    restUtils: any;
+
+    constructor(conf: any) {
+        this.config = conf;
+        this.restUtils = new RestUtils(this.config);
+    }
 
     async getAllSchools() {
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}`;
-        return getData(url);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
+        return this.restUtils.getData(url);
     }
 
     async getSchoolIDBySchoolCode(schoolCode: string) {
@@ -38,14 +46,15 @@ export class instituteApiService {
                 searchCriteriaList: JSON.stringify(schoolSearchCriteria)
             }
         };
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/paginated`;
-        const userSchoolResult = await getData(url, schoolSearchParam);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
+        const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
         return userSchoolResult?.content[0]?.schoolId;
     }
 
     async getDistrictIdByDistrictNumber(districtNumber: string) {
-        const url = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}`;
-        const districtResponse = await getData(url);
+        debugger;
+        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
+        const districtResponse = await this.restUtils.getData(url,null);
         for (const district of districtResponse) {
             if (district.districtNumber === districtNumber) {
                 return district.districtId;
@@ -54,8 +63,8 @@ export class instituteApiService {
     }
 
     async getAllDistricts() {
-        const url = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}`;
-        return getData(url);
+        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
+        return this.restUtils.getData(url, null);
     }
 
     async createDistrict(){
@@ -76,11 +85,10 @@ export class instituteApiService {
             districtStatusCode: 'ACTIVE',
             website:null,
         };
-        const url = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}`
-        const response = await postData(url, districtPayload);
+        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`
+        const response = await this.restUtils.postData(url, districtPayload, null);
         console.log('AT createDistrict completed');
         return response?.districtId;
-
     }
     async createSchool(districtID: string){
         console.log('AT createSchool');
@@ -128,20 +136,21 @@ export class instituteApiService {
                 }
             ]
         };
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}`;
-        return await postData(url, schoolPayload);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
+        const response = await this.restUtils.postData(url, schoolPayload, null);
+        return response?.schoolId;
     }
     async deleteSchoolContact(schoolID: string, contactID: string) {
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/`+schoolID+'/contact/'+contactID;
-        await deleteData(url);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/`+schoolID+'/contact/'+contactID;
+        await this.restUtils.deleteData(url, null);
     }
     async deleteSchool(schoolID: string){
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/`+schoolID;
-        await deleteData(url);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/`+schoolID;
+        await this.restUtils.deleteData(url, null);
     }
     async deleteDistrict(districtID: string){
-        const url = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}/`+districtID;
-        await deleteData(url);
+        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/`+districtID;
+        await this.restUtils.deleteData(url, null);
     }
     async deleteInstituteSetUp(){
         const school =  await this.getSchoolBySchoolDisplayName('EDX AT School');
@@ -180,8 +189,8 @@ export class instituteApiService {
                 searchCriteriaList: JSON.stringify(schoolSearchCriteria)
             }
         };
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/paginated`;
-        const userSchoolResult = await getData(url, schoolSearchParam);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
+        const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
         return userSchoolResult?.content[0];
     }
 
@@ -211,8 +220,9 @@ export class instituteApiService {
                 searchCriteriaList: JSON.stringify(authoritySearchCriteria)
             }
         };
-        const url = `${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}/paginated`;
-        const authorityResult = await getData(url, authoritySearchParam);
+
+        const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/paginated`;
+        const authorityResult = await this.restUtils.getData(url, authoritySearchParam);
         return authorityResult?.content[0]?.independentAuthorityId;
     }
 
@@ -234,13 +244,13 @@ export class instituteApiService {
             openedDate: '2022-01-01T00:00:00',
             closedDate: null
         };
-        const url = `${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}`;
+        const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}`;
         if(!authorityID){
-            return await postData(url, authorityPayload);
+            return await this.restUtils.postData(url, authorityPayload, null);
         }
         authorityPayload.independentAuthorityId = authorityID;
 
-        let freshAuthority = await putData(url + '/' + authorityID, authorityPayload);
+        let freshAuthority = await this.restUtils.putData(url + '/' + authorityID, authorityPayload, null);
         await this.setupAuthorityContact(freshAuthority);
         return freshAuthority;
     }
@@ -266,18 +276,19 @@ export class instituteApiService {
                 expiryDate: null
             };
 
-        let newAuthority = await getData(`${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}`);
+        let newAuthority = await this.restUtils.getData(`${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}`, null);
         let filteredContacts = newAuthority.contacts.filter((contact: { firstName: string; lastName: string; }) => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
-        const url = `${Cypress.env('institute').base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
+        const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
 
         if(filteredContacts.length < 1){
-            return await postData(url, authorityContactPayload);
+            return await this.restUtils.postData(url, authorityContactPayload, null);
         }
         authorityContactPayload.authorityContactId = filteredContacts[0].authorityContactId;
-        return await putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
+        return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload,null);
     }
 
     async createDistrictWithContactToTest(includeDistrictAddress=true){
+        debugger;
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
         const districtPayload = {
@@ -317,12 +328,12 @@ export class instituteApiService {
             ]
         }
 
-        const url = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}`;
+        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
         if(!districtID){
-            return await postData(url, districtPayload);
+            return await this.restUtils.postData(url, districtPayload, null);
         }
         districtPayload.districtId = districtID;
-        let freshDistrict = await putData(url + '/' + districtID, districtPayload);
+        let freshDistrict = await this.restUtils.putData(url + '/' + districtID, districtPayload, null);
         await this.setupDistrictContact(freshDistrict);
         return freshDistrict;
     }
@@ -349,19 +360,19 @@ export class instituteApiService {
                 expiryDate: null
             };
 
-        let newDistrict = await getData(`${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}/${district.districtId}`);
+        let newDistrict = await this.restUtils.getData(`${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}`, null);
 
-        const contactUrl = `${Cypress.env('institute').base_url}${DISTRICT_ENDPOINT}/${district.districtId}/contact`;
+        const contactUrl = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}/contact`;
 
         if (newDistrict.contacts) {
             console.log('deleting all district contacts');
             newDistrict.contacts.forEach((contact: { districtContactId: any; }) => {
-                deleteData(`${contactUrl}/${contact.districtContactId}`);
+                this.restUtils.deleteData(`${contactUrl}/${contact.districtContactId}`, null);
             });
         }
 
         console.log('adding Automation Testing district superintendent contact')
-        return await postData(contactUrl, districtContactPayload);
+        return await this.restUtils.postData(contactUrl, districtContactPayload, null);
 
     }
     async createSchoolWithContactToTest(districtID: string, includeSchoolAddress=true, includeTombstoneValues=true){
@@ -381,6 +392,7 @@ export class instituteApiService {
             email: 'fakeuser@sd5.bc.ca',
             website: null,
             displayName: 'EDX Automation Testing School',
+            schoolReportingRequirementCode: 'REGULAR',
             schoolOrganizationCode: 'TWO_SEM',
             schoolCategoryCode: 'PUBLIC',
             facilityTypeCode: 'STANDARD',
@@ -418,12 +430,12 @@ export class instituteApiService {
             ]
         }
 
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}`;
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
         if(!schoolID){
-            return postData(url, schoolPayload);
+            return this.restUtils.postData(url, schoolPayload, null);
         }
         schoolPayload.schoolId = schoolID;
-        let freshSchool = await putData(`${url}/${schoolID}`, schoolPayload);
+        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload, null);
         let contact = {
             createUser: 'EDXAT',
             updateUser: null,
@@ -448,20 +460,20 @@ export class instituteApiService {
     }
 
     async clearSchoolContacts(school: any) {
-        let newSchool = await getData(`${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`);
+        let newSchool = await this.restUtils.getData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`, null);
 
         if (!newSchool.contacts) {
             return;
         }
         console.log('deleting all school contacts');
         newSchool.contacts.forEach((contact: { schoolContactId: any; }) => {
-            deleteData(`${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`);
+            this.restUtils.deleteData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`, null);
         });
     }
 
     async setupSchoolContact(school: any, contact: any){
         console.log('adding Automation Testing school principal contact');
-        return postData(`${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
+        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact, null);
     }
 
     async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string) {
@@ -497,8 +509,8 @@ export class instituteApiService {
                 searchCriteriaList: JSON.stringify(schoolSearchCriteria)
             }
         };
-        const url = `${Cypress.env('institute').base_url}${SCHOOL_ENDPOINT}/paginated`;
-        const userSchoolResult = await getData(url, schoolSearchParam);
+        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
+        const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
         return userSchoolResult?.content[0]?.schoolId;
     }
 

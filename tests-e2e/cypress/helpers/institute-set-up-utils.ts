@@ -1,47 +1,41 @@
-import {instituteApiService} from '../services/institute-api-service.cy';
-import {edxApiService} from "../services/edx-api-service.cy";
+import {InstituteApiService} from "../services/institute-api-service";
+import {EdxApiService} from "../services/edx-api-service";
 
-class InstituteSetupUtils {
+export class InstituteSetupUtils {
 
-    async setUpDistrictAndSchool(){
-        const instituteApi =  new instituteApiService();
-        await instituteApi.deleteInstituteSetUp();
-        let districtID = await instituteApi.createDistrict();
-        console.log('AT district created');
-        await instituteApi.createSchool(districtID);
-        console.log('AT school created');
-        return null;
+    config: any;
+    instituteApi: any;
+    edxApi: any;
+
+    constructor(conf: any) {
+        this.config = conf;
+        this.instituteApi = new InstituteApiService(this.config);
+        this.edxApi = new EdxApiService(this.config);
     }
-
-    async setupInstituteEntities(includeDistrictAddress=true, includeSchoolAddress=true, includeTombstoneValues=true){
-        const instituteApi =  new instituteApiService();
-        const edxApi =  new edxApiService();
-        console.log('setupInstituteEntities started')
-        await instituteApi.createAuthorityWithContactToTest();
-        let district = await instituteApi.createDistrictWithContactToTest(includeDistrictAddress);
-        let school = await instituteApi.createSchoolWithContactToTest(district.districtId, includeSchoolAddress, includeTombstoneValues);
-        await edxApi.verifyInstituteActivationCodes(district.districtId,school.schoolId);
+    async setupInstituteEntities(includeDistrictAddress: boolean = true, includeSchoolAddress: boolean = true, includeTombstoneValues: boolean = true) {
+        console.log('setupInstituteEntities started');
+        await this.instituteApi.createAuthorityWithContactToTest();
+        let district = await this.instituteApi.createDistrictWithContactToTest(includeDistrictAddress);
+        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, includeSchoolAddress, includeTombstoneValues);
+        await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
         console.log('setupInstituteEntities completed')
         return {
             district: district,
             school: school
         }
-    }
+    };
 
     async addContactToSchool(school: any, contact: any) {
-        const instituteApi =  new instituteApiService();
         console.log('addContactToSchool called.');
-        let newContact = await instituteApi.setupSchoolContact(school, contact);
+        let newContact = await this.instituteApi.setupSchoolContact(school, contact);
         console.log('addContactToSchool completed.');
         return newContact;
     }
 
     async clearSchoolContacts(school: any) {
-        const instituteApi =  new instituteApiService();
         console.log('clearSchoolContacts called.');
-        await instituteApi.clearSchoolContacts(school);
+        await this.instituteApi.clearSchoolContacts(school);
         console.log('clearSchoolContacts completed.');
     }
-}
 
-export default InstituteSetupUtils;
+}
