@@ -1,88 +1,94 @@
 // @ts-ignore
-import {deleteData, getData, postData} from "../helpers/rest-utils";
 import generator from 'generate-password';
 import EdxActivationCode from "../model/EdxActivationCode";
 import EdxActivationRole from "../model/EdxActivationRole";
-import {instituteApiService} from "./institute-api-service.cy";
+import {InstituteApiService} from "./institute-api-service";
+import {RestUtils} from "../helpers/rest-utils-ts";
 
 const faker = require('faker');
 const date = require('date-and-time');
 
-export class edxApiService {
+export class EdxApiService {
+  config: any;
+  restUtils: any;
 
+  constructor(conf: any) {
+    this.config = conf;
+    this.restUtils = new RestUtils(this.config);
+  }
 
-  async getPrimaryActivationCodeForInstitute(instituteTypeCode: string,instituteID: string, config: any) {
+  async getPrimaryActivationCodeForInstitute(instituteTypeCode: string,instituteID: string) {
     try {
       const endpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
-      const url = `${config.env.edx.base_url}${endpoint}`;
-      return await getData(url, null, config);
+      const url = `${this.config.env.edx.base_url}${endpoint}`;
+      return await this.restUtils.getData(url, null);
     }catch (e: any){
       if(e?.response?.status === 404){
         const generateEndpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
         const edxActivationCode = this.createEdxActivationCode( true, '','',instituteTypeCode,instituteID);
-        const url = `${config.env.edx.base_url}${generateEndpoint}`;
-        return postData(url,edxActivationCode, null, config);
+        const url = `${this.config.env.edx.base_url}${generateEndpoint}`;
+        return this.restUtils.postData(url,edxActivationCode, null);
       }
     }
   }
 
-  async createEdxActivationCodes(personalCode: string,instituteTypeCode: string,instituteID: string, config: any) {
+  async createEdxActivationCodes(personalCode: string,instituteTypeCode: string,instituteID: string) {
     const endpoint = 'api/v1/edx/users/activation-code';
-    const url = `${config.env.edx.base_url}${endpoint}`;
-    const roles = await this.getAllEdxUserRoleForInstitute(instituteTypeCode, config);
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
+    const roles = await this.getAllEdxUserRoleForInstitute(instituteTypeCode);
     const edxActivationPersonalCode = this.createEdxActivationCode( false,roles,personalCode ,instituteTypeCode,instituteID);
-    const edxActivationPrimaryCode = await this.getPrimaryActivationCodeForInstitute(instituteTypeCode,instituteID, config);
-    const res1 = await postData(url, edxActivationPersonalCode, null, config);
+    const edxActivationPrimaryCode = await this.getPrimaryActivationCodeForInstitute(instituteTypeCode,instituteID);
+    const res1 = await this.restUtils.postData(url, edxActivationPersonalCode, null);
     return [res1, edxActivationPrimaryCode];
   }
 
-  async getAllEdxUserRoleForInstitute(instituteTypeCode: string, config: any) {
+  async getAllEdxUserRoleForInstitute(instituteTypeCode: string) {
     const endpoint = 'api/v1/edx/users/roles?instituteType='+instituteTypeCode;
-    const url = `${config.env.edx.base_url}${endpoint}`;
-    return getData(url, null, config);
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
+    return this.restUtils.getData(url, null);
   }
 
-  async findAllPaginated(params: any, config: any){
-    const EXCHANGE_ENDPOINT = `${config.env.edx.base_url}api/v1/edx/exchange`;
+  async findAllPaginated(params: any){
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
     const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
-    return getData(EXCHANGE_ENDPOINT_PAGINATED, params, config);
+    return this.restUtils.getData(EXCHANGE_ENDPOINT_PAGINATED, params);
   }
 
-  async createSecureExchange(secureExchange: any, config: any) {
-    const EXCHANGE_ENDPOINT = `${config.env.edx.base_url}api/v1/edx/exchange`;
-    return postData(EXCHANGE_ENDPOINT, secureExchange, '', config);
+  async createSecureExchange(secureExchange: any) {
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    return this.restUtils.postData(EXCHANGE_ENDPOINT, secureExchange, '');
   }
 
 
-  async deleteSecureExchange(secureExchangeID: string, config: any) {
-    const EXCHANGE_ENDPOINT = `${config.env.edx.base_url}api/v1/edx/exchange`;
+  async deleteSecureExchange(secureExchangeID: string) {
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
     const url = EXCHANGE_ENDPOINT + '/' + secureExchangeID;
-    return deleteData(url, '', config);
+    return this.restUtils.deleteData(url, '');
   }
 
-  async getAllMinistryTeams(config: any) {
+  async getAllMinistryTeams() {
     const endpoint = 'api/v1/edx/users/ministry-teams';
-    const url = `${config.env.edx.base_url}${endpoint}`;
-    return getData(url, '', config);
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
+    return this.restUtils.getData(url, '');
   }
 
-  async createUserActivationUrl(personalCode: string,instituteTypeCode: string,instituteID: string, config: any) {
+  async createUserActivationUrl(personalCode: string,instituteTypeCode: string,instituteID: string) {
     const endpoint = '/api/edx/activate-user-verification?validationCode=';
-    const activationCodes = await this.createEdxActivationCodes(personalCode,instituteTypeCode,instituteID, config);
-    const activationUrl = `${config.env.edx.base_url}${endpoint}${activationCodes[0].validationCode}`;
+    const activationCodes = await this.createEdxActivationCodes(personalCode,instituteTypeCode,instituteID);
+    const activationUrl = `${this.config.env.edx.base_url}${endpoint}${activationCodes[0].validationCode}`;
     return [activationUrl, activationCodes[0], activationCodes[1]];
   }
 
-  async deleteActivationCode(activationCodeId: string, config: any) {
+  async deleteActivationCode(activationCodeId: string) {
     const endpoint = 'api/v1/edx/users/activation-code';
-    const url = `${config.env.edx.base_url}${endpoint}/${activationCodeId}`;
-    await deleteData(url,null, config);
+    const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
+    await this.restUtils.deleteData(url,null);
   }
-  async deleteEdxUser(firstName: string, lastName: string, config: any) {
-    const edxUser = await this.getEdxUserFromFirstNameLastName(firstName, lastName, config);
+  async deleteEdxUser(firstName: string, lastName: string) {
+    const edxUser = await this.getEdxUserFromFirstNameLastName(firstName, lastName);
     const endpoint = 'api/v1/edx/users';
-    const url = `${config.env.edx.base_url}${endpoint}/${edxUser?.edxUserID}`;
-    await deleteData(url, null, config);
+    const url = `${this.config.env.edx.base_url}${endpoint}/${edxUser?.edxUserID}`;
+    await this.restUtils.deleteData(url, null);
   }
   async generateCode(){
     return  generator.generate({
@@ -92,9 +98,9 @@ export class edxApiService {
     });
   }
 
-  async  createFixtureSetupForEdxUserActivation(ctx: any,personalCode:string,instituteTypeCode: string,instituteID: string, config: any) {
+  async  createFixtureSetupForEdxUserActivation(ctx: any,personalCode:string,instituteTypeCode: string,instituteID: string) {
     try {
-      ctx.activationUrl = await this.createUserActivationUrl(personalCode,instituteTypeCode,instituteID, config);
+      ctx.activationUrl = await this.createUserActivationUrl(personalCode,instituteTypeCode,instituteID);
       ctx.acCode1 = ctx.activationUrl[1].edxActivationCodeId;
       ctx.acCode2 = ctx.activationUrl[2].edxActivationCodeId;
       ctx.primaryCode= ctx.activationUrl[2].activationCode;
@@ -104,21 +110,21 @@ export class edxApiService {
     }
   }
 
-  async setUpDataForUserActivation(ctx: any,instituteTypeCode: string,instituteIdentifier: string, config: any){
-    const instituteApi =  new instituteApiService();
+  async setUpDataForUserActivation(ctx: any,instituteTypeCode: string,instituteIdentifier: string){
+    const instituteApi =  new InstituteApiService(this.config);
     const code = await this.generateCode();
     let instituteID;
     if(instituteTypeCode.toString().toUpperCase()=== 'SCHOOL'){
-      instituteID = await instituteApi.getSchoolIDBySchoolCode(instituteIdentifier, config);
+      instituteID = await instituteApi.getSchoolIDBySchoolCode(instituteIdentifier);
     }else{
-      instituteID = await instituteApi.getDistrictIdByDistrictNumber(instituteIdentifier, config);
+      instituteID = await instituteApi.getDistrictIdByDistrictNumber(instituteIdentifier);
     }
-    await this.createFixtureSetupForEdxUserActivation(ctx,code,instituteTypeCode,instituteID, config);
+    await this.createFixtureSetupForEdxUserActivation(ctx,code,instituteTypeCode,instituteID);
   }
 
-  async  getEdxUserFromFirstNameLastName(firstName: string, lastName: string, config: any) {
+  async  getEdxUserFromFirstNameLastName(firstName: string, lastName: string) {
     const endpoint = 'api/v1/edx/users';
-    const url = `${config.env.edx.base_url}${endpoint}`;
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
 
     const searchParams = {
       params: {
@@ -126,7 +132,7 @@ export class edxApiService {
         lastName
       }
     };
-    const responseBody = await getData(url, searchParams, config);
+    const responseBody = await this.restUtils.getData(url, searchParams);
 
     return responseBody[0];
   }
@@ -165,16 +171,16 @@ export class edxApiService {
    * @param {string} userID
    * @returns {Promise<any>} Response data
    */
-  async deleteUserActivationCodes(userID: string, config: any) {
-    const endPoint = `${config.env.edx.base_url}api/v1/edx/users/activation-code/user/${userID}`;
-    return await deleteData(endPoint, null, config);
+  async deleteUserActivationCodes(userID: string) {
+    const endPoint = `${this.config.env.edx.base_url}api/v1/edx/users/activation-code/user/${userID}`;
+    return await this.restUtils.deleteData(endPoint, null);
   }
   
-  async verifyInstituteActivationCodes(districtID: string,schoolID: string, config: any){
+  async verifyInstituteActivationCodes(districtID: string,schoolID: string){
     const endpoint = 'api/v1/edx/users';
-    const schoolActivationCodeUrl = `${config.env.edx.base_url}/${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
+    const schoolActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
     try{
-      await getData(schoolActivationCodeUrl, null, config);
+      await this.restUtils.getData(schoolActivationCodeUrl, null);
       console.log('School activation code found');
     }catch (e: any){
       if(e.response.status === 404 ){
@@ -187,14 +193,14 @@ export class edxApiService {
           districtID: null,
           schoolID:schoolID,
         };
-        await postData(schoolActivationCodeUrl,schoolActivationCodePayload,'', config);
+        await this.restUtils.postData(schoolActivationCodeUrl,schoolActivationCodePayload,'');
         console.log('district Activation code created');
       }
     }
 
-    const districtActivationCodeUrl = `${config.env.edx.base_url}/${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
+    const districtActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
     try{
-      await getData(districtActivationCodeUrl, null, config);
+      await this.restUtils.getData(districtActivationCodeUrl, null);
       console.log('district Activation code found');
     }catch (e: any){
       if(e.response.status === 404 ){
@@ -207,7 +213,7 @@ export class edxApiService {
           districtID: districtID,
           schoolID: null,
         };
-        await postData(districtActivationCodeUrl,districtActivationCodePayload, '', config);
+        await this.restUtils.postData(districtActivationCodeUrl,districtActivationCodePayload, '');
         console.log('district Activation code created');
       }
     }

@@ -1,31 +1,39 @@
 // @ts-ignore
-import {deleteData, getData, postData, putData} from '../helpers/rest-utils';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
+import {RestUtils} from "../helpers/rest-utils-ts";
 
 const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
 const COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/collection/search';
 
-export class sldCollectionApiService {
+export class SldCollectionApiService {
 
-    async createSchoolCollection(schoolID: string, config: any){
+    config: any;
+    restUtils: any;
+
+    constructor(conf: any) {
+        this.config = conf;
+        this.restUtils = new RestUtils(this.config);
+    }
+
+    async createSchoolCollection(schoolID: string){
         console.log('AT createSchoolCollection started');
 
         let curDate = LocalDateTime.now();
         let curCloseDate = curDate.plusDays(2);
 
-        const urlGetCollections = `${config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
-        const collectionsList = await getData(urlGetCollections, null, config);
+        const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
+        const collectionsList = await this.restUtils.getData(urlGetCollections);
 
         collectionsList.forEach((collection: any) => {
-            deleteData(`${config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID, null, config);
+            this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
         });
 
-        const urlGetActiveSdcSchoolCollection = `${config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolID;
+        const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolID;
         try{
-            const activeSdcCollection = await getData(urlGetActiveSdcSchoolCollection, null, config);
-            await deleteData(`${config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.data.sdcSchoolCollectionID, null, config);
+            const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.data.sdcSchoolCollectionID);
         }catch(e: any){
             //This is ok
         }
@@ -40,8 +48,8 @@ export class sldCollectionApiService {
             'closeDate': curCloseDate
         };
 
-        const url = `${config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}`;
-        const newCollection = await postData(url, collectionPayload, null, config);
+        const url = `${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}`;
+        const newCollection = await this.restUtils.postData(url, collectionPayload);
 
         const sdcSchoolCollectionPayload = {
             'createUser': 'EDXAT',
@@ -58,8 +66,8 @@ export class sldCollectionApiService {
             'collectionOpenDate': curDate,
             'collectionCloseDate': curCloseDate
         };
-        const urlSdcSchoolCollection = `${config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + newCollection.collectionID;
-        const schoolCollectionResponse = await postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload, null, config);
+        const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + newCollection.collectionID;
+        const schoolCollectionResponse = await this.restUtils.postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
         console.log('AT createSchoolCollection completed');
         return schoolCollectionResponse?.sdcSchoolCollectionID;

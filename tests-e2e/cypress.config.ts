@@ -1,4 +1,6 @@
-import {setupInstituteEntities, setUpSchoolCollection} from "./cypress/helpers/institute-set-up-utils";
+import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
+import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
+
 const { defineConfig } = require('cypress');
 
 export default defineConfig({
@@ -13,8 +15,10 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         'defaults:db': async() => {
-          let response = await setupInstituteEntities(config, true, true, true);
-          await setUpSchoolCollection(response.school.schoolId, config);
+          const instituteSetupUtils = new InstituteSetupUtils(config);
+          const collectionSetupUtils = new CollectionSetupUtils(config);
+          let response = await instituteSetupUtils.setupInstituteEntities(true, true, true);
+          await collectionSetupUtils.setUpSchoolCollection(response.school.schoolId);
           return null;
         },
       })
