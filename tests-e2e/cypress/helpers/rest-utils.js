@@ -1,27 +1,27 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const lodash = require('lodash');
 
 const restService = {
 
-    async getToken() {
+    async getToken(config) {
         const params = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-        const data = 'grant_type=client_credentials&client_id=' + Cypress.env('CLIENT_ID') + '&client_secret=' + Cypress.env('CLIENT_SECRET');
-        const response = await axios.post(Cypress.env('TOKEN_URL'), data, params);
+        const data = 'grant_type=client_credentials&client_id=' + config.env.CLIENT_ID + '&client_secret=' + config.env.CLIENT_SECRET;
+        const response = await axios.post(config.env.TOKEN_URL, data, params);
         return response.data.access_token;
     },
 
-    async getData(url, params = {}) {
+    async getData(url, params = {}, config) {
         try {
-            params = setToken(params, await restService.getToken());
+            params = setToken(params, await restService.getToken(config));
             const response = await axios.get(url, params);
-            console.log('get Data Status', response.status);
-            console.log('get Data StatusText', response.statusText);
-            console.log('get Data Res', minify(response.data));
+            // console.log('get Data Status', response.status);
+            // console.log('get Data StatusText', response.statusText);
+            // console.log('get Data Res', minify(response.data));
             return response.data;
         } catch (e) {
             logApiError(e, 'getData', 'Error during GET on ' + url);
@@ -29,44 +29,44 @@ const restService = {
         }
     },
 
-    async postData(url, data, params = {}) {
+    async postData(url, data, params = {}, config) {
         try {
-            params = setToken(params, await restService.getToken());
+            params = setToken(params, await restService.getToken(config));
             const response = await axios.post(url, data, params);
-            console.log('post Data Status', response.status);
-            console.log('post Data StatusText', response.statusText);
+            // console.log('post Data Status', response.status);
+            // console.log('post Data StatusText', response.statusText);
             return response.data;
         } catch (e) {
             logApiError(e, 'postData', 'Error during POST on ' + url);
-            const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+            const status = e.response ? e.response.status : 500;
             throw new Error('API POST Error: status=' + status );
         }
     },
 
-    async putData(url, data, params = {}) {
+    async putData(url, data, params = {}, config) {
         try {
-            params = setToken(params, await restService.getToken());
+            params = setToken(params, await restService.getToken(config));
             const response = await axios.put(url, data, params);
-            console.log('put Data Status', response.status);
-            console.log('put Data StatusText', response.statusText);
+            // console.log('put Data Status', response.status);
+            // console.log('put Data StatusText', response.statusText);
             return response.data;
         } catch (e) {
             logApiError(e, 'putData', 'Error during PUT on ' + url);
-            const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+            const status = e.response ? e.response.status : 500;
             throw new Error('API PUT Error: status=' + status );
         }
     },
 
-    async deleteData(url, params = {}) {
+    async deleteData(url, params = {}, config) {
         try {
-            params = setToken(params, await restService.getToken());
+            params = setToken(params, await restService.getToken(config));
             const response = await axios.delete(url, params);
-            console.log('delete Data Status', response.status);
-            console.log('delete Data StatusText', response.statusText);
+            // console.log('delete Data Status', response.status);
+            // console.log('delete Data StatusText', response.statusText);
             return response.data;
         } catch (e) {
             logApiError(e, 'deleteData', 'Error during DELETE on ' + url);
-            const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+            const status = e.response ? e.response.status : 500;
             throw new Error('API DELETE Error: status=' + status );
         }
     }
