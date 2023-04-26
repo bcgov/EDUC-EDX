@@ -52,7 +52,6 @@ export class InstituteApiService {
     }
 
     async getDistrictIdByDistrictNumber(districtNumber: string) {
-        debugger;
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
         const districtResponse = await this.restUtils.getData(url,null);
         for (const district of districtResponse) {
@@ -288,7 +287,6 @@ export class InstituteApiService {
     }
 
     async createDistrictWithContactToTest(includeDistrictAddress=true){
-        debugger;
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
         const districtPayload = {
