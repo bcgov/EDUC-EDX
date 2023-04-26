@@ -26,9 +26,9 @@ export class SldCollectionApiService {
         const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
         const collectionsList = await this.restUtils.getData(urlGetCollections);
 
-        collectionsList.forEach((collection: any) => {
-            this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
-        });
+        for (const collection of collectionsList) {
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
+        }
 
         const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolID;
         try{

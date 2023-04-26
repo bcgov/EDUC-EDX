@@ -7,6 +7,25 @@ export class Selectors {
     };
 
     dataCollectionsLanding: any = {
-        title: '#navTitle > div'
+        title: '#navTitle > div',
+        continue: '.navigate'
     };
+
+    schoolDetails: any = {
+        subjectHeading: 'h2.subjectHeading'
+    }
+
+    schoolContacts: any = {
+        subjectHeading: 'h2.subjectHeading'
+    }
+
+    stepOneSchoolDetails: any = {
+        nextButton: '#nextButton'
+    }
+
+    stepTwoSchoolContacts: any = {
+        nextButton: '#nextButton'
+    }
+
+
 }

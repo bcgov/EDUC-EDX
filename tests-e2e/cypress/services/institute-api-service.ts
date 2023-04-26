@@ -15,11 +15,6 @@ export class InstituteApiService {
         this.restUtils = new RestUtils(this.config);
     }
 
-    async getAllSchools() {
-        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
-        return this.restUtils.getData(url);
-    }
-
     async getSchoolIDBySchoolCode(schoolCode: string) {
         const schoolSearchCriteria = [{
             condition: null,
@@ -52,7 +47,6 @@ export class InstituteApiService {
     }
 
     async getDistrictIdByDistrictNumber(districtNumber: string) {
-        debugger;
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
         const districtResponse = await this.restUtils.getData(url,null);
         for (const district of districtResponse) {
@@ -60,138 +54,6 @@ export class InstituteApiService {
                 return district.districtId;
             }
         }
-    }
-
-    async getAllDistricts() {
-        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
-        return this.restUtils.getData(url, null);
-    }
-
-    async createDistrict(){
-        console.log('AT createDistrict started');
-
-        const districtPayload = {
-            createUser: 'EDXAT',
-            updateUser: null,
-            createDate: null,
-            updateDate: null,
-            districtId: null,
-            districtNumber: '998',
-            faxNumber: '2504266673',
-            phoneNumber: '2504265241',
-            email: 'noreply-edx@gov.bc.ca',
-            displayName: 'EDX AT District',
-            districtRegionCode: 'METRO',
-            districtStatusCode: 'ACTIVE',
-            website:null,
-        };
-        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`
-        const response = await this.restUtils.postData(url, districtPayload, null);
-        console.log('AT createDistrict completed');
-        return response?.districtId;
-    }
-    async createSchool(districtID: string){
-        console.log('AT createSchool');
-
-        const schoolPayload = {
-            createUser: 'EDXAT',
-            updateUser: null,
-            createDate: null,
-            updateDate: null,
-            schoolId: null,
-            districtId: districtID,
-            mincode: null,
-            independentAuthorityId: null,
-            schoolNumber: '99999',
-            faxNumber: '2504266673',
-            phoneNumber: '2504265241',
-            email: 'dave.hill@sd5.bc.ca',
-            website: null,
-            displayName: 'EDX AT School',
-            schoolReportingRequirementCode: 'REGULAR',
-            schoolOrganizationCode: 'TWO_SEM',
-            schoolCategoryCode: 'PUBLIC',
-            facilityTypeCode: 'STANDARD',
-            openedDate: '2022-01-01T00:00:00',
-            closedDate: null,
-            contacts: [
-                {
-                    createUser: null,
-                    updateUser: null,
-                    createDate: null,
-                    updateDate: null,
-                    schoolContactId: null,
-                    schoolId: null,
-                    schoolContactTypeCode: 'PRINCIPAL',
-                    phoneNumber: '2506656585',
-                    jobTitle: 'Principal',
-                    phoneExtension: '123',
-                    alternatePhoneNumber: '2506544578',
-                    alternatePhoneExtension: '321',
-                    email: 'test@test.com',
-                    firstName: 'EDX AT Principal First Name',
-                    lastName: 'Last Name',
-                    effectiveDate: '2022-10-25T00:00:00',
-                    expiryDate: null
-                }
-            ]
-        };
-        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
-        const response = await this.restUtils.postData(url, schoolPayload, null);
-        return response?.schoolId;
-    }
-    async deleteSchoolContact(schoolID: string, contactID: string) {
-        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/`+schoolID+'/contact/'+contactID;
-        await this.restUtils.deleteData(url, null);
-    }
-    async deleteSchool(schoolID: string){
-        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/`+schoolID;
-        await this.restUtils.deleteData(url, null);
-    }
-    async deleteDistrict(districtID: string){
-        const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/`+districtID;
-        await this.restUtils.deleteData(url, null);
-    }
-    async deleteInstituteSetUp(){
-        const school =  await this.getSchoolBySchoolDisplayName('EDX AT School');
-
-        if(school){
-            console.log('School Details Found for Institute Delete');
-            if(school.contacts && school.contacts.length>0){
-                for(const contact of school.contacts){
-                    await this.deleteSchoolContact(school?.schoolId, contact.schoolContactId);
-                }
-                console.log('School Contacts Deleted');
-            }
-            await this.deleteSchool(school?.schoolId);
-            console.log('School Deleted');
-            await this.deleteDistrict(school?.districtId);
-            console.log('District Deleted');
-        }
-
-    }
-    async getSchoolBySchoolDisplayName(displayName: string) {
-        const schoolSearchCriteria = [{
-            condition: null,
-            searchCriteriaList: [
-                {
-                    key: "displayName",
-                    operation: "eq",
-                    value: displayName,
-                    valueType: "STRING",
-                    condition: "AND"
-                },
-            ]
-        }];
-
-        const schoolSearchParam = {
-            params: {
-                searchCriteriaList: JSON.stringify(schoolSearchCriteria)
-            }
-        };
-        const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
-        const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
-        return userSchoolResult?.content[0];
     }
 
     async getAuthorityIDByAuthorityNumber(authorityNumber: string) {
@@ -288,7 +150,6 @@ export class InstituteApiService {
     }
 
     async createDistrictWithContactToTest(includeDistrictAddress=true){
-        debugger;
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
         const districtPayload = {
