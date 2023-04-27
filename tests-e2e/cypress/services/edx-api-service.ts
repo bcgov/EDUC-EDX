@@ -1,86 +1,94 @@
 // @ts-ignore
-import {deleteData, getData, postData, putData} from "../helpers/rest-utils";
-import HttpStatus from 'http-status-codes';
 import generator from 'generate-password';
 import EdxActivationCode from "../model/EdxActivationCode";
 import EdxActivationRole from "../model/EdxActivationRole";
-import {instituteApiService} from "./institute-api-service.cy";
+import {InstituteApiService} from "./institute-api-service";
+import {RestUtils} from "../helpers/rest-utils-ts";
 
 const faker = require('faker');
 const date = require('date-and-time');
-const EXCHANGE_ENDPOINT = `${Cypress.env('edx').base_url}api/v1/edx/exchange`;
-const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
 
-export class edxApiService {
+export class EdxApiService {
+  config: any;
+  restUtils: any;
+
+  constructor(conf: any) {
+    this.config = conf;
+    this.restUtils = new RestUtils(this.config);
+  }
 
   async getPrimaryActivationCodeForInstitute(instituteTypeCode: string,instituteID: string) {
     try {
       const endpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
-      const url = `${Cypress.env('edx').base_url}${endpoint}`;
-      return await getData(url);
+      const url = `${this.config.env.edx.base_url}${endpoint}`;
+      return await this.restUtils.getData(url, null);
     }catch (e: any){
       if(e?.response?.status === 404){
         const generateEndpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
         const edxActivationCode = this.createEdxActivationCode( true, '','',instituteTypeCode,instituteID);
-        const url = `${Cypress.env('edx').base_url}${generateEndpoint}`;
-        return postData(url,edxActivationCode);
+        const url = `${this.config.env.edx.base_url}${generateEndpoint}`;
+        return this.restUtils.postData(url,edxActivationCode, null);
       }
     }
   }
 
   async createEdxActivationCodes(personalCode: string,instituteTypeCode: string,instituteID: string) {
     const endpoint = 'api/v1/edx/users/activation-code';
-    const url = `${Cypress.env('edx').base_url}${endpoint}`;
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
     const roles = await this.getAllEdxUserRoleForInstitute(instituteTypeCode);
     const edxActivationPersonalCode = this.createEdxActivationCode( false,roles,personalCode ,instituteTypeCode,instituteID);
     const edxActivationPrimaryCode = await this.getPrimaryActivationCodeForInstitute(instituteTypeCode,instituteID);
-    const res1 = await postData(url, edxActivationPersonalCode);
+    const res1 = await this.restUtils.postData(url, edxActivationPersonalCode, null);
     return [res1, edxActivationPrimaryCode];
   }
 
   async getAllEdxUserRoleForInstitute(instituteTypeCode: string) {
     const endpoint = 'api/v1/edx/users/roles?instituteType='+instituteTypeCode;
-    const url = `${Cypress.env('edx').base_url}${endpoint}`;
-    return getData(url);
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
+    return this.restUtils.getData(url, null);
   }
 
   async findAllPaginated(params: any){
-    return getData(EXCHANGE_ENDPOINT_PAGINATED, params);
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
+    return this.restUtils.getData(EXCHANGE_ENDPOINT_PAGINATED, params);
   }
 
   async createSecureExchange(secureExchange: any) {
-    return postData(EXCHANGE_ENDPOINT, secureExchange, '');
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    return this.restUtils.postData(EXCHANGE_ENDPOINT, secureExchange, '');
   }
 
 
   async deleteSecureExchange(secureExchangeID: string) {
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
     const url = EXCHANGE_ENDPOINT + '/' + secureExchangeID;
-    return deleteData(url, '');
+    return this.restUtils.deleteData(url, '');
   }
 
   async getAllMinistryTeams() {
     const endpoint = 'api/v1/edx/users/ministry-teams';
-    const url = `${Cypress.env('edx').base_url}${endpoint}`;
-    return getData(url, '');
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
+    return this.restUtils.getData(url, '');
   }
 
   async createUserActivationUrl(personalCode: string,instituteTypeCode: string,instituteID: string) {
     const endpoint = '/api/edx/activate-user-verification?validationCode=';
     const activationCodes = await this.createEdxActivationCodes(personalCode,instituteTypeCode,instituteID);
-    const activationUrl = `${Cypress.env('edx').base_url}${endpoint}${activationCodes[0].validationCode}`;
+    const activationUrl = `${this.config.env.edx.base_url}${endpoint}${activationCodes[0].validationCode}`;
     return [activationUrl, activationCodes[0], activationCodes[1]];
   }
 
   async deleteActivationCode(activationCodeId: string) {
     const endpoint = 'api/v1/edx/users/activation-code';
-    const url = `${Cypress.env('edx').base_url}${endpoint}/${activationCodeId}`;
-    await deleteData(url);
+    const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
+    await this.restUtils.deleteData(url,null);
   }
   async deleteEdxUser(firstName: string, lastName: string) {
     const edxUser = await this.getEdxUserFromFirstNameLastName(firstName, lastName);
     const endpoint = 'api/v1/edx/users';
-    const url = `${Cypress.env('edx').base_url}${endpoint}/${edxUser?.edxUserID}`;
-    await deleteData(url);
+    const url = `${this.config.env.edx.base_url}${endpoint}/${edxUser?.edxUserID}`;
+    await this.restUtils.deleteData(url, null);
   }
   async generateCode(){
     return  generator.generate({
@@ -103,7 +111,7 @@ export class edxApiService {
   }
 
   async setUpDataForUserActivation(ctx: any,instituteTypeCode: string,instituteIdentifier: string){
-    const instituteApi =  new instituteApiService();
+    const instituteApi =  new InstituteApiService(this.config);
     const code = await this.generateCode();
     let instituteID;
     if(instituteTypeCode.toString().toUpperCase()=== 'SCHOOL'){
@@ -116,7 +124,7 @@ export class edxApiService {
 
   async  getEdxUserFromFirstNameLastName(firstName: string, lastName: string) {
     const endpoint = 'api/v1/edx/users';
-    const url = `${Cypress.env('edx').base_url}${endpoint}`;
+    const url = `${this.config.env.edx.base_url}${endpoint}`;
 
     const searchParams = {
       params: {
@@ -124,7 +132,7 @@ export class edxApiService {
         lastName
       }
     };
-    const responseBody = await getData(url, searchParams);
+    const responseBody = await this.restUtils.getData(url, searchParams);
 
     return responseBody[0];
   }
@@ -164,18 +172,18 @@ export class edxApiService {
    * @returns {Promise<any>} Response data
    */
   async deleteUserActivationCodes(userID: string) {
-    const endPoint = `${Cypress.env('edx').base_url}api/v1/edx/users/activation-code/user/${userID}`;
-    return await deleteData(endPoint);
+    const endPoint = `${this.config.env.edx.base_url}api/v1/edx/users/activation-code/user/${userID}`;
+    return await this.restUtils.deleteData(endPoint, null);
   }
   
   async verifyInstituteActivationCodes(districtID: string,schoolID: string){
     const endpoint = 'api/v1/edx/users';
-    const schoolActivationCodeUrl = `${Cypress.env('edx').base_url}${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
+    const schoolActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
     try{
-      await getData(schoolActivationCodeUrl);
-      console.log('school Activation code found');
+      await this.restUtils.getData(schoolActivationCodeUrl, null);
+      console.log('School activation code found');
     }catch (e: any){
-      if(e.response.status === HttpStatus.NOT_FOUND ){
+      if(e.response.status === 404 ){
         //generate school activation code if it doesn't exist
         const schoolActivationCodePayload = {
           createUser: 'EDXAT',
@@ -185,17 +193,17 @@ export class edxApiService {
           districtID: null,
           schoolID:schoolID,
         };
-        await postData(schoolActivationCodeUrl,schoolActivationCodePayload,'');
+        await this.restUtils.postData(schoolActivationCodeUrl,schoolActivationCodePayload,'');
         console.log('district Activation code created');
       }
     }
 
-    const districtActivationCodeUrl = `${Cypress.env('edx').base_url}${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
+    const districtActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
     try{
-      await getData(districtActivationCodeUrl);
+      await this.restUtils.getData(districtActivationCodeUrl, null);
       console.log('district Activation code found');
     }catch (e: any){
-      if(e.response.status === HttpStatus.NOT_FOUND ){
+      if(e.response.status === 404 ){
         //generate school activation code if it doesn't exist
         const districtActivationCodePayload = {
           createUser: 'EDXAT',
@@ -205,7 +213,7 @@ export class edxApiService {
           districtID: districtID,
           schoolID: null,
         };
-        await postData(districtActivationCodeUrl,districtActivationCodePayload, '');
+        await this.restUtils.postData(districtActivationCodeUrl,districtActivationCodePayload, '');
         console.log('district Activation code created');
       }
     }

@@ -14,6 +14,7 @@ screenshots
 local.*
 .env
 endpoint-proxy.sh
+cypress.env.json
 # Editor directories and files
 .idea
 .vscode

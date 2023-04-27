@@ -4,28 +4,36 @@ on:
   schedule:
     - cron: '0 11 * * 1-5'
 
+env:
+  ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
+
 jobs:
   Regression:
     runs-on: ubuntu-latest
+    # Cypress Docker image with Chrome v91
+    # and Firefox v89 pre-installed
+    container: cypress/browsers:node-18.16.0-chrome-112.0.5615.121-1-ff-112.0.1-edge-112.0.1722.48-1
     environment: dev
-    defaults:
-      run:
-        working-directory: test-e2e
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v1
         name: Checkout
       - name: cypress.env.json
         run: |
-          echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+          echo '${{ secrets.CYPRESS_ENV_CI }}' > ./tests-e2e/cypress.env.json
       - uses: cypress-io/github-action@v5
         with:
           browser: chrome
-#      - name: Upload Failure Screenshot
-#        uses: actions/upload-artifact@v3
-#        if: ${{ failure() }}
+          working-directory: ./tests-e2e
+#      - uses: actions/upload-artifact@v1
+#        if: failure()
 #        with:
-#          name: Screenshot
-#          path: /home/runner/work/EDUC-EDX/EDUC-EDX/test/src/screenshots
+#          name: cypress-screenshots
+#          path: ./tests-e2e/cypress/screenshots
+#      - uses: actions/upload-artifact@v1
+#        if: always()
+#        with:
+#          name: cypress-videos
+#          path: ./tests-e2e/cypress/videos
       - name: Rocket.Chat Notification
         uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@1.1.1
         if: failure()
