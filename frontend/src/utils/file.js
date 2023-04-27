@@ -4,6 +4,8 @@
  * @param {*} decimals 
  */
 
+import { unescape } from "lodash";
+
 export function humanFileSize(bytes, decimals = 2) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -37,7 +39,7 @@ export async function toBase64(blob) {
   return new Promise((resolve, reject) => {
     let r = new FileReader();
     r.readAsText(blob);
-    r.onload = () => resolve(window.btoa(r.result));
+    r.onload = () => resolve(window.btoa(unescape(encodeURIComponent(r.result))));
     r.onerror = e => reject(e);
   });
 }
