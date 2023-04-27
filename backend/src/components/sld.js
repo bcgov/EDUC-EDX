@@ -11,7 +11,7 @@ async function getCollectionBySchoolId(req, res) {
     checkEDXCollectionPermission(req);
     checkEDXUserAccess(req,'SCHOOL', req.params.schoolID);
 
-    const data = await getData(token, `${config.get('sdc:collectionBySchoolIdURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
+    const data = await getData(token, `${config.get('sdc:schoolCollectionURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
     if(e?.status === 404){
@@ -39,6 +39,7 @@ async function uploadFile(req, res) {
     const data = await postData(token, payload, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
+    console.log(JSON.stringify(e));
     if(e.status === 400){
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
@@ -79,7 +80,7 @@ async function updateSchoolCollection(req, res) {
 
     payload.sdcSchoolCollectionStatusCode = req.body.status;
     
-    const data = await putData(token, payload, `${config.get('sdc:collectionBySchoolIdURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating the school collection record', e.stack);
@@ -94,7 +95,7 @@ async function getSchoolCollectionById(req, res) {
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
-    const data = await getData(token, `${config.get('sdc:collectionBySchoolIdURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    const data = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error retrieving the school collection record', e.stack);

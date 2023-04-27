@@ -304,7 +304,7 @@ export default {
       try{
         let document = {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
-          fileContents: btoa(fileAsString)
+          fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
