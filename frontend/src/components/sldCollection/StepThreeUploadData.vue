@@ -158,10 +158,10 @@
       <v-file-input
         id="selectFileInput"
         ref="uploader"
-        :key="inputKey"
-        v-model="uploadFileValue"
         :rules="fileRules"
+        :key="inputKey"
         style="display: none"
+        v-model="uploadFileValue"
         :accept="acceptableFileExtensions.join(',')"
       />
     </v-form>
@@ -173,7 +173,7 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
-import {getFileNameWithMaxNameLength, humanFileSize, toBase64} from '../../utils/file';
+import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
 import Spinner from '../common/Spinner.vue';
@@ -291,22 +291,30 @@ export default {
     async importFile() {
       if(this.uploadFileValue) {
         this.isReadingFile = true;
+        let data = null;
+
         await this.validateForm();
 
         if (!this.uploadFileValue[0] || !this.validForm) {
+          data = 'No File Chosen';
           this.inputKey++;
           this.isReadingFile = false;
         } else {
-          this.uploadFile(this.uploadFileValue[0]);
+          let reader = new FileReader();
+          reader.readAsText(this.uploadFileValue[0]);
+          reader.onload = () => {
+            data = reader.result;
+            this.uploadFile(data);
+          };
           this.inputKey++;
         }
       }
     },
-    async uploadFile(fileBlob) {
-      try {
+    async uploadFile(fileAsString) {
+      try{
         let document = {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
-          fileContents: await toBase64(fileBlob)
+          fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
