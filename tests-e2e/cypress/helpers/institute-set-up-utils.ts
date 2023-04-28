@@ -20,7 +20,6 @@ export class InstituteSetupUtils {
                                      includeSchoolContact = true
                                  } = {}) {
         console.log('setupInstituteEntities started');
-        console.log(...arguments);
         await this.instituteApi.createAuthorityWithContactToTest();
         let district = await this.instituteApi.createDistrictWithContactToTest({includeDistrictAddress});
         let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, {
