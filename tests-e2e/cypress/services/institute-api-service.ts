@@ -149,7 +149,7 @@ export class InstituteApiService {
         return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload,null);
     }
 
-    async createDistrictWithContactToTest(includeDistrictAddress=true){
+    async createDistrictWithContactToTest({includeDistrictAddress = true} = {}){
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
         const districtPayload = {
@@ -236,7 +236,12 @@ export class InstituteApiService {
         return await this.restUtils.postData(contactUrl, districtContactPayload, null);
 
     }
-    async createSchoolWithContactToTest(districtID: string, includeSchoolAddress=true, includeTombstoneValues=true){
+
+    async createSchoolWithContactToTest(districtID: string, {
+        includeSchoolAddress = true,
+        includeTombstoneValues = true,
+        includeSchoolContact = true
+    } = {}) {
         let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
         const schoolPayload = {
@@ -316,7 +321,9 @@ export class InstituteApiService {
             expiryDate: null
         }
         await this.clearSchoolContacts(freshSchool);
-        await this.setupSchoolContact(freshSchool, contact);
+        if (includeSchoolContact) {
+            await this.setupSchoolContact(freshSchool, contact);
+        }
         return freshSchool;
     }
 

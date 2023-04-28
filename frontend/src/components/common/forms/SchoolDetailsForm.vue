@@ -1123,18 +1123,18 @@ export default {
           this.loading = false;
         });
     },
-    getAuthorityDetails(authorityId){
+    getAuthorityDetails(authorityId) {
       this.authority = '';
-      ApiService.apiAxios.get(ApiRoutes.institute.AUTHORITY_DATA_URL + '/'+ authorityId)
-          .then(response => {
-            this.authority = response.data;
-            this.populateExtraAuthorityFields(this.authority);
-          }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loading = false;
-      });
+      ApiService.apiAxios.get(ApiRoutes.institute.AUTHORITY_DATA_URL + '/' + authorityId)
+        .then(response => {
+          this.authority = response.data;
+          this.populateExtraAuthorityFields(this.authority);
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loading = false;
+        });
     },
     populateExtraAuthorityFields(authority) {
       authority.status = getStatusAuthorityOrSchool(authority);
@@ -1265,7 +1265,7 @@ export default {
       return this.school.addresses.filter(address => address.addressTypeCode === 'MAILING').length > 0;
     },
     hasRequiredFieldValues() {
-      return this.school.phoneNumber!== '' && this.school.email!=='' && this.hasMailingAddress();
+      return this.school.phoneNumber!== null && this.school.email!==null && this.hasMailingAddress();
     },
     hasPhysicalAddress(){
       return this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;

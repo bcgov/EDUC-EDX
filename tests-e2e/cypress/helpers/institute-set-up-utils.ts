@@ -12,11 +12,21 @@ export class InstituteSetupUtils {
         this.instituteApi = new InstituteApiService(this.config);
         this.edxApi = new EdxApiService(this.config);
     }
-    async setupInstituteEntities(includeDistrictAddress: boolean = true, includeSchoolAddress: boolean = true, includeTombstoneValues: boolean = true) {
+
+    async setupInstituteEntities({
+                                     includeDistrictAddress = true,
+                                     includeSchoolAddress = true,
+                                     includeTombstoneValues = true,
+                                     includeSchoolContact = true
+                                 } = {}) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
-        let district = await this.instituteApi.createDistrictWithContactToTest(includeDistrictAddress);
-        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, includeSchoolAddress, includeTombstoneValues);
+        let district = await this.instituteApi.createDistrictWithContactToTest({includeDistrictAddress});
+        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, {
+            includeSchoolAddress,
+            includeTombstoneValues,
+            includeSchoolContact
+        });
         await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
         console.log('setupInstituteEntities completed')
         return {
