@@ -10,6 +10,8 @@ export default defineConfig({
   videosFolder: 'cypress/videos',
   video: false,
   screenshotOnRunFailure: false,
+  viewportHeight: 1080,
+  viewportWidth: 1920,
   e2e: {
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
@@ -17,7 +19,7 @@ export default defineConfig({
         'defaults:db': async() => {
           const instituteSetupUtils = new InstituteSetupUtils(config);
           const collectionSetupUtils = new CollectionSetupUtils(config);
-          let response = await instituteSetupUtils.setupInstituteEntities(true, true, true);
+          let response = await instituteSetupUtils.setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
           await collectionSetupUtils.setUpSchoolCollection(response.school.schoolId);
           return null;
         },
