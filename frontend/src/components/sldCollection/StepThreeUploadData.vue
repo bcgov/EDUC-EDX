@@ -19,6 +19,15 @@
           <h1>Upload Student Level Data</h1>
         </v-col>
       </v-row>
+      <v-row v-if="fileUploadErrorMessage">
+        <v-col>
+          <v-alert
+            density="compact"
+            type="error"
+            :text="fileUploadErrorMessage"
+          />
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-divider class="divider" />
