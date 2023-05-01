@@ -215,7 +215,7 @@ export default {
           return ret;
         },
         value => {
-          const extension = `.${value[0].name.split('.')[1]}`;
+          const extension = `.${value[0].name.split('.').slice(-1)}`;
           const failMessage = 'File type invalid.  Files must be ".ver" or ".std".';
           const foundValidExtension = this.acceptableFileExtensions.find(ext => ext === extension);
 
