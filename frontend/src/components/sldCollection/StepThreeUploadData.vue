@@ -52,7 +52,7 @@
             color="#1976d2"
             class="ml-16"
             variant="text"
-            @click="handleFileImport"
+            @click="clickFileReUpload"
           >
             Upload Replacement File
           </v-btn>
@@ -174,6 +174,13 @@
         :accept="acceptableFileExtensions.join(',')"
       />
     </v-form>
+    <ConfirmationDialog ref="confirmReplacementFile">
+        <template #message>
+            <p>Uploading a replacement file will remove all data associated with the existing file you have uploaded.</p>
+            &nbsp;
+            <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
+        </template>
+    </ConfirmationDialog>
   </v-container>
 </template>
 
@@ -186,10 +193,12 @@ import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
 import Spinner from '../common/Spinner.vue';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
   name: 'StepThreeUploadData',
   components: {
+    ConfirmationDialog,
     Spinner,
     PrimaryButton
   },
@@ -263,6 +272,13 @@ export default {
       if(this.processing){
         this.startPollingStatus();
       }
+    },
+    async clickFileReUpload(){
+      const confirmation = await this.$refs.confirmReplacementFile.open('Confirm Replacement File', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Select a Replacement File', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      await this.handleFileImport();
     },
     next() {
       if(this.currentStepInCollectionProcess.isComplete) {
