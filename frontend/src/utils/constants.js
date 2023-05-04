@@ -38,7 +38,16 @@ export const ApiRoutes = Object.freeze({
   },
   sld: {
     BASE_URL: sldRoot,
-    SLD_COLLECTION_BY_SCHOOL_ID: sldRoot + '/getCollectionBySchoolId'
+    SLD_COLLECTION_BY_SCHOOL_ID: sldRoot + '/getCollectionBySchoolId',
+    SLD_SCHOOL_COLLECTION_STUDENT: sldRoot + '/sdcSchoolCollectionStudent',
+    SDC_BAND_CODES: sldRoot + '/band-codes',
+    SDC_CAREER_PROGRAM_CODES: sldRoot + '/career-program-codes',
+    SDC_ENROLLED_GRADE_CODES: sldRoot + '/enrolled-grade-codes',
+    SDC_ENROLLED_PROGRAM_CODES: sldRoot + '/enrolled-program-codes',
+    SDC_HOME_LANGUAGE_SPOKEN_CODES: sldRoot + '/home-language-spoken-codes',
+    SDC_SCHOOL_FUNDING_CODES: sldRoot + '/school-funding-codes',
+    SDC_SPECIAL_ED_CODES: sldRoot + '/specialEducation-codes',
+    SDC_VALIDATION_ISSUE_TYPE_CODES: sldRoot + '/validation-issue-type-codes',
   },
   district: {
     BASE_URL: districtRoot,
@@ -112,3 +121,29 @@ export const PAGE_TITLES = Object.freeze({
 export const MINISTRY_NAME = 'Ministry of Education and Child Care';
 
 export const EDX_SAGA_REQUEST_DELAY_MILLISECONDS = 2000;
+
+export const SDC_VALIDATION_FIELD_FIELD_MAPPINGS = Object.freeze({
+  LOCAL_ID: {label: 'Local Id', key: 'localID'},
+  STUDENT_PEN: {label: 'PEN', key: 'studentPen'},
+  LEGAL_FIRST_NAME: {label: 'Legal First Name', key: 'legalFirstName'},
+  LEGAL_MIDDLE_NAMES: {label: 'Legal Middle Name', key: 'legalMiddleNames'},
+  LEGAL_LAST_NAME: {label: 'Legal Last Name', key: 'legalLastName'},
+  USUAL_FIRST_NAME: {label: 'Usual First Name', key: 'usualFirstName'},
+  USUAL_MIDDLE_NAMES: {label: 'Usual Middle Names', key: 'usualMiddleNames'},
+  USUAL_LAST_NAME: {label: 'Usual Last Name', key: 'usualLastNames'},
+  DOB: {label: 'DOB', key: ''},
+  GENDER_CODE: {label: 'Gender', key: ''},
+  GRADE_CODE: {label: 'Grade Code', key: ''},
+  SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: ''},
+  SCHOOL_FUNDING_CODE: {label: 'School Funding', key: ''},
+  NATIVE_ANCESTRY_IND: {label: 'Native Ancestry', key: ''},
+  HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: ''},
+  OTHER_COURSES: {label: 'Other Courses', key: ''},
+  SUPPORT_BLOCKS: {label: 'Support Blocks', key: ''},
+  ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: ''},
+  ENROLLED_PROGRAM_CODE: {label: 'Enrolled Program Codes', key: ''},
+  CAREER_PROGRAM_CODE: {label: 'Career Program Code', key: ''},
+  NUMBER_OF_COURSES: {label: 'Number of Courses', key: ''},
+  BAND_CODE: {label: 'Band Codes', key: ''},
+  POSTAL_CODE: {label: 'Postal Code', key: ''}
+});

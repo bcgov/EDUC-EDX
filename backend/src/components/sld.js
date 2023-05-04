@@ -1,8 +1,9 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
+const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -103,6 +104,112 @@ async function getSchoolCollectionById(req, res) {
   }
 }
 
+async function getSDCSchoolCollectionStudentPaginated(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
+
+    let criteria = [];
+    criteria = buildSearchParams(JSON.stringify(req.query.searchParams));
+
+    criteria.push({key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID});
+    log.debug(criteria);
+
+    const search = [{
+      condition: null,
+      searchCriteriaList: criteria
+    }];
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: req.query.sort,
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json(data);
+  }catch (e) {
+    if(e?.status === 404){
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting sdc school collection student paginated list', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
+async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
+
+    let errorCriteria = [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND}];
+    errorCriteria.push({key: 'sdcSchoolCollectionStudentStatusCode', value: 'ERROR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+
+    let warningCriteria = [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND}];
+    warningCriteria.push({key: 'sdcSchoolCollectionStudentStatusCode', value: 'WARNING', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+
+    const errorParams = {
+      params: {
+        pageNumber: 1,
+        pageSize: 1,
+        searchCriteriaList: JSON.stringify([{condition: null, searchCriteriaList: errorCriteria}]),
+      }
+    };
+
+    const warningParams = {
+      params: {
+        pageNumber: 1,
+        pageSize: 1,
+        searchCriteriaList: JSON.stringify([{condition: null, searchCriteriaList: warningCriteria}]),
+      }
+    };
+
+    let errorData = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', errorParams, req.session?.correlationID);
+    let warningData = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', warningParams, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json({warnings: warningData.totalElements, errors: errorData.totalElements});
+  }catch (e) {
+    if(e?.status === 404){
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting sdc school collection student count summaries', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
+async function getSDCSchoolCollectionStudentDetail (req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
+
+    let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
+  }catch (e) {
+    if(e?.status === 404){
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting sdc school collection student detail', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
 async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
   const urlGetCollection = `${config.get('sdc:rootURL')}/sdcSchoolCollection/${sdcSchoolCollectionID}`;
   const sdcSchoolCollection = await getData(token, urlGetCollection, null);
@@ -123,10 +230,45 @@ function validateAccessToken(token, res) {
   }
 }
 
+/**
+ * Returns an array of search criteria objects to query SLD API
+ *
+ * @param searchParams object with keys of the columns we are searching for
+ */
+const buildSearchParams = (searchParams) => {
+  if (!searchParams) {
+    return [];
+  }
+
+  return Object.entries(JSON.parse(searchParams))
+    .map(([key, value]) => createSearchParamObject(key, value));
+};
+
+/**
+ * Returns an object that has the following properties key, value, operation, valueType
+ * Helper function when building search params for querying SLD API
+ *
+ * @param key of what we are searching in
+ * @param value of what we are searching for
+ */
+const createSearchParamObject = (key, value) => {
+  let operation = FILTER_OPERATION.CONTAINS_IGNORE_CASE;
+  let valueType = VALUE_TYPE.STRING;
+
+  if (key === 'studentPen') {
+    operation = FILTER_OPERATION.EQUAL;
+  }
+
+  return {key, value, operation, valueType};
+};
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
   getSdcFileProgress,
   updateSchoolCollection,
-  getSchoolCollectionById
+  getSchoolCollectionById,
+  getSDCSchoolCollectionStudentPaginated,
+  getSDCSchoolCollectionStudentSummaryCounts,
+  getSDCSchoolCollectionStudentDetail
 };

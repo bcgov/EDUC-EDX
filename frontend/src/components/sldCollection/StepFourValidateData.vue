@@ -6,7 +6,8 @@
     <div class="inner-border">
       <v-row>
         <v-col class="pr-0" cols="3">
-          <div class="inner-border">
+          <Spinner v-if="isLoading()"/>
+          <div class="inner-border" v-else>
             <v-row>
               <v-col class="d-flex justify-center">
                 <h3>Summary of Data Issues</h3>
@@ -22,7 +23,7 @@
                 <v-row no-gutters class="mt-1">
                   <v-col class="d-flex justify-end">
                     <v-icon size="35" color="#d90606">mdi-alert-circle-outline</v-icon>
-                    <span style="font-size: x-large">5</span>
+                    <span style="font-size: x-large">{{summaryCounts.errors}}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -36,7 +37,7 @@
                 <v-row no-gutters class="mt-1">
                   <v-col class="d-flex justify-start">
                     <v-icon size="35" color="blue">mdi-alert-outline</v-icon>
-                    <span style="font-size: x-large">18</span>
+                    <span style="font-size: x-large">{{summaryCounts.warnings}}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -89,14 +90,16 @@
           </div>
           <div>
             <v-data-table-server
-              v-model:items-per-page="itemsPerPage"
+              :items-per-page="pageSize"
+              v-model:page="pageNumber"
               :headers="headers"
-              :items-length="studentList.length"
-              :items="studentList"
-              :loading="loading"
+              :items-length="totalStudents"
+              :items="studentListData"
+              :loading="isLoading()"
               class="mt-2"
               item-title="name"
               item-value="name"
+
             >
               <template v-slot:headers>
                 <v-row no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
@@ -127,14 +130,14 @@
                 </v-row>
               </template>
               <template v-slot:item="{ item, index }">
-                <v-row class="hoverTable" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-row @click="studentSelected(item.value.sdcSchoolCollectionStudentID)" class="hoverTable" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
                   <v-col cols="1">
-                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value)">{{getIssueIcon(item.value)}}</v-icon>
+                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)">{{getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode)}}</v-icon>
                   </v-col>
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.pen}}</span>
+                        <span class="tableItemVal">{{item.value.studentPen}}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -146,12 +149,12 @@
                   <v-col>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.legalName}}</span>
+                        <span class="tableItemVal">{{`${item.value.legalLastName} ${item.value.legalFirstName}`}}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.usualName}}</span>
+                        <span class="tableItemVal">{{`${item.value.usualLastName} ${item.value.usualFirstName}`}}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -161,7 +164,8 @@
           </div>
         </v-col>
         <v-col cols="9">
-          <div class="inner-border">
+          <Spinner v-if="isLoading()"/>
+          <div class="inner-border" v-else>
             <v-row>
               <v-col cols="6">
                 <v-row>
@@ -188,7 +192,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="pen"
+                          v-model="sdcSchoolCollectionStudentDetail.studentPen"
                         >
                         </v-text-field>
                       </v-col>
@@ -198,7 +202,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="localID"
+                          v-model="sdcSchoolCollectionStudentDetail.localID"
                         >
                         </v-text-field>
                       </v-col>
@@ -210,7 +214,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="birthdate"
+                          v-model="sdcSchoolCollectionStudentDetail.dob"
                         >
                         </v-text-field>
                       </v-col>
@@ -220,7 +224,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="gender"
+                          v-model="sdcSchoolCollectionStudentDetail.gender"
                         >
                         </v-text-field>
                       </v-col>
@@ -232,7 +236,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalSurname"
+                          v-model="sdcSchoolCollectionStudentDetail.legalLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -242,7 +246,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualSurname"
+                          v-model="sdcSchoolCollectionStudentDetail.usualLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -254,7 +258,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalGiven"
+                          v-model="sdcSchoolCollectionStudentDetail.legalFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -264,7 +268,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualGiven"
+                          v-model="sdcSchoolCollectionStudentDetail.usualFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -276,7 +280,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalMiddle"
+                          v-model="sdcSchoolCollectionStudentDetail.legalMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -286,7 +290,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualMiddle"
+                          v-model="sdcSchoolCollectionStudentDetail.usualMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -298,7 +302,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="grade"
+                          v-model="sdcSchoolCollectionStudentDetail.enrolledGradeCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -308,7 +312,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="fundingCode"
+                          v-model="sdcSchoolCollectionStudentDetail.schoolFundingCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -320,7 +324,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="numberOfCourses"
+                          v-model="sdcSchoolCollectionStudentDetail.numberOfCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -330,7 +334,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="otherCourses"
+                          v-model="sdcSchoolCollectionStudentDetail.otherCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -342,7 +346,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="supportBlocks"
+                          v-model="sdcSchoolCollectionStudentDetail.supportBlocks"
                         >
                         </v-text-field>
                       </v-col>
@@ -352,7 +356,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="specialEducationCategory"
+                          v-model="sdcSchoolCollectionStudentDetail.specialEducationCategoryCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -364,7 +368,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="indigenousAncestry"
+                          v-model="sdcSchoolCollectionStudentDetail.nativeAncestryInd"
                         >
                         </v-text-field>
                       </v-col>
@@ -374,7 +378,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="bandOfResidence"
+                          :v-model="getBandCodesLabel(sdcSchoolCollectionStudentDetail.bandCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -386,7 +390,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="homeLanguage"
+                          :v-model="getHomeLanguageSpokenCodesLabel(sdcSchoolCollectionStudentDetail.homeLanguageSpokenCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -396,7 +400,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="postalCode"
+                          v-model="sdcSchoolCollectionStudentDetail.postalCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -408,7 +412,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="careerCode"
+                          :v-model="getCareerProgramCodesLabel(sdcSchoolCollectionStudentDetail.careerProgramCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -418,7 +422,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="programCodes"
+                          v-model="sdcSchoolCollectionStudentDetail.enrolledProgramCodes"
                         >
                         </v-text-field>
                       </v-col>
@@ -443,43 +447,50 @@
                 <v-row>
                   <v-col class="pl-0 pr-6">
                     <v-timeline
-                      v-if="studentIssues"
+                      v-if="sdcSchoolCollectionStudentDetail.sdcSchoolCollectionStudentValidationIssues"
                       side="end"
                       align="start"
                       truncate-line="start"
                     >
                       <v-timeline-item
-                        v-for="(issue,index) in studentIssues"
-                        :key="issue.issueID"
+                        v-for="(issue) in sdcSchoolCollectionStudentDetail.sdcSchoolCollectionStudentValidationIssues"
+                        :key="issue.sdcSchoolCollectionStudentValidationIssueID"
                         dot-color="white"
                         fill-dot
-                        :icon-color="getIssueIconColor(issue)"
-                        :icon="getIssueIcon(issue)"
+                        :icon-color="getIssueIconColor(issue.validationIssueSeverityCode)"
+                        :icon="getIssueIcon(issue.validationIssueSeverityCode)"
                         size="large"
                         width="100%"
                       >
                         <v-row class="mt-n1">
                           <v-col>
-                            <h3 :style="`color:` + getIssueIconColor(issue)">{{ issue.type }}</h3>
+                            <h3 :style="`color:` + getIssueIconColor(issue.validationIssueSeverityCode)">{{ issue.validationIssueSeverityCode }}</h3>
                           </v-col>
                         </v-row>
                         <v-row no-gutters>
                           <v-col>
-                            <span> {{ issue.description }}</span>
+                            <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }}</span>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col>
-                            <div v-for="(field,index) in issue.fields"
-                                 :key="field.fieldName">
-                              <v-text-field
-                                :label="field.fieldName"
+                            <v-text-field
+                                :label="issue.validationIssueFieldCode"
                                 density="compact"
                                 variant="underlined"
-                                v-model="field.fieldValue"
-                              >
-                              </v-text-field>
-                            </div>
+                                v-model="issue.validationIssueFieldCode"
+                            >
+                            </v-text-field>
+<!--                            <div v-for="(field,index) in issue.validationIssueFieldCode"-->
+<!--                                 :key="field.fieldName">-->
+<!--                              <v-text-field-->
+<!--                                :label="field.fieldName"-->
+<!--                                density="compact"-->
+<!--                                variant="underlined"-->
+<!--                                v-model="field.fieldValue"-->
+<!--                              >-->
+<!--                              </v-text-field>-->
+<!--                            </div>-->
                           </v-col>
                         </v-row>
                       </v-timeline-item>
@@ -516,53 +527,178 @@
     </div>
   </v-container>
 </template>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+const route = useRoute();
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {isEmpty, omitBy} from 'lodash';
+import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
+
+//components
+import Spinner from '../common/Spinner.vue';
+import PrimaryButton from '../util/PrimaryButton.vue';
+
+import { appStore } from '../../store/modules/app';
+import { useSldCollectionStore } from '../../store/modules/sldCollection';
+
+const useAppStore = appStore();
+const sldCollectionStore = useSldCollectionStore();
+
+
+onMounted(() => {
+  sldCollectionStore.getCodes().then(() => {
+    getSummaryCounts();
+    getSDCSchoolCollectionStudentPaginated();
+  });
+});
+
+const loadingCount = ref(0);
+const summaryCounts = ref({errors: 0, warnings: 0});
+
+const getSummaryCounts = () => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/summaryCounts`, {
+  }).then(response => {
+    summaryCounts.value = response.data;
+  }).catch(error => {
+    console.error(error);
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+  }).finally(() => {
+    loadingCount.value -= 1;
+  });
+};
+
+//sdc school collection student list pagination
+const headerSearchParams = ref({
+  penNumber: '',
+});
+
+const pageNumber = ref(1);
+const pageSize = ref(10);
+const studentListData = ref([]);
+const totalStudents = ref(0);
+const headers = ref([
+  {
+    title: 'PEN',
+    align: 'start',
+    sortable: false,
+    key: 'name',
+  },
+  { title: 'Local ID', key: 'calories', align: 'end' }
+]);
+
+watch(pageNumber, () => {
+  getSDCSchoolCollectionStudentPaginated();
+});
+
+const selectedSdcStudentID = ref();
+
+const getSDCSchoolCollectionStudentPaginated = () => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/paginated`, {
+    params: {
+      pageNumber: pageNumber.value - 1,
+      pageSize: pageSize.value,
+      searchParams: omitBy(headerSearchParams.value, isEmpty),
+    }
+  }).then(response => {
+    console.log(response.data.content);
+    studentListData.value = response.data.content;
+    totalStudents.value = response.data.totalElements;
+    selectedSdcStudentID.value = response.data.content[0].sdcSchoolCollectionStudentID;
+  }).catch(error => {
+    console.error(error);
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+  }).finally(() => {
+    loadingCount.value -= 1;
+  });
+};
+
+const sdcSchoolCollectionStudentDetail = ref({});
+
+watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
+  getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+});
+
+const studentSelected = (sdcSchoolCollectionStudentID) => {
+  selectedSdcStudentID.value = sdcSchoolCollectionStudentID;
+};
+
+const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
+    .then(response => {
+      sdcSchoolCollectionStudentDetail.value = response.data;
+      console.log(response.data);
+    }).catch(error => {
+      console.error(error);
+      useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+    }).finally(() => {
+      loadingCount.value -= 1;
+    });
+};
+
+const isLoading = () => {
+  return loadingCount.value > 0;
+};
+
+const getBandCodesLabel = (key) => {
+  return sldCollectionStore.bandCodesMap.get(key)?.label;
+};
+
+const getCareerProgramCodesLabel = (key) => {
+  return sldCollectionStore.careerProgramCodesMap.get(key)?.label;
+};
+
+const getHomeLanguageSpokenCodesLabel = (key) => {
+  return sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label;
+};
+
+const getValidationIssueTypeCodesDescription = (key) => {
+  return sldCollectionStore.validationIssueTypeCodesMap.get(key)?.message;
+};
+
+const getIssueIcon = (issue) => {
+  switch (issue) {
+  case 'ERROR':
+    return 'mdi-alert-circle-outline';
+  case 'WARNING':
+    return 'mdi-alert-outline';
+  default:
+    return '';
+  }
+};
+
+const getIssueIconColor = (issue) => {
+  switch (issue) {
+  case 'ERROR':
+    return '#d90606';
+  case 'WARNING':
+    return '#2196F3';
+  default:
+    return '';
+  }
+};
+
+</script>
     
 <script>
 import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
     
 export default {
   name: 'StepFourValidateData',
-  components: {PrimaryButton},
   mixins: [alertMixin],
   props: {
   },
   emits: ['next'],
   data() {
     return {
-      pen: '123456789',
-      localID: '2468',
-      birthdate: '2024/06/01',
-      legalSurname: 'SMITH',
-      legalGiven: 'EMILY',
-      legalMiddle: 'ANNE',
-      usualSurname: 'SMITH',
-      usualGiven: 'EM',
-      gender: 'F',
-      usualMiddle: ' ',
-      grade: '07',
-      fundingCode: '20 - Living on Reserve',
-      numberOfCourses: ' ',
-      otherCourses: ' ',
-      supportBlocks: ' ',
-      specialEducationCategory: ' ',
-      indigenousAncestry: ' ',
-      bandOfResidence: ' ',
-      homeLanguage: 'English',
-      postalCode: ' ',
-      careerCode: ' ',
-      programCodes: ' ',
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
-      itemsPerPage: 10,
-      headers: [
-        {
-          title: 'PEN',
-          align: 'start',
-          sortable: false,
-          key: 'name',
-        },
-        { title: 'Local ID', key: 'calories', align: 'end' }
-      ],
       studentIssues: [
         {
           issueID: '1',
@@ -601,78 +737,12 @@ export default {
             }
           ]
         },
-      ],
-      studentList: [
-        {
-          pen: '123456789',
-          localID: '2468',
-          legalName: 'SMITH, EMILY ANNE',
-          usualName: 'SMITH, XX',
-          type: 'Error'
-        },
-        {
-          pen: '123456789',
-          localID: '2468',
-          legalName: 'SMITH, EMILY ANNE',
-          usualName: null,
-          type: 'Error'
-        },
-        {
-          pen: '852963741',
-          localID: '2356',
-          legalName: 'BROWN, JAKE',
-          usualName: null,
-          type: 'Error'
-        },
-        {
-          pen: '753951826',
-          localID: '7458',
-          legalName: 'ROSE, ADAM',
-          usualName: null,
-          type: 'Warning'
-        },
-        {
-          pen: '147321596',
-          localID: '9654',
-          legalName: 'SHARPE, MICHAEL',
-          usualName: null,
-          type: 'Warning'
-        },
-        {
-          pen: '789258741',
-          localID: '4018',
-          legalName: 'WILSON, FRANK',
-          usualName: null,
-          type: 'Warning'
-        },
-      ],
-      loading: true,
-      totalItems: 0
+      ]
     };
   },
   methods: {
     next() {
       this.$emit('next');
-    },
-    getIssueIcon(issue) {
-      switch (issue.type) {
-      case 'Error':
-        return 'mdi-alert-circle-outline';
-      case 'Warning':
-        return 'mdi-alert-outline';
-      default:
-        return '';
-      }
-    },
-    getIssueIconColor(issue) {
-      switch (issue.type) {
-      case 'Error':
-        return '#d90606';
-      case 'Warning':
-        return '#2196F3';
-      default:
-        return '';
-      }
     },
   },
 };

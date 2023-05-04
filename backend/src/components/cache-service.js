@@ -187,7 +187,6 @@ const cacheService = {
     }, {
       retries: 50
     });
-
   },
   getAllDocumentTypeCodesJSON() {
     return documentTypeCodes;
