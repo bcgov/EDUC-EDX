@@ -192,7 +192,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.studentPen"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
                         >
                         </v-text-field>
                       </v-col>
@@ -202,7 +202,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.localID"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
                         >
                         </v-text-field>
                       </v-col>
@@ -214,7 +214,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.dob"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
                         >
                         </v-text-field>
                       </v-col>
@@ -224,7 +224,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.gender"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
                         >
                         </v-text-field>
                       </v-col>
@@ -236,7 +236,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.legalLastName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -246,7 +246,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.usualLastName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -258,7 +258,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.legalFirstName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -268,7 +268,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.usualFirstName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -280,7 +280,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.legalMiddleNames"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -290,7 +290,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.usualMiddleNames"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -302,7 +302,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.enrolledGradeCode"
+                          :model-value="getEnrolledGradeCodesLabel(sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -312,7 +312,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.schoolFundingCode"
+                          :model-value="getSchoolFundingCodeLabel(sdcSchoolCollectionStudentDetailCopy.schoolFundingCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -324,7 +324,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.numberOfCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -334,7 +334,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.otherCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -346,7 +346,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.supportBlocks"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
                         >
                         </v-text-field>
                       </v-col>
@@ -356,7 +356,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.specialEducationCategoryCode"
+                          :model-value="getSpecialEducationCodesLabel(sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -368,7 +368,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.nativeAncestryInd"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
                         >
                         </v-text-field>
                       </v-col>
@@ -378,7 +378,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          :v-model="getBandCodesLabel(sdcSchoolCollectionStudentDetail.bandCode)"
+                          :model-value="getBandCodesLabel(sdcSchoolCollectionStudentDetailCopy.bandCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -390,7 +390,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          :v-model="getHomeLanguageSpokenCodesLabel(sdcSchoolCollectionStudentDetail.homeLanguageSpokenCode)"
+                          :model-value="getHomeLanguageSpokenCodesLabel(sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -400,7 +400,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.postalCode"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -412,7 +412,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          :v-model="getCareerProgramCodesLabel(sdcSchoolCollectionStudentDetail.careerProgramCode)"
+                          :model-value="getCareerProgramCodesLabel(sdcSchoolCollectionStudentDetailCopy.careerProgramCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -422,7 +422,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetail.enrolledProgramCodes"
+                          :model-value="getEnrolledProgramCodesLabel(sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes)"
                         >
                         </v-text-field>
                       </v-col>
@@ -445,15 +445,15 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col class="pl-0 pr-6">
+                  <v-col class="pl-0 pr-6 scroll">
                     <v-timeline
-                      v-if="sdcSchoolCollectionStudentDetail.sdcSchoolCollectionStudentValidationIssues"
+                      v-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
                       side="end"
                       align="start"
                       truncate-line="start"
                     >
                       <v-timeline-item
-                        v-for="(issue) in sdcSchoolCollectionStudentDetail.sdcSchoolCollectionStudentValidationIssues"
+                        v-for="(issue) in sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
                         :key="issue.sdcSchoolCollectionStudentValidationIssueID"
                         dot-color="white"
                         fill-dot
@@ -475,13 +475,32 @@
                         <v-row>
                           <v-col>
                             <v-text-field
-                                :label="issue.validationIssueFieldCode"
+                                v-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'input'"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
                                 density="compact"
                                 variant="underlined"
-                                v-model="issue.validationIssueFieldCode"
-                            >
-                            </v-text-field>
-<!--                            <div v-for="(field,index) in issue.validationIssueFieldCode"-->
+                                v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                            />
+                            <v-autocomplete
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'select'"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                                :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                            />
+                            <v-autocomplete
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'multiselect'"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                                :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                                multiple
+                                :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key].length < 8"
+                                @update:modelValue="syncWithEnrolledProgramCodeOnUserInput"
+                            />
+                              <!--                            <div v-for="(field,index) in issue.validationIssueFieldCode"-->
 <!--                                 :key="field.fieldName">-->
 <!--                              <v-text-field-->
 <!--                                :label="field.fieldName"-->
@@ -531,9 +550,10 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import _ from 'lodash';
 const route = useRoute();
 import ApiService from '../../common/apiService';
-import {ApiRoutes} from '../../utils/constants';
+import {ApiRoutes, SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/constants';
 import {isEmpty, omitBy} from 'lodash';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 
@@ -566,7 +586,7 @@ const getSummaryCounts = () => {
     summaryCounts.value = response.data;
   }).catch(error => {
     console.error(error);
-    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
   }).finally(() => {
     loadingCount.value -= 1;
   });
@@ -613,13 +633,14 @@ const getSDCSchoolCollectionStudentPaginated = () => {
     selectedSdcStudentID.value = response.data.content[0].sdcSchoolCollectionStudentID;
   }).catch(error => {
     console.error(error);
-    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
   }).finally(() => {
     loadingCount.value -= 1;
   });
 };
 
-const sdcSchoolCollectionStudentDetail = ref({});
+let sdcSchoolCollectionStudentDetail = ref({});
+let sdcSchoolCollectionStudentDetailCopy = ref({});
 
 watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
   getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
@@ -634,14 +655,25 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
 
   ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
-      sdcSchoolCollectionStudentDetail.value = response.data;
+      let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes)};
+
+      sdcSchoolCollectionStudentDetail.value = filteredResponse;
+      sdcSchoolCollectionStudentDetailCopy.value = _.cloneDeep(filteredResponse);
       console.log(response.data);
     }).catch(error => {
       console.error(error);
-      useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR})
+      useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
     }).finally(() => {
       loadingCount.value -= 1;
     });
+};
+
+const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
+  return enrolledProgramCodes.filter(enrolledProgramCode => sldCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
+};
+
+const syncWithEnrolledProgramCodeOnUserInput = (value) => {
+  sdcSchoolCollectionStudentDetailCopy.value.enrolledProgramCodes = value;
 };
 
 const isLoading = () => {
@@ -649,15 +681,56 @@ const isLoading = () => {
 };
 
 const getBandCodesLabel = (key) => {
-  return sldCollectionStore.bandCodesMap.get(key)?.label;
+  let label = key;
+  if (sldCollectionStore.bandCodesMap.get(key)) {
+    label = `${sldCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sldCollectionStore.bandCodesMap.get(key)?.label}`;
+  }
+  return label;
 };
 
 const getCareerProgramCodesLabel = (key) => {
-  return sldCollectionStore.careerProgramCodesMap.get(key)?.label;
+  let label = key;
+  if (sldCollectionStore.careerProgramCodesMap.get(key)) {
+    label = `${sldCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sldCollectionStore.careerProgramCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getEnrolledGradeCodesLabel = (key) => {
+  let label = key;
+  console.log(key);
+  if (sldCollectionStore.enrolledGradeCodesMap.get(key)) {
+    label = `${sldCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sldCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getEnrolledProgramCodesLabel = (text = '') => {
+  return(text);
 };
 
 const getHomeLanguageSpokenCodesLabel = (key) => {
-  return sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label;
+  let label = key;
+  if (sldCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
+    label = `${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getSchoolFundingCodeLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.schoolFundingCodesMap.get(key)) {
+    label = `${sldCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sldCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getSpecialEducationCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.specialEducationCodesMap.get(key)) {
+    label = `${sldCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sldCollectionStore.specialEducationCodesMap.get(key)?.label}`;
+  }
+  return label;
 };
 
 const getValidationIssueTypeCodesDescription = (key) => {
@@ -697,49 +770,6 @@ export default {
   props: {
   },
   emits: ['next'],
-  data() {
-    return {
-      studentIssues: [
-        {
-          issueID: '1',
-          type: 'Error',
-          description: 'PEN reported more than once. Correct the PEN or remove the appropriate student from the submission.',
-          fields: [
-            {
-              fieldName: 'PEN',
-              fieldValue: '123456789'
-            }
-          ]
-        },
-        {
-          issueID: '2',
-          type: 'Error',
-          description: 'Students must be reported with both a Band of Residence and a Funding Code of Living on Reserve (20). Add or remove both values.',
-          fields: [
-            {
-              fieldName: 'Funding Code',
-              fieldValue: '20 - Living on Reserve',
-            },
-            {
-              fieldName: 'Band of Residence',
-              fieldValue: ' ',
-            }
-          ]
-        },
-        {
-          issueID: '3',
-          type: 'Warning',
-          description: 'Missing Postal Code.',
-          fields: [
-            {
-              fieldName: 'Postal Code',
-              fieldValue: ' '
-            }
-          ]
-        },
-      ]
-    };
-  },
   methods: {
     next() {
       this.$emit('next');
@@ -790,6 +820,12 @@ export default {
 
  .tableItemVal{
      font-size: small;
+ }
+
+ .scroll{
+   overflow-y: auto;
+   overflow-x: hidden;
+   height: 100vh;
  }
 </style>
 

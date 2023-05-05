@@ -199,6 +199,8 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
 
     let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
 
+    sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
+
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
     if(e?.status === 404){

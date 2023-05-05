@@ -122,28 +122,28 @@ export const MINISTRY_NAME = 'Ministry of Education and Child Care';
 
 export const EDX_SAGA_REQUEST_DELAY_MILLISECONDS = 2000;
 
-export const SDC_VALIDATION_FIELD_FIELD_MAPPINGS = Object.freeze({
-  LOCAL_ID: {label: 'Local Id', key: 'localID'},
-  STUDENT_PEN: {label: 'PEN', key: 'studentPen'},
-  LEGAL_FIRST_NAME: {label: 'Legal First Name', key: 'legalFirstName'},
-  LEGAL_MIDDLE_NAMES: {label: 'Legal Middle Name', key: 'legalMiddleNames'},
-  LEGAL_LAST_NAME: {label: 'Legal Last Name', key: 'legalLastName'},
-  USUAL_FIRST_NAME: {label: 'Usual First Name', key: 'usualFirstName'},
-  USUAL_MIDDLE_NAMES: {label: 'Usual Middle Names', key: 'usualMiddleNames'},
-  USUAL_LAST_NAME: {label: 'Usual Last Name', key: 'usualLastNames'},
-  DOB: {label: 'DOB', key: ''},
-  GENDER_CODE: {label: 'Gender', key: ''},
-  GRADE_CODE: {label: 'Grade Code', key: ''},
-  SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: ''},
-  SCHOOL_FUNDING_CODE: {label: 'School Funding', key: ''},
-  NATIVE_ANCESTRY_IND: {label: 'Native Ancestry', key: ''},
-  HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: ''},
-  OTHER_COURSES: {label: 'Other Courses', key: ''},
-  SUPPORT_BLOCKS: {label: 'Support Blocks', key: ''},
-  ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: ''},
-  ENROLLED_PROGRAM_CODE: {label: 'Enrolled Program Codes', key: ''},
-  CAREER_PROGRAM_CODE: {label: 'Career Program Code', key: ''},
-  NUMBER_OF_COURSES: {label: 'Number of Courses', key: ''},
-  BAND_CODE: {label: 'Band Codes', key: ''},
-  POSTAL_CODE: {label: 'Postal Code', key: ''}
+export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
+  LOCAL_ID: {label: 'Local Id', key: 'localID', type: 'input', options: {}},
+  STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {}},
+  LEGAL_FIRST_NAME: {label: 'Legal First Name', key: 'legalFirstName', type: 'input', options: {}},
+  LEGAL_MIDDLE_NAMES: {label: 'Legal Middle Name', key: 'legalMiddleNames', type: 'input', options: {}},
+  LEGAL_LAST_NAME: {label: 'Legal Last Name', key: 'legalLastName', type: 'input', options: {}},
+  USUAL_FIRST_NAME: {label: 'Usual First Name', key: 'usualFirstName', type: 'input', options: {}},
+  USUAL_MIDDLE_NAMES: {label: 'Usual Middle Names', key: 'usualMiddleNames', type: 'input', options: {}},
+  USUAL_LAST_NAME: {label: 'Usual Last Name', key: 'usualLastName', type: 'input', options: {}},
+  DOB: {label: 'DOB', key: 'dob', type: 'datePicker', options: {}},
+  GENDER_CODE: {label: 'Gender', key: 'gender', type: 'input', options: {}}, //TODO change this to select when we grab the gender drop down lists
+  GRADE_CODE: {label: 'Grade Code', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
+  SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCategoryCodes', itemValue: 'specialEducationCategoryCode'}},
+  SCHOOL_FUNDING_CODE: {label: 'School Funding', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},
+  NATIVE_ANCESTRY_IND: {label: 'Native Ancestry', key: 'nativeAncestryInd', type: 'input', options: {}},
+  HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: 'homeLanguageSpokenCode', type: 'select', options: {items: 'homeLanguageSpokenCodes', itemValue: 'homeLanguageSpokenCode'}},
+  OTHER_COURSES: {label: 'Other Courses', key: 'otherCourses', type: 'input', options: {}},
+  SUPPORT_BLOCKS: {label: 'Support Blocks', key: 'supportBlocks', type: 'input', options: {}},
+  ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
+  ENROLLED_PROGRAM_CODE: {label: 'Enrolled Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}}, //TODO implement this after we solve check boxes
+  CAREER_PROGRAM_CODE: {label: 'Career Program Code', key: 'careerProgramCode', type: 'select', options: {items: 'careerProgramCodes', itemValue: 'careerProgramCode'}},
+  NUMBER_OF_COURSES: {label: 'Number of Courses', key: 'numberOfCourses', type: 'input', options: {}},
+  BAND_CODE: {label: 'Band Codes', key: 'bandCode', type: 'select', options: {items: 'bandCodes', itemValue: 'bandCode'}},
+  POSTAL_CODE: {label: 'Postal Code', key: 'postalCode', type: 'input', options: {}}
 });

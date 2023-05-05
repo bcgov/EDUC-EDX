@@ -18,6 +18,8 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     careerProgramCodes: [],
     enrolledGradeCodesMap: new Map(),
     enrolledGradeCodes: [],
+    enrolledProgramCodesMap: new Map(),
+    enrolledProgramCodes: [],
     homeLanguageSpokenCodesMap: new Map(),
     homeLanguageSpokenCodes: [],
     schoolFundingCodesMap: new Map(),
@@ -50,42 +52,63 @@ export const useSldCollectionStore = defineStore('sldCollection', {
       this.schoolCollection = schoolCollection;
     },
     setBandCodes(bandCodes) {
-      this.bandCodes = bandCodes;
+      this.bandCodes = bandCodes.map(item => {
+        return {...item, dropdownText: `${item.bandCode} - ${item.label}`};
+      });
       this.bandCodesMap = new Map();
       bandCodes.forEach(bandCode => {
         this.bandCodesMap.set(bandCode.bandCode, bandCode);
       });
     },
     setCareerProgramCodes(careerProgramCodes) {
-      this.careerProgramCodes = careerProgramCodes;
+      this.careerProgramCodes = careerProgramCodes.map(item => {
+        return {...item, dropdownText: `${item.careerProgramCode} - ${item.label}`};
+      });
       this.careerProgramCodesMap = new Map();
       careerProgramCodes.forEach(careerProgramCode => {
         this.careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
       });
     },
+    setEnrolledProgramCodes(enrolledProgramCodes) {
+      this.enrolledProgramCodes = enrolledProgramCodes.map(item => {
+        return {...item, dropdownText: `${item.enrolledProgramCode} - ${item.label}`};
+      });
+      this.enrolledProgramCodesMap = new Map();
+      enrolledProgramCodes.forEach(enrolledProgramCode => {
+        this.enrolledProgramCodesMap.set(enrolledProgramCode.enrolledProgramCode, enrolledProgramCode);
+      });
+    },
     setEnrolledGradeCodes(enrolledGradeCodes) {
-      this.enrolledGradeCodes = enrolledGradeCodes;
+      this.enrolledGradeCodes = enrolledGradeCodes.map(item => {
+        return {...item, dropdownText: `${item.enrolledGradeCode} - ${item.label}`};
+      });
       this.enrolledGradeCodesMap = new Map();
       enrolledGradeCodes.forEach(enrolledGradeCode => {
         this.enrolledGradeCodesMap.set(enrolledGradeCode.enrolledGradeCode, enrolledGradeCode);
       });
     },
     setHomeLanguageSpokenCodes(homeLanguageSpokenCodes) {
-      this.homeLanguageSpokenCodes = homeLanguageSpokenCodes;
+      this.homeLanguageSpokenCodes = homeLanguageSpokenCodes.map(item => {
+        return {...item, dropdownText: `${item.homeLanguageSpokenCode} - ${item.label}`};
+      });
       this.homeLanguageSpokenCodesMap = new Map();
       homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
         this.homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
       });
     },
     setSchoolFundingCodes(schoolFundingCodes) {
-      this.schoolFundingCodes = schoolFundingCodes;
+      this.schoolFundingCodes = schoolFundingCodes.map(item => {
+        return {...item, dropdownText: `${item.schoolFundingCode} - ${item.label}`};
+      });
       this.schoolFundingCodesMap = new Map();
       schoolFundingCodes.forEach(schoolFundingCode => {
         this.schoolFundingCodesMap.set(schoolFundingCode.schoolFundingCode, schoolFundingCode);
       });
     },
     setSpecialEducationCodes(specialEducationCodes) {
-      this.specialEducationCodes = specialEducationCodes;
+      this.specialEducationCodes = specialEducationCodes.map(item => {
+        return {...item, dropdownText: `${item.specialEducationCode} - ${item.label}`};
+      });
       this.specialEducationCodesMap = new Map();
       specialEducationCodes.forEach(specialEducationCategoryCode => {
         this.specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
@@ -147,6 +170,10 @@ export const useSldCollectionStore = defineStore('sldCollection', {
         if(this.enrolledGradeCodesMap.size === 0) {
           const response = await ApiService.getAllEnrolledGradeCodes();
           await this.setEnrolledGradeCodes(response.data);
+        }
+        if(this.enrolledProgramCodesMap.size === 0) {
+          const response = await ApiService.getAllEnrolledProgramCodes();
+          await this.setEnrolledProgramCodes(response.data);
         }
         if(this.homeLanguageSpokenCodesMap.size === 0) {
           const response = await ApiService.getAllHomeLanguageSpokenCodes();
