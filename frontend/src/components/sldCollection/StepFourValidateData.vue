@@ -589,13 +589,13 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import _ from 'lodash';
 const route = useRoute();
 import ApiService from '../../common/apiService';
 import {ApiRoutes, SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 import {formatDate} from '../../utils/format';
+import moment from 'moment/moment';
 
 //components
 import Spinner from '../common/Spinner.vue';
@@ -605,7 +605,6 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 //pinia store
 import { appStore } from '../../store/modules/app';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
-import moment from "moment/moment";
 
 const useAppStore = appStore();
 const sldCollectionStore = useSldCollectionStore();
@@ -720,7 +719,7 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
       let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
 
       sdcSchoolCollectionStudentDetail.value = filteredResponse;
-      sdcSchoolCollectionStudentDetailCopy.value = _.cloneDeep(filteredResponse);
+      sdcSchoolCollectionStudentDetailCopy.value = cloneDeep(filteredResponse);
       console.log(response.data);
     }).catch(error => {
       console.error(error);
