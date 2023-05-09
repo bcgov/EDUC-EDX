@@ -122,12 +122,14 @@ export const MINISTRY_NAME = 'Ministry of Education and Child Care';
 
 export const EDX_SAGA_REQUEST_DELAY_MILLISECONDS = 2000;
 
+import * as formRules from '../utils/institute/formRules';
+
 export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   LOCAL_ID: {label: 'Local Id', key: 'localID', type: 'input', options: {}},
   STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {}},
   LEGAL_FIRST_NAME: {label: 'Legal First Name', key: 'legalFirstName', type: 'input', options: {}},
   LEGAL_MIDDLE_NAMES: {label: 'Legal Middle Name', key: 'legalMiddleNames', type: 'input', options: {}},
-  LEGAL_LAST_NAME: {label: 'Legal Last Name', key: 'legalLastName', type: 'input', options: {}},
+  LEGAL_LAST_NAME: {label: 'Legal Last Name', key: 'legalLastName', type: 'input', options: {rules: [formRules.required()]}},
   USUAL_FIRST_NAME: {label: 'Usual First Name', key: 'usualFirstName', type: 'input', options: {}},
   USUAL_MIDDLE_NAMES: {label: 'Usual Middle Names', key: 'usualMiddleNames', type: 'input', options: {}},
   USUAL_LAST_NAME: {label: 'Usual Last Name', key: 'usualLastName', type: 'input', options: {}},

@@ -92,7 +92,6 @@
             <v-data-table-server
               :items-per-page="pageSize"
               v-model:page="pageNumber"
-              :headers="headers"
               :items-length="totalStudents"
               :items="studentListData"
               :loading="isLoading()"
@@ -102,7 +101,7 @@
 
             >
               <template v-slot:headers>
-                <v-row no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-row no-gutters :class="[]" style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
                   <v-col cols="5" offset="1">
                     <v-row>
                       <v-col>
@@ -130,7 +129,7 @@
                 </v-row>
               </template>
               <template v-slot:item="{ item, index }">
-                <v-row @click="studentSelected(item.value.sdcSchoolCollectionStudentID)" class="hoverTable" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-row @click="studentSelected(item.value.sdcSchoolCollectionStudentID)" :class="tableRowClass(item.value.sdcSchoolCollectionStudentID, index)" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
                   <v-col cols="1">
                     <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)">{{getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode)}}</v-icon>
                   </v-col>
@@ -477,6 +476,7 @@
                             <v-text-field
                                 v-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'input'"
                                 :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
                                 density="compact"
                                 variant="underlined"
                                 v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
@@ -500,6 +500,41 @@
                                 :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key].length < 8"
                                 @update:modelValue="syncWithEnrolledProgramCodeOnUserInput"
                             />
+                            <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'datePicker'">
+                              <v-menu
+                                  id="dobDatePickerChangeThis"
+                                  ref="editContactEffectiveDateFilter"
+                                  :close-on-content-click="false"
+                                  transition="scale-transition"
+                                  offset-y
+                                  min-width="auto"
+                              >
+                                <template #activator="{ on, attrs }">
+                                  <v-text-field
+                                      id="editContactEffectiveDateTextField"
+                                      v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                                      :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
+                                      class="pt-0 mt-0"
+                                      variant="underlined"
+                                      label="Start Date"
+                                      prepend-inner-icon="mdi-calendar"
+                                      clearable
+                                      readonly
+                                      v-bind="attrs"
+                                      @click:clear="clearEffectiveDate"
+                                      @click="openEffectiveDatePicker"
+                                  />
+                                </template>
+                              </v-menu>
+                              <VueDatePicker
+                                  ref="dobDatePicker"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
+                                  :enable-time-picker="false"
+                                  format="yyyy-MM-dd"
+                                  @update:model-value="saveEditContactEffectiveDate"
+                              />
+                            </div>
                               <!--                            <div v-for="(field,index) in issue.validationIssueFieldCode"-->
 <!--                                 :key="field.fieldName">-->
 <!--                              <v-text-field-->
@@ -525,6 +560,8 @@
                   size="35"
                   class="mr-2"
                   variant="text"
+                  @click="previousSdcSchoolCollectionStudent"
+                  :disabled="disablePreviousSdcSchoolCollectionStudentNavigation()"
                 >
                 </v-btn>
                 <PrimaryButton
@@ -536,6 +573,8 @@
                   size="35"
                   class="ml-2"
                   variant="text"
+                  @click="nextSdcSchoolCollectionStudent"
+                  :disabled="disableNextSdcSchoolCollectionStudentNavigation()"
                 >
                 </v-btn>
               </v-col>
@@ -556,13 +595,17 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes, SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/constants';
 import {isEmpty, omitBy} from 'lodash';
 import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
+import {formatDate} from '../../utils/format';
 
 //components
 import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
 
+//pinia store
 import { appStore } from '../../store/modules/app';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import moment from "moment/moment";
 
 const useAppStore = appStore();
 const sldCollectionStore = useSldCollectionStore();
@@ -575,6 +618,7 @@ onMounted(() => {
   });
 });
 
+//page summary counts
 const loadingCount = ref(0);
 const summaryCounts = ref({errors: 0, warnings: 0});
 
@@ -601,21 +645,13 @@ const pageNumber = ref(1);
 const pageSize = ref(10);
 const studentListData = ref([]);
 const totalStudents = ref(0);
-const headers = ref([
-  {
-    title: 'PEN',
-    align: 'start',
-    sortable: false,
-    key: 'name',
-  },
-  { title: 'Local ID', key: 'calories', align: 'end' }
-]);
+
+const selectedSdcStudentID = ref();
+const selectedSdcStudentIndex = ref(0);
 
 watch(pageNumber, () => {
   getSDCSchoolCollectionStudentPaginated();
 });
-
-const selectedSdcStudentID = ref();
 
 const getSDCSchoolCollectionStudentPaginated = () => {
   loadingCount.value += 1;
@@ -627,10 +663,9 @@ const getSDCSchoolCollectionStudentPaginated = () => {
       searchParams: omitBy(headerSearchParams.value, isEmpty),
     }
   }).then(response => {
-    console.log(response.data.content);
     studentListData.value = response.data.content;
     totalStudents.value = response.data.totalElements;
-    selectedSdcStudentID.value = response.data.content[0].sdcSchoolCollectionStudentID;
+    selectedSdcStudentID.value = response.data.content[0]?.sdcSchoolCollectionStudentID;
   }).catch(error => {
     console.error(error);
     useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
@@ -638,9 +673,6 @@ const getSDCSchoolCollectionStudentPaginated = () => {
     loadingCount.value -= 1;
   });
 };
-
-let sdcSchoolCollectionStudentDetail = ref({});
-let sdcSchoolCollectionStudentDetailCopy = ref({});
 
 watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
   getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
@@ -650,12 +682,42 @@ const studentSelected = (sdcSchoolCollectionStudentID) => {
   selectedSdcStudentID.value = sdcSchoolCollectionStudentID;
 };
 
+const nextSdcSchoolCollectionStudent = () => {
+  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value + 1;
+  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
+};
+
+const previousSdcSchoolCollectionStudent = () => {
+  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value - 1;
+  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
+};
+
+const disableNextSdcSchoolCollectionStudentNavigation = () => {
+  return selectedSdcStudentIndex.value === studentListData.value.length - 1;
+};
+
+const disablePreviousSdcSchoolCollectionStudentNavigation = () => {
+  return selectedSdcStudentIndex.value === 0;
+};
+
+const tableRowClass = (sdcSchoolCollectionStudentID, index) => {
+  let rowClass = ['hoverTable'];
+  if (sdcSchoolCollectionStudentID === selectedSdcStudentID.value) {
+    rowClass.push('isSelected');
+    selectedSdcStudentIndex.value = index;
+  }
+  return  rowClass;
+};
+
+let sdcSchoolCollectionStudentDetail = ref({});
+let sdcSchoolCollectionStudentDetailCopy = ref({});
+
 const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
   loadingCount.value += 1;
 
   ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
-      let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes)};
+      let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
 
       sdcSchoolCollectionStudentDetail.value = filteredResponse;
       sdcSchoolCollectionStudentDetailCopy.value = _.cloneDeep(filteredResponse);
@@ -666,6 +728,23 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
     }).finally(() => {
       loadingCount.value -= 1;
     });
+};
+
+//date picker
+const dobDatePicker = ref(null);
+const from = 'uuuuMMdd';
+const pickerFormat = 'uuuu-MM-dd';
+
+const clearEffectiveDate = () => {
+  sdcSchoolCollectionStudentDetailCopy.value.dob = null;
+};
+
+const openEffectiveDatePicker = () => {
+  dobDatePicker.value[0].openMenu();
+};
+
+const saveEditContactEffectiveDate = () => {
+  sdcSchoolCollectionStudentDetailCopy.value.dob = moment(sdcSchoolCollectionStudentDetailCopy.value.dob).format('YYYY-MM-DD').toString();
 };
 
 const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
@@ -698,7 +777,6 @@ const getCareerProgramCodesLabel = (key) => {
 
 const getEnrolledGradeCodesLabel = (key) => {
   let label = key;
-  console.log(key);
   if (sldCollectionStore.enrolledGradeCodesMap.get(key)) {
     label = `${sldCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sldCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
   }
@@ -818,6 +896,10 @@ export default {
     color: #7f7f7f;
  }
 
+ .isSelected{
+   background-color: #E1F5FE;
+ }
+
  .tableItemVal{
      font-size: small;
  }
@@ -826,6 +908,19 @@ export default {
    overflow-y: auto;
    overflow-x: hidden;
    height: 100vh;
+ }
+
+ :deep(.dp__input_wrap){
+   height: 0px;
+   width: 0px;
+ }
+
+ :deep(.dp__input){
+   display: none;
+ }
+
+ :deep(.dp__icon){
+   display: none;
  }
 </style>
 
