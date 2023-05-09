@@ -17,7 +17,7 @@
       <v-col class="d-flex justify-end">
         <v-chip
           id="primaryEdxActivationCode"
-          :color="getChipColor()"
+          :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
         >
           <v-icon left>
             mdi-shield-key-outline
@@ -53,7 +53,7 @@
         <v-col>
           <v-row no-gutters>
             <v-col>
-              <span>Generating a new Primary Activation Code for a district will replace the existing code for the district. The new code will have to be communicated to the district administrator.</span>
+              <span>Generating a new Primary Activation Code for a district will replace the existing code for the district.</span>
             </v-col>
           </v-row>
           <v-row>
@@ -413,6 +413,16 @@ export default {
   color: white;
   font-size: medium !important;
   font-weight: bolder !important;
+}
+
+.primary_color {
+    background-color: #4caf50;
+    color: white;
+}
+
+.secondary_color {
+    background-color: #424242;
+    color: white;
 }
 
 .searchBox {

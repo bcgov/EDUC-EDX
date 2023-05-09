@@ -43,7 +43,7 @@
           <v-col class="d-flex justify-end">
             <v-chip
               id="primaryEdxActivationCode"
-              :color="getChipColor()"
+              :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
             >
               <v-icon left>
                 mdi-shield-key-outline
@@ -55,6 +55,7 @@
               id="copyPrimaryEdxActivationCodeButton"
               :copy-text="primaryEdxActivationCode.activationCode"
               icon="mdi-content-copy"
+              icon-style="ml-1"
               class="color: white"
             />
             <PrimaryButton
@@ -79,7 +80,7 @@
             <v-col>
               <v-row no-gutters>
                 <v-col>
-                  <span>Generating a new Primary Activation Code for a school will replace the existing code for the school. The new code will have to be communicated to the school administrator.</span>
+                  <span>Generating a new Primary Activation Code for a school will replace the existing code for the school.</span>
                 </v-col>
               </v-row>
               <v-row>
@@ -199,6 +200,7 @@
                     icon="mdi-plus"
                     :large-icon="true"
                     secondary
+                    :disabled="!primaryEdxActivationCode"
                     icon-left
                     text="Add New User"
                     :click-action="openInviteUserSheet"
@@ -464,12 +466,6 @@ export default {
     updateUserRoles(newValue){
       edxStore().setDistrictRoles(newValue);
     },
-    getChipColor(){
-      if(this.primaryEdxActivationCode){
-        return 'success';
-      }
-      return 'secondary';
-    },
     setupSchoolFields() {
       if(this.schoolID){
         this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
@@ -540,6 +536,16 @@ export default {
   color: white;
   font-size: medium !important;
   font-weight: bolder !important;
+}
+
+.primary_color {
+    background-color: #4caf50;
+    color: white;
+}
+
+.secondary_color {
+    background-color: #424242;
+    color: white;
 }
 
 .searchBox {

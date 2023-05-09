@@ -299,7 +299,7 @@ export default {
           this.messageSent();
         })
         .catch(error => {
-          this.setFailureAlert('An error occurred while sending message. Please try again later.');
+          this.setFailureAlert('An error occurred while inviting new user. Please try again later.');
           console.log(error);
         })
         .finally(() => {

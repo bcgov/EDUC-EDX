@@ -707,6 +707,13 @@ async function districtUserActivationInvite(req, res) {
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
+
+    if(!await checkIfPrimaryCodeExists(req,res,token,'DISTRICT', req.session.activeInstituteIdentifier)){
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No primary code exists for this district'
+      });
+    }
+
     const payload = {
       ...req.body
     };
@@ -724,6 +731,13 @@ async function schoolUserActivationInvite(req, res) {
 
     const token = getAccessToken(req);
     validateAccessToken(token);
+
+    if(!await checkIfPrimaryCodeExists(req,res,token, 'SCHOOL' , req.body.schoolID)){
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'No primary code exists for this district'
+      });
+    }
+
     const payload = {
       ...req.body
     };
@@ -1022,6 +1036,15 @@ async function findPrimaryEdxActivationCode(req, res) {
   } catch (e) {
     log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
     return handleExceptionResponse(e, res);
+  }
+}
+
+async function checkIfPrimaryCodeExists(req,res, token, instituteType, instituteIdentifier){
+  try {
+    await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${instituteIdentifier}`, req.session?.correlationID);
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 
