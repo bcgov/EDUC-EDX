@@ -161,35 +161,35 @@ export const useSldCollectionStore = defineStore('sldCollection', {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
         if(this.bandCodesMap.size === 0) {
           const response = await ApiService.getAllBandCodes();
-          await this.setBandCodes(response.data);
+          this.setBandCodes(response.data);
         }
         if(this.careerProgramCodesMap.size === 0) {
           const response = await ApiService.getAllCareerProgramCodes();
-          await this.setCareerProgramCodes(response.data);
+          this.setCareerProgramCodes(response.data);
         }
         if(this.enrolledGradeCodesMap.size === 0) {
           const response = await ApiService.getAllEnrolledGradeCodes();
-          await this.setEnrolledGradeCodes(response.data);
+          this.setEnrolledGradeCodes(response.data);
         }
         if(this.enrolledProgramCodesMap.size === 0) {
           const response = await ApiService.getAllEnrolledProgramCodes();
-          await this.setEnrolledProgramCodes(response.data);
+          this.setEnrolledProgramCodes(response.data);
         }
         if(this.homeLanguageSpokenCodesMap.size === 0) {
           const response = await ApiService.getAllHomeLanguageSpokenCodes();
-          await this.setHomeLanguageSpokenCodes(response.data);
+          this.setHomeLanguageSpokenCodes(response.data);
         }
         if(this.schoolFundingCodesMap.size === 0) {
           const response = await ApiService.getAllSchoolFundingCodes();
-          await this.setSchoolFundingCodes(response.data);
+          this.setSchoolFundingCodes(response.data);
         }
         if(this.specialEducationCodesMap.size === 0) {
           const response = await ApiService.getAllSpecialEdCodes();
-          await this.setSpecialEducationCodes(response.data);
+          this.setSpecialEducationCodes(response.data);
         }
         if(this.validationIssueTypeCodesMap.size === 0) {
           const response = await ApiService.getAllValidationIssueTypeCodes();
-          await this.setValidationIssueTypeCodes(response.data);
+          this.setValidationIssueTypeCodes(response.data);
         }
       }
     }
