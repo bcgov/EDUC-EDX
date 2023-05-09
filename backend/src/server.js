@@ -142,7 +142,6 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
 }
 
 require('./schedulers/saga-check-scheduler');
-const cacheService = require("./components/cache-service");
 /**
  * Listen on provided port, on all network interfaces.
  */
