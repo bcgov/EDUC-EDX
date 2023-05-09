@@ -468,7 +468,7 @@ export default {
       if(this.primaryEdxActivationCode){
         return 'success';
       }
-      return 'secondary';
+      return 'default';
     },
     setupSchoolFields() {
       if(this.schoolID){

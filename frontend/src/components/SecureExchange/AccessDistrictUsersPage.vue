@@ -384,7 +384,7 @@ export default {
       if(this.primaryEdxActivationCode){
         return 'success';
       }
-      return 'secondary';
+      return 'default';
     },
     closeNewUserModal(){
       edxStore().setDistrictRoles(JSON.parse(JSON.stringify(this.districtRolesCopy)));
