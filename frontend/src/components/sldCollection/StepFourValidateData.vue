@@ -6,7 +6,8 @@
     <div class="inner-border">
       <v-row>
         <v-col class="pr-0" cols="3">
-          <div class="inner-border">
+          <Spinner v-if="isLoading()"/>
+          <div class="inner-border" v-else>
             <v-row>
               <v-col class="d-flex justify-center">
                 <h3>Summary of Data Issues</h3>
@@ -22,7 +23,7 @@
                 <v-row no-gutters class="mt-1">
                   <v-col class="d-flex justify-end">
                     <v-icon size="35" color="#d90606">mdi-alert-circle-outline</v-icon>
-                    <span style="font-size: x-large">5</span>
+                    <span style="font-size: x-large">{{summaryCounts.errors}}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -36,7 +37,7 @@
                 <v-row no-gutters class="mt-1">
                   <v-col class="d-flex justify-start">
                     <v-icon size="35" color="blue">mdi-alert-outline</v-icon>
-                    <span style="font-size: x-large">18</span>
+                    <span style="font-size: x-large">{{summaryCounts.warnings}}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -89,17 +90,18 @@
           </div>
           <div>
             <v-data-table-server
-              v-model:items-per-page="itemsPerPage"
-              :headers="headers"
-              :items-length="studentList.length"
-              :items="studentList"
-              :loading="loading"
+              :items-per-page="pageSize"
+              v-model:page="pageNumber"
+              :items-length="totalStudents"
+              :items="studentListData"
+              :loading="isLoading()"
               class="mt-2"
               item-title="name"
               item-value="name"
+
             >
               <template v-slot:headers>
-                <v-row no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-row no-gutters :class="[]" style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
                   <v-col cols="5" offset="1">
                     <v-row>
                       <v-col>
@@ -127,14 +129,14 @@
                 </v-row>
               </template>
               <template v-slot:item="{ item, index }">
-                <v-row class="hoverTable" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+                <v-row @click="studentSelected(item.value.sdcSchoolCollectionStudentID)" :class="tableRowClass(item.value.sdcSchoolCollectionStudentID, index)" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
                   <v-col cols="1">
-                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value)">{{getIssueIcon(item.value)}}</v-icon>
+                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)">{{getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode)}}</v-icon>
                   </v-col>
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.pen}}</span>
+                        <span class="tableItemVal">{{item.value.studentPen}}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -146,12 +148,12 @@
                   <v-col>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.legalName}}</span>
+                        <span class="tableItemVal">{{`${item.value.legalLastName} ${item.value.legalFirstName}`}}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.usualName}}</span>
+                        <span class="tableItemVal">{{`${item.value.usualLastName} ${item.value.usualFirstName}`}}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -161,7 +163,8 @@
           </div>
         </v-col>
         <v-col cols="9">
-          <div class="inner-border">
+          <Spinner v-if="isLoading()"/>
+          <div class="inner-border" v-else>
             <v-row>
               <v-col cols="6">
                 <v-row>
@@ -188,7 +191,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="pen"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
                         >
                         </v-text-field>
                       </v-col>
@@ -198,7 +201,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="localID"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
                         >
                         </v-text-field>
                       </v-col>
@@ -210,7 +213,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="birthdate"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
                         >
                         </v-text-field>
                       </v-col>
@@ -220,7 +223,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="gender"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
                         >
                         </v-text-field>
                       </v-col>
@@ -232,7 +235,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalSurname"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -242,7 +245,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualSurname"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
                         >
                         </v-text-field>
                       </v-col>
@@ -254,7 +257,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalGiven"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -264,7 +267,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualGiven"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
                         >
                         </v-text-field>
                       </v-col>
@@ -276,7 +279,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="legalMiddle"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -286,7 +289,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="usualMiddle"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
                         >
                         </v-text-field>
                       </v-col>
@@ -298,7 +301,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="grade"
+                          :model-value="getEnrolledGradeCodesLabel(sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -308,7 +311,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="fundingCode"
+                          :model-value="getSchoolFundingCodeLabel(sdcSchoolCollectionStudentDetailCopy.schoolFundingCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -320,7 +323,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="numberOfCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -330,7 +333,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="otherCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
                         >
                         </v-text-field>
                       </v-col>
@@ -342,7 +345,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="supportBlocks"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
                         >
                         </v-text-field>
                       </v-col>
@@ -352,7 +355,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="specialEducationCategory"
+                          :model-value="getSpecialEducationCodesLabel(sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -364,7 +367,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="indigenousAncestry"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
                         >
                         </v-text-field>
                       </v-col>
@@ -374,7 +377,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="bandOfResidence"
+                          :model-value="getBandCodesLabel(sdcSchoolCollectionStudentDetailCopy.bandCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -386,7 +389,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="homeLanguage"
+                          :model-value="getHomeLanguageSpokenCodesLabel(sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -396,7 +399,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="postalCode"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
                         >
                         </v-text-field>
                       </v-col>
@@ -408,7 +411,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="careerCode"
+                          :model-value="getCareerProgramCodesLabel(sdcSchoolCollectionStudentDetailCopy.careerProgramCode)"
                         >
                         </v-text-field>
                       </v-col>
@@ -418,7 +421,7 @@
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="programCodes"
+                          :model-value="getEnrolledProgramCodesLabel(sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes)"
                         >
                         </v-text-field>
                       </v-col>
@@ -441,45 +444,107 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col class="pl-0 pr-6">
+                  <v-col class="pl-0 pr-6 scroll">
                     <v-timeline
-                      v-if="studentIssues"
+                      v-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
                       side="end"
                       align="start"
                       truncate-line="start"
                     >
                       <v-timeline-item
-                        v-for="(issue,index) in studentIssues"
-                        :key="issue.issueID"
+                        v-for="(issue) in sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
+                        :key="issue.sdcSchoolCollectionStudentValidationIssueID"
                         dot-color="white"
                         fill-dot
-                        :icon-color="getIssueIconColor(issue)"
-                        :icon="getIssueIcon(issue)"
+                        :icon-color="getIssueIconColor(issue.validationIssueSeverityCode)"
+                        :icon="getIssueIcon(issue.validationIssueSeverityCode)"
                         size="large"
                         width="100%"
                       >
                         <v-row class="mt-n1">
                           <v-col>
-                            <h3 :style="`color:` + getIssueIconColor(issue)">{{ issue.type }}</h3>
+                            <h3 :style="`color:` + getIssueIconColor(issue.validationIssueSeverityCode)">{{ issue.validationIssueSeverityCode }}</h3>
                           </v-col>
                         </v-row>
                         <v-row no-gutters>
                           <v-col>
-                            <span> {{ issue.description }}</span>
+                            <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }}</span>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col>
-                            <div v-for="(field,index) in issue.fields"
-                                 :key="field.fieldName">
-                              <v-text-field
-                                :label="field.fieldName"
+                            <v-text-field
+                                v-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'input'"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
                                 density="compact"
                                 variant="underlined"
-                                v-model="field.fieldValue"
+                                v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                            />
+                            <v-autocomplete
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'select'"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                                :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                            />
+                            <v-autocomplete
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'multiselect'"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key]"
+                                :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].label"
+                                multiple
+                                :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].key].length < 8"
+                                @update:modelValue="syncWithEnrolledProgramCodeOnUserInput"
+                            />
+                            <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].type === 'datePicker'">
+                              <v-menu
+                                  id="dobDatePickerChangeThis"
+                                  ref="editContactEffectiveDateFilter"
+                                  :close-on-content-click="false"
+                                  transition="scale-transition"
+                                  offset-y
+                                  min-width="auto"
                               >
-                              </v-text-field>
+                                <template #activator="{ on, attrs }">
+                                  <v-text-field
+                                      id="editContactEffectiveDateTextField"
+                                      v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                                      :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
+                                      class="pt-0 mt-0"
+                                      variant="underlined"
+                                      label="Start Date"
+                                      prepend-inner-icon="mdi-calendar"
+                                      clearable
+                                      readonly
+                                      v-bind="attrs"
+                                      @click:clear="clearEffectiveDate"
+                                      @click="openEffectiveDatePicker"
+                                  />
+                                </template>
+                              </v-menu>
+                              <VueDatePicker
+                                  ref="dobDatePicker"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[issue.validationIssueFieldCode].options.rules"
+                                  :enable-time-picker="false"
+                                  format="yyyy-MM-dd"
+                                  @update:model-value="saveEditContactEffectiveDate"
+                              />
                             </div>
+                              <!--                            <div v-for="(field,index) in issue.validationIssueFieldCode"-->
+<!--                                 :key="field.fieldName">-->
+<!--                              <v-text-field-->
+<!--                                :label="field.fieldName"-->
+<!--                                density="compact"-->
+<!--                                variant="underlined"-->
+<!--                                v-model="field.fieldValue"-->
+<!--                              >-->
+<!--                              </v-text-field>-->
+<!--                            </div>-->
                           </v-col>
                         </v-row>
                       </v-timeline-item>
@@ -495,6 +560,8 @@
                   size="35"
                   class="mr-2"
                   variant="text"
+                  @click="previousSdcSchoolCollectionStudent"
+                  :disabled="disablePreviousSdcSchoolCollectionStudentNavigation()"
                 >
                 </v-btn>
                 <PrimaryButton
@@ -506,6 +573,8 @@
                   size="35"
                   class="ml-2"
                   variant="text"
+                  @click="nextSdcSchoolCollectionStudent"
+                  :disabled="disableNextSdcSchoolCollectionStudentNavigation()"
                 >
                 </v-btn>
               </v-col>
@@ -516,163 +585,271 @@
     </div>
   </v-container>
 </template>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+const route = useRoute();
+import ApiService from '../../common/apiService';
+import {ApiRoutes, SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/constants';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
+import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
+import {formatDate} from '../../utils/format';
+import moment from 'moment/moment';
+
+//components
+import Spinner from '../common/Spinner.vue';
+import PrimaryButton from '../util/PrimaryButton.vue';
+import VueDatePicker from '@vuepic/vue-datepicker';
+
+//pinia store
+import { appStore } from '../../store/modules/app';
+import { useSldCollectionStore } from '../../store/modules/sldCollection';
+
+const useAppStore = appStore();
+const sldCollectionStore = useSldCollectionStore();
+
+
+onMounted(() => {
+  sldCollectionStore.getCodes().then(() => {
+    getSummaryCounts();
+    getSDCSchoolCollectionStudentPaginated();
+  });
+});
+
+//page summary counts
+const loadingCount = ref(0);
+const summaryCounts = ref({errors: 0, warnings: 0});
+
+const getSummaryCounts = () => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/summaryCounts`, {
+  }).then(response => {
+    summaryCounts.value = response.data;
+  }).catch(error => {
+    console.error(error);
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+  }).finally(() => {
+    loadingCount.value -= 1;
+  });
+};
+
+//sdc school collection student list pagination
+const headerSearchParams = ref({
+  penNumber: '',
+});
+
+const pageNumber = ref(1);
+const pageSize = ref(10);
+const studentListData = ref([]);
+const totalStudents = ref(0);
+
+const selectedSdcStudentID = ref();
+const selectedSdcStudentIndex = ref(0);
+
+watch(pageNumber, () => {
+  getSDCSchoolCollectionStudentPaginated();
+});
+
+const getSDCSchoolCollectionStudentPaginated = () => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/paginated`, {
+    params: {
+      pageNumber: pageNumber.value - 1,
+      pageSize: pageSize.value,
+      searchParams: omitBy(headerSearchParams.value, isEmpty),
+    }
+  }).then(response => {
+    studentListData.value = response.data.content;
+    totalStudents.value = response.data.totalElements;
+    selectedSdcStudentID.value = response.data.content[0]?.sdcSchoolCollectionStudentID;
+  }).catch(error => {
+    console.error(error);
+    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+  }).finally(() => {
+    loadingCount.value -= 1;
+  });
+};
+
+watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
+  getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+});
+
+const studentSelected = (sdcSchoolCollectionStudentID) => {
+  selectedSdcStudentID.value = sdcSchoolCollectionStudentID;
+};
+
+const nextSdcSchoolCollectionStudent = () => {
+  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value + 1;
+  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
+};
+
+const previousSdcSchoolCollectionStudent = () => {
+  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value - 1;
+  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
+};
+
+const disableNextSdcSchoolCollectionStudentNavigation = () => {
+  return selectedSdcStudentIndex.value === studentListData.value.length - 1;
+};
+
+const disablePreviousSdcSchoolCollectionStudentNavigation = () => {
+  return selectedSdcStudentIndex.value === 0;
+};
+
+const tableRowClass = (sdcSchoolCollectionStudentID, index) => {
+  let rowClass = ['hoverTable'];
+  if (sdcSchoolCollectionStudentID === selectedSdcStudentID.value) {
+    rowClass.push('isSelected');
+    selectedSdcStudentIndex.value = index;
+  }
+  return  rowClass;
+};
+
+let sdcSchoolCollectionStudentDetail = ref({});
+let sdcSchoolCollectionStudentDetailCopy = ref({});
+
+const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
+  loadingCount.value += 1;
+
+  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
+    .then(response => {
+      let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
+
+      sdcSchoolCollectionStudentDetail.value = filteredResponse;
+      sdcSchoolCollectionStudentDetailCopy.value = cloneDeep(filteredResponse);
+      console.log(response.data);
+    }).catch(error => {
+      console.error(error);
+      useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+    }).finally(() => {
+      loadingCount.value -= 1;
+    });
+};
+
+//date picker
+const dobDatePicker = ref(null);
+const from = 'uuuuMMdd';
+const pickerFormat = 'uuuu-MM-dd';
+
+const clearEffectiveDate = () => {
+  sdcSchoolCollectionStudentDetailCopy.value.dob = null;
+};
+
+const openEffectiveDatePicker = () => {
+  dobDatePicker.value[0].openMenu();
+};
+
+const saveEditContactEffectiveDate = () => {
+  sdcSchoolCollectionStudentDetailCopy.value.dob = moment(sdcSchoolCollectionStudentDetailCopy.value.dob).format('YYYY-MM-DD').toString();
+};
+
+const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
+  return enrolledProgramCodes.filter(enrolledProgramCode => sldCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
+};
+
+const syncWithEnrolledProgramCodeOnUserInput = (value) => {
+  sdcSchoolCollectionStudentDetailCopy.value.enrolledProgramCodes = value;
+};
+
+const isLoading = () => {
+  return loadingCount.value > 0;
+};
+
+const getBandCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.bandCodesMap.get(key)) {
+    label = `${sldCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sldCollectionStore.bandCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getCareerProgramCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.careerProgramCodesMap.get(key)) {
+    label = `${sldCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sldCollectionStore.careerProgramCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getEnrolledGradeCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.enrolledGradeCodesMap.get(key)) {
+    label = `${sldCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sldCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getEnrolledProgramCodesLabel = (text = '') => {
+  return(text);
+};
+
+const getHomeLanguageSpokenCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
+    label = `${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getSchoolFundingCodeLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.schoolFundingCodesMap.get(key)) {
+    label = `${sldCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sldCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getSpecialEducationCodesLabel = (key) => {
+  let label = key;
+  if (sldCollectionStore.specialEducationCodesMap.get(key)) {
+    label = `${sldCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sldCollectionStore.specialEducationCodesMap.get(key)?.label}`;
+  }
+  return label;
+};
+
+const getValidationIssueTypeCodesDescription = (key) => {
+  return sldCollectionStore.validationIssueTypeCodesMap.get(key)?.message;
+};
+
+const getIssueIcon = (issue) => {
+  switch (issue) {
+  case 'ERROR':
+    return 'mdi-alert-circle-outline';
+  case 'WARNING':
+    return 'mdi-alert-outline';
+  default:
+    return '';
+  }
+};
+
+const getIssueIconColor = (issue) => {
+  switch (issue) {
+  case 'ERROR':
+    return '#d90606';
+  case 'WARNING':
+    return '#2196F3';
+  default:
+    return '';
+  }
+};
+
+</script>
     
 <script>
 import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
     
 export default {
   name: 'StepFourValidateData',
-  components: {PrimaryButton},
   mixins: [alertMixin],
   props: {
   },
   emits: ['next'],
-  data() {
-    return {
-      pen: '123456789',
-      localID: '2468',
-      birthdate: '2024/06/01',
-      legalSurname: 'SMITH',
-      legalGiven: 'EMILY',
-      legalMiddle: 'ANNE',
-      usualSurname: 'SMITH',
-      usualGiven: 'EM',
-      gender: 'F',
-      usualMiddle: ' ',
-      grade: '07',
-      fundingCode: '20 - Living on Reserve',
-      numberOfCourses: ' ',
-      otherCourses: ' ',
-      supportBlocks: ' ',
-      specialEducationCategory: ' ',
-      indigenousAncestry: ' ',
-      bandOfResidence: ' ',
-      homeLanguage: 'English',
-      postalCode: ' ',
-      careerCode: ' ',
-      programCodes: ' ',
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
-      itemsPerPage: 10,
-      headers: [
-        {
-          title: 'PEN',
-          align: 'start',
-          sortable: false,
-          key: 'name',
-        },
-        { title: 'Local ID', key: 'calories', align: 'end' }
-      ],
-      studentIssues: [
-        {
-          issueID: '1',
-          type: 'Error',
-          description: 'PEN reported more than once. Correct the PEN or remove the appropriate student from the submission.',
-          fields: [
-            {
-              fieldName: 'PEN',
-              fieldValue: '123456789'
-            }
-          ]
-        },
-        {
-          issueID: '2',
-          type: 'Error',
-          description: 'Students must be reported with both a Band of Residence and a Funding Code of Living on Reserve (20). Add or remove both values.',
-          fields: [
-            {
-              fieldName: 'Funding Code',
-              fieldValue: '20 - Living on Reserve',
-            },
-            {
-              fieldName: 'Band of Residence',
-              fieldValue: ' ',
-            }
-          ]
-        },
-        {
-          issueID: '3',
-          type: 'Warning',
-          description: 'Missing Postal Code.',
-          fields: [
-            {
-              fieldName: 'Postal Code',
-              fieldValue: ' '
-            }
-          ]
-        },
-      ],
-      studentList: [
-        {
-          pen: '123456789',
-          localID: '2468',
-          legalName: 'SMITH, EMILY ANNE',
-          usualName: 'SMITH, XX',
-          type: 'Error'
-        },
-        {
-          pen: '123456789',
-          localID: '2468',
-          legalName: 'SMITH, EMILY ANNE',
-          usualName: null,
-          type: 'Error'
-        },
-        {
-          pen: '852963741',
-          localID: '2356',
-          legalName: 'BROWN, JAKE',
-          usualName: null,
-          type: 'Error'
-        },
-        {
-          pen: '753951826',
-          localID: '7458',
-          legalName: 'ROSE, ADAM',
-          usualName: null,
-          type: 'Warning'
-        },
-        {
-          pen: '147321596',
-          localID: '9654',
-          legalName: 'SHARPE, MICHAEL',
-          usualName: null,
-          type: 'Warning'
-        },
-        {
-          pen: '789258741',
-          localID: '4018',
-          legalName: 'WILSON, FRANK',
-          usualName: null,
-          type: 'Warning'
-        },
-      ],
-      loading: true,
-      totalItems: 0
-    };
-  },
   methods: {
     next() {
       this.$emit('next');
-    },
-    getIssueIcon(issue) {
-      switch (issue.type) {
-      case 'Error':
-        return 'mdi-alert-circle-outline';
-      case 'Warning':
-        return 'mdi-alert-outline';
-      default:
-        return '';
-      }
-    },
-    getIssueIconColor(issue) {
-      switch (issue.type) {
-      case 'Error':
-        return '#d90606';
-      case 'Warning':
-        return '#2196F3';
-      default:
-        return '';
-      }
     },
   },
 };
@@ -718,8 +895,31 @@ export default {
     color: #7f7f7f;
  }
 
+ .isSelected{
+   background-color: #E1F5FE;
+ }
+
  .tableItemVal{
      font-size: small;
+ }
+
+ .scroll{
+   overflow-y: auto;
+   overflow-x: hidden;
+   height: 100vh;
+ }
+
+ :deep(.dp__input_wrap){
+   height: 0px;
+   width: 0px;
+ }
+
+ :deep(.dp__input){
+   display: none;
+ }
+
+ :deep(.dp__icon){
+   display: none;
  }
 </style>
 
