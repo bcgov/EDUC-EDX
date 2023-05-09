@@ -107,8 +107,17 @@ nconf.defaults({
   },
   sdc: {
     rootURL: process.env.SDC_API_ENDPOINT,
+    schoolCollectionStudentURL: process.env.SDC_API_ENDPOINT + '/sdcSchoolCollectionStudent',
     schoolCollectionURL: process.env.SDC_API_ENDPOINT + '/sdcSchoolCollection',
-    collectionURL: process.env.SDC_API_ENDPOINT + '/collection'
+    collectionURL: process.env.SDC_API_ENDPOINT + '/collection',
+    bandCodesCodesURL: process.env.SDC_API_ENDPOINT + '/band-codes',
+    careerProgramCodesURL: process.env.SDC_API_ENDPOINT + '/career-program-codes',
+    enrolledGradeCodesURL: process.env.SDC_API_ENDPOINT + '/grade-codes',
+    enrolledProgramCodesURL: process.env.SDC_API_ENDPOINT + '/enrolled-program-codes',
+    homeLanguageSpokenCodesURL: process.env.SDC_API_ENDPOINT + '/home-language-codes',
+    schoolFundingCodesURL: process.env.SDC_API_ENDPOINT + '/funding-codes',
+    specialEdCodesURL: process.env.SDC_API_ENDPOINT + '/specialEducation-codes',
+    validationIssueTypeCodesURL: process.env.SDC_API_ENDPOINT + '/validation-issue-type-codes'
   }
 });
 module.exports = nconf;

@@ -147,6 +147,15 @@ cacheKeys = {
   EDX_SECURE_EXChANGE_FILE_REQUIREMENTS: 'edx_secureExchangeFileRequirements',
   PROVINCE_CODES: 'institute_provinceCodes',
   COUNTRY_CODES: 'institute_countryCodes',
+  SDC_BAND_CODES: 'sdc_band_codes',
+  SDC_CAREER_PROGRAM_CODES: 'sdc_career_program_codes',
+  SDC_ENROLLED_GRADE_CODES: 'sdc_enrolled_grade_codes',
+  SDC_ENROLLED_PROGRAM_CODES: 'sdc_enrolled_program_codes',
+  SDC_GENDER_CODES: 'sdc_gender_codes',
+  SDC_HOME_LANGUAGE_SPOKEN_CODES: 'sdc_home_language_spoken_codes',
+  SDC_SCHOOL_FUNDING_CODES: 'sdc_school_funding_code',
+  SDC_SPECIAL_ED_CODES: 'sdc_special_ed_codes',
+  SDC_VALIDATION_ISSUE_TYPE_CODES: 'sdc_validation_issue_type_codes'
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
