@@ -44,6 +44,7 @@ export const ApiRoutes = Object.freeze({
     SDC_CAREER_PROGRAM_CODES: sldRoot + '/career-program-codes',
     SDC_ENROLLED_GRADE_CODES: sldRoot + '/enrolled-grade-codes',
     SDC_ENROLLED_PROGRAM_CODES: sldRoot + '/enrolled-program-codes',
+    SDC_GENDER_CODES: sldRoot + '/gender-codes',
     SDC_HOME_LANGUAGE_SPOKEN_CODES: sldRoot + '/home-language-spoken-codes',
     SDC_SCHOOL_FUNDING_CODES: sldRoot + '/school-funding-codes',
     SDC_SPECIAL_ED_CODES: sldRoot + '/specialEducation-codes',
@@ -134,7 +135,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   USUAL_MIDDLE_NAMES: {label: 'Usual Middle Names', key: 'usualMiddleNames', type: 'input', options: {}},
   USUAL_LAST_NAME: {label: 'Usual Last Name', key: 'usualLastName', type: 'input', options: {}},
   DOB: {label: 'DOB', key: 'dob', type: 'datePicker', options: {}},
-  GENDER_CODE: {label: 'Gender', key: 'gender', type: 'input', options: {}}, //TODO change this to select when we grab the gender drop down lists
+  GENDER_CODE: {label: 'Gender', key: 'gender', type: 'select', options: {items: 'genderCodes', itemValue: 'genderCode'}},
   GRADE_CODE: {label: 'Grade Code', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
   SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCategoryCodes', itemValue: 'specialEducationCategoryCode'}},
   SCHOOL_FUNDING_CODE: {label: 'School Funding', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},

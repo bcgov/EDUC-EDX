@@ -20,6 +20,8 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     enrolledGradeCodes: [],
     enrolledProgramCodesMap: new Map(),
     enrolledProgramCodes: [],
+    genderCodesMap: new Map(),
+    genderCodes: [],
     homeLanguageSpokenCodesMap: new Map(),
     homeLanguageSpokenCodes: [],
     schoolFundingCodesMap: new Map(),
@@ -85,6 +87,15 @@ export const useSldCollectionStore = defineStore('sldCollection', {
       this.enrolledGradeCodesMap = new Map();
       enrolledGradeCodes.forEach(enrolledGradeCode => {
         this.enrolledGradeCodesMap.set(enrolledGradeCode.enrolledGradeCode, enrolledGradeCode);
+      });
+    },
+    setGenderCodes(genderCodes) {
+      this.genderCodes = genderCodes.map(item => {
+        return {...item, dropdownText: `${item.genderCode} - ${item.label}`};
+      });
+      this.genderCodesMap = new Map();
+      genderCodes.forEach(genderCode => {
+        this.genderCodesMap.set(genderCode.genderCode, genderCode);
       });
     },
     setHomeLanguageSpokenCodes(homeLanguageSpokenCodes) {
@@ -174,6 +185,10 @@ export const useSldCollectionStore = defineStore('sldCollection', {
         if(this.enrolledProgramCodesMap.size === 0) {
           const response = await ApiService.getAllEnrolledProgramCodes();
           this.setEnrolledProgramCodes(response.data);
+        }
+        if(this.genderCodesMap.size === 0) {
+          const response = await ApiService.getAllGenderCodes();
+          this.setGenderCodes(response.data);
         }
         if(this.homeLanguageSpokenCodesMap.size === 0) {
           const response = await ApiService.getAllHomeLanguageSpokenCodes();
