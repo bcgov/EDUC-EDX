@@ -92,6 +92,7 @@
         >
           <v-icon
             icon="mdi-email"
+            style="margin-bottom: 3px;"
             start
           />
           <span id="user-email"> {{ user.email }}</span>

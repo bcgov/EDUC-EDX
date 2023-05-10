@@ -188,13 +188,8 @@
             class="pb-0"
           >
             <v-card class="add-new-user h-100">
-              <v-row
-                class="h-100"
-                align="center"
-                justify="center"
-                no-gutters
-              >
-                <v-col class="text-center">
+              <v-row class="add-new-user" align="center" justify="center">
+                <v-col class="d-flex justify-center">
                   <PrimaryButton
                     id="new-user-button"
                     icon="mdi-plus"
@@ -205,6 +200,19 @@
                     text="Add New User"
                     :click-action="openInviteUserSheet"
                   />
+                </v-col>
+              </v-row>
+              <v-row v-if="!primaryEdxActivationCode">
+                <v-col class="mx-3 mb-3">
+                  <v-alert
+                    dense
+                    color="#E9EBEF"
+                    outlined
+                    type="info"
+                    class="pa-2"
+                  >
+                    <span style="color: #003366">Before adding users, a Primary Activation Code must be generated.</span>
+                  </v-alert>
                 </v-col>
               </v-row>
             </v-card>
@@ -530,7 +538,10 @@ export default {
 </script>
 
 <style scoped>
-.add-new-user { min-height: 184px; }
+.add-new-user {
+    min-height: 184px;
+}
+
 .sheetHeader{
   background-color: #003366;
   color: white;
@@ -555,6 +566,10 @@ export default {
   margin-right: 0;
   border-radius: 5px;
   background-color: #F2F2F2;
+}
+
+:deep(.mdi-information){
+    color: #003366;
 }
 
 @media screen and (max-width: 950px){
