@@ -9,7 +9,6 @@ export const setWarningAlert = (message) => {
 export const setSuccessAlert = (message) => {
   const useAppStore = appStore();
   return useAppStore.addAlertNotification({text: message, alertType: ALERT_NOTIFICATION_TYPES.SUCCESS});
-
 };
 
 export const setFailureAlert = (message) => {
