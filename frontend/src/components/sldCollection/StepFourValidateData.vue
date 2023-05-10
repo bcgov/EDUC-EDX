@@ -621,9 +621,9 @@ import { ref, onMounted, watch, defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 import ApiService from '../../common/apiService';
-import {ApiRoutes, SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/constants';
+import {ApiRoutes} from '../../utils/constants';
+import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {isEmpty, omitBy, cloneDeep, sortBy} from 'lodash';
-import {ALERT_NOTIFICATION_TYPES} from '../../utils/constants/AlertNotificationTypes';
 import {formatDate} from '../../utils/format';
 import moment from 'moment/moment';
 
@@ -632,10 +632,10 @@ import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 
+import {setFailureAlert} from '../composable/alertComposable';
+
 //pinia store
-import { appStore } from '../../store/modules/app';
 import { useSldCollectionStore } from '../../store/modules/sldCollection';
-const useAppStore = appStore();
 const sldCollectionStore = useSldCollectionStore();
 
 onMounted(() => {
@@ -666,7 +666,7 @@ const getSummaryCounts = () => {
     summaryCounts.value = response.data;
   }).catch(error => {
     console.error(error);
-    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+    setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.');
   }).finally(() => {
     loadingCount.value -= 1;
   });
@@ -705,7 +705,7 @@ const getSDCSchoolCollectionStudentPaginated = () => {
     selectedSdcStudentID.value = response.data.content[0]?.sdcSchoolCollectionStudentID;
   }).catch(error => {
     console.error(error);
-    useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+    setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
   }).finally(() => {
     loadingCount.value -= 1;
   });
@@ -764,7 +764,7 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
       console.log(response.data);
     }).catch(error => {
       console.error(error);
-      useAppStore.addAlertNotification({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
     }).finally(() => {
       loadingCount.value -= 1;
     });
