@@ -110,16 +110,13 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
-    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
-
-    let parsedParams = '';
-    if (req.query.searchParams) {
-      parsedParams = JSON.parse(req.query.searchParams);
-    }
 
     const search = [{
       condition: null,
-      searchCriteriaList: createSearchCriteria(parsedParams, req.params.sdcSchoolCollectionID)
+      searchCriteriaList: [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID}]
+    }, {
+      condition: CONDITION.AND,
+      searchCriteriaList: createSearchCriteria(req.body.searchParams)
     }];
 
     const params = {
@@ -150,7 +147,6 @@ async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
-    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
 
     let errorCriteria = [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND}];
     errorCriteria.push({key: 'sdcSchoolCollectionStudentStatusCode', value: 'ERROR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
@@ -194,7 +190,6 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
-    //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
 
     let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
 
@@ -244,19 +239,21 @@ function validateAccessToken(token, res) {
  * @param key of what we are searching in
  * @param value of what we are searching for
  */
-function createSearchCriteria(searchParams, sdcSchoolCollectionID) {
+function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
-  searchCriteriaList.push({key: 'sdcSchoolCollectionID', value: sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID});
 
   Object.keys(searchParams).forEach(function(key){
     let pValue = searchParams[key];
     if (key === 'studentPen') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
+    if (key === 'sdcSchoolCollectionStudentStatusCode') {
+      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
   });
 
   return searchCriteriaList;
-};
+}
 
 module.exports = {
   getCollectionBySchoolId,

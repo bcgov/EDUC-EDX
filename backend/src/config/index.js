@@ -114,6 +114,7 @@ nconf.defaults({
     careerProgramCodesURL: process.env.SDC_API_ENDPOINT + '/career-program-codes',
     enrolledGradeCodesURL: process.env.SDC_API_ENDPOINT + '/grade-codes',
     enrolledProgramCodesURL: process.env.SDC_API_ENDPOINT + '/enrolled-program-codes',
+    genderCodesURL: process.env.SDC_API_ENDPOINT + '/gender-codes',
     homeLanguageSpokenCodesURL: process.env.SDC_API_ENDPOINT + '/home-language-codes',
     schoolFundingCodesURL: process.env.SDC_API_ENDPOINT + '/funding-codes',
     specialEdCodesURL: process.env.SDC_API_ENDPOINT + '/specialEducation-codes',

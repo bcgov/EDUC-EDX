@@ -150,6 +150,7 @@ export default {
   getAllBandCodes:getCodes(`${ApiRoutes.sld.SDC_BAND_CODES}`),
   getAllCareerProgramCodes:getCodes(`${ApiRoutes.sld.SDC_CAREER_PROGRAM_CODES}`),
   getAllEnrolledProgramCodes:getCodes(`${ApiRoutes.sld.SDC_ENROLLED_PROGRAM_CODES}`),
+  getAllGenderCodes:getCodes(`${ApiRoutes.sld.SDC_GENDER_CODES}`),
   getAllEnrolledGradeCodes:getCodes(`${ApiRoutes.sld.SDC_ENROLLED_GRADE_CODES}`),
   getAllHomeLanguageSpokenCodes:getCodes(`${ApiRoutes.sld.SDC_HOME_LANGUAGE_SPOKEN_CODES}`),
   getAllSchoolFundingCodes:getCodes(`${ApiRoutes.sld.SDC_SCHOOL_FUNDING_CODES}`),
