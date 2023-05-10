@@ -112,15 +112,14 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
     //missing validation that user belongs to the sdcSchoolCollection (grab collection and check the schoolID)?
 
-    let criteria = [];
-    criteria = buildSearchParams(JSON.stringify(req.query.searchParams));
-
-    criteria.push({key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID});
-    log.debug(criteria);
+    let parsedParams = '';
+    if (req.query.searchParams) {
+      parsedParams = JSON.parse(req.query.searchParams);
+    }
 
     const search = [{
       condition: null,
-      searchCriteriaList: criteria
+      searchCriteriaList: createSearchCriteria(parsedParams, req.params.sdcSchoolCollectionID)
     }];
 
     const params = {
@@ -237,14 +236,6 @@ function validateAccessToken(token, res) {
  *
  * @param searchParams object with keys of the columns we are searching for
  */
-const buildSearchParams = (searchParams) => {
-  if (!searchParams) {
-    return [];
-  }
-
-  return Object.entries(JSON.parse(searchParams))
-    .map(([key, value]) => createSearchParamObject(key, value));
-};
 
 /**
  * Returns an object that has the following properties key, value, operation, valueType
@@ -253,15 +244,18 @@ const buildSearchParams = (searchParams) => {
  * @param key of what we are searching in
  * @param value of what we are searching for
  */
-const createSearchParamObject = (key, value) => {
-  let operation = FILTER_OPERATION.CONTAINS_IGNORE_CASE;
-  let valueType = VALUE_TYPE.STRING;
+function createSearchCriteria(searchParams, sdcSchoolCollectionID) {
+  let searchCriteriaList = [];
+  searchCriteriaList.push({key: 'sdcSchoolCollectionID', value: sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID});
 
-  if (key === 'studentPen') {
-    operation = FILTER_OPERATION.EQUAL;
-  }
+  Object.keys(searchParams).forEach(function(key){
+    let pValue = searchParams[key];
+    if (key === 'studentPen') {
+      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
+  });
 
-  return {key, value, operation, valueType};
+  return searchCriteriaList;
 };
 
 module.exports = {
