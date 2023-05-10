@@ -602,6 +602,14 @@
           </div>
         </v-col>
       </v-row>
+      <v-row
+          v-if="nextButtonIsDisabled()"
+          justify="end"
+      >
+        <p class="form-hint">
+          All errors must be fixed
+        </p>
+      </v-row>
       <v-row justify="end">
         <PrimaryButton
             id="nextButton"
@@ -963,6 +971,11 @@ const isLoading = () => {
 
  :deep(.dp__icon){
    display: none;
+ }
+
+ .form-hint{
+   color: rgb(56, 89, 138);
+   font-size: 14px;
  }
 </style>
 
