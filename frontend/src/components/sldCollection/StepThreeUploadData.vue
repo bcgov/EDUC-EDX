@@ -227,10 +227,8 @@ export default {
           const extension = `.${value[0].name.split('.').slice(-1)}`;
           const failMessage = 'File extension is invalid. Extension must be ".ver" or ".std".';
 
-          if(extension){
-            if ((this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
-              return true;
-            }
+          if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+            return true;
           }
 
           this.setFailureAlert(failMessage);
