@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia';
-import {SLD_STEPS} from '../../utils/institute/SldSteps';
+import {SDC_STEPS} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 
-export const useSldCollectionStore = defineStore('sldCollection', {
-  id: 'sldCollection',
+export const useSdcCollectionStore = defineStore('sdcCollection', {
+  id: 'sdcCollection',
   state: () => ({
     currentStepInCollectionProcess: null,
-    stepsInCollectionProcess: SLD_STEPS,
+    stepsInCollectionProcess: SDC_STEPS,
     currentCollectionTypeCode: null,
-    totalStepsInCollection: SLD_STEPS.length,
+    totalStepsInCollection: SDC_STEPS.length,
     schoolCollectionID: null,
     schoolCollection: null,
     bandCodesMap: new Map(),
@@ -133,7 +133,7 @@ export const useSldCollectionStore = defineStore('sldCollection', {
     },
     async getSchoolCollection(schoolCollectionId) {
       if(this.schoolCollection == null) {
-        const response = await ApiService.apiAxios.get(ApiRoutes.sld.BASE_URL + '/' + schoolCollectionId);
+        const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
         this.setSchoolCollection(response.data);
         this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
       }

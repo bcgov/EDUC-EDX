@@ -2,7 +2,7 @@
 /**
  * stepStatus values: 'in-progress', 'not-started', 'complete'
  */
-export const SLD_STEPS = Object.freeze(
+export const SDC_STEPS = Object.freeze(
   [
     {
       label: 'STEP-1',

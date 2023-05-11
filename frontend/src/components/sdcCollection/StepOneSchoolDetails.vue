@@ -43,7 +43,7 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolDetailsForm from '../common/forms/SchoolDetailsForm.vue';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 
@@ -64,13 +64,13 @@ export default {
   emits: ['next', 'previous'],
   data() {
     return {
-      type: 'SLD',
+      type: 'SDC',
       isDisabled: false,
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
   },
@@ -87,7 +87,7 @@ export default {
         schoolCollection: this.schoolCollectionObject,
         status: 'SCH_D_VRFD'
       };
-      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+      ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {
           this.$emit('next');
         })

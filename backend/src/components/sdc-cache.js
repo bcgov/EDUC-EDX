@@ -13,7 +13,7 @@ function getCachedSDCData(cacheKey,url){
       const dataResponse = req.query.active === 'true' ? cachedData[cacheKey].activeRecords : cachedData[cacheKey].records;
       return res.status(HttpStatus.OK).json(dataResponse);
     } catch (e) {
-      await logApiError(e, 'getCachedSLDData', `Error occurred while attempting to GET ${cacheKey}.`);
+      await logApiError(e, 'getCachedSDCData', `Error occurred while attempting to GET ${cacheKey}.`);
       return errorResponse(res);
     }
   };

@@ -147,15 +147,15 @@ export default {
   getAllActiveInstituteCountryCodes: getCodes(`${ApiRoutes.institute.COUNTRY_CODES_URL}?active=true`),
   getAuthorities:getCodes(`${ApiRoutes.institute.AUTHORITY_DATA_URL}`),
   getActiveAuthorities:getCodes(`${ApiRoutes.institute.AUTHORITY_DATA_URL}?active=true`),
-  getAllBandCodes:getCodes(`${ApiRoutes.sld.SDC_BAND_CODES}`),
-  getAllCareerProgramCodes:getCodes(`${ApiRoutes.sld.SDC_CAREER_PROGRAM_CODES}`),
-  getAllEnrolledProgramCodes:getCodes(`${ApiRoutes.sld.SDC_ENROLLED_PROGRAM_CODES}`),
-  getAllGenderCodes:getCodes(`${ApiRoutes.sld.SDC_GENDER_CODES}`),
-  getAllEnrolledGradeCodes:getCodes(`${ApiRoutes.sld.SDC_ENROLLED_GRADE_CODES}`),
-  getAllHomeLanguageSpokenCodes:getCodes(`${ApiRoutes.sld.SDC_HOME_LANGUAGE_SPOKEN_CODES}`),
-  getAllSchoolFundingCodes:getCodes(`${ApiRoutes.sld.SDC_SCHOOL_FUNDING_CODES}`),
-  getAllSpecialEdCodes:getCodes(`${ApiRoutes.sld.SDC_SPECIAL_ED_CODES}`),
-  getAllValidationIssueTypeCodes:getCodes(`${ApiRoutes.sld.SDC_VALIDATION_ISSUE_TYPE_CODES}`)
+  getAllBandCodes:getCodes(`${ApiRoutes.sdc.SDC_BAND_CODES}`),
+  getAllCareerProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_CAREER_PROGRAM_CODES}`),
+  getAllEnrolledProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_ENROLLED_PROGRAM_CODES}`),
+  getAllGenderCodes:getCodes(`${ApiRoutes.sdc.SDC_GENDER_CODES}`),
+  getAllEnrolledGradeCodes:getCodes(`${ApiRoutes.sdc.SDC_ENROLLED_GRADE_CODES}`),
+  getAllHomeLanguageSpokenCodes:getCodes(`${ApiRoutes.sdc.SDC_HOME_LANGUAGE_SPOKEN_CODES}`),
+  getAllSchoolFundingCodes:getCodes(`${ApiRoutes.sdc.SDC_SCHOOL_FUNDING_CODES}`),
+  getAllSpecialEdCodes:getCodes(`${ApiRoutes.sdc.SDC_SPECIAL_ED_CODES}`),
+  getAllValidationIssueTypeCodes:getCodes(`${ApiRoutes.sdc.SDC_VALIDATION_ISSUE_TYPE_CODES}`)
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

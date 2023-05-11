@@ -24,13 +24,13 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
-import SLDCollectionView from './components/sldCollection/SLDCollectionView.vue';
-import StepOneSchoolDetails from './components/sldCollection/StepOneSchoolDetails.vue';
-import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolContacts.vue';
-import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
-import StepFourValidateData from './components/sldCollection/StepFourValidateData.vue';
-import SLDCollectionSummary from './components/sldCollection/SLDCollectionSummary.vue';
-import StepFiveVerifyData from './components/sldCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
+import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
+import StepOneSchoolDetails from './components/sdcCollection/StepOneSchoolDetails.vue';
+import StepTwoSchoolContacts from './components/sdcCollection/StepTwoSchoolContacts.vue';
+import StepThreeUploadData from './components/sdcCollection/StepThreeUploadData.vue';
+import StepFourValidateData from './components/sdcCollection/StepFourValidateData.vue';
+import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
+import StepFiveVerifyData from './components/sdcCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -249,22 +249,22 @@ const router = createRouter({
         },
         {
           path: 'open-collection-summary',
-          name: 'sldCollectionSummary',
-          component: SLDCollectionSummary,
+          name: 'sdcCollectionSummary',
+          component: SDCCollectionSummary,
           props: true,
           meta: {
-            pageTitle: PAGE_TITLES.SLD,
+            pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
             permission: 'STUDENT_DATA_COLLECTION'
           },
         },
         {
           path: 'open-collection-details/:schoolCollectionID',
-          name: 'sldCollection',
-          component: SLDCollectionView,
+          name: 'sdcCollection',
+          component: SDCCollectionView,
           props: true,
           meta: {
-            pageTitle: PAGE_TITLES.SLD,
+            pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
             permission: 'STUDENT_DATA_COLLECTION'
           },
@@ -274,7 +274,7 @@ const router = createRouter({
               name: 'step-1',
               component: StepOneSchoolDetails,
               meta: {
-                pageTitle: PAGE_TITLES.SLD,
+                pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               },
@@ -285,7 +285,7 @@ const router = createRouter({
               name: 'step-2',
               component: StepTwoSchoolContacts,
               meta: {
-                pageTitle: PAGE_TITLES.SLD,
+                pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               }
@@ -295,7 +295,7 @@ const router = createRouter({
               name: 'step-3',
               component: StepThreeUploadData,
               meta: {
-                pageTitle: PAGE_TITLES.SLD,
+                pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               }
@@ -305,7 +305,7 @@ const router = createRouter({
               name: 'step-4',
               component: StepFourValidateData,
               meta: {
-                pageTitle: PAGE_TITLES.SLD,
+                pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               }
@@ -315,7 +315,7 @@ const router = createRouter({
               name: 'step-5',
               component: StepFiveVerifyData,
               meta: {
-                pageTitle: PAGE_TITLES.SLD,
+                pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               }
