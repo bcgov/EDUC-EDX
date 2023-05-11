@@ -89,7 +89,9 @@
             </v-row>
           </div>
           <div>
+            <Spinner v-if="isLoading()"/>
             <v-data-table-server
+              else
               :items-per-page="pageSize"
               v-model:page="pageNumber"
               :items-length="totalStudents"
@@ -246,7 +248,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                            id="studentUsualLastName"
+                          id="studentUsualLastName"
                           label="Usual Surname"
                           density="compact"
                           variant="plain"
@@ -659,7 +661,7 @@ const next = () => {
 };
 
 const nextButtonIsDisabled = () => {
-  return !studentListData.value.every(student => student.sdcSchoolCollectionStudentStatusCode !== 'ERROR');
+  return summaryCounts.value.errors > 0 || isLoading();
 };
 
 //page summary counts
@@ -769,7 +771,6 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
 
       sdcSchoolCollectionStudentDetail.value = filteredResponse;
       sdcSchoolCollectionStudentDetailCopy.value = cloneDeep(filteredResponse);
-      console.log(response.data);
     }).catch(error => {
       console.error(error);
       setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
