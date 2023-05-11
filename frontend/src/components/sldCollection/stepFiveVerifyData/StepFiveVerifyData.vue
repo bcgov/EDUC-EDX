@@ -1,0 +1,151 @@
+<template>
+  <v-container 
+    class="containerSetup"
+    fluid
+  >
+    <div class="border">
+      <v-tabs
+        v-model="tab"   
+        show-arrows
+      >
+        <v-tab
+          v-for="name in tabs"
+          :key="name"
+          :value="name"
+        >
+          {{ name }}
+        </v-tab>
+      </v-tabs>
+       
+      <v-window v-model="tab">
+        <v-window-item value="FTE">
+          <FTEComponent />
+        </v-window-item>
+        <v-window-item value="French Programs">
+          <FrenchProgramsComponent />
+        </v-window-item>
+        <v-window-item value="Career Programs">
+          <CareerProgramsComponent />
+        </v-window-item>
+        <v-window-item value="Indigenous Students & Support Programs">
+          <IndSupportProgramsComponent />
+        </v-window-item>
+        <v-window-item value="Special Education">
+          <SpecialEduComponent />
+        </v-window-item>
+        <v-window-item value="English Language Learning">
+          <EnglishLangComponent />
+        </v-window-item>
+        <v-window-item value="Refugee">
+          <RefugeeComponent />
+        </v-window-item>
+      </v-window>
+    </div>
+      
+
+    <v-row justify="end">
+      <PrimaryButton
+        id="nextButton"
+        class="mr-2 mb-3"           
+        icon="mdi-check"
+        text="Verify as Correct & Submit"
+        :click-action="next"
+      />
+    </v-row>
+    <v-row
+      v-if="isDisabled"
+      justify="end"
+    >
+      <p class="form-hint">
+        Address, phone, and/or email must be added
+      </p>
+    </v-row>
+  </v-container>
+</template>
+  
+<script>
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import { mapState } from 'pinia';
+import { useSldCollectionStore } from '../../../store/modules/sldCollection';
+import { SLD_VERIFY_TABS } from '../../../utils/institute/SldVerifyTabs';
+import FTEComponent from './FTEComponent.vue';
+import CareerProgramsComponent from './CareerProgramsComponent.vue';
+import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
+import SpecialEduComponent from './SpecialEduComponent.vue';
+import EnglishLangComponent from './EnglishLangComponent.vue';
+import RefugeeComponent from './RefugeeComponent.vue';
+import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
+
+export default {
+  name: 'StepFiveVerifyData',
+  components: {
+    PrimaryButton,
+    FTEComponent,
+    CareerProgramsComponent,
+    IndSupportProgramsComponent,
+    SpecialEduComponent,
+    EnglishLangComponent,
+    RefugeeComponent,
+    FrenchProgramsComponent
+  },
+  mixins: [alertMixin],
+  props: {
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    }
+  },
+  emits: ['next', 'previous'],
+  data() {
+    return {
+      tab: null,
+      tabs: SLD_VERIFY_TABS,
+      type: 'SLD',
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+    };
+  },
+  computed: {
+    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
+  },
+  created() {
+  },
+  methods: {
+    next() {
+      if(this.currentStepInCollectionProcess.isComplete) {
+        this.$emit('next');
+      } 
+    }
+  }
+};
+</script>
+    
+    <style scoped>
+  .containerSetup{
+    padding-right: 5em !important;
+    padding-left: 5em !important;
+  }
+
+ .border {
+    border: 2px solid grey;
+    border-radius: 5px;
+    padding: 35px;
+    margin-bottom: 2em;
+  } 
+
+   .form-hint{
+    color: rgb(56, 89, 138);
+    font-size: 14px;
+  } 
+ 
+  @media screen and (max-width: 1200px) {
+    .containerSetup{
+      padding-right: 3em !important;
+      padding-left: 3em !important;
+    }
+  }  
+    </style>
+    
+    
+  

@@ -10,12 +10,18 @@
         </h2>
       </v-col>
     </v-row>
-    <v-row no-gutters class="mt-1 d-flex justify-start">
+    <v-row
+      no-gutters
+      class="mt-1 d-flex justify-start"
+    >
       <v-col>
         <h4>{{ currentCollectionTypeCode }} 2022 Collection</h4>
       </v-col>
     </v-row>
-    <v-row no-gutters class="mt-2 mb-2 d-flex justify-start">
+    <v-row
+      no-gutters
+      class="mt-2 mb-2 d-flex justify-start"
+    >
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
           small
@@ -34,7 +40,10 @@
         <v-divider class="divider" />
       </v-col>
     </v-row>
-    <v-row class="mt-0" v-if="isLoading">
+    <v-row
+      v-if="isLoading"
+      class="mt-0"
+    >
       <v-col class="d-flex justify-center">
         <v-progress-circular
           class="mt-16"
@@ -55,7 +64,7 @@
           @on-navigation-complete="navigationCompleted()"
         />
       </v-col>
-      <v-col>
+      <v-col cols="10">
         <router-view
           :school-collection-object="schoolCollectionObject"
           @next="next"
