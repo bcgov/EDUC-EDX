@@ -194,10 +194,10 @@ export default {
       });
     },
     reload(value) {
-      if(value && value.pageSize) {
-        this.pageSize = value.pageSize;
-      } else if(value && value.pageNumber) {
-        this.pageNumber = value.pageNumber;
+      if(value && value?.pageSize) {
+        this.pageSize = value?.pageSize;
+      } else if(value && value?.pageNumber) {
+        this.pageNumber = value?.pageNumber;
       }
       this.loadStudents();
     },
