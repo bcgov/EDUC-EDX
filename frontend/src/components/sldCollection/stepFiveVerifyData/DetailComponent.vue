@@ -138,7 +138,6 @@ import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
-import {ALERT_NOTIFICATION_TYPES} from '../../../utils/constants/AlertNotificationTypes';
  
 export default {
   name: 'DetailComponent',
