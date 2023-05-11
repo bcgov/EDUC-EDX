@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {SLD_STEPS} from '../../utils/institute/SldSteps';
+import {SLD_STEPS} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 

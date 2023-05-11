@@ -79,7 +79,7 @@ import alertMixin from '../../mixins/alertMixin';
 import StepperComponent from '../common/StepperComponent.vue';
 import RouterView from '../RouterView.vue';
 import { mapState, mapActions } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'SLDCollectionView',

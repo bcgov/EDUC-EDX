@@ -7,7 +7,7 @@ const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollec
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
 const COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/collection/search';
 
-export class SldCollectionApiService {
+export class SdcCollectionApiService {
 
     config: any;
     restUtils: any;

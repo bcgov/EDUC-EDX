@@ -40,7 +40,7 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import { mapActions, mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'StepperComponent',

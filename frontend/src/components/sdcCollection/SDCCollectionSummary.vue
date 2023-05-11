@@ -73,7 +73,7 @@
 import alertMixin from '../../mixins/alertMixin';
 import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 
 export default {

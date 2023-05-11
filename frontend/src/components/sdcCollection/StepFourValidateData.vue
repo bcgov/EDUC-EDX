@@ -645,7 +645,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import {setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 const sldCollectionStore = useSldCollectionStore();
 
 onMounted(() => {

@@ -43,7 +43,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
 import {isContactCurrent} from '../../utils/institute/status';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
   

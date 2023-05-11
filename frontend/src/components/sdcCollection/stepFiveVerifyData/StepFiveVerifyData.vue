@@ -59,7 +59,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../../store/modules/sdcCollection';
 import { SLD_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';

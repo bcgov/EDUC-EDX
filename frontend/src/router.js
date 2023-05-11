@@ -24,13 +24,13 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
-import SLDCollectionView from './components/sldCollection/SLDCollectionView.vue';
-import StepOneSchoolDetails from './components/sldCollection/StepOneSchoolDetails.vue';
-import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolContacts.vue';
-import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
-import StepFourValidateData from './components/sldCollection/StepFourValidateData.vue';
-import SLDCollectionSummary from './components/sldCollection/SLDCollectionSummary.vue';
-import StepFiveVerifyData from './components/sldCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
+import SLDCollectionView from './components/sdcCollection/SDCCollectionView.vue';
+import StepOneSchoolDetails from './components/sdcCollection/StepOneSchoolDetails.vue';
+import StepTwoSchoolContacts from './components/sdcCollection/StepTwoSchoolContacts.vue';
+import StepThreeUploadData from './components/sdcCollection/StepThreeUploadData.vue';
+import StepFourValidateData from './components/sdcCollection/StepFourValidateData.vue';
+import SLDCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
+import StepFiveVerifyData from './components/sdcCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];

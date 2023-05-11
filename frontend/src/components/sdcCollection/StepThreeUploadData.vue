@@ -191,7 +191,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sldCollection';
+import { useSldCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 

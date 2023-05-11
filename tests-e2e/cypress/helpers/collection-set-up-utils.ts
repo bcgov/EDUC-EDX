@@ -1,4 +1,4 @@
-import {SldCollectionApiService} from "../services/sld-collection-api-service";
+import {SdcCollectionApiService} from "../services/sdc-collection-api-service";
 
 export class CollectionSetupUtils {
 
@@ -7,7 +7,7 @@ export class CollectionSetupUtils {
 
     constructor(conf: any) {
         this.config = conf;
-        this.sldCollectionApi = new SldCollectionApiService(this.config);
+        this.sldCollectionApi = new SdcCollectionApiService(this.config);
     }
 
     async setUpSchoolCollection(schoolID: string) {
