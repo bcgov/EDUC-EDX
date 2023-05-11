@@ -33,7 +33,7 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { CAREER_PR } from '../../../utils/institute/TableConfiguration';
+import { CAREER_PR } from '../../../utils/sdc/TableConfiguration';
   
 export default {
   name: 'CareerProgramsComponent',

@@ -33,7 +33,7 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { ELL } from '../../../utils/institute/TableConfiguration';
+import { ELL } from '../../../utils/sdc/TableConfiguration';
   
 export default {
   name: 'EnglishLangComponent',

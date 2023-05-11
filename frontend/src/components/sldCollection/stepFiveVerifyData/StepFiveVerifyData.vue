@@ -52,14 +52,6 @@
         :click-action="next"
       />
     </v-row>
-    <v-row
-      v-if="isDisabled"
-      justify="end"
-    >
-      <p class="form-hint">
-        Address, phone, and/or email must be added
-      </p>
-    </v-row>
   </v-container>
 </template>
   
@@ -68,7 +60,7 @@ import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
 import { useSldCollectionStore } from '../../../store/modules/sldCollection';
-import { SLD_VERIFY_TABS } from '../../../utils/institute/SldVerifyTabs';
+import { SLD_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';

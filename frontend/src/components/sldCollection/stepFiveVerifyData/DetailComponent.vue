@@ -188,7 +188,7 @@ export default {
         this.totalElements = response.data.totalElements;
       }).catch(error => {
         console.error(error);
-        this.setFailureAlert({text: error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve students list. Please try again later.', alertType: ALERT_NOTIFICATION_TYPES.ERROR});
+        this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
       }).finally(() => {
         this.isLoading = false;
       });
