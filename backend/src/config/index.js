@@ -110,7 +110,7 @@ nconf.defaults({
     schoolCollectionStudentURL: process.env.SDC_API_ENDPOINT + '/sdcSchoolCollectionStudent',
     schoolCollectionURL: process.env.SDC_API_ENDPOINT + '/sdcSchoolCollection',
     collectionURL: process.env.SDC_API_ENDPOINT + '/collection',
-    bandCodesCodesURL: process.env.SDC_API_ENDPOINT + '/band-codes',
+    bandCodesURL: process.env.SDC_API_ENDPOINT + '/band-codes',
     careerProgramCodesURL: process.env.SDC_API_ENDPOINT + '/career-program-codes',
     enrolledGradeCodesURL: process.env.SDC_API_ENDPOINT + '/grade-codes',
     enrolledProgramCodesURL: process.env.SDC_API_ENDPOINT + '/enrolled-program-codes',
