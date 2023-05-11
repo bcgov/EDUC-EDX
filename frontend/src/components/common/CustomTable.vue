@@ -157,7 +157,6 @@ export default {
       this.masterCheckbox = this.selected.length > 0 && this.isAllSelected();
     },
     isSelected(selectedValue) {
-      console.log(this.selected.find(value => value.sdcSchoolCollectionStudentID === selectedValue.sdcSchoolCollectionStudentID));
       return this.selected.find(value => value.sdcSchoolCollectionStudentID === selectedValue.sdcSchoolCollectionStudentID);
     },
     isAllSelected() {
