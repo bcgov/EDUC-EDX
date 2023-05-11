@@ -59,8 +59,8 @@
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../../store/modules/sdcCollection';
-import { SLD_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
+import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
+import { SDC_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
@@ -93,13 +93,13 @@ export default {
   data() {
     return {
       tab: null,
-      tabs: SLD_VERIFY_TABS,
-      type: 'SLD',
+      tabs: SDC_VERIFY_TABS,
+      type: 'SDC',
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
   },

@@ -297,7 +297,7 @@ export default {
     formatPhoneNumber,
     formatContactName,
     showDetailsButton() {
-      return this.functionName !== 'SLD';
+      return this.functionName !== 'SDC';
     },
   }
 };

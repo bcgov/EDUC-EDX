@@ -73,11 +73,11 @@
 import alertMixin from '../../mixins/alertMixin';
 import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sdcCollection';
+import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 
 export default {
-  name: 'SLDCollectionSummary',
+  name: 'sdcCollectionSummary',
   components: {
     DoughnutChart
   },
@@ -92,14 +92,14 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess', 'schoolCollectionID'])
+    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess', 'schoolCollectionID'])
   },
   created() {
     this.calcuateStep();
   },
   methods: {
     startCollection() {
-      router.push({name: 'sldCollection', params: {schoolCollectionID: this.schoolCollectionID}});
+      router.push({name: 'sdcCollection', params: {schoolCollectionID: this.schoolCollectionID}});
     },
     backToDashboard() {
       this.$router.push({name: 'home'});

@@ -227,17 +227,10 @@ function validateAccessToken(token, res) {
 }
 
 /**
- * Returns an array of search criteria objects to query SLD API
- *
- * @param searchParams object with keys of the columns we are searching for
- */
-
-/**
  * Returns an object that has the following properties key, value, operation, valueType
- * Helper function when building search params for querying SLD API
+ * Helper function when building search params for querying SDC API
  *
- * @param key of what we are searching in
- * @param value of what we are searching for
+ * @param searchParams key value pair of what we are searching for
  */
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];

@@ -2,7 +2,7 @@
 /**
  * stepStatus values: 'in-progress', 'not-started', 'complete'
  */
-export const SLD_VERIFY_TABS = Object.freeze(
+export const SDC_VERIFY_TABS = Object.freeze(
   [
     'FTE',
     'French Programs',

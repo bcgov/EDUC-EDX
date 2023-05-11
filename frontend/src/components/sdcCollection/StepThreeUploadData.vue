@@ -191,7 +191,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState } from 'pinia';
-import { useSldCollectionStore } from '../../store/modules/sdcCollection';
+import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
@@ -256,7 +256,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSldCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   watch: {
     uploadFileValue() {
@@ -294,7 +294,7 @@ export default {
         schoolCollection: this.schoolCollectionObject,
         status: 'LOADED'
       };
-      ApiService.apiAxios.put(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+      ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {
           this.$emit('next');
         })
@@ -343,7 +343,7 @@ export default {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
           fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
-        await ApiService.apiAxios.post(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
+        await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
         await this.fireFileProgress();
       } catch (e) {
@@ -355,7 +355,7 @@ export default {
     },
     async getFileProgress() {
       try{
-        await ApiService.apiAxios.get(ApiRoutes.sld.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file').then(response => {
+        await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file').then(response => {
           this.sdcSchoolProgress = response.data;
           this.totalStudents = this.sdcSchoolProgress.totalStudents;
           this.totalProcessed = this.sdcSchoolProgress.totalProcessed;

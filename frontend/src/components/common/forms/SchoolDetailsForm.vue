@@ -1206,7 +1206,7 @@ export default {
       return this.userInfo.activeInstituteType === 'DISTRICT';
     },
     showContactButton() {
-      return this.functionName !== 'SLD';
+      return this.functionName !== 'SDC';
     },
     formatDate,
     formatPhoneNumber,

@@ -7,7 +7,7 @@ const instituteRoot = baseRoot + '/institute';
 const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
-const sldRoot = baseRoot + '/sld';
+const sdcRoot = baseRoot + '/sdc';
 
 let object;
 
@@ -36,19 +36,19 @@ export const ApiRoutes = Object.freeze({
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
     UPDATE_SCHOOL_CONTACT_URL: schoolRoot + '/update-contact'
   },
-  sld: {
-    BASE_URL: sldRoot,
-    SLD_COLLECTION_BY_SCHOOL_ID: sldRoot + '/getCollectionBySchoolId',
-    SLD_SCHOOL_COLLECTION_STUDENT: sldRoot + '/sdcSchoolCollectionStudent',
-    SDC_BAND_CODES: sldRoot + '/band-codes',
-    SDC_CAREER_PROGRAM_CODES: sldRoot + '/career-program-codes',
-    SDC_ENROLLED_GRADE_CODES: sldRoot + '/enrolled-grade-codes',
-    SDC_ENROLLED_PROGRAM_CODES: sldRoot + '/enrolled-program-codes',
-    SDC_GENDER_CODES: sldRoot + '/gender-codes',
-    SDC_HOME_LANGUAGE_SPOKEN_CODES: sldRoot + '/home-language-spoken-codes',
-    SDC_SCHOOL_FUNDING_CODES: sldRoot + '/school-funding-codes',
-    SDC_SPECIAL_ED_CODES: sldRoot + '/specialEducation-codes',
-    SDC_VALIDATION_ISSUE_TYPE_CODES: sldRoot + '/validation-issue-type-codes',
+  sdc: {
+    BASE_URL: sdcRoot,
+    SDC_COLLECTION_BY_SCHOOL_ID: sdcRoot + '/getCollectionBySchoolId',
+    SDC_SCHOOL_COLLECTION_STUDENT: sdcRoot + '/sdcSchoolCollectionStudent',
+    SDC_BAND_CODES: sdcRoot + '/band-codes',
+    SDC_CAREER_PROGRAM_CODES: sdcRoot + '/career-program-codes',
+    SDC_ENROLLED_GRADE_CODES: sdcRoot + '/enrolled-grade-codes',
+    SDC_ENROLLED_PROGRAM_CODES: sdcRoot + '/enrolled-program-codes',
+    SDC_GENDER_CODES: sdcRoot + '/gender-codes',
+    SDC_HOME_LANGUAGE_SPOKEN_CODES: sdcRoot + '/home-language-spoken-codes',
+    SDC_SCHOOL_FUNDING_CODES: sdcRoot + '/school-funding-codes',
+    SDC_SPECIAL_ED_CODES: sdcRoot + '/specialEducation-codes',
+    SDC_VALIDATION_ISSUE_TYPE_CODES: sdcRoot + '/validation-issue-type-codes',
   },
   district: {
     BASE_URL: districtRoot,
@@ -114,7 +114,7 @@ export const PAGE_TITLES = Object.freeze({
   SCHOOL_DETAILS:'School Details',
   DISTRICT_DETAILS:'District Details',
   DISTRICT_CONTACTS: 'District Contacts',
-  SLD:'Student Level Data (1701)',
+  SDC:'Student Level Data (1701)',
   DATA_COLLECTION: 'Data Collections'
 });
 

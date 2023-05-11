@@ -513,7 +513,7 @@
                                   v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
                                   v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
                                   :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
                                   :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
                                   item-title="dropdownText"
                                   :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
@@ -523,7 +523,7 @@
                                   v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
                                   v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
                                   :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sldCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
                                   :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
                                   item-title="dropdownText"
                                   :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
@@ -645,11 +645,11 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import {setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
-import { useSldCollectionStore } from '../../store/modules/sdcCollection';
-const sldCollectionStore = useSldCollectionStore();
+import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+const sdcCollectionStore = useSdcCollectionStore();
 
 onMounted(() => {
-  sldCollectionStore.getCodes().then(() => {
+  sdcCollectionStore.getCodes().then(() => {
     getSummaryCounts();
     getSDCSchoolCollectionStudentPaginated();
   });
@@ -671,7 +671,7 @@ const summaryCounts = ref({errors: 0, warnings: 0});
 const getSummaryCounts = () => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/summaryCounts`, {
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/summaryCounts`, {
   }).then(response => {
     summaryCounts.value = response.data;
   }).catch(error => {
@@ -703,7 +703,7 @@ watch(pageNumber, () => {
 const getSDCSchoolCollectionStudentPaginated = () => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/paginated`, {
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/paginated`, {
     params: {
       pageNumber: pageNumber.value - 1,
       pageSize: pageSize.value,
@@ -765,7 +765,7 @@ let sdcSchoolCollectionStudentDetailCopy = ref({});
 const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
       let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
 
@@ -780,7 +780,7 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
 };
 
 const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
-  return enrolledProgramCodes.filter(enrolledProgramCode => sldCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
+  return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
 };
 
 const syncWithEnrolledProgramCodeOnUserInput = (value) => {
@@ -789,54 +789,54 @@ const syncWithEnrolledProgramCodeOnUserInput = (value) => {
 
 const getBandCodesLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.bandCodesMap.get(key)) {
-    label = `${sldCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sldCollectionStore.bandCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.bandCodesMap.get(key)) {
+    label = `${sdcCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sdcCollectionStore.bandCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getCareerProgramCodesLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.careerProgramCodesMap.get(key)) {
-    label = `${sldCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sldCollectionStore.careerProgramCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.careerProgramCodesMap.get(key)) {
+    label = `${sdcCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sdcCollectionStore.careerProgramCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getEnrolledGradeCodesLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.enrolledGradeCodesMap.get(key)) {
-    label = `${sldCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sldCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.enrolledGradeCodesMap.get(key)) {
+    label = `${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getHomeLanguageSpokenCodesLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
-    label = `${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sldCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
+    label = `${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getSchoolFundingCodeLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.schoolFundingCodesMap.get(key)) {
-    label = `${sldCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sldCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.schoolFundingCodesMap.get(key)) {
+    label = `${sdcCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sdcCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getSpecialEducationCodesLabel = (key) => {
   let label = key;
-  if (sldCollectionStore.specialEducationCodesMap.get(key)) {
-    label = `${sldCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sldCollectionStore.specialEducationCodesMap.get(key)?.label}`;
+  if (sdcCollectionStore.specialEducationCodesMap.get(key)) {
+    label = `${sdcCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sdcCollectionStore.specialEducationCodesMap.get(key)?.label}`;
   }
   return label;
 };
 
 const getValidationIssueTypeCodesDescription = (key) => {
-  return sldCollectionStore.validationIssueTypeCodesMap.get(key)?.message;
+  return sdcCollectionStore.validationIssueTypeCodesMap.get(key)?.message;
 };
 
 const getValidationIssueSeverityCodeLabel = (severityCode) => {

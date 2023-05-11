@@ -176,7 +176,7 @@ export default {
   methods: {
     loadStudents() {
       this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.sld.SLD_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,

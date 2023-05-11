@@ -300,7 +300,7 @@
             width="22em"
             outlined
             rounded
-            @click="openSLDCollection()"
+            @click="openSDCCollection()"
           >
             <v-row class="pl-4">
               <v-col cols="4">
@@ -346,7 +346,7 @@ import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import { useSldCollectionStore } from '../store/modules/sdcCollection';
+import { useSdcCollectionStore } from '../store/modules/sdcCollection';
 
 export default {
   name: 'DashboardTable',
@@ -410,7 +410,7 @@ export default {
 
     if(this.isLoggedInSchoolUser) { 
       if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
-        this.getSLDCollectionBySchoolId();
+        this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
@@ -424,7 +424,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSldCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
+    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -508,14 +508,14 @@ export default {
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
-    openSLDCollection() {
-      router.push({name: 'sldCollectionSummary',});
+    openSDCCollection() {
+      router.push({name: 'sdcCollectionSummary',});
     },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
     },
-    getSLDCollectionBySchoolId() {
-      ApiService.apiAxios.get(ApiRoutes.sld.SLD_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+    getSDCCollectionBySchoolId() {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
           this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
