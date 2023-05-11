@@ -464,6 +464,7 @@ export default {
         this.instituteCode = '';
         this.setupSchoolFields();
         this.loading = false;
+        this.doShowGenerateNewPrimaryEdxActivationCodeDialog = false;
       }else{
         this.$router.push({name: 'home'});
       }
