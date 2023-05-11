@@ -30,6 +30,7 @@ import StepTwoSchoolContacts from './components/sldCollection/StepTwoSchoolConta
 import StepThreeUploadData from './components/sldCollection/StepThreeUploadData.vue';
 import StepFourValidateData from './components/sldCollection/StepFourValidateData.vue';
 import SLDCollectionSummary from './components/sldCollection/SLDCollectionSummary.vue';
+import StepFiveVerifyData from './components/sldCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -303,6 +304,16 @@ const router = createRouter({
               path: 'step-4',
               name: 'step-4',
               component: StepFourValidateData,
+              meta: {
+                pageTitle: PAGE_TITLES.SLD,
+                requiresAuth: true,
+                permission: 'STUDENT_DATA_COLLECTION'
+              }
+            },
+            {
+              path: 'step-5',
+              name: 'step-5',
+              component: StepFiveVerifyData,
               meta: {
                 pageTitle: PAGE_TITLES.SLD,
                 requiresAuth: true,
