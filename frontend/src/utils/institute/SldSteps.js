@@ -33,8 +33,10 @@ export const SLD_STEPS = Object.freeze(
       index: 3,
       isComplete: false
     }, {
+      label: 'STEP-5',
       name: 'Edit/Verify Data & Submit',
       index: 4,
+      route: 'step-5',
       isComplete: false
     }
   ]
