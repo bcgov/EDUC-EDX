@@ -407,7 +407,7 @@ export default {
 </script>
 
 <style scoped>
-.add-new-user { min-height: 184px; }
+.add-new-user { min-height: 160px; }
 .sheetHeader {
   background-color: #003366;
   color: white;

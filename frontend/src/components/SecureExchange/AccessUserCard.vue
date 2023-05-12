@@ -103,7 +103,7 @@
       class="pt-2"
       :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
     >
-      <v-chip-group v-if="!editState">
+      <div v-if="!editState" >
         <v-chip
           v-for="role in userRoles"
           :key="role.edxRoleCode"
@@ -111,7 +111,7 @@
         >
           {{ getRoleLabel(role) }}
         </v-chip>
-      </v-chip-group>
+      </div>
       <v-list
         v-else
         v-model:selected="selectedRoles"

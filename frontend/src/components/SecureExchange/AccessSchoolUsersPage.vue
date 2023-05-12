@@ -540,7 +540,7 @@ export default {
 
 <style scoped>
 .add-new-user {
-    min-height: 184px;
+    min-height: 160px;
 }
 
 .sheetHeader{
