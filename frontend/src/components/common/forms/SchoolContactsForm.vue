@@ -28,7 +28,7 @@
         </v-col>
       </v-row>
       <v-row cols="2">
-        <v-col class="d-flex justify-start">
+        <v-col>
           <v-chip
             variant="elevated"
             class="text-black mr-3"
@@ -115,7 +115,6 @@
       v-model="newContactSheet"
       inset
       location="bottom"
-      temporary
       style="width: 50%; height: max-content; left: 25%;"
       no-click-animation
       scrollable
@@ -133,9 +132,7 @@
       v-model="editContactSheet"
       inset
       location="bottom"
-      temporary
       no-click-animation
-      scrollable
       style="width: 50%; height: max-content; left: 25%;"
       persistent
     >

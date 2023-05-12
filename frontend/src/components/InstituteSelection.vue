@@ -27,7 +27,8 @@
             <v-row
               no-gutters
               class="pl-2 hoverTable"
-              :style="(index + 1) === activeUserSchools.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'"
+              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
+              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
               @click="selectSchool(item.value.schoolID)"
             >
               <v-col class="pa-1">
@@ -61,7 +62,8 @@
             <v-row
               no-gutters
               class="pl-2 hoverTable"
-              :style="(index + 1) === activeUserDistricts.length ? '' : 'border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);'"
+              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
+              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
               @click="selectDistrict(item.value.districtID)"
             >
               <v-col class="pa-1">
