@@ -14,10 +14,11 @@
           @click="backButtonClick"
         >Return to Dashboard</a>
       </v-col>
-      <v-col class="d-flex justify-end">
+      <v-col style="text-align: end">
         <v-chip
           id="primaryEdxActivationCode"
           :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
+          class="mr-1"
         >
           <v-icon left>
             mdi-shield-key-outline
@@ -195,7 +196,6 @@
       style="width: 50%; height: max-content; left: 25%;"
       no-click-animation
       scrollable
-      temporary
       persistent
     >
       <v-card
