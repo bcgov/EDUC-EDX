@@ -627,7 +627,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineEmits } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 import ApiService from '../../common/apiService';
@@ -648,6 +648,16 @@ import {setFailureAlert} from '../composable/alertComposable';
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 const sdcCollectionStore = useSdcCollectionStore();
 
+const props = defineProps({
+  schoolCollectionObject: {
+    type: Object,
+    required: true,
+    default: null
+  }
+});
+
+const emit = defineEmits(['next']);
+
 onMounted(() => {
   sdcCollectionStore.getCodes().then(() => {
     getSummaryCounts();
@@ -655,14 +665,34 @@ onMounted(() => {
   });
 });
 
-const emit = defineEmits(['next']);
+//next logic
 const next = () => {
-  emit('next');
+  if(sdcCollectionStore.currentStepInCollectionProcess.isComplete) {
+    emit('next');
+  } else {
+    markStepAsComplete();
+  }
+};
+
+const markStepAsComplete = () => {
+  let updateCollection = {
+    schoolCollection: props.schoolCollectionObject,
+    status: 'REVIEWED'
+  };
+  ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${route.params.schoolCollectionID}`, updateCollection)
+    .then(() => {
+      emit('next');
+    })
+    .catch(error => {
+      console.error(error);
+      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+    });
 };
 
 const nextButtonIsDisabled = () => {
   return summaryCounts.value.errors > 0 || isLoading();
 };
+//end next logic
 
 //page summary counts
 const loadingCount = ref(0);
