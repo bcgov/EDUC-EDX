@@ -92,14 +92,30 @@
             />
           </v-col>
         </v-row>
-        <v-row v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)" class="d-flex justify-start">
+        <v-row
+          v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)"
+          class="d-flex justify-start"
+        >
           <v-col class="d-flex">
-            <div class="ministryOwnershipTeamName"  style="color: black">{{district.districtNumber}} - {{district.name}}</div>
+            <div
+              class="ministryOwnershipTeamName"
+              style="color: black"
+            >
+              {{ district.districtNumber }} - {{ district.name }}
+            </div>
           </v-col>
         </v-row>
-        <v-row v-else class="d-flex justify-start">
+        <v-row
+          v-else
+          class="d-flex justify-start"
+        >
           <v-col class="d-flex">
-            <div class="ministryOwnershipTeamName"  style="color: black">{{authority.authorityNumber}} - {{authority.name}}</div>
+            <div
+              class="ministryOwnershipTeamName"
+              style="color: black"
+            >
+              {{ authority.authorityNumber }} - {{ authority.name }}
+            </div>
           </v-col>
         </v-row>
         <v-row class="d-flex justify-start">
