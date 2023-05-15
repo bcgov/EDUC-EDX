@@ -50,20 +50,19 @@
               />
             </v-col>
           </v-row>
-          <v-row>
+          <v-row class="mt-n2">
             <v-col>
               <PrimaryButton
                 id="clear"
                 secondary
                 text="Clear"
-                class="mt-n1"
                 :click-action="clear"
               />
 
               <PrimaryButton
                 id="search"       
                 text="Search"
-                class="mt-n1 ml-3"
+                class="ml-3"
                 :click-action="search"
               />
             </v-col>
@@ -84,8 +83,8 @@
           </v-icon>
         </v-col>
         <v-col
-          cols="4"
-          align-self="end"
+          cols="8"
+          class="d-flex justify-end"
         >
           <PrimaryButton
             id="add"
@@ -216,8 +215,7 @@ export default {
 .search-box {
     background: rgb(235, 237, 239);
     border-radius: 8px;
-    
-    padding: 25px;
+    padding: 10px;
 }
 
 .filter-col {

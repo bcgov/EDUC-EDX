@@ -1,6 +1,5 @@
 <template>
   <v-container 
-    class="containerSetup"
     fluid
   >
     <v-row class="mt-3 mb-3">

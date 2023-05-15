@@ -1,15 +1,16 @@
 <template>
   <v-container 
-    class="containerSetup"
     fluid
   >
     <div class="border">
       <v-tabs
-        v-model="tab"   
+        v-model="tab"
+        color="#38598a"
         show-arrows
       >
         <v-tab
           v-for="name in tabs"
+          class="divider"
           :key="name"
           :value="name"
         >
@@ -137,6 +138,15 @@ export default {
       padding-left: 3em !important;
     }
   }  
+  .divider { 
+    border-right: 1px solid lightgray;
+    border-radius: 0px;
+   } 
+   
+   .divider:last-child  { 
+    border-right: 0
+   }
+
     </style>
     
     
