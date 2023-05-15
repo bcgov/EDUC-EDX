@@ -8,7 +8,7 @@ export const FTE = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'grad'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'schoolFundingCode'}},
-      { title: 'Courses For Grad', key: 'courses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
+      { title: 'Courses For Grad', key: 'numberOfCourses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
     ],
   }  
 );
@@ -38,7 +38,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'grad'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'schoolFundingCode'}},
-      { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerCode'}},
+      { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerProgramCode'}},
     ],
   }  
 );
@@ -53,7 +53,7 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'grad'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'schoolFundingCode'}},
-      { title: 'Indigenous Ancestry', key: 'indAncestry', subHeader: {title: 'Band Code', key: 'bandCode'}},
+      { title: 'Indigenous Ancestry', key: 'nativeAncestryInd', subHeader: {title: 'Band Code', key: 'bandCode'}},
       { title: 'Indigenous Support Program', key: 'suppProg'},
     ],
   }  
@@ -69,7 +69,7 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'grad'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'schoolFundingCode'}},
-      { title: 'Special Education Category', key: 'spedCategory'},
+      { title: 'Special Education Category', key: 'specialEducationCategoryCode'},
     ],
   }  
 );

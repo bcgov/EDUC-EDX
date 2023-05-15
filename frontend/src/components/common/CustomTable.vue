@@ -65,21 +65,25 @@
                 <span v-if="props.item.value['legalMiddleNames']">({{ props.item.value['legalMiddleNames'] }})</span>
               </div>
 
-              <div v-else-if="column.key === 'usualName'">
-                <span v-if="props.item.value['usualLastName']">{{ props.item.value['usualLastName'] }}</span>,
-                <span v-if="props.item.value['usualFirstName']">{{ props.item.value['usualFirstName'] }}</span>
-                <span v-if="props.item.value['usualMiddleNames']">({{ props.item.value['usualMiddleNames'] }})</span>
+              <div v-else-if="column.key === 'isAdult'">
+                <span v-if="props.item.value['isAdult']">{{ props.item.value['isAdult'] ? 'Yes' :'No' }}</span>
               </div>
 
-              <div v-else>
-                <span v-if="props.item.value[column.key]">{{ props.item.value[column.key] }}</span>
+                <span v-else-if="props.item.value[column.key]">{{ props.item.value[column.key] }}</span>
                 <span v-else>-</span>
 
                 <div v-if="column.hasOwnProperty('subHeader')">
-                  <span v-if="props.item.value[column.subHeader.key]">{{ props.item.value[column.subHeader.key] }}</span>
+                  <div v-if="column.subHeader.key === 'usualName'">
+                    <div v-if="props.item.value['usualLastName'] || props.item.value['usualFirstName'] || props.item.value['usualMiddleNames']">
+                      <span v-if="props.item.value['usualLastName']">{{ props.item.value['usualLastName'] }}</span>,
+                      <span v-if="props.item.value['usualFirstName']">{{ props.item.value['usualFirstName'] }}</span>
+                      <span v-if="props.item.value['usualMiddleNames']">({{ props.item.value['usualMiddleNames'] }})</span>
+                    </div>
+                    <span v-else>-</span>
+                  </div>
+                  <span v-else-if="props.item.value[column.subHeader.key]">{{ props.item.value[column.subHeader.key] }}</span>
                   <span v-else>-</span>
                 </div>
-              </div>
             </div>
           </td>
         </tr>
@@ -180,16 +184,11 @@ export default {
 <style scoped>
   .header-text {
     color: #7f7f7f;
-    text-align: center !important;
  }
 
  .header-row {
     border-bottom-style: groove;
     border-bottom-color: rgb(255 255 255 / 45%);
- }
-
- .td-data {
-    text-align: center !important;
  }
    
 </style>
