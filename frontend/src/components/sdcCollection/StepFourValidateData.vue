@@ -1,13 +1,19 @@
 <template>
-  <v-container 
+  <v-container
     class="containerSetup"
     fluid
   >
     <div class="inner-border">
       <v-row>
-        <v-col class="pr-0" cols="3">
-          <Spinner v-if="isLoading()"/>
-          <div class="inner-border" v-else>
+        <v-col
+          class="pr-0"
+          cols="3"
+        >
+          <Spinner v-if="isLoading()" />
+          <div
+            v-else
+            class="inner-border"
+          >
             <v-row>
               <v-col class="d-flex justify-center">
                 <h3>Summary of Data Issues</h3>
@@ -20,24 +26,46 @@
                     <span>Errors</span>
                   </v-col>
                 </v-row>
-                <v-row no-gutters class="mt-1">
+                <v-row
+                  no-gutters
+                  class="mt-1"
+                >
                   <v-col class="d-flex justify-end">
-                    <v-icon size="35" color="#d90606">mdi-alert-circle-outline</v-icon>
-                    <span style="font-size: x-large">{{summaryCounts.errors}}</span>
+                    <v-icon
+                      size="35"
+                      color="#d90606"
+                    >
+                      mdi-alert-circle-outline
+                    </v-icon>
+                    <span style="font-size: x-large">{{ summaryCounts.errors }}</span>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-divider :thickness="1" inset color="#b3b0b0" class="border-opacity-75" vertical></v-divider>
+              <v-divider
+                :thickness="1"
+                inset
+                color="#b3b0b0"
+                class="border-opacity-75"
+                vertical
+              />
               <v-col class="ml-5 mr-5">
                 <v-row>
                   <v-col class="d-flex justify-start">
                     <span>Warnings</span>
                   </v-col>
                 </v-row>
-                <v-row no-gutters class="mt-1">
+                <v-row
+                  no-gutters
+                  class="mt-1"
+                >
                   <v-col class="d-flex justify-start">
-                    <v-icon size="35" color="blue">mdi-alert-outline</v-icon>
-                    <span style="font-size: x-large">{{summaryCounts.warnings}}</span>
+                    <v-icon
+                      size="35"
+                      color="blue"
+                    >
+                      mdi-alert-outline
+                    </v-icon>
+                    <span style="font-size: x-large">{{ summaryCounts.warnings }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -52,20 +80,26 @@
                       id="legalUsualNameSearch"
                       placeholder="Legal or Usual Name"
                       density="compact"
-                    ></v-text-field>
+                    />
                   </v-col>
                 </v-row>
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col class="ml-5">
-                <v-row no-gutters class="mt-1">
-                  <v-col cols="5" class="d-flex justify-start">
+                <v-row
+                  no-gutters
+                  class="mt-1"
+                >
+                  <v-col
+                    cols="5"
+                    class="d-flex justify-start"
+                  >
                     <v-text-field
                       id="penSearch"
                       placeholder="PEN"
                       density="compact"
-                    ></v-text-field>
+                    />
                   </v-col>
                   <v-col class="d-flex justify-end">
                     <PrimaryButton
@@ -89,22 +123,28 @@
             </v-row>
           </div>
           <div>
-            <Spinner v-if="isLoading()"/>
+            <Spinner v-if="isLoading()" />
             <v-data-table-server
+              v-model:page="pageNumber"
               else
               :items-per-page="pageSize"
-              v-model:page="pageNumber"
               :items-length="totalStudents"
               :items="studentListData"
               :loading="isLoading()"
               class="mt-2"
               item-title="name"
               item-value="name"
-
             >
-              <template v-slot:headers>
-                <v-row no-gutters :class="[]" style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
-                  <v-col cols="5" offset="1">
+              <template #headers>
+                <v-row
+                  no-gutters
+                  :class="[]"
+                  style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);"
+                >
+                  <v-col
+                    cols="5"
+                    offset="1"
+                  >
                     <v-row>
                       <v-col>
                         <span class="headerVal">PEN</span>
@@ -130,32 +170,44 @@
                   </v-col>
                 </v-row>
               </template>
-              <template v-slot:item="{ item, index }">
-                <v-row id="sdcStudentDataRow" @click="studentSelected(item.value.sdcSchoolCollectionStudentID)" :class="tableRowClass(item.value.sdcSchoolCollectionStudentID, index)" no-gutters style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);">
+              <template #item="{ item, index }">
+                <v-row
+                  id="sdcStudentDataRow"
+                  :class="tableRowClass(item.value.sdcSchoolCollectionStudentID, index)"
+                  no-gutters
+                  style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);"
+                  @click="studentSelected(item.value.sdcSchoolCollectionStudentID)"
+                >
                   <v-col cols="1">
-                    <v-icon class="mt-2" size="25" :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)">{{getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode)}}</v-icon>
+                    <v-icon
+                      class="mt-2"
+                      size="25"
+                      :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)"
+                    >
+                      {{ getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode) }}
+                    </v-icon>
                   </v-col>
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.studentPen}}</span>
+                        <span class="tableItemVal">{{ item.value.studentPen }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{item.value.localID}}</span>
+                        <span class="tableItemVal">{{ item.value.localID }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
                   <v-col>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{`${item.value.legalLastName} ${item.value.legalFirstName}`}}</span>
+                        <span class="tableItemVal">{{ `${item.value.legalLastName} ${item.value.legalFirstName}` }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{`${item.value.usualLastName} ${item.value.usualFirstName}`}}</span>
+                        <span class="tableItemVal">{{ `${item.value.usualLastName} ${item.value.usualFirstName}` }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -165,8 +217,11 @@
           </div>
         </v-col>
         <v-col cols="9">
-          <Spinner v-if="isLoading()"/>
-          <div class="inner-border" v-else>
+          <Spinner v-if="isLoading()" />
+          <div
+            v-else
+            class="inner-border"
+          >
             <v-row>
               <v-col cols="6">
                 <v-row>
@@ -190,120 +245,110 @@
                       <v-col>
                         <v-text-field
                           id="studentPen"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
                           label="PEN"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentLocalID"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
                           label="Local ID"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentDob"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
                           label="Birthdate"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentGender"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
                           label="Gender"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentLegalLastName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
                           label="Legal Surname"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentUsualLastName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
                           label="Usual Surname"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentLegalFirstName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
                           label="Legal Given"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentUsualFirstName"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
                           label="Usual Given"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentLegalMiddleNames"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
                           label="Legal Middle"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentUsualMiddleNames"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
                           label="Usual Middle"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -315,8 +360,7 @@
                           variant="plain"
                           readonly
                           :model-value="getEnrolledGradeCodesLabel(sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
@@ -326,45 +370,41 @@
                           variant="plain"
                           readonly
                           :model-value="getSchoolFundingCodeLabel(sdcSchoolCollectionStudentDetailCopy.schoolFundingCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentNumberOfCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
                           label="Number of Courses"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentOtherCourses"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
                           label="Other Courses"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentSupportBlocks"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
                           label="Support Blocks"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
@@ -374,21 +414,19 @@
                           variant="plain"
                           readonly
                           :model-value="getSpecialEducationCodesLabel(sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
                           id="studentNativeAncestryInd"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
                           label="Indigenous Ancestry"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
@@ -398,8 +436,7 @@
                           variant="plain"
                           readonly
                           :model-value="getBandCodesLabel(sdcSchoolCollectionStudentDetailCopy.bandCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -411,19 +448,17 @@
                           variant="plain"
                           readonly
                           :model-value="getHomeLanguageSpokenCodesLabel(sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
                           id="studentPostalCode"
+                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
                           label="Postal Code"
                           density="compact"
                           variant="plain"
                           readonly
-                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -435,8 +470,7 @@
                           variant="plain"
                           readonly
                           :model-value="getCareerProgramCodesLabel(sdcSchoolCollectionStudentDetailCopy.careerProgramCode)"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                       <v-col>
                         <v-text-field
@@ -446,14 +480,19 @@
                           variant="plain"
                           readonly
                           :model-value="sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes"
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-divider :thickness="1" inset color="#b3b0b0" class="border-opacity-75 mt-16" vertical></v-divider>
+              <v-divider
+                :thickness="1"
+                inset
+                color="#b3b0b0"
+                class="border-opacity-75 mt-16"
+                vertical
+              />
               <v-col>
                 <v-row>
                   <v-col class="d-flex justify-end">
@@ -487,7 +526,9 @@
                       >
                         <v-row class="mt-n1">
                           <v-col>
-                            <h3 :style="`color:` + getIssueIconColor(issue.validationIssueSeverityCode)">{{ getValidationIssueSeverityCodeLabel(issue.validationIssueSeverityCode) }}</h3>
+                            <h3 :style="`color:` + getIssueIconColor(issue.validationIssueSeverityCode)">
+                              {{ getValidationIssueSeverityCodeLabel(issue.validationIssueSeverityCode) }}
+                            </h3>
                           </v-col>
                         </v-row>
                         <v-row no-gutters>
@@ -497,73 +538,75 @@
                         </v-row>
                         <v-row>
                           <v-col>
-                            <div v-for="(field) in issue.validationIssueFieldCode"
-                                 :key="field">
+                            <div
+                              v-for="(field) in issue.validationIssueFieldCode"
+                              :key="field"
+                            >
                               <v-text-field
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationTextInput`"
-                                  v-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'input'"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  density="compact"
-                                  variant="underlined"
-                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                v-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'input'"
+                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationTextInput`"
+                                v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                density="compact"
+                                variant="underlined"
                               />
                               <v-autocomplete
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
-                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
-                                  item-title="dropdownText"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
+                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
                               />
                               <v-autocomplete
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
-                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
-                                  item-title="dropdownText"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                  multiple
-                                  :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
-                                  @update:modelValue="syncWithEnrolledProgramCodeOnUserInput"
+                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
+                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
+                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                item-title="dropdownText"
+                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                multiple
+                                :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
+                                @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
                               />
                               <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'datePicker'">
                                 <v-menu
-                                    id="dobValidationDatePicker"
-                                    ref="dobDateFilter"
-                                    :close-on-content-click="false"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="auto"
+                                  id="dobValidationDatePicker"
+                                  ref="dobDateFilter"
+                                  :close-on-content-click="false"
+                                  transition="scale-transition"
+                                  offset-y
+                                  min-width="auto"
                                 >
                                   <template #activator="{ on, attrs }">
                                     <v-text-field
-                                        :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDatePicker`"
-                                        v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                        :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                        class="pt-0 mt-0"
-                                        variant="underlined"
-                                        label="Start Date"
-                                        prepend-inner-icon="mdi-calendar"
-                                        clearable
-                                        readonly
-                                        v-bind="attrs"
-                                        @click:clear="clearDobDate"
-                                        @click="openDobDatePicker"
+                                      :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDatePicker`"
+                                      v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                      :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                      class="pt-0 mt-0"
+                                      variant="underlined"
+                                      label="Start Date"
+                                      prepend-inner-icon="mdi-calendar"
+                                      clearable
+                                      readonly
+                                      v-bind="attrs"
+                                      @click:clear="clearDobDate"
+                                      @click="openDobDatePicker"
                                     />
                                   </template>
                                 </v-menu>
                                 <VueDatePicker
-                                    ref="dobDatePicker"
-                                    v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                    :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                    :enable-time-picker="false"
-                                    format="yyyy-MM-dd"
-                                    @update:model-value="saveDobDate"
+                                  ref="dobDatePicker"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                  :enable-time-picker="false"
+                                  format="yyyy-MM-dd"
+                                  @update:model-value="saveDobDate"
                                 />
                               </div>
                             </div>
@@ -582,10 +625,9 @@
                   size="35"
                   class="mr-2"
                   variant="text"
-                  @click="previousSdcSchoolCollectionStudent"
                   :disabled="disablePreviousSdcSchoolCollectionStudentNavigation()"
-                >
-                </v-btn>
+                  @click="previousSdcSchoolCollectionStudent"
+                />
                 <PrimaryButton
                   id="saveAndRefreshButton"
                   text="Save & Refresh List"
@@ -595,18 +637,17 @@
                   size="35"
                   class="ml-2"
                   variant="text"
-                  @click="nextSdcSchoolCollectionStudent"
                   :disabled="disableNextSdcSchoolCollectionStudentNavigation()"
-                >
-                </v-btn>
+                  @click="nextSdcSchoolCollectionStudent"
+                />
               </v-col>
             </v-row>
           </div>
         </v-col>
       </v-row>
       <v-row
-          v-if="nextButtonIsDisabled()"
-          justify="end"
+        v-if="nextButtonIsDisabled()"
+        justify="end"
       >
         <p class="form-hint">
           All errors must be fixed
@@ -614,12 +655,12 @@
       </v-row>
       <v-row justify="end">
         <PrimaryButton
-            id="nextButton"
-            class="mr-2 mb-3"
-            icon="mdi-check"
-            text="Next"
-            :disabled="nextButtonIsDisabled()"
-            :click-action="next"
+          id="nextButton"
+          class="mr-2 mb-3"
+          icon="mdi-check"
+          text="Next"
+          :disabled="nextButtonIsDisabled()"
+          :click-action="next"
         />
       </v-row>
     </div>
