@@ -1,11 +1,13 @@
 import ApiService from '../../common/apiService';
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export const appStore = defineStore('app', {
   namespaced: true,
   state: () => ({
     pageTitle: null,
     schoolsMap: new Map(),
+    notClosedSchoolsMap: new Map(),
     activeSchoolsMap:  new Map(),
     activeDistrictsMap: new Map(),
     districtsMap : new Map(),
@@ -25,6 +27,9 @@ export const appStore = defineStore('app', {
       this.schoolsMap = new Map();
       schoolsResponse.forEach(element => {
         this.schoolsMap.set(element.schoolID, element);
+        if(isSchoolActive(element)){
+          this.notClosedSchoolsMap.set(element.schoolID, element);
+        }
       });
     },
     async setActiveSchools(activeSchoolsResponse) {
@@ -79,3 +84,10 @@ export const appStore = defineStore('app', {
     },
   },
 });
+
+function isSchoolActive(school) {
+  const currentTime = LocalDate.now();
+  const openedDate = school?.effectiveDate;
+  const closedDate = school?.expiryDate;
+  return school?.schoolName && !!openedDate && (!closedDate || currentTime.isAfter(LocalDate.parse(closedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+}
