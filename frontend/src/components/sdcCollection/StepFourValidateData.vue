@@ -202,12 +202,16 @@
                   <v-col>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ `${item.value.legalLastName} ${item.value.legalFirstName}` }}</span>
+                        <span class="tableItemVal">
+                          {{ `${fieldOrHyphen(item.value.legalLastName)} ${fieldOrHyphen(item.value.legalFirstName)}` }}
+                        </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ `${item.value.usualLastName} ${item.value.usualFirstName}` }}</span>
+                        <span class="tableItemVal">
+                          {{ `${fieldOrHyphen(item.value.usualLastName)} ${fieldOrHyphen(item.value.usualFirstName)}` }}
+                        </span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -289,7 +293,7 @@
                       <v-col>
                         <v-text-field
                           id="studentLegalLastName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalLastName)"
                           label="Legal Surname"
                           density="compact"
                           variant="plain"
@@ -299,7 +303,7 @@
                       <v-col>
                         <v-text-field
                           id="studentUsualLastName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualLastName)"
                           label="Usual Surname"
                           density="compact"
                           variant="plain"
@@ -311,7 +315,7 @@
                       <v-col>
                         <v-text-field
                           id="studentLegalFirstName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalFirstName)"
                           label="Legal Given"
                           density="compact"
                           variant="plain"
@@ -321,7 +325,7 @@
                       <v-col>
                         <v-text-field
                           id="studentUsualFirstName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualFirstName)"
                           label="Usual Given"
                           density="compact"
                           variant="plain"
@@ -333,7 +337,7 @@
                       <v-col>
                         <v-text-field
                           id="studentLegalMiddleNames"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalMiddleNames)"
                           label="Legal Middle"
                           density="compact"
                           variant="plain"
@@ -343,7 +347,7 @@
                       <v-col>
                         <v-text-field
                           id="studentUsualMiddleNames"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualMiddleNames)"
                           label="Usual Middle"
                           density="compact"
                           variant="plain"
@@ -917,6 +921,8 @@ const getValidationIssueSeverityCodeLabel = (severityCode) => {
     return 'Warning';
   }
 };
+
+const fieldOrHyphen = (field) => field || '-';
 
 const formatAndSortValidationIssues = (validationIssues = []) => {
   let validationIssueMap = new Map();
