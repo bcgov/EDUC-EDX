@@ -189,7 +189,9 @@
             class="pb-0"
           >
             <v-card class="add-new-user h-100">
-              <v-row class="add-new-user" align="center" justify="center">
+              <v-row class="add-new-user"
+                     align="center"
+                     justify="center">
                 <v-col class="d-flex justify-center">
                   <PrimaryButton
                     id="new-user-button"
@@ -372,7 +374,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap', 'activeSchoolsMap']),
+    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
   },
@@ -513,7 +515,7 @@ export default {
     },
     setupSchoolList(){
       this.schoolSearchNames = [];
-      for(const school of this.activeSchoolsMap.values()){
+      for(const school of this.notClosedSchoolsMap.values()){
         let schoolItem = {
           schoolCodeName: school.schoolName + ' - ' + school.mincode,
           schoolID: school.schoolID,
