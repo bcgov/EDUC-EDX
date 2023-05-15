@@ -89,5 +89,5 @@ function isSchoolActive(school) {
   const currentTime = LocalDate.now();
   const openedDate = school?.effectiveDate;
   const closedDate = school?.expiryDate;
-  return school?.schoolName && !!openedDate && (!closedDate || currentTime.isAfter(LocalDate.parse(closedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+  return school?.schoolName && !!openedDate && (!closedDate || currentTime.isBefore(LocalDate.parse(closedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
 }
