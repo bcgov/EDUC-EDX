@@ -977,7 +977,7 @@ const isLoading = () => {
 };
 
 </script>
-      
+
 <style scoped>
  .containerSetup{
     padding-right: 0em !important;
@@ -1050,7 +1050,3 @@ const isLoading = () => {
    font-size: 14px;
  }
 </style>
-
-
-
-
