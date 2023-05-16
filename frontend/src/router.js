@@ -248,7 +248,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'open-collection-summary',
+          path: 'open-collection-summary/:schoolID',
           name: 'sdcCollectionSummary',
           component: SDCCollectionSummary,
           props: true,

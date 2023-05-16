@@ -10,7 +10,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
     stepsInCollectionProcess: SDC_STEPS,
     currentCollectionTypeCode: null,
     totalStepsInCollection: SDC_STEPS.length,
-    schoolCollectionID: null,
     schoolCollection: null,
     bandCodesMap: new Map(),
     bandCodes: [],
@@ -35,7 +34,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
     getStepsInCollectionProcess: state => state.stepsInCollectionProcess,
     getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
     getTotalStepsInCollection: state => state.totalStepsInCollection,
-    getSchoolCollectionID: state => state.schoolCollectionID,
   },
   actions: {
     setStepsInCollectionProcess(stepsInCollectionProcess) {
@@ -43,9 +41,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentStepInCollectionProcess(currentStepInCollectionProcess) {
       this.currentStepInCollectionProcess = currentStepInCollectionProcess;
-    },
-    setSchoolCollectionID(schoolCollectionID) {
-      this.schoolCollectionID = schoolCollectionID;
     },
     setCurrentCollectionTypeCode(currentCollectionTypeCode) {
       this.currentCollectionTypeCode = currentCollectionTypeCode;

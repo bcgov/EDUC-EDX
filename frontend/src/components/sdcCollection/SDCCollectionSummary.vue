@@ -24,7 +24,23 @@
         >Return to Dashboard</a>
       </v-col>
     </v-row>
-    <div
+    <v-row
+      v-if="isLoading"
+      class="mt-0"
+    >
+      <v-col class="d-flex justify-center">
+        <v-progress-circular
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="isLoading"
+        />
+      </v-col>
+    </v-row> 
+    <v-row v-else>
+      <div
       v-if="isCollectionOpen()"
       class="border"
     >
@@ -66,15 +82,19 @@
     <div v-else>
       <p>Currently, there are no open collections.</p>
     </div>
+    </v-row>
   </v-container>
 </template>
   
 <script>
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
 import DoughnutChart from '../common/DoughnutChart.vue';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
+import {capitalize} from 'lodash';
 
 export default {
   name: 'sdcCollectionSummary',
@@ -83,21 +103,28 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-    
+    schoolID: {
+      type: String,
+      required: true,
+      default: null
+    }
   },
   data() {
     return {
       noOfStepsCompleted: 0,
-      incomingChartData: null
+      incomingChartData: null,
+      schoolCollectionID: null,
+      isLoading: false,
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess', 'schoolCollectionID'])
+    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess',])
   },
   created() {
-    this.calcuateStep();
+    this.getSDCCollectionBySchoolId();
   },
   methods: {
+    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
     startCollection() {
       router.push({name: 'sdcCollection', params: {schoolCollectionID: this.schoolCollectionID}});
     },
@@ -112,7 +139,23 @@ export default {
         this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index;
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
-    }
+    },
+    getSDCCollectionBySchoolId() {
+      this.isLoading = true;
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`).then(response => {
+        if(response.data) {
+          this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
+          this.schoolCollectionID = response.data.sdcSchoolCollectionID;
+          this.calcuateStep();
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
 
   }
 };
