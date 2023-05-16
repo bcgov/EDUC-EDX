@@ -424,7 +424,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setSchoolCollectionID', 'setCollectionMetaData']),
+    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -509,7 +509,7 @@ export default {
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     openSDCCollection() {
-      router.push({name: 'sdcCollectionSummary',});
+      router.push({name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToDistrictDetails(){
       router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
@@ -518,9 +518,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
-          this.setSchoolCollectionID(response.data.sdcSchoolCollectionID);
         } else {
           this.collectionDetail = 'No open collections';
         }
