@@ -101,6 +101,7 @@ export default {
       registerNextEvent: false,
       schoolCollectionObject: {},
       isLoading: false,
+      schoolID: null
     };
   },
   computed: {
@@ -111,6 +112,7 @@ export default {
     this.steps = [...this.stepsInCollectionProcess];
     useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
+      this.schoolID = this.schoolCollection.schoolID;
       this.isLoading = !this.isLoading;
     });
   },
@@ -123,7 +125,7 @@ export default {
       this.registerNextEvent = false;
     },
     backToCollectionDashboard() {
-      this.$router.push({name: 'sdcCollectionSummary'});
+      this.$router.push({name: 'sdcCollectionSummary', params: {schoolID: this.schoolID}});
     }
   }
 };
