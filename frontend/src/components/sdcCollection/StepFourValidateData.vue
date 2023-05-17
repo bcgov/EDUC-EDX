@@ -840,7 +840,7 @@ let sdcSchoolCollectionStudentDetailCopy = ref({});
 const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
       let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
 

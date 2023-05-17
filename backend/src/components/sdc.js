@@ -166,9 +166,10 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
-    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
     let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+
+    await validateEdxUserAccess(token, req, res, sdcSchoolCollectionStudentData.sdcSchoolCollectionID);
 
     sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
 
