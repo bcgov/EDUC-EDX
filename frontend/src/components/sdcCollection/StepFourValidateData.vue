@@ -37,7 +37,7 @@
                     >
                       mdi-alert-circle-outline
                     </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.errors }}</span>
+                    <span style="font-size: x-large">{{ summaryCounts.error }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -65,7 +65,7 @@
                     >
                       mdi-alert-outline
                     </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.warnings }}</span>
+                    <span style="font-size: x-large">{{ summaryCounts.warning }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -746,7 +746,7 @@ const summaryCounts = ref({errors: 0, warnings: 0});
 const getSummaryCounts = () => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/summaryCounts`, {
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/stats/error-warning-count/${route.params.schoolCollectionID}`, {
   }).then(response => {
     summaryCounts.value = response.data;
   }).catch(error => {
@@ -840,7 +840,7 @@ let sdcSchoolCollectionStudentDetailCopy = ref({});
 const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
   loadingCount.value += 1;
 
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/${sdcSchoolCollectionStudentID}`)
+  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
       let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
 
