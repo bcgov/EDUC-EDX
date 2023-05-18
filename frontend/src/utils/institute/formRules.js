@@ -33,6 +33,15 @@ const number = (message = 'Must be a number') => {
 };
 
 /**
+ * Form input must not contain special characters
+ *
+ * @param {String} [message]
+ * @returns {(value: string) => true|string}
+ */
+const noSpecialCharacters = (message = 'Remove or replace any special characters in this field.') =>
+  v => !v || !/[^\w\s-',.#]/.test(v) || message;
+
+/**
  * Rule for phone numbers also works for fax numbers too
  * @param {String} message
  * @returns Function
@@ -91,6 +100,7 @@ export {
   email,
   endDateRule,
   number,
+  noSpecialCharacters,
   phoneNumber,
   postalCode,
   required,
