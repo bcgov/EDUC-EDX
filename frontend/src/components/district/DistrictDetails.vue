@@ -325,7 +325,7 @@
                         label="Line 1"
                         variant="underlined"
                         required
-                        :rules="[rules.required()]"
+                        :rules="[rules.required(), rules.noSpecialCharacters()]"
                         :maxlength="255"
                         class="mt-n5 mb-3"
                       />
@@ -342,6 +342,7 @@
                         label="Line 2"
                         variant="underlined"
                         class="mt-n5 mb-3"
+                        :rules="[rules.noSpecialCharacters()]"
                         :maxlength="255"
                       />
                     </v-col>
@@ -357,7 +358,7 @@
                         label="City"
                         variant="underlined"
                         required
-                        :rules="[rules.required()]"
+                        :rules="[rules.required(), rules.noSpecialCharacters()]"
                         class="mt-n5 mb-3"
                         :maxlength="255"
                       />
@@ -505,7 +506,7 @@
                                         label="Line 1"
                                         variant="underlined"
                                         required
-                                        :rules="[rules.required()]"
+                                        :rules="[rules.required(), rules.noSpecialCharacters()]"
                                         :maxlength="255"
                                         class="mt-n5 mb-3"
                                       />
@@ -519,6 +520,7 @@
                                         label="Line 2"
                                         variant="underlined"
                                         :maxlength="255"
+                                        :rules="[rules.noSpecialCharacters()]"
                                         class="mt-n5 mb-3"
                                       />
                                     </v-col>
@@ -531,7 +533,7 @@
                                         label="City"
                                         variant="underlined"
                                         required
-                                        :rules="[rules.required()]"
+                                        :rules="[rules.required(), rules.noSpecialCharacters()]"
                                         :maxlength="255"
                                         class="mt-n5 mb-3"
                                       />
