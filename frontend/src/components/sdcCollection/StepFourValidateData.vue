@@ -735,13 +735,13 @@ const markStepAsComplete = () => {
 };
 
 const nextButtonIsDisabled = () => {
-  return summaryCounts.value.errors > 0 || isLoading();
+  return summaryCounts.value.error > 0 || isLoading();
 };
 //end next logic
 
 //page summary counts
 const loadingCount = ref(0);
-const summaryCounts = ref({errors: 0, warnings: 0});
+const summaryCounts = ref({error: 0, warning: 0});
 
 const getSummaryCounts = () => {
   loadingCount.value += 1;
