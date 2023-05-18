@@ -741,7 +741,7 @@ const nextButtonIsDisabled = () => {
 
 //page summary counts
 const loadingCount = ref(0);
-const summaryCounts = ref({errors: 0, warnings: 0});
+const summaryCounts = ref({error: 0, warning: 0});
 
 const getSummaryCounts = () => {
   loadingCount.value += 1;
