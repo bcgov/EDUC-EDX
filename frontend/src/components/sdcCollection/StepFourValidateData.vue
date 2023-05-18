@@ -735,7 +735,7 @@ const markStepAsComplete = () => {
 };
 
 const nextButtonIsDisabled = () => {
-  return summaryCounts.value.errors > 0 || isLoading();
+  return summaryCounts.value.error > 0 || isLoading();
 };
 //end next logic
 
