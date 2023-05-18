@@ -46,12 +46,13 @@
               class="pt-0"
               variant="underlined"
               :maxlength="255"
+              :rules="[rules.noSpecialCharacters()]"
               label="First Name"
             />
             <v-text-field
               id="editContactLastNameInput"
               v-model="editContact.lastName"
-              :rules="[rules.required()]"
+              :rules="[rules.required(), rules.noSpecialCharacters()]"
               class="pt-0"
               variant="underlined"
               :maxlength="255"
@@ -64,6 +65,7 @@
               variant="underlined"
               type="text"
               maxlength="255"
+              :rules="[rules.noSpecialCharacters()]"
             />
             <v-text-field
               id="editContactEmailInput"
