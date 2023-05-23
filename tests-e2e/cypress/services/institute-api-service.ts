@@ -122,7 +122,7 @@ export class InstituteApiService {
     }
 
     async createAuthorityWithContactToTest(){
-        let authority = await this.getAuthorityByAuthorityName('E2E Automation Testing Authority');
+        let authority = await this.getAuthorityByAuthorityName('EDX Automation Testing Authority');
 
         const authorityPayload = {
             createUser: 'EDXAT',
@@ -134,7 +134,7 @@ export class InstituteApiService {
             faxNumber: '2505555555',
             phoneNumber: '2505555555',
             email: 'fakeuser@sd5.bc.ca',
-            displayName: 'E2E Automation Testing Authority',
+            displayName: 'EDX Automation Testing Authority',
             authorityTypeCode: 'INDEPENDNT',
             openedDate: '2022-01-01T00:00:00',
             closedDate: null
