@@ -88,31 +88,65 @@ export class InstituteApiService {
         return authorityResult?.content[0]?.independentAuthorityId;
     }
 
+    async getAuthorityByAuthorityName(authorityName: string) {
+     
+        const authoritySearchCriteria = [{
+          condition: null,
+          searchCriteriaList: [
+            {
+              key: "displayName",
+              operation: "eq",
+              value: authorityName,
+              valueType: "STRING",
+              condition: "AND"
+            },
+            {
+              key: "closedDate",
+              operation: "eq",
+              value: null,
+              valueType: "STRING",
+              condition: "AND"
+            }
+          ]
+        }];
+  
+        const authoritySearchParam = {
+          params: {
+            searchCriteriaList: JSON.stringify(authoritySearchCriteria)
+          }
+        };
+
+        const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/paginated`;
+        const authorityResult = await this.restUtils.getData(url, authoritySearchParam);
+        return authorityResult?.content[0];
+    }
+
     async createAuthorityWithContactToTest(){
-        let authorityID = await this.getAuthorityIDByAuthorityNumber('998');
+        let authority = await this.getAuthorityByAuthorityName('E2E Automation Testing Authority');
 
         const authorityPayload = {
             createUser: 'EDXAT',
             updateUser: null,
             createDate: null,
             updateDate: null,
-            authorityNumber: '998',
+            authorityNumber: null,
             independentAuthorityId: null,
             faxNumber: '2505555555',
             phoneNumber: '2505555555',
             email: 'fakeuser@sd5.bc.ca',
-            displayName: 'EDX Automation Testing Authority',
+            displayName: 'E2E Automation Testing Authority',
             authorityTypeCode: 'INDEPENDNT',
             openedDate: '2022-01-01T00:00:00',
             closedDate: null
         };
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}`;
-        if(!authorityID){
+        if(!authority){
             return await this.restUtils.postData(url, authorityPayload, null);
         }
-        authorityPayload.independentAuthorityId = authorityID;
+        authorityPayload.independentAuthorityId = authority.independentAuthorityId;
+        authorityPayload.authorityNumber = authority.authorityNumber;
 
-        let freshAuthority = await this.restUtils.putData(url + '/' + authorityID, authorityPayload, null);
+        let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload, null);
         await this.setupAuthorityContact(freshAuthority);
         return freshAuthority;
     }
