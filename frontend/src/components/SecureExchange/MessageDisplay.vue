@@ -277,50 +277,47 @@
                       </v-card-text>
                     </v-card>
                     <v-card v-if="activity.type === 'document'">
-                      <v-row no-gutters>
-                        <v-card-text
-                          class="mt-n2 pb-0"
-                          :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
+                      <v-card-text
+                        class="mt-n2 pb-0"
+                        :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
+                      >
+                        <router-link
+                          v-if="isEditable() && isPdf(activity)"
+                          :to="{ path: documentUrl(activity) }"
+                          target="_blank"
                         >
-                          <router-link
-                            v-if="isEditable() && isPdf(activity)"
-                            :to="{ path: documentUrl(activity) }"
-                            target="_blank"
-                          >
-                            {{ activity.fileName }}
-                          </router-link>
-                          <a
-                            v-else-if="isEditable()"
-                            @click="showDocModal(activity)"
-                          >
-                            {{ activity.fileName }}
-                          </a>
-                          <span
-                            v-else
-                            style="color: grey"
-                          >
-                            {{ activity.fileName }}
-                          </span>
-                        </v-card-text>
-                        <v-card-text
-                          v-if="activity.documentType.label !== 'Other'"
-                          class="pt-0 pb-3"
+                          {{ activity.fileName }}
+                        </router-link>
+                        <a
+                          v-else-if="isEditable()"
+                          @click="showDocModal(activity)"
                         >
-                          {{ activity.documentType.label }}
-                        </v-card-text>
+                          {{ activity.fileName }}
+                        </a>
+                        <span
+                          v-else
+                          style="color: grey"
+                        >
+                          {{ activity.fileName }}
+                        </span>
+                      </v-card-text>
+                      <v-card-text
+                        v-if="activity.documentType.label !== 'Other'"
+                        class="pt-0 pb-3"
+                      >
+                        {{ activity.documentType.label }}
+                      </v-card-text>
+                      <v-card-actions v-show="isOpenDocIndex !== index">
+                        <v-spacer />
                         <v-btn
-                          v-show="isOpenDocIndex !== index"
-                          class="ml-12 mb-2 mr-1 pl-0 pr-0 plainBtn"
-                          bottom
-                          right
-                          absolute
+                          density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
                           @click="toggleRemoveDoc(index)"
                         >
                           <v-icon>mdi-delete-forever-outline</v-icon>
                         </v-btn>
-                      </v-row>
+                      </v-card-actions>
                       <v-expand-transition>
                         <div
                           v-show="isOpenDocIndex === index"
@@ -462,20 +459,17 @@
                           </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-row>
+                      <v-card-actions v-show="isOpenStudentIndex !== index">
+                        <v-spacer />
                         <v-btn
-                          v-show="isOpenStudentIndex !== index"
-                          class="ml-12 mr-1 mb-2 pl-0 pr-0 plainBtn"
-                          bottom
-                          right
-                          absolute
+                          density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
                           @click="toggleRemoveStudent(index)"
                         >
                           <v-icon>mdi-delete-forever-outline</v-icon>
                         </v-btn>
-                      </v-row>
+                      </v-card-actions>
                       <v-expand-transition>
                         <div
                           v-show="isOpenStudentIndex === index"
