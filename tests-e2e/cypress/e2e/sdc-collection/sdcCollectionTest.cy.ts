@@ -1,7 +1,13 @@
 import {Selectors} from "../../support/selectors";
 
 before(() => {
-    cy.task('defaults:db');
+    cy.task('dataLoad').then((res: any) => {
+       cy.task('setup-collections', res.school.schoolId);
+       cy.task('setup-schoolUser', ['99998']);
+    });
+})
+after(async t => {
+    cy.visit(Cypress.env('url.base_url') + '/logout');
 })
 describe('SDC Collection Test', () => {
     it('Load dashboard & click data collection card & process collection', () => {

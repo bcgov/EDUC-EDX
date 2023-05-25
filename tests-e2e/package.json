@@ -19,13 +19,15 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@js-joda/core": "^5.5.3",
     "axios": "^1.3.6",
     "cypress": "^12.10.0",
     "date-and-time": "^0.14.2",
     "faker": "^5.5.3",
-    "@js-joda/core": "^5.5.3",
-    "generate-password": "^1.7.0",
     "http-status-codes": "^1.4.0",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "generate-password-ts": "^1.6.3"
   }
 }

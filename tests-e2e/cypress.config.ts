@@ -1,7 +1,21 @@
 import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
 import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
+import {EdxApiService} from "./cypress/services/edx-api-service";
+import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
+
 
 const { defineConfig } = require('cypress');
+
+const loadAppSetupData = (config) => {
+  return new Promise(async (resolve, reject) => {
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
+    if(response){
+      resolve(response)
+    } else {
+      reject();
+    }
+  })
+}
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -16,13 +30,22 @@ export default defineConfig({
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
       on('task', {
-        'defaults:db': async() => {
-          const instituteSetupUtils = new InstituteSetupUtils(config);
-          const collectionSetupUtils = new CollectionSetupUtils(config);
-          let response = await instituteSetupUtils.setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
-          await collectionSetupUtils.setUpSchoolCollection(response.school.schoolId);
+        'dataLoad': async () => {
+          let appLoad = await loadAppSetupData(config);
+          return appLoad;
+        },
+        'setup-collections': async (schoolId) => {
+          let response = await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
+        'setup-schoolUser': async (schoolCodes) => {
+          const response = await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
+          return null;
+        },
+        'setup-userActivation': async (schoolNumber) => {
+          let response = await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
+          return null;
+        }
       })
     },
   }

@@ -1,7 +1,7 @@
 // @ts-ignore
-import generator from 'generate-password';
+import generator from "generate-password-ts";
 import EdxActivationCode from "../model/EdxActivationCode";
-import EdxActivationRole from "../model/EdxActivationRole";
+import {EdxActivationRole} from "../model/EdxActivationRole";
 import {InstituteApiService} from "./institute-api-service";
 import {RestUtils} from "../helpers/rest-utils-ts";
 
@@ -17,14 +17,14 @@ export class EdxApiService {
     this.restUtils = new RestUtils(this.config);
   }
 
-  async getPrimaryActivationCodeForInstitute(instituteTypeCode: string,instituteID: string) {
+  async getPrimaryActivationCodeForInstitute(instituteTypeCode: string, instituteID: string) {
     try {
-      const endpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
+      const endpoint = '/api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
       const url = `${this.config.env.edx.base_url}${endpoint}`;
       return await this.restUtils.getData(url, null);
     }catch (e: any){
       if(e?.response?.status === 404){
-        const generateEndpoint = 'api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
+        const generateEndpoint = '/api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
         const edxActivationCode = this.createEdxActivationCode( true, '','',instituteTypeCode,instituteID);
         const url = `${this.config.env.edx.base_url}${generateEndpoint}`;
         return this.restUtils.postData(url,edxActivationCode, null);
@@ -33,7 +33,7 @@ export class EdxApiService {
   }
 
   async createEdxActivationCodes(personalCode: string,instituteTypeCode: string,instituteID: string) {
-    const endpoint = 'api/v1/edx/users/activation-code';
+    const endpoint = '/api/v1/edx/users/activation-code';
     const url = `${this.config.env.edx.base_url}${endpoint}`;
     const roles = await this.getAllEdxUserRoleForInstitute(instituteTypeCode);
     const edxActivationPersonalCode = this.createEdxActivationCode( false,roles,personalCode ,instituteTypeCode,instituteID);
@@ -43,7 +43,7 @@ export class EdxApiService {
   }
 
   async getAllEdxUserRoleForInstitute(instituteTypeCode: string) {
-    const endpoint = 'api/v1/edx/users/roles?instituteType='+instituteTypeCode;
+    const endpoint = '/api/v1/edx/users/roles?instituteType='+instituteTypeCode;
     const url = `${this.config.env.edx.base_url}${endpoint}`;
     return this.restUtils.getData(url, null);
   }
@@ -80,13 +80,13 @@ export class EdxApiService {
   }
 
   async deleteActivationCode(activationCodeId: string) {
-    const endpoint = 'api/v1/edx/users/activation-code';
+    const endpoint = '/api/v1/edx/users/activation-code';
     const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
     await this.restUtils.deleteData(url,null);
   }
   async deleteEdxUser(firstName: string, lastName: string) {
     const edxUser = await this.getEdxUserFromFirstNameLastName(firstName, lastName);
-    const endpoint = 'api/v1/edx/users';
+    const endpoint = '/api/v1/edx/users';
     const url = `${this.config.env.edx.base_url}${endpoint}/${edxUser?.edxUserID}`;
     await this.restUtils.deleteData(url, null);
   }
@@ -123,7 +123,7 @@ export class EdxApiService {
   }
 
   async  getEdxUserFromFirstNameLastName(firstName: string, lastName: string) {
-    const endpoint = 'api/v1/edx/users';
+    const endpoint = '/api/v1/edx/users';
     const url = `${this.config.env.edx.base_url}${endpoint}`;
 
     const searchParams = {
@@ -152,11 +152,12 @@ export class EdxApiService {
     //get only first 19 to avoid adding millisecond at the end.
     edxActivationCode.expiryDate = date.addDays(now, 1).toJSON().substring(0, 19);
     if (roles.length > 0) {
+      let roleArr: Array<EdxActivationRole> = new Array<EdxActivationRole>();
       for (const role of roles) {
-        const activationRole = new EdxActivationRole();
-        activationRole.edxRoleCode = role.edxRoleCode;
-        edxActivationCode.addActivationRole(activationRole);
+        const activationRole : EdxActivationRole = {edxRoleCode: role.edxRoleCode};
+        roleArr.push(activationRole);
       }
+      edxActivationCode.edxActivationRoles = roleArr;
     }
 
     if (instituteTypeCode.toString().toUpperCase() === 'SCHOOL') {
@@ -172,7 +173,7 @@ export class EdxApiService {
    * @returns {Promise<any>} Response data
    */
   async deleteUserActivationCodes(userID: string) {
-    const endPoint = `${this.config.env.edx.base_url}api/v1/edx/users/activation-code/user/${userID}`;
+    const endPoint = `${this.config.env.edx.base_url}/api/v1/edx/users/activation-code/user/${userID}`;
     return await this.restUtils.deleteData(endPoint, null);
   }
   
