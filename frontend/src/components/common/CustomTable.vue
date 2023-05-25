@@ -189,6 +189,7 @@ export default {
  .header-row {
     border-bottom-style: groove;
     border-bottom-color: rgb(255 255 255 / 45%);
+    vertical-align: top !important;
  }
    
 </style>
