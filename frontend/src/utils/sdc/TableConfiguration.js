@@ -76,7 +76,7 @@ export const SPECIALED_PR = Object.freeze(
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: 'Has Special Education Category',
+    defaultFilter: 'English Language Learner',
     tableHeaders: [
       { title: 'select' },
       { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
