@@ -25,9 +25,7 @@
     "date-and-time": "^0.14.2",
     "faker": "^5.5.3",
     "http-status-codes": "^1.4.0",
-    "typescript": "^4.9.5"
-  },
-  "dependencies": {
+    "typescript": "^4.9.5",
     "generate-password-ts": "^1.6.3"
   }
 }
