@@ -191,9 +191,9 @@
                       <v-select
                         id="contactNameSelect"
                         v-model="contactNameFilter"
-                        class="pt-0 mt-0"
                         label="Contact Name"
                         density="compact"
+                        style="margin-top: 0.1em"
                         variant="underlined"
                         item-title="teamName"
                         item-value="ministryOwnershipTeamId"
