@@ -110,7 +110,8 @@
                         <v-chip
                           :id="`documentChip-${index}`"
                           :class="['ma-1']"
-                          close
+                          close-icon="mdi-close-circle"
+                          closable
                           @click:close="removeDocumentByIndex(index)"
                         >
                           <v-avatar left>
@@ -128,7 +129,8 @@
                         <v-chip
                           :id="`studentChip-${index}`"
                           :class="['ma-1']"
-                          close
+                          close-icon="mdi-close-circle"
+                          closable
                           @click:close="removeSecureExchangeStudentByID(secureExchangeStudent)"
                         >
                           <v-avatar left>

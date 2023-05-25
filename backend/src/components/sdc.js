@@ -116,7 +116,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       searchCriteriaList: [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID}]
     }, {
       condition: CONDITION.AND,
-      searchCriteriaList: createSearchCriteria(req.body.searchParams)
+      searchCriteriaList: createSearchCriteria(req.query.searchParams)
     }];
 
     const params = {
@@ -148,32 +148,9 @@ async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
-    let errorCriteria = [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND}];
-    errorCriteria.push({key: 'sdcSchoolCollectionStudentStatusCode', value: 'ERROR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    let errorWarningCount = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/stats/error-warning-count/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
 
-    let warningCriteria = [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND}];
-    warningCriteria.push({key: 'sdcSchoolCollectionStudentStatusCode', value: 'WARNING', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
-
-    const errorParams = {
-      params: {
-        pageNumber: 1,
-        pageSize: 1,
-        searchCriteriaList: JSON.stringify([{condition: null, searchCriteriaList: errorCriteria}]),
-      }
-    };
-
-    const warningParams = {
-      params: {
-        pageNumber: 1,
-        pageSize: 1,
-        searchCriteriaList: JSON.stringify([{condition: null, searchCriteriaList: warningCriteria}]),
-      }
-    };
-
-    let errorData = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', errorParams, req.session?.correlationID);
-    let warningData = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', warningParams, req.session?.correlationID);
-
-    return res.status(HttpStatus.OK).json({warnings: warningData.totalElements, errors: errorData.totalElements});
+    return res.status(HttpStatus.OK).json(errorWarningCount);
   }catch (e) {
     if(e?.status === 404){
       res.status(HttpStatus.OK).json(null);
@@ -189,9 +166,10 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
-    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
     let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+
+    await validateEdxUserAccess(token, req, res, sdcSchoolCollectionStudentData.sdcSchoolCollectionID);
 
     sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
 
