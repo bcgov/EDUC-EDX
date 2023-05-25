@@ -346,8 +346,7 @@
                                   No
                                 </v-btn>
                                 <v-btn
-                                  dark
-                                  color="#003366"
+                                  color="primary"
                                   @click="removeAttachment(activity.documentID)"
                                 >
                                   Yes
@@ -497,8 +496,7 @@
                                   No
                                 </v-btn>
                                 <v-btn
-                                  dark
-                                  color="#003366"
+                                  color="primary"
                                   @click="removeStudent(activity.secureExchangeStudentId)"
                                 >
                                   Yes
