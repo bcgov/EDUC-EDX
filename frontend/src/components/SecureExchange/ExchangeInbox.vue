@@ -108,7 +108,7 @@
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
-                        prepend-inner-icon="mdi-book-open-variant"
+                        prepend-icon="mdi-book-open-variant"
                         clearable
                       />
                     </v-col>
@@ -134,7 +134,7 @@
                             class="pt-0 mt-0"
                             variant="underlined"
                             label="Message Date"
-                            prepend-inner-icon="mdi-calendar"
+                            prepend-icon="mdi-calendar"
                             clearable
                             readonly
                             v-bind="attrs"
@@ -158,9 +158,8 @@
                         id="statusSelector"
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
-                        prepend-inner-icon="mdi-circle-medium"
-                        density="compact"
                         label="Status"
+                        density="compact"
                         style="margin-top: 0.3em"
                         variant="underlined"
                         :menu-props="{
@@ -168,6 +167,11 @@
                           closeOnContentClick: true,
                         }"
                       >
+                        <template #prepend>
+                          <v-icon :color="getStatusColor(statusSelectFilter ? statusSelectFilter[0].label : '')">
+                            mdi-circle-medium
+                          </v-icon>
+                        </template>
                         <template #selection="{ item, index }">
                           <span id="statusLabel">{{ item.value.label }}</span>
                         </template>
@@ -198,7 +202,7 @@
                         item-title="teamName"
                         item-value="ministryOwnershipTeamId"
                         :items="ministryContactName"
-                        prepend-inner-icon="mdi-book-open-variant"
+                        prepend-icon="mdi-book-open-variant"
                         clearable
                       >
                         <template #selection="{ item, index }">
@@ -219,7 +223,7 @@
                         class="pt-0 mt-0"
                         density="compact"
                         label="Message ID"
-                        prepend-inner-icon="mdi-pound"
+                        prepend-icon="mdi-pound"
                         clearable
                         @keypress="isNumber($event)"
                       />
@@ -237,7 +241,7 @@
                         variant="underlined"
                         density="compact"
                         label="Student PEN"
-                        prepend-inner-icon="mdi-account"
+                        prepend-icon="mdi-account"
                         maxlength="9"
                         counter="9"
                         clearable
