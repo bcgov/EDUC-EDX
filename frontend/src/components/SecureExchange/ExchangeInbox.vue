@@ -107,7 +107,7 @@
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
-                        prepend-inner-icon="mdi-book-open-variant"
+                        prepend-icon="mdi-book-open-variant"
                         clearable
                       />
                     </v-col>
@@ -132,7 +132,7 @@
                             class="pt-0 mt-0"
                             variant="underlined"
                             label="Message Date"
-                            prepend-inner-icon="mdi-calendar"
+                            prepend-icon="mdi-calendar"
                             clearable
                             readonly
                             v-bind="attrs"
@@ -156,7 +156,7 @@
                         id="statusSelector"
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
-                        prepend-inner-icon="mdi-circle-medium"
+                        prepend-icon="mdi-circle-medium"
                         label="Status"
                         variant="underlined"
                         :menu-props="{
@@ -193,7 +193,7 @@
                         item-title="teamName"
                         item-value="ministryOwnershipTeamId"
                         :items="ministryContactName"
-                        prepend-inner-icon="mdi-book-open-variant"
+                        prepend-icon="mdi-book-open-variant"
                         clearable
                       />
                     </v-col>
@@ -209,7 +209,7 @@
                         variant="underlined"
                         class="pt-0 mt-0"
                         label="Message ID"
-                        prepend-inner-icon="mdi-pound"
+                        prepend-icon="mdi-pound"
                         clearable
                       />
                     </v-col>
@@ -225,7 +225,7 @@
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Student PEN"
-                        prepend-inner-icon="mdi-account"
+                        prepend-icon="mdi-account"
                         maxlength="9"
                         counter="9"
                         clearable
