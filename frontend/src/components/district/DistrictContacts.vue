@@ -111,6 +111,7 @@
               :district-i-d="$route.params.districtID"
               :can-edit-district-contact="canEditDistrictContact"
               :handle-open-editor="() => openEditContactSheet(contact)"
+              @remove-district-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
         </v-row>
@@ -159,6 +160,7 @@
         :on-success-handler="contactEditSuccess"
       />
     </v-navigation-drawer>
+    <ConfirmationDialog ref="confirmationDialog" />
   </v-container>
 </template>
 
@@ -169,6 +171,7 @@ import {ApiRoutes} from '../../utils/constants';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import NewDistrictContactPage from './NewDistrictContactPage.vue';
 import EditDistrictContactPage from './EditDistrictContactPage.vue';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import DistrictContact from './DistrictContact.vue';
 import { mapState } from 'pinia';
 import { authStore } from '../../store/modules/auth';
@@ -183,7 +186,8 @@ export default {
     PrimaryButton,
     NewDistrictContactPage,
     EditDistrictContactPage,
-    DistrictContact
+    DistrictContact,
+    ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
@@ -274,6 +278,29 @@ export default {
     },
     redirectToDistrictDetails() {
       this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
+    },
+    removeContact(districtID, districtContactID) {
+      const opts = {
+        color: '#003366',
+        dense: false,
+        titleBold: true,
+        resolveText: 'Remove'
+      };
+      this.$refs.confirmationDialog.open('Please Confirm', 'Are you sure you want to remove this contact?',opts)
+        .then((result) => {
+          if (result) { // the component returns true only when user confirms the dialog.
+            this.loadingCount += 1;
+            ApiService.apiAxios.delete(`${ApiRoutes.district.BASE_URL}/${districtID}/contact/${districtContactID}`).then(() => {
+              this.setSuccessAlert('District contact removed successfully');
+              this.getThisDistrictsContacts();
+            }).catch(error => {
+              console.log(error);
+              this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'Error removing district contact. Please try again later');
+            }).finally(() => {
+              this.loadingCount -= 1;
+            });
+          }
+        });
     }
   },
 };

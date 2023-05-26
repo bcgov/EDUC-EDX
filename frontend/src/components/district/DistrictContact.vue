@@ -23,6 +23,7 @@
           <v-btn
             v-if="canEditDistrictContact"
             id="editContactButton"
+            class="mr-2"
             title="Edit"
             width="0.5em"
             color="white"
@@ -35,6 +36,25 @@
               color="#003366"
               dark
             />
+          </v-btn>
+          <v-btn
+            v-if="canEditDistrictContact"
+            id="removeContactButton"
+            title="Remove"
+            color="white"
+            width="0.5em"
+            min-width="0.5em"
+            depressed
+            small
+            @click="callShowRemoveContactConfirmation"
+          >
+            <v-icon
+              size="x-large"
+              color="#003366"
+              dark
+            >
+              mdi-trash-can-outline
+            </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -171,7 +191,11 @@ export default {
       required: true
     }
   },
+  emits: ['remove-district-contact:show-confirmation-prompt'],
   methods: {
+    callShowRemoveContactConfirmation() {
+      this.$emit('remove-district-contact:show-confirmation-prompt', this.contact.districtId, this.contact.districtContactId);
+    },
     formatDate,
     formatPhoneNumber,
     getStatusColor,
@@ -181,15 +205,6 @@ export default {
 </script>
 
 <style scoped>
-.editField {
-  font-size: 16px;
-  color: rgb(0, 51, 102);
-  vertical-align: super;
-}
-
-.editField:hover {
-  text-decoration: underline;
-}
 
 .missing-highlight {
   color: #ff5252;
