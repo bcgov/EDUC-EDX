@@ -156,7 +156,6 @@
                         id="statusSelector"
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
-                        prepend-icon="mdi-circle-medium"
                         label="Status"
                         variant="underlined"
                         :menu-props="{
@@ -164,6 +163,11 @@
                           closeOnContentClick: true,
                         }"
                       >
+                        <template #prepend>
+                          <v-icon :color="getStatusColor(statusSelectFilter ? statusSelectFilter[0].label : '')">
+                            mdi-circle-medium
+                          </v-icon>
+                        </template>
                         <template #selection="{ item, index }">
                           {{ item.value.label }}
                         </template>
