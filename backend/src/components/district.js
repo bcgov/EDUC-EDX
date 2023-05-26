@@ -3,7 +3,7 @@ const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserD
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
-const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
+const {LocalDate, DateTimeFormatter, LocalDateTime} = require('@js-joda/core');
 
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
@@ -118,9 +118,37 @@ async function updateDistrictContact(req, res) {
   }
 }
 
+async function removeDistrictContact(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
+    checkEDXUserDistrictAdminPermission(req);
+    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+    const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
+
+    if (!contact) {
+      log.error('Contact not found');
+      return errorResponse(res);
+    }
+
+    contact.createDate = null;
+    contact.updateDate = null;
+    contact.expiryDate = LocalDateTime.now().format(formatter);
+
+    const result = await putData(token, contact,`${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}` , req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'removeDistrictContact', 'Error occurred while attempting to remove a district contact.');
+    return errorResponse(res);
+  }
+}
+
 module.exports = {
   getDistrictByDistrictID,
   updateDistrict,
   createDistrictContact,
-  updateDistrictContact
+  updateDistrictContact,
+  removeDistrictContact
 };
