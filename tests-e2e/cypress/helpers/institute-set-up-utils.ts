@@ -3,11 +3,11 @@ import {EdxApiService} from "../services/edx-api-service";
 
 export class InstituteSetupUtils {
 
-    config: any;
+    config: Cypress.PluginConfigOptions;
     instituteApi: any;
     edxApi: any;
 
-    constructor(conf: any) {
+    constructor(conf: Cypress.PluginConfigOptions) {
         this.config = conf;
         this.instituteApi = new InstituteApiService(this.config);
         this.edxApi = new EdxApiService(this.config);

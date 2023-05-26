@@ -2,14 +2,17 @@ import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
 import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
+import {defineConfig} from "cypress";
 
-
-const { defineConfig } = require('cypress');
-
-const loadAppSetupData = (config) => {
+const loadAppSetupData = (config: Cypress.PluginConfigOptions) => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
-    if(response){
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
+      includeTombstoneValues: false,
+      includeSchoolAddress: true,
+      includeSchoolContact: false,
+      includeDistrictAddress: true
+    });
+    if (response){
       resolve(response)
     } else {
       reject();
@@ -35,15 +38,15 @@ export default defineConfig({
           return appLoad;
         },
         'setup-collections': async (schoolId) => {
-          let response = await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
+          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
         'setup-schoolUser': async (schoolCodes) => {
-          const response = await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
+          await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
           return null;
         },
         'setup-userActivation': async (schoolNumber) => {
-          let response = await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
+          await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
           return null;
         }
       })
