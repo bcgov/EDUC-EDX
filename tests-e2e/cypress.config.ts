@@ -2,11 +2,9 @@ import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
 import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
+import {defineConfig} from "cypress";
 
-
-const { defineConfig } = require('cypress');
-
-const loadAppSetupData = (config) => {
+const loadAppSetupData = (config: Cypress.PluginConfigOptions) => {
   return new Promise(async (resolve, reject) => {
     let response = await new InstituteSetupUtils(config).setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
     if(response){

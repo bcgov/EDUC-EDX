@@ -2,10 +2,10 @@ import {SdcCollectionApiService} from "../services/sdc-collection-api-service";
 
 export class CollectionSetupUtils {
 
-    config: any;
+    config: Cypress.PluginConfigOptions;
     sdcCollectionApi: any;
 
-    constructor(conf: any) {
+    constructor(conf: Cypress.PluginConfigOptions) {
         this.config = conf;
         this.sdcCollectionApi = new SdcCollectionApiService(this.config);
     }

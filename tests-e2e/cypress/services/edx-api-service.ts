@@ -4,15 +4,14 @@ import EdxActivationCode from "../model/EdxActivationCode";
 import {EdxActivationRole} from "../model/EdxActivationRole";
 import {InstituteApiService} from "./institute-api-service";
 import {RestUtils} from "../helpers/rest-utils-ts";
-
-const faker = require('faker');
-const date = require('date-and-time');
+import {faker} from '@faker-js/faker';
+import date from 'date-and-time';
 
 export class EdxApiService {
-  config: any;
+  config: Cypress.PluginConfigOptions;
   restUtils: any;
 
-  constructor(conf: any) {
+  constructor(conf: Cypress.PluginConfigOptions) {
     this.config = conf;
     this.restUtils = new RestUtils(this.config);
   }
