@@ -7,8 +7,8 @@ before(() => {
   });
 })
 
-after(async _t => {
-  cy.visit(Cypress.env('url.base_url') + '/logout');
+after(() => {
+  cy.visit(Cypress.env('url').base_url + '/logout')
 })
 
 describe('SDC Collection Test', () => {

@@ -1,4 +1,3 @@
-// @ts-ignore
 import {RestUtils} from "../helpers/rest-utils-ts";
 
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
@@ -89,7 +88,6 @@ export class InstituteApiService {
     }
 
     async getAuthorityByAuthorityName(authorityName: string) {
-     
         const authoritySearchCriteria = [{
           condition: null,
           searchCriteriaList: [
@@ -203,7 +201,6 @@ export class InstituteApiService {
         };
 
         if(includeDistrictAddress){
-            // @ts-ignore
             districtPayload['addresses'] = [
                 {
                     updateUser: 'EDXAT',
@@ -301,16 +298,12 @@ export class InstituteApiService {
         }
 
         if(!includeTombstoneValues){
-            // @ts-ignore
             schoolPayload.email = null;
-            // @ts-ignore
             schoolPayload.faxNumber = null;
-            // @ts-ignore
             schoolPayload.phoneNumber = null;
         }
 
         if(includeSchoolAddress){
-            // @ts-ignore
             schoolPayload['addresses'] = [
                 {
                     updateUser: 'EDXAT',

@@ -33,15 +33,15 @@ export default defineConfig({
           return appLoad;
         },
         'setup-collections': async (schoolId) => {
-          let response = await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
+          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
         'setup-schoolUser': async (schoolCodes) => {
-          const response = await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
+          await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
           return null;
         },
         'setup-userActivation': async (schoolNumber) => {
-          let response = await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
+          await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
           return null;
         }
       })
