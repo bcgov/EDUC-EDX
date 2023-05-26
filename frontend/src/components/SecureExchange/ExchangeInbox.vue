@@ -104,6 +104,7 @@
                       <v-text-field
                         id="subjectInput"
                         v-model="subjectFilter"
+                        density="compact"
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
@@ -129,6 +130,7 @@
                           <v-text-field
                             id="messageDateTextField"
                             v-model="messageDateMoment"
+                            density="compact"
                             class="pt-0 mt-0"
                             variant="underlined"
                             label="Message Date"
@@ -157,6 +159,8 @@
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
                         label="Status"
+                        density="compact"
+                        style="margin-top: 0.3em"
                         variant="underlined"
                         :menu-props="{
                           closeOnClick: true,
@@ -169,7 +173,7 @@
                           </v-icon>
                         </template>
                         <template #selection="{ item, index }">
-                          {{ item.value.label }}
+                          <span id="statusLabel">{{ item.value.label }}</span>
                         </template>
 
                         <template #item="{ item, index }">
@@ -191,15 +195,20 @@
                       <v-select
                         id="contactNameSelect"
                         v-model="contactNameFilter"
-                        class="pt-0 mt-0"
                         label="Contact Name"
+                        density="compact"
+                        style="margin-top: 0.1em"
                         variant="underlined"
                         item-title="teamName"
                         item-value="ministryOwnershipTeamId"
                         :items="ministryContactName"
                         prepend-icon="mdi-book-open-variant"
                         clearable
-                      />
+                      >
+                        <template #selection="{ item, index }">
+                          <span id="contactNameLabel">{{ item.title }}</span>
+                        </template>
+                      </v-select>
                     </v-col>
                     <v-col
                       cols="12"
@@ -212,9 +221,11 @@
                         v-model="messageIDFilter"
                         variant="underlined"
                         class="pt-0 mt-0"
+                        density="compact"
                         label="Message ID"
                         prepend-icon="mdi-pound"
                         clearable
+                        @keypress="isNumber($event)"
                       />
                     </v-col>
                   </v-row>
@@ -225,14 +236,16 @@
                       class="pt-0"
                     >
                       <v-text-field
+                        id="studentIDInput"
                         v-model="studentIDFilter"
-                        class="pt-0 mt-0"
                         variant="underlined"
+                        density="compact"
                         label="Student PEN"
                         prepend-icon="mdi-account"
                         maxlength="9"
                         counter="9"
                         clearable
+                        @keypress="isNumber($event)"
                       />
                     </v-col>
                   </v-row>
@@ -415,6 +428,7 @@ import {appStore} from '../../store/modules/app';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import moment from 'moment';
+import {isNumber} from '../../utils/institute/formInput';
 
 export default {
   name: 'ExchangeInbox',
@@ -617,6 +631,7 @@ export default {
       }
       return content;
     },
+    isNumber,
     getCompletedMessages() {
       this.headerSearchParams.secureExchangeStatusCode = ['CLOSED'];
       this.isActiveMessagesTabEnabled = false;
@@ -690,13 +705,37 @@ export default {
   color: #003366;
 }
 
-:deep(.dp__input_wrap){
+:deep(.dp__input_wrap) {
   height: 0;
   width: 0;
 }
 
 :deep(.dp__input){
   display: none;
+}
+
+:deep(#subjectInput){
+  padding-top: 0.6em;
+}
+
+:deep(#messageDateTextField){
+  padding-top: 0.6em;
+}
+
+:deep(#statusLabel){
+  margin-top: -0.5em;
+}
+
+:deep(#contactNameLabel){
+  margin-top: -0.3em;
+}
+
+:deep(#messageIdInput){
+  padding-top: 0.5em;
+}
+
+:deep(#studentIDInput){
+  padding-top: 0.8em;
 }
 
 :deep(.dp__icon){
