@@ -327,7 +327,6 @@
                         required
                         :rules="[rules.required(), rules.noSpecialCharacters()]"
                         :maxlength="255"
-                        class="mt-n5 mb-3"
                       />
                     </v-col>
                   </v-row>
@@ -341,7 +340,6 @@
                         v-model="getMailingAddressCopy()[0].addressLine2"
                         label="Line 2"
                         variant="underlined"
-                        class="mt-n5 mb-3"
                         :rules="[rules.noSpecialCharacters()]"
                         :maxlength="255"
                       />
@@ -359,7 +357,6 @@
                         variant="underlined"
                         required
                         :rules="[rules.required(), rules.noSpecialCharacters()]"
-                        class="mt-n5 mb-3"
                         :maxlength="255"
                       />
                     </v-col>
@@ -384,7 +381,6 @@
                         outlined
                         :rules="[rules.required()]"
                         required
-                        class="mt-n3"
                         style="color: black"
                       />
                     </v-col>
@@ -408,7 +404,6 @@
                         :rules="[rules.required()]"
                         dense
                         outlined
-                        class="mb-4"
                         style="color: black"
                       />
                     </v-col>
@@ -426,7 +421,6 @@
                         :maxlength="6"
                         required
                         :rules="[rules.required(), rules.postalCode()]"
-                        class="mt-n5 mb-3"
                       />
                     </v-col>
                   </v-row>
@@ -508,7 +502,6 @@
                                         required
                                         :rules="[rules.required(), rules.noSpecialCharacters()]"
                                         :maxlength="255"
-                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -521,7 +514,6 @@
                                         variant="underlined"
                                         :maxlength="255"
                                         :rules="[rules.noSpecialCharacters()]"
-                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -535,7 +527,6 @@
                                         required
                                         :rules="[rules.required(), rules.noSpecialCharacters()]"
                                         :maxlength="255"
-                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -553,7 +544,6 @@
                                         required
                                         :rules="[rules.required()]"
                                         outlined
-                                        class="mt-n3"
                                         style="color: black"
                                       />
                                     </v-col>
@@ -572,7 +562,6 @@
                                         :rules="[rules.required()]"
                                         required
                                         outlined
-                                        class="mb-4"
                                         style="color: black"
                                       />
                                     </v-col>
@@ -587,7 +576,6 @@
                                         required
                                         :rules="[rules.required(), rules.postalCode()]"
                                         :maxlength="6"
-                                        class="mt-n5 mb-3"
                                       />
                                     </v-col>
                                   </v-row>
@@ -600,7 +588,7 @@
                                     v-model="sameAsMailingCheckbox"
                                     dense
                                     label="Same as Mailing Address"
-                                    class="mt-n3 pt-0 ml-n3"
+                                    class="pt-0 ml-n3"
                                     @change="clickSameAsAddressButton"
                                   />
                                 </v-col>
