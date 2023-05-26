@@ -6,8 +6,13 @@ import {defineConfig} from "cypress";
 
 const loadAppSetupData = (config: Cypress.PluginConfigOptions) => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities({includeTombstoneValues: false, includeSchoolAddress: true, includeSchoolContact: false, includeDistrictAddress: true});
-    if(response){
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
+      includeTombstoneValues: false,
+      includeSchoolAddress: true,
+      includeSchoolContact: false,
+      includeDistrictAddress: true
+    });
+    if (response){
       resolve(response)
     } else {
       reject();
