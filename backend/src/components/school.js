@@ -178,7 +178,7 @@ async function removeSchoolContact(req, res) {
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
-    logApiError(e, 'removeSchoolContact', 'Error occurred while attempting to remove a school contact.');
+    await logApiError(e, 'removeSchoolContact', 'Error occurred while attempting to remove a school contact.');
     return errorResponse(res);
   }
 }
