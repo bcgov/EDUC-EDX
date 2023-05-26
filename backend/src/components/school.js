@@ -8,7 +8,7 @@ const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
 const _ = require('lodash');
-const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
+const {LocalDate, LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -155,6 +155,34 @@ async function updateSchoolContact(req, res) {
   }
 }
 
+async function removeSchoolContact(req, res) {
+  try {
+    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+
+    const token = getAccessToken(req);
+    validateAccessToken(token, res);
+
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+
+    const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
+
+    if (!contact) {
+      log.error('Contact not found');
+      return errorResponse(res);
+    }
+
+    contact.createDate = null;
+    contact.updateDate = null;
+    contact.expiryDate = LocalDateTime.now().format(formatter);
+
+    const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    logApiError(e, 'removeSchoolContact', 'Error occurred while attempting to remove a school contact.');
+    return errorResponse(res);
+  }
+}
+
 async function getAllCachedSchools(_req, res){
   try {
     let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
@@ -276,5 +304,6 @@ module.exports = {
   getFullSchoolDetails,
   updateSchool,
   addSchoolContact,
-  updateSchoolContact
+  updateSchoolContact,
+  removeSchoolContact
 };
