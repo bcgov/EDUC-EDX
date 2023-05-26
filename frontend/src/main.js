@@ -18,7 +18,7 @@ import component from 'v-viewer';
 const myCustomLightTheme = {
   dark: false,
   colors: {
-    primary: '#1976d2'
+    primary: '#003366'
   }
 };
 
