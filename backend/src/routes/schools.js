@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getSchoolBySchoolID, getAllSchoolDetails, getFullSchoolDetails, updateSchool, addSchoolContact, updateSchoolContact } = require('../components/school');
+const { getSchoolBySchoolID, getAllSchoolDetails, getFullSchoolDetails, updateSchool, addSchoolContact, updateSchoolContact, removeSchoolContact } = require('../components/school');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 
@@ -14,6 +14,7 @@ router.get('/allSchools', passport.authenticate('jwt', {session: false}, undefin
 router.get('/schoolDetailsById/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getFullSchoolDetails);
 router.put('/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateSchool);
 router.post('/:schoolID/contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, addSchoolContact);
+router.delete('/:schoolID/contact/:contactID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeSchoolContact);
 router.post('/update-contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateSchoolContact);
 module.exports = router;
 

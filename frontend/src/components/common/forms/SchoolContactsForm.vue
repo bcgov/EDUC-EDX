@@ -97,6 +97,7 @@
               :contact="contact"
               :school-i-d="selectedSchoolId"
               :can-edit-school-contact="canEditSchoolContacts()"
+              @remove-school-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
         </v-row>
@@ -145,6 +146,7 @@
         :on-success-handler="() => contactEditSuccess()"
       />
     </v-navigation-drawer>
+    <ConfirmationDialog ref="confirmationDialog" />
   </div>
 </template>
 
@@ -164,6 +166,7 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import NewSchoolContactPage from '../../school/NewSchoolContactPage.vue';
 import EditSchoolContactPage from '../../school/EditSchoolContactPage.vue';
 import SchoolContact from '../../school/SchoolContact.vue';
+import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -176,7 +179,8 @@ export default {
     PrimaryButton,
     NewSchoolContactPage,
     EditSchoolContactPage,
-    SchoolContact
+    SchoolContact,
+    ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
@@ -288,6 +292,29 @@ export default {
     openEditContactSheet(contact) {
       this.editContact = contact;
       this.editContactSheet = !this.editContactSheet;
+    },
+    removeContact(schoolID, schoolContactID) {
+      const opts = {
+        color: '#003366',
+        dense: false,
+        titleBold: true,
+        resolveText: 'Remove'
+      };
+      this.$refs.confirmationDialog.open('Please Confirm', 'Are you sure you want to remove this contact?',opts)
+        .then((result) => {
+          if (result) { // the component returns true only when user confirms the dialog.
+            this.loadingCount += 1;
+            ApiService.apiAxios.delete(`${ApiRoutes.school.BASE_URL}/${schoolID}/contact/${schoolContactID}`).then(() => {
+              this.setSuccessAlert('School contact removed successfully');
+              this.getThisSchoolsContacts();
+            }).catch(error => {
+              console.log(error);
+              this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'Error removing school contact. Please try again later');
+            }).finally(() => {
+              this.loadingCount -= 1;
+            });
+          }
+        });
     },
     getStatusColor,
     formatDate,

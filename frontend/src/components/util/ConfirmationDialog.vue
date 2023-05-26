@@ -17,14 +17,13 @@
           :dense="options.dense"
           flat
         >
-          <v-toolbar-title :class="{'white--text': options.dark, 'align-self-end': options.closeIcon, 'font-weight-bold': options.titleBold, 'dialog-subtitle': options.subtitle}">
+          <v-toolbar-title :class="{'text-white': options.dark, 'align-self-end': options.closeIcon, 'font-weight-bold': options.titleBold, 'dialog-subtitle': options.subtitle}">
             {{ title }}
           </v-toolbar-title>
           <v-spacer />
           <v-btn
             v-if="options.closeIcon"
             id="closeBtn"
-            text
             icon
             @click="cancel"
           >

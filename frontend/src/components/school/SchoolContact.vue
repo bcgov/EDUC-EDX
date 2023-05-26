@@ -23,6 +23,7 @@
           <v-btn
             v-if="canEditSchoolContact"
             id="editContactButton"
+            class="mr-2"
             title="Edit"
             width="0.5em"
             color="white"
@@ -35,6 +36,25 @@
               color="#003366"
               dark
             />
+          </v-btn>
+          <v-btn
+            v-if="canEditSchoolContact"
+            id="removeContactButton"
+            title="Remove"
+            color="white"
+            width="0.5em"
+            min-width="0.5em"
+            depressed
+            small
+            @click="callShowRemoveContactConfirmation"
+          >
+            <v-icon
+              size="x-large"
+              color="#003366"
+              dark
+            >
+              mdi-trash-can-outline
+            </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -169,7 +189,11 @@ export default {
       required: true
     }
   },
+  emits: ['remove-school-contact:show-confirmation-prompt'],
   methods: {
+    callShowRemoveContactConfirmation() {
+      this.$emit('remove-school-contact:show-confirmation-prompt', this.contact.schoolId, this.contact.schoolContactId);
+    },
     formatDate,
     formatPhoneNumber,
     getStatusColor,
