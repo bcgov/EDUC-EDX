@@ -164,7 +164,7 @@ var collector = 'spt.apps.gov.bc.ca';
 #  };
 #})();"
 
-regConfig = "var publicStaticConfig = {
+regConfig="var publicStaticConfig = {
   \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
   \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
   \"BANNER_COLOR\" : \"$bannerColor\"
