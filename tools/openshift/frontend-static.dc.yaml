@@ -146,7 +146,7 @@
         name: "${APP_NAME}-frontend-${BRANCH}"
         weight: 100
       wildcardPolicy: None
-  - apiVersion: autoscaling/v2beta1
+  - apiVersion: autoscaling/v2
     kind: HorizontalPodAutoscaler
     metadata:
       name: "${APP_NAME}-frontend-${BRANCH}-cpu-autoscaler"
