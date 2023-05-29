@@ -4,8 +4,8 @@ import {EdxApiService} from "../services/edx-api-service";
 export class InstituteSetupUtils {
 
     config: Cypress.PluginConfigOptions;
-    instituteApi: any;
-    edxApi: any;
+    instituteApi: InstituteApiService;
+    edxApi: EdxApiService;
 
     constructor(conf: Cypress.PluginConfigOptions) {
         this.config = conf;

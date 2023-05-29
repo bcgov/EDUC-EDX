@@ -1,16 +1,75 @@
-// @ts-ignore
 import {RestUtils} from "../helpers/rest-utils-ts";
-
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
 const AUTHORITY_ENDPOINT=`/api/v1/institute/authority`;
 
+interface BaseEntity {
+    createUser: string;
+    updateUser: string | null;
+    createDate: string | null;
+    updateDate: string | null;
+}
+
+interface PayloadAddress extends BaseEntity {
+    addressId: string| null;
+    addressLine1: string;
+    addressLine2: string | null;
+    city: string;
+    postal: string;
+    addressTypeCode: 'MAILING' | 'PHYSICAL';
+    provinceCode: 'BC';
+    countryCode: 'CA';
+}
+
+interface DistrictAddress extends PayloadAddress {
+    districtId: string | null;
+}
+
+interface SchoolAddress extends PayloadAddress {
+    schoolId: string | null;
+}
+
+interface DistrictPayload extends BaseEntity {
+    addresses: DistrictAddress[];
+    districtId: string | null;
+    districtNumber: string;
+    faxNumber: string;
+    phoneNumber: string;
+    email: string;
+    website: string | null;
+    displayName: string;
+    districtRegionCode: 'NOT_APPLIC' | 'KOOTENAYS' | 'OKANAGAN' | 'NORTHEAST' | 'FRASER' | 'METRO' | 'VAN_ISLE'
+    | 'NORTHWEST' | 'OFFSHORE' | 'PSI' | 'YUKON';
+    districtStatusCode: 'ACTIVE' | 'INACTIVE';
+}
+
+interface SchoolPayload extends BaseEntity {
+    addresses: SchoolAddress[];
+    schoolId: string | null;
+    schoolNumber: string;
+    districtId: string | null;
+    independentAuthorityId: string | null;
+    faxNumber: string | null;
+    phoneNumber: string | null;
+    email: string | null;
+    website: string | null;
+    schoolReportingRequirementCode: 'CSF' | 'RT' | 'REGULAR' | 'NONE';
+    schoolOrganizationCode: 'TWO_SEM' | 'TWO_SEM' | 'TRIMESTER' | 'QUARTER' | 'TEN_MONTHS' | 'PART_TEN' | 'OTHER'
+    schoolCategoryCode: 'IMM_DATA' | 'CHILD_CARE' | 'MISC' | 'PUBLIC' | 'INDEPEND' | 'INDP_FNS' | 'FED_BAND'
+    | 'OFFSHORE' | 'EAR_LEARN' | 'YUKON' | 'POST_SEC';
+    facilityTypeCode: 'STANDARD' | 'PROVINCIAL' | 'DIST_CONT' | 'ELEC_DELIV' | 'STANDARD' | 'CONT_ED' | 'DIST_LEARN'
+    | 'ALT_PROGS' | 'STRONG_CEN' | 'STRONG_OUT' | 'JUSTB4PRO' | 'SHORT_PRP' | 'LONG_PRP' | 'SUMMER' | 'YOUTH'
+    | 'POST_SEC' | 'DISTONLINE';
+    openedDate: string;
+    closedDate: string | null;
+    displayName: string;
+}
 
 export class InstituteApiService {
-    config: any;
-    restUtils: any;
+    config: Cypress.PluginConfigOptions;
+    restUtils: RestUtils;
 
-    constructor(conf: any) {
+    constructor(conf: Cypress.PluginConfigOptions) {
         this.config = conf;
         this.restUtils = new RestUtils(this.config);
     }
@@ -48,7 +107,7 @@ export class InstituteApiService {
 
     async getDistrictIdByDistrictNumber(districtNumber: string) {
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
-        const districtResponse = await this.restUtils.getData(url,null);
+        const districtResponse = await this.restUtils.getData<DistrictPayload[]>(url);
         for (const district of districtResponse) {
             if (district.districtNumber === districtNumber) {
                 return district.districtId;
@@ -89,7 +148,6 @@ export class InstituteApiService {
     }
 
     async getAuthorityByAuthorityName(authorityName: string) {
-     
         const authoritySearchCriteria = [{
           condition: null,
           searchCriteriaList: [
@@ -109,7 +167,7 @@ export class InstituteApiService {
             }
           ]
         }];
-  
+
         const authoritySearchParam = {
           params: {
             searchCriteriaList: JSON.stringify(authoritySearchCriteria)
@@ -141,12 +199,12 @@ export class InstituteApiService {
         };
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}`;
         if(!authority){
-            return await this.restUtils.postData(url, authorityPayload, null);
+            return await this.restUtils.postData(url, authorityPayload);
         }
         authorityPayload.independentAuthorityId = authority.independentAuthorityId;
         authorityPayload.authorityNumber = authority.authorityNumber;
 
-        let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload, null);
+        let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload);
         await this.setupAuthorityContact(freshAuthority);
         return freshAuthority;
     }
@@ -177,16 +235,17 @@ export class InstituteApiService {
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
 
         if(filteredContacts.length < 1){
-            return await this.restUtils.postData(url, authorityContactPayload, null);
+            return await this.restUtils.postData(url, authorityContactPayload);
         }
         authorityContactPayload.authorityContactId = filteredContacts[0].authorityContactId;
-        return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload,null);
+        return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
     }
 
-    async createDistrictWithContactToTest({includeDistrictAddress = true} = {}){
+    async createDistrictWithContactToTest({includeDistrictAddress = true} = {}) {
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
-        const districtPayload = {
+        const districtPayload: DistrictPayload = {
+            addresses: [],
             createUser: 'EDXAT',
             updateUser: null,
             createDate: null,
@@ -202,8 +261,7 @@ export class InstituteApiService {
             districtStatusCode: 'ACTIVE'
         };
 
-        if(includeDistrictAddress){
-            // @ts-ignore
+        if (includeDistrictAddress) {
             districtPayload['addresses'] = [
                 {
                     updateUser: 'EDXAT',
@@ -224,11 +282,11 @@ export class InstituteApiService {
         }
 
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
-        if(!districtID){
-            return await this.restUtils.postData(url, districtPayload, null);
+        if (!districtID) {
+            return await this.restUtils.postData<DistrictEntity>(url, districtPayload);
         }
         districtPayload.districtId = districtID;
-        let freshDistrict = await this.restUtils.putData(url + '/' + districtID, districtPayload, null);
+        let freshDistrict = await this.restUtils.putData<DistrictEntity>(url + '/' + districtID, districtPayload);
         await this.setupDistrictContact(freshDistrict);
         return freshDistrict;
     }
@@ -262,12 +320,12 @@ export class InstituteApiService {
         if (newDistrict.contacts) {
             console.log('deleting all district contacts');
             newDistrict.contacts.forEach((contact: { districtContactId: any; }) => {
-                this.restUtils.deleteData(`${contactUrl}/${contact.districtContactId}`, null);
+                this.restUtils.deleteData(`${contactUrl}/${contact.districtContactId}`);
             });
         }
 
         console.log('adding Automation Testing district superintendent contact')
-        return await this.restUtils.postData(contactUrl, districtContactPayload, null);
+        return await this.restUtils.postData(contactUrl, districtContactPayload);
 
     }
 
@@ -278,7 +336,8 @@ export class InstituteApiService {
     } = {}) {
         let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
-        const schoolPayload = {
+        const schoolPayload: SchoolPayload = {
+            addresses: [],
             createUser: 'EDXAT',
             updateUser: null,
             createDate: null,
@@ -300,17 +359,13 @@ export class InstituteApiService {
             closedDate: null,
         }
 
-        if(!includeTombstoneValues){
-            // @ts-ignore
+        if (!includeTombstoneValues) {
             schoolPayload.email = null;
-            // @ts-ignore
             schoolPayload.faxNumber = null;
-            // @ts-ignore
             schoolPayload.phoneNumber = null;
         }
 
-        if(includeSchoolAddress){
-            // @ts-ignore
+        if (includeSchoolAddress){
             schoolPayload['addresses'] = [
                 {
                     updateUser: 'EDXAT',
@@ -332,10 +387,10 @@ export class InstituteApiService {
 
         const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
         if(!schoolID){
-            return this.restUtils.postData(url, schoolPayload, null);
+            return this.restUtils.postData(url, schoolPayload);
         }
         schoolPayload.schoolId = schoolID;
-        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload, null);
+        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload);
         let contact = {
             createUser: 'EDXAT',
             updateUser: null,
@@ -369,13 +424,13 @@ export class InstituteApiService {
         }
         console.log('deleting all school contacts');
         newSchool.contacts.forEach((contact: { schoolContactId: any; }) => {
-            this.restUtils.deleteData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`, null);
+            this.restUtils.deleteData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`);
         });
     }
 
     async setupSchoolContact(school: any, contact: any){
         console.log('adding Automation Testing school principal contact');
-        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact, null);
+        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
     }
 
     async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string) {
