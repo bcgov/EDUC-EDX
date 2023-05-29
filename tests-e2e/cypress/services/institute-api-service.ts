@@ -1,9 +1,69 @@
 import {RestUtils} from "../helpers/rest-utils-ts";
-
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
 const AUTHORITY_ENDPOINT=`/api/v1/institute/authority`;
 
+interface BaseEntity {
+    createUser: string;
+    updateUser: string | null;
+    createDate: string | null;
+    updateDate: string | null;
+}
+
+interface PayloadAddress extends BaseEntity {
+    addressId: string| null;
+    addressLine1: string;
+    addressLine2: string | null;
+    city: string;
+    postal: string;
+    addressTypeCode: 'MAILING' | 'PHYSICAL';
+    provinceCode: 'BC';
+    countryCode: 'CA';
+}
+
+interface DistrictAddress extends PayloadAddress {
+    districtId: string | null;
+}
+
+interface SchoolAddress extends PayloadAddress {
+    schoolId: string | null;
+}
+
+interface DistrictPayload extends BaseEntity {
+    addresses: DistrictAddress[];
+    districtId: string | null;
+    districtNumber: string;
+    faxNumber: string;
+    phoneNumber: string;
+    email: string;
+    website: string | null;
+    displayName: string;
+    districtRegionCode: 'NOT_APPLIC' | 'KOOTENAYS' | 'OKANAGAN' | 'NORTHEAST' | 'FRASER' | 'METRO' | 'VAN_ISLE'
+    | 'NORTHWEST' | 'OFFSHORE' | 'PSI' | 'YUKON';
+    districtStatusCode: 'ACTIVE' | 'INACTIVE';
+}
+
+interface SchoolPayload extends BaseEntity {
+    addresses: SchoolAddress[];
+    schoolId: string | null;
+    schoolNumber: string;
+    districtId: string | null;
+    independentAuthorityId: string | null;
+    faxNumber: string | null;
+    phoneNumber: string | null;
+    email: string | null;
+    website: string | null;
+    schoolReportingRequirementCode: 'CSF' | 'RT' | 'REGULAR' | 'NONE';
+    schoolOrganizationCode: 'TWO_SEM' | 'TWO_SEM' | 'TRIMESTER' | 'QUARTER' | 'TEN_MONTHS' | 'PART_TEN' | 'OTHER'
+    schoolCategoryCode: 'IMM_DATA' | 'CHILD_CARE' | 'MISC' | 'PUBLIC' | 'INDEPEND' | 'INDP_FNS' | 'FED_BAND'
+    | 'OFFSHORE' | 'EAR_LEARN' | 'YUKON' | 'POST_SEC';
+    facilityTypeCode: 'STANDARD' | 'PROVINCIAL' | 'DIST_CONT' | 'ELEC_DELIV' | 'STANDARD' | 'CONT_ED' | 'DIST_LEARN'
+    | 'ALT_PROGS' | 'STRONG_CEN' | 'STRONG_OUT' | 'JUSTB4PRO' | 'SHORT_PRP' | 'LONG_PRP' | 'SUMMER' | 'YOUTH'
+    | 'POST_SEC' | 'DISTONLINE';
+    openedDate: string;
+    closedDate: string | null;
+    displayName: string;
+}
 
 export class InstituteApiService {
     config: Cypress.PluginConfigOptions;
