@@ -164,11 +164,13 @@ var collector = 'spt.apps.gov.bc.ca';
 #  };
 #})();"
 
-regConfig="var publicStaticConfig = {
-  \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
-  \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
-  \"BANNER_COLOR\" : \"$bannerColor\"
-  \"VUE_APP_IDLE_TIMEOUT_IN_MILLIS\" : \"1800000\"
+regConfig="let publicStaticConfig = function() {
+  return {
+    \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
+    \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
+    \"BANNER_COLOR\" : \"$bannerColor\"
+    \"VUE_APP_IDLE_TIMEOUT_IN_MILLIS\" : \"1800000\"
+  };
 };
 export default publicStaticConfig;"
 
