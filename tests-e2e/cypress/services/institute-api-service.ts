@@ -7,10 +7,10 @@ const AUTHORITY_ENDPOINT=`/api/v1/institute/authority`;
 
 
 export class InstituteApiService {
-    config: any;
-    restUtils: any;
+    config: Cypress.PluginConfigOptions;
+    restUtils: RestUtils;
 
-    constructor(conf: any) {
+    constructor(conf: Cypress.PluginConfigOptions) {
         this.config = conf;
         this.restUtils = new RestUtils(this.config);
     }
