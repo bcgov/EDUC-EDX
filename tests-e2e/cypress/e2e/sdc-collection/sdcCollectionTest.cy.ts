@@ -1,4 +1,4 @@
-import {Selectors} from "../../support/selectors";
+import selectors from "../../support/selectors";
 
 before(() => {
   cy.task('dataLoad').then((res: any) => {
@@ -13,7 +13,6 @@ after(() => {
 
 describe('SDC Collection Test', () => {
   it('Load dashboard & click data collection card & process collection', () => {
-    const selectors = new Selectors();
     cy.visit('/');
     cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
