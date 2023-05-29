@@ -1,14 +1,14 @@
 import { EdxUserSchool } from "./EdxUserSchool";
 
 export interface EdxUser {
-    createUser?: string | undefined;
-    updateUser?: string | undefined;
-    createDate?: string | undefined;
-    updateDate?: string | undefined;
-    digitalIdentityID?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    email?: string | undefined;
-    edxUserSchools?:EdxUserSchool[] | undefined;
-    edxUserDistricts?:[] | undefined;
+    createUser?: string;
+    updateUser?: string;
+    createDate?: string;
+    updateDate?: string;
+    digitalIdentityID?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    edxUserSchools?: EdxUserSchool[];
+    edxUserDistricts?: any[];
 }
