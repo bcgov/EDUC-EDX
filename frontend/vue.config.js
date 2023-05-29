@@ -1,26 +1,26 @@
 module.exports = {
   configureWebpack: {
-    module: {
-      rules: [
-        {
-          test: /config.*config\.js$/,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: '/js/config/config.js'
-              },
-            },
-            {
-              loader: 'file-loader',
-              options: {
-                name: '/js/snowplow.js'
-              }
-            }
-          ]
-        }
-      ]
-    },
+    // module: {
+    //   rules: [
+    //     {
+    //       test: /config.*config\.js$/,
+    //       use: [
+    //         {
+    //           loader: 'file-loader',
+    //           options: {
+    //             name: '/js/config/config.js'
+    //           },
+    //         },
+    //         {
+    //           loader: 'file-loader',
+    //           options: {
+    //             name: '/js/snowplow.js'
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
     performance: {
       hints: false
     },
