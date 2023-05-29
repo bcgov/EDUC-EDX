@@ -146,37 +146,6 @@
                 class="mb-1 mr-1"
                 aria-hidden="false"
               >
-                mdi-at
-              </v-icon>
-              <div v-if="!editing">
-                <span
-                  v-if="district.email"
-                  class="ml-n1"
-                >{{ district.email }}</span>
-                <a
-                  v-if="showEditLinks(district.email)"
-                  class="editField"
-                  @click="toggleEdit"
-                >+Email</a>
-              </div>
-              <v-text-field
-                v-else
-                id="districtEmail"
-                v-model="districtCopy.email"
-                prepend-icon="mdi-at"
-                variant="underlined"
-                class="py-0"
-                required
-                :rules="[rules.required(), rules.email()]"
-                :maxlength="255"
-              />
-            </v-col>
-            <v-col class="d-flex">
-              <v-icon
-                v-if="!editing"
-                class="mb-1 mr-1"
-                aria-hidden="false"
-              >
                 mdi-fax
               </v-icon>
               <div v-if="!editing">
@@ -207,12 +176,45 @@
                 class="mb-1 mr-1"
                 aria-hidden="false"
               >
+                mdi-at
+              </v-icon>
+              <div v-if="!editing">
+                <span
+                  v-if="district.email"
+                  class="ml-n1"
+                  style="word-break: break-all;"
+                >{{ district.email }}</span>
+                <a
+                  v-if="showEditLinks(district.email)"
+                  class="editField"
+                  @click="toggleEdit"
+                >+Email</a>
+              </div>
+              <v-text-field
+                v-else
+                id="districtEmail"
+                v-model="districtCopy.email"
+                prepend-icon="mdi-at"
+                variant="underlined"
+                class="py-0"
+                required
+                :rules="[rules.required(), rules.email()]"
+                :maxlength="255"
+              />
+            </v-col>
+            <v-col class="d-flex">
+              <v-icon
+                v-if="!editing"
+                class="mb-1 mr-1"
+                aria-hidden="false"
+              >
                 mdi-web
               </v-icon>
               <div v-if="!editing">
                 <a
                   v-if="cleanWebsiteUrl"
                   :href="cleanWebsiteUrl"
+                  style="word-break: break-all;"
                   target="_blank"
                 >{{ cleanWebsiteUrl }}</a>
                 <a
