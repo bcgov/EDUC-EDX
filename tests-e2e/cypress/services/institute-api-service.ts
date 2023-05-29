@@ -1,4 +1,3 @@
-// @ts-ignore
 import {RestUtils} from "../helpers/rest-utils-ts";
 
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
@@ -141,12 +140,12 @@ export class InstituteApiService {
         };
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}`;
         if(!authority){
-            return await this.restUtils.postData(url, authorityPayload, null);
+            return await this.restUtils.postData(url, authorityPayload);
         }
         authorityPayload.independentAuthorityId = authority.independentAuthorityId;
         authorityPayload.authorityNumber = authority.authorityNumber;
 
-        let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload, null);
+        let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload);
         await this.setupAuthorityContact(freshAuthority);
         return freshAuthority;
     }
@@ -177,10 +176,10 @@ export class InstituteApiService {
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
 
         if(filteredContacts.length < 1){
-            return await this.restUtils.postData(url, authorityContactPayload, null);
+            return await this.restUtils.postData(url, authorityContactPayload);
         }
         authorityContactPayload.authorityContactId = filteredContacts[0].authorityContactId;
-        return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload,null);
+        return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
     }
 
     async createDistrictWithContactToTest({includeDistrictAddress = true} = {}){
@@ -225,10 +224,10 @@ export class InstituteApiService {
 
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
         if(!districtID){
-            return await this.restUtils.postData(url, districtPayload, null);
+            return await this.restUtils.postData(url, districtPayload);
         }
         districtPayload.districtId = districtID;
-        let freshDistrict = await this.restUtils.putData(url + '/' + districtID, districtPayload, null);
+        let freshDistrict = await this.restUtils.putData(url + '/' + districtID, districtPayload);
         await this.setupDistrictContact(freshDistrict);
         return freshDistrict;
     }
@@ -262,12 +261,12 @@ export class InstituteApiService {
         if (newDistrict.contacts) {
             console.log('deleting all district contacts');
             newDistrict.contacts.forEach((contact: { districtContactId: any; }) => {
-                this.restUtils.deleteData(`${contactUrl}/${contact.districtContactId}`, null);
+                this.restUtils.deleteData(`${contactUrl}/${contact.districtContactId}`);
             });
         }
 
         console.log('adding Automation Testing district superintendent contact')
-        return await this.restUtils.postData(contactUrl, districtContactPayload, null);
+        return await this.restUtils.postData(contactUrl, districtContactPayload);
 
     }
 
@@ -332,10 +331,10 @@ export class InstituteApiService {
 
         const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
         if(!schoolID){
-            return this.restUtils.postData(url, schoolPayload, null);
+            return this.restUtils.postData(url, schoolPayload);
         }
         schoolPayload.schoolId = schoolID;
-        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload, null);
+        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload);
         let contact = {
             createUser: 'EDXAT',
             updateUser: null,
@@ -369,13 +368,13 @@ export class InstituteApiService {
         }
         console.log('deleting all school contacts');
         newSchool.contacts.forEach((contact: { schoolContactId: any; }) => {
-            this.restUtils.deleteData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`, null);
+            this.restUtils.deleteData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact/${contact.schoolContactId}`);
         });
     }
 
     async setupSchoolContact(school: any, contact: any){
         console.log('adding Automation Testing school principal contact');
-        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact, null);
+        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
     }
 
     async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string) {
