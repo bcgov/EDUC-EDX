@@ -18,7 +18,7 @@ export class RestUtils {
         return response.data.access_token;
     }
 
-    public async getData(url: string, params: any = {}) {
+    public async getData<T = any>(url: string, params: any = {}): Promise<T> {
         try {
             params = this.setToken(params, await this.getToken());
             const response = await axios.get(url, params);
@@ -32,7 +32,7 @@ export class RestUtils {
         }
     }
 
-    async postData(url: string, data: any, params = {}) {
+    async postData<T = any>(url: string, data: any, params = {}): Promise<T> {
         try {
             params = this.setToken(params, await this.getToken());
             const response = await axios.post(url, data, params);
@@ -46,7 +46,7 @@ export class RestUtils {
         }
     }
 
-    async putData(url: string, data: any, params = {}) {
+    async putData<T = any>(url: string, data: any, params = {}): Promise<T> {
         try {
             params = this.setToken(params, await this.getToken());
             const response = await axios.put(url, data, params);
