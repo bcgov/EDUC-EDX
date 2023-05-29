@@ -172,38 +172,6 @@
               class="mr-1"
               aria-hidden="false"
             >
-              mdi-at
-            </v-icon>
-            <div v-if="!editing">
-              <span
-                v-if="school.email"
-                class="ml-n1"
-              >{{ school.email }}</span>
-              <a
-                v-if="showEditLinks(school.email)"
-                id="addEmailLink"
-                class="editField"
-                @click="toggleEdit"
-              >+Email</a>
-            </div>
-            <v-text-field
-              v-else
-              id="schoolDetailsEmail"
-              v-model="schoolDetailsCopy.email"
-              prepend-icon="mdi-at"
-              variant="underlined"
-              class="py-0"
-              required
-              :rules="[rules.required(), rules.email()]"
-              :maxlength="255"
-            />
-          </v-col>
-          <v-col class="d-flex">
-            <v-icon
-              v-if="!editing"
-              class="mr-1"
-              aria-hidden="false"
-            >
               mdi-fax
             </v-icon>
             <div v-if="!editing">
@@ -236,12 +204,46 @@
               class="mr-1"
               aria-hidden="false"
             >
+              mdi-at
+            </v-icon>
+            <div v-if="!editing">
+              <span
+                v-if="school.email"
+                class="ml-n1"
+                style="word-break: break-all;"
+              >{{ school.email }}</span>
+              <a
+                v-if="showEditLinks(school.email)"
+                id="addEmailLink"
+                class="editField"
+                @click="toggleEdit"
+              >+Email</a>
+            </div>
+            <v-text-field
+              v-else
+              id="schoolDetailsEmail"
+              v-model="schoolDetailsCopy.email"
+              prepend-icon="mdi-at"
+              variant="underlined"
+              class="py-0"
+              required
+              :rules="[rules.required(), rules.email()]"
+              :maxlength="255"
+            />
+          </v-col>
+          <v-col class="d-flex">
+            <v-icon
+              v-if="!editing"
+              class="mr-1"
+              aria-hidden="false"
+            >
               mdi-web
             </v-icon>
             <div v-if="!editing">
               <a
                 v-if="cleanWebsiteUrl"
                 :href="cleanWebsiteUrl"
+                style="word-break: break-all;"
                 target="_blank"
               >{{ cleanWebsiteUrl }}</a>
               <a
@@ -1332,50 +1334,32 @@ export default {
 };
 </script>
   
-  <style scoped>
-  
-  :deep(div.v-input__prepend > i){
-    margin-top: 5px;
-    margin-right: -10px;
-  }
-  
-  .fontItalic{
-    font-style: italic;
-  }
-  
-  .divider {
-    border-color: #FCBA19;
+<style scoped>
+
+:deep(div.v-input__prepend > i){
+  margin-top: 5px;
+  margin-right: -10px;
+}
+
+.fontItalic{
+  font-style: italic;
+}
+
+.divider {
+  border-color: #FCBA19;
   border-width: 3px;
   opacity: unset;
-  }
-  
-  .containerSetup{
-    padding-right: 24em !important;
-    padding-left: 24em !important;
-  }
-  
-  @media screen and (max-width: 1950px) {
-    .containerSetup{
-      padding-right: 20em !important;
-      padding-left: 20em !important;
-    }
-  }
-  
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 4em !important;
-      padding-left: 4em !important;
-    }
-  }
-  .editField {
-    font-size: 14px;
-    color: rgb(0, 51, 102);
-    vertical-align: super;
-  }
-  
-  .editField:hover {
-    text-decoration: underline;
-  }
-  </style>
+}
+
+.editField {
+  font-size: 14px;
+  color: rgb(0, 51, 102);
+  vertical-align: super;
+}
+
+.editField:hover {
+  text-decoration: underline;
+}
+</style>
     
   
