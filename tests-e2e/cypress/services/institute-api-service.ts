@@ -38,9 +38,8 @@ interface DistrictPayload extends BaseEntity {
     email: string;
     website: string | null;
     displayName: string;
-    districtRegionCode: 'NOT_APPLIC' | 'KOOTENAYS' | 'OKANAGAN' | 'NORTHEAST' | 'FRASER' | 'METRO' | 'VAN_ISLE'
-    | 'NORTHWEST' | 'OFFSHORE' | 'PSI' | 'YUKON';
-    districtStatusCode: 'ACTIVE' | 'INACTIVE';
+    districtRegionCode: DistrictRegionCodeKey;
+    districtStatusCode: DistrictStatusCodeKey;
 }
 
 interface SchoolPayload extends BaseEntity {
@@ -53,13 +52,10 @@ interface SchoolPayload extends BaseEntity {
     phoneNumber: string | null;
     email: string | null;
     website: string | null;
-    schoolReportingRequirementCode: 'CSF' | 'RT' | 'REGULAR' | 'NONE';
-    schoolOrganizationCode: 'TWO_SEM' | 'TWO_SEM' | 'TRIMESTER' | 'QUARTER' | 'TEN_MONTHS' | 'PART_TEN' | 'OTHER'
-    schoolCategoryCode: 'IMM_DATA' | 'CHILD_CARE' | 'MISC' | 'PUBLIC' | 'INDEPEND' | 'INDP_FNS' | 'FED_BAND'
-    | 'OFFSHORE' | 'EAR_LEARN' | 'YUKON' | 'POST_SEC';
-    facilityTypeCode: 'STANDARD' | 'PROVINCIAL' | 'DIST_CONT' | 'ELEC_DELIV' | 'STANDARD' | 'CONT_ED' | 'DIST_LEARN'
-    | 'ALT_PROGS' | 'STRONG_CEN' | 'STRONG_OUT' | 'JUSTB4PRO' | 'SHORT_PRP' | 'LONG_PRP' | 'SUMMER' | 'YOUTH'
-    | 'POST_SEC' | 'DISTONLINE';
+    schoolReportingRequirementCode: SchoolReportingRequirementCodeKey;
+    schoolOrganizationCode: SchoolOrganizationCodeKey;
+    schoolCategoryCode: SchoolCategoryCodeKey;
+    facilityTypeCode: SchoolFacilityTypeCodeKey;
     openedDate: string;
     closedDate: string | null;
     displayName: string;
