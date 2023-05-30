@@ -3,6 +3,7 @@ export default {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
     title: '#navTitle > div',
+    schoolDetailsCard: '#schoolDetailsCard'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
@@ -27,6 +28,8 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     subjectHeading: 'h2.subjectHeading',
+    addWebsiteLink: '#addWebsiteLink',
+    schoolDetailsWebsite: '#schoolDetailsWebsite'
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',
