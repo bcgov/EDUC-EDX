@@ -155,13 +155,22 @@ var collector = 'spt.apps.gov.bc.ca';
 //  <!-- Snowplow stop plowing -->
 "
 
-regConfig="var publicStaticConfig = {
-  \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
-  \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
-  \"BANNER_COLOR\" : \"$bannerColor\"
-  \"VUE_APP_IDLE_TIMEOUT_IN_MILLIS\" : \"1800000\"
-};
-export default publicStaticConfig;"
+#regConfig="var publicStaticConfig = {
+#  \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
+#  \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
+#  \"BANNER_COLOR\" : \"$bannerColor\"
+#  \"VUE_APP_IDLE_TIMEOUT_IN_MILLIS\" : \"1800000\"
+#};
+#export default publicStaticConfig;"
+
+regConfig="const publicStaticConfig = (() => {
+  return {
+    \"VUE_APP_BCEID_REG_URL\" : \"$bceid_reg_url\",
+    \"BANNER_ENVIRONMENT\" : \"$bannerEnvironment\",
+    \"BANNER_COLOR\" : \"$bannerColor\"
+    \"VUE_APP_IDLE_TIMEOUT_IN_MILLIS\" : \"1800000\"
+  };
+})();"
 
 echo Creating config map $APP_NAME-frontend-config-map
 oc create -n $OPENSHIFT_NAMESPACE-$envValue configmap $APP_NAME-frontend-config-map --from-literal=TZ=$TZVALUE --from-literal=HOST_ROUTE=$HOST_ROUTE --from-literal=config.js="$regConfig" --from-literal=snowplow.js="$snowplow"  --dry-run -o yaml | oc apply -f -
