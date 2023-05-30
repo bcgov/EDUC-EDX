@@ -61,6 +61,25 @@ interface SchoolPayload extends BaseEntity {
     displayName: string;
 }
 
+export interface SchoolContactPayload {
+    createUser: string;
+    updateUser: string | null;
+    createDate: string | null;
+    updateDate: string | null;
+    schoolContactId: string | null;
+    schoolId: string;
+    schoolContactTypeCode: string;
+    phoneNumber: string
+    phoneExtension: string;
+    alternatePhoneNumber: string;
+    alternatePhoneExtension: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    effectiveDate: string;
+    expiryDate: string | null;
+}
+
 export class InstituteApiService {
     config: Cypress.PluginConfigOptions;
     restUtils: RestUtils;
@@ -329,7 +348,7 @@ export class InstituteApiService {
         includeSchoolAddress = true,
         includeTombstoneValues = true,
         includeSchoolContact = true
-    } = {}) {
+    } = {}): Promise<SchoolEntity> {
         let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
         const schoolPayload: SchoolPayload = {
@@ -386,7 +405,7 @@ export class InstituteApiService {
             return this.restUtils.postData(url, schoolPayload);
         }
         schoolPayload.schoolId = schoolID;
-        let freshSchool = await this.restUtils.putData(`${url}/${schoolID}`, schoolPayload);
+        let freshSchool = await this.restUtils.putData<SchoolEntity>(`${url}/${schoolID}`, schoolPayload);
         let contact = {
             createUser: 'EDXAT',
             updateUser: null,
@@ -412,7 +431,7 @@ export class InstituteApiService {
         return freshSchool;
     }
 
-    async clearSchoolContacts(school: any) {
+    async clearSchoolContacts(school: SchoolEntity) {
         let newSchool = await this.restUtils.getData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`, null);
 
         if (!newSchool.contacts) {
@@ -424,9 +443,9 @@ export class InstituteApiService {
         });
     }
 
-    async setupSchoolContact(school: any, contact: any){
+    async setupSchoolContact(school: SchoolEntity, contact: SchoolContactPayload) {
         console.log('adding Automation Testing school principal contact');
-        return this.restUtils.postData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
+        return this.restUtils.postData<SchoolContactEntity>(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
     }
 
     async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string) {
