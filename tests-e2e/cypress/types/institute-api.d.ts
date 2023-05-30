@@ -88,3 +88,51 @@ type SchoolFacilityTypeCodeKey = 'STANDARD' | 'PROVINCIAL' | 'DIST_CONT' | 'ELEC
 | 'POST_SEC' | 'DISTONLINE';
 type NeighborhoodLearningTypeCodeKey = 'EARLYLEARN' | 'AFTERSCHL' | 'CONTINEDUC' | 'SENIORS' | 'SPORTRECR' | 'COMMUNITY'
 | 'INTEGRSERV';
+
+type SchoolGradeCode = {
+  schoolGradeCode: string,
+  label: string,
+  description: string,
+  displayOrder: string,
+  effectiveDate: string,
+  expiryDate: string
+}
+
+interface NeighborhoodLearningEntity extends BaseApiEntity {
+  neighborhoodLearningId: string;
+  schoolId: string;
+  NeighborhoodLearningTypeCode: NeighborhoodLearningTypeCodeKey;
+}
+
+interface SchoolMoveEntity extends BaseApiEntity {
+  schoolMoveId: string | null;
+  toSchoolId: string;
+  fromSchoolId: string;
+  moveDate: string;
+}
+
+interface SchoolEntity extends BaseApiEntity {
+  schoolId: string;
+  districtId: string;
+  mincode: string;
+  independentAuthorityId: string;
+  schoolNumber: string;
+  faxNumber: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  website: string | null;
+  schoolReportingRequirementCode: SchoolReportingRequirementCodeKey;
+  displayName: string;
+  displayNameNoSpecialChars: string | null;
+  schoolOrganizationCode: SchoolOrganizationCodeKey;
+  schoolCategoryCode: SchoolCategoryCodeKey;
+  facilityTypeCode: SchoolFacilityTypeCodeKey;
+  openedDate: string;
+  closedDate: string | null;
+  contacts: SchoolContactEntity[];
+  addresses: SchoolAddressEntity[];
+  notes: NoteEntity[];
+  grades: SchoolGradeCode[];
+  neighborhoodLearning: NeighborhoodLearningTypeCodeKey[];
+  schoolMove: SchoolMoveEntity[];
+}
