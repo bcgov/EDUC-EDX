@@ -3,24 +3,19 @@ module.exports = {
     module: {
       rules: [
         {
-          test: /config\.js$/,
+          test: /config.*config\.js$/,
           use: [
             {
               loader: 'file-loader',
               options: {
                 name: '/js/config/config.js'
               },
-            }
-          ]
-        },
-        {
-          test: /snowplow\.js$/,
-          use: [
+            },
             {
               loader: 'file-loader',
               options: {
                 name: '/js/snowplow.js'
-              },
+              }
             }
           ]
         }
