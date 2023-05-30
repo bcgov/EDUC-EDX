@@ -3,10 +3,17 @@ export default {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
     title: '#navTitle > div',
+    schoolDetailsCard: '#schoolDetailsCard',
+    districtDetailsCard: '#districtDetailsCard'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
     title: '#navTitle > div',
+  },
+  districtDetails: {
+    editDetailsButton: "#editButton",
+    addWebsiteLink: "#addWebsiteLink",
+    districtDetailsWebsite: "#districtDetailsWebsite"
   },
   schoolContacts: {
     listItem: '.v-list-item',
