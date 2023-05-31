@@ -1,7 +1,7 @@
-import {RestUtils} from "../helpers/rest-utils-ts";
+import { RestUtils } from "../helpers/rest-utils-ts";
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
-const AUTHORITY_ENDPOINT=`/api/v1/institute/authority`;
+const AUTHORITY_ENDPOINT = `/api/v1/institute/authority`;
 
 interface BaseEntity {
     createUser: string;
@@ -11,7 +11,7 @@ interface BaseEntity {
 }
 
 interface PayloadAddress extends BaseEntity {
-    addressId: string| null;
+    addressId: string | null;
     addressLine1: string;
     addressLine2: string | null;
     city: string;
@@ -164,29 +164,29 @@ export class InstituteApiService {
 
     async getAuthorityByAuthorityName(authorityName: string) {
         const authoritySearchCriteria = [{
-          condition: null,
-          searchCriteriaList: [
-            {
-              key: "displayName",
-              operation: "eq",
-              value: authorityName,
-              valueType: "STRING",
-              condition: "AND"
-            },
-            {
-              key: "closedDate",
-              operation: "eq",
-              value: null,
-              valueType: "STRING",
-              condition: "AND"
-            }
-          ]
+            condition: null,
+            searchCriteriaList: [
+                {
+                    key: "displayName",
+                    operation: "eq",
+                    value: authorityName,
+                    valueType: "STRING",
+                    condition: "AND"
+                },
+                {
+                    key: "closedDate",
+                    operation: "eq",
+                    value: null,
+                    valueType: "STRING",
+                    condition: "AND"
+                }
+            ]
         }];
 
         const authoritySearchParam = {
-          params: {
-            searchCriteriaList: JSON.stringify(authoritySearchCriteria)
-          }
+            params: {
+                searchCriteriaList: JSON.stringify(authoritySearchCriteria)
+            }
         };
 
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/paginated`;
@@ -194,7 +194,7 @@ export class InstituteApiService {
         return authorityResult?.content[0];
     }
 
-    async createAuthorityWithContactToTest(){
+    async createAuthorityWithContactToTest() {
         let authority = await this.getAuthorityByAuthorityName('EDX Automation Testing Authority');
 
         const authorityPayload = {
@@ -213,7 +213,7 @@ export class InstituteApiService {
             closedDate: null
         };
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}`;
-        if(!authority){
+        if (!authority) {
             return await this.restUtils.postData(url, authorityPayload);
         }
         authorityPayload.independentAuthorityId = authority.independentAuthorityId;
@@ -224,39 +224,38 @@ export class InstituteApiService {
         return freshAuthority;
     }
 
-    async setupAuthorityContact(authority: any){
-        const authorityContactPayload =
-            {
-                createUser: 'EDXAT',
-                updateUser: null,
-                createDate: null,
-                updateDate: null,
-                authorityContactId: null,
-                authorityId: authority.independentAuthorityId,
-                authorityContactTypeCode: 'INDAUTHREP',
-                phoneNumber: '2506656585',
-                phoneExtension: '123',
-                alternatePhoneNumber: '2506544578',
-                alternatePhoneExtension: '321',
-                email: 'test@test.com',
-                firstName: 'EDXAutomation',
-                lastName: 'Testing',
-                effectiveDate: '2022-10-25T00:00:00',
-                expiryDate: null
-            };
+    async setupAuthorityContact(authority: any) {
+        const authorityContactPayload = {
+            createUser: 'EDXAT',
+            updateUser: null,
+            createDate: null,
+            updateDate: null,
+            authorityContactId: null,
+            authorityId: authority.independentAuthorityId,
+            authorityContactTypeCode: 'INDAUTHREP',
+            phoneNumber: '2506656585',
+            phoneExtension: '123',
+            alternatePhoneNumber: '2506544578',
+            alternatePhoneExtension: '321',
+            email: 'test@test.com',
+            firstName: 'EDXAutomation',
+            lastName: 'Testing',
+            effectiveDate: '2022-10-25T00:00:00',
+            expiryDate: null
+        };
 
         let newAuthority = await this.restUtils.getData(`${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}`, null);
         let filteredContacts = newAuthority.contacts.filter((contact: { firstName: string; lastName: string; }) => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
         const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
 
-        if(filteredContacts.length < 1){
+        if (filteredContacts.length < 1) {
             return await this.restUtils.postData(url, authorityContactPayload);
         }
         authorityContactPayload.authorityContactId = filteredContacts[0].authorityContactId;
         return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
     }
 
-    async createDistrictWithContactToTest({includeDistrictAddress = true} = {}) {
+    async createDistrictWithContactToTest({ includeDistrictAddress = true } = {}) {
         let districtID = await this.getDistrictIdByDistrictNumber('998');
 
         const districtPayload: DistrictPayload = {
@@ -306,27 +305,26 @@ export class InstituteApiService {
         return freshDistrict;
     }
 
-    async setupDistrictContact(district: any){
-        const districtContactPayload =
-            {
-                createUser: 'EDXAT',
-                updateUser: null,
-                createDate: null,
-                updateDate: null,
-                districtContactId: null,
-                districtId: district.districtId,
-                districtContactTypeCode: 'SUPER',
-                phoneNumber: '2506656585',
-                jobTitle: 'Superintendent',
-                phoneExtension: '123',
-                alternatePhoneNumber: '2506544578',
-                alternatePhoneExtension: '321',
-                email: 'test@test.com',
-                firstName: 'EDXAutomation',
-                lastName: 'Testing',
-                effectiveDate: '2022-10-25T00:00:00',
-                expiryDate: null
-            };
+    async setupDistrictContact(district: any) {
+        const districtContactPayload = {
+            createUser: 'EDXAT',
+            updateUser: null,
+            createDate: null,
+            updateDate: null,
+            districtContactId: null,
+            districtId: district.districtId,
+            districtContactTypeCode: 'SUPER',
+            phoneNumber: '2506656585',
+            jobTitle: 'Superintendent',
+            phoneExtension: '123',
+            alternatePhoneNumber: '2506544578',
+            alternatePhoneExtension: '321',
+            email: 'test@test.com',
+            firstName: 'EDXAutomation',
+            lastName: 'Testing',
+            effectiveDate: '2022-10-25T00:00:00',
+            expiryDate: null
+        };
 
         let newDistrict = await this.restUtils.getData(`${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}`, null);
 
@@ -380,7 +378,7 @@ export class InstituteApiService {
             schoolPayload.phoneNumber = null;
         }
 
-        if (includeSchoolAddress){
+        if (includeSchoolAddress) {
             schoolPayload['addresses'] = [
                 {
                     updateUser: 'EDXAT',
@@ -401,7 +399,7 @@ export class InstituteApiService {
         }
 
         const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
-        if(!schoolID){
+        if (!schoolID) {
             return this.restUtils.postData(url, schoolPayload);
         }
         schoolPayload.schoolId = schoolID;
