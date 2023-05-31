@@ -7,11 +7,11 @@ import {InstituteApiService} from "./institute-api-service";
 
 export class UserApiService {
 
-    config: any;
-    restUtils: any;
-    edxApi: any;
-    instituteApi: any;
-  
+    config: Cypress.PluginConfigOptions;
+    restUtils: RestUtils;
+    edxApi: EdxApiService;
+    instituteApi: InstituteApiService;
+
     constructor(conf: any) {
       this.config = conf;
       this.restUtils = new RestUtils(this.config);
@@ -29,7 +29,7 @@ export class UserApiService {
     }
 
     async getInstituteIds(instituteTypeCode: string, instituteCodes: string[]) {
-        let instituteIds = [];
+        let instituteIds: string[] = [];
         if (instituteTypeCode.toString().toUpperCase() === 'SCHOOL') {
         for (const schoolCode of instituteCodes) {
             instituteIds.push(await this.instituteApi.getSchoolIDBySchoolCode(schoolCode));
@@ -70,7 +70,7 @@ export class UserApiService {
         return await this.restUtils.postData(url, edxUser);
       }
 
-      async createEdxUserSchoolWithRoles(schoolIDs: any, schoolRoles: any) {
+      async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any) {
         if (schoolIDs.length > 0 && schoolRoles.length > 0) {
           const edxUserSchools: EdxUserSchool[] = [];
           const edxUserSchoolRoles = [];
