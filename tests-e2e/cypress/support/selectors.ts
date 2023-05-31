@@ -11,9 +11,9 @@ export default {
     title: '#navTitle > div',
   },
   districtDetails: {
-    addWebsiteLink: "#addWebsiteLink",
-    districtDetailsWebsite: "#districtDetailsWebsite",
-    editDetailsButton: "#editButton"
+    addWebsiteLink: '#addWebsiteLink',
+    districtDetailsWebsite: '#districtDetailsWebsite',
+    editDetailsButton: '#editButton'
   },
   schoolContacts: {
     listItem: '.v-list-item',
