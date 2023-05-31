@@ -1,5 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
+import { vInputParentOf } from 'tests-e2e/cypress/support/utils';
 
 before(() => {
   cy.task<AppSetupData>('dataLoad').then(() => {
@@ -10,9 +11,6 @@ before(() => {
 after(() => {
   cy.visit(Cypress.env('url').base_url + '/logout');
 })
-
-const vInputParentOf = (selector: () => Cypress.Chainable<JQuery<HTMLElement>>) =>
-  () => selector().parents('.v-input');
 
 describe('District Details Interface Test', () => {
   it('Loads district details and checks field validation', () => {
