@@ -3,7 +3,7 @@ import {UserApiService} from "../services/user-api-service";
 export class UserSetupUtils {
 
     config: Cypress.PluginConfigOptions;
-    userApi: any;
+    userApi: UserApiService;
 
     constructor(config: Cypress.PluginConfigOptions) {
         this.config = config;
