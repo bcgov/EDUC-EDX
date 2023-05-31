@@ -28,15 +28,15 @@ describe('School Details Interface Test', () => {
 
     websiteField().clear().type('http://www.nope.com');
     websiteWrapper().should('have.class', 'v-input--error');
-    websiteWrapper().within(() => {
-      cy.get('.v-messages__message').should('contain.text', websiteErrorMessage);
-    });
+    websiteWrapper().within(() =>
+      cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
+    );
 
     websiteField().clear().type('https://notawebsite');
     websiteWrapper().should('have.class', 'v-input--error');
-    websiteWrapper().within(() => {
-      cy.get('.v-messages__message').should('contain.text', websiteErrorMessage);
-    });
+    websiteWrapper().within(
+      () => cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
+    );
 
     websiteField().clear().type('https://saulgoodman.com');
     websiteWrapper().should('not.have.class', 'v-input--error');
