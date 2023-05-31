@@ -219,12 +219,14 @@
                 >{{ cleanWebsiteUrl }}</a>
                 <a
                   v-if="showEditLinks(cleanWebsiteUrl)"
+                  id="addWebsiteLink"
                   class="editField"
                   @click="toggleEdit"
                 >+Website</a>
               </div>
               <v-text-field
                 v-if="editing"
+                id="districtDetailsWebsite"
                 v-model="districtCopy.website"
                 prepend-icon="mdi-web"
                 variant="underlined"
