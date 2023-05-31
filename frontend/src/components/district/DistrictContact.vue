@@ -62,7 +62,7 @@
     <v-card-text class="pb-0">
       <v-list density="compact">
         <v-list-item
-          v-if="!contact.email && !contact.phoneNumber"
+          v-if="!contact.email && !contact.phoneNumber && canEditDistrictContact"
           class="pl-0"
         >
           <a
