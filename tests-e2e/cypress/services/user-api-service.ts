@@ -47,7 +47,6 @@ export class UserApiService {
     }
 
     async createEdxUserObject(digitalId: string, schoolIDs: any, schoolRoles: any, districtIDs: any, districtRoles: any) {
-        const userSchools = await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles);
         let edxUser: EdxUser =  {
             email: 'edx-noreply@gov.bc.ca',
             firstName: 'TESTAUTOMATIONUSERFIRSTNAME',
@@ -55,11 +54,18 @@ export class UserApiService {
             digitalIdentityID: digitalId,
             createUser: 'Test-automation',
             updateUser: 'Test-automation',
-            edxUserSchools: userSchools
         }
-        
-        
-        // await this.createEdxUserDistrictWithRoles(edxUser, districtIDs, districtRoles);
+
+        if (schoolIDs.length > 0) {
+          const userSchools = await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles);
+          edxUser.edxUserSchools = userSchools;
+        }
+
+        if (districtIDs.length > 0) {
+          const userDistricts = await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles);
+          edxUser.edxUserDistricts = userDistricts;
+        }
+
         const url = `${this.config.env.edx.base_url}/api/v1/edx/users`;
         return await this.restUtils.postData(url, edxUser);
       }
@@ -88,4 +94,29 @@ export class UserApiService {
           return edxUserSchools;
         }
       }
+
+  async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[]) {
+    if (districtIDs.length > 0 && districtRoles.length > 0) {
+      const edxUserDistricts: any = []; //TODO change type should be EdxUserDistrict
+      const edxUserDistrictRoles = [];
+      for (const districtID of districtIDs) {
+        for (const districtRole of districtRoles) {
+          const edxDistrictRole :EdxUserSchoolRole = {
+            edxRoleCode: districtRole,
+            createUser: 'Test-automation',
+            updateUser: 'Test-automation'
+          }
+          edxUserDistrictRoles.push(edxDistrictRole);
+        }
+        let edxUserDistrict : any = { //TODO change type should be edxUserDistrict
+          districtID: districtID,
+          createUser: 'Test-automation',
+          updateUser: 'Test-automation',
+          edxUserDistrictRoles: edxUserDistrictRoles
+        };
+        edxUserDistricts.push(edxUserDistrict);
+      }
+      return edxUserDistricts;
+    }
+  }
 }

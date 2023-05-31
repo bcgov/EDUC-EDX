@@ -72,7 +72,7 @@
           <span id="contactEmail"> {{ contact.jobTitle }}</span>
         </v-list-item>
         <v-list-item
-          v-if="!contact.email && !contact.phoneNumber"
+          v-if="!contact.email && !contact.phoneNumber && canEditSchoolContact"
           class="pl-0"
         >
           <a

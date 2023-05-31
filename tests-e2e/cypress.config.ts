@@ -46,6 +46,10 @@ export default defineConfig({
           await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
           return null;
         },
+        'setup-districtUser': async (districtUserOptions) => { //TODO maybe add types for this
+          await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
+          return null;
+        },
         'setup-userActivation': async (schoolNumber) => {
           await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
           return null;
