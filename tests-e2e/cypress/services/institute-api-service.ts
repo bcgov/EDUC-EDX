@@ -122,7 +122,7 @@ export class InstituteApiService {
 
     async getDistrictIdByDistrictNumber(districtNumber: string) {
         const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
-        const districtResponse = await this.restUtils.getData<DistrictPayload[]>(url);
+        const districtResponse = await this.restUtils.getData<DistrictEntity[]>(url);
         for (const district of districtResponse) {
             if (district.districtNumber === districtNumber) {
                 return district.districtId;
