@@ -36,7 +36,12 @@ export class UserApiService {
         }
         } else if (instituteTypeCode.toString().toUpperCase() === 'DISTRICT') {
         for (const districtNumber of instituteCodes) {
-            instituteIds.push(await this.instituteApi.getDistrictIdByDistrictNumber(districtNumber));
+            const districtId = await this.instituteApi.getDistrictIdByDistrictNumber(districtNumber);
+            if (districtId === undefined) {
+                console.log(`Failed to find district ID for district number ${districtNumber}`);
+                continue;
+            }
+            instituteIds.push(districtId);
         }
         }
         return instituteIds;
