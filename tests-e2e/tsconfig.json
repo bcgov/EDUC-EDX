@@ -10,7 +10,7 @@
         "module": "commonjs",
       "allowSyntheticDefaultImports": true
     },
-    "include": ["./cypress/**/*.ts", "**/*.d.ts"],
+    "include": ["./cypress/**/*.ts", "**/*.d.ts", "./cypress.config.ts"],
     "exclude": [],
     "noEmit": true
 }
