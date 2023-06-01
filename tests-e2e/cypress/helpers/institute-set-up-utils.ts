@@ -1,4 +1,4 @@
-import {InstituteApiService} from "../services/institute-api-service";
+import {InstituteApiService, SchoolContactPayload} from "../services/institute-api-service";
 import {EdxApiService} from "../services/edx-api-service";
 
 export class InstituteSetupUtils {
@@ -35,14 +35,14 @@ export class InstituteSetupUtils {
         }
     };
 
-    async addContactToSchool(school: any, contact: any) {
+    async addContactToSchool(school: SchoolEntity, contact: SchoolContactPayload) {
         console.log('addContactToSchool called.');
         let newContact = await this.instituteApi.setupSchoolContact(school, contact);
         console.log('addContactToSchool completed.');
         return newContact;
     }
 
-    async clearSchoolContacts(school: any) {
+    async clearSchoolContacts(school: SchoolEntity) {
         console.log('clearSchoolContacts called.');
         await this.instituteApi.clearSchoolContacts(school);
         console.log('clearSchoolContacts completed.');
