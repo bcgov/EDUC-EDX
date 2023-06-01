@@ -50,7 +50,7 @@ export default defineConfig({
           await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
           return null;
         },
-        'setup-districtUser': async (districtUserOptions) => { //TODO maybe add types for this
+        'setup-districtUser': async (districtUserOptions: DistrictUserOptions) => {
           await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
           return null;
         },

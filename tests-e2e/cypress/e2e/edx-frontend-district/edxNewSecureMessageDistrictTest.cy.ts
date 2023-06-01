@@ -1,9 +1,11 @@
 import selectors from "../../support/selectors";
 
 before(() => {
+  const districtUserOptions: DistrictUserOptions = {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']};
+
   cy.task('dataLoad').then(() => {
     cy.task('cleanup-secure-exchange', 'EDX automation test');
-    cy.task('setup-districtUser', {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']});
+    cy.task('setup-districtUser', districtUserOptions);
   });
 })
 
@@ -13,6 +15,7 @@ after(() => {
 
 describe('District secure message test', () => {
   it('Access district secure message & create new message & edit message details', () => {
+    cy.pause();
     cy.visit('/');
     cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');

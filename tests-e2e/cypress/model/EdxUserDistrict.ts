@@ -1,10 +1,10 @@
 import { EdxUserRole } from "./EdxUserRole";
 
-export interface EdxUserSchool{
+export interface EdxUserDistrict{
   createUser?: string;
   updateUser?: string;
   createDate?: string;
   updateDate?: string;
-  schoolID?: string;
-  edxUserSchoolRoles?: EdxUserRole[];
+  districtID?: string;
+  edxUserDistrictRoles?: EdxUserRole[];
 }

@@ -1,7 +1,8 @@
 import { RestUtils } from '../helpers/rest-utils-ts';
 import { EdxUser } from '../model/EdxUser';
 import { EdxUserSchool } from '../model/EdxUserSchool';
-import { EdxUserSchoolRole } from '../model/EdxUserSchoolRole';
+import { EdxUserDistrict } from '../model/EdxUserDistrict';
+import { EdxUserRole } from '../model/EdxUserRole';
 import { EdxApiService } from '../services/edx-api-service';
 import { InstituteApiService } from './institute-api-service';
 
@@ -81,7 +82,7 @@ export class UserApiService {
       const edxUserSchoolRoles = [];
       for (const schoolID of schoolIDs) {
         for (const schoolRole of schoolRoles) {
-          const edxSchoolRole: EdxUserSchoolRole = {
+          const edxSchoolRole: EdxUserRole = {
             edxRoleCode: schoolRole.edxRoleCode,
             createUser: 'Test-automation',
             updateUser: 'Test-automation'
@@ -102,18 +103,18 @@ export class UserApiService {
 
   async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[]) {
     if (districtIDs.length > 0 && districtRoles.length > 0) {
-      const edxUserDistricts: any = []; //TODO change type should be EdxUserDistrict
+      const edxUserDistricts: EdxUserDistrict[] = [];
       const edxUserDistrictRoles = [];
       for (const districtID of districtIDs) {
         for (const districtRole of districtRoles) {
-          const edxDistrictRole: EdxUserSchoolRole = {
+          const edxDistrictRole: EdxUserRole = {
             edxRoleCode: districtRole,
             createUser: 'Test-automation',
             updateUser: 'Test-automation'
           }
           edxUserDistrictRoles.push(edxDistrictRole);
         }
-        let edxUserDistrict: any = { //TODO change type should be edxUserDistrict
+        let edxUserDistrict: EdxUserDistrict = {
           districtID: districtID,
           createUser: 'Test-automation',
           updateUser: 'Test-automation',
