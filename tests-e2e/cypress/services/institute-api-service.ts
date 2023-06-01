@@ -80,6 +80,12 @@ export interface SchoolContactPayload {
   expiryDate: string | null;
 }
 
+interface InstituteSchoolOptions {
+  includeSchoolAddress: boolean,
+  includeTombstoneValues: boolean,
+  includeSchoolContact: boolean
+}
+
 export class InstituteApiService {
   config: Cypress.PluginConfigOptions;
   restUtils: RestUtils;
@@ -343,10 +349,10 @@ export class InstituteApiService {
   }
 
   async createSchoolWithContactToTest(districtID: string, {
-    includeSchoolAddress = true,
-    includeTombstoneValues = true,
-    includeSchoolContact = true
-  } = {}): Promise<SchoolEntity> {
+    includeSchoolAddress,
+    includeTombstoneValues,
+    includeSchoolContact
+  }: InstituteSchoolOptions): Promise<SchoolEntity> {
     let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
     const schoolPayload: SchoolPayload = {

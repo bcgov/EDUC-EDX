@@ -1,6 +1,13 @@
 import {InstituteApiService, SchoolContactPayload} from "../services/institute-api-service";
 import {EdxApiService} from "../services/edx-api-service";
 
+export interface InstituteSetupOptions {
+    includeDistrictAddress?: boolean;
+    includeSchoolAddress?: boolean;
+    includeTombstoneValues?: boolean;
+    includeSchoolContact?: boolean;
+}
+
 export class InstituteSetupUtils {
 
     config: Cypress.PluginConfigOptions;
@@ -14,11 +21,11 @@ export class InstituteSetupUtils {
     }
 
     async setupInstituteEntities({
-                                     includeDistrictAddress = true,
-                                     includeSchoolAddress = true,
-                                     includeTombstoneValues = true,
-                                     includeSchoolContact = true
-                                 } = {}) {
+        includeDistrictAddress = true,
+        includeSchoolAddress = true,
+        includeTombstoneValues = true,
+        includeSchoolContact = true
+    }: InstituteSetupOptions = {}) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
         let district = await this.instituteApi.createDistrictWithContactToTest({includeDistrictAddress});
