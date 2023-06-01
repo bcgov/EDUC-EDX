@@ -223,7 +223,7 @@
                     </v-col>
                     <v-col
                       cols="4"
-                      class="d-flex"
+                      class="d-flex pr-2"
                     >
                       <v-icon
                         class="ml-0 mr-1 mb-1"
