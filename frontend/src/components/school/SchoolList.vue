@@ -114,7 +114,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col class="pb-0 pr-0 pl-0">
           <v-data-table-server
             v-model:items-per-page="pageSize"
             v-model:page="pageNumber"
