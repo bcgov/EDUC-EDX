@@ -6,6 +6,7 @@ export interface InstituteSetupOptions {
     includeSchoolAddress?: boolean;
     includeTombstoneValues?: boolean;
     includeSchoolContact?: boolean;
+    schoolOpeningDate?: string;
 }
 
 export class InstituteSetupUtils {
@@ -24,7 +25,8 @@ export class InstituteSetupUtils {
         includeDistrictAddress = true,
         includeSchoolAddress = true,
         includeTombstoneValues = true,
-        includeSchoolContact = true
+        includeSchoolContact = true,
+        schoolOpeningDate = '2022-01-01T00:00:00'
     }: InstituteSetupOptions = {}) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
@@ -32,7 +34,8 @@ export class InstituteSetupUtils {
         let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, {
             includeSchoolAddress,
             includeTombstoneValues,
-            includeSchoolContact
+            includeSchoolContact,
+            schoolOpeningDate
         });
         await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
         console.log('setupInstituteEntities completed')

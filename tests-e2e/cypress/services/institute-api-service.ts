@@ -83,7 +83,8 @@ export interface SchoolContactPayload {
 interface InstituteSchoolOptions {
   includeSchoolAddress: boolean,
   includeTombstoneValues: boolean,
-  includeSchoolContact: boolean
+  includeSchoolContact: boolean,
+  schoolOpeningDate: string
 }
 
 export class InstituteApiService {
@@ -351,7 +352,8 @@ export class InstituteApiService {
   async createSchoolWithContactToTest(districtID: string, {
     includeSchoolAddress,
     includeTombstoneValues,
-    includeSchoolContact
+    includeSchoolContact,
+    schoolOpeningDate
   }: InstituteSchoolOptions): Promise<SchoolEntity> {
     let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
@@ -374,7 +376,7 @@ export class InstituteApiService {
       schoolOrganizationCode: 'TWO_SEM',
       schoolCategoryCode: 'PUBLIC',
       facilityTypeCode: 'STANDARD',
-      openedDate: '2022-01-01T00:00:00',
+      openedDate: schoolOpeningDate,
       closedDate: null,
     }
 
