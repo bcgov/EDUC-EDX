@@ -35,8 +35,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         'dataLoad': async () => {
-          let appLoad = await loadAppSetupData(config);
-          return appLoad;
+          return await loadAppSetupData(config);
         },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);

@@ -1,10 +1,10 @@
-import { RestUtils } from '../helpers/rest-utils-ts';
-import { EdxUser } from '../model/EdxUser';
-import { EdxUserSchool } from '../model/EdxUserSchool';
-import { EdxUserDistrict } from '../model/EdxUserDistrict';
-import { EdxUserRole } from '../model/EdxUserRole';
-import { EdxApiService } from '../services/edx-api-service';
-import { InstituteApiService } from './institute-api-service';
+import {RestUtils} from '../helpers/rest-utils-ts';
+import {EdxUser} from '../model/EdxUser';
+import {EdxUserSchool} from '../model/EdxUserSchool';
+import {EdxUserDistrict} from '../model/EdxUserDistrict';
+import {EdxUserRole} from '../model/EdxUserRole';
+import {EdxApiService} from './edx-api-service';
+import {InstituteApiService} from './institute-api-service';
 
 export class UserApiService {
 
@@ -63,13 +63,11 @@ export class UserApiService {
     }
 
     if (schoolIDs.length > 0) {
-      const userSchools = await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles);
-      edxUser.edxUserSchools = userSchools;
+      edxUser.edxUserSchools = await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles);
     }
 
     if (districtIDs.length > 0) {
-      const userDistricts = await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles);
-      edxUser.edxUserDistricts = userDistricts;
+      edxUser.edxUserDistricts = await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles);
     }
 
     const url = `${this.config.env.edx.base_url}/api/v1/edx/users`;
