@@ -523,6 +523,7 @@ export default {
 
 .statusCodeLabel {
   font-size: large;
+  word-break: break-word;
 }
 
 .centerSpan {
