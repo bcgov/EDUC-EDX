@@ -139,7 +139,6 @@
               <v-row
                 no-gutters
                 class="hoverTable pt-1"
-                style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
                 @click="openSchool(item.value.schoolId)"
               >
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
@@ -527,6 +526,17 @@ export default {
 .centerSpan {
   display: inline-flex;
   align-items: center;
+}
+
+.hoverTable {
+  border-bottom-style: groove;
+  border-left-style: groove;
+  border-right-style: groove;
+  border-color: rgb(255 255 255 / 45%);
+}
+
+.hoverTable:nth-child(1) {
+  border-top-style: groove;
 }
 
 .hoverTable:hover{
