@@ -119,6 +119,10 @@ nconf.defaults({
     schoolFundingCodesURL: process.env.SDC_API_ENDPOINT + '/funding-codes',
     specialEdCodesURL: process.env.SDC_API_ENDPOINT + '/specialEducation-codes',
     validationIssueTypeCodesURL: process.env.SDC_API_ENDPOINT + '/validation-issue-type-codes'
-  }
+  },
+  frontendConfig: {
+    bannerEnvironment: process.env.BANNER_ENVIRONMENT,
+    bannerColor: process.env.BANNER_COLOR,
+  },
 });
 module.exports = nconf;
