@@ -14,7 +14,7 @@ async function getConfig(req, res) {
     BANNER_ENVIRONMENT: frontendConfig.bannerEnvironment,
     BANNER_COLOR: frontendConfig.bannerColor
   };
-  return res.status(HttpStatus.OK).json(frontConfig); // return blank response.
+  return res.status(HttpStatus.OK).json(frontConfig);
 }
 
 module.exports = router;
