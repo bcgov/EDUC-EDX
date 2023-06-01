@@ -17,7 +17,7 @@ export class UserSetupUtils {
         return await this.userApi.createEdxUserObject(this.config.env.adminCredential.digitalID, instituteIDs, roles, '', '');
     }
 
-    async setupDistrictUser(districtUserOptions: any) { //TODO add types
+    async setupDistrictUser(districtUserOptions: DistrictUserOptions) {
         await this.userApi.deleteSetUpEdxUser();
         const districtIDs = await this.userApi.getInstituteIds('DISTRICT', districtUserOptions.districtCodes);
         return await this.userApi.createEdxUserObject(this.config.env.adminCredential.digitalID, '', '', districtIDs, districtUserOptions.districtRoles);

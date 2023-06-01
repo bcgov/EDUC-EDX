@@ -1,4 +1,4 @@
-export interface EdxUserSchoolRole {
+export interface EdxUserRole {
   createUser?: string;
   updateUser?: string;
   createDate?: string;

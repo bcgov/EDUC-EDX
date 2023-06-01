@@ -1,4 +1,5 @@
 import { EdxUserSchool } from "./EdxUserSchool";
+import { EdxUserDistrict } from "./EdxUserDistrict";
 
 export interface EdxUser {
     createUser?: string;
@@ -10,5 +11,5 @@ export interface EdxUser {
     lastName?: string;
     email?: string;
     edxUserSchools?: EdxUserSchool[];
-    edxUserDistricts?: any[];
+    edxUserDistricts?: EdxUserDistrict[];
 }

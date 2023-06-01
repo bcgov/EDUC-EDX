@@ -35,8 +35,11 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         'dataLoad': async () => {
-          let appLoad = await loadAppSetupData(config);
-          return appLoad;
+          return await loadAppSetupData(config);
+        },
+        'cleanup-secure-exchange': async (subject: string) => {
+          await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
+          return null;
         },
         'setup-collections': async (schoolId) => {
           await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
@@ -46,7 +49,7 @@ export default defineConfig({
           await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
           return null;
         },
-        'setup-districtUser': async (districtUserOptions) => { //TODO maybe add types for this
+        'setup-districtUser': async (districtUserOptions: DistrictUserOptions) => {
           await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
           return null;
         },
