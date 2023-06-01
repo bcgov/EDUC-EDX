@@ -1,7 +1,8 @@
 import selectors from "../../support/selectors";
+import { AppSetupData } from '../../../cypress.config';
 
 before(() => {
-  cy.task('dataLoad').then((res: any) => {
+  cy.task<AppSetupData>('dataLoad').then(res => {
     cy.task('setup-collections', res.school.schoolId);
     cy.task('setup-schoolUser', ['99998']);
   });

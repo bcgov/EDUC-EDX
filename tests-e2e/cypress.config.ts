@@ -4,7 +4,8 @@ import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
 import {defineConfig} from "cypress";
 
-const loadAppSetupData = (config: Cypress.PluginConfigOptions) => {
+export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
+const loadAppSetupData = (config: Cypress.PluginConfigOptions): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
     let response = await new InstituteSetupUtils(config).setupInstituteEntities({
       includeTombstoneValues: false,

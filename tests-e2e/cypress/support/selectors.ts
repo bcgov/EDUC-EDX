@@ -2,18 +2,18 @@ export default {
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
-    title: '#navTitle > div',
+    districtDetailsCard: '#districtDetailsCard',
     schoolDetailsCard: '#schoolDetailsCard',
-    districtDetailsCard: '#districtDetailsCard'
+    title: '#navTitle > div'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
     title: '#navTitle > div',
   },
   districtDetails: {
-    editDetailsButton: "#editButton",
-    addWebsiteLink: "#addWebsiteLink",
-    districtDetailsWebsite: "#districtDetailsWebsite"
+    addWebsiteLink: '#addWebsiteLink',
+    districtDetailsWebsite: '#districtDetailsWebsite',
+    editDetailsButton: '#editButton'
   },
   schoolContacts: {
     listItem: '.v-list-item',
@@ -28,12 +28,14 @@ export default {
     subjectHeading: 'h2.subjectHeading',
   },
   schoolDetails: {
+    addWebsiteLink: '#addWebsiteLink',
     editButton: '#schoolDetailsEditButton',
     resolveBtn: '#resolveBtn',
     saveButton: '#saveButton',
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
-    subjectHeading: 'h2.subjectHeading',
+    schoolDetailsWebsite: '#schoolDetailsWebsite',
+    subjectHeading: 'h2.subjectHeading'
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',
