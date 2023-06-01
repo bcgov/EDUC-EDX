@@ -141,9 +141,9 @@
 <script>
 import {PAGE_TITLES} from '../../utils/constants';
 import { authStore } from '../../store/modules/auth';
-import { mapState } from 'pinia';
+import {mapState} from 'pinia';
 import {PERMISSION} from '../../utils/constants/Permission';
-import StaticConfig from '../../common/staticConfig';
+import {appStore} from '../../store/modules/app';
 export default {
   name: 'NavBar',
   props: {
@@ -157,12 +157,13 @@ export default {
       drawer: null,
       items: [],
       hasAnyItems: false,
-      bannerEnvironment: StaticConfig.BANNER_ENVIRONMENT,
-      bannerColor: StaticConfig.BANNER_COLOR
+      bannerEnvironment: null,
+      bannerColor: null
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated', 'userInfo']),
+    ...mapState(appStore, ['config']),
     navWidth () {
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -182,6 +183,10 @@ export default {
       immediate: true,
       deep: true
     }
+  },
+  async created(){
+    this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
+    this.bannerColor = this.config.BANNER_COLOR;
   },
   methods: {
     refreshUserPermissions(){

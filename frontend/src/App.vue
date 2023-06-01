@@ -27,7 +27,6 @@ import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import ModalIdle from './components/ModalIdle.vue';
 import MsieBanner from './components/MsieBanner.vue';
-import StaticConfig from './common/staticConfig';
 import SnackBar from './components/util/SnackBar.vue';
 import NavBar from './components/util/NavBar.vue';
 
@@ -41,9 +40,6 @@ export default {
     SnackBar,
     NavBar,
   },
-  metaInfo: {
-    meta: StaticConfig.VUE_APP_META_DATA
-  },
   computed: {
     ...mapState(authStore, ['isAuthenticated', 'loginError', 'isLoading']),
     ...mapState(appStore, ['pageTitle']),
@@ -54,7 +50,7 @@ export default {
   async created() {
     await this.setLoading(true);
     this.getJwtToken().then(() =>
-      Promise.all([this.getUserInfo()])
+      Promise.all([this.getUserInfo(), this.getConfig()])
     ).catch(e => {
       if(! e.response || e.response.status !== HttpStatus.UNAUTHORIZED) {
         this.logout();
@@ -66,7 +62,9 @@ export default {
   },
   methods: {
     authStore,
+    appStore,
     ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
+    ...mapActions(appStore, ['getConfig']),
   }
 };
 </script>

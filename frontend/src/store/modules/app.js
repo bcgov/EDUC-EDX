@@ -13,13 +13,17 @@ export const appStore = defineStore('app', {
     districtsMap : new Map(),
     alertNotificationText: '',
     alertNotificationQueue: [],
-    alertNotification: false
+    alertNotification: false,
+    config: ''
   }),
   getters: {
     schoolsMapObjectSorted: state => Object.values(Object.fromEntries(state.schoolsMap)).map(v => v.toUpperCase()).sort(),
     districtsMapObjectSorted: state => Object.values(Object.fromEntries(state.districtsMap)).map(v => v.toUpperCase()).sort(),
   },
   actions: {
+    async setConfig(config){
+      this.config = config;
+    },
     async setPageTitle(pageTitle){
       this.pageTitle = pageTitle;
     },
@@ -61,6 +65,10 @@ export const appStore = defineStore('app', {
       districtList.forEach(element => {
         this.districtsMap.set(element.districtID, element);
       });
+    },
+    async getConfig() {
+      const response = await ApiService.getConfig();
+      await this.setConfig(response.data);
     },
     async getInstitutesData() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
