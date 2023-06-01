@@ -152,7 +152,6 @@
                     </v-col>
                     <v-col
                       cols="2"
-                      class="ml-n8"
                     >
                       <v-icon
                         class="ml-0 mb-1"
@@ -164,7 +163,7 @@
                       </v-icon>
                       <span class="statusCodeLabel">{{ item.value.status }}</span>
                     </v-col>
-                    <v-col class="d-flex ml-n8">
+                    <v-col class="d-flex">
                       <v-icon
                         class="mb-3 mr-1"
                         aria-hidden="false"
@@ -214,7 +213,6 @@
                     </v-col>
                     <v-col
                       cols="2"
-                      class="ml-n8"
                     >
                       <v-icon
                         class="mb-1"
@@ -226,7 +224,7 @@
                     </v-col>
                     <v-col
                       cols="4"
-                      class="d-flex ml-n8"
+                      class="d-flex"
                     >
                       <v-icon
                         class="ml-0 mr-1 mb-1"
