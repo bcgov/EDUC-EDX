@@ -28,7 +28,8 @@
       >
         <v-col
           cols="12"
-          md="5"
+          md="4"
+          lg="5"
           class="d-flex justify-start"
         >
           <v-autocomplete
@@ -94,7 +95,8 @@
         </v-col>
         <v-col
           cols="12"
-          md="2"
+          md="3"
+          lg="2"
           class="mt-2 d-flex justify-end"
         >
           <PrimaryButton
@@ -565,8 +567,8 @@ export default {
 
 @media screen and (max-width: 1950px) {
   .containerSetup{
-    padding-right: 20em !important;
-    padding-left: 20em !important;
+    padding-right: 10em !important;
+    padding-left: 10em !important;
   }
 }
 
