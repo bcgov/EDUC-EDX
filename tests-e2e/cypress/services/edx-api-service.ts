@@ -48,21 +48,39 @@ export class EdxApiService {
   }
 
   async findAllPaginated(params: any){
-    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
     const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
     return this.restUtils.getData(EXCHANGE_ENDPOINT_PAGINATED, params);
   }
 
   async createSecureExchange(secureExchange: any) {
-    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
     return this.restUtils.postData(EXCHANGE_ENDPOINT, secureExchange, '');
   }
 
-
   async deleteSecureExchange(secureExchangeID: string) {
-    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}api/v1/edx/exchange`;
+    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
     const url = EXCHANGE_ENDPOINT + '/' + secureExchangeID;
     return this.restUtils.deleteData(url, '');
+  }
+
+  async deleteAllSecureExchangeBySubject(subject: string) {
+    console.log(`delete messages with subject:: ${subject}`)
+    let params = {
+      params: {
+        searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation":' +
+            ' "like_ignore_case", "valueType": "STRING"}]'
+      }
+    };
+    let response = await this.findAllPaginated(params);
+
+    console.log(`${response.content.length} messages found`);
+
+    for (let message of response.content) {
+      await this.deleteSecureExchange(message.secureExchangeID);
+    }
+
+    console.log('secure exchange message cleanup completed');
   }
 
   async getAllMinistryTeams() {

@@ -1,7 +1,16 @@
 export default {
+  dropdown: { //common component
+    listItem: '.v-list-item',
+  },
+  documentUpload: { //common component
+    selectFileInput: '#selectFileInput',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+    uploadDocumentButton: '#upload_form',
+  },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
+    secureMessageTile: '#secureMessageInboxCard',
     title: '#navTitle > div',
   },
   dataCollectionsLanding: {
@@ -27,6 +36,33 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     subjectHeading: 'h2.subjectHeading',
+  },
+  secureExchangeDetail: {
+    timelineContent: '.v-timeline-item__body',
+    timelineRemoveButton: 'div.v-card-actions > button'
+  },
+  secureExchangeInbox: {
+    addAttachmentButton: '#addAttachmentConvButton',
+    filtersButton: '#filterid',
+    filterSearchButton: '#searchButton',
+    filterSubjectInput: '#subjectInput',
+    newMessageButton: '#newMessageBtn',
+    newMessageTextArea: '#newMessageTextArea',
+    secureExchangeResults: '.v-data-table__tbody',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+  },
+  secureExchangeNewMessage: {
+    addStudentToNewMessageBtn: '#addStudentID',
+    attachFileID: '#attachFileID',
+    newMessagePostBtn: '#newMessagePostBtn',
+    newMessageTextArea: '#newMessageTextArea',
+    subjectTxtField: '#subjectTxtField',
+    toInputDropdown: '#schoolNameTxtField',
+  },
+  secureExchangeStudentUpload: { //common component
+    addStudentID: '#addStudentToNewMessageBtn',
+    searchPenBtn: '#searchPenBtn',
+    studentPenTextField: '#studentPenTextField',
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',

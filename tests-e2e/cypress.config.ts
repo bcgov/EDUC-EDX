@@ -37,6 +37,10 @@ export default defineConfig({
           let appLoad = await loadAppSetupData(config);
           return appLoad;
         },
+        'cleanup-secure-exchange': async (subject: string) => {
+          await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
+          return null;
+        },
         'setup-collections': async (schoolId) => {
           await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
