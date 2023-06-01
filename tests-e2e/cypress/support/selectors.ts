@@ -47,8 +47,14 @@ export default {
     subjectHeading: 'h2.subjectHeading'
   },
   secureExchangeDetail: {
+    addAttachmentConvButton: '#addAttachmentConvButton',
+    addStudentConvButton: '#addStudentConvButton',
+    newMessageToConvBtn: '#newMessageToConvBtn',
+    newMessageToConvTextArea: '#newMessageToConvTextArea',
+    newMessagePostBtn: '#newMessagePostBtn',
+    timelineConfirmYesButton: '.v-btn',
     timelineContent: '.v-timeline-item__body',
-    timelineRemoveButton: 'div.v-card-actions > button'
+    timelineRemoveButton: 'div.v-card-actions > button',
   },
   secureExchangeInbox: {
     addAttachmentButton: '#addAttachmentConvButton',
