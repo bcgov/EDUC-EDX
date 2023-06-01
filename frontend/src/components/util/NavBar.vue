@@ -161,10 +161,6 @@ export default {
       bannerColor: null
     };
   },
-  async created(){
-    this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
-    this.bannerColor = this.config.BANNER_COLOR;
-  },
   computed: {
     ...mapState(authStore, ['isAuthenticated', 'userInfo']),
     ...mapState(appStore, ['config']),
@@ -187,6 +183,10 @@ export default {
       immediate: true,
       deep: true
     }
+  },
+  async created(){
+    this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
+    this.bannerColor = this.config.BANNER_COLOR;
   },
   methods: {
     refreshUserPermissions(){
