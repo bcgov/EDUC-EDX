@@ -28,7 +28,8 @@
       >
         <v-col
           cols="12"
-          md="5"
+          md="4"
+          lg="5"
           class="d-flex justify-start"
         >
           <v-autocomplete
@@ -94,7 +95,8 @@
         </v-col>
         <v-col
           cols="12"
-          md="2"
+          md="3"
+          lg="2"
           class="mt-2 d-flex justify-end"
         >
           <PrimaryButton
@@ -114,7 +116,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col class="pb-0 pr-0 pl-0">
           <v-data-table-server
             v-model:items-per-page="pageSize"
             v-model:page="pageNumber"
@@ -139,7 +141,6 @@
               <v-row
                 no-gutters
                 class="hoverTable pt-1"
-                style="border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
                 @click="openSchool(item.value.schoolId)"
               >
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
@@ -152,7 +153,6 @@
                     </v-col>
                     <v-col
                       cols="2"
-                      class="ml-n8"
                     >
                       <v-icon
                         class="ml-0 mb-1"
@@ -164,7 +164,7 @@
                       </v-icon>
                       <span class="statusCodeLabel">{{ item.value.status }}</span>
                     </v-col>
-                    <v-col class="d-flex ml-n8">
+                    <v-col class="d-flex">
                       <v-icon
                         class="mb-3 mr-1"
                         aria-hidden="false"
@@ -214,7 +214,6 @@
                     </v-col>
                     <v-col
                       cols="2"
-                      class="ml-n8"
                     >
                       <v-icon
                         class="mb-1"
@@ -226,7 +225,7 @@
                     </v-col>
                     <v-col
                       cols="4"
-                      class="d-flex ml-n8"
+                      class="d-flex pr-2"
                     >
                       <v-icon
                         class="ml-0 mr-1 mb-1"
@@ -523,11 +522,23 @@ export default {
 
 .statusCodeLabel {
   font-size: large;
+  word-break: break-word;
 }
 
 .centerSpan {
   display: inline-flex;
   align-items: center;
+}
+
+.hoverTable {
+  border-bottom-style: groove;
+  border-left-style: groove;
+  border-right-style: groove;
+  border-color: rgb(255 255 255 / 45%);
+}
+
+.hoverTable:nth-child(1) {
+  border-top-style: groove;
 }
 
 .hoverTable:hover{
@@ -556,8 +567,8 @@ export default {
 
 @media screen and (max-width: 1950px) {
   .containerSetup{
-    padding-right: 20em !important;
-    padding-left: 20em !important;
+    padding-right: 10em !important;
+    padding-left: 10em !important;
   }
 }
 
