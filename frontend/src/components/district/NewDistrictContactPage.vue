@@ -273,6 +273,7 @@ export default {
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
         effectiveDate: LocalDate.now().toString(),
+        effectiveDateMoment: moment(LocalDate.now().toString()).format('YYYY-MM-DD').toString(),
         expiryDate: null
       },
       rules: Rules,
