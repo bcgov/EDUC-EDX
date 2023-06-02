@@ -25,7 +25,7 @@ export class InstituteSetupUtils {
         includeDistrictAddress = true,
         includeSchoolAddress = true,
         includeTombstoneValues = true,
-        includeSchoolContact = true,
+        includeSchoolContact = false,
         schoolOpeningDate = '2022-01-01T00:00:00'
     }: InstituteSetupOptions = {}) {
         console.log('setupInstituteEntities started');
