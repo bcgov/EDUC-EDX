@@ -1,18 +1,16 @@
-import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
+import {InstituteSetupOptions, InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
 import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
 import {defineConfig} from "cypress";
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
-const loadAppSetupData = (config: Cypress.PluginConfigOptions): Promise<AppSetupData> => {
+const loadAppSetupData = (
+  config: Cypress.PluginConfigOptions,
+  options: InstituteSetupOptions = {}
+): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
-      includeTombstoneValues: false,
-      includeSchoolAddress: true,
-      includeSchoolContact: false,
-      includeDistrictAddress: true
-    });
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities(options);
     if (response){
       resolve(response)
     } else {
@@ -34,8 +32,8 @@ export default defineConfig({
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
       on('task', {
-        'dataLoad': async () => {
-          return await loadAppSetupData(config);
+        'dataLoad': async (options: InstituteSetupOptions) => {
+          return await loadAppSetupData(config, options);
         },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
