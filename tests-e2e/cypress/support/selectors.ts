@@ -10,10 +10,11 @@ export default {
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
+    districtContactsCard: '#districtContactsCard',
     districtDetailsCard: '#districtDetailsCard',
     secureMessageTile: '#secureMessageInboxCard',
-    schoolDetailsCard: '#schoolDetailsCard',
     schoolContactsCard: '#schoolContactsCard',
+    schoolDetailsCard: '#schoolDetailsCard',
     title: '#navTitle > div'
   },
   dataCollectionsLanding: {
