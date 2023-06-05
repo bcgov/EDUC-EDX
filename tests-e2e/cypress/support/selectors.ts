@@ -12,6 +12,7 @@ export default {
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
     districtContactsCard: '#districtContactsCard',
     districtDetailsCard: '#districtDetailsCard',
+    districtUserSchoolContactsCard: '#districtUserSchoolContactsCard',
     secureMessageTile: '#secureMessageInboxCard',
     schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
@@ -59,6 +60,9 @@ export default {
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: '#schoolDetailsWebsite',
     subjectHeading: 'h2.subjectHeading'
+  },
+  schoolList: {
+    viewFirstSchoolContactsButton: '#viewContactsButton0'
   },
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
