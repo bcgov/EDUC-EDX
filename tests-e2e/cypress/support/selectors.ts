@@ -21,6 +21,18 @@ export default {
     continue: '.navigate',
     title: '#navTitle > div',
   },
+  districtContacts: {
+    listItem: '.v-list-item',
+    newContactButton: '#newContactButton',
+    newContactCalendar: '.dp__outer_menu_wrap',
+    newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
+    newContactEmailInput: '#newContactEmailInput',
+    newContactLastNameInput: '#newContactLastNameInput',
+    newContactPhoneNumberInput: '#newContactPhoneNumberInput',
+    newContactPostBtn: '#newContactPostBtn',
+    newContactTypeDropdown: '#newContactDropdown',
+    subjectHeading: 'h2.subjectHeading',
+  },
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
     districtDetailsWebsite: '#districtDetailsWebsite',
