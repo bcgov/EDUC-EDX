@@ -11,20 +11,16 @@ export class UserSetupUtils {
     }
 
     async setupSchoolUser(schoolCodes: string[]) {
-        await this.userApi.deleteSetUpEdxUser();
+        let edxUserID = await  this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
         const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolCodes);
         const roles = await this.userApi.getAllEdxUserRoleForInstitute();
-        return await this.userApi.createEdxUserObject(this.config.env.adminCredential.digitalID, instituteIDs, roles, '', '');
+        return await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUserID);
     }
 
     async setupDistrictUser(districtUserOptions: DistrictUserOptions) {
-        await this.userApi.deleteSetUpEdxUser();
+        let edxUserID = await this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
         const districtIDs = await this.userApi.getInstituteIds('DISTRICT', districtUserOptions.districtCodes);
-        return await this.userApi.createEdxUserObject(this.config.env.adminCredential.digitalID, '', '', districtIDs, districtUserOptions.districtRoles);
-    }
-
-    async deleteSetUpEdxUser() {
-        return await this.userApi.deleteSetUpEdxUser();
+        return await this.userApi.createEdxInstituteUserWithRoles('', '', districtIDs, districtUserOptions.districtRoles, edxUserID);
     }
 
 }
