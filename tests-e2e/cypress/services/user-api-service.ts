@@ -20,13 +20,38 @@ export class UserApiService {
     this.instituteApi = new InstituteApiService(this.config);
   }
 
-  async deleteSetUpEdxUser() {
+  async refreshEdxUser(digitalId: string) {
     const edxUser = await this.edxApi.getEdxUserFromFirstNameLastName('TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
     if (!edxUser) {
-      return;
+      console.log('edxUser not found - creating new user');
+      const newEdxUser: EdxUser = {
+        email: 'edx-noreply@gov.bc.ca',
+        firstName: 'TESTAUTOMATIONUSERFIRSTNAME',
+        lastName: 'TESTAUTOMATIONUSERLASTNAME',
+        digitalIdentityID: digitalId,
+        createUser: 'Test-automation',
+        updateUser: 'Test-automation',
+      };
+      let createdEdxUser = await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users`, newEdxUser);
+      return createdEdxUser.edxUserID;
     }
-    const url = `${this.config.env.edx.base_url}/api/v1/edx/users/${edxUser?.edxUserID}`;
-    await this.restUtils.deleteData(url);
+
+    console.log('edxUser found - removing existing roles');
+
+    if (edxUser.edxUserSchools) {
+      for (let each of edxUser.edxUserSchools) {
+        await this.restUtils.deleteData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUser.edxUserID}/school/${each.edxUserSchoolID}`);
+      }
+    }
+
+    if (edxUser.edxUserDistricts) {
+      for (let each of edxUser.edxUserDistricts) {
+        await this.restUtils.deleteData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUser.edxUserID}/district/${each.edxUserDistrictID}`);
+      }
+    }
+
+    console.log('existing roles for edxUser removed');
+    return edxUser.edxUserID;
   }
 
   async getInstituteIds(instituteTypeCode: string, instituteCodes: string[]) {
@@ -52,33 +77,23 @@ export class UserApiService {
     return this.edxApi.getAllEdxUserRoleForInstitute('SCHOOL');
   }
 
-  async createEdxUserObject(digitalId: string, schoolIDs: any, schoolRoles: any, districtIDs: any, districtRoles: any) {
-    let edxUser: EdxUser = {
-      email: 'edx-noreply@gov.bc.ca',
-      firstName: 'TESTAUTOMATIONUSERFIRSTNAME',
-      lastName: 'TESTAUTOMATIONUSERLASTNAME',
-      digitalIdentityID: digitalId,
-      createUser: 'Test-automation',
-      updateUser: 'Test-automation',
-    }
+  async createEdxInstituteUserWithRoles(schoolIDs: any, schoolRoles: any, districtIDs: any, districtRoles: any, edxUserID: string) {
 
     if (schoolIDs.length > 0) {
-      edxUser.edxUserSchools = await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles);
+      await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles, edxUserID);
     }
 
     if (districtIDs.length > 0) {
-      edxUser.edxUserDistricts = await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles);
+      await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles, edxUserID);
     }
 
-    const url = `${this.config.env.edx.base_url}/api/v1/edx/users`;
-    return await this.restUtils.postData(url, edxUser);
   }
 
-  async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any) {
+  async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any, edxUserID: string) {
     if (schoolIDs.length > 0 && schoolRoles.length > 0) {
-      const edxUserSchools: EdxUserSchool[] = [];
       const edxUserSchoolRoles = [];
       for (const schoolID of schoolIDs) {
+        console.log(`creating edxUserSchool with ${schoolRoles.length} roles`);
         for (const schoolRole of schoolRoles) {
           const edxSchoolRole: EdxUserRole = {
             edxRoleCode: schoolRole.edxRoleCode,
@@ -89,21 +104,22 @@ export class UserApiService {
         }
         let edxUserSchool: EdxUserSchool = {
           schoolID: schoolID,
+          edxUserID: edxUserID,
           createUser: 'Test-automation',
           updateUser: 'Test-automation',
           edxUserSchoolRoles: edxUserSchoolRoles
         };
-        edxUserSchools.push(edxUserSchool);
+
+        await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/school`, edxUserSchool);
       }
-      return edxUserSchools;
     }
   }
 
-  async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[]) {
+  async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[], edxUserID: string) {
     if (districtIDs.length > 0 && districtRoles.length > 0) {
-      const edxUserDistricts: EdxUserDistrict[] = [];
       const edxUserDistrictRoles = [];
       for (const districtID of districtIDs) {
+        console.log(`creating edxUserDistrict with ${districtRoles.length} roles`);
         for (const districtRole of districtRoles) {
           const edxDistrictRole: EdxUserRole = {
             edxRoleCode: districtRole,
@@ -114,13 +130,14 @@ export class UserApiService {
         }
         let edxUserDistrict: EdxUserDistrict = {
           districtID: districtID,
+          edxUserID: edxUserID,
           createUser: 'Test-automation',
           updateUser: 'Test-automation',
           edxUserDistrictRoles: edxUserDistrictRoles
         };
-        edxUserDistricts.push(edxUserDistrict);
+
+        await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/district`, edxUserDistrict);
       }
-      return edxUserDistricts;
     }
   }
 }

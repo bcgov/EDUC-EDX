@@ -15,7 +15,6 @@ after(() => {
 
 describe('District secure message test', () => {
   it('Access district secure message & create new message & edit message details', () => {
-    cy.pause();
     cy.visit('/');
     cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
