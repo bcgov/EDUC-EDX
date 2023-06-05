@@ -18,8 +18,6 @@ describe('School Contacts Interface Test', () => {
     cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
     cy.get(selectors.dashboard.schoolContactsCard).click();
-
-    cy.get(selectors.dashboard.schoolContactsCard).click();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('School Contacts | EDX Automation Testing School');
 
     cy.get(selectors.schoolContacts.newContactButton).click();
