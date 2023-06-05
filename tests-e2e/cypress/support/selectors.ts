@@ -1,4 +1,15 @@
 export default {
+  snackbar: {
+    mainSnackBar: '#mainSnackBar'
+  },
+  hamburgerMenu: {
+    hamburgerMenuButton: '#menuBtn',
+    secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn',
+    administrationMenuOption: '#AdministrationMenuBtn',
+    schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
+    districtUserManagementOption: '#DistrictUserManagementMenuBtn',
+    edxAccessMenuLink: '#UserManagementMenuBtn',
+  },
   dropdown: { //common component
     listItem: '.v-list-item',
   },
@@ -17,6 +28,21 @@ export default {
     schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
     title: '#navTitle > div'
+  },
+  accessUsersPage: {
+    selectSchoolDropdown: '#selectInstituteName',
+    schoolSelectorBox: 'div[role="listbox"]',
+    manageSchoolButton: '#manageSchoolButton'
+  },
+  newUserInvites: {
+    newUserButton: '#new-user-button',
+    newUserInviteVCard: '#newUserInviteVCard',
+    firstNameInput: '#newUserFirstName',
+    lastNameInput: '#newUserLastName',
+    emailInput: '#newUserEmail',
+    rolesSelectorDropdown: '#instituteNewUserRolesSelect',
+    rolesSelectorBox: 'div[role="listbox"]',
+    sendInviteButton: '#newUserInvitePostBtn'
   },
   dataCollectionsLanding: {
     continue: '.navigate',

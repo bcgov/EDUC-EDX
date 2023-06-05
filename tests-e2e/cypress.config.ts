@@ -8,10 +8,15 @@ export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (config: Cypress.PluginConfigOptions): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
     let response = await new InstituteSetupUtils(config).setupInstituteEntities({
-      includeTombstoneValues: false,
-      includeSchoolAddress: true,
-      includeSchoolContact: false,
-      includeDistrictAddress: true
+      districtOptions: {
+        includeDistrictAddress: true
+      },
+      schoolOptions: {
+        includeTombstoneValues: false,
+        includeSchoolAddress: true,
+        includeSchoolContact: false,
+        schoolStatus: 'Open'
+      }
     });
     if (response){
       resolve(response)
@@ -37,6 +42,11 @@ export default defineConfig({
         'dataLoad': async () => {
           return await loadAppSetupData(config);
         },
+        'recreate-school': async (schoolOptions: SchoolOptions)=> {
+          console.log(schoolOptions);
+          await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
+          return null;
+      },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
