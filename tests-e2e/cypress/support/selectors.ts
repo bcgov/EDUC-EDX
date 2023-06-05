@@ -1,11 +1,8 @@
 export default {
-  dropdown: { //common component
-    listItem: '.v-list-item',
-  },
-  documentUpload: { //common component
-    selectFileInput: '#selectFileInput',
-    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
-    uploadDocumentButton: '#upload_form',
+  accessUsersPage: {
+    selectSchoolDropdown: '#selectInstituteName',
+    schoolSelectorBox: 'div[role="listbox"]',
+    manageSchoolButton: '#manageSchoolButton'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
@@ -38,6 +35,32 @@ export default {
     addWebsiteLink: '#addWebsiteLink',
     districtDetailsWebsite: '#districtDetailsWebsite',
     editDetailsButton: '#editButton'
+  },
+  documentUpload: { //common component
+    selectFileInput: '#selectFileInput',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+    uploadDocumentButton: '#upload_form',
+  },
+  dropdown: { //common component
+    listItem: '.v-list-item',
+  },
+  hamburgerMenu: {
+    hamburgerMenuButton: '#menuBtn',
+    secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn',
+    administrationMenuOption: '#AdministrationMenuBtn',
+    schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
+    districtUserManagementOption: '#DistrictUserManagementMenuBtn',
+    edxAccessMenuLink: '#UserManagementMenuBtn',
+  },
+  newUserInvites: {
+    newUserButton: '#new-user-button',
+    newUserInviteVCard: '#newUserInviteVCard',
+    firstNameInput: '#newUserFirstName',
+    lastNameInput: '#newUserLastName',
+    emailInput: '#newUserEmail',
+    rolesSelectorDropdown: '#instituteNewUserRolesSelect',
+    rolesSelectorBox: 'div[role="listbox"]',
+    sendInviteButton: '#newUserInvitePostBtn'
   },
   schoolContacts: {
     listItem: '.v-list-item',
@@ -96,6 +119,9 @@ export default {
     addStudentID: '#addStudentToNewMessageBtn',
     searchPenBtn: '#searchPenBtn',
     studentPenTextField: '#studentPenTextField',
+  },
+  snackbar: {
+    mainSnackBar: '#mainSnackBar'
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',

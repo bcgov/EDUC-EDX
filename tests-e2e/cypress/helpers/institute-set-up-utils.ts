@@ -13,20 +13,11 @@ export class InstituteSetupUtils {
         this.edxApi = new EdxApiService(this.config);
     }
 
-    async setupInstituteEntities({
-                                     includeDistrictAddress = true,
-                                     includeSchoolAddress = true,
-                                     includeTombstoneValues = true,
-                                     includeSchoolContact = true
-                                 } = {}) {
+    async setupInstituteEntities(instituteOptions: InstituteOptions) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
-        let district = await this.instituteApi.createDistrictWithContactToTest({includeDistrictAddress});
-        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, {
-            includeSchoolAddress,
-            includeTombstoneValues,
-            includeSchoolContact
-        });
+        let district = await this.instituteApi.createDistrictWithContactToTest(instituteOptions.districtOptions);
+        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, instituteOptions.schoolOptions);
         await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
         console.log('setupInstituteEntities completed')
         return {
@@ -34,6 +25,14 @@ export class InstituteSetupUtils {
             school: school
         }
     };
+
+    async recreateSchool(schoolOptions: SchoolOptions) {
+        let districtID = await this.instituteApi.getDistrictIdOfTestDistrict();
+        if (districtID === undefined) {
+            return;
+        }
+        return await this.instituteApi.createSchoolWithContactToTest(districtID, schoolOptions);
+    }
 
     async addContactToSchool(school: SchoolEntity, contact: SchoolContactPayload) {
         console.log('addContactToSchool called.');

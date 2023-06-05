@@ -1,3 +1,21 @@
+type SchoolStatus = 'Opening' | 'Open' | 'Closing' | 'Closed';
+
+interface DistrictOptions {
+  includeDistrictAddress: boolean,
+}
+
+interface SchoolOptions {
+  includeTombstoneValues: boolean,
+  includeSchoolAddress: boolean,
+  includeSchoolContact: boolean,
+  schoolStatus: SchoolStatus
+}
+
+interface InstituteOptions {
+  districtOptions: DistrictOptions,
+  schoolOptions: SchoolOptions
+}
+
 interface NoteEntity extends BaseApiEntity {
   noteId: string;
   schoolId: string;
