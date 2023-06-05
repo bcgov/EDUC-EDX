@@ -91,9 +91,9 @@ export class UserApiService {
 
   async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any, edxUserID: string) {
     if (schoolIDs.length > 0 && schoolRoles.length > 0) {
-      console.log(`creating edxUserSchool with ${schoolRoles.length} roles`);
       const edxUserSchoolRoles = [];
       for (const schoolID of schoolIDs) {
+        console.log(`creating edxUserSchool with ${schoolRoles.length} roles`);
         for (const schoolRole of schoolRoles) {
           const edxSchoolRole: EdxUserRole = {
             edxRoleCode: schoolRole.edxRoleCode,
@@ -117,9 +117,9 @@ export class UserApiService {
 
   async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[], edxUserID: string) {
     if (districtIDs.length > 0 && districtRoles.length > 0) {
-      console.log(`creating edxUserDistrict with ${districtRoles.length} roles`);
       const edxUserDistrictRoles = [];
       for (const districtID of districtIDs) {
+        console.log(`creating edxUserDistrict with ${districtRoles.length} roles`);
         for (const districtRole of districtRoles) {
           const edxDistrictRole: EdxUserRole = {
             edxRoleCode: districtRole,

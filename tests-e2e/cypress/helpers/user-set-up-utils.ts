@@ -11,7 +11,7 @@ export class UserSetupUtils {
     }
 
     async setupSchoolUser(schoolCodes: string[]) {
-        let edxUserID = await  this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
+        let edxUserID = await this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
         const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolCodes);
         const roles = await this.userApi.getAllEdxUserRoleForInstitute();
         return await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUserID);
