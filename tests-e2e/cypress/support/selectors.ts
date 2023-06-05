@@ -13,6 +13,7 @@ export default {
     districtDetailsCard: '#districtDetailsCard',
     secureMessageTile: '#secureMessageInboxCard',
     schoolDetailsCard: '#schoolDetailsCard',
+    schoolContactsCard: '#schoolContactsCard',
     title: '#navTitle > div'
   },
   dataCollectionsLanding: {
