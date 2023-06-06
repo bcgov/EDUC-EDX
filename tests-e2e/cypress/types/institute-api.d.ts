@@ -6,10 +6,6 @@ interface NoteEntity extends BaseApiEntity {
 }
 
 interface ContactEntity extends BaseApiEntity {
-  createUser: string;
-  updateUser: string;
-  createDate: string;
-  updateDate: string;
   phoneNumber: string | null;
   jobTitle: string;
   phoneExtension: string | null;
