@@ -1,4 +1,3 @@
-import { RestUtils } from "../helpers/rest-utils-ts";
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
 const AUTHORITY_ENDPOINT = `/api/v1/institute/authority`;
@@ -137,6 +136,10 @@ export class InstituteApiService {
     }
   }
 
+  async getDistrictIdOfTestDistrict() {
+    return this.getDistrictIdByDistrictNumber('998');
+  }
+
   async getAuthorityIDByAuthorityNumber(authorityNumber: string) {
     const authoritySearchCriteria = [{
       condition: null,
@@ -262,7 +265,7 @@ export class InstituteApiService {
     return await this.restUtils.putData(url + '/' + authorityContactPayload.authorityContactId, authorityContactPayload);
   }
 
-  async createDistrictWithContactToTest({ includeDistrictAddress = true } = {}) {
+  async createDistrictWithContactToTest({ includeDistrictAddress = true }: DistrictOptions) {
     let districtID = await this.getDistrictIdByDistrictNumber('998');
 
     const districtPayload: DistrictPayload = {
@@ -349,13 +352,32 @@ export class InstituteApiService {
 
   }
 
-  async createSchoolWithContactToTest(districtID: string, {
-    includeSchoolAddress,
-    includeTombstoneValues,
-    includeSchoolContact,
-    schoolOpeningDate
-  }: InstituteSchoolOptions): Promise<SchoolEntity> {
+  async createSchoolWithContactToTest(districtID: string, { includeSchoolAddress = true, includeTombstoneValues = true, includeSchoolContact = true, schoolStatus = 'Open' }: SchoolOptions): Promise<SchoolEntity> {
     let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
+
+    let currentDate = new Date();
+    let tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
+    let yesterday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1);
+    let openDate = '';
+    let closeDate = null;
+    switch(schoolStatus) {
+      case 'Opening':
+        openDate = tomorrow.toISOString().substring(0, 19);
+        closeDate = null;
+        break;
+      case 'Open':
+        openDate = '2022-01-01T00:00:00';
+        closeDate = null;
+        break;
+      case 'Closing':
+        openDate = yesterday.toISOString().substring(0, 19);
+        closeDate = tomorrow.toISOString().substring(0, 19);
+        break;
+      case 'Closed':
+        openDate = '2022-01-01T00:00:00';
+        closeDate = yesterday.toISOString().substring(0, 19);
+        break;
+    }
 
     const schoolPayload: SchoolPayload = {
       addresses: [],
@@ -376,8 +398,8 @@ export class InstituteApiService {
       schoolOrganizationCode: 'TWO_SEM',
       schoolCategoryCode: 'PUBLIC',
       facilityTypeCode: 'STANDARD',
-      openedDate: schoolOpeningDate,
-      closedDate: null,
+      openedDate: openDate,
+      closedDate: closeDate,
     }
 
     if (!includeTombstoneValues) {
@@ -462,13 +484,6 @@ export class InstituteApiService {
           key: "schoolNumber",
           operation: "eq",
           value: schoolCode,
-          valueType: "STRING",
-          condition: "AND"
-        },
-        {
-          key: "closedDate",
-          operation: "eq",
-          value: null,
           valueType: "STRING",
           condition: "AND"
         },

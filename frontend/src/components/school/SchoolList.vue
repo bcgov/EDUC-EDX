@@ -118,6 +118,7 @@
       <v-row>
         <v-col class="pb-0 pr-0 pl-0">
           <v-data-table-server
+            id="schoolListTable"
             v-model:items-per-page="pageSize"
             v-model:page="pageNumber"
             v-model:items="schools"
@@ -183,6 +184,7 @@
                       <v-tooltip bottom>
                         <template #activator="{ props }">
                           <v-btn
+                            :id="'viewContactsButton' + index"
                             color="#003366"
                             outlined
                             class="schoolContactsButton mt-0 pt-0 filterButton"

@@ -10,7 +10,18 @@ const loadAppSetupData = (
   options: InstituteSetupOptions = {}
 ): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities(options);
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
+      districtOptions: {
+        includeDistrictAddress: true
+      },
+      schoolOptions: {
+        includeTombstoneValues: false,
+        includeSchoolAddress: true,
+        includeSchoolContact: false,
+        schoolStatus: 'Open'
+      }
+    });
+
     if (response){
       resolve(response)
     } else {
@@ -35,6 +46,11 @@ export default defineConfig({
         'dataLoad': async (options: InstituteSetupOptions) => {
           return await loadAppSetupData(config, options);
         },
+        'recreate-school': async (schoolOptions: SchoolOptions)=> {
+          console.log(schoolOptions);
+          await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
+          return null;
+      },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;

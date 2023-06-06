@@ -1,17 +1,17 @@
 export default {
-  dropdown: { //common component
-    listItem: '.v-list-item',
-  },
-  documentUpload: { //common component
-    selectFileInput: '#selectFileInput',
-    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
-    uploadDocumentButton: '#upload_form',
+  accessUsersPage: {
+    selectSchoolDropdown: '#selectInstituteName',
+    schoolSelectorBox: 'div[role="listbox"]',
+    manageSchoolButton: '#manageSchoolButton'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
+    districtContactsCard: '#districtContactsCard',
     districtDetailsCard: '#districtDetailsCard',
+    districtUserSchoolContactsCard: '#districtUserSchoolContactsCard',
     secureMessageTile: '#secureMessageInboxCard',
+    schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
     title: '#navTitle > div'
   },
@@ -19,10 +19,48 @@ export default {
     continue: '.navigate',
     title: '#navTitle > div',
   },
+  districtContacts: {
+    listItem: '.v-list-item',
+    newContactButton: '#newContactButton',
+    newContactCalendar: '.dp__outer_menu_wrap',
+    newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
+    newContactEmailInput: '#newContactEmailInput',
+    newContactLastNameInput: '#newContactLastNameInput',
+    newContactPhoneNumberInput: '#newContactPhoneNumberInput',
+    newContactPostBtn: '#newContactPostBtn',
+    newContactTypeDropdown: '#newContactDropdown',
+    subjectHeading: 'h2.subjectHeading',
+  },
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
     districtDetailsWebsite: '#districtDetailsWebsite',
     editDetailsButton: '#editButton'
+  },
+  documentUpload: { //common component
+    selectFileInput: '#selectFileInput',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+    uploadDocumentButton: '#upload_form',
+  },
+  dropdown: { //common component
+    listItem: '.v-list-item',
+  },
+  hamburgerMenu: {
+    hamburgerMenuButton: '#menuBtn',
+    secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn',
+    administrationMenuOption: '#AdministrationMenuBtn',
+    schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
+    districtUserManagementOption: '#DistrictUserManagementMenuBtn',
+    edxAccessMenuLink: '#UserManagementMenuBtn',
+  },
+  newUserInvites: {
+    newUserButton: '#new-user-button',
+    newUserInviteVCard: '#newUserInviteVCard',
+    firstNameInput: '#newUserFirstName',
+    lastNameInput: '#newUserLastName',
+    emailInput: '#newUserEmail',
+    rolesSelectorDropdown: '#instituteNewUserRolesSelect',
+    rolesSelectorBox: 'div[role="listbox"]',
+    sendInviteButton: '#newUserInvitePostBtn'
   },
   schoolContacts: {
     listItem: '.v-list-item',
@@ -45,6 +83,9 @@ export default {
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: '#schoolDetailsWebsite',
     subjectHeading: 'h2.subjectHeading'
+  },
+  schoolList: {
+    viewFirstSchoolContactsButton: '#viewContactsButton0'
   },
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
@@ -78,6 +119,9 @@ export default {
     addStudentID: '#addStudentToNewMessageBtn',
     searchPenBtn: '#searchPenBtn',
     studentPenTextField: '#studentPenTextField',
+  },
+  snackbar: {
+    mainSnackBar: '#mainSnackBar'
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',
