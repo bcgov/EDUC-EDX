@@ -3,14 +3,15 @@ import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
 import {defineConfig} from "cypress";
+import { InstituteOptions, SchoolOptions } from "./cypress/services/institute-api-service";
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (
   config: Cypress.PluginConfigOptions,
-  options: InstituteSetupOptions = {}
+  options?: InstituteOptions
 ): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities(options || {
       districtOptions: {
         includeDistrictAddress: true
       },
@@ -50,7 +51,7 @@ export default defineConfig({
           console.log(schoolOptions);
           await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
           return null;
-      },
+        },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
