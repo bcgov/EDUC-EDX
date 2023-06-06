@@ -95,8 +95,8 @@ export interface SchoolOptions {
 }
 
 export interface InstituteOptions {
-  districtOptions: DistrictOptions,
-  schoolOptions: SchoolOptions
+  districtOptions?: DistrictOptions,
+  schoolOptions?: SchoolOptions
 }
 
 export class InstituteApiService {

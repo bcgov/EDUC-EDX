@@ -18,7 +18,7 @@ export class InstituteSetupUtils {
         this.edxApi = new EdxApiService(this.config);
     }
 
-    async setupInstituteEntities({ districtOptions, schoolOptions }: InstituteOptions) {
+    async setupInstituteEntities({ districtOptions = {}, schoolOptions = {} }: InstituteOptions) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
         let district = await this.instituteApi.createDistrictWithContactToTest(districtOptions);
