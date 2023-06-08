@@ -45,3 +45,4 @@ function createLoginSession(username: string = Cypress.env('USER_ID'), password:
 }
 
 Cypress.Commands.add('login', createLoginSession);
+Cypress.Commands.add('logout', () => { cy.request(Cypress.env('url').logout) });

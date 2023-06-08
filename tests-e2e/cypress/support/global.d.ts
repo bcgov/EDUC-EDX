@@ -5,6 +5,7 @@ declare global {
     namespace Cypress {
         interface Chainable<Subject> {
             login(): Chainable<void>;
+            logout(): Chainable<void>;
             task<S = InstituteOptions, T = AppSetupData>(event: string, arg?: S): Chainable<T>
         }
     }
