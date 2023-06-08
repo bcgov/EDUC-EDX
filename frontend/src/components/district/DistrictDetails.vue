@@ -329,7 +329,7 @@
                         label="Line 1"
                         variant="underlined"
                         required
-                        :rules="[rules.required(), rules.noSpecialCharacters()]"
+                        :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
                       />
                     </v-col>
@@ -344,7 +344,7 @@
                         v-model="getMailingAddressCopy()[0].addressLine2"
                         label="Line 2"
                         variant="underlined"
-                        :rules="[rules.noSpecialCharacters()]"
+                        :rules="[rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
                       />
                     </v-col>
@@ -360,7 +360,7 @@
                         label="City"
                         variant="underlined"
                         required
-                        :rules="[rules.required(), rules.noSpecialCharacters()]"
+                        :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
                       />
                     </v-col>
@@ -504,7 +504,7 @@
                                         label="Line 1"
                                         variant="underlined"
                                         required
-                                        :rules="[rules.required(), rules.noSpecialCharacters()]"
+                                        :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                         :maxlength="255"
                                       />
                                     </v-col>
@@ -517,7 +517,7 @@
                                         label="Line 2"
                                         variant="underlined"
                                         :maxlength="255"
-                                        :rules="[rules.noSpecialCharacters()]"
+                                        :rules="[rules.noSpecialCharactersAddress()]"
                                       />
                                     </v-col>
                                   </v-row>
@@ -529,7 +529,7 @@
                                         label="City"
                                         variant="underlined"
                                         required
-                                        :rules="[rules.required(), rules.noSpecialCharacters()]"
+                                        :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                         :maxlength="255"
                                       />
                                     </v-col>
