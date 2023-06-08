@@ -1210,21 +1210,28 @@ export default {
       return this.schoolOrganizationTypes?.find((facility) => facility.schoolOrganizationCode === school?.schoolOrganizationCode)?.label;
     },
     getNLCActivity(school){
-      let nLCActivityList = [];
-      for(const nl of school.neighborhoodLearning){
-        nLCActivityList.push(this.schoolNeighborhoodLearningTypes.find((facility) => facility.neighborhoodLearningTypeCode === nl?.neighborhoodLearningTypeCode).label);
-      }
-      nLCActivityList.sort();
-      return nLCActivityList.toString().replace(/,/g, ', ');
+      return school.neighborhoodLearning
+        .reduce((list, nl) => {
+          const match = this.schoolNeighborhoodLearningTypes?.find((facility) =>
+            facility.neighborhoodLearningTypeCode === nl?.neighborhoodLearningTypeCode);
+
+          if (match) {
+            return [...list, match.label];
+          }
+
+          return list;
+        }, [])
+        .sort()
+        .join(', ');
     },
     showEditLinks(fieldValue) {
       return this.canEditSchoolDetails() && !fieldValue;
     },
     getFacilityType(school){
-      return this.schoolFacilityTypes.find((facility) => facility.facilityTypeCode === school?.facilityTypeCode).label;
+      return this.schoolFacilityTypes?.find((facility) => facility.facilityTypeCode === school?.facilityTypeCode)?.label;
     },
     getSchoolCategory(school){
-      return this.schoolCategoryTypeCodes.find((category) => category.schoolCategoryCode === school?.schoolCategoryCode).label;
+      return this.schoolCategoryTypeCodes?.find((category) => category.schoolCategoryCode === school?.schoolCategoryCode)?.label;
     },
     backButtonClick() {
       if(this.isDistrictUser()){
