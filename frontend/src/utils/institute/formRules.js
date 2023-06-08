@@ -38,9 +38,14 @@ const number = (message = 'Must be a number') => {
  * @param {String} [message]
  * @returns {(value: string) => true|string}
  */
-const noSpecialCharacters = (message = 'Remove or replace any special characters in this field.') =>
-  v => !v || !/[^\w\s-',.#&]/.test(v) || message;
+const noSpecialCharactersAddress = (message = 'Remove or replace any special characters in this field.') =>
+  v => !v || !/[^\w\s-.#/]/.test(v) || message;
 
+const noSpecialCharactersContactTitle = (message = 'Remove or replace any special characters in this field.') =>
+  v => !v || !/[^A-Za-z.'\s-&()]/.test(v) || message;
+
+const noSpecialCharactersContactName = (message = 'Remove or replace any special characters in this field.') =>
+  v => !v || !/[^A-Za-z.'\s-]/.test(v) || message;
 /**
  * Rule for phone numbers also works for fax numbers too
  * @param {String} message
@@ -100,7 +105,9 @@ export {
   email,
   endDateRule,
   number,
-  noSpecialCharacters,
+  noSpecialCharactersContactName,
+  noSpecialCharactersContactTitle,
+  noSpecialCharactersAddress,
   phoneNumber,
   postalCode,
   required,
