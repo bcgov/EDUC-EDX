@@ -448,7 +448,7 @@
                   variant="underlined"
                   return-object
                   :disabled="isGradeOfferedUpdateAllowed"
-                  @update:modelValue="sortGrades()"
+                  @update:model-value="sortGrades()"
                   class="pt-0 mt-0"
                   multiple
                   ></v-select>
