@@ -10,13 +10,13 @@ before(() => {
 })
 
 after(() => {
-  cy.visit(Cypress.env('url').base_url + '/logout')
+  cy.logout();
 })
 
 describe('District secure message test', () => {
+  beforeEach(() => cy.login());
   it('Access district secure message & create new message & edit message details', () => {
     cy.visit('/');
-    cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
     cy.get(selectors.dashboard.secureMessageTile).click();
     cy.get(selectors.secureExchangeInbox.newMessageButton).click();

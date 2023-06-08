@@ -9,13 +9,13 @@ before(() => {
 })
 
 after(() => {
-  cy.visit(Cypress.env('url').base_url + '/logout');
+  cy.logout();
 })
 
 describe('District School Contacts Interface Test', () => {
+  beforeEach(() => cy.login());
   it('Check new school contact page has current effective date', () => {
     cy.visit('/');
-    cy.login();
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
     cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
     cy.get(selectors.dashboard.title, {timeout: 10000}).contains('Schools | EDX Automation Testing');
