@@ -140,47 +140,63 @@
               </v-col>
             </v-row>
             <v-divider class="divider" />
-            <v-row>
-              <v-col class="mt-2">
-                <v-btn
-                  id="newMessageToConvBtn"
-                  small
-                  @click="displayMessageField"
+            <v-row class="pt-3">
+              <v-col>
+                <v-menu
+                  v-if="shouldDisplaySpeedDial && isEditable()"
+                  v-model="editOptionsOpen"
+                  transition="fab-transition"
+                  location="end"
+                  offset="10"
                 >
-                  <v-icon color="#003366">
-                    mdi-email-outline
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Message</span>
-                </v-btn>
-                <v-btn
-                  id="addAttachmentConvButton"
-                  small
-                  @click="displayAttachmentPanel"
-                >
-                  <v-icon color="#003366">
-                    mdi-paperclip
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Attachment</span>
-                </v-btn>
-                <v-btn
-                  id="addStudentConvButton"
-                  small
-                  @click="displayStudentPanel"
-                >
-                  <v-icon color="#003366">
-                    mdi-emoticon-happy-outline
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Student</span>
-                </v-btn>
+                  <template #activator="{ props }">
+                    <v-btn
+                      id="editOptionsMenu"
+                      dark
+                      color="primary"
+                      :icon="editOptionsOpen ? 'mdi-close' : 'mdi-plus'"
+                      v-bind="props"
+                    />
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      id="newMessageToConvBtn"
+                      @click="displayMessageField"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-email-outline
+                      </v-icon>
+                      <span>Message</span>
+                    </v-list-item>
+                    <v-list-item
+                      id="addAttachmentConvButton"
+                      @click="displayAttachmentPanel"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-paperclip
+                      </v-icon>
+                      <span>Attachment</span>
+                    </v-list-item>
+                    <v-list-item
+                      id="addStudentConvButton"
+                      @click="displayStudentPanel"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-emoticon-happy-outline
+                      </v-icon>
+                      <span>Student</span>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </v-col>
             </v-row>
             <v-row
