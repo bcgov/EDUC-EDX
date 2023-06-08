@@ -59,7 +59,7 @@ export default {
     lastNameInput: '#newUserLastName',
     emailInput: '#newUserEmail',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
-    rolesSelectorBox: 'div[role="listbox"]',
+    rolesSelectorBox: '#instituteNewUserRolesListBox',
     sendInviteButton: '#newUserInvitePostBtn'
   },
   schoolContacts: {
