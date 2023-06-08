@@ -139,6 +139,14 @@ export default {
           'displayName': schoolsMap.get(value)?.schoolName,
         };
       });
+      this.activeUserSchools.sort((a,b) =>  {
+        if (a.displayName > b.displayName) {
+          return 1;
+        } else if (a.displayName < b.displayName) {
+          return -1;
+        }
+        return 0;
+      });
       const districtMap = this.activeDistrictsMap;
       this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
         return {
@@ -146,6 +154,14 @@ export default {
           'districtID': value,
           'displayName': districtMap.get(value)?.name,
         };
+      });
+      this.activeUserDistricts.sort((a,b) =>  {
+        if (a.displayName > b.displayName) {
+          return 1;
+        } else if (a.displayName < b.displayName) {
+          return -1;
+        }
+        return 0;
       });
     });
   },
