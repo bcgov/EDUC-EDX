@@ -27,10 +27,21 @@ let headers: any
 
 let requestBody: any = {}
 
-Cypress.Commands.add('login', () => {
-  cy.visit('/login');
-  cy.get('#login-button').click();
-  cy.get('input[name="user"]').type(Cypress.env('USER_ID'));
-  cy.get('input[name="password"]').type(Cypress.env('PASSWORD'));
-  cy.get('input[name="btnSubmit"][value="Continue"]').click();
-})
+function createLoginSession(username: string = Cypress.env('USER_ID'), password: string = Cypress.env('PASSWORD')) {
+  cy.session(
+    [username, password],
+    () => {
+      cy.visit('/login');
+      cy.get('#login-button').click();
+      cy.get('input[name="user"]').type(username);
+      cy.get('input[name="password"]').type(password);
+      cy.get('input[name="btnSubmit"][value="Continue"]').click();
+    },
+    {
+      validate() {
+        cy.request(Cypress.env('url').session_token).its('status').should('eq', 200);
+      }
+    })
+}
+
+Cypress.Commands.add('login', createLoginSession);

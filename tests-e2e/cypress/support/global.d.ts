@@ -4,7 +4,7 @@ import { InstituteOptions } from "../services/institute-api-service";
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
-            login(): Chainable<any>;
+            login(): Chainable<void>;
             task<S = InstituteOptions, T = AppSetupData>(event: string, arg?: S): Chainable<T>
         }
     }
