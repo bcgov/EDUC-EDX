@@ -6,16 +6,16 @@ before(() => {
   cy.task<AppSetupData>('dataLoad').then(() => {
     cy.task('setup-schoolUser', ['99998']);
   });
+  cy.login();
 })
 
 after(() => {
-  cy.visit(Cypress.env('url').base_url + '/logout');
+  cy.logout();
 })
 
 describe('School Details Interface Test', () => {
   it('Loads school details and checks field validation', () => {
-    cy.visit('/');
-    cy.login();
+    cy.visit('/')
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
     cy.get(selectors.dashboard.schoolDetailsCard).click();
     cy.get(selectors.schoolDetails.addWebsiteLink).click();

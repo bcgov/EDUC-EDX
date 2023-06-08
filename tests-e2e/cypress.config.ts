@@ -3,11 +3,15 @@ import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
 import {defineConfig} from "cypress";
+import { InstituteOptions, SchoolOptions } from "./cypress/services/institute-api-service";
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
-const loadAppSetupData = (config: Cypress.PluginConfigOptions): Promise<AppSetupData> => {
+const loadAppSetupData = (
+  config: Cypress.PluginConfigOptions,
+  options?: InstituteOptions
+): Promise<AppSetupData> => {
   return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities({
+    let response = await new InstituteSetupUtils(config).setupInstituteEntities(options || {
       districtOptions: {
         includeDistrictAddress: true
       },
@@ -18,6 +22,7 @@ const loadAppSetupData = (config: Cypress.PluginConfigOptions): Promise<AppSetup
         schoolStatus: 'Open'
       }
     });
+
     if (response){
       resolve(response)
     } else {
@@ -39,14 +44,14 @@ export default defineConfig({
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
       on('task', {
-        'dataLoad': async () => {
-          return await loadAppSetupData(config);
+        'dataLoad': async (options: InstituteOptions) => {
+          return await loadAppSetupData(config, options);
         },
         'recreate-school': async (schoolOptions: SchoolOptions)=> {
           console.log(schoolOptions);
           await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
           return null;
-      },
+        },
         'cleanup-secure-exchange': async (subject: string) => {
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;

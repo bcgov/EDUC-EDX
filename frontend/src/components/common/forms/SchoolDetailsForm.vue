@@ -43,14 +43,23 @@
             cols="6"
             class="d-flex justify-start"
           >
-          <h2>{{ school.mincode }}</h2>
-              <h2 class="pl-1 pr-1">-</h2>
-              <div>
-                <div>
-                  <h2>{{ school.displayName }}</h2>
-                </div>
-                <div class="safe-name" v-if="school.displayNameNoSpecialChars">{{ school.displayNameNoSpecialChars }}</div>
+            <h2 id="schoolMincodeTitle">
+              {{ school.mincode }}
+            </h2>
+            <h2 class="pl-1 pr-1">
+              -
+            </h2>
+            <div>
+              <div id="schoolDisplayNameTitle">
+                <h2>{{ school.displayName }}</h2>
               </div>
+              <div
+                v-if="school.displayNameNoSpecialChars"
+                class="safe-name"
+              >
+                {{ school.displayNameNoSpecialChars }}
+              </div>
+            </div>
           </v-col>
           <v-col
             v-if="!editing"

@@ -71,6 +71,7 @@
                             </template>
                             <template #append-item>
                               <v-list
+                                id="instituteNewUserRolesListBox"
                                 v-model:selected="edxActivationRoleCodes"
                                 lines="two"
                                 return-object

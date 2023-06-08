@@ -59,7 +59,7 @@ export default {
     lastNameInput: '#newUserLastName',
     emailInput: '#newUserEmail',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
-    rolesSelectorBox: 'div[role="listbox"]',
+    rolesSelectorBox: '#instituteNewUserRolesListBox',
     sendInviteButton: '#newUserInvitePostBtn'
   },
   schoolContacts: {
@@ -82,6 +82,8 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: '#schoolDetailsWebsite',
+    schoolMincodeTitle: "#schoolMincodeTitle",
+    schoolDisplayNameTitle: "#schoolDisplayNameTitle",
     subjectHeading: 'h2.subjectHeading'
   },
   schoolList: {

@@ -1,4 +1,9 @@
-import {InstituteApiService, SchoolContactPayload} from "../services/institute-api-service";
+import {
+    InstituteApiService,
+    InstituteOptions,
+    SchoolContactPayload,
+    SchoolOptions
+} from "../services/institute-api-service";
 import {EdxApiService} from "../services/edx-api-service";
 
 export class InstituteSetupUtils {
@@ -13,11 +18,11 @@ export class InstituteSetupUtils {
         this.edxApi = new EdxApiService(this.config);
     }
 
-    async setupInstituteEntities(instituteOptions: InstituteOptions) {
+    async setupInstituteEntities({ districtOptions = {}, schoolOptions = {} }: InstituteOptions) {
         console.log('setupInstituteEntities started');
         await this.instituteApi.createAuthorityWithContactToTest();
-        let district = await this.instituteApi.createDistrictWithContactToTest(instituteOptions.districtOptions);
-        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, instituteOptions.schoolOptions);
+        let district = await this.instituteApi.createDistrictWithContactToTest(districtOptions);
+        let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, schoolOptions);
         await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
         console.log('setupInstituteEntities completed')
         return {

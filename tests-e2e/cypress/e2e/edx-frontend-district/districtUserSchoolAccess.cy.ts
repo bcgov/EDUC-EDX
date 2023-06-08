@@ -8,11 +8,11 @@ before(() => {
 
 describe('District User School Access Tests', () => {
     beforeEach(() => {
-        cy.visit('/');
         cy.login();
+        cy.visit('/');
     })
     afterEach(() => {
-        cy.visit(Cypress.env('url').base_url + '/logout')
+        cy.logout();
     })
 
     describe('District User Opening School Tests', () => {

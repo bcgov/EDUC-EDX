@@ -1,4 +1,5 @@
 import { RestUtils } from "../helpers/rest-utils-ts";
+
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
 const AUTHORITY_ENDPOINT = `/api/v1/institute/authority`;
@@ -78,6 +79,24 @@ export interface SchoolContactPayload {
   lastName: string;
   effectiveDate: string;
   expiryDate: string | null;
+}
+
+type SchoolStatus = 'Opening' | 'Open' | 'Closing' | 'Closed';
+
+export interface DistrictOptions {
+  includeDistrictAddress?: boolean,
+}
+
+export interface SchoolOptions {
+  includeTombstoneValues?: boolean,
+  includeSchoolAddress?: boolean,
+  includeSchoolContact?: boolean,
+  schoolStatus?: SchoolStatus
+}
+
+export interface InstituteOptions {
+  districtOptions?: DistrictOptions,
+  schoolOptions?: SchoolOptions
 }
 
 export class InstituteApiService {
@@ -346,14 +365,19 @@ export class InstituteApiService {
 
   }
 
-  async createSchoolWithContactToTest(districtID: string, { includeSchoolAddress = true, includeTombstoneValues = true, includeSchoolContact = true, schoolStatus = 'Open' }: SchoolOptions): Promise<SchoolEntity> {
+  async createSchoolWithContactToTest(districtID: string, {
+    includeSchoolAddress = true,
+    includeTombstoneValues = true,
+    includeSchoolContact = true,
+    schoolStatus = 'Open'
+  }: SchoolOptions): Promise<SchoolEntity> {
     let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
     let currentDate = new Date();
     let tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
     let yesterday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1);
     let openDate = '';
-    let closeDate = null;
+    let closeDate: string | null = null;
     switch(schoolStatus) {
       case 'Opening':
         openDate = tomorrow.toISOString().substring(0, 19);

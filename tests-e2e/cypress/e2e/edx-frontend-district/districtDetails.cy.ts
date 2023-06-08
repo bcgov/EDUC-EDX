@@ -9,16 +9,13 @@ before(() => {
 })
 
 after(() => {
-  cy.visit(Cypress.env('url').base_url + '/logout');
+  cy.logout();
 })
 
 describe('District Details Interface Test', () => {
+  beforeEach(() => cy.login())
   it('Loads district details and checks field validation', () => {
-    cy.visit('/login');
-    cy.get('#login-button').click();
-    cy.get('input[name="user"]').type(Cypress.env('USER_ID'));
-    cy.get('input[name="password"]').type(Cypress.env('PASSWORD'));
-    cy.get('input[name="btnSubmit"][value="Continue"]').click();
+    cy.visit('/');
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
     cy.get(selectors.dashboard.districtDetailsCard).click();
     cy.get(selectors.districtDetails.editDetailsButton).click();
