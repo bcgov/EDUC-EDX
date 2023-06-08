@@ -82,6 +82,8 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: '#schoolDetailsWebsite',
+    schoolMincodeTitle: "#schoolMincodeTitle",
+    schoolDisplayNameTitle: "#schoolDisplayNameTitle",
     subjectHeading: 'h2.subjectHeading'
   },
   schoolList: {

@@ -43,14 +43,14 @@
             cols="6"
             class="d-flex justify-start"
           >
-            <h2>
+            <h2 id="schoolMincodeTitle">
               {{ school.mincode }}
             </h2>
             <h2 class="pl-1 pr-1">
               -
             </h2>
             <div>
-              <div>
+              <div id="schoolDisplayNameTitle">
                 <h2>{{ school.displayName }}</h2>
               </div>
               <div
