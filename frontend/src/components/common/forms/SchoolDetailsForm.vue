@@ -1207,7 +1207,9 @@ export default {
       return gradeList.toString().replace(/,/g, ', ');
     },
     getSchoolOrganization(school){
-      return this.schoolOrganizationTypes.find((facility) => facility.schoolOrganizationCode === school?.schoolOrganizationCode).label;
+      const org = this.schoolOrganizationTypes
+        .find((facility) => facility.schoolOrganizationCode === school?.schoolOrganizationCode);
+      return org ? org.label : '';
     },
     getNLCActivity(school){
       let nLCActivityList = [];
