@@ -669,7 +669,7 @@
                       variant="underlined"
                       label="Line 1"
                       required
-                      :rules="[rules.required(), rules.noSpecialCharacters()]"
+                      :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
                     />
                   </v-col>
@@ -684,7 +684,7 @@
                       v-model="getMailingAddressCopy()[0].addressLine2"
                       variant="underlined"
                       label="Line 2"
-                      :rules="[rules.noSpecialCharacters()]"
+                      :rules="[rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
                     />
                   </v-col>
@@ -700,7 +700,7 @@
                       variant="underlined"
                       label="City"
                       required
-                      :rules="[rules.required(), rules.noSpecialCharacters()]"
+                      :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
                     />
                   </v-col>
@@ -851,7 +851,7 @@
                                       variant="underlined"
                                       label="Line 1"
                                       required
-                                      :rules="[rules.required(), rules.noSpecialCharacters()]"
+                                      :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                       :maxlength="255"
                                     />
                                   </v-col>
@@ -861,7 +861,7 @@
                                     <v-text-field
                                       id="physicalAddressLine2"
                                       v-model="getPhysicalAddressCopy()[0].addressLine2"
-                                      :rules="[rules.noSpecialCharacters()]"
+                                      :rules="[rules.noSpecialCharactersAddress()]"
                                       :maxlength="255"
                                       variant="underlined"
                                       label="Line 2"
@@ -874,7 +874,7 @@
                                       id="physicalAddressCity"
                                       v-model="getPhysicalAddressCopy()[0].city"
                                       required
-                                      :rules="[rules.required(), rules.noSpecialCharacters()]"
+                                      :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                       :maxlength="255"
                                       variant="underlined"
                                       label="City"
