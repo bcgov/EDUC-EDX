@@ -199,69 +199,71 @@
                 </v-menu>
               </v-col>
             </v-row>
-            <v-row
-              v-if="isNewMessageDisplayed"
-              class="justify-center"
-            >
-              <v-col class="justify-center">
-                <v-card-text
-                  id="newMessageCardText"
-                >
-                  <v-textarea
-                    id="newMessageToConvTextArea"
-                    ref="newMessageToConvTextArea"
-                    v-model="newMessage"
-                    variant="solo"
-                    placeholder="New Message..."
-                    auto-grow
-                    rows="8"
-                    maxlength="4000"
-                    class="pt-0"
+            <v-expand-transition>
+              <v-row
+                v-if="isNewMessageDisplayed"
+                class="justify-center"
+              >
+                <v-col class="justify-center">
+                  <v-card-text
+                    id="newMessageCardText"
+                  >
+                    <v-textarea
+                      id="newMessageToConvTextArea"
+                      ref="newMessageToConvTextArea"
+                      v-model="newMessage"
+                      variant="solo"
+                      placeholder="New Message..."
+                      auto-grow
+                      rows="8"
+                      maxlength="4000"
+                      class="pt-0"
+                    />
+                  </v-card-text>
+                  <v-card-actions>
+                    <VSpacer />
+                    <PrimaryButton
+                      id="cancelMessage"
+                      secondary
+                      text="Cancel"
+                      :click-action="hideNewMessageField"
+                    />
+                    <PrimaryButton
+                      id="newMessagePostBtn"
+                      text="Send"
+                      :disabled="!newMessage"
+                      :loading="loading"
+                      :click-action="sendNewExchangeComment"
+                    />
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+              <v-row v-if="isNewAttachmentDisplayed">
+                <v-col class="d-flex justify-center">
+                  <DocumentUpload
+                    style="min-width: 40em"
+                    :small-file-extension="false"
+                    :check-file-rules="true"
+                    @close:form="hideAttachmentPanel"
+                    @upload="upload"
                   />
-                </v-card-text>
-                <v-card-actions>
-                  <VSpacer />
-                  <PrimaryButton
-                    id="cancelMessage"
-                    secondary
-                    text="Cancel"
-                    :click-action="hideNewMessageField"
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="isNewStudentDisplayed"
+                id="addStudentDialog"
+              >
+                <v-col class="d-flex justify-center">
+                  <AddStudent
+                    :school-i-d="userInfo.activeInstituteIdentifier"
+                    :additional-student-add-warning="addStudentWarningMessage"
+                    @add-student="sendNewSecureExchangeStudent"
+                    @close:form="hideStudentPanel"
+                    @update-additional-student-add-warning="updateAddStudentWarningMessage"
                   />
-                  <PrimaryButton
-                    id="newMessagePostBtn"
-                    text="Send"
-                    :disabled="!newMessage"
-                    :loading="loading"
-                    :click-action="sendNewExchangeComment"
-                  />
-                </v-card-actions>
-              </v-col>
-            </v-row>
-            <v-row v-if="isNewAttachmentDisplayed">
-              <v-col class="d-flex justify-center">
-                <DocumentUpload
-                  style="min-width: 40em"
-                  :small-file-extension="false"
-                  :check-file-rules="true"
-                  @close:form="hideAttachmentPanel"
-                  @upload="upload"
-                />
-              </v-col>
-            </v-row>
-            <v-row
-              v-if="isNewStudentDisplayed"
-              id="addStudentDialog"
-            >
-              <v-col class="d-flex justify-center">
-                <AddStudent
-                  :school-i-d="userInfo.activeInstituteIdentifier"
-                  :additional-student-add-warning="addStudentWarningMessage"
-                  @add-student="sendNewSecureExchangeStudent"
-                  @close:form="hideStudentPanel"
-                  @update-additional-student-add-warning="updateAddStudentWarningMessage"
-                />
-              </v-col>
-            </v-row>
+                </v-col>
+              </v-row>
+            </v-expand-transition>
             <v-row>
               <v-col>
                 <v-timeline
