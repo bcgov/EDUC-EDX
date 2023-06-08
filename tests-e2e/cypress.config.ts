@@ -1,4 +1,4 @@
-import {InstituteSetupOptions, InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
+import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
 import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
 import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
@@ -44,7 +44,7 @@ export default defineConfig({
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
       on('task', {
-        'dataLoad': async (options: InstituteSetupOptions) => {
+        'dataLoad': async (options: InstituteOptions) => {
           return await loadAppSetupData(config, options);
         },
         'recreate-school': async (schoolOptions: SchoolOptions)=> {
