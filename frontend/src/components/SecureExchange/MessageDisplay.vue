@@ -183,41 +183,43 @@
                 </v-btn>
               </v-col>
             </v-row>
-            <v-row v-if="isNewMessageDisplayed">
-              <v-card-text
-                id="newMessageCardText"
-                class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10"
-              >
-                <v-textarea
-                  id="newMessageToConvTextArea"
-                  ref="newMessageToConvTextArea"
-                  v-model="newMessage"
-                  outlined
-                  solo
-                  label="New Message..."
-                  auto-grow
-                  rows="8"
-                  maxlength="4000"
-                  class="pt-0"
-                />
-              </v-card-text>
-              <v-row class="py-4 justify-end pt-0 pr-16 mr-10">
-                <PrimaryButton
-                  id="cancelMessage"
-                  secondary
-                  text="Cancel"
-                  class="mr-2"
-                  :click-action="hideNewMessageField"
-                />
-                <PrimaryButton
-                  id="newMessagePostBtn"
-                  text="Send"
-                  width="8rem"
-                  :disabled="!newMessage"
-                  :loading="loading"
-                  :click-action="sendNewExchangeComment"
-                />
-              </v-row>
+            <v-row
+              v-if="isNewMessageDisplayed"
+              class="justify-center"
+            >
+              <v-col class="justify-center">
+                <v-card-text
+                  id="newMessageCardText"
+                >
+                  <v-textarea
+                    id="newMessageToConvTextArea"
+                    ref="newMessageToConvTextArea"
+                    v-model="newMessage"
+                    variant="solo"
+                    placeholder="New Message..."
+                    auto-grow
+                    rows="8"
+                    maxlength="4000"
+                    class="pt-0"
+                  />
+                </v-card-text>
+                <v-card-actions>
+                  <VSpacer />
+                  <PrimaryButton
+                    id="cancelMessage"
+                    secondary
+                    text="Cancel"
+                    :click-action="hideNewMessageField"
+                  />
+                  <PrimaryButton
+                    id="newMessagePostBtn"
+                    text="Send"
+                    :disabled="!newMessage"
+                    :loading="loading"
+                    :click-action="sendNewExchangeComment"
+                  />
+                </v-card-actions>
+              </v-col>
             </v-row>
             <v-row v-if="isNewAttachmentDisplayed">
               <v-col class="d-flex justify-center">
