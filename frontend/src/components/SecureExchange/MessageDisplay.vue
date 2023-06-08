@@ -91,7 +91,7 @@
                       <v-row no-gutters>
                         <v-col>
                           <v-icon
-                            color="grey darken-3"
+                            color="black"
                             size="medium"
                             dark
                           >
@@ -255,6 +255,8 @@
                     v-for="(activity,index) in secureExchange.activities"
                     :key="activity.secureExchangeCommentID"
                     dot-color="white"
+                    fill-dot
+                    elevation="1"
                     icon-color="#003366"
                     :icon="getActivityIcon(activity)"
                     size="large"
@@ -859,6 +861,8 @@ export default {
 
 .activityHeader {
   text-align: right;
+  width: 20vw;
+  word-break: break-word;
 }
 
 .activityTitle {
