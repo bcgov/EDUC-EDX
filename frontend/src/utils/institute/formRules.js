@@ -39,7 +39,7 @@ const number = (message = 'Must be a number') => {
  * @returns {(value: string) => true|string}
  */
 const noSpecialCharactersAddress = (message = 'Remove or replace any special characters in this field.') =>
-  v => !v || !/[^\w\s-.#\/]/.test(v) || message;
+  v => !v || !/[^\w\s-.#/]/.test(v) || message;
 
 const noSpecialCharactersContactTitle = (message = 'Remove or replace any special characters in this field.') =>
   v => !v || !/[^A-Za-z.'\s-&()]/.test(v) || message;
