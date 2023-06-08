@@ -204,7 +204,10 @@
                 v-if="isNewMessageDisplayed"
                 class="justify-center"
               >
-                <v-col class="justify-center">
+                <v-card
+                  class="new-message-card"
+                  style="min-width: 50em"
+                >
                   <v-card-text
                     id="newMessageCardText"
                   >
@@ -233,10 +236,11 @@
                       text="Send"
                       :disabled="!newMessage"
                       :loading="loading"
+                      width="7rem"
                       :click-action="sendNewExchangeComment"
                     />
                   </v-card-actions>
-                </v-col>
+                </v-card>
               </v-row>
               <v-row v-if="isNewAttachmentDisplayed">
                 <v-col class="d-flex justify-center">
@@ -335,10 +339,9 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
+                          icon="mdi-trash-can-outline"
                           @click="toggleRemoveDoc(index)"
-                        >
-                          <v-icon>mdi-delete-forever-outline</v-icon>
-                        </v-btn>
+                        />
                       </v-card-actions>
                       <v-expand-transition>
                         <div
@@ -486,10 +489,9 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
+                          icon="mdi-trash-can-outline"
                           @click="toggleRemoveStudent(index)"
-                        >
-                          <v-icon>mdi-delete-forever-outline</v-icon>
-                        </v-btn>
+                        />
                       </v-card-actions>
                       <v-expand-transition>
                         <div
@@ -575,7 +577,7 @@ export default {
       subject: '',
       isNewMessageDisplayed: false,
       isNewAttachmentDisplayed: false,
-      isNewStudentDisplayed: false,
+      isNewStudentDisplayed: true,
       newMessageBtnDisplayed: false,
       shouldDisplaySpeedDial: true,
       newMessage:'',
@@ -944,6 +946,12 @@ export default {
 
 .v-timeline--vertical.v-timeline--justify-auto {
   grid-template-columns: minmax(min-content, 10em) min-content auto;
+}
+
+.new-message-card{
+  padding: 1.1rem;
+  max-width: 50rem;
+  min-width: 10rem;
 }
 
 </style>

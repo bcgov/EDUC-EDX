@@ -70,7 +70,7 @@
         <span>{{ student['studentGender'] }}</span>
       </div>
     </v-row>
-    <v-row class="justify-end pr-2 pt-2">
+    <v-row class="justify-end pr-2 pt-2 pb-4">
       <PrimaryButton
         id="cancelAddStudentBtn"
         secondary
