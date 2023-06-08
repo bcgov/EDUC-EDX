@@ -434,10 +434,24 @@
                 cols="10"
                 class="d-flex justify-start"
               >
-                <span
+                <span v-if="!editing"
                   class="ministryLine"
                   style="color: black"
                 >{{ getGradesOffered(school.grades) }}</span>
+                <v-select 
+                  v-else
+                  id="schoolGrades"
+                  v-model="schoolDetailsCopy.grades"
+                  :items="gradeCodes"
+                  item-title="label"
+                  item-value="schoolGradeCode"
+                  variant="underlined"
+                  return-object
+                  :disabled="isGradeOfferedUpdateAllowed"
+                  @update:modelValue="sortGrades()"
+                  class="pt-0 mt-0"
+                  multiple
+                  ></v-select>
               </v-col>
             </v-row>
           </v-col>
@@ -967,6 +981,7 @@ import {deepCloneObject} from '../../../utils/common';
 import * as Rules from '../../../utils/institute/formRules';
 import {isNumber} from '../../../utils/institute/formInput';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {sortBy} from 'lodash';
   
 export default {
   name: 'SchoolDetailsPage',
@@ -1048,7 +1063,10 @@ export default {
         .find(rr => rr.schoolReportingRequirementCode === code);
       if (type === undefined) return {};
       return type;
-    }
+    },
+    isGradeOfferedUpdateAllowed() {
+      return this.school.schoolCategoryCode === 'INDP_FNS' || this.school.schoolCategoryCode === 'INDEPEND';
+    },
   },
   watch: {
     schoolDetailsFormValid(value) {
@@ -1084,7 +1102,7 @@ export default {
       this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
     });
     instituteStore().getGradeCodes().then(() => {
-      this.schoolGradeTypes = this.gradeCodes;
+      this.schoolGradeTypes = sortBy(this.gradeCodes, ['displayOrder']);
     });
     instituteStore().getProvinceCodes().then(() => {
       this.provinceCodeValues = this.provinceCodes.filter(province => province.provinceCode === 'BC' || province.provinceCode === 'YT');
@@ -1243,6 +1261,7 @@ export default {
     async toggleEdit() {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
       this.addAddressesIfRequired(this.schoolDetailsCopy);
+      this.sortGrades();
       this.editing = !this.editing;
       await this.$nextTick();
       this.$refs.schoolDetailsForm.validate();
@@ -1334,7 +1353,15 @@ export default {
         });
       }
     },
-  
+    sortGrades() {
+      const gradeList = [];
+      for (const grade of this.schoolGradeTypes) {
+        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode)) {
+          gradeList.push(grade);
+        }
+      }
+      this.schoolDetailsCopy.grades = gradeList;
+    },
   }
 };
 </script>
