@@ -17,7 +17,7 @@ const {
   checkEDXUserAccessForSchoolAdminFunctions
 } = require('./utils');
 const config = require('../config/index');
-const { scanFileForVirus } = require('../components/fileUtils');
+const { scanFile } = require('../components/fileUtils');
 const log = require('./logger');
 
 const HttpStatus = require('http-status-codes');
@@ -223,8 +223,11 @@ async function createExchange(req, res) {
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
 
+    for(const doc in message.secureExchangeDocuments){
+      await scanFile(doc);
+    }
+
     const documentPayload = message.secureExchangeDocuments.map(document => {
-      scanFileForVirus(req, res);
       return {...document, edxUserID: edxUserInfo.edxUserID};
     });
     const studentPayload = message.secureExchangeStudents.map(student => {
