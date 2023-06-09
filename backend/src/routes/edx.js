@@ -7,6 +7,7 @@ const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, c
   removeUserSchoolOrDistrictAccess
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
+const { scanFilePayload } = require('../components/fileUtils');
 const config = require('../config/index');
 const auth = require('../components/auth');
 const {CACHE_KEYS} = require('../util/constants');
@@ -26,7 +27,7 @@ router.get('/document-types', passport.authenticate('jwt', {session: false}), is
 
 router.get('/file-requirements', passport.authenticate('jwt', {session: false}), isValidBackendToken, getCodes('edx:exchangeURL', CACHE_KEYS.EDX_SECURE_EXChANGE_FILE_REQUIREMENTS, '/file-requirements'));
 
-router.post('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, uploadFile]);
+router.post('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, scanFilePayload, uploadFile]);
 
 router.get('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, verifyRequest,
   (req, res) => forwardGetReq(req, res, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`)

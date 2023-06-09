@@ -124,5 +124,9 @@ nconf.defaults({
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,
   },
+  clamav: {
+    host: process.env.CLAMAV_HOST,
+    port: process.env.CLAMAV_PORT,
+  },
 });
 module.exports = nconf;
