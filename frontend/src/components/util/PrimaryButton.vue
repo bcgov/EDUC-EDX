@@ -119,13 +119,13 @@ export default {
 .button-hover {
   background-color: #38598A !important;
 }
-.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+.v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
   background-color: #003366 !important;
   opacity: 0.298039215686275;
   color: white !important;
 }
 
-.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) .v-icon {
+.v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) .v-icon {
   color: white !important;
 }
 </style>

@@ -91,7 +91,7 @@
                       <v-row no-gutters>
                         <v-col>
                           <v-icon
-                            color="grey darken-3"
+                            color="black"
                             size="medium"
                             dark
                           >
@@ -140,110 +140,134 @@
               </v-col>
             </v-row>
             <v-divider class="divider" />
-            <v-row>
-              <v-col class="mt-2">
-                <v-btn
-                  id="newMessageToConvBtn"
-                  small
-                  @click="displayMessageField"
+            <v-row class="pt-3">
+              <v-col>
+                <v-menu
+                  v-if="shouldDisplaySpeedDial && isEditable()"
+                  v-model="editOptionsOpen"
+                  transition="fab-transition"
+                  location="end"
+                  offset="10"
                 >
-                  <v-icon color="#003366">
-                    mdi-email-outline
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Message</span>
-                </v-btn>
-                <v-btn
-                  id="addAttachmentConvButton"
-                  small
-                  @click="displayAttachmentPanel"
-                >
-                  <v-icon color="#003366">
-                    mdi-paperclip
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Attachment</span>
-                </v-btn>
-                <v-btn
-                  id="addStudentConvButton"
-                  small
-                  @click="displayStudentPanel"
-                >
-                  <v-icon color="#003366">
-                    mdi-emoticon-happy-outline
-                  </v-icon>
-                  <span
-                    style="color: #003366"
-                    class="ml-1"
-                  >Student</span>
-                </v-btn>
+                  <template #activator="{ props }">
+                    <v-btn
+                      id="editOptionsMenu"
+                      dark
+                      color="primary"
+                      :icon="editOptionsOpen ? 'mdi-close' : 'mdi-plus'"
+                      v-bind="props"
+                    />
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      id="newMessageToConvBtn"
+                      @click="displayMessageField"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-email-outline
+                      </v-icon>
+                      <span>Message</span>
+                    </v-list-item>
+                    <v-list-item
+                      id="addAttachmentConvButton"
+                      @click="displayAttachmentPanel"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-paperclip
+                      </v-icon>
+                      <span>Attachment</span>
+                    </v-list-item>
+                    <v-list-item
+                      id="addStudentConvButton"
+                      @click="displayStudentPanel"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1"
+                      >
+                        mdi-emoticon-happy-outline
+                      </v-icon>
+                      <span>Student</span>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </v-col>
             </v-row>
-            <v-row v-if="isNewMessageDisplayed">
-              <v-card-text
-                id="newMessageCardText"
-                class="pb-0 pt-5 pl-16 ml-10 pr-16 mr-10"
+            <v-expand-transition>
+              <v-row
+                v-if="isNewMessageDisplayed"
+                class="justify-center"
               >
-                <v-textarea
-                  id="newMessageToConvTextArea"
-                  ref="newMessageToConvTextArea"
-                  v-model="newMessage"
-                  outlined
-                  solo
-                  label="New Message..."
-                  auto-grow
-                  rows="8"
-                  maxlength="4000"
-                  class="pt-0"
-                />
-              </v-card-text>
-              <v-row class="py-4 justify-end pt-0 pr-16 mr-10">
-                <PrimaryButton
-                  id="cancelMessage"
-                  secondary
-                  text="Cancel"
-                  class="mr-2"
-                  :click-action="hideNewMessageField"
-                />
-                <PrimaryButton
-                  id="newMessagePostBtn"
-                  text="Send"
-                  width="8rem"
-                  :disabled="!newMessage"
-                  :loading="loading"
-                  :click-action="sendNewExchangeComment"
-                />
+                <v-card
+                  class="new-message-card"
+                  style="min-width: 50em"
+                >
+                  <v-card-text
+                    id="newMessageCardText"
+                  >
+                    <v-textarea
+                      id="newMessageToConvTextArea"
+                      ref="newMessageToConvTextArea"
+                      v-model="newMessage"
+                      variant="solo"
+                      placeholder="New Message..."
+                      auto-grow
+                      rows="8"
+                      maxlength="4000"
+                      class="pt-0"
+                    />
+                  </v-card-text>
+                  <v-card-actions>
+                    <VSpacer />
+                    <PrimaryButton
+                      id="cancelMessage"
+                      secondary
+                      text="Cancel"
+                      :click-action="hideNewMessageField"
+                    />
+                    <PrimaryButton
+                      id="newMessagePostBtn"
+                      text="Send"
+                      :disabled="!newMessage"
+                      :loading="loading"
+                      width="7rem"
+                      :click-action="sendNewExchangeComment"
+                    />
+                  </v-card-actions>
+                </v-card>
               </v-row>
-            </v-row>
-            <v-row v-if="isNewAttachmentDisplayed">
-              <v-col class="d-flex justify-center">
-                <DocumentUpload
-                  style="min-width: 40em"
-                  :small-file-extension="false"
-                  :check-file-rules="true"
-                  @close:form="hideAttachmentPanel"
-                  @upload="upload"
-                />
-              </v-col>
-            </v-row>
-            <v-row
-              v-if="isNewStudentDisplayed"
-              id="addStudentDialog"
-            >
-              <v-col class="d-flex justify-center">
-                <AddStudent
-                  :school-i-d="userInfo.activeInstituteIdentifier"
-                  :additional-student-add-warning="addStudentWarningMessage"
-                  @add-student="sendNewSecureExchangeStudent"
-                  @close:form="hideStudentPanel"
-                  @update-additional-student-add-warning="updateAddStudentWarningMessage"
-                />
-              </v-col>
-            </v-row>
+              <v-row v-if="isNewAttachmentDisplayed">
+                <v-col class="d-flex justify-center">
+                  <DocumentUpload
+                    style="min-width: 40em"
+                    :small-file-extension="false"
+                    :check-file-rules="true"
+                    @close:form="hideAttachmentPanel"
+                    @upload="upload"
+                  />
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="isNewStudentDisplayed"
+                id="addStudentDialog"
+              >
+                <v-col class="d-flex justify-center">
+                  <AddStudent
+                    :school-i-d="userInfo.activeInstituteIdentifier"
+                    :additional-student-add-warning="addStudentWarningMessage"
+                    @add-student="sendNewSecureExchangeStudent"
+                    @close:form="hideStudentPanel"
+                    @update-additional-student-add-warning="updateAddStudentWarningMessage"
+                  />
+                </v-col>
+              </v-row>
+            </v-expand-transition>
             <v-row>
               <v-col>
                 <v-timeline
@@ -255,6 +279,8 @@
                     v-for="(activity,index) in secureExchange.activities"
                     :key="activity.secureExchangeCommentID"
                     dot-color="white"
+                    fill-dot
+                    elevation="1"
                     icon-color="#003366"
                     :icon="getActivityIcon(activity)"
                     size="large"
@@ -278,7 +304,7 @@
                     </v-card>
                     <v-card v-if="activity.type === 'document'">
                       <v-card-text
-                        class="mt-n2 pb-0"
+                        class="pb-0"
                         :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
                       >
                         <router-link
@@ -300,12 +326,11 @@
                         >
                           {{ activity.fileName }}
                         </span>
-                      </v-card-text>
-                      <v-card-text
-                        v-if="activity.documentType.label !== 'Other'"
-                        class="pt-0 pb-3"
-                      >
-                        {{ activity.documentType.label }}
+                        <div
+                          v-if="activity.documentType.label !== 'Other'"
+                        >
+                          {{ activity.documentType.label }}
+                        </div>
                       </v-card-text>
                       <v-card-actions v-show="isOpenDocIndex !== index">
                         <v-spacer />
@@ -313,10 +338,9 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
+                          icon="mdi-trash-can-outline"
                           @click="toggleRemoveDoc(index)"
-                        >
-                          <v-icon>mdi-delete-forever-outline</v-icon>
-                        </v-btn>
+                        />
                       </v-card-actions>
                       <v-expand-transition>
                         <div
@@ -358,100 +382,108 @@
                       </v-expand-transition>
                     </v-card>
                     <v-card v-if="activity.type === 'student'">
-                      <v-card-text>
-                        <v-row v-if="activity.studentPEN">
+                      <v-card-text class="pb-0">
+                        <v-row
+                          v-if="activity.studentPEN"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>PEN: </span>
                           </v-col>
                           <v-col
-                            class="studentPenRaw pt-0"
+                            class="studentPenRaw"
                             cols="9"
                           >
                             {{ activity.studentPEN }}
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentLocalID">
+                        <v-row
+                          v-if="activity.studentLocalID"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Local ID: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentLocalID }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentSurname">
+                        <v-row
+                          v-if="activity.studentSurname"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Surname: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentSurname }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentGiven">
+                        <v-row
+                          v-if="activity.studentGiven"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Given Name: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentGiven }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentMiddle">
+                        <v-row
+                          v-if="activity.studentMiddle"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Middle Name: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentMiddle }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentDOB">
+                        <v-row
+                          v-if="activity.studentDOB"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Birth Date: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentDOB }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentGender">
+                        <v-row
+                          v-if="activity.studentGender"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Gender: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentGender }}</span>
@@ -464,10 +496,9 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
+                          icon="mdi-trash-can-outline"
                           @click="toggleRemoveStudent(index)"
-                        >
-                          <v-icon>mdi-delete-forever-outline</v-icon>
-                        </v-btn>
+                        />
                       </v-card-actions>
                       <v-expand-transition>
                         <div
@@ -859,6 +890,9 @@ export default {
 
 .activityHeader {
   text-align: right;
+  word-break: break-word;
+  width: max-content;
+  max-width: 20rem;
 }
 
 .activityTitle {
@@ -920,6 +954,12 @@ export default {
 
 .v-timeline--vertical.v-timeline--justify-auto {
   grid-template-columns: minmax(min-content, 10em) min-content auto;
+}
+
+.new-message-card{
+  padding: 1.1rem;
+  max-width: 50rem;
+  min-width: 10rem;
 }
 
 </style>

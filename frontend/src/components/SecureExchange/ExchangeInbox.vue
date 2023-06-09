@@ -46,7 +46,7 @@
                 >
                   <v-radio-group
                     v-model="statusRadioGroup"
-                    color="#003366"
+                    color="#123262"
                     class="mt-4"
                     :disabled="!statusRadioGroupEnabled"
                     direction="horizontal"
@@ -54,7 +54,7 @@
                   >
                     <v-radio
                       label="Active Only"
-                      color="#003366"
+                      color="#123262"
                       value="statusFilterActive"
                       @click.stop.prevent="statusFilterActiveClicked"
                     >
@@ -64,7 +64,7 @@
                     </v-radio>
                     <v-radio
                       label="All"
-                      color="#003366"
+                      color="#123262"
                       value="statusFilterAll"
                       @click="filterRequests"
                     >
@@ -77,7 +77,7 @@
                     <v-btn
                       id="filterid"
                       title="filter"
-                      variant="outlined"
+                      variant="text"
                     >
                       <v-icon
                         color="#003366"
@@ -306,7 +306,7 @@
                   class="hoverTable pl-3 pt-1 pb-1 pr-3"
                   no-gutters
                   :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-                  style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
+                  style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%); border-width:2px"
                   @click="openExchange(item.value.secureExchangeID)"
                 >
                   <v-col
@@ -367,7 +367,6 @@
                       <v-col class="pb-1">
                         <v-icon
                           style="margin-bottom: 0.15em"
-                          color="grey darken-3"
                           right
                           size="medium"
                           dark
@@ -702,7 +701,7 @@ export default {
 }
 
 .activeRadio {
-  color: #003366;
+  color: #123262;
 }
 
 :deep(.dp__input_wrap) {
