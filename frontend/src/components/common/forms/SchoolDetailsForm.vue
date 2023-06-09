@@ -443,11 +443,12 @@
                 cols="10"
                 class="d-flex justify-start"
               >
-                <span v-if="!editing"
+                <span
+                  v-if="!editing"
                   class="ministryLine"
                   style="color: black"
                 >{{ getGradesOffered(school.grades) }}</span>
-                <v-select 
+                <v-select
                   v-else
                   id="schoolGrades"
                   v-model="schoolDetailsCopy.grades"
@@ -457,10 +458,10 @@
                   variant="underlined"
                   return-object
                   :disabled="isGradeOfferedUpdateAllowed"
-                  @update:model-value="sortGrades()"
                   class="pt-0 mt-0"
                   multiple
-                  ></v-select>
+                  @update:model-value="sortGrades()"
+                />
               </v-col>
             </v-row>
           </v-col>
