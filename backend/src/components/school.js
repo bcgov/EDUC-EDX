@@ -70,24 +70,25 @@ async function updateSchool(req, res){
           schoolId: payload.schoolId
         });
       }
-
-      for (const gradeCode of payload.grades) {
-        //when there is an update in frontend to grades system adds array of codes to the payload
-        if (_.isString(gradeCode)) {
-          gradesObjectArray.push({
-            schoolGradeCode: gradeCode,
-            schoolId: payload.schoolId
-          });
-        } else {
-          //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
-          gradesObjectArray.push({
-            schoolGradeCode: gradeCode.schoolGradeCode,
-            schoolId: payload.schoolId
-          });
-        }
-      }
-
     }
+
+    for (const gradeCode of payload.grades) {
+      //when there is an update in frontend to grades system adds array of codes to the payload
+      console.log(gradeCode);
+      if (_.isString(gradeCode)) {
+        gradesObjectArray.push({
+          schoolGradeCode: gradeCode,
+          schoolId: payload.schoolId
+        });
+      } else {
+        //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
+        gradesObjectArray.push({
+          schoolGradeCode: gradeCode.schoolGradeCode,
+          schoolId: payload.schoolId
+        });
+      }
+    }
+
     payload.neighborhoodLearning = nlcObjectsArray;
     payload.grades = gradesObjectArray;
 
