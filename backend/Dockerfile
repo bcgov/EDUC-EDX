@@ -1,6 +1,6 @@
 FROM artifacts.developer.gov.bc.ca/docker-remote/node:18.16.0-alpine3.18
 
-RUN sudo chown -R 1010:1010 "/.npm"
+RUN chown -R 1010:1010 "/.npm"
 RUN npm cache clean --force
 RUN mkdir -p /logs
 RUN chmod 755 /logs
