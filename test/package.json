@@ -37,7 +37,7 @@
     "jsonwebtoken": "^8.5.1",
     "nconf": "^0.10.0",
     "npmlog": "^4.1.2",
-    "testcafe": "^1.20.0"
+    "testcafe": "^2.4.0"
   },
   "devDependencies": {
     "@types/npmlog": "^4.1.4"
