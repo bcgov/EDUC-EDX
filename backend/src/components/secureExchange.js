@@ -17,6 +17,7 @@ const {
   checkEDXUserAccessForSchoolAdminFunctions
 } = require('./utils');
 const config = require('../config/index');
+const { scanFile } = require('../components/fileUtils');
 const log = require('./logger');
 
 const HttpStatus = require('http-status-codes');
@@ -221,6 +222,10 @@ async function createExchange(req, res) {
 
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
+
+    for(const doc in message.secureExchangeDocuments){
+      await scanFile(doc);
+    }
 
     const documentPayload = message.secureExchangeDocuments.map(document => {
       return {...document, edxUserID: edxUserInfo.edxUserID};
@@ -529,7 +534,7 @@ async function createSecureExchangeStudent(req, res) {
       return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
-    console.log('Access RToken: ' + JSON.stringify(secureExchangeStudent));
+    console.log('Access Token: ' + JSON.stringify(secureExchangeStudent));
     const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`, req.session?.correlationID);
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
