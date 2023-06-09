@@ -304,7 +304,7 @@
                     </v-card>
                     <v-card v-if="activity.type === 'document'">
                       <v-card-text
-                        class="mt-n2 pb-0"
+                        class="pb-0"
                         :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
                       >
                         <router-link
@@ -326,12 +326,11 @@
                         >
                           {{ activity.fileName }}
                         </span>
-                      </v-card-text>
-                      <v-card-text
-                        v-if="activity.documentType.label !== 'Other'"
-                        class="pt-0 pb-3"
-                      >
-                        {{ activity.documentType.label }}
+                        <div
+                          v-if="activity.documentType.label !== 'Other'"
+                        >
+                          {{ activity.documentType.label }}
+                        </div>
                       </v-card-text>
                       <v-card-actions v-show="isOpenDocIndex !== index">
                         <v-spacer />
@@ -383,100 +382,108 @@
                       </v-expand-transition>
                     </v-card>
                     <v-card v-if="activity.type === 'student'">
-                      <v-card-text>
-                        <v-row v-if="activity.studentPEN">
+                      <v-card-text class="pb-0">
+                        <v-row
+                          v-if="activity.studentPEN"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>PEN: </span>
                           </v-col>
                           <v-col
-                            class="studentPenRaw pt-0"
+                            class="studentPenRaw"
                             cols="9"
                           >
                             {{ activity.studentPEN }}
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentLocalID">
+                        <v-row
+                          v-if="activity.studentLocalID"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Local ID: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentLocalID }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentSurname">
+                        <v-row
+                          v-if="activity.studentSurname"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Surname: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentSurname }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentGiven">
+                        <v-row
+                          v-if="activity.studentGiven"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Given Name: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentGiven }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentMiddle">
+                        <v-row
+                          v-if="activity.studentMiddle"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Middle Name: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentMiddle }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentDOB">
+                        <v-row
+                          v-if="activity.studentDOB"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Birth Date: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentDOB }}</span>
                           </v-col>
                         </v-row>
-                        <v-row v-if="activity.studentGender">
+                        <v-row
+                          v-if="activity.studentGender"
+                          dense
+                        >
                           <v-col
-                            class="pt-0"
                             cols="3"
                           >
                             <span>Gender: </span>
                           </v-col>
                           <v-col
-                            class="pt-0"
                             cols="9"
                           >
                             <span>{{ activity.studentGender }}</span>
@@ -577,7 +584,7 @@ export default {
       subject: '',
       isNewMessageDisplayed: false,
       isNewAttachmentDisplayed: false,
-      isNewStudentDisplayed: true,
+      isNewStudentDisplayed: false,
       newMessageBtnDisplayed: false,
       shouldDisplaySpeedDial: true,
       newMessage:'',
@@ -883,8 +890,9 @@ export default {
 
 .activityHeader {
   text-align: right;
-  width: 20vw;
   word-break: break-word;
+  width: max-content;
+  max-width: 20rem;
 }
 
 .activityTitle {
