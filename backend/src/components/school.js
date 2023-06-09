@@ -1,7 +1,7 @@
 'use strict';
 const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
-  checkEDXUserAccessForSchoolAdminFunctions, putData, postData, handleExceptionResponse
-} = require('./utils');
+  checkEDXUserAccessForSchoolAdminFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
+  handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
 const config = require('../config');
@@ -31,7 +31,8 @@ async function updateSchool(req, res){
   try{
     const token = getAccessToken(req);
     validateAccessToken(token);
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolId);
+    verifyQueryParamValueMatchesBodyValue(req, 'schoolID', 'schoolId');
+    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
 
     const payload = req.body;
 

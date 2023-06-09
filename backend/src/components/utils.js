@@ -402,6 +402,21 @@ function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
 }
 
 /**
+ * Verify that a query param and request body param are both present and match
+ * each-other in value.
+ *
+ * @param {Express.Request} req
+ * @param {String} paramKey
+ * @param {String} bodyKey
+ * @throws Bad Request
+ */
+function verifyQueryParamValueMatchesBodyValue(req, paramKey, bodyKey) {
+  if (!req?.params?.[paramKey]
+    || !req?.body?.[bodyKey]
+    || req.params[paramKey] !== req.body[bodyKey]) throw new Error('400');
+}
+
+/**
  * Helper function that combines all the permissions and security checks for
  * school admin operations. ex. editing school details.
  * @param {Object} req
@@ -457,6 +472,7 @@ const utils = {
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
+  verifyQueryParamValueMatchesBodyValue,
   logApiError,
   checkEDXCollectionPermission
 };
