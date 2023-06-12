@@ -103,7 +103,7 @@
       class="pt-2"
       :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
     >
-      <div v-if="!editState" >
+      <div v-if="!editState">
         <v-chip
           v-for="role in userRoles"
           :key="role.edxRoleCode"
@@ -440,12 +440,15 @@ export default {
           selectedRoles: this.selectedRoles
         }
       };
+      let url = ApiRoutes.edx.EXCHANGE_ACCESS_ROLES_URL;
       if (this.instituteTypeCode === 'SCHOOL') {
         payload.params.schoolID = this.instituteCode;
+        url = `${url}/school`;
       } else {
         payload.params.districtId = this.instituteCode;
+        url = `${url}/district`;
       }
-      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_ACCESS_ROLES_URL, payload)
+      ApiService.apiAxios.post(url, payload)
         .then(() => {
           this.setSuccessAlert('User roles have been updated.');
         }).catch(error => {
