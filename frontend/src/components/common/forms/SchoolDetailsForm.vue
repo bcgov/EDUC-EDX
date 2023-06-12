@@ -437,19 +437,14 @@
             </v-row>
             <v-row
               no-gutters
-              :class="editing ? 'pt-7': 'pt-2'"
+              class="pt-2"
             >
               <v-col
                 cols="10"
                 class="d-flex justify-start"
               >
-                <span
-                  v-if="!editing"
-                  class="ministryLine"
-                  style="color: black"
-                >{{ getGradesOffered(school.grades) }}</span>
                 <v-select
-                  v-else
+                  v-if="isGradeOfferedUpdateAllowed && editing"
                   id="schoolGrades"
                   v-model="schoolDetailsCopy.grades"
                   :items="gradeCodes"
@@ -457,11 +452,17 @@
                   item-value="schoolGradeCode"
                   variant="underlined"
                   return-object
-                  :disabled="isGradeOfferedUpdateAllowed"
                   class="pt-0 mt-0"
                   multiple
                   @update:model-value="sortGrades()"
                 />
+                <span
+                  v-else
+                  class="ministryLine"
+                  style="color: black"
+                >
+                  {{ getGradesOffered(school.grades) }}
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -1075,7 +1076,7 @@ export default {
       return type;
     },
     isGradeOfferedUpdateAllowed() {
-      return this.school.schoolCategoryCode === 'INDP_FNS' || this.school.schoolCategoryCode === 'INDEPEND';
+      return this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND';
     },
   },
   watch: {
@@ -1269,7 +1270,9 @@ export default {
       return countryName;
     },
     canEditSchoolDetails(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+      const hasPermission = this.userInfo?.activeInstitutePermissions?.
+        filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+      return hasPermission;
     },
     async clickSameAsAddressButton() {
       await this.$nextTick();
