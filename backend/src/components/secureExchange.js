@@ -224,7 +224,12 @@ async function createExchange(req, res) {
     const message = req.body;
 
     for(const doc in message.secureExchangeDocuments){
-      await scanFile(doc);
+      if(!await scanFile(doc)){
+        return res.status(HttpStatus.NOT_ACCEPTABLE).json({
+          status: HttpStatus.NOT_ACCEPTABLE,
+          message: 'File has failed the virus scan'
+        });
+      }
     }
 
     const documentPayload = message.secureExchangeDocuments.map(document => {
