@@ -2,7 +2,7 @@
 
 const passport = require('passport');
 const express = require('express');
-const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers,updateEdxUserRoles,
+const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers, updateEdxUserSchoolRoles, updateEdxUserDistrictRoles,
   createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, generateOrRegeneratePrimaryEdxActivationCode, removeSecureExchangeStudent,
   removeUserSchoolOrDistrictAccess
 } = require('../components/secureExchange');
@@ -62,7 +62,8 @@ router.post('/users/activation-code/primary/:instituteType/:instituteIdentifier'
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, activateEdxUser);
 router.get('/activate-user-verification', verifyActivateUserLink);
 router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));
-router.post('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateEdxUserRoles);
+router.post('/users/roles/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateEdxUserSchoolRoles);
+router.post('/users/roles/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateEdxUserDistrictRoles);
 router.get('/users/clearActiveUserSession', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, clearActiveSession) ;
 router.post('/institute-selection', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, instituteSelection);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getEdxUsers);
