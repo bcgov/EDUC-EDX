@@ -330,8 +330,11 @@ export default {
           this.messageSent();
         })
         .catch(error => {
-          this.setFailureAlert('An error occurred while sending message. Please try again later.');
-          console.log(error);
+          if(error?.response?.status === 406){
+            this.setFailureAlert('One or more of your files did not pass virus scanning.');
+          }else{
+            this.setFailureAlert('An error occurred while sending message. Please try again later.');
+          }
         })
         .finally(() => {
           this.processing = false;
