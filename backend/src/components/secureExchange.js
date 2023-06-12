@@ -411,6 +411,10 @@ async function getExchange(req, res) {
           let includeDemographicDetails = false;
           if(req.session.activeInstituteType === 'SCHOOL') {
             includeDemographicDetails = studentDetail.mincode === school.mincode;
+          } else if(req.session.activeInstituteType === 'DISTRICT') {
+            let studentSchoolId = cacheService.getSchoolIdByMincode(studentDetail.mincode);
+            let studentSchool = cacheService.getSchoolBySchoolID(studentSchoolId);
+            includeDemographicDetails = studentSchool.districtID === dataResponse['contactIdentifier'];
           }
           let activity = {};
           activity['type'] = 'student';
