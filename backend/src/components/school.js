@@ -74,7 +74,6 @@ async function updateSchool(req, res){
 
     for (const gradeCode of payload.grades) {
       //when there is an update in frontend to grades system adds array of codes to the payload
-      console.log(gradeCode);
       if (_.isString(gradeCode)) {
         gradesObjectArray.push({
           schoolGradeCode: gradeCode,
