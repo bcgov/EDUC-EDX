@@ -437,7 +437,7 @@
             </v-row>
             <v-row
               no-gutters
-              :class="editing ? 'pt-7': 'pt-2'"
+              class="pt-2"
             >
               <v-col
                 cols="10"
