@@ -1,6 +1,6 @@
 FROM artifacts.developer.gov.bc.ca/docker-remote/node:18.16.0-alpine3.18
 
-USER root
+ENV npm_config_cache /tmp/npm
 RUN mkdir -p /logs
 RUN chmod 755 /logs
 
