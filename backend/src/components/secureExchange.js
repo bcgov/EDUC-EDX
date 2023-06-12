@@ -591,7 +591,7 @@ async function updateEdxUserSchoolRoles(req, res) {
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
-    log.error(e, 'updateEdxUserRoles', 'Error occurred while attempting to update user roles.');
+    log.error(e, 'updateEdxUserSchoolRoles', 'Error occurred while attempting to update user roles.');
     return handleExceptionResponse(e, res);
   }
 }
@@ -632,7 +632,7 @@ async function updateEdxUserDistrictRoles(req, res) {
     const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
-    log.error(e, 'updateEdxUserRoles', 'Error occurred while attempting to update user roles.');
+    log.error(e, 'updateEdxUserDistrictRoles', 'Error occurred while attempting to update user roles.');
     return handleExceptionResponse(e, res);
   }
 }
