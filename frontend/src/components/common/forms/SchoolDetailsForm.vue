@@ -1300,7 +1300,7 @@ export default {
       if (this.sameAsMailingCheckbox) {
         this.schoolDetailsCopy.addresses = this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
       }
-      ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolID, this.schoolDetailsCopy)
+      ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolId, this.schoolDetailsCopy)
         .then(() => {
           this.setSuccessAlert('Success! The school details have been updated.');
         })
