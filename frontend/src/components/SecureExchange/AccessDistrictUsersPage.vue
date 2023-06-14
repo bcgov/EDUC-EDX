@@ -16,14 +16,16 @@
       </v-col>
       <v-col style="text-align: end">
         <v-chip
-          id="primaryEdxActivationCode"
           :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
           class="mr-1"
         >
           <v-icon left>
             mdi-shield-key-outline
-          </v-icon>Primary Activation Code:
-          {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
+          </v-icon>
+          Primary Activation Code:
+          <span id="primaryEdxActivationCode">
+            {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
+          </span>
         </v-chip>
         <ClipboardButton
           v-if="primaryEdxActivationCode"

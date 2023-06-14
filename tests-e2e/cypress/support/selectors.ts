@@ -60,7 +60,10 @@ export default {
     emailInput: '#newUserEmail',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     rolesSelectorBox: '#instituteNewUserRolesListBox',
-    sendInviteButton: '#newUserInvitePostBtn'
+    sendInviteButton: '#newUserInvitePostBtn',
+    primaryActivationCode: "#primaryEdxActivationCode",
+    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
+    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton"
   },
   schoolContacts: {
     listItem: '.v-list-item',
