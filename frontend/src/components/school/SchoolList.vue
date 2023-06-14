@@ -305,8 +305,7 @@ export default {
       schoolFacilityTypes: [],
       schoolActiveFacilityTypes: [],
       schoolCategoryTypes: [],
-      schoolFacilityTypeFilter: null,
-      loadingSchools: true,
+      schoolFacilityTypeFilter: null
     };
   },
   computed: {
