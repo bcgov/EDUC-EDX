@@ -355,6 +355,7 @@ async function getExchange(req, res) {
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       checkSecureExchangeAccess(req, res, dataResponse);
       let school = {};
+      let district = {};
       if (statusCodeResponse && dataResponse['secureExchangeStatusCode']) {
         let tempStatus = statusCodeResponse.find(codeStatus => codeStatus['secureExchangeStatusCode'] === dataResponse['secureExchangeStatusCode']);
         dataResponse['secureExchangeStatusCode'] = tempStatus?.label ? tempStatus.label : dataResponse['secureExchangeStatusCode'];
@@ -369,6 +370,8 @@ async function getExchange(req, res) {
 
       if(req.session.activeInstituteType === 'SCHOOL') {
         school = cacheService.getSchoolBySchoolID(dataResponse['contactIdentifier']);
+      }else{
+        district = cacheService.getDistrictByDistrictID(dataResponse['contactIdentifier']);
       }
       dataResponse['activities'] = [];
       dataResponse['commentsList'].forEach((comment) => {
@@ -380,6 +383,9 @@ async function getExchange(req, res) {
         if(req.session.activeInstituteType === 'SCHOOL') {
           activity['actor'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
           activity['title'] = comment.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+        }else if(req.session.activeInstituteType === 'DISTRICT') {
+          activity['actor'] = comment.edxUserID ? district.name : dataResponse['ministryOwnershipTeamName'];
+          activity['title'] = comment.edxUserID ? district.name : dataResponse['ministryOwnershipTeamName'];
         }
         
         activity['displayDate'] = comment['commentTimestamp'] ? LocalDateTime.parse(comment['commentTimestamp']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
