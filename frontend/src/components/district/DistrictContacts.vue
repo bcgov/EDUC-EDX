@@ -66,6 +66,7 @@
             width="12em"
             icon="mdi-plus-thick"
             text="New Contact"
+            v-if="canEditDistrictContact"
             :click-action="openNewContactSheet"
           />
         </v-col>
