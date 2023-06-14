@@ -11,7 +11,8 @@ describe('District User School Access Tests', () => {
         cy.login();
         cy.visit('/');
     })
-    afterEach(() => {
+
+    after(() => {
         cy.logout();
     })
 
