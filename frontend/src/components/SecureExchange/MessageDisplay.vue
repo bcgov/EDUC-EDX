@@ -154,6 +154,7 @@
                       id="editOptionsMenu"
                       dark
                       color="primary"
+                      class="ml-6"
                       :icon="editOptionsOpen ? 'mdi-close' : 'mdi-plus'"
                       v-bind="props"
                     />
@@ -274,6 +275,7 @@
                   v-if="secureExchange.activities.length > 0"
                   side="end"
                   truncate-line="both"
+                  class="mr-8"
                 >
                   <v-timeline-item
                     v-for="(activity,index) in secureExchange.activities"
@@ -286,18 +288,17 @@
                     size="large"
                     width="100%"
                   >
-                    <template #opposite>
-                      <div class="activityHeader">
-                        <div class="activityTitle">
-                          {{ activity.title }}
-                        </div>
-                        <v-spacer />
-                        <div class="activityDisplayDate">
-                          {{ activity.displayDate }}
-                        </div>
-                      </div>
-                    </template>
                     <v-card v-if="activity.type === 'message'">
+                      <v-card-text class="activityTitle pb-0">
+                        <v-row>
+                          <v-col>
+                            <span>{{ activity.actor }}</span>
+                          </v-col>
+                          <v-col class="d-flex justify-end">
+                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
                       <v-card-text class="activityContent">
                         {{ activity.content }}
                       </v-card-text>
@@ -387,16 +388,9 @@
                           v-if="activity.studentPEN"
                           dense
                         >
-                          <v-col
-                            cols="3"
-                          >
-                            <span>PEN: </span>
-                          </v-col>
-                          <v-col
-                            class="studentPenRaw"
-                            cols="9"
-                          >
-                            {{ activity.studentPEN }}
+                          <v-col>
+                            <span class="activityTitle">Student PEN:</span>
+                            <span class="ml-2">{{ activity.studentPEN }}</span>
                           </v-col>
                         </v-row>
                         <v-row
@@ -741,7 +735,11 @@ export default {
     getActivityIcon(activity) {
       switch (activity.type) {
       case 'message':
-        return 'mdi-email-outline';
+        if(activity.isSchool === true){
+          return 'mdi-email-outline';
+        }else{
+          return 'mdi-email';
+        }
       case 'document':
         return 'mdi-paperclip';
       case 'student':
@@ -953,7 +951,7 @@ export default {
 }
 
 .v-timeline--vertical.v-timeline--justify-auto {
-  grid-template-columns: minmax(min-content, 10em) min-content auto;
+  grid-template-columns: minmax(min-content, 0em) min-content auto;
 }
 
 .new-message-card{

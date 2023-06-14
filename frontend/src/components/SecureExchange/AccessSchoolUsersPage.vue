@@ -189,15 +189,17 @@
             class="pb-0"
           >
             <v-card class="add-new-user h-100">
-              <v-row class="add-new-user"
-                     align="center"
-                     justify="center">
+              <v-row
+                 class="add-new-user"
+                 align="center"
+                 justify="center"
+              >
                 <v-col class="d-flex justify-center">
                   <PrimaryButton
                     id="new-user-button"
                     icon="mdi-plus"
                     :large-icon="true"
-                    secondary
+                    :secondary="primaryEdxActivationCode"
                     :disabled="!primaryEdxActivationCode"
                     icon-left
                     text="Add New User"
@@ -542,7 +544,7 @@ export default {
 
 <style scoped>
 .add-new-user {
-    min-height: 160px;
+  min-height: 160px;
 }
 
 .sheetHeader{
@@ -553,13 +555,13 @@ export default {
 }
 
 .primary_color {
-    background-color: #4caf50;
-    color: white;
+  background-color: #4caf50;
+  color: white;
 }
 
 .secondary_color {
-    background-color: #424242;
-    color: white;
+  background-color: #424242;
+  color: white;
 }
 
 .searchBox {
@@ -572,7 +574,7 @@ export default {
 }
 
 :deep(.mdi-information){
-    color: #003366;
+  color: #003366;
 }
 
 @media screen and (max-width: 950px){
