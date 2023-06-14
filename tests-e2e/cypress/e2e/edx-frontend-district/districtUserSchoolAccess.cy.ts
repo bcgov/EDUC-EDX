@@ -1,7 +1,7 @@
 import selectors from "../../support/selectors";
 
 before(() => {
-    cy.task('dataLoad').then((res: any) => {
+    cy.task('dataLoad').then(() => {
         cy.task('setup-districtUser', {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']});
     });
 })
