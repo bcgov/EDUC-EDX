@@ -430,7 +430,7 @@
               <v-col
                 cols="10"
                 class="pr-0"
-                :class="editing ? 'mb-n5': ''"
+                :class="editing && isGradeOfferedUpdateAllowed ? 'mb-n5': ''"
               >
                 <span style="color: grey">Grades Offered</span>
               </v-col>

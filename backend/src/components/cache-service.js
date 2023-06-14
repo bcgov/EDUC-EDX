@@ -220,7 +220,7 @@ const cacheService = {
           'records':records
         };
       }
-      log.info(`loaded ${responseData.length} ${cacheKey} Types.`);
+      log.info(`Loaded ${responseData.length} ${cacheKey} types.`);
     }, {
       retries: 50
     });
