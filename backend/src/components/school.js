@@ -271,6 +271,7 @@ function createSchoolSearchCriteria(searchParams){
       } else if (pValue === 'NotClosed'){
         searchCriteriaList.push({key: 'closedDate', operation: FILTER_OPERATION.GREATER_THAN, value: currentDate, valueType: VALUE_TYPE.DATE_TIME, condition: CONDITION.OR});
         searchCriteriaList.push({key: 'closedDate', operation: FILTER_OPERATION.EQUAL, value: null, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
+        searchCriteriaList.push({key: 'openedDate', operation: FILTER_OPERATION.NOT_EQUAL, value: null, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
       }
     }
     if(key === 'pubEarlyLearning'){

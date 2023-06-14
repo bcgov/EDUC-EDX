@@ -479,7 +479,7 @@ export default {
       } else if (status === 'Opening') {
         return 'blue';
       } else if (status === 'Closing') {
-        return 'red';
+        return 'orange';
       }
     },
     selectItem(item){
