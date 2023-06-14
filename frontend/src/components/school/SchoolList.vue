@@ -4,7 +4,7 @@
     fluid
   >
     <Spinner
-      v-if="loadingSchools"
+      v-if="loadingTable"
       flat
     />
     <div v-else>
@@ -353,7 +353,6 @@ export default {
       this.schoolStatus = [{name: 'Open', code: 'Open'}, {name: 'Opening', code: 'Opening'}, {name: 'Closing', code: 'Closing'}];
     },
     getSchoolDropDownItems(){
-      this.loadingSchools = true;
       this.headerSearchParams.status = 'NotClosed';
       this.headerSearchParams.districtID = this.userInfo.activeInstituteIdentifier;
       this.headerSearchParams.pubEarlyLearning = 'true';
@@ -377,8 +376,6 @@ export default {
         }
       }).catch(error => {
         console.error(error);
-      }).finally(() => {
-        this.loadingSchools = false;
       });
     },
     getSchoolList() {
