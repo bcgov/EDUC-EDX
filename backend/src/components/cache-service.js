@@ -59,6 +59,9 @@ const cacheService = {
   getSchoolBySchoolID(schoolID) {
     return schoolMap.get(schoolID);
   },
+  getDistrictByDistrictID(districtID) {
+    return districtsMap.get(districtID);
+  },
   getAllActiveSchoolsJSON() {
     return activeSchools;
   },

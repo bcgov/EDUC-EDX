@@ -108,6 +108,7 @@
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
+                        @keyup.enter="filterRequests()"
                         prepend-icon="mdi-book-open-variant"
                         clearable
                       />
@@ -134,6 +135,7 @@
                             class="pt-0 mt-0"
                             variant="underlined"
                             label="Message Date"
+                            @keyup.enter="filterRequests()"
                             prepend-icon="mdi-calendar"
                             clearable
                             readonly
@@ -223,6 +225,7 @@
                         class="pt-0 mt-0"
                         density="compact"
                         label="Message ID"
+                        @keyup.enter="filterRequests()"
                         prepend-icon="mdi-pound"
                         clearable
                         @keypress="isNumber($event)"
@@ -244,6 +247,7 @@
                         prepend-icon="mdi-account"
                         maxlength="9"
                         counter="9"
+                        @keyup.enter="filterRequests()"
                         clearable
                         @keypress="isNumber($event)"
                       />
@@ -279,7 +283,11 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <Spinner
+          v-if="loadingTable"
+          flat
+        />
+        <v-row v-else>
           <v-col>
             <v-data-table-server
               v-model:items-per-page="pageSize"
@@ -428,10 +436,12 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import moment from 'moment';
 import {isNumber} from '../../utils/institute/formInput';
+import Spinner from '../common/Spinner.vue';
 
 export default {
   name: 'ExchangeInbox',
   components: {
+    Spinner,
     PrimaryButton,
     NewMessagePage,
     VueDatePicker
