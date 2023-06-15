@@ -1,8 +1,8 @@
 export default {
   accessUsersPage: {
-    selectSchoolDropdown: '#selectInstituteName',
+    manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
-    manageSchoolButton: '#manageSchoolButton'
+    selectSchoolDropdown: '#selectInstituteName'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
@@ -10,14 +10,14 @@ export default {
     districtContactsCard: '#districtContactsCard',
     districtDetailsCard: '#districtDetailsCard',
     districtUserSchoolContactsCard: '#districtUserSchoolContactsCard',
-    secureMessageTile: '#secureMessageInboxCard',
     schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
+    secureMessageTile: '#secureMessageInboxCard',
     title: '#navTitle > div'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
-    title: '#navTitle > div',
+    title: '#navTitle > div'
   },
   districtContacts: {
     listItem: '.v-list-item',
@@ -29,7 +29,7 @@ export default {
     newContactPhoneNumberInput: '#newContactPhoneNumberInput',
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
-    subjectHeading: 'h2.subjectHeading',
+    subjectHeading: 'h2.subjectHeading'
   },
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
@@ -38,32 +38,32 @@ export default {
   },
   documentUpload: { //common component
     selectFileInput: '#selectFileInput',
-    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
     uploadDocumentButton: '#upload_form',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect'
   },
   dropdown: { //common component
-    listItem: '.v-list-item',
+    listItem: '.v-list-item'
   },
   hamburgerMenu: {
-    hamburgerMenuButton: '#menuBtn',
-    secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn',
     administrationMenuOption: '#AdministrationMenuBtn',
-    schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     districtUserManagementOption: '#DistrictUserManagementMenuBtn',
     edxAccessMenuLink: '#UserManagementMenuBtn',
+    hamburgerMenuButton: '#menuBtn',
+    schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
+    secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
   },
   newUserInvites: {
+    emailInput: '#newUserEmail',
+    firstNameInput: '#newUserFirstName',
+    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton",
+    lastNameInput: '#newUserLastName',
     newUserButton: '#new-user-button',
     newUserInviteVCard: '#newUserInviteVCard',
-    firstNameInput: '#newUserFirstName',
-    lastNameInput: '#newUserLastName',
-    emailInput: '#newUserEmail',
-    rolesSelectorDropdown: '#instituteNewUserRolesSelect',
-    rolesSelectorBox: '#instituteNewUserRolesListBox',
-    sendInviteButton: '#newUserInvitePostBtn',
     primaryActivationCode: "#primaryEdxActivationCode",
-    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
-    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton"
+    rolesSelectorBox: '#instituteNewUserRolesListBox',
+    rolesSelectorDropdown: '#instituteNewUserRolesSelect',
+    sendInviteButton: '#newUserInvitePostBtn',
+    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
   },
   schoolContacts: {
     listItem: '.v-list-item',
@@ -75,7 +75,7 @@ export default {
     newContactPhoneNumberInput: '#newContactPhoneNumberInput',
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
-    subjectHeading: 'h2.subjectHeading',
+    subjectHeading: 'h2.subjectHeading'
   },
   schoolDetails: {
     addWebsiteLink: '#addWebsiteLink',
@@ -85,8 +85,8 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: '#schoolDetailsWebsite',
-    schoolMincodeTitle: "#schoolMincodeTitle",
     schoolDisplayNameTitle: "#schoolDisplayNameTitle",
+    schoolMincodeTitle: "#schoolMincodeTitle",
     subjectHeading: 'h2.subjectHeading'
   },
   schoolList: {
@@ -95,22 +95,22 @@ export default {
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',
+    newMessagePostBtn: '#newMessagePostBtn',
     newMessageToConvBtn: '#newMessageToConvBtn',
     newMessageToConvTextArea: '#newMessageToConvTextArea',
-    newMessagePostBtn: '#newMessagePostBtn',
     timelineConfirmYesButton: '.v-btn',
     timelineContent: '.v-timeline-item__body',
-    timelineRemoveButton: 'div.v-card-actions > button',
+    timelineRemoveButton: 'div.v-card-actions > button'
   },
   secureExchangeInbox: {
     addAttachmentButton: '#addAttachmentConvButton',
-    filtersButton: '#filterid',
     filterSearchButton: '#searchButton',
     filterSubjectInput: '#subjectInput',
+    filtersButton: '#filterid',
     newMessageButton: '#newMessageBtn',
     newMessageTextArea: '#newMessageTextArea',
     secureExchangeResults: '.v-data-table__tbody',
-    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect'
   },
   secureExchangeNewMessage: {
     addStudentToNewMessageBtn: '#addStudentID',
@@ -118,22 +118,22 @@ export default {
     newMessagePostBtn: '#newMessagePostBtn',
     newMessageTextArea: '#newMessageTextArea',
     subjectTxtField: '#subjectTxtField',
-    toInputDropdown: '#schoolNameTxtField',
+    toInputDropdown: '#schoolNameTxtField'
   },
   secureExchangeStudentUpload: { //common component
     addStudentID: '#addStudentToNewMessageBtn',
     searchPenBtn: '#searchPenBtn',
-    studentPenTextField: '#studentPenTextField',
+    studentPenTextField: '#studentPenTextField'
   },
   snackbar: {
     mainSnackBar: '#mainSnackBar'
   },
   stepOneSchoolDetails: {
     formHint: 'p.form-hint',
-    nextButton: '#nextButton',
+    nextButton: '#nextButton'
   },
   stepTwoSchoolContacts: {
     formHint: 'p.form-hint',
-    nextButton: '#nextButton',
+    nextButton: '#nextButton'
   }
 }
