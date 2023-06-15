@@ -1,7 +1,7 @@
 import selectors from "../../support/selectors";
 
 before(() => {
-    cy.task('dataLoad').then((res: any) => {
+    cy.task('dataLoad').then(() => {
         cy.task('setup-districtUser', {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']});
     });
 })
@@ -11,7 +11,8 @@ describe('District User School Access Tests', () => {
         cy.login();
         cy.visit('/');
     })
-    afterEach(() => {
+
+    after(() => {
         cy.logout();
     })
 
