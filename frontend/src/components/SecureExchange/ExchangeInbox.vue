@@ -541,7 +541,7 @@ export default {
       setTimeout(this.getExchanges, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
     },
     getMinistryTeamName(ministryOwnershipTeamId){
-      return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId).teamName;
+      return this.ministryTeams.find(item => item.ministryOwnershipTeamId === ministryOwnershipTeamId)?.teamName;
     },
     setFilterStatusAll() {
       this.headerSearchParams.secureExchangeStatusCode = ['OPEN', 'CLOSED'];
