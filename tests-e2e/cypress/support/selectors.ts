@@ -98,6 +98,7 @@ export default {
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',
+    editOptionsMenu: '#editOptionsMenu',
     newMessagePostBtn: '#newMessagePostBtn',
     newMessageToConvBtn: '#newMessageToConvBtn',
     newMessageToConvTextArea: '#newMessageToConvTextArea',
