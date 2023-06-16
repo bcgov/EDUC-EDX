@@ -194,7 +194,6 @@
                       <v-expand-transition>
                         <AddStudent
                           v-show="expandAddStudent"
-                          :school-i-d="userInfo.activeInstituteIdentifier"
                           :additional-student-add-warning="additionalStudentAddWarningMessage"
                           @close:form="showOptions"
                           @add-student="addSecureExchangeStudent"

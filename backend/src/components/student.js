@@ -3,6 +3,7 @@ const {errorResponse, getAccessToken, getDataWithParams} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../config');
 const log = require('./logger');
+const cacheService = require('./cache-service');
 
 async function getStudentByPEN(req, res) {
   try {
@@ -14,9 +15,17 @@ async function getStudentByPEN(req, res) {
     }
     const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
-      const mincode = req.query.mincode;
       const studentMincode = result[0].mincode;
-      if (mincode === studentMincode) {
+      let instituteHasStudent = false;
+      if(req.session.activeInstituteType === 'DISTRICT'){
+        let district = cacheService.getDistrictByDistrictID(req.session.activeInstituteIdentifier);
+        instituteHasStudent = district.districtNumber === studentMincode.substring(0,3);
+      }else if(req.session.activeInstituteType === 'SCHOOL'){
+        let school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
+        instituteHasStudent = school.mincode === studentMincode;
+      }
+
+      if (instituteHasStudent) {
         const body = {
           studentID: result[0].studentID,
           pen:result[0].pen,
