@@ -106,10 +106,6 @@ export default {
       type: Boolean,
       default: false
     },
-    schoolID: {
-      type: String,
-      required: true
-    },
     additionalStudentAddWarning:{
       type: String,
       required: false,
@@ -189,8 +185,7 @@ export default {
       this.student = {};
       ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL, {
         params: {
-          pen: this.penNumber,
-          mincode: this.schoolsMap.get(this.schoolID)?.mincode //this remains as we need to pass the mincode for checking
+          pen: this.penNumber
         }
       })
         .then(response => {
@@ -270,7 +265,5 @@ ul {
 h3 {
   font-size: 1.2rem
 }
-.v-alert >>> .v-alert__content {
-  max-width: 28em;
-}
+
 </style>

@@ -260,7 +260,6 @@
               >
                 <v-col class="d-flex justify-center">
                   <AddStudent
-                    :school-i-d="userInfo.activeInstituteIdentifier"
                     :additional-student-add-warning="addStudentWarningMessage"
                     @add-student="sendNewSecureExchangeStudent"
                     @close:form="hideStudentPanel"
@@ -388,9 +387,11 @@
                           v-if="activity.studentPEN"
                           dense
                         >
-                          <v-col>
+                          <v-col cols="2">
                             <span class="activityTitle">Student PEN:</span>
-                            <span class="ml-2">{{ activity.studentPEN }}</span>
+                          </v-col>
+                          <v-col cols="10">
+                            <span>{{ activity.studentPEN }}</span>
                           </v-col>
                         </v-row>
                         <v-row
@@ -398,12 +399,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Local ID: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentLocalID }}</span>
                           </v-col>
@@ -413,12 +414,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Surname: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentSurname }}</span>
                           </v-col>
@@ -428,12 +429,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Given Name: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentGiven }}</span>
                           </v-col>
@@ -443,12 +444,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Middle Name: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentMiddle }}</span>
                           </v-col>
@@ -458,12 +459,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Birth Date: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentDOB }}</span>
                           </v-col>
@@ -473,12 +474,12 @@
                           dense
                         >
                           <v-col
-                            cols="3"
+                            cols="2"
                           >
                             <span>Gender: </span>
                           </v-col>
                           <v-col
-                            cols="9"
+                            cols="10"
                           >
                             <span>{{ activity.studentGender }}</span>
                           </v-col>
