@@ -40,5 +40,19 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.saveChangesToDistrictContactButton).click();
       cy.get(selectors.districtContacts.editContactFirstNameInput).should('have.value', 'Testing Edited User');
     })
+
+    it('creates new district contact', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.districtContactsCard).click();
+      cy.get(selectors.districtContacts.newContactButton).click();
+      cy.get(selectors.districtContacts.newContactTypeDropdown).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Chairperson').click();
+      cy.get(selectors.districtContacts.newContactLastNameInput).clear().type('AT Chairperson LastName');
+      cy.get(selectors.districtContacts.newContactEmailInput).clear().type('test@test.com');
+      cy.get(selectors.districtContacts.newContactPhoneNumberInput).clear().type('1234567890');
+      cy.get(selectors.districtContacts.newContactPostBtn).click({force:true});
+      cy.get('form').submit();
+    });
+
   });
 });
