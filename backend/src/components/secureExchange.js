@@ -14,7 +14,9 @@ const {
   getDataWithParams,
   checkEDXUserAccess,
   checkEDXUserDistrictAdminPermission,
-  checkEDXUserAccessForSchoolAdminFunctions
+  checkEDXUserAccessForSchoolAdminFunctions,
+  isPdf,
+  isImage
 } = require('./utils');
 const config = require('../config/index');
 const { scanFile } = require('../components/fileUtils');
@@ -122,11 +124,16 @@ async function downloadFile(req, res) {
     validateAccessToken(token);
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
-
-    res.setHeader('Content-disposition', 'inline; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
-    res.setHeader('Content-type', resData.fileExtension);
-
-    return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
+    if(isImage(resData) || isPdf(resData)) {
+      res.setHeader('Content-disposition', 'inline; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
+      res.setHeader('Content-type', resData.fileExtension);
+      return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
+    } else {
+      res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
+      res.setHeader('Content-type', resData.fileExtension);
+      return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
+    }
+    
   } catch (e) {
     log.error('downloadFile Error', e.stack);
     return handleExceptionResponse(e, res);
@@ -403,6 +410,8 @@ async function getExchange(req, res) {
           activity['actor'] = document.edxUserID ? document.edxUserID : document.staffUserIdentifier;
           if(req.session.activeInstituteType === 'SCHOOL') {
             activity['title'] = document.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          } else if(req.session.activeInstituteType === 'DISTRICT') {
+            activity['title'] = document.edxUserID ? district.name : dataResponse['ministryOwnershipTeamName'];
           }
           activity['fileName'] = document.fileName;
           activity['documentType'] = cacheService.getDocumentTypeCodeLabelByCode(document.documentTypeCode);
@@ -438,6 +447,8 @@ async function getExchange(req, res) {
           activity['actor'] = student.edxUserID ? student.edxUserID : student.staffUserIdentifier;
           if(req.session.activeInstituteType === 'SCHOOL') {
             activity['title'] = student.edxUserID ? school.schoolName : dataResponse['ministryOwnershipTeamName'];
+          } else if(req.session.activeInstituteType === 'DISTRICT') {
+            activity['title'] = student.edxUserID ? district.name : dataResponse['ministryOwnershipTeamName'];
           }
           activity['displayDate'] = student['createDate'] ? LocalDateTime.parse(student['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd HH:mm')) : 'Unknown Date';
           dataResponse['activities'].push(activity);

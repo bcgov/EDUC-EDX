@@ -31,7 +31,7 @@
               variant="underlined"
               :accept="fileAccept"
               :disabled="hasReadOnlyRoleAccess()"
-              hint="JPEG, PNG, and PDF files supported"
+              hint="JPEG, PNG, CSV, MS-WORD, MS-EXCEL, .STD, .VER and PDF files supported"
               :error-messages="fileInputError"
               placeholder="Select your file"
               :rules="fileRules"
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
+import {getFileNameWithMaxNameLength, getFileExtensionWithDot, humanFileSize} from '../../utils/file';
 import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import {sortBy} from 'lodash';
@@ -88,6 +88,10 @@ export default {
       type: Boolean,
       default: false
     },
+    allowedFileFormat: {
+      type: String,
+      default: null
+    }
   },
   emits: ['close:form', 'upload'],
   data() {
@@ -198,7 +202,7 @@ export default {
     async uploadFile(env) {
       let document = {
         fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
-        fileExtension: this.uploadFileValue[0].type,
+        fileExtension: this.uploadFileValue[0].type ? this.uploadFileValue[0].type : getFileExtensionWithDot(this.uploadFileValue[0].name),
         fileSize: this.uploadFileValue[0].size,
         documentTypeCode: this.documentTypeCode,
         documentData: btoa(env.target.result)
@@ -230,11 +234,12 @@ export default {
           return !value || !value.length || value[0].size < maxSize || `File size should not be larger than ${humanFileSize(maxSize)}!`;
         },
         value => {
-          return !value || !value.length || this.fileRequirements.extensions.includes(value[0].type) || `File formats should be ${this.fileFormats}.`;
+          const extension = `.${value[0]?.name?.split('.').slice(-1)}`;
+          return !value || !value.length || this.fileRequirements.extensions.includes(extension) || this.fileRequirements.extensions.includes(value[0].type) || `File formats should be ${this.fileFormats}.`;
         }
       ];
       this.fileAccept = this.fileRequirements.extensions.join();
-      this.fileFormats = this.makefileFormatList(this.fileRequirements.extensions);
+      this.fileFormats = this.allowedFileFormat ? this.allowedFileFormat : this.makefileFormatList(this.fileRequirements.extensions);
     },
   },
 };
