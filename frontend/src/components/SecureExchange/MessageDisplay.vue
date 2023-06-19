@@ -312,7 +312,7 @@
                         class="pb-0"
                         :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
                       >
-                      <a
+                        <a
                           v-if="isImage(activity) && isEditable()"
                           @click="showDocModal(activity)"
                         >
@@ -569,7 +569,6 @@ import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
 import alertMixin from '../../mixins/alertMixin';
 import DocumentUpload from '../common/DocumentUpload.vue';
 import AddStudent from '../AddStudent.vue';
-import PdfRenderer from '../common/PdfRenderer.vue';
 import ImageRenderer from '../common/ImageRenderer.vue';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
@@ -578,7 +577,7 @@ import {getFileExtensionWithDot} from '../../utils/file';
 
 export default {
   name: 'MessageDisplay',
-  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer, PdfRenderer },
+  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer },
   mixins: [alertMixin],
   props: {
     secureExchangeID: {
@@ -640,8 +639,8 @@ export default {
       }
     },
     showDocModal(document){
-        this.imageId = document.documentID;
-        this.imageRendererDialog = true;
+      this.imageId = document.documentID;
+      this.imageRendererDialog = true;
     },
     isPdf(document){
       return (
