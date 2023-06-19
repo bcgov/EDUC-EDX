@@ -124,11 +124,20 @@ async function downloadFile(req, res) {
     validateAccessToken(token);
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
+    resData = {
+      documentData: 'dGVzdCBkYXRh',
+      fileName: 'test.jpg',
+      fileExtension: 'image/jpeg'
+    };
+    console.log(isImage(resData));
+    console.log(isPdf(resData));
     if(!isImage(resData) && !isPdf(resData)) {
+      console.log('1')
       res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
       res.setHeader('Content-type', resData.fileExtension);
       return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
     } else {
+      console.log('2')
       res.setHeader('Content-disposition', 'inline; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
       res.setHeader('Content-type', resData.fileExtension);
       return res.status(HttpStatus.OK).send(Buffer.from(resData.documentData, 'base64'));
