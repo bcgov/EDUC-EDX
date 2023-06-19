@@ -1,10 +1,37 @@
 import {RestUtils} from '../helpers/rest-utils-ts';
-import {EdxUser} from '../model/EdxUser';
-import {EdxUserSchool} from '../model/EdxUserSchool';
-import {EdxUserDistrict} from '../model/EdxUserDistrict';
-import {EdxUserRole} from '../model/EdxUserRole';
 import {EdxApiService} from './edx-api-service';
 import {InstituteApiService} from './institute-api-service';
+
+type EdxUserPayload = {
+  email: string,
+  firstName: string,
+  lastName: string,
+  digitalIdentityID: string,
+  createUser: string,
+  updateUser: string,
+}
+
+type EdxUserRolePayload = {
+  edxRoleCode: string;
+  createUser: string
+  updateUser: string,
+}
+
+type EdxUserSchoolPayload = {
+  schoolID: string;
+  edxUserID: string;
+  createUser: string;
+  updateUser: string;
+  edxUserSchoolRoles: EdxUserRolePayload[]
+}
+
+type EdxUserDistrictPayload = {
+  districtID: string;
+  edxUserID: string;
+  createUser: string;
+  updateUser: string;
+  edxUserDistrictRoles: EdxUserRolePayload[]
+}
 
 export class UserApiService {
 
@@ -24,7 +51,7 @@ export class UserApiService {
     const edxUser = await this.edxApi.getEdxUserFromFirstNameLastName('TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
     if (!edxUser) {
       console.log('edxUser not found - creating new user');
-      const newEdxUser: EdxUser = {
+      const newEdxUser: EdxUserPayload = {
         email: 'edx-noreply@gov.bc.ca',
         firstName: 'TESTAUTOMATIONUSERFIRSTNAME',
         lastName: 'TESTAUTOMATIONUSERLASTNAME',
@@ -32,7 +59,7 @@ export class UserApiService {
         createUser: 'Test-automation',
         updateUser: 'Test-automation',
       };
-      let createdEdxUser = await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users`, newEdxUser);
+      let createdEdxUser = await this.restUtils.postData<EdxUserEntity>(`${this.config.env.edx.base_url}/api/v1/edx/users`, newEdxUser);
       return createdEdxUser.edxUserID;
     }
 
@@ -89,20 +116,20 @@ export class UserApiService {
 
   }
 
-  async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any, edxUserID: string) {
+  async createEdxUserSchoolWithRoles(schoolIDs: string[], schoolRoles: any[], edxUserID: string) {
     if (schoolIDs.length > 0 && schoolRoles.length > 0) {
-      const edxUserSchoolRoles = [];
+      const edxUserSchoolRoles: EdxUserRolePayload[] = [];
       for (const schoolID of schoolIDs) {
         console.log(`creating edxUserSchool with ${schoolRoles.length} roles`);
         for (const schoolRole of schoolRoles) {
-          const edxSchoolRole: EdxUserRole = {
+          const edxSchoolRole: EdxUserRolePayload = {
             edxRoleCode: schoolRole.edxRoleCode,
             createUser: 'Test-automation',
             updateUser: 'Test-automation'
           }
           edxUserSchoolRoles.push(edxSchoolRole);
         }
-        let edxUserSchool: EdxUserSchool = {
+        let edxUserSchool: EdxUserSchoolPayload = {
           schoolID: schoolID,
           edxUserID: edxUserID,
           createUser: 'Test-automation',
@@ -117,18 +144,18 @@ export class UserApiService {
 
   async createEdxUserDistrictWithRoles(districtIDs: string[], districtRoles: string[], edxUserID: string) {
     if (districtIDs.length > 0 && districtRoles.length > 0) {
-      const edxUserDistrictRoles = [];
+      const edxUserDistrictRoles: EdxUserRolePayload[] = [];
       for (const districtID of districtIDs) {
         console.log(`creating edxUserDistrict with ${districtRoles.length} roles`);
         for (const districtRole of districtRoles) {
-          const edxDistrictRole: EdxUserRole = {
+          const edxDistrictRole = {
             edxRoleCode: districtRole,
             createUser: 'Test-automation',
             updateUser: 'Test-automation'
           }
           edxUserDistrictRoles.push(edxDistrictRole);
         }
-        let edxUserDistrict: EdxUserDistrict = {
+        let edxUserDistrict: EdxUserDistrictPayload = {
           districtID: districtID,
           edxUserID: edxUserID,
           createUser: 'Test-automation',
