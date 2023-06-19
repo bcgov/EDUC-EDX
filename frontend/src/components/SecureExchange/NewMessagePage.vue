@@ -208,6 +208,9 @@
             </v-row>
           </v-col>
         </v-row>
+        <v-alert v-model="fileSizeAlert" density="compact" type="error">
+          {{ `Total files must be less than ${humanFileSize(fileRequirements.maxSize)}. Please remove some uploads. You may upload additional files later.` }}
+        </v-alert>
         <v-row class="py-4 justify-end pr-3">
           <PrimaryButton
             id="cancelMessage"
@@ -220,7 +223,7 @@
             id="newMessagePostBtn"
             text="Send"
             width="7rem"
-            :disabled="!isValidForm"
+            :disabled="!isValidForm || fileSizeAlert"
             :loading="processing"
             :click-action="sendNewMessage"
           />
@@ -242,6 +245,7 @@ import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import alertMixin from '../../mixins/alertMixin';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
+import {humanFileSize} from '../../utils/file';
 import AddStudent from '../AddStudent.vue';
 
 export default {
@@ -265,12 +269,13 @@ export default {
       expandAttachFile: false,
       expandAddStudent: false,
       shouldShowOptions: true,
-      additionalStudentAddWarningMessage:''
+      additionalStudentAddWarningMessage:'',
+      fileSizeAlert: false
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    ...mapState(edxStore, ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents']),
+    ...mapState(edxStore, ['ministryTeams', 'exchangeSchoolIds', 'secureExchangeDocuments','secureExchangeStudents', 'fileRequirements']),
     ...mapState(appStore, ['schoolsMap', 'activeDistrictsMap']),
   },
   mounted() {
@@ -279,6 +284,7 @@ export default {
   created() {
     edxStore().getExchangeSchoolIds();
     edxStore().getMinistryTeams();
+    edxStore().getFileRequirements();
     //ensure uploaded messages are cleared out
     this.clearSecureExchangeDocuments();
     //ensure selected students are cleared out
@@ -341,6 +347,7 @@ export default {
     },
     async uploadDocument(document) {
       await edxStore().setSecureExchangeDocuments([...this.secureExchangeDocuments, document]);
+      this.checkTotalFileSize();
     },
     async addSecureExchangeStudent(secureExchangeStudent) {
       const found =this.secureExchangeStudents.some(el =>el.studentID === secureExchangeStudent.studentID);
@@ -352,6 +359,7 @@ export default {
     removeDocumentByIndex(index) {
       //since we don't have a unique UUID to identify the document to remove, we will use the index
       edxStore().deleteSecureExchangeDocumentByIndex(index);
+      this.checkTotalFileSize();
     },
     removeSecureExchangeStudentByID(secureExchangeStudent) {
       edxStore().deleteSecureExchangeStudentsByID(secureExchangeStudent);
@@ -390,6 +398,14 @@ export default {
       const valid = await this.$refs.newMessageForm.validate();
       this.isFormValid = valid.valid;
     },
+    checkTotalFileSize() {
+      let totalFileSize = 0;
+      for (let each of this.secureExchangeDocuments) {
+        totalFileSize += each.fileSize;
+      }
+      this.fileSizeAlert = totalFileSize > this.fileRequirements.maxSize;
+    },
+    humanFileSize
   }
 };
 </script>
