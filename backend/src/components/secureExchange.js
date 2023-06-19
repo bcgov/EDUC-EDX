@@ -124,6 +124,7 @@ async function downloadFile(req, res) {
     validateAccessToken(token);
 
     let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
+    console.log(resData);
     if(isImage(resData) || isPdf(resData)) {
       res.setHeader('Content-disposition', 'inline; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
       res.setHeader('Content-type', resData.fileExtension);

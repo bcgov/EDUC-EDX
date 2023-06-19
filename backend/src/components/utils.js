@@ -457,6 +457,7 @@ function isPdf(document){
 
 function isImage(document) {
   let imageTypes = ['.jpg','.jpeg','.jpe','.jfif','.jif','.jfi', '.png'];
+  console.log(getFileExtensionWithDot(document.fileName.toLowerCase()));
   return (
     'fileName' in document &&
     typeof document.fileName === 'string' &&
