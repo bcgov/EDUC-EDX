@@ -12,19 +12,33 @@ after(() => {
   cy.logout();
 })
 
-describe('District Contacts Interface Test', () => {
-  beforeEach(() => cy.login());
-  it('Check new contact page has current effective date', () => {
-    cy.visit('/');
-    cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
-    cy.get(selectors.dashboard.districtContactsCard).click();
+describe('District Contacts Page', () => {
+  context('As an EDX district admin', () => {
+    beforeEach(() => cy.login());
 
-    cy.get(selectors.dashboard.title, {timeout: 60000}).contains('District Contacts | EDX Automation Testing District');
+    it('should make new contacts with a current effective date', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtContactsCard).click();
 
-    cy.get(selectors.districtContacts.newContactButton).click();
-    cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
-      const val = $input.val()
-      expect(val).to.contains(LocalDate.now().toString());
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Contacts | EDX Automation Testing District');
+
+      cy.get(selectors.districtContacts.newContactButton).click();
+      cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
+        const val = $input.val()
+        expect(val).to.contains(LocalDate.now().toString());
+      })
+    });
+
+    it('can edit contact details', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtContactsCard).click();
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.districtContacts.editDistrictContactButton).click();
+      cy.get(selectors.districtContacts.editContactFirstNameInput).clear().type('Testing Edited User');
+      cy.get(selectors.districtContacts.saveChangesToDistrictContactButton).click();
+      cy.get(selectors.districtContacts.editContactFirstNameInput).should('have.value', 'Testing Edited User');
     })
   });
 });

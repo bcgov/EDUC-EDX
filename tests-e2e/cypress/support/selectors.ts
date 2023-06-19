@@ -20,6 +20,8 @@ export default {
     title: '#navTitle > div'
   },
   districtContacts: {
+    editDistrictContactButton: '#editContactButton',
+    editContactFirstNameInput: '#editContactFirstNameInput',
     listItem: '.v-list-item',
     newContactButton: '#newContactButton',
     newContactCalendar: '.dp__outer_menu_wrap',
@@ -29,7 +31,8 @@ export default {
     newContactPhoneNumberInput: '#newContactPhoneNumberInput',
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
-    subjectHeading: 'h2.subjectHeading'
+    saveChangesToDistrictContactButton: '#saveChangesToDistrictContactButton',
+    subjectHeading: 'h2.subjectHeading',
   },
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
@@ -95,6 +98,7 @@ export default {
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',
+    editOptionsMenu: '#editOptionsMenu',
     newMessagePostBtn: '#newMessagePostBtn',
     newMessageToConvBtn: '#newMessageToConvBtn',
     newMessageToConvTextArea: '#newMessageToConvTextArea',
