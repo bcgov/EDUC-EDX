@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export class RestUtils {
-    config: any;
+    config: Cypress.PluginConfigOptions;
 
-    constructor(conf: any) {
+    constructor(conf:  Cypress.PluginConfigOptions) {
         this.config = conf;
     }
 
