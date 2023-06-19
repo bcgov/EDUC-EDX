@@ -14,7 +14,7 @@ after(() => {
 
 describe('District Details Interface Test', () => {
   beforeEach(() => cy.login());
-  it('Loads district details and checks field validation', () => {
+  it('can load district details and checks field validation', () => {
     cy.visit('/');
     cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
     cy.get(selectors.dashboard.districtDetailsCard).click();
