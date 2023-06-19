@@ -41,7 +41,7 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.editContactFirstNameInput).should('have.value', 'Testing Edited User');
     })
 
-    it('create new district contact', () => {
+    it('creates new district contact', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.districtContactsCard).click();
       cy.get(selectors.districtContacts.newContactButton).click();
