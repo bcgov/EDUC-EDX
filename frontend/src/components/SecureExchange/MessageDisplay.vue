@@ -21,12 +21,6 @@
         :class="{'mr-0 ml-0': $vuetify.display.smAndDown, 'mr-3 ml-3': $vuetify.display.mdAndUp}"
       >
         <v-col cols="12 pt-0">
-          <PdfRenderer
-            :dialog="pdfRenderDialog"
-            :request-id="secureExchangeID"
-            :document-id="documentId"
-            @close-dialog="closeDialog"
-          />
           <ImageRenderer
             :dialog="imageRendererDialog"
             :request-id="secureExchangeID"
@@ -249,6 +243,7 @@
                     style="min-width: 40em"
                     :small-file-extension="false"
                     :check-file-rules="true"
+                    :allowed-file-format="formatMessage"
                     @close:form="hideAttachmentPanel"
                     @upload="upload"
                   />
@@ -303,23 +298,34 @@
                       </v-card-text>
                     </v-card>
                     <v-card v-if="activity.type === 'document'">
+                      <v-card-text class="activityTitle pb-0">
+                        <v-row>
+                          <v-col>
+                            <span>{{ activity.title }}</span>
+                          </v-col>
+                          <v-col class="d-flex justify-end">
+                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
                       <v-card-text
                         class="pb-0"
                         :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
                       >
+                        <a
+                          v-if="isImage(activity) && isEditable()"
+                          @click="showDocModal(activity)"
+                        >
+                          {{ activity.fileName }}
+                        </a>
                         <router-link
-                          v-if="isEditable() && isPdf(activity)"
+                          v-else-if="isEditable()"
                           :to="{ path: documentUrl(activity) }"
                           target="_blank"
                         >
                           {{ activity.fileName }}
                         </router-link>
-                        <a
-                          v-else-if="isEditable()"
-                          @click="showDocModal(activity)"
-                        >
-                          {{ activity.fileName }}
-                        </a>
+                        
                         <span
                           v-else
                           style="color: grey"
@@ -382,6 +388,16 @@
                       </v-expand-transition>
                     </v-card>
                     <v-card v-if="activity.type === 'student'">
+                      <v-card-text class="activityTitle pb-0">
+                        <v-row>
+                          <v-col>
+                            <span>{{ activity.title }}</span>
+                          </v-col>
+                          <v-col class="d-flex justify-end">
+                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
                       <v-card-text class="pb-0">
                         <v-row
                           v-if="activity.studentPEN"
@@ -553,15 +569,15 @@ import {ChronoUnit, DateTimeFormatter, LocalDate} from '@js-joda/core';
 import alertMixin from '../../mixins/alertMixin';
 import DocumentUpload from '../common/DocumentUpload.vue';
 import AddStudent from '../AddStudent.vue';
-import PdfRenderer from '../common/PdfRenderer.vue';
 import ImageRenderer from '../common/ImageRenderer.vue';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
+import {getFileExtensionWithDot} from '../../utils/file';
 
 
 export default {
   name: 'MessageDisplay',
-  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer, PdfRenderer },
+  components: { DocumentUpload, AddStudent, PrimaryButton, ImageRenderer },
   mixins: [alertMixin],
   props: {
     secureExchangeID: {
@@ -587,12 +603,12 @@ export default {
       isOpenStudentIndex: false,
       show: false,
       isHideIndex: false,
-      pdfRenderDialog: false,
       imageRendererDialog: false,
       documentId: '',
       imageId: '',
       addStudentWarningMessage: '',
       disableAnchorTagDocumentName: true,
+      formatMessage: 'JPEG, PNG, PDF, CSV, MS-WORD, MS-EXCEL, .STD, .VER'
     };
   },
   computed: {
@@ -623,13 +639,8 @@ export default {
       }
     },
     showDocModal(document){
-      if (this.isPdf(document)) {
-        this.documentId = document.documentID;
-        this.pdfRenderDialog = true;
-      }else {
-        this.imageId = document.documentID;
-        this.imageRendererDialog = true;
-      }
+      this.imageId = document.documentID;
+      this.imageRendererDialog = true;
     },
     isPdf(document){
       return (
@@ -638,10 +649,17 @@ export default {
           document.fileName.toLowerCase().endsWith('.pdf')
       );
     },
+    isImage(document) {
+      let imageTypes = ['.jpg','.jpeg','.jpe','.jfif','.jif','.jfi', '.png'];
+      return (
+        'fileName' in document &&
+        typeof document.fileName === 'string' &&
+        imageTypes.includes(getFileExtensionWithDot(document.fileName.toLowerCase()))
+      );
+    },
     async closeDialog() {
       this.documentId = '';
       this.imageId = '';
-      this.pdfRenderDialog = false;
       this.imageRendererDialog = false;
       await this.$nextTick(); //need to wait so update can be made in parent and propagated back down to child component
     },

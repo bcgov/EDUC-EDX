@@ -447,6 +447,28 @@ async function logApiError(e, functionName, message) {
   }
 }
 
+function isPdf(document){
+  return (
+    'fileName' in document &&
+    typeof document.fileName === 'string' &&
+    document.fileName.toLowerCase().endsWith('.pdf')
+  );
+}
+
+function isImage(document) {
+  let imageTypes = ['.jpg','.jpeg','.jpe','.jfif','.jif','.jfi', '.png'];
+  return (
+    'fileName' in document &&
+    typeof document.fileName === 'string' &&
+    imageTypes.includes(getFileExtensionWithDot(document.fileName.toLowerCase()))
+  );
+}
+
+function getFileExtensionWithDot(fileName) {
+  const extension = fileName.slice((fileName.lastIndexOf('.') - 1 >>> 0) + 2);
+  return (extension.length > 0 ? ('.' + extension) : '');
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -474,7 +496,9 @@ const utils = {
   checkEDXUserAccessForSchoolAdminFunctions,
   verifyQueryParamValueMatchesBodyValue,
   logApiError,
-  checkEDXCollectionPermission
+  checkEDXCollectionPermission,
+  isPdf,
+  isImage
 };
 
 module.exports = utils;

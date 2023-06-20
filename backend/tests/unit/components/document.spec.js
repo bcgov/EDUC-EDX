@@ -243,11 +243,15 @@ describe('downloadFile', () => {
   let res;
 
   jest.spyOn(utils, 'getAccessToken');
+  jest.spyOn(utils, 'isImage');
+  jest.spyOn(utils, 'isPdf');
   const getDataSpy = jest.spyOn(utils, 'getData');
 
   beforeEach(() => {
     utils.getAccessToken.mockReturnValue('token');
     utils.getData.mockResolvedValue(document);
+    utils.isImage.mockReturnValue(true);
+    utils.isPdf.mockReturnValue(false);
     req = mockRequest(null, session, params);
     res = mockResponse();
   });

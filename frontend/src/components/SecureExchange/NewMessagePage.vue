@@ -187,6 +187,7 @@
                       <v-expand-transition>
                         <DocumentUpload
                           v-show="expandAttachFile"
+                          :allowed-file-format="formatMessage"
                           @close:form="showOptions"
                           @upload="uploadDocument"
                         />
@@ -208,7 +209,11 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-alert v-model="fileSizeAlert" density="compact" type="error">
+        <v-alert
+          v-model="fileSizeAlert"
+          density="compact"
+          type="error"
+        >
           {{ `Total files must be less than ${humanFileSize(fileRequirements.maxSize)}. Please remove some uploads. You may upload additional files later.` }}
         </v-alert>
         <v-row class="py-4 justify-end pr-3">
@@ -270,7 +275,8 @@ export default {
       expandAddStudent: false,
       shouldShowOptions: true,
       additionalStudentAddWarningMessage:'',
-      fileSizeAlert: false
+      fileSizeAlert: false,
+      formatMessage: 'JPEG, PNG, PDF, CSV, MS-WORD, MS-EXCEL, .STD, .VER'
     };
   },
   computed: {
