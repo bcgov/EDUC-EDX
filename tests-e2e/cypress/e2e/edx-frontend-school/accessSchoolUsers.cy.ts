@@ -23,7 +23,36 @@ function testSendingNewUserInvites() {
     cy.get(selectors.newUserInvites.rolesSelectorBox).find('div').contains('EDX School Administrator').click();
     cy.get(selectors.newUserInvites.sendInviteButton).click();
     cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The request is being processed.');
-}
+};
+
+function testGeneratingActivationCode() {
+    cy.intercept(Cypress.env('interceptors').activation_code).as('activationCodeUpdate');
+        
+    cy.visit('/schoolAccess');
+    cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
+    cy.get(selectors.accessUsersPage.schoolSelectorBox).should('exist');
+    cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div').contains('EDX Automation Testing School').click();
+    cy.get(selectors.accessUsersPage.manageSchoolButton).click();
+
+    cy.wait('@activationCodeUpdate');
+
+    cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').as('initialCode');
+    cy.get('@initialCode').then(initialCode => {
+    cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
+    cy.get(selectors.newUserInvites.generateNewCode).click();
+
+    cy.wait('@activationCodeUpdate').then(({response}) => {
+      expect(response?.body.activationCode).not.null;
+      expect(response?.body.activationCode).not.eq(initialCode);
+    });
+
+    cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
+      cy.get(selectors.snackbar.mainSnackBar)
+        .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
+      expect(initialCode).not.eq(newCode);
+    });
+  });
+};
 
 describe('Access School Users Page', () => {
   context('As a school user', () => {
@@ -68,17 +97,20 @@ describe('Access School Users Page', () => {
 
     context('with an opening school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Opening' }));
-      it('can add a user to the opening school', testSendingNewUserInvites)
+      it('can add a user to the opening school', testSendingNewUserInvites);
+      it('can generate a primary activation code', testGeneratingActivationCode);
     });
 
     context('with an open school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Open' }));
-      it('can add a user to the open school', testSendingNewUserInvites)
+      it('can add a user to the open school', testSendingNewUserInvites);
+      it('can generate a primary activation code', testGeneratingActivationCode);
     });
 
     context('with a closing school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Closing' }));
-      it('can add a user to the closing school', testSendingNewUserInvites)
+      it('can add a user to the closing school', testSendingNewUserInvites);
+      it('can generate a primary activation code', testGeneratingActivationCode);
     });
 
   });
