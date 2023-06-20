@@ -26,32 +26,43 @@ function testSendingNewUserInvites() {
 };
 
 function testGeneratingActivationCode() {
-    cy.intercept(Cypress.env('interceptors').activation_code).as('activationCodeUpdate');
-        
-    cy.visit('/schoolAccess');
+    cy.intercept(Cypress.env("interceptors").activation_code).as(
+      "activationCodeUpdate"
+    );
+
+    cy.visit("/schoolAccess");
     cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
-    cy.get(selectors.accessUsersPage.schoolSelectorBox).should('exist');
-    cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div').contains('EDX Automation Testing School').click();
+    cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
+    cy.get(selectors.accessUsersPage.schoolSelectorBox)
+      .find("div")
+      .contains("EDX Automation Testing School")
+      .click();
     cy.get(selectors.accessUsersPage.manageSchoolButton).click();
 
-    cy.wait('@activationCodeUpdate');
+    cy.wait("@activationCodeUpdate");
 
-    cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').as('initialCode');
-    cy.get('@initialCode').then(initialCode => {
-    cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
-    cy.get(selectors.newUserInvites.generateNewCode).click();
+    cy.get(selectors.newUserInvites.primaryActivationCode)
+      .invoke("text")
+      .as("initialCode");
+    cy.get("@initialCode").then((initialCode) => {
+      cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
+      cy.get(selectors.newUserInvites.generateNewCode).click();
 
-    cy.wait('@activationCodeUpdate').then(({response}) => {
-      expect(response?.body.activationCode).not.null;
-      expect(response?.body.activationCode).not.eq(initialCode);
+      cy.wait("@activationCodeUpdate").then(({ response }) => {
+        expect(response?.body.activationCode).not.null;
+        expect(response?.body.activationCode).not.eq(initialCode);
+      });
+
+      cy.get(selectors.newUserInvites.primaryActivationCode)
+        .invoke("text")
+        .then((newCode) => {
+          cy.get(selectors.snackbar.mainSnackBar).should(
+            "include.text",
+            `The new Primary Activation Code is ${newCode}. Close`
+          );
+          expect(initialCode).not.eq(newCode);
+        });
     });
-
-    cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
-      cy.get(selectors.snackbar.mainSnackBar)
-        .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
-      expect(initialCode).not.eq(newCode);
-    });
-  });
 };
 
 describe('Access School Users Page', () => {
