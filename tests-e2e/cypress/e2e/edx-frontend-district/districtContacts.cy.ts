@@ -27,7 +27,7 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
         const val = $input.val()
         expect(val).to.contains(LocalDate.now().toString());
-      })
+      });
     });
 
     it('can edit contact details', () => {
@@ -39,7 +39,7 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.editContactFirstNameInput).clear().type('Testing Edited User');
       cy.get(selectors.districtContacts.saveChangesToDistrictContactButton).click();
       cy.get(selectors.districtContacts.editContactFirstNameInput).should('have.value', 'Testing Edited User');
-    })
+    });
 
     it('creates new district contact', () => {
       cy.visit('/');
