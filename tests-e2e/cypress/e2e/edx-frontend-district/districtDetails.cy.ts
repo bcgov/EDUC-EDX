@@ -2,13 +2,20 @@ import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { vInputParentOf } from 'tests-e2e/cypress/support/utils';
 
+before(() => {
+  cy.task<AppSetupData>('dataLoad').then(() => {
+    cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+  });
+});
+
+after(() => {
+  cy.logout();
+})
+
+
 describe('District Details Interface Test', () => {
   context('As an EDX district admin', () => {
-    before(() => {
-      cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
-      });
-    });
+
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
@@ -16,7 +23,7 @@ describe('District Details Interface Test', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
-      cy.get(selectors.districtDetails.editDetailsButton).click();
+      cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
 
       const websiteField = () => cy.get(selectors.districtDetails.districtDetailsWebsite);
       const websiteWrapper = vInputParentOf(websiteField);
@@ -37,6 +44,44 @@ describe('District Details Interface Test', () => {
       websiteField().clear().type('https://saulgoodman.com');
       websiteWrapper().should('not.have.class', 'v-input--error');
       websiteWrapper().within(() => cy.get('.v-messags__message').should('not.exist'));
+    });
+
+
+    it('can edit district details', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.districtDetailsCard).click();
+      cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
+      cy.get(selectors.districtDetails.editDistrictPhone).clear().type('333-777-5555');
+      cy.get(selectors.districtDetails.editDistrictWorkPhone).clear().type('111-222-3333');
+      cy.get(selectors.districtDetails.editDistrictEmail).clear().type('automation@testing.com');
+      cy.get(selectors.districtDetails.editMailingAddressLine1).clear().type('1234 Main St');
+      cy.get(selectors.districtDetails.editAddressMailCity).clear().type('Victoria');
+      cy.get(selectors.districtDetails.editAddressPostalCode).clear().type('V8P5J2');
+      cy.get(selectors.districtDetails.editMailingAddressProvince).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Yukon').click();
+      cy.get(selectors.districtDetails.editMailingAddressCountry).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Canada').click();
+      cy.get(selectors.districtDetails.editSaveButton).click();
+      cy.get(selectors.districtDetails.editPopupConfirmButton).click();
+    });
+
+
+    it('checks if the changes in edit are correct', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtDetailsCard).click();
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Details | EDX Automation Testing District');
+      cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
+      cy.get(selectors.districtDetails.editDistrictPhone).should('have.value', '3337775555');
+      cy.get(selectors.districtDetails.editDistrictWorkPhone).should('have.value', '1112223333');
+      cy.get(selectors.districtDetails.editDistrictEmail).should('have.value','automation@testing.com');
+      cy.get(selectors.districtDetails.editMailingAddressLine1).should('have.value','1234 Main St');
+      cy.get(selectors.districtDetails.editAddressMailCity).should('have.value','Victoria');
+      cy.get(selectors.districtDetails.editAddressPostalCode).should('have.value','V8P5J2');
+      cy.get(selectors.districtDetails.editMailingAddressProvince).should('have.value','YT');
+      cy.get(selectors.districtDetails.editMailingAddressCountry).should('have.value','CA');
+      cy.get(selectors.districtDetails.editSaveButton).click();
+      cy.get(selectors.districtDetails.editPopupReturnButton).click();
     });
   });
 });

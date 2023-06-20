@@ -37,7 +37,18 @@ export default {
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
     districtDetailsWebsite: '#districtDetailsWebsite',
-    editDetailsButton: '#editButton'
+    editAddressMailCity: '#mailAddressCity',
+    editAddressPostalCode: '#mailAddressPostal',
+    editDistrictDetailsButton: '#editButton',
+    editDistrictEmail: '#districtEmail',
+    editDistrictPhone: '#districtPhone',
+    editDistrictWorkPhone: '#input-31',
+    editMailingAddressCountry: '#mailAddressCountry',
+    editMailingAddressLine1: '#mailAddressLine1',
+    editMailingAddressProvince: '#mailAddressProvince',
+    editPopupConfirmButton: '#resolveBtn',
+    editPopupReturnButton: '#rejectBtn',
+    editSaveButton: '#saveButton',
   },
   documentUpload: { //common component
     selectFileInput: '#selectFileInput',
