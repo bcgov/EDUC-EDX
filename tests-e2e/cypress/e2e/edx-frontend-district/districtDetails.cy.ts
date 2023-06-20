@@ -2,17 +2,6 @@ import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { vInputParentOf } from 'tests-e2e/cypress/support/utils';
 
-before(() => {
-  cy.task<AppSetupData>('dataLoad').then(() => {
-    cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
-  });
-});
-
-after(() => {
-  cy.logout();
-})
-
-
 describe('District Details Interface Test', () => {
   context('As an EDX district admin', () => {
 
@@ -48,7 +37,7 @@ describe('District Details Interface Test', () => {
 
 
     it('can edit district details', () => {
-      cy.visit('/');
+      cy.visit('/districtDetails');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
       cy.get(selectors.districtDetails.editDistrictPhone).clear().type('333-777-5555');
@@ -67,7 +56,7 @@ describe('District Details Interface Test', () => {
 
 
     it('checks if the changes in edit are correct', () => {
-      cy.visit('/');
+      cy.visit('/districtDetails');
       cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Details | EDX Automation Testing District');
