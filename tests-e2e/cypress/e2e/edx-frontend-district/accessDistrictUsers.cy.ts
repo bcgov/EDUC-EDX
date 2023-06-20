@@ -14,35 +14,27 @@ describe('Access District Users Page Tests', () => {
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
-    it("can generate a primary activation code", () => {
-      cy.intercept(Cypress.env("interceptors").activation_code).as(
-        "activationCodeUpdate"
-      );
+    it('can generate a primary activation code', () => {
+      cy.intercept(Cypress.env('interceptors').activation_code).as('activationCodeUpdate');
 
-      cy.visit("/districtAccess");
-      cy.wait("@activationCodeUpdate");
+      cy.visit('/districtAccess');
+      cy.wait('@activationCodeUpdate');
 
-      cy.get(selectors.newUserInvites.primaryActivationCode)
-        .invoke("text")
-        .as("initialCode");
-      cy.get("@initialCode").then((initialCode) => {
+      cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').as('initialCode');
+      cy.get('@initialCode').then(initialCode => {
         cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
         cy.get(selectors.newUserInvites.generateNewCode).click();
 
-        cy.wait("@activationCodeUpdate").then(({ response }) => {
+        cy.wait('@activationCodeUpdate').then(({response}) => {
           expect(response?.body.activationCode).not.null;
           expect(response?.body.activationCode).not.eq(initialCode);
         });
 
-        cy.get(selectors.newUserInvites.primaryActivationCode)
-          .invoke("text")
-          .then((newCode) => {
-            cy.get(selectors.snackbar.mainSnackBar).should(
-              "include.text",
-              `The new Primary Activation Code is ${newCode}. Close`
-            );
-            expect(initialCode).not.eq(newCode);
-          });
+        cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
+          cy.get(selectors.snackbar.mainSnackBar)
+            .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
+          expect(initialCode).not.eq(newCode);
+        });
       });
     });
   });
