@@ -117,12 +117,13 @@ export class EdxApiService {
     const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
     await this.restUtils.deleteData(url);
   }
-  async deleteEdxUser(firstName: string, lastName: string) {
-    const edxUser = await this.getEdxUserFromFirstNameLastName(firstName, lastName);
+
+  async deleteEdxUser(edxUserID: string) {
     const endpoint = '/api/v1/edx/users';
-    const url = `${this.config.env.edx.base_url}${endpoint}/${edxUser?.edxUserID}`;
+    const url = `${this.config.env.edx.base_url}${endpoint}/${edxUserID}`;
     await this.restUtils.deleteData(url);
   }
+
   async generateCode(){
     return  generator.generate({
       length: faker.datatype.number({ 'min': 7, 'max': 7 }),
@@ -155,19 +156,17 @@ export class EdxApiService {
     await this.createFixtureSetupForEdxUserActivation(ctx,code,instituteTypeCode,instituteID);
   }
 
-  async getEdxUserFromFirstNameLastName(firstName: string, lastName: string) {
+  async getEdxUserWithDigitalId(digitalId: string): Promise<EdxUserEntity|undefined> {
     const endpoint = '/api/v1/edx/users';
     const url = `${this.config.env.edx.base_url}${endpoint}`;
 
     const searchParams: EdxUsersSearchParams = {
       params: {
-        firstName,
-        lastName
+        digitalId
       }
     };
 
     const responseBody = await this.restUtils.getData<EdxUserEntity[]>(url, searchParams);
-    if (responseBody.length < 1) throw new Error('EDX User not found');
     return responseBody[0];
   }
 

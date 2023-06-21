@@ -6,7 +6,7 @@ describe('School Contacts Page', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-schoolUser', ['99998']);
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     })
     beforeEach(() => cy.login());

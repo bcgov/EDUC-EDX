@@ -48,7 +48,6 @@ export default defineConfig({
           return await loadAppSetupData(config, options);
         },
         'recreate-school': async (schoolOptions: SchoolOptions)=> {
-          console.log(schoolOptions);
           await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
           return null;
         },
@@ -60,16 +59,18 @@ export default defineConfig({
           await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
-        'setup-schoolUser': async (schoolCodes) => {
-          await new UserSetupUtils(config).setupSchoolUser(schoolCodes);
-          return null;
+        'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
+          return await new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
         },
         'setup-districtUser': async (districtUserOptions: DistrictUserOptions) => {
-          await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
-          return null;
+          return await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
         },
         'setup-userActivation': async (schoolNumber) => {
           await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
+          return null;
+        },
+        'teardown-edxUser': async (edxUserId: string) => {
+          await new EdxApiService(config).deleteEdxUser(edxUserId);
           return null;
         }
       })

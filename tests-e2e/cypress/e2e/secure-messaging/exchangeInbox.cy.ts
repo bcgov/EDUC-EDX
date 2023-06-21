@@ -15,7 +15,7 @@ describe('Exchange Inbox Page', () => {
     beforeEach(() => cy.login());
 
     after(() => {
-      // cy.logout();
+      cy.logout();
     });
 
     it('can create a new secure exchange message with a document and a student', () => {
