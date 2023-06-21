@@ -229,8 +229,7 @@ async function createExchange(req, res) {
 
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
-
-    for(const doc in message.secureExchangeDocuments){
+    for(const doc of message.secureExchangeDocuments){
       if(!await scanFile(doc?.documentData)){
         return res.status(HttpStatus.NOT_ACCEPTABLE).json({
           status: HttpStatus.NOT_ACCEPTABLE,
