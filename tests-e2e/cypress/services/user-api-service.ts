@@ -48,7 +48,7 @@ export class UserApiService {
   }
 
   async refreshEdxUser(digitalId: string) {
-    const edxUser = await this.edxApi.getEdxUserFromFirstNameLastName('TESTAUTOMATIONUSERFIRSTNAME', 'TESTAUTOMATIONUSERLASTNAME');
+    const edxUser = await this.edxApi.getEdxUserWithDigitalId(digitalId);
     if (!edxUser) {
       console.log('edxUser not found - creating new user');
       const newEdxUser: EdxUserPayload = {
@@ -60,7 +60,7 @@ export class UserApiService {
         updateUser: 'Test-automation',
       };
       let createdEdxUser = await this.restUtils.postData<EdxUserEntity>(`${this.config.env.edx.base_url}/api/v1/edx/users`, newEdxUser);
-      return createdEdxUser.edxUserID;
+      return createdEdxUser;
     }
 
     console.log('edxUser found - removing existing roles');
@@ -78,7 +78,7 @@ export class UserApiService {
     }
 
     console.log('existing roles for edxUser removed');
-    return edxUser.edxUserID;
+    return edxUser;
   }
 
   async getInstituteIds(instituteTypeCode: string, instituteCodes: string[]) {
@@ -107,11 +107,11 @@ export class UserApiService {
   async createEdxInstituteUserWithRoles(schoolIDs: any, schoolRoles: any, districtIDs: any, districtRoles: any, edxUserID: string) {
 
     if (schoolIDs.length > 0) {
-      await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles, edxUserID);
+      return await this.createEdxUserSchoolWithRoles(schoolIDs, schoolRoles, edxUserID);
     }
 
     if (districtIDs.length > 0) {
-      await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles, edxUserID);
+      return await this.createEdxUserDistrictWithRoles(districtIDs, districtRoles, edxUserID);
     }
 
   }
@@ -137,7 +137,7 @@ export class UserApiService {
           edxUserSchoolRoles: edxUserSchoolRoles
         };
 
-        await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/school`, edxUserSchool);
+        return await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/school`, edxUserSchool);
       }
     }
   }
@@ -163,7 +163,7 @@ export class UserApiService {
           edxUserDistrictRoles: edxUserDistrictRoles
         };
 
-        await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/district`, edxUserDistrict);
+        return await this.restUtils.postData(`${this.config.env.edx.base_url}/api/v1/edx/users/${edxUserID}/district`, edxUserDistrict);
       }
     }
   }

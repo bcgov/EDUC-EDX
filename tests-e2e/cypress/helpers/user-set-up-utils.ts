@@ -10,17 +10,21 @@ export class UserSetupUtils {
         this.userApi = new UserApiService(config);
     }
 
-    async setupSchoolUser(schoolCodes: string[]) {
-        let edxUserID = await this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
-        const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolCodes);
+    async setupSchoolUser(schoolUserOptions: SchoolUserOptions) {
+        const digitalId = schoolUserOptions.digitalId || this.config.env.adminCredential.digitalID;
+        const edxUser = await this.userApi.refreshEdxUser(digitalId);
+        const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolUserOptions.schoolCodes);
         const roles = await this.userApi.getAllEdxUserRoleForInstitute();
-        return await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUserID);
+        return await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUser.edxUserID);
     }
 
     async setupDistrictUser(districtUserOptions: DistrictUserOptions) {
-        let edxUserID = await this.userApi.refreshEdxUser(this.config.env.adminCredential.digitalID);
+        const digitalId = districtUserOptions.digitalId || this.config.env.adminCredential.digitalID as string;
+        const edxUser = await this.userApi.refreshEdxUser(digitalId);
         const districtIDs = await this.userApi.getInstituteIds('DISTRICT', districtUserOptions.districtCodes);
-        return await this.userApi.createEdxInstituteUserWithRoles('', '', districtIDs, districtUserOptions.districtRoles, edxUserID);
+        await this.userApi
+            .createEdxInstituteUserWithRoles('', '', districtIDs, districtUserOptions.districtRoles, edxUser.edxUserID);
+        return edxUser;
     }
 
 }
