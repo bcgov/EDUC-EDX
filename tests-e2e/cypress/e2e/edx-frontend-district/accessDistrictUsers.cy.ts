@@ -49,5 +49,90 @@ describe('Access District Users Page Tests', () => {
       cy.get(selectors.newUserInvites.sendInviteButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The request is being processed.');
     });
+
+    context('with a temporary user', () => {
+      let tempUserId = '';
+      let tempFirstName = '';
+
+      before(() => {
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
+          digitalId: crypto.randomUUID(),
+          districtRoles: ['EDX_DISTRICT_ADMIN'],
+          districtCodes: ['998']
+        }).then((user: EdxUserEntity) => {
+            tempUserId = user.edxUserID;
+            tempFirstName = user.firstName;
+          });
+      });
+      beforeEach(() => {
+        cy.wrap(tempUserId).as('tempUserId');
+        cy.wrap(tempFirstName).as('tempUserFirstName');
+      });
+      after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
+
+      it('will not save a user with no roles', () => {
+        cy.visit('/districtAccess', {timeout: 3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#edxUser-${uid}`).should('exist');
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
+          });
+          cy.get('@tempUserFirstName').then(fname => {
+            cy.get(selectors.accessUsersPage.accessUserFeedback)
+              .should('include.text', `Please select at least one role for ${fname}`);
+          });
+          cy.get(`#user-save-action-button-${uid}`).should('be.disabled');
+        });
+      });
+
+      it('can cancel the edit user mode', () => {
+        cy.visit('/districtAccess', {timeout:3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#user-cancel-edit-button-${uid}`).should('exist').click();
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
+          cy.get(`#user-edit-button-${uid}`).click().click({timeout:200});
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
+        });
+      });
+
+      it('will only permit one role', () => {
+        cy.visit('/districtAccess', {timeout: 3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] > .v-list-item')
+              .should('have.class', 'v-list-item--disabled');
+            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
+            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').click().should('be.checked');
+            cy.get('div[value="EDX_DISTRICT_ADMIN"] > .v-list-item').should('not.have.class', '.v-list-item--disabled');
+            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
+            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').should('not.be.checked');
+            cy.get('div[value="EDX_DISTRICT_ADMIN"] > .v-list-item').should('not.have.class', '.v-list-item--disabled');
+          });
+        });
+      });
+
+      it('can update the user\'s role', () => {
+        cy.visit('/districtAccess', {timeout:3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
+            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"]').click();
+          });
+          cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
+          cy.get(`#access-user-roles-${uid}`, {timeout: 3000}).should('not.exist');
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_DISTRICT_ADMIN"] input').should('not.be.checked');
+            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').should('be.checked');
+          });
+        });
+      })
+
+    });
   });
 });

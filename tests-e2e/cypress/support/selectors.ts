@@ -2,7 +2,8 @@ export default {
   accessUsersPage: {
     manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
-    selectSchoolDropdown: '#selectInstituteName'
+    selectSchoolDropdown: '#selectInstituteName',
+    accessUserFeedback: '.accessUserFeedback'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
