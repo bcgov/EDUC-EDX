@@ -6,7 +6,9 @@ declare global {
         interface Chainable<Subject> {
             login(): Chainable<void>;
             logout(): Chainable<void>;
-            task<S = InstituteOptions, T = AppSetupData>(event: string, arg?: S): Chainable<T>
+            task<S = InstituteOptions, T = AppSetupData>(event: string, arg?: S): Chainable<T>;
+            task<S = DistrictUserOptions, T = EdxUserEntity>(event: string, arg: S): Chainable<T>;
+            task<S = SchoolUserOptions, T = EdxUserEntity>(event: string, arg: S): Chainable<T>;
         }
     }
 }
