@@ -114,6 +114,7 @@
       </div>
       <v-list
         v-else
+        :id="`access-user-roles-${user.edxUserID}`"
         v-model:selected="selectedRoles"
         lines="two"
         return-object
@@ -190,7 +191,10 @@
       >
         <v-row no-gutters>
           <v-col class="d-flex justify-center">
-            <span style="font-size: medium; font-weight: bold; color: black">
+            <span
+              class="accessUserFeedback"
+              style="font-size: medium; font-weight: bold; color: black"
+            >
               Re-linking an account will remove the current user and resend the activation code so
               that the user can set up EDX access with their new credential.
             </span>
@@ -234,7 +238,10 @@
           no-gutters
         >
           <v-col class="mt-0 d-flex justify-start">
-            <p style="font-weight: bolder;color: black;">
+            <p
+              class="accessUserFeedback"
+              style="font-weight: bolder;color: black;"
+            >
               Please select at least one role for {{ user.firstName }}.
             </p>
           </v-col>
