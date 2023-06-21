@@ -6,7 +6,7 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task('setup-collections', res.school.schoolId);
-        cy.task('setup-schoolUser', ['99998']);
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
     after(() => cy.logout());

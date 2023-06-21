@@ -31,7 +31,7 @@ describe('Access School Users Page', () => {
       cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Opening' } })
         .then(data => {
           console.log("DATA:", data);
-          cy.task('setup-schoolUser', ['99998']);
+          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
         });
       cy.login();
     });
@@ -60,7 +60,10 @@ describe('Access School Users Page', () => {
   context('As an EDX district admin', () => {
     before(() => {
       cy.task('dataLoad').then(() => {
-        cy.task('setup-districtUser', {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']});
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
+          districtRoles: ['EDX_DISTRICT_ADMIN'],
+          districtCodes: ['998']
+        });
       });
     });
     after(() => cy.logout());
