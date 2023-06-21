@@ -38,6 +38,18 @@ describe('Access District Users Page Tests', () => {
       });
     });
 
+    it('checks if new user request can be created to district', () => {
+      cy.visit('/districtAccess');
+      cy.get(selectors.newUserInvites.newUserButton).click();
+      cy.get(selectors.newUserInvites.firstNameInput).type('AT FIRST NAME');
+      cy.get(selectors.newUserInvites.lastNameInput).type('AT LAST NAME');
+      cy.get(selectors.newUserInvites.emailInput).type('edx-noreply@gov.bc.ca');
+      cy.get(selectors.newUserInvites.rolesSelectorDropdown).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
+      cy.get(selectors.newUserInvites.sendInviteButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The request is being processed.');
+    });
+
     context('with a temporary user', () => {
       let tempUserId = '';
       let tempFirstName = '';
