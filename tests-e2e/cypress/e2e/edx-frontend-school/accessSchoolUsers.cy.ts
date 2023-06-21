@@ -30,7 +30,6 @@ describe('Access School Users Page', () => {
     before(() => {
       cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Opening' } })
         .then(data => {
-          console.log("DATA:", data);
           cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
         });
       cy.login();

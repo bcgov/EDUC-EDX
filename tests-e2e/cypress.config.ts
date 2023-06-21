@@ -48,7 +48,6 @@ export default defineConfig({
           return await loadAppSetupData(config, options);
         },
         'recreate-school': async (schoolOptions: SchoolOptions)=> {
-          console.log(schoolOptions);
           await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
           return null;
         },
