@@ -14,7 +14,7 @@ describe('School Details Interface Test', () => {
 
     it('can load the details page and validate the website url field', () => {
       cy.visit('/')
-      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.get(selectors.schoolDetails.addWebsiteLink).click();
 

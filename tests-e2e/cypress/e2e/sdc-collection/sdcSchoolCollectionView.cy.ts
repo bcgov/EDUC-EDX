@@ -14,8 +14,8 @@ describe('SDC School Collection View', () => {
 
     it('can load dashboard & click data collection card & process collection', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
-      cy.get(selectors.dashboard.dataCollectionsTileTitle, {timeout: 60000}).contains('Data Collections');
+      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle, {timeout: 3000}).contains('Data Collections');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.title, {timeout: 5000}).contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
