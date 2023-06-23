@@ -79,7 +79,7 @@ export default {
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     sendInviteButton: '#newUserInvitePostBtn',
     toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
-    noActivationCodeBanner: "no-activation-code-banner"
+    noActivationCodeBanner: "#no-activation-code-banner"
   },
   schoolContacts: {
     listItem: '.v-list-item',
