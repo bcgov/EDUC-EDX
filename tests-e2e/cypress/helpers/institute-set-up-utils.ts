@@ -23,7 +23,8 @@ export class InstituteSetupUtils {
         await this.instituteApi.createAuthorityWithContactToTest();
         let district = await this.instituteApi.createDistrictWithContactToTest(districtOptions);
         let school = await this.instituteApi.createSchoolWithContactToTest(district.districtId, schoolOptions);
-        await this.edxApi.verifyInstituteActivationCodes(district.districtId, school.schoolId);
+        districtOptions?.withPrimaryActivationCode ? await this.edxApi.verifyDistrictActivationCodes(district.districtId) : await this.edxApi.deleteActivationCode('DISTRICT', district.districtId);
+        schoolOptions?.withPrimaryActivationCode ? await this.edxApi.verifySchoolActivationCodes(school.schoolId): await this.edxApi.deleteActivationCode('SCHOOL', school.schoolId);
         console.log('setupInstituteEntities completed')
         return {
             district: district,
