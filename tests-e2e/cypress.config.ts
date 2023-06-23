@@ -19,14 +19,14 @@ const loadAppSetupData = (
       schoolOptions: {
         includeTombstoneValues: false,
         includeSchoolAddress: true,
-        includeSchoolContact: false,
+        includeSchoolContact: true,
         schoolStatus: 'Open',
         withPrimaryActivationCode: true
       }
     });
 
     if (response){
-      resolve(response)
+      resolve(response);
     } else {
       reject();
     }

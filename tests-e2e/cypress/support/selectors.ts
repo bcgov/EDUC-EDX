@@ -91,7 +91,9 @@ export default {
     newContactPhoneNumberInput: '#newContactPhoneNumberInput',
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
-    subjectHeading: 'h2.subjectHeading'
+    subjectHeading: 'h2.subjectHeading',
+    removeContactButton: '#removeContactButton',
+    resolveButton:'#resolveBtn'
   },
   schoolDetails: {
     addWebsiteLink: '#addWebsiteLink',
