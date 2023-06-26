@@ -154,7 +154,7 @@ describe('Access School Users Page', () => {
 
   });
 
-  context('As an EDX district admin, I cannot send invite if no primary activation generated', () => {
+  context('As an EDX district admin, with a school that has no primary activation generated', () => {
     before(() => {
       cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Open', withPrimaryActivationCode: false }}).then(() => {
         cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
