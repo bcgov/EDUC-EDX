@@ -85,13 +85,15 @@ type SchoolStatus = 'Opening' | 'Open' | 'Closing' | 'Closed';
 
 export interface DistrictOptions {
   includeDistrictAddress?: boolean,
+  withPrimaryActivationCode?: boolean;
 }
 
 export interface SchoolOptions {
-  includeTombstoneValues?: boolean,
-  includeSchoolAddress?: boolean,
-  includeSchoolContact?: boolean,
-  schoolStatus?: SchoolStatus
+  includeTombstoneValues?: boolean;
+  includeSchoolAddress?: boolean;
+  includeSchoolContact?: boolean;
+  schoolStatus?: SchoolStatus;
+  withPrimaryActivationCode?: boolean;
 }
 
 export interface InstituteOptions {

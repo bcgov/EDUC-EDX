@@ -68,13 +68,13 @@ function testGeneratingActivationCode() {
 describe('Access School Users Page', () => {
   context('As a school user', () => {
     before(() => {
-      cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Opening' } })
+      cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Opening', withPrimaryActivationCode: true } })
         .then(data => {
           cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
         });
-      cy.login();
     });
     after(() => cy.logout());
+    beforeEach(() => cy.login());
 
     it('Loads school details and checks field validation', () => {
       cy.visit('/');
@@ -92,6 +92,33 @@ describe('Access School Users Page', () => {
 
       cy.get(selectors.newUserInvites.sendInviteButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The request is being processed.');
+    });
+
+    it('can generate a primary activation code', () => {
+      cy.intercept(Cypress.env("interceptors").activation_code).as("activationCodeUpdate");
+      cy.visit("/schoolAccess");
+      cy.wait("@activationCodeUpdate");
+
+    cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").as("initialCode");
+    cy.get("@initialCode").then((initialCode) => {
+      cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
+      cy.get(selectors.newUserInvites.generateNewCode).click();
+
+      cy.wait("@activationCodeUpdate").then(({ response }) => {
+        expect(response?.body.activationCode).not.null;
+        expect(response?.body.activationCode).not.eq(initialCode);
+      });
+
+      cy.get(selectors.newUserInvites.primaryActivationCode)
+        .invoke("text")
+        .then((newCode) => {
+          cy.get(selectors.snackbar.mainSnackBar).should(
+            "include.text",
+            `The new Primary Activation Code is ${newCode}. Close`
+          );
+          expect(initialCode).not.eq(newCode);
+        });
+      });
     });
   });
 
@@ -125,5 +152,47 @@ describe('Access School Users Page', () => {
       it('can generate a primary activation code', testGeneratingActivationCode);
     });
 
+  });
+
+  context('As an EDX district admin, with a school that has no primary activation generated', () => {
+    before(() => {
+      cy.task<InstituteOptions, AppSetupData>('dataLoad', { schoolOptions: { schoolStatus: 'Open', withPrimaryActivationCode: false }}).then(() => {
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
+          districtRoles: ['EDX_DISTRICT_ADMIN'],
+          districtCodes: ['998']
+        });
+      });
+    });
+    after(() => cy.logout());
+    beforeEach(() => cy.login());
+
+    it('school should not have primary activation code', () => {
+    
+      cy.visit("/schoolAccess", {timeout: 10000});
+      cy.get(selectors.accessUsersPage.selectSchoolDropdown, {timeout: 10000}).click();
+      cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
+      cy.get(selectors.accessUsersPage.schoolSelectorBox)
+        .find("div")
+        .contains("EDX Automation Testing School")
+        .click();
+      cy.get(selectors.accessUsersPage.manageSchoolButton).click();
+      cy.get(selectors.newUserInvites.primaryActivationCode).contains("Code Not Found");
+  });
+
+    
+    it('cannot send invite if no primary activation code present', () => {
+    
+      cy.visit("/schoolAccess", {timeout: 10000});
+      cy.get(selectors.accessUsersPage.selectSchoolDropdown, {timeout: 10000}).click();
+      cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
+      cy.get(selectors.accessUsersPage.schoolSelectorBox)
+        .find("div")
+        .contains("EDX Automation Testing School")
+        .click();
+      cy.get(selectors.accessUsersPage.manageSchoolButton).click();
+      cy.get(selectors.newUserInvites.newUserButton).should("be.disabled");
+      cy.get(selectors.newUserInvites.noActivationCodeBanner).contains("Before adding users, a Primary Activation Code must be generated.");
+
+    });
   });
 });

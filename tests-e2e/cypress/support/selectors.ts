@@ -78,7 +78,8 @@ export default {
     rolesSelectorBox: '#instituteNewUserRolesListBox',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     sendInviteButton: '#newUserInvitePostBtn',
-    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
+    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
+    noActivationCodeBanner: "#no-activation-code-banner"
   },
   schoolContacts: {
     cancelContactButton: '#cancelContactBtn',
@@ -102,6 +103,7 @@ export default {
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
     subjectHeading: 'h2.subjectHeading',
+    resolveButton:'#resolveBtn'
   },
   schoolDetails: {
     addWebsiteLink: '#addWebsiteLink',

@@ -24,6 +24,22 @@ describe('School Contacts Page', () => {
         expect(val).to.contains(LocalDate.now().toString());
       })
     });
+
+    it('Can remove contact', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.schoolContactsCard).click();
+      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('School Contacts | EDX Automation Testing School');
+
+      cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
+      cy.get(selectors.schoolContacts.deleteContactButton).click();
+
+      cy.on('window:confirm', (str) => {
+        expect(str).to.equal('Please Confirm, Are you sure you want to remove this contact?');
+      })
+      cy.get(selectors.schoolContacts.resolveButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'School contact removed successfully');
+    });
   });
 
   context('As an EDX district admin', () => {
@@ -47,6 +63,25 @@ describe('School Contacts Page', () => {
         const val = $input.val()
         expect(val).to.contains(LocalDate.now().toString());
       });
+    });
+
+    it('Can remove contact', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
+      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('Schools | EDX Automation Testing');
+
+      cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
+      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('School Contacts | EDX Automation Testing');
+
+      cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
+      cy.get(selectors.schoolContacts.deleteContactButton).click();
+
+      cy.on('window:confirm', (str) => {
+        expect(str).to.equal('Please Confirm, Are you sure you want to remove this contact?');
+      })
+      cy.get(selectors.schoolContacts.resolveButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'School contact removed successfully');
     });
 
     it('can create a new school contact - vice principal', () => {
