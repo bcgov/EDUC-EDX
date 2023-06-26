@@ -81,7 +81,6 @@ describe('Access School Users Page', () => {
       cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
       cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
-
       cy.get(selectors.newUserInvites.newUserButton, {timeout: 30000}).click();
       cy.get(selectors.newUserInvites.firstNameInput).type("Richard");
       cy.get(selectors.newUserInvites.lastNameInput).type("Stallman");
