@@ -81,16 +81,27 @@ export default {
     toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
   },
   schoolContacts: {
+    cancelContactButton: '#cancelContactBtn',
+    deleteCancelButton: '#rejectBtn',
+    deleteConfirmButton: '#resolveBtn',
+    deleteContactButton: '#removeContactButton',
+    editContactButton: '#editContactButton',
+    editContactEmailInput: '#editContactEmailInput',
+    editContactFirstNameInput: '#editContactFirstNameInput',
+    editContactLastNameInput: '#editContactLastNameInput',
+    editContactPhoneNumberInput: '#editContactPhoneNumberInput',
+    editContactSaveButton: '#editContactPostBtn',
     listItem: '.v-list-item',
     newContactButton: '#addSchoolContactBtn',
     newContactCalendar: '.dp__outer_menu_wrap',
     newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
     newContactEmailInput: '#newContactEmailInput',
+    newContactFirstNameInput: '#newContactFirstNameInput',
     newContactLastNameInput: '#newContactLastNameInput',
     newContactPhoneNumberInput: '#newContactPhoneNumberInput',
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
-    subjectHeading: 'h2.subjectHeading'
+    subjectHeading: 'h2.subjectHeading',
   },
   schoolDetails: {
     addWebsiteLink: '#addWebsiteLink',
