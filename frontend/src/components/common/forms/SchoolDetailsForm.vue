@@ -53,7 +53,7 @@
               <div id="schoolDisplayNameTitle">
                 <h2>{{ school.displayName }}</h2>
               </div>
-              <div
+              <div id="schoolNameNoSpecialChars"
                 v-if="school.displayNameNoSpecialChars"
                 class="safe-name"
               >
