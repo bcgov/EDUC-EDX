@@ -38,5 +38,36 @@ describe('School Details Interface Test', () => {
       websiteWrapper().should('not.have.class', 'v-input--error');
       websiteWrapper().within(() => cy.get('.v-messags__message').should('not.exist'));
     });
+
+    it('can view legacy safe name', () => {
+      cy.visit('/')
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.schoolDetailsCard).click();
+
+      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
+      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+    });
+
+  });
+
+  context('As an EDX district admin', () => {
+    before(() => {
+      cy.task<AppSetupData>('dataLoad').then(() => {
+        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+      });
+    });
+    beforeEach(() => cy.login());
+    after(() => cy.logout());
+
+    it('can view legacy safe name', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
+      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
+
+      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
+      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+    });
+
   });
 });
