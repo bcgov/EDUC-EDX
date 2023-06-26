@@ -112,10 +112,21 @@ export class EdxApiService {
     return [activationUrl, activationCodes[0], activationCodes[1]];
   }
 
-  async deleteActivationCode(activationCodeId: string) {
+  async deleteActivationCode(identifier?:string, id?: string) {
     const endpoint = '/api/v1/edx/users/activation-code';
-    const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
-    await this.restUtils.deleteData(url);
+    if(id) {
+      const districtActivationCodeUrl = `${this.config.env.edx.base_url}/api/v1/edx/users/activation-code/primary/${identifier}/${id}`;
+      this.restUtils.getData(districtActivationCodeUrl, null).then(async response => {
+        let activationCodeId = response.edxActivationCodeId;
+        const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
+        await this.restUtils.deleteData(url);
+      })
+      .catch(e => {
+        if(e.status !== 404 ){
+          console.log(e);
+        }
+      });
+    }
   }
 
   async deleteEdxUser(edxUserID: string) {
@@ -207,7 +218,7 @@ export class EdxApiService {
     return await this.restUtils.deleteData(endPoint);
   }
 
-  async verifyInstituteActivationCodes(districtID: string,schoolID: string){
+  async verifySchoolActivationCodes(schoolID: string) {
     const endpoint = 'api/v1/edx/users';
     const schoolActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
     try{
@@ -228,7 +239,10 @@ export class EdxApiService {
         console.log('district Activation code created');
       }
     }
+  }
 
+  async verifyDistrictActivationCodes(districtID: string) {
+    const endpoint = 'api/v1/edx/users';
     const districtActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/DISTRICT/${districtID}`;
     try{
       await this.restUtils.getData(districtActivationCodeUrl, null);

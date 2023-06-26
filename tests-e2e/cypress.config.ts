@@ -14,18 +14,20 @@ const loadAppSetupData = (
   return new Promise(async (resolve, reject) => {
     let response = await new InstituteSetupUtils(config).setupInstituteEntities(options || {
       districtOptions: {
-        includeDistrictAddress: true
+        includeDistrictAddress: true,
+        withPrimaryActivationCode: true
       },
       schoolOptions: {
         includeTombstoneValues: false,
         includeSchoolAddress: true,
-        includeSchoolContact: false,
-        schoolStatus: 'Open'
+        includeSchoolContact: true,
+        schoolStatus: 'Open',
+        withPrimaryActivationCode: true
       }
     });
 
     if (response){
-      resolve(response)
+      resolve(response);
     } else {
       reject();
     }

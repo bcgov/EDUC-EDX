@@ -218,7 +218,7 @@
                     type="info"
                     class="pa-2"
                   >
-                    <span style="color: #003366">Before adding users, a Primary Activation Code must be generated.</span>
+                    <span id="no-activation-code-banner" style="color: #003366">Before adding users, a Primary Activation Code must be generated.</span>
                   </v-alert>
                 </v-col>
               </v-row>

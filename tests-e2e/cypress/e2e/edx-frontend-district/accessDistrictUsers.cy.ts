@@ -129,9 +129,9 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_DISTRICT_ADMIN"] input').should('not.be.checked');
             cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').should('be.checked');
+            });
           });
         });
-      })
 
       it('can cancel relinking a user', () => {
         cy.visit('/districtAccess', {timeout: 3000});
