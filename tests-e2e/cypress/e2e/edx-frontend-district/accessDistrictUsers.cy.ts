@@ -159,5 +159,55 @@ describe('Access District Users Page Tests', () => {
       })
 
     });
+
+    context('temporary user to be deleted', () => {
+      let tempUserId = '';
+      let tempFirstName = '';
+      let tempUserId2 = '';
+      let tempFirstName2 = '';
+      let tempLastName2 = '';
+
+      before(() => {
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
+          digitalId: crypto.randomUUID(), districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']
+        }).then((user: EdxUserEntity) => {
+          tempUserId = user.edxUserID;
+          tempFirstName = user.firstName;
+        });
+
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
+          digitalId: crypto.randomUUID(), districtRoles: [`EDX_DISTRICT_ADMIN`], districtCodes: ['998'],
+        }).then((user2: EdxUserEntity) => {
+          tempUserId2 = user2.edxUserID;
+          tempFirstName2 = user2.firstName;
+          tempLastName2 = user2.lastName;
+        });
+      });
+
+        beforeEach(() => {
+          cy.wrap(tempUserId).as('tempUserId');
+          cy.wrap(tempFirstName).as('tempUserFirstName');
+        });
+        after(() => cy.logout());
+
+        it('can find delete option and cancel delete', () => {
+          cy.visit('/districtAccess');
+          cy.get('@tempUserId').then(uid => {
+            cy.get(`#user-remove-button-${uid}`).click();
+
+            cy.get(`#user-cancel-remove-button-${tempFirstName2}-${tempLastName2}`).click();
+          });
+        });
+
+      it('can find delete option and clicks delete', () => {
+        cy.visit('/districtAccess');
+        cy.get('@tempUserId').then(uid2 => {
+          cy.get(`#user-remove-button-${uid2}`).click();
+          cy.get(`#user-remove-action-button-${tempFirstName2}-${tempLastName2}`).click();
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been removed. Close');
+        });
+      });
+
+    });
   });
 });
