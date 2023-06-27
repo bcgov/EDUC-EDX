@@ -299,7 +299,6 @@ describe('Access School Users Page', () => {
       let tempFirstName2 = '';
       let tempLastName2 = '';
 
-
       before(() => {
         cy.task('recreate-school', { schoolStatus: 'Open' });
 
@@ -314,14 +313,14 @@ describe('Access School Users Page', () => {
         cy.wrap(tempUserId).as('tempUserId');
         cy.wrap(tempFirstName).as('tempUserFirstName');
       });
-      // after(() => cy.logout());
+
+      after(() => cy.logout());
 
       it('can find delete option and cancel delete', () => {
         navigateToAccessSchoolUsers();
         cy.get('@tempUserId').then(uid => {
         cy.get(`#user-remove-button-${uid}`).click();
         cy.get(`#user-cancel-remove-button-${tempFirstName2}-${tempLastName2}`).click();
-
         });
       });
 
@@ -335,7 +334,6 @@ describe('Access School Users Page', () => {
       });
 
     });
-
   });
 
   context('As an EDX district admin, with a school that has no primary activation generated', () => {
