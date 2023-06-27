@@ -310,13 +310,11 @@ describe('Access School Users Page', () => {
 
     it('school should not have primary activation code', () => {
       navigateToAccessSchoolUsers();
-      cy.get(selectors.accessUsersPage.manageSchoolButton).click();
       cy.get(selectors.newUserInvites.primaryActivationCode).contains("Code Not Found");
     });
 
     it('cannot send invite if no primary activation code present', () => {
       navigateToAccessSchoolUsers();
-      cy.get(selectors.accessUsersPage.manageSchoolButton).click();
       cy.get(selectors.newUserInvites.newUserButton).should("be.disabled");
       cy.get(selectors.newUserInvites.noActivationCodeBanner)
         .contains("Before adding users, a Primary Activation Code must be generated.");
