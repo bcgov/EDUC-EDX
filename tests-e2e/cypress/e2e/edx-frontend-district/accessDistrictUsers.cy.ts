@@ -138,7 +138,6 @@ describe('Access District Users Page Tests', () => {
     context('temporary user to be deleted', () => {
       let tempUserId = '';
       let tempFirstName = '';
-
       let tempUserId2 = '';
       let tempFirstName2 = '';
       let tempLastName2 = '';
@@ -151,24 +150,20 @@ describe('Access District Users Page Tests', () => {
           tempFirstName = user.firstName;
         });
 
-        //   Create another user using the same district code
         cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
           digitalId: crypto.randomUUID(), districtRoles: [`EDX_DISTRICT_ADMIN`], districtCodes: ['998'],
         }).then((user2: EdxUserEntity) => {
           tempUserId2 = user2.edxUserID;
           tempFirstName2 = user2.firstName;
           tempLastName2 = user2.lastName;
-
         });
       });
+
         beforeEach(() => {
           cy.wrap(tempUserId).as('tempUserId');
           cy.wrap(tempFirstName).as('tempUserFirstName');
         });
-
-        // after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
         after(() => cy.logout());
-
 
         it('can find delete option and cancel delete', () => {
           cy.visit('/districtAccess', {timeout: 3000});
@@ -188,8 +183,6 @@ describe('Access District Users Page Tests', () => {
         });
       });
 
-
     });
-
   });
 });
