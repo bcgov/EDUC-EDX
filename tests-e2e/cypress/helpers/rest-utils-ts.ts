@@ -7,14 +7,17 @@ export class RestUtils {
         this.config = conf;
     }
 
-    private async getToken() {
+    async getToken(): Promise<string> {
         const params = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-        const data = 'grant_type=client_credentials&client_id=' + this.config.env.CLIENT_ID + '&client_secret=' + this.config.env.CLIENT_SECRET;
-        const response = await axios.post(this.config.env.TOKEN_URL, data, params);
+
+        const data = 'grant_type=client_credentials&client_id=' + this.config.env.CLIENT_ID + '&client_secret='
+            + this.config.env.CLIENT_SECRET;
+
+        const response = await axios.post<{access_token: string}>(this.config.env.TOKEN_URL, data, params);
         return response.data.access_token;
     }
 

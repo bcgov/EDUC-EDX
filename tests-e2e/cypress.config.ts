@@ -4,6 +4,7 @@ import {EdxApiService} from "./cypress/services/edx-api-service";
 import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
 import {defineConfig} from "cypress";
 import { InstituteOptions, SchoolOptions } from "./cypress/services/institute-api-service";
+import { UserActivationUtils } from "./cypress/helpers/user-activation-utils";
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (
@@ -72,6 +73,7 @@ export default defineConfig({
           return null;
         },
         'teardown-edxUser': async (edxUserId: string) => {
+          await new UserActivationUtils(config).deleteUserActivationCodes(edxUserId);
           await new EdxApiService(config).deleteEdxUser(edxUserId);
           return null;
         }

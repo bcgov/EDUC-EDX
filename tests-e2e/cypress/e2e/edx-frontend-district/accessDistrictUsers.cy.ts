@@ -133,6 +133,31 @@ describe('Access District Users Page Tests', () => {
           });
         });
 
+      it('can cancel relinking a user', () => {
+        cy.visit('/districtAccess', {timeout: 3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-relink-button-${uid}`).click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('exist')
+            .should('include.text', 'Are you sure you want to re-link this account?');
+          cy.get(`#user-cancel-relink-button-${uid}`).should('exist').click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
+          cy.get(`#user-relink-button-${uid}`).click().click({timeout: 300});
+          cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
+        });
+      })
+
+      it('can relink a user', () => {
+        cy.visit('/districtAccess', {timeout: 3000});
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-relink-button-${uid}`).click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('exist')
+            .should('include.text', 'Are you sure you want to re-link this account?');
+          cy.get(`#user-relink-action-button-${uid}`).should('exist').click();
+          cy.get(selectors.snackbar.mainSnackBar)
+            .should('contain', 'User has been removed, email sent with instructions to re-link. Close');
+        });
+      })
+
     });
   });
 });
