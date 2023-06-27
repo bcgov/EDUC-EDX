@@ -168,19 +168,12 @@ describe('Access District Users Page Tests', () => {
       let tempLastName2 = '';
 
       before(() => {
-        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
-          digitalId: crypto.randomUUID(), districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']
-        }).then((user: EdxUserEntity) => {
-          tempUserId = user.edxUserID;
-          tempFirstName = user.firstName;
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', { digitalId: crypto.randomUUID(), districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']
+        }).then((user: EdxUserEntity) => { tempUserId = user.edxUserID; tempFirstName = user.firstName;
         });
 
-        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
-          digitalId: crypto.randomUUID(), districtRoles: [`EDX_DISTRICT_ADMIN`], districtCodes: ['998'],
-        }).then((user2: EdxUserEntity) => {
-          tempUserId2 = user2.edxUserID;
-          tempFirstName2 = user2.firstName;
-          tempLastName2 = user2.lastName;
+        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', { digitalId: crypto.randomUUID(), districtRoles: [`EDX_DISTRICT_ADMIN`], districtCodes: ['998'],
+        }).then((user2: EdxUserEntity) => { tempUserId2 = user2.edxUserID; tempFirstName2 = user2.firstName; tempLastName2 = user2.lastName;
         });
       });
 
