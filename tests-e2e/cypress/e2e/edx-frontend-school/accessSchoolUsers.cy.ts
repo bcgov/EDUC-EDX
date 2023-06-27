@@ -2,15 +2,18 @@ import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { InstituteOptions } from 'tests-e2e/cypress/services/institute-api-service';
 
-
-function testSendingNewUserInvites() {
-  cy.visit('/', {timeout: 6000});
-  cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
-  cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
+function navigateToAccessSchoolUsers() {
+  cy.visit('/schoolAccess', {timeout: 6000});
   cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
   cy.get(selectors.accessUsersPage.schoolSelectorBox).should('exist');
-  cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div').contains('EDX Automation Testing School').click();
+  cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div')
+    .contains('EDX Automation Testing School').click();
   cy.get(selectors.accessUsersPage.manageSchoolButton).click();
+}
+
+
+function testSendingNewUserInvites() {
+  navigateToAccessSchoolUsers();
 
   cy.get(selectors.newUserInvites.newUserButton).click();
   cy.get(selectors.newUserInvites.newUserInviteVCard).should('exist');
@@ -30,15 +33,7 @@ function testGeneratingActivationCode() {
     "activationCodeUpdate"
   );
 
-  cy.visit("/schoolAccess", {timeout: 6000});
-  cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
-  cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
-  cy.get(selectors.accessUsersPage.schoolSelectorBox)
-    .find("div")
-    .contains("EDX Automation Testing School")
-    .click();
-  cy.get(selectors.accessUsersPage.manageSchoolButton).click();
-
+  navigateToAccessSchoolUsers();
   cy.wait("@activationCodeUpdate");
 
   cy.get(selectors.newUserInvites.primaryActivationCode)
@@ -172,25 +167,13 @@ describe('Access School Users Page', () => {
     beforeEach(() => cy.login());
 
     it('school should not have primary activation code', () => {
-      cy.visit("/schoolAccess", {timeout: 6000});
-      cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
-      cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
-      cy.get(selectors.accessUsersPage.schoolSelectorBox)
-        .find("div")
-        .contains("EDX Automation Testing School")
-        .click();
+      navigateToAccessSchoolUsers();
       cy.get(selectors.accessUsersPage.manageSchoolButton).click();
       cy.get(selectors.newUserInvites.primaryActivationCode).contains("Code Not Found");
     });
 
     it('cannot send invite if no primary activation code present', () => {
-      cy.visit("/schoolAccess", {timeout: 6000});
-      cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
-      cy.get(selectors.accessUsersPage.schoolSelectorBox).should("exist");
-      cy.get(selectors.accessUsersPage.schoolSelectorBox)
-        .find("div")
-        .contains("EDX Automation Testing School")
-        .click();
+      navigateToAccessSchoolUsers();
       cy.get(selectors.accessUsersPage.manageSchoolButton).click();
       cy.get(selectors.newUserInvites.newUserButton).should("be.disabled");
       cy.get(selectors.newUserInvites.noActivationCodeBanner)
