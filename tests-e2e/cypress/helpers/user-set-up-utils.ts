@@ -11,11 +11,12 @@ export class UserSetupUtils {
     }
 
     async setupSchoolUser(schoolUserOptions: SchoolUserOptions) {
-        const digitalId = schoolUserOptions.digitalId || this.config.env.adminCredential.digitalID;
+        const digitalId = schoolUserOptions.digitalId || this.config.env.adminCredential.digitalID as string;
         const edxUser = await this.userApi.refreshEdxUser(digitalId);
         const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolUserOptions.schoolCodes);
         const roles = await this.userApi.getAllEdxUserRoleForInstitute();
-        return await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUser.edxUserID);
+        await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUser.edxUserID);
+        return edxUser;
     }
 
     async setupDistrictUser(districtUserOptions: DistrictUserOptions) {
