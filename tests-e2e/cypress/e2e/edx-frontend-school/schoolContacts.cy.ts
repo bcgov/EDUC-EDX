@@ -15,9 +15,9 @@ describe('School Contacts Page', () => {
 
     it('Check new contact page has current effective date', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolContactsCard).click();
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('School Contacts | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing School');
       cy.get(selectors.schoolContacts.newContactButton).click();
       cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
         const val = $input.val()
@@ -27,9 +27,9 @@ describe('School Contacts Page', () => {
 
     it('Can remove contact', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolContactsCard).click();
-      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('School Contacts | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing School');
 
       cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
       cy.get(selectors.schoolContacts.deleteContactButton).click();
@@ -53,11 +53,11 @@ describe('School Contacts Page', () => {
 
     it('Check new school contact page has current effective date', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('Schools | EDX Automation Testing');
+      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
-      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('School Contacts | EDX Automation Testing');
+      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
       cy.get(selectors.schoolContacts.newContactButton).click();
       cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
         const val = $input.val()
@@ -67,12 +67,12 @@ describe('School Contacts Page', () => {
 
     it('Can remove contact', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 60000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('Schools | EDX Automation Testing');
+      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
 
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
-      cy.get(selectors.dashboard.title, {timeout: 10000}).contains('School Contacts | EDX Automation Testing');
+      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
 
       cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
       cy.get(selectors.schoolContacts.deleteContactButton).click();
@@ -86,7 +86,7 @@ describe('School Contacts Page', () => {
 
     it('can create a new school contact - vice principal', () => {
       cy.visit('/schools');
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Schools | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing District');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.schoolContacts.newContactButton).click();
       cy.get(selectors.schoolContacts.newContactTypeDropdown).parent().click();
