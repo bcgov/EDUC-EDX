@@ -19,7 +19,7 @@ describe('Exchange Inbox Page', () => {
     });
 
     it('can create a new secure exchange message with a document and a student', () => {
-      cy.visit('/', {timeout: 3000});
+      cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.secureMessageTile).click();
       cy.get(selectors.secureExchangeInbox.newMessageButton).click();
@@ -53,14 +53,14 @@ describe('Exchange Inbox Page', () => {
     });
 
     it('has an existing message with attachments', () => {
-      cy.visit('/inbox', {timeout: 3000});
+      cy.visit('/inbox');
       cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
       cy.get(selectors.secureExchangeDetail.timelineContent).contains('BC.jpg').should('exist');
       cy.get(selectors.secureExchangeDetail.timelineContent).contains(Cypress.env('student').penList[0]).should('exist');
     });
 
     it('can search for the message', () => {
-      cy.visit('/inbox', {timeout: 3000});
+      cy.visit('/inbox');
       cy.get(selectors.secureExchangeInbox.filtersButton).click();
       cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
       cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
@@ -68,7 +68,7 @@ describe('Exchange Inbox Page', () => {
     });
 
     it('can remove the existing document and student from the message', () => {
-      cy.visit('/inbox', {timeout: 3000});
+      cy.visit('/inbox');
       cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
       cy.get(selectors.secureExchangeDetail.timelineContent).contains('BC.jpg')
         .parentsUntil(selectors.secureExchangeDetail.timelineContent)
@@ -84,7 +84,7 @@ describe('Exchange Inbox Page', () => {
     });
 
     it('can add a document to the message', () => {
-      cy.visit('/inbox', {timeout: 3000});
+      cy.visit('/inbox');
       cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
       cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
       cy.get(selectors.secureExchangeDetail.addAttachmentConvButton).click();
@@ -97,7 +97,7 @@ describe('Exchange Inbox Page', () => {
     });
 
     it('can add a student to the message', () => {
-      cy.visit('/inbox', {timeout: 3000});
+      cy.visit('/inbox');
       cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
       cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
       cy.get(selectors.secureExchangeDetail.addStudentConvButton).click();

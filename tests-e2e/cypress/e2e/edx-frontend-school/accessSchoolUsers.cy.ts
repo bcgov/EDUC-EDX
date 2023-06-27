@@ -3,7 +3,7 @@ import { AppSetupData } from '../../../cypress.config';
 import { InstituteOptions } from 'tests-e2e/cypress/services/institute-api-service';
 
 function navigateToAccessSchoolUsers() {
-  cy.visit('/schoolAccess', {timeout: 6000});
+  cy.visit('/schoolAccess');
   cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
   cy.get(selectors.accessUsersPage.schoolSelectorBox).should('exist');
   cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div')
@@ -74,7 +74,7 @@ describe('Access School Users Page', () => {
     beforeEach(() => cy.login());
 
     it('Loads school details and checks field validation', () => {
-      cy.visit('/', {timeout: 6000});
+      cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
       cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
@@ -193,7 +193,7 @@ describe('Access School Users Page', () => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#user-cancel-edit-button-${uid}`).should('exist').click();
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
-          cy.get(`#user-edit-button-${uid}`).click().click({timeout:200});
+          cy.get(`#user-edit-button-${uid}`).click().click();
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
         });
       });
@@ -205,7 +205,7 @@ describe('Access School Users Page', () => {
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             // The user is currently bootstrapped with all roles. This is not the natural order. Clicking
             // the admin role twice should clear the less privileged roles and prevent role overlap.
-            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click({timeout: 300});
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click();
             cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('be.checked');
             cy.get('div[value="STUDENT_DATA_COLLECTION"] > .v-list-item')
               .should('have.class', 'v-list-item--disabled');
@@ -251,11 +251,11 @@ describe('Access School Users Page', () => {
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
-            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click({timeout: 300});
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click();
           });
           cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
           cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
-          cy.get(`#access-user-roles-${uid}`).should('not.exist', {timeout: 5000});
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('be.checked');
@@ -273,7 +273,7 @@ describe('Access School Users Page', () => {
             .should('include.text', 'Are you sure you want to re-link this account?');
           cy.get(`#user-cancel-relink-button-${uid}`).should('exist').click();
           cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
-          cy.get(`#user-relink-button-${uid}`).click().click({timeout: 300});
+          cy.get(`#user-relink-button-${uid}`).click().click();
           cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
         });
       })

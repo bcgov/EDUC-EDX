@@ -18,10 +18,10 @@ describe('District Contacts Page', () => {
 
     it('should make new contacts with a current effective date', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
 
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
 
       cy.get(selectors.districtContacts.newContactButton).click();
       cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
@@ -32,9 +32,9 @@ describe('District Contacts Page', () => {
 
     it('can edit contact details', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.dashboard.title, {timeout: 3000}).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
       cy.get(selectors.districtContacts.editDistrictContactButton).click();
       cy.get(selectors.districtContacts.editContactFirstNameInput).clear().type('Testing Edited User');
       cy.get(selectors.districtContacts.saveChangesToDistrictContactButton).click();
