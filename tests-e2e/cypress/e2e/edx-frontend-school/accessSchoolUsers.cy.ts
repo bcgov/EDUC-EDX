@@ -149,6 +149,148 @@ describe('Access School Users Page', () => {
       it('can generate a primary activation code', testGeneratingActivationCode);
     });
 
+    context('with a temporary user', () => {
+      let tempUserId = '';
+      let tempFirstName = '';
+
+      before(() => {
+        cy.task('recreate-school', { schoolStatus: 'Open' });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          digitalId: crypto.randomUUID(),
+          schoolCodes: ['99998']
+        }).then((user: EdxUserEntity) => {
+            tempUserId = user.edxUserID;
+            tempFirstName = user.firstName;
+          });
+      });
+      beforeEach(() => {
+        cy.wrap(tempUserId).as('tempUserId');
+        cy.wrap(tempFirstName).as('tempUserFirstName');
+      });
+      after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
+
+      it('will not save a user with no roles', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#edxUser-${uid}`).should('exist');
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click();
+            cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
+          });
+          cy.get('@tempUserFirstName').then(fname => {
+            cy.get(selectors.accessUsersPage.accessUserFeedback)
+              .should('include.text', `Please select at least one role for ${fname}`);
+          });
+          cy.get(`#user-save-action-button-${uid}`).should('be.disabled');
+        });
+      });
+
+      it('can cancel the edit user mode', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#user-cancel-edit-button-${uid}`).should('exist').click();
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
+          cy.get(`#user-edit-button-${uid}`).click().click({timeout:200});
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
+        });
+      });
+
+      it('will only allow admin, or non-admin roles, not both', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            // The user is currently bootstrapped with all roles. This is not the natural order. Clicking
+            // the admin role twice should clear the less privileged roles and prevent role overlap.
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click({timeout: 300});
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('be.checked');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] > .v-list-item')
+              .should('have.class', 'v-list-item--disabled');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] input')
+              .should('not.be.checked');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] > .v-list-item')
+              .should('have.class', 'v-list-item--disabled');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] input')
+              .should('not.be.checked');
+
+            // if we have selected admin, the other choices should be disabled.
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click();
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('not.be.checked');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+
+            // if we make any combination of less privileged roles, EDX admin should still be enabled.
+            cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] input').should('be.checked');
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] input').should('not.be.checked');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] input').should('be.checked');
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] input').should('be.checked');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] input').should('be.checked');
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] > .v-list-item')
+              .should('not.have.class', 'v-list-item--disabled');
+          });
+        });
+      });
+
+      it('can update the user\'s role', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click({timeout: 300});
+          });
+          cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
+          cy.get(`#access-user-roles-${uid}`).should('not.exist', {timeout: 5000});
+          cy.get(`#user-edit-button-${uid}`).click();
+          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
+            cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('be.checked');
+            cy.get('div[value="STUDENT_DATA_COLLECTION"] input').should('not.be.checked');
+            cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] input').should('not.be.checked');
+            });
+          });
+        });
+
+      it('can cancel relinking a user', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-relink-button-${uid}`).click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('exist')
+            .should('include.text', 'Are you sure you want to re-link this account?');
+          cy.get(`#user-cancel-relink-button-${uid}`).should('exist').click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
+          cy.get(`#user-relink-button-${uid}`).click().click({timeout: 300});
+          cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
+        });
+      })
+
+      it('can relink a user', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-relink-button-${uid}`).click();
+          cy.get(`#userRelinkWarningText-${uid}`).should('exist')
+            .should('include.text', 'Are you sure you want to re-link this account?');
+          cy.get(`#user-relink-action-button-${uid}`).should('exist').click();
+          cy.get(selectors.snackbar.mainSnackBar)
+            .should('contain', 'User has been removed, email sent with instructions to re-link. Close');
+        });
+      });
+
+    });
   });
 
   context('As an EDX district admin, with a school that has no primary activation generated', () => {
