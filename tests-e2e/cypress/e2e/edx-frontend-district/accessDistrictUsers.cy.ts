@@ -71,7 +71,7 @@ describe('Access District Users Page Tests', () => {
       after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
 
       it('will not save a user with no roles', () => {
-        cy.visit('/districtAccess', {timeout: 3000});
+        cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#edxUser-${uid}`).should('exist');
           cy.get(`#user-edit-button-${uid}`).click();
@@ -87,18 +87,18 @@ describe('Access District Users Page Tests', () => {
       });
 
       it('can cancel the edit user mode', () => {
-        cy.visit('/districtAccess', {timeout:3000});
+        cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#user-cancel-edit-button-${uid}`).should('exist').click();
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
-          cy.get(`#user-edit-button-${uid}`).click().click({timeout:200});
+          cy.get(`#user-edit-button-${uid}`).click().click();
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
         });
       });
 
       it('will only permit one role', () => {
-        cy.visit('/districtAccess', {timeout: 3000});
+        cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
@@ -115,7 +115,7 @@ describe('Access District Users Page Tests', () => {
       });
 
       it('can update the user\'s role', () => {
-        cy.visit('/districtAccess', {timeout:3000});
+        cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
@@ -124,7 +124,7 @@ describe('Access District Users Page Tests', () => {
           });
           cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
           cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
-          cy.get(`#access-user-roles-${uid}`, {timeout: 3000}).should('not.exist');
+          cy.get(`#access-user-roles-${uid}`).should('not.exist');
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_DISTRICT_ADMIN"] input').should('not.be.checked');
@@ -166,7 +166,7 @@ describe('Access District Users Page Tests', () => {
         after(() => cy.logout());
 
         it('can find delete option and cancel delete', () => {
-          cy.visit('/districtAccess', {timeout: 3000});
+          cy.visit('/districtAccess');
           cy.get('@tempUserId').then(uid => {
             cy.get(`#user-remove-button-${uid}`).click();
 
@@ -175,7 +175,7 @@ describe('Access District Users Page Tests', () => {
         });
 
       it('can find delete option and clicks delete', () => {
-        cy.visit('/districtAccess', {timeout: 3000});
+        cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid2 => {
           cy.get(`#user-remove-button-${uid2}`).click();
           cy.get(`#user-remove-action-button-${tempFirstName2}-${tempLastName2}`).click();
