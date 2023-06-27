@@ -115,7 +115,8 @@ export default {
     schoolDetailsWebsite: '#schoolDetailsWebsite',
     schoolDisplayNameTitle: "#schoolDisplayNameTitle",
     schoolMincodeTitle: "#schoolMincodeTitle",
-    subjectHeading: 'h2.subjectHeading'
+    subjectHeading: 'h2.subjectHeading',
+    schoolNameNoSpecialChars: '#schoolNameNoSpecialChars'
   },
   schoolList: {
     viewFirstSchoolContactsButton: '#viewContactsButton0'

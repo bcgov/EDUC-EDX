@@ -59,12 +59,12 @@
                 :click-action="redirectToDistrictContacts"
               />
               <PrimaryButton
+                v-if="canEditDistrict()"
                 id="editButton"
                 icon-left
                 width="6em"
                 icon="mdi-pencil"
                 text="Edit"
-                :disabled="!canEditDistrict()"
                 :click-action="toggleEdit"
               />
             </v-col>

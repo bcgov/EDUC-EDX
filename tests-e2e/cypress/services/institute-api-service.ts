@@ -60,6 +60,7 @@ interface SchoolPayload extends BaseEntity {
   openedDate: string;
   closedDate: string | null;
   displayName: string;
+  displayNameNoSpecialChars: string;
 }
 
 export interface SchoolContactPayload {
@@ -414,6 +415,7 @@ export class InstituteApiService {
       email: 'fakeuser@sd5.bc.ca',
       website: null,
       displayName: 'EDX Automation Testing School',
+      displayNameNoSpecialChars: 'Legacy Safe Name',
       schoolReportingRequirementCode: 'REGULAR',
       schoolOrganizationCode: 'TWO_SEM',
       schoolCategoryCode: 'PUBLIC',
