@@ -22,7 +22,8 @@ const loadAppSetupData = (
         includeSchoolAddress: true,
         includeSchoolContact: true,
         schoolStatus: 'Open',
-        withPrimaryActivationCode: true
+        withPrimaryActivationCode: true,
+        isIndependentSchool: false
       }
     });
 

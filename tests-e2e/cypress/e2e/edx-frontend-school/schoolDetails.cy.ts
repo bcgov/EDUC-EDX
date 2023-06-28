@@ -75,6 +75,21 @@ describe('School Details Interface Test', () => {
       })
     });
 
+    context('with an independent school', () => {
+      before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
+      it('cannot edit grades offered if the school is an independent school', () => {
+        cy.visit('/')
+        cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+  
+        cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+        cy.get("@schoolName").then(() => {
+          cy.get(selectors.schoolDetails.editButton).click();
+          cy.get(selectors.schoolDetails.schoolGradesDropdown).should('not.exist');
+        })
+      });
+    });
+
   });
 
   context('As an EDX district admin', () => {
