@@ -14,38 +14,80 @@ describe('School Details Interface Test', () => {
 
     it('can load the details page and validate the website url field', () => {
       cy.visit('/')
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
-      cy.get(selectors.schoolDetails.addWebsiteLink).click();
+      
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+      cy.get("@schoolName").then(() => {
+        cy.get(selectors.schoolDetails.addWebsiteLink).click();
 
-      const websiteField = () => cy.get(selectors.schoolDetails.schoolDetailsWebsite);
-      const websiteWrapper = vInputParentOf(websiteField);
-      const websiteErrorMessage = 'Website must be valid and secure (i.e., https)';
+        const websiteField = () => cy.get(selectors.schoolDetails.schoolDetailsWebsite);
+        const websiteWrapper = vInputParentOf(websiteField);
+        const websiteErrorMessage = 'Website must be valid and secure (i.e., https)';
 
-      websiteField().clear().type('http://www.nope.com');
-      websiteWrapper().should('have.class', 'v-input--error');
-      websiteWrapper().within(() =>
-        cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
-      );
+        websiteField().clear().type('http://www.nope.com');
+        websiteWrapper().should('have.class', 'v-input--error');
+        websiteWrapper().within(() =>
+          cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
+        );
 
-      websiteField().clear().type('https://notawebsite');
-      websiteWrapper().should('have.class', 'v-input--error');
-      websiteWrapper().within(
-        () => cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
-      );
+        websiteField().clear().type('https://notawebsite');
+        websiteWrapper().should('have.class', 'v-input--error');
+        websiteWrapper().within(
+          () => cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
+        );
 
-      websiteField().clear().type('https://saulgoodman.com');
-      websiteWrapper().should('not.have.class', 'v-input--error');
-      websiteWrapper().within(() => cy.get('.v-messags__message').should('not.exist'));
+        websiteField().clear().type('https://saulgoodman.com');
+        websiteWrapper().should('not.have.class', 'v-input--error');
+        websiteWrapper().within(() => cy.get('.v-messags__message').should('not.exist'));
+      });
     });
 
     it('can view legacy safe name', () => {
       cy.visit('/')
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
 
-      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
-      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+      cy.get("@schoolName").then(() => {
+        cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
+        cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+      })
+    });
+
+    it('can edit grades offered if the school is not an independent or an independent first nations school', () => {
+      cy.visit('/')
+      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.schoolDetailsCard).click();
+
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+      cy.get("@schoolName").then(() => {
+        cy.get(selectors.schoolDetails.editButton).click();
+
+        cy.get(selectors.schoolDetails.schoolGradesDropdown).should('exist').then(() => {
+          cy.get(selectors.schoolDetails.schoolGradesDropdown).parent().click();
+          cy.get(selectors.dropdown.listItem).contains('Grade 1').click();
+          cy.get(selectors.schoolDetails.saveButton).click();
+          cy.get(selectors.schoolDetails.resolveButton).click();
+
+          cy.get(selectors.schoolDetails.schoolGradesValue).should("be.visible").should("contain", "1");
+        });
+      })
+    });
+
+    context('with an independent school', () => {
+      before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
+      it('cannot edit grades offered if the school is an independent school', () => {
+        cy.visit('/')
+        cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+  
+        cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+        cy.get("@schoolName").then(() => {
+          cy.get(selectors.schoolDetails.editButton).click();
+          cy.get(selectors.schoolDetails.schoolGradesDropdown).should('not.exist');
+        })
+      });
     });
 
   });
@@ -61,12 +103,16 @@ describe('School Details Interface Test', () => {
 
     it('can view legacy safe name', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
+      cy.get(selectors.dashboard.title).should("be.visible").contains('Schools | EDX Automation Testing');
+      cy.get(selectors.schoolList.schoolRow).should("be.visible").click();
 
-      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
-      cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
+      cy.get("@schoolName").then(() => {
+        cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
+        cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
+      });
     });
 
   });

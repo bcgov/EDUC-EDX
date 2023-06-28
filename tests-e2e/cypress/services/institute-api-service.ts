@@ -91,6 +91,7 @@ export interface DistrictOptions {
 
 export interface SchoolOptions {
   includeTombstoneValues?: boolean;
+  isIndependentSchool?: boolean;
   includeSchoolAddress?: boolean;
   includeSchoolContact?: boolean;
   schoolStatus?: SchoolStatus;
@@ -372,7 +373,8 @@ export class InstituteApiService {
     includeSchoolAddress = true,
     includeTombstoneValues = true,
     includeSchoolContact = true,
-    schoolStatus = 'Open'
+    schoolStatus = 'Open',
+    isIndependentSchool = false
   }: SchoolOptions): Promise<SchoolEntity> {
     let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
 
@@ -422,6 +424,11 @@ export class InstituteApiService {
       facilityTypeCode: 'STANDARD',
       openedDate: openDate,
       closedDate: closeDate,
+    }
+   
+    if(isIndependentSchool) {
+      schoolPayload.schoolCategoryCode = 'INDEPEND';
+      schoolPayload.facilityTypeCode = 'STANDARD';
     }
 
     if (!includeTombstoneValues) {

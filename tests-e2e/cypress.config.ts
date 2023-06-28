@@ -18,11 +18,12 @@ const loadAppSetupData = (
         withPrimaryActivationCode: true
       },
       schoolOptions: {
-        includeTombstoneValues: false,
+        includeTombstoneValues: true,
         includeSchoolAddress: true,
         includeSchoolContact: true,
         schoolStatus: 'Open',
-        withPrimaryActivationCode: true
+        withPrimaryActivationCode: true,
+        isIndependentSchool: false
       }
     });
 
@@ -43,6 +44,7 @@ export default defineConfig({
   screenshotOnRunFailure: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
+  defaultCommandTimeout: 5000,
   e2e: {
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {

@@ -460,6 +460,7 @@
                   v-else
                   class="ministryLine"
                   style="color: black"
+                  id="schoolGradesValue"
                 >
                   {{ getGradesOffered(school.grades) }}
                 </span>
