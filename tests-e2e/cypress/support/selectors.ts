@@ -67,6 +67,9 @@ export default {
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
   },
+  logoutPage: {
+    logoutText: '#logout_text'
+  },
   newUserInvites: {
     emailInput: '#newUserEmail',
     firstNameInput: '#newUserFirstName',
@@ -116,10 +119,14 @@ export default {
     schoolDisplayNameTitle: "#schoolDisplayNameTitle",
     schoolMincodeTitle: "#schoolMincodeTitle",
     subjectHeading: 'h2.subjectHeading',
-    schoolNameNoSpecialChars: '#schoolNameNoSpecialChars'
+    schoolNameNoSpecialChars: '#schoolNameNoSpecialChars',
+    schoolGradesDropdown: '#schoolGrades',
+    schoolGradesValue: '#schoolGradesValue',
+    resolveButton:'#resolveBtn'
   },
   schoolList: {
-    viewFirstSchoolContactsButton: '#viewContactsButton0'
+    viewFirstSchoolContactsButton: '#viewContactsButton0',
+    schoolRow: '.hoverTable'
   },
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
