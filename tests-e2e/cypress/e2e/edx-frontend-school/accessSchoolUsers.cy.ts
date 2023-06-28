@@ -295,18 +295,25 @@ describe('Access School Users Page', () => {
     context('temporary user to be deleted', () => {
       let tempUserId = '';
       let tempFirstName = '';
-      let tempUserId2 = '';
-      let tempFirstName2 = '';
-      let tempLastName2 = '';
 
       before(() => {
         cy.task('recreate-school', { schoolStatus: 'Open' });
 
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { digitalId: crypto.randomUUID(), schoolCodes: ['99998']
-        }).then((user: EdxUserEntity) => { tempUserId = user.edxUserID; tempFirstName = user.firstName; });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser',
+            { digitalId: crypto.randomUUID(),
+              schoolCodes: ['99998']
+        }).then((user: EdxUserEntity) => {
+          tempUserId = user.edxUserID;
+          tempFirstName = user.firstName;
+        });
 
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { digitalId: crypto.randomUUID(), schoolCodes: ['99998']
-        }).then((user2: EdxUserEntity) => { tempUserId2 = user2.edxUserID; tempFirstName2 = user2.firstName; tempLastName2 = user2.lastName; });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          digitalId: crypto.randomUUID(),
+          schoolCodes: ['99998']
+        }).then((user: EdxUserEntity) => {
+          tempUserId = user.edxUserID;
+          tempFirstName = user.firstName;
+        });
       });
 
       beforeEach(() => {
@@ -314,21 +321,24 @@ describe('Access School Users Page', () => {
         cy.wrap(tempFirstName).as('tempUserFirstName');
       });
 
-      after(() => cy.logout());
+      after(() => {
+        cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));
+        cy.logout();
+      });
 
       it('can find delete option and cancel delete', () => {
         navigateToAccessSchoolUsers();
         cy.get('@tempUserId').then(uid => {
-        cy.get(`#user-remove-button-${uid}`).click();
-        cy.get(`#user-cancel-remove-button-${tempFirstName2}-${tempLastName2}`).click();
+          cy.get(`#user-remove-button-${uid}`).click();
+          cy.get(`#user-cancel-remove-button-${uid}`).click();
         });
       });
 
       it('can find delete option and clicks delete', () => {
         navigateToAccessSchoolUsers();
-        cy.get('@tempUserId').then(uid2 => {
-          cy.get(`#user-remove-button-${uid2}`).click();
-          cy.get(`#user-remove-action-button-${tempFirstName2}-${tempLastName2}`).click();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-remove-button-${uid}`).click();
+          cy.get(`#user-remove-action-button-${uid}`).click();
           cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been removed. Close');
         });
       });
