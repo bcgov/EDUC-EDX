@@ -37,7 +37,7 @@ test('school_add_contact', async t => {
 
     //Test adding a contact.
     //Test the initial state of the new contact dialog.
-    await schoolContactsPage.verifyAddSchoolContactButtonExists();
+    await schoolContactsPage.verifyAddSchoolContactButtonExists();kj6t
     await schoolContactsPage.verifyNewContactSheetDoesNotExist();
     await schoolContactsPage.clickAddSchoolContactButton();
     await schoolContactsPage.verifyNewContactSheetExists();
