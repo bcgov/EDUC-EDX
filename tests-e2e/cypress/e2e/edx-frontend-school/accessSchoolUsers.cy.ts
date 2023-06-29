@@ -291,6 +291,59 @@ describe('Access School Users Page', () => {
       });
 
     });
+
+    context('temporary user to be deleted', () => {
+      let tempUserId = '';
+      let tempFirstName = '';
+
+      before(() => {
+        cy.task('recreate-school', { schoolStatus: 'Open' });
+
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser',
+            { digitalId: crypto.randomUUID(),
+              schoolCodes: ['99998']
+        }).then((user: EdxUserEntity) => {
+          tempUserId = user.edxUserID;
+          tempFirstName = user.firstName;
+        });
+
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          digitalId: crypto.randomUUID(),
+          schoolCodes: ['99998']
+        }).then((user: EdxUserEntity) => {
+          tempUserId = user.edxUserID;
+          tempFirstName = user.firstName;
+        });
+      });
+
+      beforeEach(() => {
+        cy.wrap(tempUserId).as('tempUserId');
+        cy.wrap(tempFirstName).as('tempUserFirstName');
+      });
+
+      after(() => {
+        cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));
+        cy.logout();
+      });
+
+      it('can find delete option and cancel delete', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-remove-button-${uid}`).click();
+          cy.get(`#user-cancel-remove-button-${uid}`).click();
+        });
+      });
+
+      it('can find delete option and clicks delete', () => {
+        navigateToAccessSchoolUsers();
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-remove-button-${uid}`).click();
+          cy.get(`#user-remove-action-button-${uid}`).click();
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been removed. Close');
+        });
+      });
+
+    });
   });
 
   context('As an EDX district admin, with a school that has no primary activation generated', () => {

@@ -167,7 +167,7 @@
         <v-row no-gutters>
           <v-col class="mt-3 d-flex justify-end">
             <PrimaryButton
-              :id="`user-cancel-remove-button-${user.firstName}-${user.lastName}`"
+              :id="`user-cancel-remove-button-${user.edxUserID}`"
               width="5em"
               text="Cancel"
               class="mr-2 cancelUserDeleteButton"
@@ -175,7 +175,7 @@
               :click-action="clickDeleteButton"
             />
             <PrimaryButton
-              :id="`user-remove-action-button-${user.firstName}-${user.lastName}`"
+              :id="`user-remove-action-button-${user.edxUserID}`"
               text="Remove"
               class="confirmUserDeleteButton"
               :click-action="clickRemoveButton"
