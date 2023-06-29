@@ -1,8 +1,9 @@
 import selectors from "../../support/selectors";
+import {timeout} from "rxjs";
 
 
 describe('Exchange Inbox Page', () => {
-  context.only('As a school User', () => {
+  context('As a school User', () => {
     before(() => {
       cy.task('dataLoad').then(() => {
         cy.task('cleanup-secure-exchange', 'EDX automation test');
@@ -60,7 +61,7 @@ describe('Exchange Inbox Page', () => {
       cy.get(selectors.secureExchangeInbox.filtersButton).click();
       cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
       cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
-      cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').should('have.length', 1);
+      cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation').should('have.length', 1);
     });
 
     it('can remove the existing document and student from the message', () => {
@@ -121,7 +122,7 @@ describe('Exchange Inbox Page', () => {
       cy.get(selectors.secureExchangeInbox.filtersButton).click();
       cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
       cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
-      cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').should('have.length', 2);
+      cy.get(selectors.secureExchangeInbox.secureExchangeResults).children('.v-row').should('have.length', 2);
     });
 
   });
@@ -229,5 +230,24 @@ describe('Exchange Inbox Page', () => {
       cy.get(selectors.secureExchangeDetail.timelineContent).contains(Cypress.env('student').penList[0]).should('exist');
     });
 
+    it('creates second message', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.secureMessageTile).click();
+      cy.get(selectors.secureExchangeInbox.newMessageButton).click();
+      cy.get(selectors.secureExchangeNewMessage.toInputDropdown).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('PEN Team').click();
+      cy.get(selectors.secureExchangeNewMessage.subjectTxtField).type('EDX automation test 2');
+      cy.get(selectors.secureExchangeNewMessage.newMessageTextArea).type('This second message was created by an EDX automation test');
+      cy.get(selectors.secureExchangeNewMessage.newMessagePostBtn).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The message has been sent. Close');
+    });
+
+    it('checks if the 2 messages show up in search feature', () => {
+      cy.visit('/inbox');
+      cy.get(selectors.secureExchangeInbox.filtersButton).click();
+      cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
+      cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
+      cy.get(selectors.secureExchangeInbox.secureExchangeResults).children('.v-row').should('have.length', 2);
+    });
   });
 });
