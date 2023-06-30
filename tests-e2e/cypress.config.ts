@@ -58,15 +58,15 @@ export default defineConfig({
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
         },
-        'setup-collections': async (schoolId) => {
+        'setup-collections': async (schoolId: string) => {
           await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
-          return await new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
+          return new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
         },
         'setup-districtUser': async (districtUserOptions: DistrictUserOptions) => {
-          return await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
+          return new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
         },
         'setup-userActivation': async (schoolNumber) => {
           await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);

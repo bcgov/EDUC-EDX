@@ -23,6 +23,13 @@ type EdxActivationCodePayload = {
   edxActivationRoles?: EdxActivationRolePayload[];
 };
 
+export type EdxUserActivationFixture = {
+  activationUrl: string,
+  primaryCode: string,
+  personalCode: string,
+  personalCodeId: string
+}
+
 export class EdxApiService {
   config: Cypress.PluginConfigOptions;
   restUtils: RestUtils;
