@@ -2,7 +2,6 @@ import generator from "generate-password-ts";
 import {InstituteApiService} from "./institute-api-service";
 import {RestUtils} from "../helpers/rest-utils-ts";
 import {faker} from '@faker-js/faker';
-import date from 'date-and-time';
 
 type EdxActivationRolePayload = {
   edxRoleCode?: string;
@@ -199,10 +198,14 @@ export class EdxApiService {
       createUser: 'Automation-Test',
       updateUser: 'Automation-Test'
     };
+    const oneDayFrom = (date: Date) => {
+      date.setDate(date.getDate() + 1);
+      return date;
+    }
     const now = new Date();
 
     //get only first 19 to avoid adding millisecond at the end.
-    edxActivationCode.expiryDate = date.addDays(now, 1).toJSON().substring(0, 19);
+    edxActivationCode.expiryDate = oneDayFrom(now).toISOString().substring(0, 19);
     if (roles.length > 0) {
       let roleArr: Array<EdxActivationRolePayload> = new Array<EdxActivationRolePayload>();
       for (const role of roles) {
