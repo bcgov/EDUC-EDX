@@ -1,4 +1,5 @@
 import { RestUtils } from "../helpers/rest-utils-ts";
+import { SearchCondition, SearchCriteria, SearchFilter, SearchValueType } from "../helpers/api-search-params";
 
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
 const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
@@ -111,23 +112,23 @@ export class InstituteApiService {
     this.restUtils = new RestUtils(this.config);
   }
 
-  async getSchoolIDBySchoolCode(schoolCode: string) {
-    const schoolSearchCriteria = [{
+  async getSchoolIDBySchoolCode(schoolCode: string): Promise<string|undefined> {
+    const schoolSearchCriteria: SearchCriteria[] = [{
       condition: null,
       searchCriteriaList: [
         {
           key: "schoolNumber",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: schoolCode,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         },
         {
           key: "closedDate",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: null,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         }
       ]
     }];
@@ -138,8 +139,8 @@ export class InstituteApiService {
       }
     };
     const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
-    const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
-    return userSchoolResult?.content[0]?.schoolId;
+    const userSchoolResult = await this.restUtils.getData<PaginatedSchoolResponse>(url, schoolSearchParam);
+    return userSchoolResult.content[0]?.schoolId;
   }
 
   async getDistrictIdByDistrictNumber(districtNumber: string) {
@@ -157,22 +158,22 @@ export class InstituteApiService {
   }
 
   async getAuthorityIDByAuthorityNumber(authorityNumber: string) {
-    const authoritySearchCriteria = [{
+    const authoritySearchCriteria: SearchCriteria[] = [{
       condition: null,
       searchCriteriaList: [
         {
           key: "authorityNumber",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: authorityNumber,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         },
         {
           key: "closedDate",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: null,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         }
       ]
     }];
@@ -194,17 +195,17 @@ export class InstituteApiService {
       searchCriteriaList: [
         {
           key: "displayName",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: authorityName,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         },
         {
           key: "closedDate",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: null,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         }
       ]
     }];
@@ -498,23 +499,23 @@ export class InstituteApiService {
     return this.restUtils.postData<SchoolContactEntity>(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}/contact`, contact);
   }
 
-  async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string) {
-    const schoolSearchCriteria = [{
+  async getSchoolIDBySchoolCodeAndDistrictID(schoolCode: string, districtID: string): Promise<string|undefined> {
+    const schoolSearchCriteria: SearchCriteria[] = [{
       condition: null,
       searchCriteriaList: [
         {
           key: "schoolNumber",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: schoolCode,
-          valueType: "STRING",
-          condition: "AND"
+          valueType: SearchValueType.STRING,
+          condition: SearchCondition.AND
         },
         {
           key: "districtID",
-          operation: "eq",
+          operation: SearchFilter.EQUAL,
           value: districtID,
-          valueType: "UUID",
-          condition: "AND"
+          valueType: SearchValueType.UUID,
+          condition: SearchCondition.AND
         }
       ]
     }];
@@ -525,8 +526,8 @@ export class InstituteApiService {
       }
     };
     const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/paginated`;
-    const userSchoolResult = await this.restUtils.getData(url, schoolSearchParam);
-    return userSchoolResult?.content[0]?.schoolId;
+    const userSchoolResult = await this.restUtils.getData<PaginatedSchoolResponse>(url, schoolSearchParam);
+    return userSchoolResult.content[0]?.schoolId;
   }
 
 }

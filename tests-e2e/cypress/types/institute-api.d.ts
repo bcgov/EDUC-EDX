@@ -132,3 +132,34 @@ interface SchoolEntity extends BaseApiEntity {
   neighborhoodLearning: NeighborhoodLearningTypeCodeKey[];
   schoolMove: SchoolMoveEntity[];
 }
+
+interface BasePaginatedResponse {
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  pageable: {
+    offset: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  empty: boolean;
+}
+
+interface PaginatedSchoolResponse extends BasePaginatedResponse {
+  content: SchoolEntity[];
+}

@@ -56,6 +56,11 @@ declare global {
                 options?: Partial<Loggable & Timeoutable>
             ): Chainable<void>;
 
+            task<T = {instituteType: InstituteTypeCode, activationCodeId: string}> (
+                event: 'teardown-userActivationCode',
+                code: T,
+                options?: Partial<Loggable & Timeoutable>
+            ): Chainable<void>
         }
     }
 }
