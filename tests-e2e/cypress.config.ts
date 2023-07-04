@@ -60,23 +60,27 @@ export default defineConfig({
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
         },
-        'setup-collections': async (schoolId) => {
+        'setup-collections': async (schoolId: string) => {
           await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
           return null;
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
-          return await new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
+          return new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
         },
         'setup-districtUser': async (districtUserOptions: DistrictUserOptions) => {
-          return await new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
+          return new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
         },
-        'setup-userActivation': async (schoolNumber) => {
-          await new EdxApiService(config).setUpDataForUserActivation({}, 'SCHOOL', schoolNumber);
-          return null;
+        'setup-userActivation': async (userActivationOptions: UserActivationOptions) => {
+          return new EdxApiService(config)
+            .setUpDataForUserActivation(userActivationOptions);
         },
         'teardown-edxUser': async (edxUserId: string) => {
           await new UserActivationUtils(config).deleteUserActivationCodes(edxUserId);
           await new EdxApiService(config).deleteEdxUser(edxUserId);
+          return null;
+        },
+        'teardown-userActivationCode': async (activationCodeId: string) => {
+          await new EdxApiService(config).deleteActivationCode(activationCodeId);
           return null;
         }
       })

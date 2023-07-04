@@ -3,10 +3,41 @@ interface EdxActivationRoleEntity extends BaseApiEntity {
   edxActivationCodeId: string;
 }
 
+interface ActivationCodeEntity extends BaseApiEntity {
+  schoolID: string;
+  districtID: string;
+  activationCode: string;
+  edxActivationCodeId: string;
+  isPrimary: boolean;
+  expiryDate: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  numberOfClicks: string;
+  validationCode: string;
+  edxUserId: string;
+  edxActivationRoles: EdxActivationRoleEntity[];
+}
+
 type DistrictRole = 'SECURE_EXCHANGE' | 'EDX_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION';
+type SchoolRole = 'SECURE_EXCHANGE_SCHOOL' | 'EDX_SCHOOL_ADMIN' | 'STUDENT_DATA_COLLECTION';
+type InstituteTypeCode = 'SCHOOL' | 'DISTRICT';
 
 interface EdxUserDistrictRoleEntity extends EdxActivationRoleEntity {
   edxRoleCode: DistrictRole;
+}
+
+interface EdxRolePermission extends BaseApiEntity {
+  edxRolePermissionId: string;
+  edxPermissionCode: 'EDX_USER_SCHOOL_ADMIN' | 'EDX_USER_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION';
+}
+
+interface EdxRoleEntity extends BaseApiEntity {
+  edxRoleCode: DistrictRole | SchoolRole;
+  label: string;
+  roleDescription: string;
+  isDistrictRole: 'Y' | 'N';
+  edxRolePermissions: EdxRolePermission[];
 }
 
 interface EdxUserSchoolRoleEntity extends EdxActivationRoleEntity {
