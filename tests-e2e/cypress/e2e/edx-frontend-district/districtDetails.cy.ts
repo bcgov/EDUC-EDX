@@ -36,8 +36,8 @@ describe('District Details Interface Test', () => {
     });
 
 
-    it('can edit district details', () => {
-      cy.visit('/districtDetails');
+    it.only('can edit district details', () => {
+      cy.visit('/');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
       cy.get(selectors.districtDetails.editDistrictPhone).clear().type('333-777-5555');
@@ -52,6 +52,7 @@ describe('District Details Interface Test', () => {
       cy.get(selectors.dropdown.listItem).contains('Canada').click();
       cy.get(selectors.districtDetails.editSaveButton).click();
       cy.get(selectors.districtDetails.editPopupConfirmButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
     });
 
 

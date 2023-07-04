@@ -16,11 +16,9 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
-      
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.addWebsiteLink).click();
-
         const websiteField = () => cy.get(selectors.schoolDetails.schoolDetailsWebsite);
         const websiteWrapper = vInputParentOf(websiteField);
         const websiteErrorMessage = 'Website must be valid and secure (i.e., https)';
@@ -30,13 +28,11 @@ describe('School Details Interface Test', () => {
         websiteWrapper().within(() =>
           cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
         );
-
         websiteField().clear().type('https://notawebsite');
         websiteWrapper().should('have.class', 'v-input--error');
         websiteWrapper().within(
           () => cy.get('.v-messages__message').should('contain.text', websiteErrorMessage)
         );
-
         websiteField().clear().type('https://saulgoodman.com');
         websiteWrapper().should('not.have.class', 'v-input--error');
         websiteWrapper().within(() => cy.get('.v-messags__message').should('not.exist'));
@@ -47,7 +43,6 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
-
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
@@ -81,12 +76,30 @@ describe('School Details Interface Test', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
         cy.get(selectors.dashboard.schoolDetailsCard).click();
-  
         cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
         cy.get("@schoolName").then(() => {
           cy.get(selectors.schoolDetails.editButton).click();
           cy.get(selectors.schoolDetails.schoolGradesDropdown).should('not.exist');
-        })
+        });
+      });
+
+      it('can edit school fields', () => {
+        cy.visit('/');
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+        cy.get(selectors.schoolDetails.editButton).click();
+        cy.get(selectors.schoolDetails.schoolDetailsEmail).clear().type('newemail@gov.bc.ca');
+        cy.get(selectors.schoolDetails.schoolDetailsPhoneNumber).clear().type('1234567890');
+        cy.get(selectors.schoolDetails.schoolDetailsNlc).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Seniors').click();
+        cy.get(selectors.schoolDetails.schoolDetailsWebsite).clear().type('https://saulgoodman.com');
+        cy.get(selectors.schoolDetails.editMailingAddressProvince).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Yukon').click();
+        cy.get(selectors.schoolDetails.editMailingAddressLine1).clear().type('1234 Main St');
+        cy.get(selectors.schoolDetails.editAddressMailCity).clear().type('Victoria');
+        cy.get(selectors.schoolDetails.editAddressPostalCode).clear().type('V8P5J2');
+        cy.get(selectors.schoolDetails.editSaveButton).click();
+        cy.get(selectors.schoolDetails.editPopupConfirmButton).click();
+        cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
       });
     });
 
