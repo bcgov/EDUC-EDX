@@ -361,6 +361,13 @@
                     <v-row no-gutters>
                       <v-col class="pb-1 pt-2">
                         <v-icon
+                          v-if="item?.value?.documentList?.length > 0" 
+                        >
+                          mdi-paperclip
+                        </v-icon>
+                      </v-col>
+                      <v-col class="pb-1 pt-2">
+                        <v-icon
                           class="pb-1"
                           :color="getStatusColor(item.value.secureExchangeStatusCode)"
                           right
