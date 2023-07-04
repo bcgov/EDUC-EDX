@@ -16,6 +16,7 @@ export class UserSetupUtils {
         const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolUserOptions.schoolCodes);
         const roles = await this.userApi.getAllEdxUserRoleForInstitute();
         await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUser.edxUserID);
+        // await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, schoolUserOptions.schoolRoles, '', '', edxUser.edxUserID);
         return edxUser;
     }
 

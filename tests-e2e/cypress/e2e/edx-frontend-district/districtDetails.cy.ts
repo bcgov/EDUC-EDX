@@ -36,7 +36,7 @@ describe('District Details Interface Test', () => {
     });
 
 
-    it.only('can edit district details', () => {
+    it('can edit district details', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();

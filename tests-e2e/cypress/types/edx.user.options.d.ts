@@ -1,10 +1,11 @@
 declare interface DistrictUserOptions {
+  digitalId?: string;
   districtCodes: string[];
   districtRoles: DistrictRole[];
-  digitalId?: string;
 }
 
 declare interface SchoolUserOptions {
-  schoolCodes: string[];
   digitalId?: string;
+  schoolCodes: string[];
+  schoolRoles: SchoolRole[];
 }

@@ -109,7 +109,9 @@ export default {
     subjectHeading: 'h2.subjectHeading',
   },
   schoolDetails: {
+    addAddressButton: '#addAddressButton',
     addWebsiteLink: '#addWebsiteLink',
+    editableFieldAlert: '.v-alert__content',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
     editButton: '#schoolDetailsEditButton',
@@ -132,6 +134,7 @@ export default {
     schoolMincodeTitle: "#schoolMincodeTitle",
     schoolNameNoSpecialChars: '#schoolNameNoSpecialChars',
     subjectHeading: 'h2.subjectHeading',
+    viewContactsButton: '#viewContactsButton',
   },
   schoolList: {
     viewFirstSchoolContactsButton: '#viewContactsButton0',

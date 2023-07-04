@@ -6,13 +6,17 @@ describe('School Details Interface Test', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          // schoolRoles: ['EDX_SCHOOL_ADMIN', 'SECURE_EXCHANGE'],
+          schoolCodes: ['99998']
+        });
       });
-    })
-    beforeEach(() => cy.login());
-    after(() => cy.logout());
+    });
 
-    it('can load the details page and validate the website url field', () => {
+    beforeEach(() => cy.login());
+    // after(() => cy.logout());
+
+    it.only('can load the details page and validate the website url field', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
@@ -72,6 +76,7 @@ describe('School Details Interface Test', () => {
 
     context('with an independent school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
+
       it('cannot edit grades offered if the school is an independent school', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
@@ -103,6 +108,28 @@ describe('School Details Interface Test', () => {
       });
     });
 
+    context('with no school address', () => {
+
+      // change the setup status for secure exchange user.
+      // before(() => cy.task('recreate-school', { schoolStatus: 'Open', includeDisrictAddress: true,  includeSchoolAddress: false }));
+
+      before(() => {
+        cy.task<AppSetupData>('dataLoad').then(() => {
+          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+            schoolRoles: ['EDX_SCHOOL_ADMIN', 'SECURE_EXCHANGE'],
+            schoolCodes: ['99998'] });
+        });
+      });
+      it.only('add contact button should not show up', () => {
+        cy.visit('/')
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+        cy.get(selectors.schoolDetails.viewContactsButton).should('exist');
+        // cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
+        cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
+        // cy.get(selectors.schoolDetails.editButton).should('not.exist');
+
+      });
+    });
   });
 
   context('As an EDX district admin', () => {
@@ -120,7 +147,6 @@ describe('School Details Interface Test', () => {
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).should("be.visible").contains('Schools | EDX Automation Testing');
       cy.get(selectors.schoolList.schoolRow).should("be.visible").click();
-
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');

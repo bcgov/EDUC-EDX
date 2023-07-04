@@ -4,13 +4,16 @@ interface EdxActivationRoleEntity extends BaseApiEntity {
 }
 
 type DistrictRole = 'SECURE_EXCHANGE' | 'EDX_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION';
+type SchoolRole = 'SECURE_EXCHANGE'| 'EDX_SCHOOL_ADMIN' | 'STUDENT_DATA_COLLECTION';
 
 interface EdxUserDistrictRoleEntity extends EdxActivationRoleEntity {
   edxRoleCode: DistrictRole;
 }
 
 interface EdxUserSchoolRoleEntity extends EdxActivationRoleEntity {
-  edxRoleCode: string;
+  // edxRoleCode: string;
+  edxRoleCode: SchoolRole;
+
 }
 
 interface EdxActivationCodeEntity extends BaseApiEntity {
