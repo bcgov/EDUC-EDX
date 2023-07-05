@@ -7,6 +7,7 @@ declare interface DistrictUserOptions {
 declare interface SchoolUserOptions {
   schoolCodes: string[];
   digitalId?: string;
+  schoolRoles?: SchoolRole[];
 }
 
 /**

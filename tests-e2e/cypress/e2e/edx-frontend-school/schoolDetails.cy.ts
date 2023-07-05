@@ -16,11 +16,9 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
-      
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.addWebsiteLink).click();
-
         const websiteField = () => cy.get(selectors.schoolDetails.schoolDetailsWebsite);
         const websiteWrapper = vInputParentOf(websiteField);
         const websiteErrorMessage = 'Website must be valid and secure (i.e., https)';
@@ -47,7 +45,6 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
-
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
@@ -77,17 +74,57 @@ describe('School Details Interface Test', () => {
 
     context('with an independent school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
+      after(() => cy.logout());
       it('cannot edit grades offered if the school is an independent school', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
         cy.get(selectors.dashboard.schoolDetailsCard).click();
-  
         cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
         cy.get("@schoolName").then(() => {
           cy.get(selectors.schoolDetails.editButton).click();
           cy.get(selectors.schoolDetails.schoolGradesDropdown).should('not.exist');
         })
       });
+
+      it('can edit school fields', () => {
+        cy.visit('/');
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+        cy.get(selectors.schoolDetails.editButton).click();
+        cy.get(selectors.schoolDetails.schoolDetailsEmail).clear().type('newemail@gov.bc.ca');
+        cy.get(selectors.schoolDetails.schoolDetailsPhoneNumber).clear().type('1234567890');
+        cy.get(selectors.schoolDetails.schoolDetailsNlc).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Seniors').click();
+        cy.get(selectors.schoolDetails.schoolDetailsWebsite).clear().type('https://saulgoodman.com');
+        cy.get(selectors.schoolDetails.editMailingAddressProvince).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Yukon').click();
+        cy.get(selectors.schoolDetails.editMailingAddressLine1).clear().type('1234 Main St');
+        cy.get(selectors.schoolDetails.editAddressMailCity).clear().type('Victoria');
+        cy.get(selectors.schoolDetails.editAddressPostalCode).clear().type('V8P5J2');
+        cy.get(selectors.schoolDetails.editSaveButton).click();
+        cy.get(selectors.schoolDetails.editPopupConfirmButton).click();
+        cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
+      });
+    });
+
+    context('logging in as secure-exchange-school user', () => {
+      before(() => {
+        cy.task<AppSetupData>('dataLoad').then(() => {
+          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+            schoolRoles: ['SECURE_EXCHANGE_SCHOOL'],
+            schoolCodes: ['99998'] });
+        });
+      });
+
+      it('checks if no edit and add button show up', () => {
+        cy.visit('/')
+        cy.get(selectors.dashboard.schoolDetailsCard).click();
+        cy.get(selectors.schoolDetails.viewContactsButton).should('exist');
+        cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
+        cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
+        cy.get(selectors.schoolDetails.editButton).should('not.exist');
+
+      });
+
     });
 
   });
