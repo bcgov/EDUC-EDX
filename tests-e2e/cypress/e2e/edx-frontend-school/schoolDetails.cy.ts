@@ -6,7 +6,8 @@ describe('School Details Interface Test', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998'] });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          schoolCodes: ['99998'] });
       });
     });
 
@@ -73,7 +74,7 @@ describe('School Details Interface Test', () => {
 
     context('with an independent school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
-
+      after(() => cy.logout());
       it('cannot edit grades offered if the school is an independent school', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
@@ -103,27 +104,28 @@ describe('School Details Interface Test', () => {
         cy.get(selectors.schoolDetails.editPopupConfirmButton).click();
         cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
       });
+
     });
 
-    context.only('with no school address', () => {
-      // before(() => cy.task('recreate-school', { schoolStatus: 'Open', includeDisrictAddress: true,  includeSchoolAddress: false }));
-
+    context('logging in as secure-exchange-school user', () => {
       before(() => {
         cy.task<AppSetupData>('dataLoad').then(() => {
           cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
-            schoolRoles: ['SECURE_EXCHANGE'],
+            schoolRoles: ['SECURE_EXCHANGE_SCHOOL'],
             schoolCodes: ['99998'] });
         });
       });
-      it.only('add contact button should not show up', () => {
+
+      it('checks if no edit and add button show up', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.schoolDetailsCard).click();
         cy.get(selectors.schoolDetails.viewContactsButton).should('exist');
-        // cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
+        cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
         cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
-        // cy.get(selectors.schoolDetails.editButton).should('not.exist');
+        cy.get(selectors.schoolDetails.editButton).should('not.exist');
 
       });
+
     });
   });
 
