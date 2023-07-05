@@ -41,7 +41,7 @@ describe('School Contacts Page', () => {
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The school contact has been created. Close');
     });
 
-    it('can edit schoool contact details; cancels', () => {
+    it('can edit school contact details; cancels', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.editContactButton).click();
       cy.get(selectors.schoolContacts.editContactLastNameInput).clear().type('AT Vice Principal Last Name');
@@ -50,7 +50,7 @@ describe('School Contacts Page', () => {
       cy.get(selectors.schoolContacts.cancelContactButton).click();
     });
 
-    it('can edit schoool contact details; saves', () => {
+    it('can edit school contact details; saves', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.editContactButton).click();
       cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');;
@@ -124,7 +124,7 @@ describe('School Contacts Page', () => {
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The school contact has been created. Close');
     });
 
-    it('can edit schoool contact details; cancels', () => {
+    it('can edit school contact details; cancels', () => {
       cy.visit('/schools');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.schoolContacts.editContactButton).click();
@@ -134,7 +134,7 @@ describe('School Contacts Page', () => {
       cy.get(selectors.schoolContacts.cancelContactButton).click();
     });
 
-    it('can edit schoool contact details; saves', () => {
+    it('can edit school contact details; saves', () => {
       cy.visit('/schools');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.schoolContacts.editContactButton).click();
