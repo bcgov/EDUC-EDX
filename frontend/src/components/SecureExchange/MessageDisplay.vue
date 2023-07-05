@@ -914,7 +914,6 @@ export default {
 
 .activityTitle {
   font-size: medium;
-  font-weight: bold;
 }
 
 .activityDisplayDate{
