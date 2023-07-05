@@ -335,6 +335,13 @@
                           class="subjectHeading"
                           :style="{color: item.value.isReadByExchangeContact ? 'black': '#1f7cef'}"
                         >{{ getSubject(item.value.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item.value) }}</span>
+                        <v-icon
+                          v-if="item?.raw?.documentList?.length > 0"
+                          size="x-small"
+                          class="mb-1"
+                        >
+                          mdi-paperclip
+                        </v-icon>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -359,13 +366,6 @@
                     class="pb-0 pt-0"
                   >
                     <v-row no-gutters>
-                      <v-col class="pb-1 pt-2">
-                        <v-icon
-                          v-if="item?.value?.documentList?.length > 0" 
-                        >
-                          mdi-paperclip
-                        </v-icon>
-                      </v-col>
                       <v-col class="pb-1 pt-2">
                         <v-icon
                           class="pb-1"
