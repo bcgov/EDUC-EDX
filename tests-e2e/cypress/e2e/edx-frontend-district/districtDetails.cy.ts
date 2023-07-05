@@ -1,5 +1,4 @@
 import selectors from '../../support/selectors';
-import { AppSetupData } from '../../../cypress.config';
 import { vInputParentOf } from 'tests-e2e/cypress/support/utils';
 
 describe('District Details Interface Test', () => {

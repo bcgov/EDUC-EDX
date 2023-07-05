@@ -6,17 +6,14 @@ describe('School Details Interface Test', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
-          // schoolRoles: ['EDX_SCHOOL_ADMIN', 'SECURE_EXCHANGE'],
-          schoolCodes: ['99998']
-        });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998'] });
       });
     });
 
     beforeEach(() => cy.login());
-    // after(() => cy.logout());
+    after(() => cy.logout());
 
-    it.only('can load the details page and validate the website url field', () => {
+    it('can load the details page and validate the website url field', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
@@ -108,15 +105,13 @@ describe('School Details Interface Test', () => {
       });
     });
 
-    context('with no school address', () => {
-
-      // change the setup status for secure exchange user.
+    context.only('with no school address', () => {
       // before(() => cy.task('recreate-school', { schoolStatus: 'Open', includeDisrictAddress: true,  includeSchoolAddress: false }));
 
       before(() => {
         cy.task<AppSetupData>('dataLoad').then(() => {
           cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
-            schoolRoles: ['EDX_SCHOOL_ADMIN', 'SECURE_EXCHANGE'],
+            schoolRoles: ['SECURE_EXCHANGE'],
             schoolCodes: ['99998'] });
         });
       });
