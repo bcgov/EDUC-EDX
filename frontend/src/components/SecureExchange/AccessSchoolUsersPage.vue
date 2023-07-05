@@ -161,6 +161,20 @@
             />
           </v-col>
         </v-row>
+        <!-- warning message for no existing users-->
+        <v-row v-if="!hasAdminUsers && primaryEdxActivationCode">
+          <v-col class="mx-3 px-0 pb-0">
+            <v-alert
+              density="compact"
+              color="#003366"
+              type="info"
+              class="px-2"
+              variant="tonal"
+            >
+              The Primary Activation Code will have to be communicated to any new users, as there are no school level administrators.
+            </v-alert>
+          </v-col>
+        </v-row>
         <!--  user info -->
         <Spinner v-if="loadingUsers" />
         <v-row
@@ -349,6 +363,7 @@ import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
+import { ROLES } from '../../utils/constants/Roles.js';
 
 export default {
   name: 'AccessSchoolUsersPage',
@@ -381,6 +396,11 @@ export default {
     ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
+    hasAdminUsers() {
+      return this.filteredUsers.filter(user => {
+        return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
+      })?.length > 0;
+    }
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {
