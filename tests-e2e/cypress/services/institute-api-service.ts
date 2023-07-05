@@ -490,7 +490,8 @@ export class InstituteApiService {
   }
 
   async clearSchoolContacts(school: SchoolEntity) {
-    let newSchool = await this.restUtils.getData(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`, null);
+    let newSchool = await this.restUtils
+      .getData<SchoolEntity>(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`);
 
     if (!newSchool.contacts) {
       return;
