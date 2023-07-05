@@ -404,7 +404,7 @@
                           dense
                         >
                           <v-col cols="2">
-                            <span class="activityTitle">Student PEN:</span>
+                            <span class="activityTitle">PEN:</span>
                           </v-col>
                           <v-col cols="10">
                             <span>{{ activity.studentPEN }}</span>
