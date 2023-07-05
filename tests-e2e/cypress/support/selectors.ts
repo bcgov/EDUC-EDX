@@ -21,6 +21,9 @@ export default {
     title: '#navTitle > div'
   },
   districtContacts: {
+    deleteCancelButton: '#rejectBtn',
+    deleteConfirmButton: '#resolveBtn',
+    deleteContactButton: '#removeContactButton',
     editDistrictContactButton: '#editContactButton',
     editContactFirstNameInput: '#editContactFirstNameInput',
     listItem: '.v-list-item',
@@ -34,6 +37,7 @@ export default {
     newContactTypeDropdown: '#newContactDropdown',
     saveChangesToDistrictContactButton: '#saveChangesToDistrictContactButton',
     subjectHeading: 'h2.subjectHeading',
+
   },
   districtDetails: {
     addWebsiteLink: '#addWebsiteLink',
