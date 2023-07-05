@@ -52,7 +52,7 @@ describe('District Details Interface Test', () => {
       cy.get(selectors.dropdown.listItem).contains('Canada').click();
       cy.get(selectors.districtDetails.editSaveButton).click();
       cy.get(selectors.districtDetails.editPopupConfirmButton).click();
-      cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
+      cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The district details have been updated. Close');
 
     });
 
