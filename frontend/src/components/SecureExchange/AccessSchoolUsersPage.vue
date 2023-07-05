@@ -363,7 +363,7 @@ import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
-import { PERMISSION } from '../../utils/constants/Permission.js';
+import { ROLES } from '../../utils/constants/Roles.js';
 
 export default {
   name: 'AccessSchoolUsersPage',
@@ -398,7 +398,7 @@ export default {
     ...mapState(authStore, ['userInfo']),
     hasAdminUsers() {
       return this.filteredUsers.filter(user => {
-        return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === PERMISSION.EDX_SCHOOL_ADMIN));
+        return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
       })?.length > 0;
     }
   },
