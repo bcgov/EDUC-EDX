@@ -5,10 +5,8 @@ import selectors from "../../support/selectors";
 describe('Access District Users Page Tests', () => {
   context('As a district admin', () => {
     before(() => {
-      cy.task<InstituteOptions, AppSetupData>('dataLoad');
-      cy.task<DistrictUserOptions>('setup-districtUser', {
-        districtRoles: ['EDX_DISTRICT_ADMIN'],
-        districtCodes: ['998']
+      cy.task<AppSetupData>('dataLoad').then(() => {
+        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());

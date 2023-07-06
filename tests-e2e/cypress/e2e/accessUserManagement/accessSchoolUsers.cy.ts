@@ -60,33 +60,62 @@ function testGeneratingActivationCode() {
   });
 };
 
+function navigateToNewUserInvites() {
+  cy.visit('/');
+  cy.get(selectors.dashboard.title).should('exist').contains('Dashboard | EDX Automation Testing School');
+  cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
+  cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
+  cy.get(selectors.newUserInvites.newUserButton).click();
+}
 describe('Access School Users Page', () => {
   context('As a school user', () => {
     before(() => {
       cy.task<InstituteOptions, AppSetupData>('dataLoad', {
         schoolOptions: { schoolStatus: 'Opening', withPrimaryActivationCode: true }
-      })
-        .then(() => {
+      }).then(() => {
           cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
         });
     });
-    after(() => cy.logout());
+    after(() => {
+      cy.logout()
+    });
     beforeEach(() => cy.login());
 
-    it('Loads school details and checks field validation', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-      cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
-      cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
-      cy.get(selectors.newUserInvites.newUserButton).click();
+    it('Phase 1: Loads school details and checks if all fields are invalid', () => {
+      navigateToNewUserInvites();
+      cy.get(selectors.newUserInvites.firstNameInput).invoke('val').should('be.empty');
+      cy.get(selectors.newUserInvites.lastNameInput).invoke('val').should('be.empty');
+      cy.get(selectors.newUserInvites.emailInput).invoke('val').should('be.empty');
+      cy.get(selectors.newUserInvites.rolesSelectorDropdown).parent().should('be.not.empty');
+      cy.get(selectors.newUserInvites.sendInviteButton).should('be.disabled');
+    });
+
+    it('Phase 2: Ensure email field does not accept bogus input', () => {
+      navigateToNewUserInvites();
+      cy.get(selectors.newUserInvites.firstNameInput).clear().type('TESTFIRSTNAME');
+      cy.get(selectors.newUserInvites.lastNameInput).clear().type('TESTLASTNAME');
+      cy.get(selectors.newUserInvites.emailInput).clear().type('notAnEmail');
+      cy.get(selectors.newUserInvites.sendInviteButton).should('be.disabled');
+      cy.get(selectors.newUserInvites.emailInput).clear();
+    });
+
+    it('Phase 3: Loads school details and checks if all fields are valid', () => {
+      navigateToNewUserInvites();
+      cy.get(selectors.newUserInvites.firstNameInput).clear().type('TESTFIRSTNAME');
+      cy.get(selectors.newUserInvites.lastNameInput).clear().type('TESTLASTNAME');
+      cy.get(selectors.newUserInvites.emailInput).clear().type('validEmail@bc.gov.ca');
+      cy.get(selectors.newUserInvites.rolesSelectorDropdown).click({force: true});
+      cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
+      cy.get(selectors.newUserInvites.sendInviteButton).should('be.enabled');
+    });
+
+    it.only('Loads school details and checks field validation', () => {
+      navigateToNewUserInvites();
       cy.get(selectors.newUserInvites.firstNameInput).type("Richard");
       cy.get(selectors.newUserInvites.lastNameInput).type("Stallman");
       cy.get(selectors.newUserInvites.emailInput).type("rms@gov.bc.ca");
       cy.get(selectors.newUserInvites.rolesSelectorDropdown).click({force: true});
-      cy.get(selectors.newUserInvites.rolesSelectorBox).within(() => {
-        cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
-      });
-
+      cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
       cy.get(selectors.newUserInvites.sendInviteButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The request is being processed.');
     });
