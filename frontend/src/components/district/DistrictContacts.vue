@@ -62,11 +62,11 @@
             :click-action="redirectToDistrictDetails"
           />
           <PrimaryButton
+            v-if="canEditDistrictContact"
             id="newContactButton"
             width="12em"
             icon="mdi-plus-thick"
             text="New Contact"
-            v-if="canEditDistrictContact"
             :click-action="openNewContactSheet"
           />
         </v-col>
@@ -83,12 +83,14 @@
           </v-col>
         </v-row>
         <v-row v-if="!districtContactType.publiclyAvailable">
-          <v-col>
+          <v-col
+            cols="12"
+            lg="8"
+          >
             <v-alert
               :id="`publiclyAvailableAlert${districtContactType.label}`"
               color="#E9EBEF"
               dense
-              text
               type="info"
             >
               <p style="color: #003366">
@@ -96,6 +98,7 @@
               </p>
             </v-alert>
           </v-col>
+          <v-spacer />
         </v-row>
         <v-row
           v-if="districtContacts.has(districtContactType.districtContactTypeCode)"
