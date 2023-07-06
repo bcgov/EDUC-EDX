@@ -41,7 +41,7 @@ interface EdxRoleEntity extends BaseApiEntity {
 }
 
 interface EdxUserSchoolRoleEntity extends EdxActivationRoleEntity {
-  edxRoleCode: string;
+  edxRoleCode: SchoolRole;
 }
 
 interface EdxActivationCodeEntity extends BaseApiEntity {
