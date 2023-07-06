@@ -186,7 +186,7 @@
                     <v-col class="d-flex justify-center px-2 pb-2 pt-2">
                       <v-expand-transition>
                         <DocumentUpload
-                          v-show="expandAttachFile"
+                          v-if="expandAttachFile"
                           :allowed-file-format="formatMessage"
                           @close:form="showOptions"
                           @upload="uploadDocument"

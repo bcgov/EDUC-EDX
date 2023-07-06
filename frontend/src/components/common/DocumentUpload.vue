@@ -139,18 +139,7 @@ export default {
       return false;
     },
     closeForm() {
-      this.resetForm();
       this.$emit('close:form');
-    },
-    resetForm() {
-      this.$refs.documentForm.reset();
-      this.fileInputError = [];
-      this.uploadFileValue = null;
-      this.alert = false;
-      this.active = false;
-      this.alertMessage = null;
-      this.documentTypeCode = null;
-      this.validateForm();
     },
     setSuccessAlert() {
       this.alertMessage = 'File upload successful.';
@@ -208,7 +197,6 @@ export default {
         documentData: btoa(env.target.result)
       };
       this.$emit('upload', document);
-      this.resetForm();
       this.$emit('close:form');
     },
     makefileFormatList(extensions) {
