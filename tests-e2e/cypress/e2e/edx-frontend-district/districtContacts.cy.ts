@@ -16,6 +16,19 @@ describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
     beforeEach(() => cy.login());
 
+    it('creates new district contact', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.districtContactsCard).click();
+      cy.get(selectors.districtContacts.newContactButton).click();
+      cy.get(selectors.districtContacts.newContactTypeDropdown).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Chairperson').click();
+      cy.get(selectors.districtContacts.newContactLastNameInput).clear().type('AT Chairperson LastName');
+      cy.get(selectors.districtContacts.newContactEmailInput).clear().type('test@test.com');
+      cy.get(selectors.districtContacts.newContactPhoneNumberInput).clear().type('1234567890');
+      cy.get(selectors.districtContacts.newContactPostBtn).click({force:true});
+      cy.get('form').submit();
+    });
+
     it('should make new contacts with a current effective date', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
@@ -41,17 +54,19 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.editContactFirstNameInput).should('have.value', 'Testing Edited User');
     });
 
-    it('creates new district contact', () => {
+    it('can delete contact; cancels', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.districtContacts.newContactButton).click();
-      cy.get(selectors.districtContacts.newContactTypeDropdown).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Chairperson').click();
-      cy.get(selectors.districtContacts.newContactLastNameInput).clear().type('AT Chairperson LastName');
-      cy.get(selectors.districtContacts.newContactEmailInput).clear().type('test@test.com');
-      cy.get(selectors.districtContacts.newContactPhoneNumberInput).clear().type('1234567890');
-      cy.get(selectors.districtContacts.newContactPostBtn).click({force:true});
-      cy.get('form').submit();
+      cy.get(selectors.districtContacts.deleteContactButton).click();
+      cy.get(selectors.districtContacts.deleteCancelButton).click();
+    });
+
+    it('can delete contact; confirms', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.districtContactsCard).click();
+      cy.get(selectors.districtContacts.deleteContactButton).click();
+      cy.get(selectors.districtContacts.deleteConfirmButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('contain', 'District contact removed successfully Close');
     });
 
   });
