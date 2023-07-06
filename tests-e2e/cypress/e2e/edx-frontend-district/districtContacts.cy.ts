@@ -8,9 +8,9 @@ before(() => {
   });
 })
 
-// after(() => {
-//   cy.logout();
-// })
+after(() => {
+  cy.logout();
+})
 
 describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
