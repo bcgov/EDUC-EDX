@@ -109,7 +109,7 @@ describe('Access School Users Page', () => {
       cy.get(selectors.newUserInvites.sendInviteButton).should('be.enabled');
     });
 
-    it.only('Loads school details and checks field validation', () => {
+    it('Loads school details and checks field validation', () => {
       navigateToNewUserInvites();
       cy.get(selectors.newUserInvites.firstNameInput).type("Richard");
       cy.get(selectors.newUserInvites.lastNameInput).type("Stallman");
