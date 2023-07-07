@@ -5,47 +5,53 @@ import selectors from "../../support/selectors";
 describe('Access District Users Page Tests', () => {
   context('As a district admin', () => {
     before(() => {
-      cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+      cy.task<InstituteOptions, AppSetupData>('dataLoad', { });
+      cy.task<DistrictUserOptions>('setup-districtUser', {
+        districtRoles: ['EDX_DISTRICT_ADMIN'],
+        districtCodes: ['998']
       });
     });
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
-    it('can generate a primary activation code', () => {
-      cy.intercept(Cypress.env('interceptors').activation_code).as('activationCodeUpdate');
+    context('main district user admin', () => {
 
-      cy.visit('/districtAccess');
-      cy.wait('@activationCodeUpdate');
+      it('can generate a primary activation code', () => {
+        cy.intercept(Cypress.env('interceptors').activation_code).as('activationCodeUpdate');
 
-      cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').as('initialCode');
-      cy.get('@initialCode').then(initialCode => {
-        cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
-        cy.get(selectors.newUserInvites.generateNewCode).click();
+        cy.visit('/districtAccess');
+        cy.wait('@activationCodeUpdate');
 
-        cy.wait('@activationCodeUpdate').then(({response}) => {
-          expect(response?.body.activationCode).not.null;
-          expect(response?.body.activationCode).not.eq(initialCode);
-        });
+        cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').as('initialCode');
+        cy.get('@initialCode').then(initialCode => {
+          cy.get(selectors.newUserInvites.toggleGenerateNewCode).click();
+          cy.get(selectors.newUserInvites.generateNewCode).click();
 
-        cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
-          cy.get(selectors.snackbar.mainSnackBar)
-            .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
-          expect(initialCode).not.eq(newCode);
+          cy.wait('@activationCodeUpdate').then(({response}) => {
+            expect(response?.body.activationCode).not.null;
+            expect(response?.body.activationCode).not.eq(initialCode);
+          });
+
+          cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
+            cy.get(selectors.snackbar.mainSnackBar)
+                .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
+            expect(initialCode).not.eq(newCode);
+          });
         });
       });
-    });
 
-    it('checks if new user request can be created to district', () => {
-      cy.visit('/districtAccess');
-      cy.get(selectors.newUserInvites.newUserButton).click();
-      cy.get(selectors.newUserInvites.firstNameInput).type('AT FIRST NAME');
-      cy.get(selectors.newUserInvites.lastNameInput).type('AT LAST NAME');
-      cy.get(selectors.newUserInvites.emailInput).type('edx-noreply@gov.bc.ca');
-      cy.get(selectors.newUserInvites.rolesSelectorDropdown).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
-      cy.get(selectors.newUserInvites.sendInviteButton).click();
-      cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The request is being processed.');
+      it('checks if new user request can be created to district', () => {
+        cy.visit('/districtAccess');
+        cy.get(selectors.newUserInvites.newUserButton).click();
+        cy.get(selectors.newUserInvites.firstNameInput).type('AT FIRST NAME');
+        cy.get(selectors.newUserInvites.lastNameInput).type('AT LAST NAME');
+        cy.get(selectors.newUserInvites.emailInput).type('edx-noreply@gov.bc.ca');
+        cy.get(selectors.newUserInvites.rolesSelectorDropdown).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
+        cy.get(selectors.newUserInvites.sendInviteButton).click();
+        cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The request is being processed.');
+      });
+
     });
 
     context('with a temporary user', () => {
@@ -158,7 +164,7 @@ describe('Access District Users Page Tests', () => {
 
     });
 
-    context.only('temporary user to be deleted', () => {
+    context('temporary user to be deleted', () => {
       let tempUserId = '';
       let tempFirstName = '';
 
@@ -172,34 +178,25 @@ describe('Access District Users Page Tests', () => {
           tempFirstName = user.firstName;
         });
 
-        cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
-          digitalId: crypto.randomUUID(),
-          districtRoles: [`EDX_DISTRICT_ADMIN`],
-          districtCodes: ['998'],
-        }).then((user: EdxUserEntity) => {
-          tempUserId = user.edxUserID;
-          tempFirstName = user.firstName;
+      });
+      beforeEach(() => {
+        cy.wrap(tempUserId).as('tempUserId');
+        cy.wrap(tempFirstName).as('tempUserFirstName');
+      });
+      after(() => {
+        cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));
+        cy.logout()
+      });
+
+      it('can find delete option and cancel delete', () => {
+        cy.visit('/districtAccess');
+        cy.get('@tempUserId').then(uid => {
+          cy.get(`#user-remove-button-${uid}`).click();
+          cy.get(`#user-cancel-remove-button-${uid}`).click();
         });
       });
 
-        beforeEach(() => {
-          cy.wrap(tempUserId).as('tempUserId');
-          cy.wrap(tempFirstName).as('tempUserFirstName');
-        });
-        after(() => {
-          cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));
-          cy.logout()
-        });
-
-        it('can find delete option and cancel delete', () => {
-          cy.visit('/districtAccess');
-          cy.get('@tempUserId').then(uid => {
-            cy.get(`#user-remove-button-${uid}`).click();
-            cy.get(`#user-cancel-remove-button-${uid}`).click();
-          });
-        });
-
-      it('can find delete option and clicks delete', () => {
+      it('can find delete option and confirms delete', () => {
         cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-remove-button-${uid}`).click();
@@ -209,5 +206,6 @@ describe('Access District Users Page Tests', () => {
       });
 
     });
+
   });
 });
