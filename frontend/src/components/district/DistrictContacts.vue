@@ -71,10 +71,61 @@
           />
         </v-col>
       </v-row>
+      <v-row
+        :class="['d-sm-flex', 'align-center', 'searchBox', 'elevation-2']"
+        @keydown.enter="searchButtonClicked"
+      >
+        <v-col>
+          <v-select
+            id="status-select-field"
+            v-model="searchFilter.districtContactTypeCode"
+            clearable
+            :items="districtContactTypes"
+            item-title="label"
+            variant="underlined"
+            item-value="districtContactTypeCode"
+            :menu-props="{closeOnContentClick:true}"
+            label="Contact Type"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            id="first-name-search-text-field"
+            v-model="searchFilter.firstName"
+            variant="underlined"
+            label="Contact First Name"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            id="last-name-search-text-field"
+            v-model="searchFilter.lastName"
+            variant="underlined"
+            label="Contact Last Name"
+          />
+        </v-col>
+        <v-col
+          :class="['text-right']"
+        >
+          <PrimaryButton
+            id="district-clear-button"
+            secondary
+            text="Clear"
+            :click-action="clearButtonClicked"
+          />
+          <PrimaryButton
+            id="district-search-button"
+            class="ml-2"
+            text="Search"
+            :click-action="searchButtonClicked"
+          />
+        </v-col>
+      </v-row>
       <div
         v-for="districtContactType in districtContactTypes"
         :key="districtContactType.code"
       >
+      <div v-if="hasContactsWhenFiltered(districtContactType)">
         <v-row>
           <v-col>
             <h2 style="color:#1A5A96">
@@ -127,6 +178,7 @@
             <p>No contacts of this type have been listed.</p>
           </v-col>
         </v-row>
+       </div>
       </div>
     </template>
     <v-navigation-drawer
@@ -181,8 +233,9 @@ import { mapState } from 'pinia';
 import { authStore } from '../../store/modules/auth';
 import alertMixin from '../../mixins/alertMixin';
 import { isExpired } from '../../utils/institute/status';
-import {sortBy} from 'lodash';
+import {sortBy, omitBy, isEmpty} from 'lodash';
 import {PERMISSION} from '../../utils/constants/Permission';
+import {setEmptyInputParams} from '../../utils/common';
 
 export default {
   name: 'DistrictContactsPage',
@@ -208,7 +261,14 @@ export default {
       districtContacts: new Map(),
       editContact: null,
       newContactSheet: false,
-      editContactSheet: false
+      editContactSheet: false,
+      searchFilter: {
+        districtContactTypeCode: null,
+        firstName: '',
+        lastName: ''
+      },
+      filteredDistrictContacts: new Map(),
+      isFiltered: false
     };
   },
   computed: {
@@ -225,6 +285,37 @@ export default {
     this.getThisDistrictsContacts();
   },
   methods: {
+    clearButtonClicked() {
+      setEmptyInputParams(this.searchFilter);
+      this.searchButtonClicked();
+    },
+    searchButtonClicked() {
+      console.log('hello')
+      const searchCriteriaWithoutNulls = omitBy(this.searchFilter, isEmpty); //removing null filter criteria
+      this.isFiltered = Object.keys(searchCriteriaWithoutNulls).length !== 0; //setting isFiltered flag of use elsewhere
+
+      //Creating a new map of district contacts (from districtContacts) by performing a wildcard search with each provided filter parameters
+      this.filteredDistrictContacts = new Map(
+        Array.from(this.districtContacts).map(([districtContactType, contactArray]) => [
+          districtContactType,
+          contactArray.filter((obj) =>
+            Object.entries(searchCriteriaWithoutNulls).every(([filterKey, filterValue]) =>
+              new RegExp(`^.*${filterValue}.*$`, 'i').test(obj[filterKey])
+            )
+          ),
+        ])
+      );
+    },
+    hasContactsForThisType(districtContactType) {
+      return this.filteredDistrictContacts.has(districtContactType.districtContactTypeCode) && this.filteredDistrictContacts.get(districtContactType.districtContactTypeCode)?.length !== 0;
+    },
+    hasContactsWhenFiltered(districtContactType) {
+      if(this.isFiltered) {
+        return this.hasContactsForThisType(districtContactType);
+      } else {
+        return true;
+      }
+    },
     getDistrictContactTypeCodes() {
       this.loadingCount += 1;
       ApiService.apiAxios.get(ApiRoutes.institute.DISTRICT_CONTACT_TYPE_CODES + '?active=true')
@@ -339,6 +430,15 @@ export default {
     padding-right: 4em !important;
     padding-left: 4em !important;
   }
+}
+
+.searchBox {
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 5px;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: #F2F2F2;
 }
 
 </style>
