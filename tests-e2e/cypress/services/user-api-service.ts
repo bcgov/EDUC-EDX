@@ -85,7 +85,7 @@ export class UserApiService {
     let instituteIds: string[] = [];
     if (instituteTypeCode.toString().toUpperCase() === 'SCHOOL') {
       for (const schoolCode of instituteCodes) {
-        instituteIds.push(await this.instituteApi.getSchoolIDBySchoolCode(schoolCode));
+        instituteIds.push(<string>await this.instituteApi.getSchoolIDBySchoolCode(schoolCode));
       }
     } else if (instituteTypeCode.toString().toUpperCase() === 'DISTRICT') {
       for (const districtNumber of instituteCodes) {

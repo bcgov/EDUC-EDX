@@ -14,9 +14,9 @@ describe('Activate EDX User Account Page', () => {
             });
       });
     });
-    // afterEach(() => {
-    //   cy.get('@personalCodeId').then(id => cy.task('teardown-userActivationCode', id));
-    // });
+    afterEach(() => {
+      cy.get('@personalCodeId').then(id => cy.task('teardown-userActivationCode', id));
+    });
 
     context('by clicking their activation link too many times', () => {
       it('will not permit more than 2 visits to the activation URL', () => {
@@ -82,7 +82,7 @@ describe('Activate EDX User Account Page', () => {
 
   });
 
-  context.only('As a user who successfully activates their account', () => {
+  context('As a user who successfully activates their account', () => {
 
     beforeEach(() => {
       const user: UserActivationOptions = {instituteTypeCode: 'SCHOOL', instituteNumber: '99998'};
@@ -96,22 +96,21 @@ describe('Activate EDX User Account Page', () => {
             });
       });
     });
-    // afterEach(() => {
-    //   cy.get('@personalCodeId').then(id => cy.task('teardown-userActivationCode', id));
-    // });
+    afterEach(() => {
+      cy.get('@personadlCodeId').then(id => cy.task('teardown-userActivationCode', id));
+    });
 
     context('by entering an correct activation details', () => {
       it('will confirm correct user has been created', () => {
 
         cy.get<string>('@activationUrl').then(url => {
           cy.visit(url);
-          cy.get(selectors.loginPage.loginUsername).clear().type('EdxUser11');
-          cy.get(selectors.loginPage.loginPassword).clear().type('asdfasdf');
+          cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
+          cy.get(selectors.loginPage.loginPassword).type('asdfasdf');
           cy.get(selectors.loginPage.loginContinueButton).click();
-          cy.wait(10000);
 
           // user Activation Page
-          cy.get(selectors.userActivationPage.mincodeInput).type('99899998');
+          cy.get(selectors.userActivationPage.mincodeInput, {timeout:8000}).type('99899998');  // Used timeout as the only exception in this test case.
           cy.get('@primaryCode').then(primaryCode => { // @ts-ignore
             cy.get(selectors.userActivationPage.primaryTextActivationCodeInput).type(primaryCode);
           });
@@ -120,11 +119,8 @@ describe('Activate EDX User Account Page', () => {
             cy.get(selectors.userActivationPage.personalActivationCodeInput).type(personalCode);
           });
           cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
-          cy.wait(11000);
-          cy.get(selectors.userActivationPage.userActivationSnackBar).should('include.text',
-              'User could activate account successfully');
-          // cy.url().should('eq', 'https://dev.educationdataexchange.gov.bc.ca/institute-selection'
-
+          cy.get(selectors.userActivationPage.userActivationSnackBar, {timeout:9000}).should('include.text',
+              'User Activation Completed Successfully. Redirecting to your Dashboard...');
 
         });
       });

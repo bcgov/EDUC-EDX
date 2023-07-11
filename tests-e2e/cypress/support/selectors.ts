@@ -199,7 +199,7 @@ export default {
     primaryTextActivationCodeInput: '#primaryEdxCodeTextField',
     personalActivationCodeInput: '#personalActivationCodeTextField',
     userActivationSubmitButton: '#edxUserActivationSubmitBtn',
-    userActivationSnackBar: '#activationSnackBar',
+    userActivationSnackBar: '.v-snackbar__content',
     userActivationErrorMessaageSnackBar: '#user_activation_error_message',
   }
 }
