@@ -74,6 +74,10 @@ export default defineConfig({
           return new EdxApiService(config)
             .setUpDataForUserActivation(userActivationOptions);
         },
+        'teardown-userActivation': async (userActivationOptions: UserActivationOptions) => {
+          return new EdxApiService(config)
+              .setUpDataForUserActivation(userActivationOptions);
+        },
         'teardown-edxUser': async (edxUserId: string) => {
           await new UserActivationUtils(config).deleteUserActivationCodes(edxUserId);
           await new EdxApiService(config).deleteEdxUser(edxUserId);

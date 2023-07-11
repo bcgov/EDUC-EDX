@@ -71,6 +71,11 @@ export default {
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
   },
+  loginPage: {
+    loginUsername: '#user',
+    loginPassword: '#password',
+    loginContinueButton: 'input[name="btnSubmit"][value="Continue"]',
+  },
   logoutPage: {
     logoutText: '#logout_text'
   },
@@ -188,5 +193,13 @@ export default {
   stepTwoSchoolContacts: {
     formHint: 'p.form-hint',
     nextButton: '#nextButton'
+  },
+  userActivationPage: {
+    mincodeInput: '#instituteIdentifierTextField',
+    primaryTextActivationCodeInput: '#primaryEdxCodeTextField',
+    personalActivationCodeInput: '#personalActivationCodeTextField',
+    userActivationSubmitButton: '#edxUserActivationSubmitBtn',
+    userActivationSnackBar: '#activationSnackBar',
+    userActivationErrorMessaageSnackBar: '#user_activation_error_message',
   }
 }
