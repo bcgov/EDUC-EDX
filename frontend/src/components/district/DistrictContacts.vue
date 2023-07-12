@@ -72,7 +72,7 @@
         </v-col>
       </v-row>
       <v-row
-        :class="['d-sm-flex', 'align-center', 'searchBox', 'elevation-2']"
+        :class="['d-sm-flex', 'align-center', 'searchBox', 'elevation-2', 'mb-3']"
         @keydown.enter="searchButtonClicked"
       >
         <v-col>
