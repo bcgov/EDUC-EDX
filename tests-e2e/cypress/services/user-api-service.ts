@@ -85,7 +85,12 @@ export class UserApiService {
     let instituteIds: string[] = [];
     if (instituteTypeCode.toString().toUpperCase() === 'SCHOOL') {
       for (const schoolCode of instituteCodes) {
-        instituteIds.push(<string>await this.instituteApi.getSchoolIDBySchoolCode(schoolCode));
+        const schoolId = await this.instituteApi.getSchoolIDBySchoolCode(schoolCode);
+        if (typeof schoolId === 'string') {
+          instituteIds.push(schoolId);
+        } else {
+          throw new Error('Failed to retrieve school ID.');
+        }
       }
     } else if (instituteTypeCode.toString().toUpperCase() === 'DISTRICT') {
       for (const districtNumber of instituteCodes) {
