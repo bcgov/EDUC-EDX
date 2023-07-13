@@ -1,0 +1,4 @@
+.env
+dist/
+sample*.csv
+Session.vim
