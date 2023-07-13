@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/main.js"
   },
-  "author": "",
+  "author": "Trevor Richards",
   "license": "ISC",
   "dependencies": {
     "csv-parse": "^5.4.0",
