@@ -71,8 +71,7 @@ export default defineConfig({
           return new UserSetupUtils(config).setupDistrictUser(districtUserOptions);
         },
         'setup-userActivation': async (userActivationOptions: UserActivationOptions) => {
-          return new EdxApiService(config)
-            .setUpDataForUserActivation(userActivationOptions);
+          return new UserSetupUtils(config).setupEdxUser(userActivationOptions);
         },
         'teardown-edxUser': async (edxUserId: string) => {
           await new UserActivationUtils(config).deleteUserActivationCodes(edxUserId);
