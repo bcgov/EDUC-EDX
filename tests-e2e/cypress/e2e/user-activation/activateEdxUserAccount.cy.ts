@@ -27,7 +27,7 @@ function clickingSubmitButtonTooManyTimes() {
 
     // Click the submit button 4 times for disabling the submit button
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
-    cy.get(selectors.userActivationPage.userActivationSubmitButton, {timeout:8000}).click();
+    cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSnackBar).should('include.text',
@@ -69,12 +69,10 @@ function enterCorrectActivationCode(mincode: string) {
 
     // User Activation Page
     cy.get(selectors.userActivationPage.mincodeInput, {timeout:15000}).type(mincode);  // Used timeout as the only exception in this test case.
-    // @ts-ignore
-    cy.get('@primaryCode').then((primaryCode: string) => {
+    cy.get<string>('@primaryCode').then((primaryCode: string) => {
       cy.get(selectors.userActivationPage.primaryTextActivationCodeInput).type(primaryCode);
     });
-    // @ts-ignore
-    cy.get('@personalCode').then((personalCode: string) => {
+    cy.get<string>('@personalCode').then((personalCode: string) => {
       cy.get(selectors.userActivationPage.personalActivationCodeInput).type(personalCode);
     });
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
