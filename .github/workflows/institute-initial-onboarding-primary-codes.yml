@@ -1,0 +1,42 @@
+name: Institute - Primary Code Onboarding
+
+on:
+  # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+  workflow_dispatch:
+
+jobs:
+  openshift-ci-cd:
+    name: Send out initial onboarding primary codes for schools
+    # ubuntu-latest can also be used.
+    runs-on: ubuntu-22.04
+    environment: dev
+
+    outputs:
+      ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
+      SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Dump CSV Data
+      run: 'echo ${{ secrets.EDX_ONBOARDING_CSV }} > tools/onboarding/user-records.csv'
+
+    - name: Dump Environment Data into .env File
+      run: |
+        export LOCATION="tools/onboarding/.env"
+        echo 'SOAM_CLIENT_ID="${{ secrets.SOAM_CLIENT_ID }}"\n' >> $LOCATION
+        echo 'SOAM_CLIENT_SECRET="${{ secrets.SOAM_CLIENT_SECRET }}"\n' >> $LOCATION
+        echo 'SOAM_TOKEN_URL="${{ secrets.SOAM_TOKEN_URL }}"\n' >> $LOCATION
+        echo 'INSTITUTE_SERVICE_URL="${{ secrets.INSTITUTE_API_URL }}"\n' >> $LOCATION
+        echo 'EDX_API_BASE_URL="${{ secrets.EDX_API_BASE_URL }}"\n' >> $LOCATION
+        echo 'CHES_CLIENT_ID="${{ secrets.CHES_CLIENT_ID }}"\n' >> $LOCATION
+        echo 'CHES_CLIENT_SECRET="${{ secrets.CHES_CLIENT_SECRET }}"\n' >> $LOCATION
+        echo 'CHES_TOKEN_URL="${{ secrets.CHES_TOKEN_URL }}"\n' >> $LOCATION
+        echo 'CHES_EMAIL_URL="${{ secrets.CHES_EMAIL_URL }}"\n' >> $LOCATION
+        echo 'ONBOARDING_INSTITUTE_TYPE="${{ env.ONBOARDING_INSTITUTE_TYPE }}"\n' >> $LOCATION
+
+    - name: Send Primary Code to New EDX Users
+      run: |
+        cd tools/onboarding && npm install
+        npm run start
