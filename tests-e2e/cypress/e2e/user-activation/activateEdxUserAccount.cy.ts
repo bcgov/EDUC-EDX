@@ -27,7 +27,7 @@ function clickingSubmitButtonTooManyTimes() {
 
     // Click the submit button 4 times for disabling the submit button
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
-    cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
+    cy.get(selectors.userActivationPage.userActivationSubmitButton, {timeout:8000}).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSnackBar).should('include.text',
@@ -42,7 +42,6 @@ function clickingSubmitButtonTooManyTimes() {
 };
 
 function enterIncorrectActivationCodes(mincode: string) {
-
   cy.get<string>('@activationUrl').then((url: string) => {
     cy.visit(url);
     cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
@@ -85,7 +84,6 @@ function enterCorrectActivationCode(mincode: string) {
 }
 
 describe('Activate EDX User Account Page', () => {
-
   context('As a school User', () => {
     beforeEach(() => {
       const user: UserActivationOptions = {instituteTypeCode: 'SCHOOL', instituteNumber: '99998'};
@@ -122,7 +120,6 @@ describe('Activate EDX User Account Page', () => {
         enterCorrectActivationCode('99899998');
       });
     });
-
   });
 
 
@@ -143,21 +140,21 @@ describe('Activate EDX User Account Page', () => {
       cy.get('@personalCodeId').then(id => cy.task('teardown-userActivationCode', id));
     });
 
-    context('by clicking their activation link too many times', () => {
+    context('Activation error check by  clicking their activation link too many times', () => {
       it('will not permit more than 2 visits to the activation URL', clickingActivationLinkMoreThan2Times);
     });
 
-    context('by clicking the submit button link many times', () => {
+    context('Activation error check by clicking the submit button link many times', () => {
       it('will return an input error message to the user', clickingSubmitButtonTooManyTimes);
     });
 
-    context('by entering an incorrect activation details', () => {
+    context('Activation error check by entering an incorrect activation details', () => {
       it('will return an input error message to the user', () => {
         enterIncorrectActivationCodes('006');
       });
     });
 
-    context('by entering an correct activation details', () => {
+    context('User successfully activates by entering an correct activation details', () => {
       it('will confirm correct user has been created', () => {
         enterCorrectActivationCode('006')
       });
