@@ -39,6 +39,4 @@ jobs:
         echo 'ONBOARDING_INSTITUTE_TYPE="${{ env.ONBOARDING_INSTITUTE_TYPE }}"\n' >> .env
 
     - name: Send Primary Code to New EDX Users
-      run: |
-        cd tools/onboarding && npm install
-        npm run start
+      run: npm run start
