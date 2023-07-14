@@ -28,7 +28,8 @@ export function createCSVReadStream(path: string) {
     .pipe(csvParser({
       delimiter: ',',
       columns: HEADERS,
-      from_line: 2
+      from_line: 2,
+      skip_empty_lines: true
     }));
 }
 
