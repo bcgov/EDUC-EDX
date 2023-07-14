@@ -38,5 +38,8 @@ jobs:
         echo 'CHES_EMAIL_URL="${{ secrets.CHES_EMAIL_URL }}"\n' >> .env
         echo 'ONBOARDING_INSTITUTE_TYPE="${{ env.ONBOARDING_INSTITUTE_TYPE }}"\n' >> .env
 
+    - name: Build onboarding tool
+      run: npm run build
+
     - name: Send Primary Code to New EDX Users
-      run: npm run start
+      run: npm start
