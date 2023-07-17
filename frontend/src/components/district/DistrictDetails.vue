@@ -331,6 +331,8 @@
                         required
                         :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
+                        class="pb-5"
+                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -346,6 +348,8 @@
                         variant="underlined"
                         :rules="[rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
+                        class="pb-5"
+                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -362,6 +366,8 @@
                         required
                         :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                         :maxlength="255"
+                        class="pb-5"
+                        hide-details="auto"
                       />
                     </v-col>
                   </v-row>
@@ -506,6 +512,8 @@
                                         required
                                         :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                         :maxlength="255"
+                                        class="pb-5"
+                                        hide-details="auto"
                                       />
                                     </v-col>
                                   </v-row>
@@ -518,6 +526,8 @@
                                         variant="underlined"
                                         :maxlength="255"
                                         :rules="[rules.noSpecialCharactersAddress()]"
+                                        class="pb-5"
+                                        hide-details="auto"
                                       />
                                     </v-col>
                                   </v-row>
@@ -531,6 +541,8 @@
                                         required
                                         :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                         :maxlength="255"
+                                        class="pb-5"
+                                        hide-details="auto"
                                       />
                                     </v-col>
                                   </v-row>
