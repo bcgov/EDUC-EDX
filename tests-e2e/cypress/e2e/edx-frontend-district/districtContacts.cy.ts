@@ -2,20 +2,6 @@ import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import {LocalDate} from "@js-joda/core";
 
-function createDistrictContact(contactType: string, firstName: string, lastName: string, email: string, phoneNumber: string ) {
-  cy.visit('/');
-  cy.get(selectors.dashboard.districtContactsCard).click();
-  cy.get(selectors.districtContacts.newContactButton).click();
-  cy.get(selectors.districtContacts.newContactTypeDropdown).parent().click();
-  cy.get(selectors.dropdown.listItem).contains(contactType).click();
-  cy.get(selectors.districtContacts.newContactFirstNameInput).clear().type(firstName);
-  cy.get(selectors.districtContacts.newContactLastNameInput).clear().type(lastName);
-  cy.get(selectors.districtContacts.newContactEmailInput).clear().type(email);
-  cy.get(selectors.districtContacts.newContactPhoneNumberInput).clear().type(phoneNumber);
-  cy.get(selectors.districtContacts.newContactPostBtn).click({force:true});
-  cy.get('form').submit();
-}
-
 describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
     beforeEach(() => cy.login());
