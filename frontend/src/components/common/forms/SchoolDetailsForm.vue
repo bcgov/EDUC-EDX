@@ -683,6 +683,8 @@
                       required
                       :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
+                      class="pb-5"
+                      hide-details="auto"
                     />
                   </v-col>
                 </v-row>
@@ -698,6 +700,8 @@
                       label="Line 2"
                       :rules="[rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
+                      class="pb-5"
+                      hide-details="auto"
                     />
                   </v-col>
                 </v-row>
@@ -714,6 +718,8 @@
                       required
                       :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                       :maxlength="255"
+                      class="pb-5"
+                      hide-details="auto"
                     />
                   </v-col>
                 </v-row>
@@ -865,6 +871,8 @@
                                       required
                                       :rules="[rules.required(), rules.noSpecialCharactersAddress()]"
                                       :maxlength="255"
+                                      class="pb-5"
+                                      hide-details="auto"
                                     />
                                   </v-col>
                                 </v-row>
@@ -877,6 +885,8 @@
                                       :maxlength="255"
                                       variant="underlined"
                                       label="Line 2"
+                                      class="pb-5"
+                                      hide-details="auto"
                                     />
                                   </v-col>
                                 </v-row>
@@ -890,6 +900,8 @@
                                       :maxlength="255"
                                       variant="underlined"
                                       label="City"
+                                      class="pb-5"
+                                      hide-details="auto"
                                     />
                                   </v-col>
                                 </v-row>
