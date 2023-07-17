@@ -30,9 +30,7 @@ describe('District Contacts Page', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-
       cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
-
       cy.get(selectors.districtContacts.newContactButton).click();
       cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
         const val = $input.val()
@@ -55,17 +53,14 @@ describe('District Contacts Page', () => {
     it('can search for contacts', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      // cy.get(selectors.districtContacts.searchContactFirstNameInput).type('EDXAutomation');
       cy.get(selectors.districtContacts.searchContactLastNameInput).type('Lastname');
       cy.get(selectors.districtContacts.searchContactTypeDropdown).parent().click();
-      // cy.get(selectors.dropdown.listItem).contains('Chairperson').click();
       cy.get(selectors.districtContacts.searchContactButton).click();
 
       // Checks the output card for the contact
       cy.get('[id^="districtContactCard-"]').each((element) => {
         cy.wrap(element).children().should('contain', 'Lastname');
       });
-
 
       // Clicks the clear button
       cy.get(selectors.districtContacts.filterContactClearButton).click();
