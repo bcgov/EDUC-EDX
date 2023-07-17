@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`schoolContactCard-${contact.schoolContactId}`"
-    class="schoolContactCard pb-8"
+    class="schoolContactCard"
     height="100%"
   >
     <v-card-title class="text-wrap">
@@ -28,6 +28,7 @@
             width="0.5em"
             color="white"
             min-width="0.5em"
+            variant="flat"
             @click="handleOpenEditor"
           >
             <v-icon
@@ -44,6 +45,7 @@
             color="white"
             width="0.5em"
             min-width="0.5em"
+            variant="flat"
             depressed
             small
             @click="callShowRemoveContactConfirmation"
@@ -124,11 +126,9 @@
             ext. {{ contact.alternatePhoneExtension }}
           </span>
         </v-list-item>
-      </v-list>
-      <div class="date-container">
-        <div
+        <v-list-item
           v-if="contact.expiryDate"
-          class="pl-0 text-right"
+          class="pl-0 text-left"
         >
           <v-icon
             icon="mdi-calendar-today"
@@ -142,10 +142,10 @@
           >
             {{ formatDate(contact.effectiveDate) }} - {{ formatDate(contact.expiryDate) }}
           </span>
-        </div>
-        <div
+        </v-list-item>
+        <v-list-item
           v-else
-          class="pl-0 text-right"
+          class="pl-0 text-left"
         >
           <v-icon
             icon="mdi-calendar-today"
@@ -159,8 +159,8 @@
           >
             {{ formatDate(contact.effectiveDate) }}
           </span>
-        </div>
-      </div>
+        </v-list-item>
+      </v-list>
     </v-card-text>
   </v-card>
 </template>
