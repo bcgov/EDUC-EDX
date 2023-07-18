@@ -52,4 +52,6 @@ async function main(instituteType: InstituteTypeCode) {
 
 if (process.env.ONBOARDING_INSTITUTE_TYPE) {
   main(process.env.ONBOARDING_INSTITUTE_TYPE);
+} else {
+  console.log("Unable to start onboarding without institute type context");
 }

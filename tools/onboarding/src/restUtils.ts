@@ -41,10 +41,10 @@ export async function getToken(): Promise<string> {
   return response.data.access_token;
 }
 
-export async function getData<T = any>(url: string, params: any = {}): Promise<T> {
+export async function getData<T = any>(url: URL, params: any = {}): Promise<T> {
   try {
     params = setToken(params, await getToken());
-    const response = await axios.get(url, params);
+    const response = await axios.get(url.href, params);
     return response.data;
   } catch (e: any) {
     logApiError(e, 'getData', 'Error during GET on ' + url);
@@ -52,10 +52,10 @@ export async function getData<T = any>(url: string, params: any = {}): Promise<T
   }
 }
 
-export async function postData<T = any>(url: string, data: any, params = {}): Promise<T> {
+export async function postData<T = any>(url: URL, data: any, params = {}): Promise<T> {
   try {
     params = setToken(params, await getToken());
-    const response = await axios.post(url, data, params);
+    const response = await axios.post(url.href, data, params);
     return response.data;
   } catch (e: any) {
     logApiError(e, 'postData', 'Error during POST on ' + url);
@@ -64,10 +64,10 @@ export async function postData<T = any>(url: string, data: any, params = {}): Pr
   }
 }
 
-export async function putData<T = any>(url: string, data: any, params = {}): Promise<T> {
+export async function putData<T = any>(url: URL, data: any, params = {}): Promise<T> {
   try {
     params = setToken(params, await getToken());
-    const response = await axios.put(url, data, params);
+    const response = await axios.put(url.href, data, params);
     return response.data;
   } catch (e: any) {
     logApiError(e, 'putData', 'Error during PUT on ' + url);
@@ -76,10 +76,10 @@ export async function putData<T = any>(url: string, data: any, params = {}): Pro
   }
 }
 
-export async function deleteData(url: string, params = {}) {
+export async function deleteData(url: URL, params = {}) {
   try {
     params = setToken(params, await getToken());
-    const response = await axios.delete(url, params);
+    const response = await axios.delete(url.href, params);
     return response.data;
   } catch (e: any) {
     logApiError(e, 'deleteData', 'Error during DELETE on ' + url);

@@ -32,13 +32,13 @@ export async function getPrimaryActivationCodeForInstitute(
 ) {
   try {
     const endpoint = '/api/v1/edx/users/activation-code/primary/' + instituteTypeCode + '/' + instituteId;
-    const url = `${process.env.EDX_API_BASE_URL}${endpoint}`;
+    const url = new URL(endpoint, process.env.EDX_API_BASE_URL);
     return await getData<ActivationCodeEntity>(url);
   } catch (e: any) {
     if(e?.response?.status === 404){
       const generateEndpoint = '/api/v1/edx/users/activation-code/primary/' + instituteTypeCode + '/' + instituteId;
       const edxActivationCode = createEdxActivationCodePayload(instituteTypeCode, instituteId);
-      const url = `${process.env.EDX_API_BASE_URL}${generateEndpoint}`;
+      const url = new URL(generateEndpoint, process.env.EDX_API_BASE_URL);
       return postData<ActivationCodeEntity>(url, edxActivationCode);
     }
     throw new Error(`${instituteTypeCode} primary activation code could not be acquired for ID: ${instituteId}`);
