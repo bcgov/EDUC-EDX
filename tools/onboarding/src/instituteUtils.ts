@@ -1,4 +1,4 @@
-import { getData, postData } from './restUtils';
+import { getData } from './restUtils';
 import { SearchCriteria, SearchFilter, SearchValueType, SearchCondition } from './apiSearchParams';
 
 const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
@@ -31,13 +31,13 @@ async function getSchoolsBySchoolNumber(schoolNumber: string): Promise<SchoolEnt
     }
   };
 
-  const url = `${process.env.INSTITUTE_SERVICE_URL}${SCHOOL_ENDPOINT}/paginated`;
+  const url = new URL(SCHOOL_ENDPOINT + '/paginated', process.env.INSTITUTE_SERVICE_URL);
   const userSchoolResult = await getData<PaginatedSchoolResponse>(url, schoolSearchParam);
   return userSchoolResult.content;
 }
 
 export async function getDistrictIdByDistrictNumber(districtNumber: string) {
-  const url = `${process.env.INSTITUTE_SERVICE_URL}${DISTRICT_ENDPOINT}`;
+  const url = new URL(DISTRICT_ENDPOINT, process.env.INSTITUTE_SERVICE_URL);
   const districtResponse = await getData<DistrictEntity[]>(url);
   for (const district of districtResponse) {
     if (district.districtNumber === districtNumber) {
