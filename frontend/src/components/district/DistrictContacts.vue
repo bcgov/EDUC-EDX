@@ -152,11 +152,11 @@
           <v-spacer />
         </v-row>
         <v-row
-          v-if="districtContacts.has(districtContactType.districtContactTypeCode)"
+          v-if="hasContactsForThisType(districtContactType)"
           cols="2"
         >
           <v-col
-            v-for="contact in districtContacts.get(districtContactType.districtContactTypeCode)"
+            v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
             :key="contact.schoolId"
             cols="5"
             lg="4"
@@ -290,7 +290,6 @@ export default {
       this.searchButtonClicked();
     },
     searchButtonClicked() {
-      console.log('hello')
       const searchCriteriaWithoutNulls = omitBy(this.searchFilter, isEmpty); //removing null filter criteria
       this.isFiltered = Object.keys(searchCriteriaWithoutNulls).length !== 0; //setting isFiltered flag of use elsewhere
 
@@ -347,6 +346,7 @@ export default {
               this.districtContacts.get(contact.districtContactTypeCode).push(contact);
             }
           });
+          this.filteredDistrictContacts = this.districtContacts;
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get a list of the district\'s contacts. Please try again later.');
