@@ -33,20 +33,21 @@ async function onboardUser(record: UserRecord, instituteType: InstituteTypeCode)
 
 async function main(instituteType: InstituteTypeCode) {
   const userRecordStream = createCSVReadStream('./user-records.csv');
-  let totalUsers = 0;
-  let usersOnboarded = 0;
+  let queuedUsers: Promise<boolean>[] = [];
 
   console.log(`::: Begin Onboarding for ${instituteType} Users:::`)
   for await (const record of userRecordStream) {
-    totalUsers++;
-
     if (isUserRecord(record)) {
-      const onboarded = await onboardUser(record, instituteType);
-      if (onboarded) usersOnboarded++;
+      queuedUsers.push(onboardUser(record, instituteType));
     } else {
       console.log(`Malformed data in CSV row: ${JSON.stringify(record)}`);
     }
   }
+
+  const completedQueue = await Promise.all(queuedUsers);
+  const totalUsers = completedQueue.length;
+  const usersOnboarded = completedQueue.filter(u => u === true).length;
+
   console.log(`::: Users Onboarded: ${usersOnboarded}/${totalUsers}:::`);
 }
 
