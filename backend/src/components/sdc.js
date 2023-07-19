@@ -171,8 +171,10 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
 
     await validateEdxUserAccess(token, req, res, sdcSchoolCollectionStudentData.sdcSchoolCollectionID);
 
-    sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
-
+    if(sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
+      sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
+    
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
     if(e?.status === 404){
