@@ -843,7 +843,6 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
   ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
     .then(response => {
       let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
-
       sdcSchoolCollectionStudentDetail.value = filteredResponse;
       sdcSchoolCollectionStudentDetailCopy.value = cloneDeep(filteredResponse);
     }).catch(error => {
@@ -855,7 +854,9 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
 };
 
 const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
-  return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
+  if(enrolledProgramCodes) {
+    return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
+  } 
 };
 
 const syncWithEnrolledProgramCodeOnUserInput = (value) => {
