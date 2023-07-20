@@ -26,6 +26,7 @@
                 depressed
                 small
                 class="mr-2"
+                variant="flat"
                 @click="clickEditButton"
               >
                 <v-icon
@@ -45,6 +46,7 @@
                 depressed
                 small
                 class="mr-2"
+                variant="flat"
                 @click="clickDeleteButton"
               >
                 <v-icon
@@ -63,6 +65,7 @@
                 min-width="0.5em"
                 depressed
                 small
+                variant="flat"
                 @click="clickRelinkButton"
               >
                 <v-icon
@@ -172,12 +175,14 @@
               text="Cancel"
               class="mr-2 cancelUserDeleteButton"
               secondary
+              variant="flat"
               :click-action="clickDeleteButton"
             />
             <PrimaryButton
               :id="`user-remove-action-button-${user.edxUserID}`"
               text="Remove"
               class="confirmUserDeleteButton"
+              variant="flat"
               :click-action="clickRemoveButton"
             />
           </v-col>
@@ -216,11 +221,13 @@
               text="Cancel"
               class="mr-2"
               secondary
+              variant="flat"
               :click-action="clickRelinkButton"
             />
             <PrimaryButton
               :id="`user-relink-action-button-${user.edxUserID}`"
               text="Re-Link"
+              variant="flat"
               :click-action="clickActionRelinkButton"
             />
           </v-col>
@@ -254,12 +261,14 @@
               text="Cancel"
               class="mr-2"
               secondary
+              variant="flat"
               :click-action="clickEditButton"
             />
             <PrimaryButton
               :id="`user-save-action-button-${user.edxUserID}`"
               text="Save"
               :disabled="!minimumRolesSelected"
+              variant="flat"
               :click-action="clickSaveButton"
             />
           </v-col>
