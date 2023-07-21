@@ -94,6 +94,7 @@
             v-model="searchFilter.firstName"
             variant="underlined"
             label="Contact First Name"
+            clearable
           />
         </v-col>
         <v-col>
@@ -102,6 +103,7 @@
             v-model="searchFilter.lastName"
             variant="underlined"
             label="Contact Last Name"
+            clearable
           />
         </v-col>
         <v-col
