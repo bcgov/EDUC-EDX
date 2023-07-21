@@ -58,6 +58,19 @@
           </v-btn>
         </v-col>
       </v-row>
+      <v-row v-if="showFileReportDateWarning">
+        <v-col class="mb-3 d-flex justify-center">
+          <v-alert
+            dense
+            outlined
+            color="#E9EBEF"
+            type="info"
+            class="pa-2"
+          >
+            The date in the uploaded file is {{ fileReportDateFormatted }}. Please ensure that you have uploaded the correct data for this collection before continuing.
+          </v-alert>
+        </v-col>
+      </v-row>
     </div>
     <div
       v-else-if="hasFileAttached"
@@ -167,19 +180,19 @@
       <v-file-input
         id="selectFileInput"
         ref="uploader"
-        :rules="fileRules"
         :key="inputKey"
-        style="display: none"
         v-model="uploadFileValue"
+        :rules="fileRules"
+        style="display: none"
         :accept="acceptableFileExtensions.join(',')"
       />
     </v-form>
     <ConfirmationDialog ref="confirmReplacementFile">
-        <template #message>
-            <p>Uploading a replacement file will remove all data associated with the existing file you have uploaded.</p>
+      <template #message>
+        <p>Uploading a replacement file will remove all data associated with the existing file you have uploaded.</p>
             &nbsp;
-            <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
-        </template>
+        <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
+      </template>
     </ConfirmationDialog>
   </v-container>
 </template>
@@ -194,6 +207,7 @@ import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'StepThreeUploadData',
@@ -257,6 +271,34 @@ export default {
   },
   computed: {
     ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
+    snapshotDate() {
+      return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    },
+    fileReportDate() {
+      try {
+        return LocalDate.parse(this.sdcSchoolProgress?.uploadReportDate, DateTimeFormatter.ofPattern('uuuuMMdd'));
+      } catch (e) {
+        return null;
+      }
+    },
+    fileReportDateFormatted() {
+      if (!this.sdcSchoolProgress?.uploadReportDate) {
+        return 'not specified';
+      }
+      if (!this.fileReportDate) {
+        return this.sdcSchoolProgress?.uploadReportDate;
+      }
+      return this.fileReportDate.toLocaleString();
+    },
+    showFileReportDateWarning() {
+      if (!this.sdcSchoolProgress) {
+        return false;
+      }
+      if (!this.fileReportDate) {
+        return true;
+      }
+      return this.fileReportDate.isBefore(this.snapshotDate.minusDays(30));
+    }
   },
   watch: {
     uploadFileValue() {
