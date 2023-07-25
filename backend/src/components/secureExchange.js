@@ -952,7 +952,7 @@ async function verifyActivateUserLink(req, res) {
     }
     return res.redirect(baseUrl + '/api/auth/logout?loginBceidActivateDistrictUser=true');
   } catch (e) {
-    let msg = 'Error Occurred please retry with the link provided in the email';
+    let msg = 'Error occurred please retry with the link provided in the email';
     if (e.status === 400) {
       msg = 'Invalid link clicked. Please click the link provided in your email';
     } else if (e.status === 410) {
@@ -1035,8 +1035,13 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID) {
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true') {
   log.info('User Set Up and Redirect called');
+
+  if(!isValidTenant  || isValidTenant !== 'true'){
+    log.info('Not a valid tenant, redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
 
   Promise.all([
     cacheService.loadAllSchoolsToMap(),

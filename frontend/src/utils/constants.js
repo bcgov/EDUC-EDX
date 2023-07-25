@@ -15,6 +15,7 @@ object = {
   LOGIN: authRoot + '/login',
   DASHBOARD: '/',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
+  LOGIN_ENTRA: authRoot + '/logout?loginEntra=true',
   LOGOUT: authRoot + '/logout',
   SESSION_EXPIRED: authRoot + '/logout?sessionExpired=true',
   LOGIN_FAILED: authRoot + '/logout?loginError=true',
