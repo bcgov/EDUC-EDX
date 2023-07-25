@@ -22,19 +22,40 @@
             Welcome to the Education Data Exchange!
           </v-card-text>
           <v-row
+            no-gutters
             class="my-1"
             align="center"
             justify="center"
           >
-            <v-btn
-              id="login-button"
-              variant="outlined"
-              :href="authRoutes.LOGIN_BCEID"
-              class="ma-2"
-              @click="clearStorage"
-            >
-              Log In with Basic BCeID<v-icon>mdi-login</v-icon>
-            </v-btn>
+            <v-col class="d-flex justify-center">
+              <v-btn
+                id="login-button"
+                variant="outlined"
+                :href="authRoutes.LOGIN_ENTRA"
+                class="ma-2"
+                @click="clearStorage"
+              >
+                Log In with Entra<v-icon>mdi-login</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row
+            no-gutters
+            class="my-1"
+            align="center"
+            justify="center"
+          >
+            <v-col class="d-flex justify-center">
+              <v-btn
+                id="login-button"
+                variant="outlined"
+                :href="authRoutes.LOGIN_BCEID"
+                class="ma-2"
+                @click="clearStorage"
+              >
+                Log In with Basic BCeID<v-icon>mdi-login</v-icon>
+              </v-btn>
+            </v-col>
           </v-row>
         </v-card>
       </v-row>

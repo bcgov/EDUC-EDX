@@ -54,6 +54,21 @@ router.get('/callback_bceid',
     getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID);
   }
 );
+
+router.get('/callback_entra',
+  passport.authenticate('oidcEntra', {
+    failureRedirect: 'error'
+  }),
+  (req, res) => {
+    const userInfo = getSessionUser(req);
+    const accessToken = userInfo.jwt;
+    const isValidTenant = userInfo._json.isValidTenant;
+    const digitalID = userInfo._json.digitalIdentityID;
+    const correlationID = req.session?.correlationID;
+    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant);
+  }
+);
+
 //a prettier way to handle errors
 router.get('/error', (_req, res) => {
   res.redirect(config.get('server:frontend') + '/login-error');
@@ -66,6 +81,7 @@ function addBaseRouterGet(strategyName, callbackURI) {
 }
 
 addBaseRouterGet('oidcBceid', '/login_bceid');
+addBaseRouterGet('oidcEntra', '/login_entra');
 addBaseRouterGet('oidcBceidActivateUser', '/login_bceid_activate_user');
 addBaseRouterGet('oidcBceidActivateDistrictUser', '/login_bceid_activate_district_user');
 
@@ -84,6 +100,8 @@ router.get('/logout', async (req, res, next) => {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/login-error');
     } else if (req.query && req.query.loginBceid) {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
+    } else if (req.query && req.query.loginEntra) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra');
     } else if (req.query && req.query.loginBceidActivateUser) {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
     } else if (req.query && req.query.loginBceidActivateDistrictUser) {
