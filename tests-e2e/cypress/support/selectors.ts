@@ -65,7 +65,8 @@ export default {
   documentUpload: { //common component
     selectFileInput: '#selectFileInput',
     uploadDocumentButton: '#upload_form',
-    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect'
+    uploadDocumentTypeCodeSelect: '#uploadDocumentTypeCodeSelect',
+    stepThreeNextButton: '#nextButton',
   },
   dropdown: { //common component
     listItem: '.v-list-item'
@@ -193,13 +194,10 @@ export default {
   snackbar: {
     mainSnackBar: '#mainSnackBar'
   },
-  stepOneSchoolDetails: {
+  studentLevelData: {
     formHint: 'p.form-hint',
-    nextButton: '#nextButton'
-  },
-  stepTwoSchoolContacts: {
-    formHint: 'p.form-hint',
-    nextButton: '#nextButton'
+    nextButton: '#nextButton',
+    documentUploadButton: '#uploadButton',
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
