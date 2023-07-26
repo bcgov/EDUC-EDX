@@ -67,7 +67,7 @@
             type="info"
             class="pa-2"
           >
-            The date in the uploaded file is {{ fileReportDateFormatted }}. Please ensure that you have uploaded the correct data for this collection before continuing.
+            <p style="color: #003366">The date in the uploaded file is <strong>{{ fileReportDateFormatted }}</strong>. Please ensure that you have uploaded the correct data for this collection before continuing.</p>
           </v-alert>
         </v-col>
       </v-row>
@@ -207,7 +207,7 @@ import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
 
 export default {
   name: 'StepThreeUploadData',
@@ -271,12 +271,15 @@ export default {
   },
   computed: {
     ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
-    snapshotDate() {
+    collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    },
+    collectionCloseDate() {
+      return LocalDate.parse(this.schoolCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
     fileReportDate() {
       try {
-        return LocalDate.parse(this.sdcSchoolProgress?.uploadReportDate, DateTimeFormatter.ofPattern('uuuuMMdd'));
+        return LocalDate.parse(this.sdcSchoolProgress?.uploadReportDate, DateTimeFormatter.ofPattern('uuuuMMdd').withResolverStyle(ResolverStyle.STRICT));
       } catch (e) {
         return null;
       }
@@ -297,7 +300,7 @@ export default {
       if (!this.fileReportDate) {
         return true;
       }
-      return this.fileReportDate.isBefore(this.snapshotDate.minusDays(30));
+      return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
     }
   },
   watch: {
@@ -464,4 +467,8 @@ export default {
     color: rgb(56, 89, 138);
     font-size: 14px;
   }
+
+ :deep(.mdi-information){
+   color: #003366;
+ }
 </style>
