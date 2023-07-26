@@ -15,7 +15,7 @@
         >
           <v-card-title class="gov-header">
             <h4 id="login_text">
-              Log In
+              Register
             </h4>
           </v-card-title>
           <v-card-text id="login_descriptor">
