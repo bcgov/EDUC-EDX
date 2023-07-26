@@ -31,6 +31,7 @@ import StepThreeUploadData from './components/sdcCollection/StepThreeUploadData.
 import StepFourValidateData from './components/sdcCollection/StepFourValidateData.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
 import StepFiveVerifyData from './components/sdcCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
+import InviteSelection from './components/InviteSelection.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -94,6 +95,15 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
+      meta: {
+        pageTitle: PAGE_TITLES.LOGIN,
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/invite-selection',
+      name: 'invite-selection',
+      component: InviteSelection,
       meta: {
         pageTitle: PAGE_TITLES.LOGIN,
         requiresAuth: false

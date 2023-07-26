@@ -41,6 +41,8 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
 
 addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
 addOIDCRouterGet('oidcBceidActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
+addOIDCRouterGet('oidcEntraActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
+addOIDCRouterGet('oidcEntraActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
 
 router.get('/callback_bceid',
   passport.authenticate('oidcBceid', {
@@ -84,7 +86,8 @@ addBaseRouterGet('oidcBceid', '/login_bceid');
 addBaseRouterGet('oidcEntra', '/login_entra');
 addBaseRouterGet('oidcBceidActivateUser', '/login_bceid_activate_user');
 addBaseRouterGet('oidcBceidActivateDistrictUser', '/login_bceid_activate_district_user');
-
+addBaseRouterGet('oidcEntraActivateUser', '/login_entra_activate_user');
+addBaseRouterGet('oidcEntraActivateDistrictUser', '/login_entra_activate_district_user');
 
 //removes tokens and destroys session
 router.get('/logout', async (req, res, next) => {
@@ -106,6 +109,10 @@ router.get('/logout', async (req, res, next) => {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
     } else if (req.query && req.query.loginBceidActivateDistrictUser) {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_district_user');
+    } else if (req.query && req.query.loginEntraActivateUser) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra_activate_user');
+    } else if (req.query && req.query.loginEntraActivateDistrictUser) {
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra_activate_district_user');
     } else {
       retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
     }

@@ -5,7 +5,7 @@
       v-model="isValidForm"
       :disabled="isEdxUserActivationFormDisabled"
     >
-      <v-row class="pt-2 d-flex justify-center">
+      <v-row class="pt-10 d-flex justify-center">
         <v-col
           cols="9"
           md="4"

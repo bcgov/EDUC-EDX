@@ -135,6 +135,8 @@ utils.getOidcDiscovery().then(discovery => {
   //OIDC Strategy is used for authorization
   addLoginPassportUse(discovery, 'oidcBceid', config.get('server:frontend') + '/api/auth/callback_bceid', 'keycloak_bcdevexchange_bceid');
   addLoginPassportUse(discovery, 'oidcEntra', config.get('server:frontend') + '/api/auth/callback_entra', 'entra');
+  addLoginPassportUse(discovery, 'oidcEntraActivateUser', config.get('server:frontend') + '/api/auth/callback_activate_user', 'entra');
+  addLoginPassportUse(discovery, 'oidcEntraActivateDistrictUser', config.get('server:frontend') + '/api/auth/callback_activate_district_user', 'entra');
   addLoginPassportUse(discovery, 'oidcBceidActivateUser', config.get('server:frontend') + '/api/auth/callback_activate_user', 'keycloak_bcdevexchange_bceid');
   addLoginPassportUse(discovery, 'oidcBceidActivateDistrictUser', config.get('server:frontend') + '/api/auth/callback_activate_district_user', 'keycloak_bcdevexchange_bceid');
   //JWT strategy is used for authorization
