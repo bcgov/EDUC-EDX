@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import {SDC_STEPS} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
+import {capitalize} from "lodash";
 
 export const useSdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
@@ -130,6 +131,7 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
       if(this.schoolCollection == null) {
         const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
         this.setSchoolCollection(response.data);
+        this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
         this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
       }
     },
