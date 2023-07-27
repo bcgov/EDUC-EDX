@@ -142,17 +142,6 @@
             :loading="isReadingFile"
             :click-action="handleFileImport"
           />
-          <div class="mt-2">
-            More information on the
-            <a
-              :href="getLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color: rgb(56, 89, 138);"
-            >
-              1701 submission requirements.
-            </a>
-          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -281,7 +270,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess']),
+    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
     collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
@@ -312,21 +301,7 @@ export default {
         return true;
       }
       return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
-    },
-    getLink() {
-      let collectionLink = '';
-      let collectionCodeType = this.currentCollectionTypeCode;
-      if (collectionCodeType === 'September') {
-        collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/september';
-      } else if (collectionCodeType === 'February') {
-        collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/february';
-      } else if (collectionCodeType === 'May') {
-        collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/may';
-      } else if (collectionCodeType === 'July') {
-        collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/summer-learning';
-      }
-      return collectionLink;
-    },
+    }
   },
   watch: {
     uploadFileValue() {

@@ -1,5 +1,5 @@
 <template>
-  <v-container
+  <v-container 
     class="containerSetup"
     fluid
   >
@@ -38,54 +38,54 @@
           :active="isLoading"
         />
       </v-col>
-    </v-row>
+    </v-row> 
     <v-row v-else>
       <div
-        v-if="isCollectionOpen()"
-        class="border"
-      >
-        <v-row>
-          <v-col cols="4">
-            <DoughnutChart :incoming-chart-data="incomingChartData" />
-          </v-col>
-          <v-col cols="8">
-            <h2 class="subjectHeading">
-              Student Level Data (1701)
-            </h2>
-            <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
-          </v-col>
-        </v-row>
-        <v-row justify="space-around">
-          <v-col
-            cols="4"
-            class="steps"
+      v-if="isCollectionOpen()"
+      class="border"
+    >
+      <v-row>
+        <v-col cols="4">
+          <DoughnutChart :incoming-chart-data="incomingChartData" />
+        </v-col>
+        <v-col cols="8">
+          <h2 class="subjectHeading">
+            Student Level Data (1701)
+          </h2>
+          <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
+        </v-col>
+      </v-row>
+      <v-row justify="space-around">
+        <v-col
+          cols="4"
+          class="steps"
+        >
+          <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span> 
+        </v-col>
+        <v-col
+          cols="8"
+          class="navigate"
+        >
+          <a
+            class="ml-1"
+            @click="startCollection()"
+          >Continue</a>
+          <v-icon
+            small
+            color="#1976d2"
           >
-            <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span>
-          </v-col>
-          <v-col
-            cols="8"
-            class="navigate"
-          >
-            <a
-              class="ml-1"
-              @click="startCollection()"
-            >Continue</a>
-            <v-icon
-              small
-              color="#1976d2"
-            >
-              mdi-arrow-right
-            </v-icon>
-          </v-col>
-        </v-row>
-      </div>
-      <div v-else>
-        <p>Currently, there are no open collections.</p>
-      </div>
+            mdi-arrow-right
+          </v-icon>
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else>
+      <p>Currently, there are no open collections.</p>
+    </div>
     </v-row>
   </v-container>
 </template>
-
+  
 <script>
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
@@ -160,36 +160,36 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.containerSetup{
-  padding-right: 10em !important;
-  padding-left: 10em !important;
-}
-
-@media screen and (max-width: 1200px) {
+    
+    <style scoped>
   .containerSetup{
-    padding-right: 3em !important;
-    padding-left: 3em !important;
+    padding-right: 10em !important;
+    padding-left: 10em !important;
   }
-}
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin-bottom: 2em;
-  margin-top: 2em;
-  width: 70%;
-}
+  
+  @media screen and (max-width: 1200px) {
+    .containerSetup{
+      padding-right: 3em !important;
+      padding-left: 3em !important;
+    }
+  } 
+  .border {
+    border: 2px solid grey;
+    border-radius: 5px;
+    padding: 35px;
+    margin-bottom: 2em;
+    margin-top: 2em;
+    width: 70%;
+  }
 
-.steps {
-  text-align: center;
-}
+  .steps {
+    text-align: center;
+  }
 
-.navigate {
-  text-align: end;
-}
-</style>
+  .navigate {
+    text-align: end;
+  }
+    </style>
     
     
   
