@@ -1,5 +1,5 @@
 <template>
-  <v-container 
+  <v-container
     class="containerSetup"
     fluid
   >
@@ -54,7 +54,7 @@
           :active="isLoading"
         />
       </v-col>
-    </v-row> 
+    </v-row>
     <v-row v-else>
       <v-col cols="2">
         <StepperComponent
@@ -147,7 +147,7 @@ export default {
     padding-right: 3em !important;
     padding-left: 3em !important;
   }
-} 
-  </style>
+}
+</style>
   
   
