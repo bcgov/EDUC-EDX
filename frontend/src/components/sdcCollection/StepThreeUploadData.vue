@@ -219,6 +219,7 @@ import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
+import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
   name: 'StepThreeUploadData',
@@ -316,13 +317,13 @@ export default {
     getLink() {
       let collectionLink = '';
       let collectionCodeType = this.currentCollectionTypeCode;
-      if (collectionCodeType === 'September') {
+      if (collectionCodeType === COLLECTIONCODETYPE.SEPTEMBER) {
         collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/september';
-      } else if (collectionCodeType === 'February') {
+      } else if (collectionCodeType === COLLECTIONCODETYPE.FEBRUARY) {
         collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/february';
-      } else if (collectionCodeType === 'May') {
+      } else if (collectionCodeType === COLLECTIONCODETYPE.MAY) {
         collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/may';
-      } else if (collectionCodeType === 'July') {
+      } else if (collectionCodeType === COLLECTIONCODETYPE.JULY) {
         collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/summer-learning';
       }
       return collectionLink;
