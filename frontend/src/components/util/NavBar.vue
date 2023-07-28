@@ -20,7 +20,7 @@
             class="menuRow"
           >
             <router-link
-              :to="{ path: item.link}"
+              :to="{ path: item.link }"
               :target="item.newTab ? '_blank' : '_self'"
 
               class="router"
@@ -154,11 +154,7 @@ export default {
     title: {
       type: String,
       required: true
-    },
-    contact: {
-      type: Object,
-      required: true
-    },
+    }
   },
   data() {
     return {
