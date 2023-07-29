@@ -35,7 +35,13 @@
                 class="ma-2"
                 @click="clearStorage"
               >
-                Log In with Entra<v-icon>mdi-login</v-icon>
+                <img
+                  tabindex="-1"
+                  src="../assets/images/microsoftlogo.png"
+                  width="55"
+                  class="logo mx-n5"
+                  alt="B.C. Government Logo"
+                >Log In with Microsoft
               </v-btn>
             </v-col>
           </v-row>
@@ -53,7 +59,13 @@
                 class="ma-2"
                 @click="clearStorage"
               >
-                Log In with Basic BCeID<v-icon>mdi-login</v-icon>
+                <img
+                  tabindex="-1"
+                  src="../assets/images/bcid-mstile-70x70.png"
+                  width="50"
+                  class="logo mx-n3"
+                  alt="B.C. Government Logo"
+                >Log In with Basic BCeID
               </v-btn>
             </v-col>
           </v-row>

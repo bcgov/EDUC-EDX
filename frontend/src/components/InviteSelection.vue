@@ -15,7 +15,7 @@
         >
           <v-card-title class="gov-header">
             <h4 id="login_text">
-              Register
+              Register for Education Data Exchange
             </h4>
           </v-card-title>
           <v-card-text id="login_descriptor">
@@ -35,7 +35,13 @@
                 class="ma-2"
                 @click="clearStorage"
               >
-                Register using Entra<v-icon>mdi-login</v-icon>
+                <img
+                  tabindex="-1"
+                  src="../assets/images/microsoftlogo.png"
+                  width="55"
+                  class="logo mx-n5"
+                  alt="B.C. Government Logo"
+                >Microsoft
               </v-btn>
             </v-col>
           </v-row>
@@ -53,7 +59,13 @@
                 class="ma-2"
                 @click="clearStorage"
               >
-                Register using Basic BCeID<v-icon>mdi-login</v-icon>
+                <img
+                  tabindex="-1"
+                  src="../assets/images/bcid-mstile-70x70.png"
+                  width="50"
+                  class="logo mx-n3"
+                  alt="B.C. Government Logo"
+                >Basic BCeID
               </v-btn>
             </v-col>
           </v-row>
