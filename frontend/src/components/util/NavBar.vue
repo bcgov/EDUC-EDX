@@ -20,8 +20,9 @@
             class="menuRow"
           >
             <router-link
-              :to="{ name: item.link }"
+              :to="{ path: item.link }"
               :target="item.newTab ? '_blank' : '_self'"
+
               class="router"
             >
               <v-list-item>
@@ -203,6 +204,36 @@ export default {
           title: PAGE_TITLES.EXCHANGE,
           link: 'inbox',
           authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
+        },
+        {
+          title: PAGE_TITLES.SCHOOL_CONTACTS,
+          link: 'schoolContacts/'+ this.userInfo.activeInstituteIdentifier,
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+        },
+        {
+          title: PAGE_TITLES.SCHOOL_DETAILS,
+          link: 'schoolDetails/'+ this.userInfo.activeInstituteIdentifier,
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+        },
+        {
+          title: PAGE_TITLES.DATA_COLLECTION,
+          link: 'open-collection-summary/'+ this.userInfo.activeInstituteIdentifier,
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+        },
+        {
+          title: PAGE_TITLES.DISTRICT_CONTACTS,
+          link: 'districtContacts/'+ this.userInfo.activeInstituteIdentifier,
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
+        },
+        {
+          title: PAGE_TITLES.DISTRICT_DETAILS,
+          link: 'districtDetails/'+ this.userInfo.activeInstituteIdentifier,
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
+        },
+        {
+          title: PAGE_TITLES.SCHOOLS,
+          link: 'schools',
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.ADMINISTRATION,
