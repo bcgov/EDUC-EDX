@@ -10,6 +10,7 @@ export const SDC_STEPS = Object.freeze(
       route: 'step-1',
       next: 'step-2',
       index: 0,
+      isStarted: false,
       isComplete: false
     }, {
       label: 'STEP-2',
@@ -17,6 +18,7 @@ export const SDC_STEPS = Object.freeze(
       route: 'step-2',
       next: 'step-3',
       index: 1,
+      isStarted: false,
       isComplete: false
     }, {
       label: 'STEP-3',
@@ -24,6 +26,7 @@ export const SDC_STEPS = Object.freeze(
       route: 'step-3',
       next: 'step-4',
       index: 2,
+      isStarted: false,
       isComplete: false
     }, {
       label: 'STEP-4',
@@ -31,12 +34,14 @@ export const SDC_STEPS = Object.freeze(
       route: 'step-4',
       next: 'step-5',
       index: 3,
+      isStarted: false,
       isComplete: false
     }, {
       label: 'STEP-5',
       name: 'Edit/Verify Data & Submit',
       index: 4,
       route: 'step-5',
+      isStarted: false,
       isComplete: false
     }
   ]

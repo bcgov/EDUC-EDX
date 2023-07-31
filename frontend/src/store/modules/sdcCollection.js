@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import {SDC_STEPS} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
-import {capitalize} from "lodash";
+import {capitalize} from 'lodash';
 
 export const useSdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
@@ -156,10 +156,13 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
         break;
       }
-      this.markStepsComplete();
+      this.setStepsProgressState();
     },
-    markStepsComplete() {   
+    setStepsProgressState() {
       this.stepsInCollectionProcess.forEach(step => {
+        if (step.index <= this.currentStepInCollectionProcess.index) {
+          step.isStarted = true;
+        }
         if(step.index < this.currentStepInCollectionProcess.index) {
           step.isComplete = true;
         }
