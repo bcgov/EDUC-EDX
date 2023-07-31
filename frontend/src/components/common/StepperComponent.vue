@@ -4,15 +4,15 @@
       <v-row
         v-for="(step, index) in steps"
         :key="index"
+        :class="{'step': true, 'step-previous': step.index < currentStepInCollectionProcess.index, 'step-current': step.index === currentStepInCollectionProcess.index, 'step-future': step.isStarted && step.index > currentStepInCollectionProcess.index, 'step-disabled': !step.isStarted && step.index > currentStepInCollectionProcess.index}"
+        @click="onStepClick(step)"
       >
         <v-col
           class="step-base"
           cols="9"
         >
           <div
-            :class="{'complete' : step.isComplete, 'not-started': !step.isComplete && step.index > currentStepInCollectionProcess.index, 'in-progress': step.index === currentStepInCollectionProcess.index}"
             class="pb-7"
-            @click="onStepClick(step)"
           >
             {{ step.name }}
           </div>
@@ -21,7 +21,7 @@
           class="wrapper"
           cols="3"
         >
-          <div :class="{'circle circle-inactive': !step.isComplete && step.index > currentStepInCollectionProcess.index, 'circle circle-active': step.isComplete || step.index === currentStepInCollectionProcess.index}">
+          <div class="circle">
             <v-icon v-if="step.isComplete">
               mdi-check
             </v-icon>
@@ -80,16 +80,19 @@ export default {
   methods: {
     ...mapActions(useSdcCollectionStore, ['setCurrentStepInCollectionProcess']),
     onStepClick(step) {
+      if (step.index >= this.currentStepInCollectionProcess.index) {
+        return;
+      }
       this.setCurrentStepInCollectionProcess(step);
       this.$router.push({name: step.route});
     },
     moveToNextStep() {
       const currentIndex = this.currentStepInCollectionProcess.index;
-      if(!this.steps[currentIndex].isComplete) {
+      if (!this.steps[currentIndex].isComplete) {
         this.markStepComplete(currentIndex);
       }
       this.$emit('on-navigation-complete');
-      if(currentIndex < (this.steps.length - 1)) {
+      if (currentIndex < (this.steps.length - 1)) {
         this.setNextStepInProgressAndNavigate(currentIndex);       
       }
     },
@@ -99,6 +102,7 @@ export default {
     },
     setNextStepInProgressAndNavigate(currentIndex) {
       let nextStep = this.steps[currentIndex + 1];
+      nextStep.isStarted = true;
       this.setCurrentStepInCollectionProcess(nextStep);
       this.$router.push({name: nextStep.route});
     },
@@ -113,18 +117,26 @@ export default {
 <style scoped>
 
 .step-base {
-    margin: 20px auto 0 auto;
+  margin: 20px auto 0 auto;
 }
 
-.in-progress, .complete {
-  color: rgb(56, 89, 138);
+.step {
   font-weight: bold;
 }
 
-.not-started {
+.step.step-previous, .step.step-current {
+  color: rgb(56, 89, 138);
+  cursor: pointer;
+}
+
+.step.step-future {
+  color: #9dc3e6;
   cursor: not-allowed;
-  pointer-events: none;
+}
+
+.step.step-disabled {
   color: grey;
+  cursor: not-allowed;
 }
 
 .circle {
@@ -139,14 +151,19 @@ export default {
     position: relative;
 }
 
-.circle-active {
-    background: rgb(56, 89, 138);
-    border: 3px solid rgb(56, 89, 138);
+.step.step-previous .circle, .step.step-current .circle {
+  background: rgb(56, 89, 138);
+  border: 3px solid rgb(56, 89, 138);
 }
 
-.circle-inactive {
-    background: grey;
-    border: 3px solid grey;
+.step.step-future .circle {
+  background: #9dc3e6;
+  border: 3px solid #9dc3e6;
+}
+
+.step.step-disabled .circle {
+  background: grey;
+  border: 3px solid grey;
 }
 
 .vertical{
