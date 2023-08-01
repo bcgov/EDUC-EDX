@@ -148,7 +148,7 @@
               :href="getLink"
               target="_blank"
               rel="noopener noreferrer"
-              style="color: rgb(56, 89, 138);"
+              style="color: rgb(56, 89, 138); text-decoration: underline"
             >
               1701 submission requirements.
             </a>
