@@ -32,7 +32,7 @@ function createLoginSession(username: string = Cypress.env('USER_ID'), password:
     [username, password],
     () => {
       cy.visit('/login');
-      cy.get('#login-button').click();
+      cy.get('#login-button-bceid').click();
       cy.get('input[name="user"]').type(username);
       cy.get('input[name="password"]').type(password);
       cy.get('input[name="btnSubmit"][value="Continue"]').click();
