@@ -206,13 +206,13 @@ export default {
           authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
         },
         {
-          title: PAGE_TITLES.SCHOOL_CONTACTS,
-          link: 'schoolContacts/'+ this.userInfo.activeInstituteIdentifier,
+          title: PAGE_TITLES.SCHOOL_DETAILS,
+          link: 'schoolDetails/'+ this.userInfo.activeInstituteIdentifier,
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
-          title: PAGE_TITLES.SCHOOL_DETAILS,
-          link: 'schoolDetails/'+ this.userInfo.activeInstituteIdentifier,
+          title: PAGE_TITLES.SCHOOL_CONTACTS,
+          link: 'schoolContacts/'+ this.userInfo.activeInstituteIdentifier,
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
@@ -221,8 +221,8 @@ export default {
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
-          title: PAGE_TITLES.DISTRICT_CONTACTS,
-          link: 'districtContacts/'+ this.userInfo.activeInstituteIdentifier,
+          title: PAGE_TITLES.SCHOOLS,
+          link: 'schools',
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
@@ -231,8 +231,8 @@ export default {
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
-          title: PAGE_TITLES.SCHOOLS,
-          link: 'schools',
+          title: PAGE_TITLES.DISTRICT_CONTACTS,
+          link: 'districtContacts/'+ this.userInfo.activeInstituteIdentifier,
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
