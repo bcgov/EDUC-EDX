@@ -100,52 +100,6 @@
       selector:
         app: "${APP_NAME}-${BRANCH}"
         deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
-  - apiVersion: v1
-    kind: Route
-    metadata:
-      annotations:
-        openshift.io/host.generated: 'true'
-      labels:
-        app: "${APP_NAME}-${BRANCH}"
-      name: "${APP_NAME}-frontend-${BRANCH}"
-    spec:
-      host: "${HOST_ROUTE}"
-      port:
-        targetPort: 2015-tcp
-      tls:
-        caCertificate: "${CA_CERT}"
-        certificate: "${CERTIFICATE}"
-        insecureEdgeTerminationPolicy: Redirect
-        key: "${PRIVATE_KEY}"
-        termination: edge
-      to:
-        kind: Service
-        name: "${APP_NAME}-frontend-${BRANCH}"
-        weight: 100
-      wildcardPolicy: None
-  - apiVersion: v1
-    kind: Route
-    metadata:
-      annotations:
-        openshift.io/host.generated: 'true'
-      labels:
-        app: "${APP_NAME}-${BRANCH}"
-      name: "www.${APP_NAME}-frontend-${BRANCH}"
-    spec:
-      host: "www.${HOST_ROUTE}"
-      port:
-        targetPort: 2015-tcp
-      tls:
-        caCertificate: ${CA_CERT}
-        certificate: ${CERTIFICATE}
-        insecureEdgeTerminationPolicy: Redirect
-        key: ${PRIVATE_KEY}
-        termination: edge
-      to:
-        kind: Service
-        name: "${APP_NAME}-frontend-${BRANCH}"
-        weight: 100
-      wildcardPolicy: None
   - apiVersion: autoscaling/v2
     kind: HorizontalPodAutoscaler
     metadata:
