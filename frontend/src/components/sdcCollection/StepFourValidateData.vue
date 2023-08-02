@@ -194,12 +194,12 @@
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ item.value.studentPen }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.studentPen) }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ item.value.localID }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.localID) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -207,14 +207,14 @@
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.legalLastName)}, ${fieldOrHyphen(item.value.legalFirstName)} ${fieldOrHyphen(item.value.legalMiddleNames)}` }}
+                          {{ `${fieldOrHyphen(item.value.legalLastName)}, ${fieldOrHyphen(item.value.legalFirstName)} ${fieldOrSpace(item.value.legalMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.usualLastName)}, ${fieldOrHyphen(item.value.usualFirstName)} ${fieldOrHyphen(item.value.usualMiddleNames)}` }}
+                          {{ `${fieldOrHyphen(item.value.usualLastName)}, ${fieldOrHyphen(item.value.usualFirstName)} ${fieldOrSpace(item.value.usualMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
@@ -928,6 +928,8 @@ const getValidationIssueSeverityCodeLabel = (severityCode) => {
 };
 
 const fieldOrHyphen = (field) => field || '-';
+
+const fieldOrSpace = (field) => field || '';
 
 const formatAndSortValidationIssues = (validationIssues = []) => {
   let validationIssueMap = new Map();
