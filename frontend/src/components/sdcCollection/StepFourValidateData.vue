@@ -86,7 +86,7 @@
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="ml-5">
+              <v-col class="ml-5 mb-2">
                 <v-row
                   no-gutters
                   class="mt-1"
@@ -144,6 +144,7 @@
                   <v-col
                     cols="5"
                     offset="1"
+                    class="mt-3 mb-3"
                   >
                     <v-row>
                       <v-col>
@@ -156,7 +157,10 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="5">
+                  <v-col
+                    cols="5"
+                    class="mt-3 mb-3"
+                  >
                     <v-row>
                       <v-col>
                         <span class="headerVal">Legal Name</span>
@@ -180,7 +184,7 @@
                 >
                   <v-col cols="1">
                     <v-icon
-                      class="mt-2"
+                      class="mt-2 mr-3"
                       size="25"
                       :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)"
                     >
@@ -190,12 +194,12 @@
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ item.value.studentPen }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.studentPen) }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ item.value.localID }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.localID) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -203,14 +207,14 @@
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.legalLastName)} ${fieldOrHyphen(item.value.legalFirstName)}` }}
+                          {{ `${fieldOrHyphen(item.value.legalLastName)}, ${fieldOrHyphen(item.value.legalFirstName)} ${fieldOrSpace(item.value.legalMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.usualLastName)} ${fieldOrHyphen(item.value.usualFirstName)}` }}
+                          {{ `${fieldOrHyphen(item.value.usualLastName)}, ${fieldOrHyphen(item.value.usualFirstName)} ${fieldOrSpace(item.value.usualMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
@@ -924,6 +928,8 @@ const getValidationIssueSeverityCodeLabel = (severityCode) => {
 };
 
 const fieldOrHyphen = (field) => field || '-';
+
+const fieldOrSpace = (field) => field || '';
 
 const formatAndSortValidationIssues = (validationIssues = []) => {
   let validationIssueMap = new Map();
