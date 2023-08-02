@@ -9,6 +9,7 @@ TZVALUE="America/Vancouver"
 SOAM_KC_REALM_ID="master"
 SOAM_KC=soam-$envValue.apps.silver.devops.gov.bc.ca
 siteMinderLogoutUrl=""
+BACKEND_HOST_ROUTE="edx-backend-master.$OPENSHIFT_NAMESPACE-$envValue.svc.cluster.local:8080"
 HOST_ROUTE="edx-${OPENSHIFT_NAMESPACE}-${envValue}.apps.silver.devops.gov.bc.ca"
 #HOST_ROUTE="${envValue}.educationdataexchange.gov.bc.ca"
 #SERVER_FRONTEND="https://${envValue}.educationdataexchange.gov.bc.ca"
@@ -124,7 +125,7 @@ echo Setting environment variables for $APP_NAME-backend-$SOAM_KC_REALM_ID appli
 oc -n $OPENSHIFT_NAMESPACE-$envValue set env --from=configmap/$APP_NAME-backend-config-map dc/$APP_NAME-backend-$SOAM_KC_REALM_ID
 
 echo Creating config map $APP_NAME-frontend-config-map
-oc create -n $OPENSHIFT_NAMESPACE-$envValue configmap $APP_NAME-frontend-config-map --from-literal=TZ=$TZVALUE --from-literal=HOST_ROUTE=$HOST_ROUTE  --dry-run -o yaml | oc apply -f -
+oc create -n $OPENSHIFT_NAMESPACE-$envValue configmap $APP_NAME-frontend-config-map --from-literal=TZ=$TZVALUE --from-literal=HOST_ROUTE=$HOST_ROUTE --from-literal=BACKEND_HOST_ROUTE=$BACKEND_HOST_ROUTE  --dry-run -o yaml | oc apply -f -
 echo
 echo Setting environment variables for $APP_NAME-frontend-$SOAM_KC_REALM_ID application
 oc -n $OPENSHIFT_NAMESPACE-$envValue set env --from=configmap/$APP_NAME-frontend-config-map dc/$APP_NAME-frontend-$SOAM_KC_REALM_ID
