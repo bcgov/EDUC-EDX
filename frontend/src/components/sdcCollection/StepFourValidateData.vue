@@ -256,7 +256,7 @@
                       <v-col>
                         <v-text-field
                           id="studentPen"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.studentPen)"
                           label="PEN"
                           density="compact"
                           variant="plain"
@@ -265,8 +265,8 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentLocalID"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
+                          id="localID"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.localID)"
                           label="Local ID"
                           density="compact"
                           variant="plain"
@@ -277,8 +277,8 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentDob"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                          id="dob"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.dob)"
                           label="Birthdate"
                           density="compact"
                           variant="plain"
@@ -287,8 +287,8 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentGender"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
+                          id="gender"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.gender)"
                           label="Gender"
                           density="compact"
                           variant="plain"
@@ -299,7 +299,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentLegalLastName"
+                          id="legalLastName"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalLastName)"
                           label="Legal Surname"
                           density="compact"
@@ -309,7 +309,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentUsualLastName"
+                          id="usualLastName"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualLastName)"
                           label="Usual Surname"
                           density="compact"
@@ -321,7 +321,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentLegalFirstName"
+                          id="legalFirstName"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalFirstName)"
                           label="Legal Given"
                           density="compact"
@@ -331,7 +331,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentUsualFirstName"
+                          id="usualFirstName"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualFirstName)"
                           label="Usual Given"
                           density="compact"
@@ -343,7 +343,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentLegalMiddleNames"
+                          id="legalMiddleNames"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.legalMiddleNames)"
                           label="Legal Middle"
                           density="compact"
@@ -353,7 +353,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentUsualMiddleNames"
+                          id="usualMiddleNames"
                           :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.usualMiddleNames)"
                           label="Usual Middle"
                           density="compact"
@@ -365,7 +365,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentEnrolledGradeCode"
+                          id="enrolledGradeCode"
                           label="Grade"
                           density="compact"
                           variant="plain"
@@ -375,7 +375,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentSchoolFundingCode"
+                          id="schoolFundingCode"
                           label="Funding Code"
                           density="compact"
                           variant="plain"
@@ -387,8 +387,8 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentNumberOfCourses"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
+                          id="numberOfCourses"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.numberOfCourses)"
                           label="Number of Courses"
                           density="compact"
                           variant="plain"
@@ -397,8 +397,8 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentOtherCourses"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
+                          id="otherCourses"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.otherCourses)"
                           label="Other Courses"
                           density="compact"
                           variant="plain"
@@ -409,8 +409,8 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentSupportBlocks"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
+                          id="supportBlocks"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.supportBlocks)"
                           label="Support Blocks"
                           density="compact"
                           variant="plain"
@@ -419,7 +419,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentSpecialEducationCategoryCode"
+                          id="specialEducationCategoryCode"
                           label="Special Ed. Category"
                           density="compact"
                           variant="plain"
@@ -431,8 +431,8 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentNativeAncestryInd"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
+                          id="nativeAncestryInd"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd)"
                           label="Indigenous Ancestry"
                           density="compact"
                           variant="plain"
@@ -441,7 +441,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentBandCode"
+                          id="bandCode"
                           label="Band of Residence"
                           density="compact"
                           variant="plain"
@@ -453,7 +453,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentHomeLanguageSpokenCode"
+                          id="homeLanguageSpokenCode"
                           label="Home Language"
                           density="compact"
                           variant="plain"
@@ -463,8 +463,8 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentPostalCode"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
+                          id="postalCode"
+                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.postalCode)"
                           label="Postal Code"
                           density="compact"
                           variant="plain"
@@ -475,7 +475,7 @@
                     <v-row no-gutters>
                       <v-col>
                         <v-text-field
-                          id="studentCareerProgramCode"
+                          id="careerProgramCode"
                           label="Career Code"
                           density="compact"
                           variant="plain"
@@ -485,7 +485,7 @@
                       </v-col>
                       <v-col>
                         <v-text-field
-                          id="studentEnrolledProgramCodes"
+                          id="filteredEnrolledProgramCodes"
                           label="Program Codes"
                           density="compact"
                           variant="plain"
@@ -558,16 +558,17 @@
                                 :key="field"
                               >
                                 <v-text-field
-                                  v-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'input'"
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationTextInput`"
-                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                  v-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'input'"
+                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field]?.key}ValidationTextInput`"
+                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field]?.key]"
+                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field]?.label"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field]?.options.rules"
                                   density="compact"
                                   variant="underlined"
+                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <v-autocomplete
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
+                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'select'"
                                   :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
                                   v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
                                   :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
@@ -575,9 +576,10 @@
                                   :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
                                   item-title="dropdownText"
                                   :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <v-autocomplete
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
+                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'multiselect'"
                                   :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
                                   v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
                                   :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
@@ -588,8 +590,9 @@
                                   multiple
                                   :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
                                   @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
+                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
-                                <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'datePicker'">
+                                <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'datePicker'">
                                   <v-menu
                                     id="dobValidationDatePicker"
                                     ref="dobDateFilter"
@@ -647,6 +650,7 @@
                 <PrimaryButton
                   id="saveAndRefreshButton"
                   text="Save & Refresh List"
+                  :disabled="!isValid"
                   :click-action="save"
                 />
                 <v-btn
@@ -743,6 +747,22 @@ const next = () => {
     markStepAsComplete();
   }
 };
+
+const onFieldClick = (fieldName, $event, errorType) => {
+  if($event) {
+    if(errorType === 'ERROR') {
+      document.getElementById(fieldName).style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+    } else {
+      document.getElementById(fieldName).style.backgroundColor = 'lightblue';
+    }
+    
+    document.getElementById(fieldName).style.marginTop = '7px';
+    document.getElementById(fieldName).style.marginRight = '20px';
+  } else {
+    document.getElementById(fieldName).style.backgroundColor = 'transparent';
+  }
+  
+}
 
 const markStepAsComplete = () => {
   let updateCollection = {
@@ -914,7 +934,7 @@ const getBandCodesLabel = (key) => {
   if (sdcCollectionStore.bandCodesMap.get(key)) {
     label = `${sdcCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sdcCollectionStore.bandCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getCareerProgramCodesLabel = (key) => {
@@ -922,7 +942,7 @@ const getCareerProgramCodesLabel = (key) => {
   if (sdcCollectionStore.careerProgramCodesMap.get(key)) {
     label = `${sdcCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sdcCollectionStore.careerProgramCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getEnrolledGradeCodesLabel = (key) => {
@@ -930,7 +950,7 @@ const getEnrolledGradeCodesLabel = (key) => {
   if (sdcCollectionStore.enrolledGradeCodesMap.get(key)) {
     label = `${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getHomeLanguageSpokenCodesLabel = (key) => {
@@ -938,7 +958,7 @@ const getHomeLanguageSpokenCodesLabel = (key) => {
   if (sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
     label = `${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getSchoolFundingCodeLabel = (key) => {
@@ -946,7 +966,7 @@ const getSchoolFundingCodeLabel = (key) => {
   if (sdcCollectionStore.schoolFundingCodesMap.get(key)) {
     label = `${sdcCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sdcCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getSpecialEducationCodesLabel = (key) => {
@@ -954,7 +974,7 @@ const getSpecialEducationCodesLabel = (key) => {
   if (sdcCollectionStore.specialEducationCodesMap.get(key)) {
     label = `${sdcCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sdcCollectionStore.specialEducationCodesMap.get(key)?.label}`;
   }
-  return label;
+  return label || '-';
 };
 
 const getValidationIssueTypeCodesDescription = (key) => {
