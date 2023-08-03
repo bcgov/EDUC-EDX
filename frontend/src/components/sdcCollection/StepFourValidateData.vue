@@ -224,7 +224,7 @@
             </v-data-table-server>
           </div>
         </v-col>
-        <v-col cols="9">
+        <v-col v-if="showStudentDetails()" cols="9">
           <Spinner v-if="isLoading()" />
           <div
             v-else
@@ -539,12 +539,13 @@
                             </h3>
                           </v-col>
                         </v-row>
-                        <v-row no-gutters>
+                        <v-row>
                           <v-col>
                             <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }}</span>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-form ref="form" v-model="isValid">
+                          <v-row>
                           <v-col>
                             <div
                               v-for="(field) in issue.validationIssueFieldCode"
@@ -620,6 +621,7 @@
                             </div>
                           </v-col>
                         </v-row>
+                        </v-form>
                       </v-timeline-item>
                     </v-timeline>
                   </v-col>
@@ -639,6 +641,7 @@
                 <PrimaryButton
                   id="saveAndRefreshButton"
                   text="Save & Refresh List"
+                  :click-action="save"
                 />
                 <v-btn
                   icon="mdi-arrow-right-circle-outline"
@@ -651,6 +654,14 @@
               </v-col>
             </v-row>
           </div>
+        </v-col>
+        <v-col v-else>
+          <v-row>
+            <v-col class="d-flex justify-start">
+              <h3>Student Record</h3>
+            </v-col>
+          </v-row>
+          <p class="clear-message">Congratulations! There are no errors or warnings in the 1701 Submission</p>
         </v-col>
       </v-row>
       <v-row
@@ -691,6 +702,7 @@ import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 
+import {setSuccessAlert} from '../composable/alertComposable';
 import {setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
@@ -704,6 +716,8 @@ const props = defineProps({
     default: null
   }
 });
+const isValid = ref(false);
+const form = ref<HTMLFormElement>(null);
 
 const emit = defineEmits(['next']);
 
@@ -742,6 +756,10 @@ const nextButtonIsDisabled = () => {
   return summaryCounts.value.error > 0 || isLoading();
 };
 //end next logic
+
+const showStudentDetails = () => {
+  return totalStudents.value > 0;
+};
 
 //page summary counts
 const loadingCount = ref(0);
@@ -802,7 +820,9 @@ const getSDCSchoolCollectionStudentPaginated = () => {
 
 //arrow navigation
 watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
-  getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+  if(selectedSdcStudentID.value) {
+    getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+  }
 });
 
 const studentSelected = (sdcSchoolCollectionStudentID) => {
@@ -856,6 +876,21 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
       loadingCount.value -= 1;
     });
 };
+
+
+const save = () => {
+  ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/student/${selectedSdcStudentID.value}`, sdcSchoolCollectionStudentDetailCopy.value)
+    .then(response => {
+      setSuccessAlert('Success! The student details have been updated.');
+    }).catch(error => {
+      console.error(error);
+      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+    }).finally(() => {
+      selectedSdcStudentID.value= null;
+      getSummaryCounts();
+      getSDCSchoolCollectionStudentPaginated();
+    });
+}
 
 const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
   if(enrolledProgramCodes) {
@@ -1002,6 +1037,11 @@ const isLoading = () => {
     border-radius: 5px;
     padding: 35px;
     margin-bottom: 2em;
+  }
+
+  .clear-message {
+    background-color: palegreen;
+    padding: 5px;
   }
 
  .inner-border {

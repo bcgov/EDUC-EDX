@@ -171,35 +171,35 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
     async getCodes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
         if(this.bandCodesMap.size === 0) {
-          const response = await ApiService.getAllBandCodes();
+          const response = await ApiService.getAllActiveBandCodes();
           this.setBandCodes(response.data);
         }
         if(this.careerProgramCodesMap.size === 0) {
-          const response = await ApiService.getAllCareerProgramCodes();
+          const response = await ApiService.getAllActiveCareerProgramCodes();
           this.setCareerProgramCodes(response.data);
         }
         if(this.enrolledGradeCodesMap.size === 0) {
-          const response = await ApiService.getAllEnrolledGradeCodes();
+          const response = await ApiService.getAllActiveEnrolledGradeCodes();
           this.setEnrolledGradeCodes(response.data);
         }
         if(this.enrolledProgramCodesMap.size === 0) {
-          const response = await ApiService.getAllEnrolledProgramCodes();
+          const response = await ApiService.getAllActiveEnrolledProgramCodes();
           this.setEnrolledProgramCodes(response.data);
         }
         if(this.genderCodesMap.size === 0) {
-          const response = await ApiService.getAllGenderCodes();
+          const response = await ApiService.getAllActiveGenderCodes();
           this.setGenderCodes(response.data);
         }
         if(this.homeLanguageSpokenCodesMap.size === 0) {
-          const response = await ApiService.getAllHomeLanguageSpokenCodes();
+          const response = await ApiService.getAllActiveHomeLanguageSpokenCodes();
           this.setHomeLanguageSpokenCodes(response.data);
         }
         if(this.schoolFundingCodesMap.size === 0) {
-          const response = await ApiService.getAllSchoolFundingCodes();
+          const response = await ApiService.getAllActiveSchoolFundingCodes();
           this.setSchoolFundingCodes(response.data);
         }
         if(this.specialEducationCodesMap.size === 0) {
-          const response = await ApiService.getAllSpecialEdCodes();
+          const response = await ApiService.getAllActiveSpecialEdCodes();
           this.setSpecialEducationCodes(response.data);
         }
         if(this.validationIssueTypeCodesMap.size === 0) {
