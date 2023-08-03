@@ -13,7 +13,7 @@ import {isValidPEN} from '../../utils/validation';
 // }
 
 export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
-  LOCAL_ID: {label: 'Local Id', key: 'localID', type: 'input', options: {}},
+  LOCALID: {label: 'Local ID', key: 'localID', type: 'input', options: {}},
   STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {rules: [v => (!v || isValidPEN(v) || 'Invalid PEN')]}},
   LEGAL_FIRST_NAME: {label: 'Legal First Name', key: 'legalFirstName', type: 'input', options: {}},
   LEGAL_MIDDLE_NAMES: {label: 'Legal Middle Name', key: 'legalMiddleNames', type: 'input', options: {}},
