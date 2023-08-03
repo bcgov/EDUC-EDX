@@ -207,14 +207,14 @@
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrSpace(item.value.legalLastName)}, ${fieldOrSpace(item.value.legalFirstName)} ${fieldOrSpace(item.value.legalMiddleNames)}` }}
+                          {{ getLegalName(item.value.legalFirstName, item.value.legalMiddleNames, item.value.legalLastName) }}
                         </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrSpace(item.value.usualLastName)}, ${fieldOrSpace(item.value.usualFirstName)} ${fieldOrSpace(item.value.usualMiddleNames)}` }}
+                          {{ getLegalName(item.value.usualFirstName, item.value.usualMiddleNames, item.value.usualLastName) }}
                         </span>
                       </v-col>
                     </v-row>
@@ -991,7 +991,16 @@ const getValidationIssueSeverityCodeLabel = (severityCode) => {
 
 const fieldOrHyphen = (field) => field || '-';
 
-const fieldOrSpace = (field) => field || '';
+const getLegalName = (first, middle, last) => {
+  if(first && middle){
+    return last + ', ' + first + ', ' + middle;
+  }else if(first){
+    return last + ', ' + first;
+  }else if(last){
+    return last;
+  }
+  return '';
+};
 
 const formatAndSortValidationIssues = (validationIssues = []) => {
   let validationIssueMap = new Map();
