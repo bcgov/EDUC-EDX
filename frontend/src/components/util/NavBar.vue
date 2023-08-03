@@ -227,14 +227,12 @@ export default {
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
-          link: { name: 'districtDetails'},
-          queryParam: {districtID: this.userInfo.activeInstituteIdentifier},
+          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
-          link: { name: 'districtContacts'},
-          queryParam: {districtID: this.userInfo.activeInstituteIdentifier},
+          link: { name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
