@@ -20,7 +20,7 @@
             class="menuRow"
           >
             <router-link
-              :to="{ path: item.link }"
+              :to="item.link"
               :target="item.newTab ? '_blank' : '_self'"
 
               class="router"
@@ -69,7 +69,7 @@
               class="subMenuRow pl-9"
             >
               <router-link
-                :to="{ name: subItem.link }"
+                :to="subItem.link"
                 :target="subItem.newTab ? '_blank' : '_self'"
                 class="router"
               >
@@ -197,42 +197,44 @@ export default {
       this.items = [
         {
           title: PAGE_TITLES.DASHBOARD,
-          link: 'home',
+          link: { name: 'home'},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT' || this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.EXCHANGE,
-          link: 'inbox',
+          link: { name: 'inbox'},
           authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
         },
         {
           title: PAGE_TITLES.SCHOOL_DETAILS,
-          link: 'schoolDetails/'+ this.userInfo.activeInstituteIdentifier,
+          link: { name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.SCHOOL_CONTACTS,
-          link: 'schoolContacts/'+ this.userInfo.activeInstituteIdentifier,
+          link: { name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.DATA_COLLECTION,
-          link: 'open-collection-summary/'+ this.userInfo.activeInstituteIdentifier,
+          link: { name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.SCHOOLS,
-          link: 'schools',
+          link: { name: 'schools'},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
-          link: 'districtDetails/'+ this.userInfo.activeInstituteIdentifier,
+          link: { name: 'districtDetails'},
+          queryParam: {districtID: this.userInfo.activeInstituteIdentifier},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
-          link: 'districtContacts/'+ this.userInfo.activeInstituteIdentifier,
+          link: { name: 'districtContacts'},
+          queryParam: {districtID: this.userInfo.activeInstituteIdentifier},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
@@ -241,12 +243,12 @@ export default {
           items: [
             {
               title: 'School User Management',
-              link: 'schoolAccess',
+              link: { name: 'schoolAccess'},
               authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
             },
             {
               title: 'District User Management',
-              link: 'districtAccess',
+              link: { name: 'districtAccess'},
               authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
             }
           ],
