@@ -710,8 +710,7 @@ import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 
-import {setSuccessAlert} from '../composable/alertComposable';
-import {setFailureAlert} from '../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
