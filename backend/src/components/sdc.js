@@ -4,6 +4,7 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -166,7 +167,6 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
-
     let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
 
     await validateEdxUserAccess(token, req, res, sdcSchoolCollectionStudentData.sdcSchoolCollectionID);
@@ -177,13 +177,42 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
-    if(e?.status === 404){
-      res.status(HttpStatus.OK).json(null);
-    } else {
-      log.error('Error getting sdc school collection student detail', e.stack);
-      return handleExceptionResponse(e, res);
-    }
+     log.error('Error getting sdc school collection student detail', e.stack);
+     return handleExceptionResponse(e, res);
   }
+}
+
+async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
+  try{
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    const payload = req.body;
+    payload.createDate = null;
+    payload.createUser = null;
+    payload.updateDate = null;
+    payload.updateUser = null;
+
+    if(payload?.enrolledProgramCodes) {
+      payload.enrolledProgramCodes = payload.enrolledProgramCodes.join();
+    }
+
+    if(payload?.dob) {
+      payload.dob = LocalDate.parse(payload.dob, DateTimeFormatter.ofPattern('uuuu-MM-dd')).format(DateTimeFormatter.ofPattern('uuuuMMdd'));
+    }
+
+    payload.sdcSchoolCollectionStudentValidationIssues = null;
+    payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
+    
+    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error updating sdc school collection student detail', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+
 }
 
 async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
@@ -236,5 +265,6 @@ module.exports = {
   getSchoolCollectionById,
   getSDCSchoolCollectionStudentPaginated,
   getSDCSchoolCollectionStudentSummaryCounts,
-  getSDCSchoolCollectionStudentDetail
+  getSDCSchoolCollectionStudentDetail,
+  updateAndValidateSdcSchoolCollectionStudent
 };

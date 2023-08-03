@@ -224,7 +224,10 @@
             </v-data-table-server>
           </div>
         </v-col>
-        <v-col cols="9">
+        <v-col
+          v-if="showStudentDetails()"
+          cols="9"
+        >
           <Spinner v-if="isLoading()" />
           <div
             v-else
@@ -539,87 +542,92 @@
                             </h3>
                           </v-col>
                         </v-row>
-                        <v-row no-gutters>
+                        <v-row>
                           <v-col>
                             <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }}</span>
                           </v-col>
                         </v-row>
-                        <v-row>
-                          <v-col>
-                            <div
-                              v-for="(field) in issue.validationIssueFieldCode"
-                              :key="field"
-                            >
-                              <v-text-field
-                                v-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'input'"
-                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationTextInput`"
-                                v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                density="compact"
-                                variant="underlined"
-                              />
-                              <v-autocomplete
-                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
-                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
-                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
-                                item-title="dropdownText"
-                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                              />
-                              <v-autocomplete
-                                v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
-                                :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
-                                v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
-                                item-title="dropdownText"
-                                :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                multiple
-                                :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
-                                @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
-                              />
-                              <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'datePicker'">
-                                <v-menu
-                                  id="dobValidationDatePicker"
-                                  ref="dobDateFilter"
-                                  :close-on-content-click="false"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
-                                >
-                                  <template #activator="{ on, attrs }">
-                                    <v-text-field
-                                      :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDatePicker`"
-                                      v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                      :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                      class="pt-0 mt-0"
-                                      variant="underlined"
-                                      label="Start Date"
-                                      prepend-inner-icon="mdi-calendar"
-                                      clearable
-                                      readonly
-                                      v-bind="attrs"
-                                      @click:clear="clearDobDate"
-                                      @click="openDobDatePicker"
-                                    />
-                                  </template>
-                                </v-menu>
-                                <VueDatePicker
-                                  ref="dobDatePicker"
+                        <v-form
+                          ref="form"
+                          v-model="isValid"
+                        >
+                          <v-row>
+                            <v-col>
+                              <div
+                                v-for="(field) in issue.validationIssueFieldCode"
+                                :key="field"
+                              >
+                                <v-text-field
+                                  v-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'input'"
+                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationTextInput`"
+                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                  density="compact"
+                                  variant="underlined"
+                                />
+                                <v-autocomplete
+                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'select'"
+                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
                                   v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
                                   :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :enable-time-picker="false"
-                                  format="yyyy-MM-dd"
-                                  @update:model-value="saveDobDate"
+                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                  item-title="dropdownText"
+                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
                                 />
+                                <v-autocomplete
+                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'multiselect'"
+                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
+                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                  item-title="dropdownText"
+                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                  multiple
+                                  :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
+                                  @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
+                                />
+                                <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field].type === 'datePicker'">
+                                  <v-menu
+                                    id="dobValidationDatePicker"
+                                    ref="dobDateFilter"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="auto"
+                                  >
+                                    <template #activator="{ on, attrs }">
+                                      <v-text-field
+                                        :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDatePicker`"
+                                        v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                        :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                        class="pt-0 mt-0"
+                                        variant="underlined"
+                                        label="Start Date"
+                                        prepend-inner-icon="mdi-calendar"
+                                        clearable
+                                        readonly
+                                        v-bind="attrs"
+                                        @click:clear="clearDobDate"
+                                        @click="openDobDatePicker"
+                                      />
+                                    </template>
+                                  </v-menu>
+                                  <VueDatePicker
+                                    ref="dobDatePicker"
+                                    v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
+                                    :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                    :enable-time-picker="false"
+                                    format="yyyy-MM-dd"
+                                    @update:model-value="saveDobDate"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </v-col>
-                        </v-row>
+                            </v-col>
+                          </v-row>
+                        </v-form>
                       </v-timeline-item>
                     </v-timeline>
                   </v-col>
@@ -639,6 +647,7 @@
                 <PrimaryButton
                   id="saveAndRefreshButton"
                   text="Save & Refresh List"
+                  :click-action="save"
                 />
                 <v-btn
                   icon="mdi-arrow-right-circle-outline"
@@ -651,6 +660,16 @@
               </v-col>
             </v-row>
           </div>
+        </v-col>
+        <v-col v-else>
+          <v-row>
+            <v-col class="d-flex justify-start">
+              <h3>Student Record</h3>
+            </v-col>
+          </v-row>
+          <p class="clear-message">
+            Congratulations! There are no errors or warnings in the 1701 Submission
+          </p>
         </v-col>
       </v-row>
       <v-row
@@ -691,7 +710,7 @@ import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 
-import {setFailureAlert} from '../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
@@ -704,6 +723,8 @@ const props = defineProps({
     default: null
   }
 });
+const isValid = ref(false);
+const form = ref<HTMLFormElement>(null);
 
 const emit = defineEmits(['next']);
 
@@ -742,6 +763,10 @@ const nextButtonIsDisabled = () => {
   return summaryCounts.value.error > 0 || isLoading();
 };
 //end next logic
+
+const showStudentDetails = () => {
+  return totalStudents.value > 0;
+};
 
 //page summary counts
 const loadingCount = ref(0);
@@ -802,7 +827,9 @@ const getSDCSchoolCollectionStudentPaginated = () => {
 
 //arrow navigation
 watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
-  getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+  if(selectedSdcStudentID.value) {
+    getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+  }
 });
 
 const studentSelected = (sdcSchoolCollectionStudentID) => {
@@ -854,6 +881,21 @@ const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
       setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
     }).finally(() => {
       loadingCount.value -= 1;
+    });
+};
+
+
+const save = () => {
+  ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/student/${selectedSdcStudentID.value}`, sdcSchoolCollectionStudentDetailCopy.value)
+    .then(() => {
+      setSuccessAlert('Success! The student details have been updated.');
+    }).catch(error => {
+      console.error(error);
+      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+    }).finally(() => {
+      selectedSdcStudentID.value= null;
+      getSummaryCounts();
+      getSDCSchoolCollectionStudentPaginated();
     });
 };
 
@@ -1002,6 +1044,11 @@ const isLoading = () => {
     border-radius: 5px;
     padding: 35px;
     margin-bottom: 2em;
+  }
+
+  .clear-message {
+    background-color: palegreen;
+    padding: 5px;
   }
 
  .inner-border {
