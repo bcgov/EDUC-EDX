@@ -207,14 +207,14 @@
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.legalLastName)}, ${fieldOrHyphen(item.value.legalFirstName)} ${fieldOrSpace(item.value.legalMiddleNames)}` }}
+                          {{ `${fieldOrSpace(item.value.legalLastName)}, ${fieldOrSpace(item.value.legalFirstName)} ${fieldOrSpace(item.value.legalMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ `${fieldOrHyphen(item.value.usualLastName)}, ${fieldOrHyphen(item.value.usualFirstName)} ${fieldOrSpace(item.value.usualMiddleNames)}` }}
+                          {{ `${fieldOrSpace(item.value.usualLastName)}, ${fieldOrSpace(item.value.usualFirstName)} ${fieldOrSpace(item.value.usualMiddleNames)}` }}
                         </span>
                       </v-col>
                     </v-row>
