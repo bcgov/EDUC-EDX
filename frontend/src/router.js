@@ -348,13 +348,13 @@ router.beforeEach((to, _from, next) => {
         next('/token-expired');
       } else {
         aStore.getUserInfo().then(() => {
-          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwn(aStore.userInfo,'activeInstitutePermissions'))) {
+          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions'))) {
             if(to.fullPath === '/institute-selection'){
               next();
             }else{
               next('/institute-selection');
             }
-          }else if (to.meta.permission && (!Object.prototype.hasOwn(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
           }else if (to && to.meta) {
             if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
