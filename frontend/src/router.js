@@ -25,12 +25,12 @@ import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictU
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
 import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
-import StepOneSchoolDetails from './components/sdcCollection/StepOneSchoolDetails.vue';
-import StepTwoSchoolContacts from './components/sdcCollection/StepTwoSchoolContacts.vue';
-import StepThreeUploadData from './components/sdcCollection/StepThreeUploadData.vue';
-import StepFourValidateData from './components/sdcCollection/StepFourValidateData.vue';
+import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
+import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
+import StepOneUploadData from './components/sdcCollection/StepOneUploadData.vue';
+import StepTwoValidateData from './components/sdcCollection/StepTwoValidateData.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
-import StepFiveVerifyData from './components/sdcCollection/stepFiveVerifyData/StepFiveVerifyData.vue';
+import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
 
 // a comment for commit.
@@ -282,7 +282,7 @@ const router = createRouter({
             {
               path: 'step-1',
               name: 'step-1',
-              component: StepOneSchoolDetails,
+              component: StepOneUploadData,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
@@ -293,7 +293,7 @@ const router = createRouter({
             {
               path: 'step-2',
               name: 'step-2',
-              component: StepTwoSchoolContacts,
+              component: StepTwoValidateData,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
@@ -303,7 +303,7 @@ const router = createRouter({
             {
               path: 'step-3',
               name: 'step-3',
-              component: StepThreeUploadData,
+              component: StepThreeVerifyData,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
@@ -313,7 +313,7 @@ const router = createRouter({
             {
               path: 'step-4',
               name: 'step-4',
-              component: StepFourValidateData,
+              component: StepFourSchoolDetails,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
@@ -323,7 +323,18 @@ const router = createRouter({
             {
               path: 'step-5',
               name: 'step-5',
-              component: StepFiveVerifyData,
+              component: StepFiveSchoolContacts,
+              meta: {
+                pageTitle: PAGE_TITLES.SDC,
+                requiresAuth: true,
+                permission: 'STUDENT_DATA_COLLECTION'
+              }
+            },
+            {
+              path: 'step-6',
+              name: 'step-6',
+              // To be implemented
+              component: StepFiveSchoolContacts,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,

@@ -1,7 +1,7 @@
 import * as formRules from '../../utils/institute/formRules';
 import {isValidPEN} from '../../utils/validation';
 
-// contains the mappings for validation field errors used in StepFourValidateData.vue
+// contains the mappings for validation field errors used in StepTwoValidateData.vue
 // type: refers to the type of user input example input => <v-text-input>, select => <v-select>
 // label: refers to label in input field.
 // key: refers to the property in sdcSchoolCollectionStudent.

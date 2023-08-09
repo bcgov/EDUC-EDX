@@ -135,7 +135,7 @@ export default {
       return this.schoolCollectionID !== null;
     },
     calcuateStep() {
-      if(this.currentStepInCollectionProcess?.index <= 4) {
+      if(this.currentStepInCollectionProcess?.index <= 5) {
         this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index;
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
