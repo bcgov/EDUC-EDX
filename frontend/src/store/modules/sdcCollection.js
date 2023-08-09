@@ -140,16 +140,16 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
       case 'NEW':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
         break;
-      case 'SCH_D_VRFD':
+      case 'LOADED':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-2'));
         break;
-      case 'SCH_C_VRFD':
+      case 'REVIEWED':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-3'));
         break;
-      case 'LOADED': 
+      case 'SCH_D_VRFD':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-4'));
         break;
-      case 'REVIEWED':
+      case 'SCH_C_VRFD':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-5'));
         break;
       default: 
