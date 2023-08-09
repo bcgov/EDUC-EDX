@@ -243,7 +243,7 @@ export default {
       requiredRules: [v => !!v || 'Required'],
       fileRules: [
         value => {
-          let ret = !value || !value.length || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
+          let ret = !value || value.length === 0 || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
           if (ret !== true) {
             this.setFailureAlert(ret);
           }
