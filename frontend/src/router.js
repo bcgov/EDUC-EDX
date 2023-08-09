@@ -329,17 +329,6 @@ const router = createRouter({
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
               }
-            },
-            {
-              path: 'step-6',
-              name: 'step-6',
-              // To be implemented
-              component: StepFiveSchoolContacts,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
             }
           ]
         }
