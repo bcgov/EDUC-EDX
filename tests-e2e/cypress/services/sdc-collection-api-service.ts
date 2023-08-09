@@ -1,6 +1,12 @@
 // @ts-ignore
 import {LocalDate, LocalDateTime} from '@js-joda/core';
 import {RestUtils} from "../helpers/rest-utils-ts";
+import {
+    InstituteApiService,
+    InstituteOptions,
+    SchoolContactPayload,
+    SchoolOptions
+} from "../services/institute-api-service";
 
 const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
@@ -17,7 +23,7 @@ export class SdcCollectionApiService {
         this.restUtils = new RestUtils(this.config);
     }
 
-    async createSchoolCollection(schoolID: string){
+    async createSchoolCollection(school: SchoolEntity){
         console.log('AT createSchoolCollection started');
 
         let curDate = LocalDateTime.now();
@@ -30,7 +36,7 @@ export class SdcCollectionApiService {
             await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
         }
 
-        const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolID;
+        const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + school.schoolId;
         try{
             const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
             await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.data.sdcSchoolCollectionID);
@@ -49,7 +55,9 @@ export class SdcCollectionApiService {
         };
 
         const url = `${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}`;
+        console.log('a1', url);
         const newCollection = await this.restUtils.postData(url, collectionPayload);
+        console.log('a1a', newCollection);
 
         const sdcSchoolCollectionPayload = {
             'createUser': 'EDXAT',
@@ -58,7 +66,8 @@ export class SdcCollectionApiService {
             'updateDate': null,
             'sdcSchoolCollectionID': null,
             'collectionID': newCollection.collectionID,
-            'schoolID': schoolID,
+            'schoolID': school.schoolId,
+            'districtID': school.districtId,
             'uploadDate': null,
             'uploadFileName': null,
             'sdcSchoolCollectionStatusCode': 'NEW',
@@ -67,7 +76,9 @@ export class SdcCollectionApiService {
             'collectionCloseDate': curCloseDate
         };
         const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + newCollection.collectionID;
+        console.log('a2', urlSdcSchoolCollection);
         const schoolCollectionResponse = await this.restUtils.postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
+        console.log('a2a', schoolCollectionResponse);
 
         console.log('AT createSchoolCollection completed');
         return schoolCollectionResponse?.sdcSchoolCollectionID;

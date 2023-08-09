@@ -1,5 +1,8 @@
 import {SdcCollectionApiService} from "../services/sdc-collection-api-service";
 
+import {
+    InstituteOptions, SchoolOptions,
+} from "../services/institute-api-service";
 export class CollectionSetupUtils {
 
     config: Cypress.PluginConfigOptions;
@@ -10,7 +13,7 @@ export class CollectionSetupUtils {
         this.sdcCollectionApi = new SdcCollectionApiService(this.config);
     }
 
-    async setUpSchoolCollection(schoolID: string) {
-        await this.sdcCollectionApi.createSchoolCollection(schoolID);
+    async setUpSchoolCollection(school: SchoolEntity) {
+        await this.sdcCollectionApi.createSchoolCollection(school);
     };
 }

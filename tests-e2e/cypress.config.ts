@@ -46,7 +46,7 @@ export default defineConfig({
   viewportWidth: 1920,
   defaultCommandTimeout: 5000,
   e2e: {
-    baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
+    baseUrl: 'https://localhost:8081',
     setupNodeEvents(on, config) {
       on('task', {
         'dataLoad': async (options: InstituteOptions) => {
@@ -60,8 +60,8 @@ export default defineConfig({
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
         },
-        'setup-collections': async (schoolId: string) => {
-          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
+        'setup-collections': async (school: SchoolEntity) => {
+          await new CollectionSetupUtils(config).setUpSchoolCollection(school);
           return null;
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
