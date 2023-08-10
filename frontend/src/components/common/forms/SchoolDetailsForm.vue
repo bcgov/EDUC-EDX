@@ -5,17 +5,15 @@
   >
     <v-row
       v-if="!loading && editing"
-      class="d-flex justify-center"
+      class="d-flex justify-center mb-0"
     >
       <v-col>
         <v-alert
           id="nonEditableAlert"
-          style="color: rgb(0, 51, 102)"
-          color="#E9EBEF"
-          class="pa-5 mb-0"
+          color="#003366"
           icon="mdi-help-circle-outline"
-          dense
           type="info"
+          variant="tonal"
         >
           <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
@@ -40,7 +38,7 @@
       <v-col>
         <v-row class="d-flex justify-start">
           <v-col
-            cols="6"
+            cols="11"
             class="d-flex justify-start"
           >
             <h2 id="schoolMincodeTitle">
@@ -53,8 +51,9 @@
               <div id="schoolDisplayNameTitle">
                 <h2>{{ school.displayName }}</h2>
               </div>
-              <div id="schoolNameNoSpecialChars"
+              <div
                 v-if="school.displayNameNoSpecialChars"
+                id="schoolNameNoSpecialChars"
                 class="safe-name"
               >
                 {{ school.displayNameNoSpecialChars }}
@@ -63,13 +62,13 @@
           </v-col>
           <v-col
             v-if="!editing"
-            cols="6"
+            cols="1"
             class="d-flex justify-end"
           >
             <PrimaryButton
               v-if="showContactButton()"
               id="viewContactsButton"
-              class="mr-2 mb-3"
+              class="mr-2"
               secondary
               icon="mdi-account-multiple-outline"
               text="View School Contacts"
@@ -78,7 +77,7 @@
             <PrimaryButton
               v-if="canEditSchoolDetails()"
               id="schoolDetailsEditButton"
-              class="mr-0 mb-3"
+              class="mr-0"
               icon="mdi-pencil"
               text="Edit"
               :click-action="toggleEdit"
@@ -86,7 +85,7 @@
           </v-col>
           <v-col
             v-else
-            cols="6"
+            cols="1"
             class="d-flex justify-end mt-2"
           >
             <PrimaryButton
@@ -110,7 +109,7 @@
           v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)"
           class="d-flex justify-start"
         >
-          <v-col class="d-flex">
+          <v-col class="d-flex pt-0">
             <div
               class="ministryOwnershipTeamName"
               style="color: black"
@@ -458,9 +457,9 @@
                 />
                 <span
                   v-else
+                  id="schoolGradesValue"
                   class="ministryLine"
                   style="color: black"
-                  id="schoolGradesValue"
                 >
                   {{ getGradesOffered(school.grades) }}
                 </span>
@@ -1026,7 +1025,7 @@ export default {
       default: null
     }
   },
-  emits: ['is-form-valid'],
+  emits: ['is-form-valid', 'edit-toggled'],
   data() {
     return {
       school: '',
@@ -1296,11 +1295,13 @@ export default {
       this.addAddressesIfRequired(this.schoolDetailsCopy);
       this.sortGrades();
       this.editing = !this.editing;
+      this.$emit('edit-toggled', this.editing);
       await this.$nextTick();
       this.$refs.schoolDetailsForm.validate();
     },
     cancelClicked(){
       this.editing = false;
+      this.$emit('edit-toggled', this.editing);
       this.setHasSamePhysicalFlag();
       this.$emit('is-form-valid', this.hasRequiredFieldValues());
     },
