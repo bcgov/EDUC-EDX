@@ -49,7 +49,7 @@
         id="nextButton"
         class="mr-2 mb-3"           
         icon="mdi-check"
-        text="Verify as Correct & Submit"
+        text="Verify as Correct"
         :click-action="next"
       />
     </v-row>
