@@ -58,7 +58,6 @@
     <v-row v-else>
       <v-col cols="2">
         <StepperComponent
-          id="stepperComponent"
           :steps="steps"
           :next-event="registerNextEvent"
           @on-navigation-complete="navigationCompleted()"

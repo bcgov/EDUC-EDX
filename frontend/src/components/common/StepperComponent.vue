@@ -8,6 +8,7 @@
         @click="onStepClick(step)"
       >
         <v-col
+          :id="step.id"
           class="step-base"
           cols="9"
         >
