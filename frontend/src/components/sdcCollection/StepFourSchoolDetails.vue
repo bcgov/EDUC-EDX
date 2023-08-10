@@ -4,15 +4,26 @@
     fluid
   >
     <div class="border">
-      <v-row>
+      <v-row
+        v-if="displayBanner"
+        class="mb-0"
+      >
         <v-col>
-          <p>Please review and verify that the details on the record for the school are accurate.</p>
+          <v-alert
+            density="compact"
+            color="#003366"
+            type="info"
+            variant="tonal"
+          >
+            Please review and verify that the details on the record for the school are accurate.
+          </v-alert>
         </v-col>
       </v-row>
 
       <SchoolDetailsForm
         :function-name="type"
         @is-form-valid="checkFormValidity"
+        @edit-toggled="toggleBanner"
       />
     </div>
       
@@ -66,7 +77,8 @@ export default {
     return {
       type: 'SDC',
       isDisabled: false,
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      displayBanner: true
     };
   },
   computed: {
@@ -98,6 +110,9 @@ export default {
     },
     checkFormValidity(value) {
       this.isDisabled = !value;
+    },
+    toggleBanner(value) {
+      this.displayBanner = !value;
     }
   }
 };

@@ -6,7 +6,14 @@
     <div class="border">
       <v-row>
         <v-col>
-          <p>Please review and verify that the details on the record for the school are accurate.</p>
+          <v-alert
+            density="compact"
+            color="#003366"
+            type="info"
+            variant="tonal"
+          >
+            Please review and verify that the details on the record for the school are accurate.
+          </v-alert>
         </v-col>
       </v-row>
 
