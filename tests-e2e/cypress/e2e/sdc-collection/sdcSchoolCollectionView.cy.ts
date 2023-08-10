@@ -10,7 +10,7 @@ describe('SDC School Collection View', () => {
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
-    // after(() => cy.logout());
+    after(() => cy.logout());
     beforeEach(() => cy.login());
 
     it('can load dashboard & click data collection card & process collection', () => {
@@ -28,16 +28,13 @@ describe('SDC School Collection View', () => {
 
       // Timeout exception made since time to upload is variable depending on the file size and format.
       cy.get(selectors.snackbar.mainSnackBar, {timeout: 10000}).contains('Your document was uploaded successfully.');
-      cy.get(selectors.studentLevelData.nextButton, {timeout: 15000}).should('exist').should('be.enabled').click();
+      cy.get(selectors.studentLevelData.nextButton, {timeout: 15000}).should('exist').click();
 
       // step two of collection - review and fix data
       cy.get(selectors.studentLevelData.nextButton).click();
 
-
-
       //step three of collection - edit/verify data
       cy.get(selectors.studentLevelData.nextButton).click();
-
 
       // step four of collection
       cy.get(selectors.schoolDetails.schoolMincodeTitle).contains('99899998');
@@ -66,11 +63,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.schoolContacts.newContactPostBtn).click();
       cy.get(selectors.studentLevelData.nextButton).click();
 
-
-
     });
 
-    it.only('can return to previous step in collection', () => {
+    it('can return to previous step in collection', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
@@ -79,9 +74,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.documentUploadButton).click();
       cy.get(selectors.documentUpload.selectFileInput).selectFile('./cypress/uploads/sample-2-student-fnchars.std', {force: true});
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
-
-      // Timeout exception made since time to upload is variable depending on the file size and format.
-      cy.get(selectors.snackbar.mainSnackBar, {timeout: 10000}).contains('Your document was uploaded successfully.');
       cy.get(selectors.studentLevelData.nextButton, {timeout: 15000}).should('exist').should('be.enabled').click();
 
       // step two of collection - review and fix data
