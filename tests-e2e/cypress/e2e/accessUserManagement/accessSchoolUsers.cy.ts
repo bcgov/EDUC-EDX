@@ -64,6 +64,7 @@ function navigateToNewUserInvites() {
   cy.visit('/');
   cy.get(selectors.dashboard.title).should('exist').contains('Dashboard | EDX Automation Testing School');
   cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
+  cy.get(selectors.hamburgerMenu.administrationMenuOption).click();
   cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
   cy.get(selectors.newUserInvites.newUserButton).click();
 }
