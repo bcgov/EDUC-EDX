@@ -60,8 +60,8 @@ export default defineConfig({
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
         },
-        'setup-collections': async (schoolId: string) => {
-          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolId);
+        'setup-collections': async (school: SchoolEntity) => {
+          await new CollectionSetupUtils(config).setUpSchoolCollection(school);
           return null;
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {

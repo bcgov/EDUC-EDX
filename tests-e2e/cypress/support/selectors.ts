@@ -198,6 +198,12 @@ export default {
     formHint: 'p.form-hint',
     nextButton: '#nextButton',
     documentUploadButton: '#uploadButton',
+    stepOne:'#step-1',
+    stepTwo:'#step-2',
+    stepThree:'#step-3',
+    stepFour:'#step-4',
+    stepFive:'#step-5',
+    stepSix:'#step-6',
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
