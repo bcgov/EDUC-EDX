@@ -28,7 +28,24 @@ router.get('/', (_req, res) => {
   });
 });
 
-function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
+function addOIDCRouterActivateWithTenant(strategyName, callbackURI, redirectURL) {
+  router.get(callbackURI,
+    passport.authenticate(strategyName, {
+      failureRedirect: 'error'
+    }),
+    (req, res) => {
+      const userInfo = getSessionUser(req);
+      const isValidTenant = userInfo._json.isValidTenant;
+      if(!isValidTenant  || isValidTenant !== 'true'){
+        log.info('Not a valid tenant, redirecting to Unauthorized Page');
+        res.redirect(config.get('server:frontend') + '/unauthorized');
+      }
+      res.redirect(redirectURL);
+    }
+  );
+}
+
+function addOIDCRouterActivate(strategyName, callbackURI, redirectURL) {
   router.get(callbackURI,
     passport.authenticate(strategyName, {
       failureRedirect: 'error'
@@ -39,10 +56,10 @@ function addOIDCRouterGet(strategyName, callbackURI, redirectURL) {
   );
 }
 
-addOIDCRouterGet('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
-addOIDCRouterGet('oidcBceidActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
-addOIDCRouterGet('oidcEntraActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
-addOIDCRouterGet('oidcEntraActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
+addOIDCRouterActivate('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
+addOIDCRouterActivate('oidcBceidActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
+addOIDCRouterActivateWithTenant('oidcEntraActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
+addOIDCRouterActivateWithTenant('oidcEntraActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
 
 router.get('/callback_bceid',
   passport.authenticate('oidcBceid', {
