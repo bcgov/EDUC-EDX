@@ -10,6 +10,7 @@
       <v-col>
         <v-alert
           id="nonEditableAlert"
+          density="compact"
           color="#003366"
           icon="mdi-help-circle-outline"
           type="info"
