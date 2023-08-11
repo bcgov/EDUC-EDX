@@ -54,7 +54,7 @@ export default {
     editDistrictDetailsButton: '#editButton',
     editDistrictEmail: '#districtEmail',
     editDistrictPhone: '#districtPhone',
-    editDistrictWorkPhone: '#input-31',
+    editDistrictFax: '#districtFax',
     editMailingAddressCountry: '#mailAddressCountry',
     editMailingAddressLine1: '#mailAddressLine1',
     editMailingAddressProvince: '#mailAddressProvince',

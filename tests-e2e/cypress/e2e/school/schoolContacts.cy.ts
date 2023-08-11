@@ -93,22 +93,6 @@ describe('School Contacts Page', () => {
       });
     });
 
-    it('Can remove contact', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
-      cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
-      cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
-      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
-      cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
-      cy.get(selectors.schoolContacts.deleteContactButton).click();
-      cy.on('window:confirm', (str) => {
-        expect(str).to.equal('Please Confirm, Are you sure you want to remove this contact?');
-      })
-      cy.get(selectors.schoolContacts.resolveButton).click();
-      cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'School contact removed successfully');
-    });
-
     it('can create a new school contact - vice principal', () => {
       cy.visit('/schools');
       cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing District');
@@ -158,6 +142,22 @@ describe('School Contacts Page', () => {
       cy.get(selectors.schoolContacts.deleteContactButton).click();
       cy.get(selectors.schoolContacts.deleteConfirmButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('include.text','School contact removed successfully');
+    });
+
+    it('Can remove contact', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
+      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
+      cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
+      cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
+      cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
+      cy.get(selectors.schoolContacts.deleteContactButton).click();
+      cy.on('window:confirm', (str) => {
+        expect(str).to.equal('Please Confirm, Are you sure you want to remove this contact?');
+      })
+      cy.get(selectors.schoolContacts.resolveButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'School contact removed successfully');
     });
 
   });

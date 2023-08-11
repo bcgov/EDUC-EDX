@@ -40,8 +40,8 @@ describe('District Details Interface Test', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
-      cy.get(selectors.districtDetails.editDistrictPhone).clear().type('333-777-5555');
-      cy.get(selectors.districtDetails.editDistrictWorkPhone).clear().type('111-222-3333');
+      cy.get(selectors.districtDetails.editDistrictPhone).clear().type('250-555-5555');
+      cy.get(selectors.districtDetails.editDistrictFax).clear().type('111-222-3333');
       cy.get(selectors.districtDetails.editDistrictEmail).clear().type('automation@testing.com');
       cy.get(selectors.districtDetails.editMailingAddressLine1).clear().type('1234 Main St');
       cy.get(selectors.districtDetails.editAddressMailCity).clear().type('Victoria');
@@ -63,8 +63,8 @@ describe('District Details Interface Test', () => {
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
-      cy.get(selectors.districtDetails.editDistrictPhone).should('have.value', '3337775555');
-      cy.get(selectors.districtDetails.editDistrictWorkPhone).should('have.value', '1112223333');
+      cy.get(selectors.districtDetails.editDistrictPhone).should('have.value', '2505555555');
+      cy.get(selectors.districtDetails.editDistrictFax).should('have.value', '1112223333');
       cy.get(selectors.districtDetails.editDistrictEmail).should('have.value','automation@testing.com');
       cy.get(selectors.districtDetails.editMailingAddressLine1).should('have.value','1234 Main St');
       cy.get(selectors.districtDetails.editAddressMailCity).should('have.value','Victoria');
