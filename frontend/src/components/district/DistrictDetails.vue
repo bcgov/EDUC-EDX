@@ -161,6 +161,7 @@
               </div>
               <v-text-field
                 v-else
+                id="districtFax"
                 v-model="districtCopy.faxNumber"
                 prepend-icon="mdi-fax"
                 variant="underlined"
