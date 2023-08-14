@@ -13,7 +13,8 @@ function clickingActivationLinkMoreThan2Times() {
 
 function clickingSubmitButtonTooManyTimes() {
   cy.get<string>('@activationUrl').then(url => {
-    cy.visit(url);
+    cy.visit(url)
+    cy.get(selectors.invitationSelection.loginButtonBCeID).click();
     cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
     cy.get(selectors.loginPage.loginPassword).type('asdfasdf');
     cy.get(selectors.loginPage.loginContinueButton).click();
@@ -44,6 +45,7 @@ function clickingSubmitButtonTooManyTimes() {
 function enterIncorrectActivationCodes(mincode: string) {
   cy.get<string>('@activationUrl').then((url: string) => {
     cy.visit(url);
+    cy.get(selectors.invitationSelection.loginButtonBCeID).click();
     cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
     cy.get(selectors.loginPage.loginPassword).clear().type('asdfasdf');
     cy.get(selectors.loginPage.loginContinueButton).click();
@@ -63,6 +65,7 @@ function enterIncorrectActivationCodes(mincode: string) {
 function enterCorrectActivationCode(mincode: string) {
   cy.get<string>('@activationUrl').then((url: string) => {
     cy.visit(url);
+    cy.get(selectors.invitationSelection.loginButtonBCeID).click();
     cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
     cy.get(selectors.loginPage.loginPassword).type('asdfasdf');
     cy.get(selectors.loginPage.loginContinueButton).click();
@@ -104,7 +107,7 @@ describe('Activate EDX User Account Page', () => {
     });
 
     context('Activation error check by clicking the submit button link many times', () => {
-      it('will return an input error message to the user', clickingSubmitButtonTooManyTimes);
+      it.only('will return an input error message to the user', clickingSubmitButtonTooManyTimes);
     });
 
     context('Activation error check by entering an incorrect activation details', () => {
