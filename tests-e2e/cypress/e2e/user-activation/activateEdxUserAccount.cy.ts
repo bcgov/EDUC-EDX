@@ -13,7 +13,7 @@ function clickingActivationLinkMoreThan2Times() {
 
 function clickingSubmitButtonTooManyTimes() {
   cy.get<string>('@activationUrl').then(url => {
-    cy.visit(url)
+    cy.visit(url);
     cy.get(selectors.invitationSelection.loginButtonBCeID).click();
     cy.get(selectors.loginPage.loginUsername).type('EdxUser11');
     cy.get(selectors.loginPage.loginPassword).type('asdfasdf');
