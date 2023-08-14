@@ -29,7 +29,7 @@
           >
             <v-col class="d-flex justify-center">
               <v-btn
-                id="login-button"
+                id="login-button-microsoft"
                 variant="outlined"
                 :href="getEntraRoute()"
                 class="ma-2"
@@ -53,7 +53,7 @@
           >
             <v-col class="d-flex justify-center">
               <v-btn
-                id="login-button"
+                id="login-button-bceid"
                 variant="outlined"
                 :href="getBCeIDRoute()"
                 class="ma-2"

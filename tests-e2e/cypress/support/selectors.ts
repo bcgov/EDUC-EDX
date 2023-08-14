@@ -79,6 +79,10 @@ export default {
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
   },
+  invitationSelection: {
+    loginButtonBCeID: '#login-button-bceid',
+    loginButtonMicrosoft: '#login-button-microsoft',
+  },
   loginPage: {
     loginUsername: '#user',
     loginPassword: '#password',
