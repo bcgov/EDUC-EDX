@@ -107,7 +107,7 @@ describe('Activate EDX User Account Page', () => {
     });
 
     context('Activation error check by clicking the submit button link many times', () => {
-      it.only('will return an input error message to the user', clickingSubmitButtonTooManyTimes);
+      it('will return an input error message to the user', clickingSubmitButtonTooManyTimes);
     });
 
     context('Activation error check by entering an incorrect activation details', () => {
