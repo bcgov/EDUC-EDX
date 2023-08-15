@@ -7,7 +7,7 @@
       <v-row>
         <v-col
           class="pr-0"
-          cols="3"
+          cols="4"
         >
           <Spinner v-if="isLoading()" />
           <div
@@ -16,11 +16,11 @@
           >
             <v-row>
               <v-col class="d-flex justify-center">
-                <h3>Summary of Data Issues</h3>
+                <h3>Data Issues</h3>
               </v-col>
             </v-row>
             <v-row>
-              <v-col class="mr-5">
+              <v-col cols="2" class="ml-4 mr-4">
                 <v-row>
                   <v-col class="d-flex justify-end">
                     <span>Errors</span>
@@ -48,24 +48,52 @@
                 class="border-opacity-75"
                 vertical
               />
-              <v-col class="ml-5 mr-5">
+              <v-col cols="4" class="ml-4 mr-4">
                 <v-row>
                   <v-col class="d-flex justify-start">
-                    <span>Warnings</span>
+                    <span>Funding Warnings</span>
                   </v-col>
                 </v-row>
                 <v-row
                   no-gutters
                   class="mt-1"
                 >
-                  <v-col class="d-flex justify-start">
+                  <v-col class="d-flex justify-center">
+                    <v-icon
+                      size="35"
+                      color="orange"
+                    >
+                      mdi-alert-outline
+                    </v-icon>
+                    <span style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-divider
+                :thickness="1"
+                inset
+                color="#b3b0b0"
+                class="border-opacity-75"
+                vertical
+              />
+              <v-col class="ml-4 mr-5">
+                <v-row>
+                  <v-col class="d-flex justify-center">
+                    <span>Info Warnings</span>
+                  </v-col>
+                </v-row>
+                <v-row
+                  no-gutters
+                  class="mt-1"
+                >
+                  <v-col class="d-flex justify-center">
                     <v-icon
                       size="35"
                       color="blue"
                     >
-                      mdi-alert-outline
+                    mdi-alert-circle-outline
                     </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.warning }}</span>
+                    <span style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
                   </v-col>
                 </v-row>
               </v-col>
@@ -186,9 +214,9 @@
                     <v-icon
                       class="mt-2 mr-3"
                       size="25"
-                      :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)"
+                      :color="getIssueIconColor(getStudentStatus(item.value))"
                     >
-                      {{ getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode) }}
+                      {{ getIssueIcon(getStudentStatus(item.value)) }}
                     </v-icon>
                   </v-col>
                   <v-col cols="5">
@@ -226,7 +254,6 @@
         </v-col>
         <v-col
           v-if="showStudentDetails()"
-          cols="9"
         >
           <Spinner v-if="isLoading()" />
           <div
@@ -790,7 +817,7 @@ const showStudentDetails = () => {
 
 //page summary counts
 const loadingCount = ref(0);
-const summaryCounts = ref({error: 0, warning: 0});
+const summaryCounts = ref({error: 0, infoWarning: 0, fundingWarning:0});
 
 const getSummaryCounts = () => {
   loadingCount.value += 1;
@@ -809,7 +836,7 @@ const getSummaryCounts = () => {
 //sdc school collection student list pagination
 const headerSearchParams = ref({
   penNumber: '',
-  sdcSchoolCollectionStudentStatusCode: 'ERROR, WARNING'
+  sdcSchoolCollectionStudentStatusCode: 'ERROR, INFO_WARNING, FUNDING_WARNING'
 });
 
 const pageNumber = ref(1);
@@ -984,8 +1011,10 @@ const getValidationIssueTypeCodesDescription = (key) => {
 const getValidationIssueSeverityCodeLabel = (severityCode) => {
   if (severityCode === 'ERROR') {
     return 'Error';
-  } else if (severityCode === 'WARNING') {
-    return 'Warning';
+  } else if (severityCode === 'INFO_WARNING') {
+    return 'Info Warning';
+  } else if (severityCode === 'FUNDING_WARNING') {
+    return 'Funding Warning';
   }
 };
 
@@ -1015,11 +1044,24 @@ const formatAndSortValidationIssues = (validationIssues = []) => {
   return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
 };
 
+const getStudentStatus = (student)  => {
+  let studentValidationIssues = student.sdcSchoolCollectionStudentValidationIssues;
+  if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'ERROR')) {
+    return 'ERROR';
+  } else if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'FUNDING_WARNING')) {
+    return 'FUNDING_WARNING';
+  } else {
+    return 'INFO_WARNING';
+  }
+}
+
 const getIssueIcon = (issue) => {
   switch (issue) {
   case 'ERROR':
     return 'mdi-alert-circle-outline';
-  case 'WARNING':
+  case 'INFO_WARNING':
+    return 'mdi-alert-circle-outline';
+  case 'FUNDING_WARNING':
     return 'mdi-alert-outline';
   default:
     return '';
@@ -1030,8 +1072,10 @@ const getIssueIconColor = (issue) => {
   switch (issue) {
   case 'ERROR':
     return '#d90606';
-  case 'WARNING':
+  case 'INFO_WARNING':
     return '#2196F3';
+  case 'FUNDING_WARNING':
+    return '#ff9800';
   default:
     return '';
   }
