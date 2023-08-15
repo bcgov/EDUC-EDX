@@ -163,7 +163,8 @@ export default {
       totalElements: 0,
       searchText: '',
       headerSearchParams: {
-        type: '' //this.config.defaultFilter
+        type: '', //this.config.defaultFilter
+        sdcSchoolCollectionStudentStatusCode: 'LOADED, ERROR, WARNING, VERIFIED, FIXABLE'
       },
     };
   },
