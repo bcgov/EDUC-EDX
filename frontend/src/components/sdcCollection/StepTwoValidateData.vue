@@ -214,9 +214,9 @@
                     <v-icon
                       class="mt-2 mr-3"
                       size="25"
-                      :color="getIssueIconColor(item.value.sdcSchoolCollectionStudentStatusCode)"
+                      :color="getIssueIconColor(getStudentStatus(item.value))"
                     >
-                      {{ getIssueIcon(item.value.sdcSchoolCollectionStudentStatusCode) }}
+                      {{ getIssueIcon(getStudentStatus(item.value)) }}
                     </v-icon>
                   </v-col>
                   <v-col cols="5">
@@ -1043,6 +1043,17 @@ const formatAndSortValidationIssues = (validationIssues = []) => {
 
   return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
 };
+
+const getStudentStatus = (student)  => {
+  let studentValidationIssues = student.sdcSchoolCollectionStudentValidationIssues;
+  if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'ERROR')) {
+    return 'ERROR';
+  } else if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'FUNDING_WARNING')) {
+    return 'FUNDING_WARNING';
+  } else {
+    return 'INFO_WARNING';
+  }
+}
 
 const getIssueIcon = (issue) => {
   switch (issue) {

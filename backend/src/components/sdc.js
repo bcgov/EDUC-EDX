@@ -196,7 +196,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
     payload.updateUser = null;
 
     if(payload?.enrolledProgramCodes) {
-      payload.enrolledProgramCodes = payload.enrolledProgramCodes.join();
+      payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
     }
 
     if(payload?.dob) {
