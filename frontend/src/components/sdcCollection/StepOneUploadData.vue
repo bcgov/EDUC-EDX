@@ -222,7 +222,7 @@ import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
 import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
-  name: 'StepThreeUploadData',
+  name: 'StepOneUploadData',
   components: {
     ConfirmationDialog,
     Spinner,

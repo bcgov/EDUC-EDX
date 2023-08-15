@@ -58,6 +58,9 @@ export const edxStore = defineStore('edx', {
     async setSecureExchangeDocuments(payload) {
       this.secureExchangeDocuments = payload;
     },
+    async setStudentSearchParams(studentSearchParams) {
+      this.studentSearchParams = studentSearchParams;
+    },
     async deleteSecureExchangeDocumentByIndex(index) {
       if (index < this.secureExchangeDocuments.length) {
         this.secureExchangeDocuments.splice(index, 1);

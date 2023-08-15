@@ -137,6 +137,9 @@ import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
+import axios from 'axios';
+import {edxStore} from '../../../store/modules/edx';
+import {mapActions} from 'pinia';
  
 export default {
   name: 'DetailComponent',
@@ -165,6 +168,7 @@ export default {
       headerSearchParams: {
         type: '' //this.config.defaultFilter
       },
+      currentStudentSearchParams: {},
     };
   },
   mounted() {
@@ -173,6 +177,7 @@ export default {
   created() {
   },
   methods: {
+    ...mapActions(edxStore, ['setStudentSearchResponse']),
     loadStudents() {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
@@ -201,7 +206,31 @@ export default {
     },
 
     search() {
+      const combinedParams = {
+        searchText: this.searchText,
+        headerSearchParams: this.headerSearchParams,
+      };
+      this.sendToBackend(combinedParams);
     },
+    
+    sendToBackend(combinedParams) {
+      ApiService.apiAxios
+        .post('/api/search', combinedParams)   // Check for better post call! is this the correct way to send the data to backend?
+        .then(response => {
+          this.setStudentSearchResponse(response.data);
+          this.currentStudentSearchParams = JSON.parse(JSON.stringify(combinedParams));
+        })
+        .catch(error => {
+          if (error?.response?.status === 400) {
+            this.setFailureAlert(error?.response?.data?.message);
+          } else {
+            this.setFailureAlert('An error occurred while loading the new pens. Please try again later.');
+          }
+          console.error(error.response);
+        });
+          
+    },
+
 
     clear() {
       this.searchText = '';
