@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -177,8 +177,8 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
-     log.error('Error getting sdc school collection student detail', e.stack);
-     return handleExceptionResponse(e, res);
+    log.error('Error getting sdc school collection student detail', e.stack);
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -213,6 +213,21 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
     return handleExceptionResponse(e, res);
   }
 
+}
+
+async function deleteSDCSchoolCollectionStudent (req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    let deletedSdcSchoolCollectionStudentData = await deleteData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
+  }catch (e) {
+    log.error('Error deleting SDC School Collection Student.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
 }
 
 async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
@@ -266,5 +281,6 @@ module.exports = {
   getSDCSchoolCollectionStudentPaginated,
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,
-  updateAndValidateSdcSchoolCollectionStudent
+  updateAndValidateSdcSchoolCollectionStudent,
+  deleteSDCSchoolCollectionStudent
 };

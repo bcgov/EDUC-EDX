@@ -247,6 +247,7 @@
                       icon="mdi-trash-can-outline"
                       text="Remove Record"
                       class="mt-n1"
+                      :click-action="deleteSdcSchoolCollectionStudent"
                     />
                   </v-col>
                 </v-row>
@@ -695,6 +696,11 @@
         />
       </v-row>
     </div>
+    <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
+      <template #message>
+        <p>Are you sure that you would like to remove this student from the 1701 submission?</p>
+      </template>
+    </ConfirmationDialog>
   </v-container>
 </template>
 
@@ -718,6 +724,7 @@ import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 
 //pinia store
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 const sdcCollectionStore = useSdcCollectionStore();
 
 const props = defineProps({
@@ -731,6 +738,8 @@ const isValid = ref(false);
 const form = ref<HTMLFormElement>(null);
 
 const emit = defineEmits(['next']);
+
+const confirmRemovalOfStudentRecord = ref(null);
 
 onMounted(() => {
   sdcCollectionStore.getCodes().then(() => {
@@ -762,7 +771,7 @@ const onFieldClick = (fieldName, $event, errorType) => {
     document.getElementById(fieldName).style.backgroundColor = 'transparent';
   }
   
-}
+};
 
 const markStepAsComplete = () => {
   let updateCollection = {
@@ -914,6 +923,26 @@ const save = () => {
       setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
     }).finally(() => {
       selectedSdcStudentID.value= null;
+      getSummaryCounts();
+      getSDCSchoolCollectionStudentPaginated();
+    });
+};
+
+const deleteSdcSchoolCollectionStudent = async () => {
+  const confirmation = await confirmRemovalOfStudentRecord.value.open('Confirm Removal of Student Record', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+  if (!confirmation) {
+    return;
+  }
+  loadingCount.value += 1;
+  ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/student/${selectedSdcStudentID.value}`, sdcSchoolCollectionStudentDetailCopy.value)
+    .then(() => {
+      setSuccessAlert('Success! The student details have been deleted.');
+    }).catch(error => {
+      console.error(error);
+      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+    }).finally(() => {
+      selectedSdcStudentID.value = null;
+      loadingCount.value -= 1;
       getSummaryCounts();
       getSDCSchoolCollectionStudentPaginated();
     });
