@@ -2,7 +2,7 @@ const passport = require('passport');
 const express = require('express');
 const router = express.Router();
 const { getCollectionBySchoolId, uploadFile, getSdcFileProgress, updateSchoolCollection, getSchoolCollectionById, getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts, getSDCSchoolCollectionStudentDetail,
-    updateAndValidateSdcSchoolCollectionStudent} = require('../components/sdc');
+  updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
@@ -30,6 +30,7 @@ router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passp
 router.get('/sdcSchoolCollectionStudent/stats/error-warning-count/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentSummaryCounts);
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentDetail);
 router.put('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateAndValidateSdcSchoolCollectionStudent);
+router.delete('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, deleteSDCSchoolCollectionStudent);
 
 module.exports = router;
 
