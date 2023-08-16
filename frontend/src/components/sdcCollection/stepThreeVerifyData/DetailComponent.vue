@@ -139,7 +139,7 @@ import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
 import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
-
+ 
 export default {
   name: 'DetailComponent',
   components: {
@@ -165,8 +165,8 @@ export default {
       totalElements: 0,
       searchText: '',
       headerSearchParams: {
-        type: this.config.defaultFilter,
-        // sdcSchoolCollectionStudentStatusCode: 'LOADED, ERROR, WARNING, VERIFIED, FIXABLE'
+        type: '', //this.config.defaultFilter
+        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE'
       },
     };
   },
@@ -175,9 +175,9 @@ export default {
   },
   created() {
     useSdcCollectionStore().getCodes().then(() => {
-      this.loadStudents();
+      this.loadStudents();      
     });
-
+    
   },
   methods: {
     loadStudents() {
