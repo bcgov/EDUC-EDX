@@ -66,7 +66,7 @@
               </div>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item.value['isAdult']">{{ props.item.value['isAdult'] ? 'Yes' :'No' }}</span>
+                <span v-if="props.item.value['isAdult'] !== null || props.item.value['isAdult' !== undefined]">{{ props.item.value['isAdult'] ? 'Yes' :'No' }}</span>
               </div>
 
                 <span v-else-if="props.item.value[column.key]">{{ props.item.value[column.key] }}</span>
@@ -82,6 +82,9 @@
                     <span v-else>-</span>
                   </div>
                   <span v-else-if="props.item.value[column.subHeader.key]">{{ props.item.value[column.subHeader.key] }}</span>
+                  <div v-else-if="column.subHeader.key === 'isGraduated'">
+                    <span v-if="props.item.value['isGraduated'] !== null || props.item.value['isGraduated'] !== undefined">{{ props.item.value['isGraduated'] ? 'Yes' :'No' }}</span>
+                  </div>
                   <span v-else>-</span>
                 </div>
             </div>

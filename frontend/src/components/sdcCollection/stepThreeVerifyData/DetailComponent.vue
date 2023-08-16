@@ -137,6 +137,8 @@ import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
+import { mapState } from 'pinia';
+import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
  
 export default {
   name: 'DetailComponent',
@@ -168,10 +170,14 @@ export default {
       },
     };
   },
-  mounted() {
-    this.loadStudents();
+  computed: {
+    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap']),
   },
   created() {
+    useSdcCollectionStore().getCodes().then(() => {
+      this.loadStudents();      
+    });
+    
   },
   methods: {
     loadStudents() {
@@ -184,6 +190,11 @@ export default {
         }
       }).then(response => {
         this.studentList = response.data.content;
+        this.studentList.forEach(elem => {
+          if(elem) {
+            this.mapStudentData(elem);
+          }
+        });
         this.totalElements = response.data.totalElements;
       }).catch(error => {
         console.error(error);
@@ -191,6 +202,13 @@ export default {
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    mapStudentData(student) {
+      student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
+      let noOfCourses = student.numberOfCourses;
+      if(noOfCourses && noOfCourses.length === 4) {
+        student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
+      }
     },
     reload(value) {
       if(value?.pageSize) {
