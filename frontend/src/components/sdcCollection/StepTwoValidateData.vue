@@ -845,7 +845,7 @@ const getSummaryCounts = () => {
 //sdc school collection student list pagination
 const headerSearchParams = ref({
   penNumber: '',
-  sdcSchoolCollectionStudentStatusCode: 'ERROR, INFO_WARNING, FUNDING_WARNING'
+  sdcSchoolCollectionStudentStatusCode: 'ERROR,INFO_WARNING,FUNDING_WARNING'
 });
 
 const pageNumber = ref(1);
@@ -1082,7 +1082,7 @@ const getStudentStatus = (student)  => {
   } else {
     return 'INFO_WARNING';
   }
-}
+};
 
 const getIssueIcon = (issue) => {
   switch (issue) {

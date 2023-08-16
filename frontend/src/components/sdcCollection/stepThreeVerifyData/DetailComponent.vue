@@ -166,7 +166,7 @@ export default {
       searchText: '',
       headerSearchParams: {
         type: '', //this.config.defaultFilter
-        sdcSchoolCollectionStudentStatusCode: 'LOADED, ERROR, WARNING, VERIFIED, FIXABLE'
+        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE'
       },
     };
   },
