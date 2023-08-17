@@ -267,6 +267,9 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
+    if (key === 'tabFilter') {
+      searchCriteriaList.push({key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['PROGRAMME_FRANCOPHONE', 'CORE_FRENCH', 'EARLY_FRENCH_IMMERSION', 'LATE_FRENCH_IMMERSION', 'ENGLISH_LANGUAGE_LEARNING' ], valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
   });
 
   return searchCriteriaList;

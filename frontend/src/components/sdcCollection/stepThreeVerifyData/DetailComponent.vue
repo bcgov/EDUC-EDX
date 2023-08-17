@@ -22,7 +22,7 @@
               class="filter-col"
               cols="4"
             >
-              <p v-if="config.defaultFilter === ''">
+              <p v-if="config.defaultFilter.filterValue === ''">
                 No filters applied
               </p>
               <div v-else>
@@ -32,7 +32,7 @@
                   closable
                   @click:close=" chip = false"
                 >
-                  {{ config.defaultFilter }}
+                  {{ config.defaultFilter.filterValue }}
                 </v-chip> 
               </div>
             </v-col>
@@ -149,7 +149,7 @@ export default {
   mixins: [alertMixin],
   props: {
     config: {
-      type: Object,
+      tabFilter: Object,
       required: true,
       default: null
     }
@@ -164,8 +164,8 @@ export default {
       isLoading: false,
       totalElements: 0,
       searchText: '',
-      headerSearchParams: {
-        type: '', //this.config.defaultFilter
+      filterSearchParams: {
+        tabFilter: this.config.defaultFilter.filterValue,
         sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE'
       },
     };
@@ -186,7 +186,7 @@ export default {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
         }
       }).then(response => {
         this.studentList = response.data.content;
