@@ -22,7 +22,7 @@
               class="filter-col"
               cols="4"
             >
-              <p v-if="config.defaultFilter.filterValue === ''">
+              <p v-if="config.defaultFilter.description === ''">
                 No filters applied
               </p>
               <div v-else>
@@ -32,7 +32,7 @@
                   closable
                   @click:close=" chip = false"
                 >
-                  {{ config.defaultFilter.filterValue }}
+                  {{ config.defaultFilter.description }}
                 </v-chip> 
               </div>
             </v-col>
@@ -165,8 +165,9 @@ export default {
       totalElements: 0,
       searchText: '',
       filterSearchParams: {
-        tabFilter: this.config.defaultFilter.filterValue,
-        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE'
+        tabFilter: this.config.defaultFilter.description,
+        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE',
+        search: 'THis'
       },
     };
   },

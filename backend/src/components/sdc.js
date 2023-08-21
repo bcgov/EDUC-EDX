@@ -111,15 +111,18 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
-
     const search = [{
       condition: null,
       searchCriteriaList: [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID}]
     }, {
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
+    },
+    // }];
+    {
+      condition: CONDITION.IN,
+      searchCriteriaList: [{key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: ['05', '08', '11', '14', '17'], operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING}]
     }];
-
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -128,8 +131,9 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
+
+    // let data = await getDataWithParams(token, 'http://localhost:8082/api/v1/student-data-collection/sdcSchoolCollectionStudent' + '/paginated', params, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
@@ -258,7 +262,7 @@ function validateAccessToken(token, res) {
  */
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
-
+  console.log('search paramms', searchParams);
   Object.keys(searchParams).forEach(function(key){
     let pValue = searchParams[key];
     if (key === 'studentPen') {
@@ -267,8 +271,11 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
-    if (key === 'tabFilter') {
-      searchCriteriaList.push({key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['PROGRAMME_FRANCOPHONE', 'CORE_FRENCH', 'EARLY_FRENCH_IMMERSION', 'LATE_FRENCH_IMMERSION', 'ENGLISH_LANGUAGE_LEARNING' ], valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    if (key === 'sdcFunding') {
+      console.log('KEYS--->', key, pValue);
+      searchCriteriaList.push({
+        key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
+      });
     }
   });
 
