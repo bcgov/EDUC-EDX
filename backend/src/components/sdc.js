@@ -81,7 +81,6 @@ async function updateSchoolCollection(req, res) {
     payload.updateUser = null;
 
     payload.sdcSchoolCollectionStatusCode = req.body.status;
-    
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -111,18 +110,19 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
     const search = [{
       condition: null,
       searchCriteriaList: [{key: 'sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID}]
     }, {
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
-    },
-    // }];
-    {
-      condition: CONDITION.IN,
-      searchCriteriaList: [{key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: ['05', '08', '11', '14', '17'], operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING}]
     }];
+    // },
+    // {
+    //   condition: CONDITION.AND,
+    //   searchCriteriaList: [{key: 'searchThis', value: ['05', '08', '11', '14', '17'], operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING}]
+    // }];
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -178,7 +178,7 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     if(sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
-    
+
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
@@ -209,7 +209,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
-    
+
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -271,13 +271,17 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
-    if (key === 'sdcFunding') {
-      console.log('KEYS--->', key, pValue);
-      searchCriteriaList.push({
-        key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
-      });
-    }
   });
+
+  // Object.keys(searchParams).filter(key => {
+  //   if (key === 'tabFilter' && searchParams[key].label === 'FRENCH_PR') {
+  //     console.log('OYE BALLE BALLE');
+  //     // searchCriteriaList.push({
+  //     //   key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
+  //     // });
+  //   }
+  // });
+
 
   return searchCriteriaList;
 }

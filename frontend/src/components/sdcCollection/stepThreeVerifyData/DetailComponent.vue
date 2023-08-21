@@ -165,9 +165,8 @@ export default {
       totalElements: 0,
       searchText: '',
       filterSearchParams: {
-        tabFilter: this.config.defaultFilter.description,
+        tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE',
-        search: 'THis'
       },
     };
   },
@@ -252,4 +251,3 @@ export default {
        
        
      
-   
