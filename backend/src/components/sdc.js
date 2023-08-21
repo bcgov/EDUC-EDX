@@ -118,11 +118,6 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
     }];
-    // },
-    // {
-    //   condition: CONDITION.AND,
-    //   searchCriteriaList: [{key: 'searchThis', value: ['05', '08', '11', '14', '17'], operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING}]
-    // }];
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -262,7 +257,6 @@ function validateAccessToken(token, res) {
  */
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
-  console.log('search paramms', searchParams);
   Object.keys(searchParams).forEach(function(key){
     let pValue = searchParams[key];
     if (key === 'studentPen') {
@@ -273,14 +267,14 @@ function createSearchCriteria(searchParams = []) {
     }
   });
 
-  // Object.keys(searchParams).filter(key => {
-  //   if (key === 'tabFilter' && searchParams[key].label === 'FRENCH_PR') {
-  //     console.log('OYE BALLE BALLE');
-  //     // searchCriteriaList.push({
-  //     //   key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
-  //     // });
-  //   }
-  // });
+  Object.keys(searchParams).filter(key => {
+    if (key === 'tabFilter' && searchParams[key].label === 'FRENCH_PR') {
+      console.log('------If condition works ------');
+      searchCriteriaList.push({
+        key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
+      });
+    }
+  });
 
 
   return searchCriteriaList;
