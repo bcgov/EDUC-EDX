@@ -67,15 +67,15 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
         this.careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
       });
     },
-    // setEnrolledProgramCodes(enrolledProgramCodes) {
-    //   this.enrolledProgramCodes = enrolledProgramCodes.map(item => {
-    //     return {...item, dropdownText: `${item.enrolledProgramCode} - ${item.label}`};
-    //   });
-    //   this.enrolledProgramCodesMap = new Map();
-    //   enrolledProgramCodes.forEach(enrolledProgramCode => {
-    //     this.enrolledProgramCodesMap.set(enrolledProgramCode.enrolledProgramCode, enrolledProgramCode);
-    //   });
-    // },
+    setEnrolledProgramCodes(enrolledProgramCodes) {
+      this.enrolledProgramCodes = enrolledProgramCodes.map(item => {
+        return {...item, dropdownText: `${item.enrolledProgramCode} - ${item.label}`};
+      });
+      this.enrolledProgramCodesMap = new Map();
+      enrolledProgramCodes.forEach(enrolledProgramCode => {
+        this.enrolledProgramCodesMap.set(enrolledProgramCode.enrolledProgramCode, enrolledProgramCode);
+      });
+    },
 
     setEnrolledGradeCodes(enrolledGradeCodes) {
       this.enrolledGradeCodes = enrolledGradeCodes.map(item => {

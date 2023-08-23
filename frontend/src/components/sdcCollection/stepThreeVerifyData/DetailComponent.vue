@@ -203,33 +203,37 @@ export default {
         this.isLoading = false;
       });
     },
-    mapEnrolledPrograms(student) {
-      const enrolledPrograms = student.enrolledProgramCodes.split(',');
+    mapEnrolledPrograms(student, filterSearchParams) {
+      let enrolledPrograms = student.enrolledProgramCodes.match(/.{1,2}/g); // Split every 2 characters
+
+      if (filterSearchParams?.tabFilter?.label === 'FRENCH_PR') {
+        const frenchProgramCodes = ['11', '08', '14', '05'];
+        enrolledPrograms = enrolledPrograms.filter(programCode => frenchProgramCodes.includes(programCode));
+      }
 
       const mappedEnrolledPrograms = enrolledPrograms.map(programCode => {
         const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
         if (enrolledProgram) {
           return `${programCode}-${enrolledProgram.label}`;
         } else {
-          return programCode; // Just the program code if no matching program is found
+          return programCode;
         }
       }).join('\n');
 
       student.mappedEnrolledPrograms = mappedEnrolledPrograms;
-
-      return mappedEnrolledPrograms; // Return the mapped programs
+      return mappedEnrolledPrograms;
     },
 
     mapStudentData(student) {
 
-      student.mappedEnrolledProgram = this.mapEnrolledPrograms(student);
-
+      student.mappedEnrolledProgram = this.mapEnrolledPrograms(student, this.filterSearchParams);
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
       }
     },
+
     reload(value) {
       if(value?.pageSize) {
         this.pageSize = value?.pageSize;
