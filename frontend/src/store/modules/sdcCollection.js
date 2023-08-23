@@ -76,7 +76,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
         this.enrolledProgramCodesMap.set(enrolledProgramCode.enrolledProgramCode, enrolledProgramCode);
       });
     },
-
     setEnrolledGradeCodes(enrolledGradeCodes) {
       this.enrolledGradeCodes = enrolledGradeCodes.map(item => {
         return {...item, dropdownText: `${item.enrolledGradeCode} - ${item.label}`};

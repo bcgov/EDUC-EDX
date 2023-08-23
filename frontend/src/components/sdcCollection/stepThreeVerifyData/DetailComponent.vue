@@ -204,7 +204,7 @@ export default {
       });
     },
     mapEnrolledPrograms(student, filterSearchParams) {
-      let enrolledPrograms = student.enrolledProgramCodes.match(/.{1,2}/g); // Split every 2 characters
+      let enrolledPrograms = student.enrolledProgramCodes.match(/.{1,2}/g);
 
       if (filterSearchParams?.tabFilter?.label === 'FRENCH_PR') {
         const frenchProgramCodes = ['11', '08', '14', '05'];

@@ -127,10 +127,8 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
-
   } catch (e) {
     if(e?.status === 404){
       res.status(HttpStatus.OK).json(null);
@@ -263,7 +261,6 @@ function createSearchCriteria(searchParams = []) {
     let pValue = searchParams[key];
 
     if (key === 'tabFilter' ) {
-      console.log('Search Param Keys', searchParams[key].label);
       let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
       if (searchParams[key].label === 'FRENCH_PR') {
@@ -283,7 +280,6 @@ function createSearchCriteria(searchParams = []) {
 
 
   });
-  console.log('------searchCriteriaList------', JSON.stringify(searchCriteriaList));
 
   return searchCriteriaList;
 
@@ -299,5 +295,5 @@ module.exports = {
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
-  deleteSDCSchoolCollectionStudent,
+  deleteSDCSchoolCollectionStudent
 };
