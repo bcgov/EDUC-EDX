@@ -1,5 +1,6 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -126,12 +127,11 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
+
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
-
-    // let data = await getDataWithParams(token, 'http://localhost:8082/api/v1/student-data-collection/sdcSchoolCollectionStudent' + '/paginated', params, req.session?.correlationID);
-
     return res.status(HttpStatus.OK).json(data);
-  }catch (e) {
+
+  } catch (e) {
     if(e?.status === 404){
       res.status(HttpStatus.OK).json(null);
     } else {
@@ -256,28 +256,37 @@ function validateAccessToken(token, res) {
  * @param searchParams key value pair of what we are searching for
  */
 function createSearchCriteria(searchParams = []) {
+
   let searchCriteriaList = [];
-  Object.keys(searchParams).forEach(function(key){
+
+  Object.keys(searchParams).forEach(function (key) {
     let pValue = searchParams[key];
+
+    if (key === 'tabFilter' ) {
+      console.log('Search Param Keys', searchParams[key].label);
+      let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
+
+      if (searchParams[key].label === 'FRENCH_PR') {
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '05,08,11,14', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if (searchParams[key].label === 'CAREER_PR') {
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '40,41,42,43', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      } else if (searchParams[key].label === 'INDSUPPORT_PR') {
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+    }
     if (key === 'studentPen') {
-      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
-  });
 
-  Object.keys(searchParams).filter(key => {
-    if (key === 'tabFilter' && searchParams[key].label === 'FRENCH_PR') {
-      console.log('------If condition works ------');
-      searchCriteriaList.push({
-        key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', operation: FILTER_OPERATION.IN, value: ['05', '08', '11', '14', '17'], valueType: VALUE_TYPE.STRING, condition: CONDITION.IN
-      });
-    }
-  });
 
+  });
+  console.log('------searchCriteriaList------', JSON.stringify(searchCriteriaList));
 
   return searchCriteriaList;
+
 }
 
 module.exports = {
@@ -290,5 +299,5 @@ module.exports = {
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
-  deleteSDCSchoolCollectionStudent
+  deleteSDCSchoolCollectionStudent,
 };

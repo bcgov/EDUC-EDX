@@ -23,7 +23,7 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
-      { title: 'French Program', key: 'frenchProgram'},
+      { title: 'French Program', key: 'mappedEnrolledProgram'},
     ],
   }  
 );
@@ -54,7 +54,7 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Indigenous Ancestry', key: 'nativeAncestryInd', subHeader: {title: 'Band Code', key: 'bandCode'}},
-      { title: 'Indigenous Support Program', key: 'suppProg'},
+      { title: 'Indigenous Support Program', key: 'mappedEnrolledProgram'},
     ],
   }  
 );

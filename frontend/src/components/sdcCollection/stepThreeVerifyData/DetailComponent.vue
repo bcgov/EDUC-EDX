@@ -171,7 +171,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap']),
+    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap']),
   },
   created() {
     useSdcCollectionStore().getCodes().then(() => {
@@ -203,7 +203,27 @@ export default {
         this.isLoading = false;
       });
     },
+    mapEnrolledPrograms(student) {
+      const enrolledPrograms = student.enrolledProgramCodes.split(',');
+
+      const mappedEnrolledPrograms = enrolledPrograms.map(programCode => {
+        const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
+        if (enrolledProgram) {
+          return `${programCode}-${enrolledProgram.label}`;
+        } else {
+          return programCode; // Just the program code if no matching program is found
+        }
+      }).join('\n');
+
+      student.mappedEnrolledPrograms = mappedEnrolledPrograms;
+
+      return mappedEnrolledPrograms; // Return the mapped programs
+    },
+
     mapStudentData(student) {
+
+      student.mappedEnrolledProgram = this.mapEnrolledPrograms(student);
+
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
