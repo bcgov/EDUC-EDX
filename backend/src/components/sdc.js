@@ -1,6 +1,5 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData
-} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -119,6 +118,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
     }];
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -127,9 +127,11 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
+
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
+
     return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
+  }catch (e) {
     if(e?.status === 404){
       res.status(HttpStatus.OK).json(null);
     } else {
@@ -171,7 +173,7 @@ async function getSDCSchoolCollectionStudentDetail (req, res) {
     if(sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
-
+    
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   }catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
@@ -202,7 +204,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
-
+    
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -254,7 +256,6 @@ function validateAccessToken(token, res) {
  * @param searchParams key value pair of what we are searching for
  */
 function createSearchCriteria(searchParams = []) {
-
   let searchCriteriaList = [];
 
   Object.keys(searchParams).forEach(function (key) {
@@ -277,12 +278,9 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
-
-
   });
 
   return searchCriteriaList;
-
 }
 
 module.exports = {
