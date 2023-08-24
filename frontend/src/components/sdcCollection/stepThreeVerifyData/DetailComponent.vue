@@ -139,7 +139,7 @@ import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
 import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
-import { enrolledProgram } from "../../../utils/sdc/enrolledProgram";
+import { enrolledProgram } from '../../../utils/sdc/enrolledProgram';
 
 export default {
   name: 'DetailComponent',
