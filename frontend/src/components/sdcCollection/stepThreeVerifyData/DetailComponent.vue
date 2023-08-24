@@ -22,7 +22,7 @@
               class="filter-col"
               cols="4"
             >
-              <p v-if="config.defaultFilter === ''">
+              <p v-if="config.defaultFilter.description === ''">
                 No filters applied
               </p>
               <div v-else>
@@ -32,7 +32,7 @@
                   closable
                   @click:close=" chip = false"
                 >
-                  {{ config.defaultFilter }}
+                  {{ config.defaultFilter.description }}
                 </v-chip> 
               </div>
             </v-col>
@@ -139,7 +139,8 @@ import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
 import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
- 
+import { enrolledProgram } from '../../../utils/sdc/enrolledProgram';
+
 export default {
   name: 'DetailComponent',
   components: {
@@ -149,7 +150,7 @@ export default {
   mixins: [alertMixin],
   props: {
     config: {
-      type: Object,
+      tabFilter: Object,
       required: true,
       default: null
     }
@@ -164,14 +165,14 @@ export default {
       isLoading: false,
       totalElements: 0,
       searchText: '',
-      headerSearchParams: {
-        type: '', //this.config.defaultFilter
-        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE'
+      filterSearchParams: {
+        tabFilter: this.config.defaultFilter,
+        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE',
       },
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap']),
+    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap']),
   },
   created() {
     useSdcCollectionStore().getCodes().then(() => {
@@ -186,7 +187,7 @@ export default {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
         }
       }).then(response => {
         this.studentList = response.data.content;
@@ -203,13 +204,30 @@ export default {
         this.isLoading = false;
       });
     },
+
+
+    enrolledProgramMapping(student, enrolledProgramFilter) {
+      const mappedEnrolledPrograms = student.enrolledProgramCodes
+        .match(/.{1,2}/g)
+        .filter(programCode => enrolledProgramFilter.includes(programCode))
+        .map(programCode => {
+          const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
+          return enrolledProgram ? `${programCode}-${enrolledProgram.label}` : programCode;
+        })
+        .join('\n');
+
+      return mappedEnrolledPrograms;
+    },
+
     mapStudentData(student) {
+      student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES)  ;
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
       }
     },
+
     reload(value) {
       if(value?.pageSize) {
         this.pageSize = value?.pageSize;
@@ -251,4 +269,3 @@ export default {
        
        
      
-   

@@ -59,7 +59,7 @@ import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 
 export default {
-  name: 'StepOneSchoolDetails',
+  name: 'StepFourSchoolDetails',
   components: {
     PrimaryButton,
     SchoolDetailsForm

@@ -71,7 +71,7 @@ import RefugeeComponent from './RefugeeComponent.vue';
 import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
 
 export default {
-  name: 'StepFiveVerifyData',
+  name: 'StepThreeVerifyData',
   components: {
     PrimaryButton,
     FTEComponent,
