@@ -264,11 +264,7 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'tabFilter' ) {
       let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
-      if (searchParams[key].label === 'FRENCH_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      } else if (searchParams[key].label === 'CAREER_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
-      } else if (searchParams[key].label === 'INDSUPPORT_PR') {
+      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR'].includes(searchParams[key].label)) {
         searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
