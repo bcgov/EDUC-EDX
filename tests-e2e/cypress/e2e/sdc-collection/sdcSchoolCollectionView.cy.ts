@@ -1,12 +1,14 @@
 import selectors from "../../support/selectors";
 import { AppSetupData } from '../../../cypress.config';
-import {timeout} from "rxjs";
+import { SchoolCollection } from "tests-e2e/cypress/services/sdc-collection-api-service";
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task('setup-collections', res.school);
+        cy.task<SchoolCollection>('setup-collections',{
+          school: res.school,
+          loadWithStudentAndValidations: false} );
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });

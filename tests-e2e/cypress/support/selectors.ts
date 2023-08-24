@@ -208,6 +208,10 @@ export default {
     stepFour:'#step-4',
     stepFive:'#step-5',
     stepSix:'#step-6',
+    legalLastNameValidationTextInput: '#legalLastNameValidationTextInput',
+    postalCodeValidationTextInput: '#postalCodeValidationTextInput',
+    removeRecord: '#removeRecord',
+    saveAndRefreshButton: '#saveAndRefreshButton'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
