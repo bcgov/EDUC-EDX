@@ -265,11 +265,11 @@ function createSearchCriteria(searchParams = []) {
       let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
       if (searchParams[key].label === 'FRENCH_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '05,08,11,14', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       } else if (searchParams[key].label === 'CAREER_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '40,41,42,43', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
       } else if (searchParams[key].label === 'INDSUPPORT_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
     if (key === 'studentPen') {

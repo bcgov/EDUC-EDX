@@ -139,7 +139,8 @@ import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy } from 'lodash';
 import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
- 
+import { enrolledProgram } from "../../../utils/sdc/enrolledProgram";
+
 export default {
   name: 'DetailComponent',
   components: {
@@ -203,30 +204,23 @@ export default {
         this.isLoading = false;
       });
     },
-    mapEnrolledPrograms(student, filterSearchParams) {
-      let enrolledPrograms = student.enrolledProgramCodes.match(/.{1,2}/g);
 
-      if (filterSearchParams?.tabFilter?.label === 'FRENCH_PR') {
-        const frenchProgramCodes = ['11', '08', '14', '05'];
-        enrolledPrograms = enrolledPrograms.filter(programCode => frenchProgramCodes.includes(programCode));
-      }
 
-      const mappedEnrolledPrograms = enrolledPrograms.map(programCode => {
-        const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
-        if (enrolledProgram) {
-          return `${programCode}-${enrolledProgram.label}`;
-        } else {
-          return programCode;
-        }
-      }).join('\n');
+    enrolledProgramMapping(student, enrolledProgramFilter) {
+      const mappedEnrolledPrograms = student.enrolledProgramCodes
+        .match(/.{1,2}/g)
+        .filter(programCode => enrolledProgramFilter.includes(programCode))
+        .map(programCode => {
+          const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
+          return enrolledProgram ? `${programCode}-${enrolledProgram.label}` : programCode;
+        })
+        .join('\n');
 
-      student.mappedEnrolledPrograms = mappedEnrolledPrograms;
       return mappedEnrolledPrograms;
     },
 
     mapStudentData(student) {
-
-      student.mappedEnrolledProgram = this.mapEnrolledPrograms(student, this.filterSearchParams);
+      student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES)  ;
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
