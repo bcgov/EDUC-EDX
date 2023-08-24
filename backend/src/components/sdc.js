@@ -81,7 +81,6 @@ async function updateSchoolCollection(req, res) {
     payload.updateUser = null;
 
     payload.sdcSchoolCollectionStatusCode = req.body.status;
-    
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -259,10 +258,18 @@ function validateAccessToken(token, res) {
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
 
-  Object.keys(searchParams).forEach(function(key){
+  Object.keys(searchParams).forEach(function (key) {
     let pValue = searchParams[key];
+
+    if (key === 'tabFilter' ) {
+      let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
+
+      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR'].includes(searchParams[key].label)) {
+        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+    }
     if (key === 'studentPen') {
-      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
