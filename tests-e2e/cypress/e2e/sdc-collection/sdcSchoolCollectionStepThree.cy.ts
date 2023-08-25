@@ -31,7 +31,7 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.studentLevelData.nextButton).click();
         });
 
-        it.only('verifies FTE for Reported Students', () => {
+        it('verifies FTE for Reported Students', () => {
             cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
             cy.visit('/');
             cy.get(selectors.dashboard.dataCollectionsTile).click();
