@@ -5,6 +5,7 @@ import {RestUtils} from "../helpers/rest-utils-ts";
 export interface SchoolCollection {
     school: SchoolEntity,
     loadWithStudentAndValidations: boolean
+    seedData?: string
 }
 
 const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
@@ -63,63 +64,213 @@ export class SdcCollectionApiService {
         let sdcSchoolCollectionPayload = {};
 
         if(schoolCollection?.loadWithStudentAndValidations) {
-            sdcSchoolCollectionPayload = {
-                "createUser": "EDXAT",
-                "updateUser": null,
-                "createDate": null,
-                "updateDate": null,
-                "sdcSchoolCollectionID": null,
-                "collectionID": newCollection.collectionID,
-                "schoolID": schoolCollection?.school.schoolId,
-                "districtID": schoolCollection?.school.districtId,
-                "uploadDate": "20230822",
-                "uploadFileName": "EDX-AT-FILE.std",
-                "sdcSchoolCollectionStatusCode": "LOADED",
-                "collectionTypeCode": "SEPTEMBER",
-                "collectionOpenDate": curDate,
-                "collectionCloseDate": curCloseDate,
-                "students": [
-                    {
-                        "createUser": "EDXAT",
-                        "sdcSchoolCollectionStudentEnrolledPrograms": null,
-                        "localID": "12345",
-                        "studentPen": "101932770",
-                        "legalFirstName": "LEGALFIRST",
-                        "legalMiddleNames": "LEGALMIDDLE",
-                        "legalLastName": null,
-                        "usualFirstName": "USUALFIRST",
-                        "usualMiddleNames": "USUALMIDDLE",
-                        "usualLastName": "USUALLAST",
-                        "dob": "20100630",
-                        "gender": "M",
-                        "specialEducationCategoryCode": null,
-                        "schoolFundingCode": "20",
-                        "nativeAncestryInd": "N",
-                        "homeLanguageSpokenCode": "943",
-                        "otherCourses": "0",
-                        "supportBlocks": null,
-                        "enrolledGradeCode": "11",
-                        "careerProgramCode": "XH",
-                        "numberOfCourses": "0700",
-                        "bandCode": "0684",
-                        "enrolledProgramCodes": "40",
-                        "sdcSchoolCollectionStudentStatusCode": "ERROR",
-                        "sdcSchoolCollectionStudentValidationIssues": [
-                            {
-                                "createUser": "EDXAT",
-                                "validationIssueSeverityCode": "ERROR",
-                                "validationIssueCode": "LEGALLASTNAMEBLANK",
-                                "validationIssueFieldCode": "LEGAL_LAST_NAME"
-                            },
-                            {
-                                "createUser": "EDXAT",
-                                "validationIssueSeverityCode": "INFO_WARNING",
-                                "validationIssueCode": "MISSINGPOSTALCODE",
-                                "validationIssueFieldCode": "POSTAL_CODE"
-                            }
-                        ]
-                    }
-                ]
+            if (schoolCollection.seedData === 'stepTwoSeedData') {
+                sdcSchoolCollectionPayload = {
+                    "createUser": "EDXAT",
+                    "updateUser": null,
+                    "createDate": null,
+                    "updateDate": null,
+                    "sdcSchoolCollectionID": null,
+                    "collectionID": newCollection.collectionID,
+                    "schoolID": schoolCollection?.school.schoolId,
+                    "districtID": schoolCollection?.school.districtId,
+                    "uploadDate": "20230822",
+                    "uploadFileName": "EDX-AT-FILE.std",
+                    "sdcSchoolCollectionStatusCode": "LOADED",
+                    "collectionTypeCode": "SEPTEMBER",
+                    "collectionOpenDate": curDate,
+                    "collectionCloseDate": curCloseDate,
+                    "students": [
+                        {
+                            "createUser": "EDXAT",
+                            "sdcSchoolCollectionStudentEnrolledPrograms": null,
+                            "localID": "12345",
+                            "studentPen": "101932770",
+                            "legalFirstName": "LEGALFIRST",
+                            "legalMiddleNames": "LEGALMIDDLE",
+                            "legalLastName": null,
+                            "usualFirstName": "USUALFIRST",
+                            "usualMiddleNames": "USUALMIDDLE",
+                            "usualLastName": "USUALLAST",
+                            "dob": "20100630",
+                            "gender": "M",
+                            "specialEducationCategoryCode": null,
+                            "schoolFundingCode": "20",
+                            "nativeAncestryInd": "N",
+                            "homeLanguageSpokenCode": "943",
+                            "otherCourses": "0",
+                            "supportBlocks": null,
+                            "enrolledGradeCode": "11",
+                            "careerProgramCode": "XH",
+                            "numberOfCourses": "0700",
+                            "bandCode": "0684",
+                            "enrolledProgramCodes": "40",
+                            "isAdult": "false",
+                            "isSchoolAged": "true",
+                            "sdcSchoolCollectionStudentStatusCode": "ERROR",
+                            "sdcSchoolCollectionStudentValidationIssues": [
+                                {
+                                    "createUser": "EDXAT",
+                                    "validationIssueSeverityCode": "ERROR",
+                                    "validationIssueCode": "LEGALLASTNAMEBLANK",
+                                    "validationIssueFieldCode": "LEGAL_LAST_NAME"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "validationIssueSeverityCode": "INFO_WARNING",
+                                    "validationIssueCode": "MISSINGPOSTALCODE",
+                                    "validationIssueFieldCode": "POSTAL_CODE"
+                                }
+                            ]
+                        }
+
+
+                    ]
+                }
+            } else if (schoolCollection.seedData === 'stepThreeSeedData') {
+                sdcSchoolCollectionPayload = {
+                    "createUser": "EDXAT",
+                    "updateUser": null,
+                    "createDate": null,
+                    "updateDate": null,
+                    "sdcSchoolCollectionID": null,
+                    "collectionID": newCollection.collectionID,
+                    "schoolID": schoolCollection?.school.schoolId,
+                    "districtID": schoolCollection?.school.districtId,
+                    "uploadDate": "20230822",
+                    "uploadFileName": "EDX-AT-FILE.std",
+                    "sdcSchoolCollectionStatusCode": "LOADED",
+                    "collectionTypeCode": "SEPTEMBER",
+                    "collectionOpenDate": curDate,
+                    "collectionCloseDate": curCloseDate,
+                    "students": [
+                        {
+                            "createUser": "EDXAT",
+                            "localID": "12345",
+                            "studentPen": "101932770",
+                            "legalFirstName": "LEGALFIRST",
+                            "legalMiddleNames": null,
+                            "legalLastName": "LEGALLAST",
+                            "usualFirstName": "USUALFIRST",
+                            "usualMiddleNames": "USUALMIDDLE",
+                            "usualLastName": "USUALLAST",
+                            "dob": "20090630",
+                            "gender": "M",
+                            "specialEducationCategoryCode": null,
+                            "schoolFundingCode": "20",
+                            "nativeAncestryInd": "N",
+                            "homeLanguageSpokenCode": "943",
+                            "otherCourses": "0",
+                            "supportBlocks": null,
+                            "enrolledGradeCode": "07",
+                            "careerProgramCode": null,
+                            "numberOfCourses": "0700",
+                            "bandCode": "0684",
+                            "enrolledProgramCodes": "40",
+                            "sdcSchoolCollectionStudentStatusCode": "FIXABLE",
+                            "isAdult": "false",
+                            "isSchoolAged": "true",
+                            "fte": 1,
+                            "postalCode": "V8R2Y9",
+                            "fteZeroReasonCode": null,
+                            "frenchProgramNonEligReasonCode": null,
+                            "ellNonEligReasonCode": "NTENRELL",
+                            "indigenousSupportProgramNonEligReasonCode": "NTENRINDIG",
+                            "careerProgramNonEligReasonCode": "NTENRCAREE",
+                            "specialEducationNonEligReasonCode": "NOSPECIAL",
+                            "isGraduated": "false",
+                            "assignedStudentId": null,
+                            "assignedPen": null,
+                            "sdcSchoolCollectionStudentValidationIssues": [],
+                            "sdcSchoolCollectionStudentEnrolledPrograms": [
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "14"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "14"
+                                }
+                            ]
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "localID": "12345",
+                            "studentPen": "102866365",
+                            "legalFirstName": "LEGALFIRST",
+                            "legalMiddleNames": null,
+                            "legalLastName": "LEGALLAST",
+                            "usualFirstName": "USUALFIRST",
+                            "usualMiddleNames": "USUALMIDDLE",
+                            "usualLastName": "USUALLAST",
+                            "dob": "20070702",
+                            "gender": "F",
+                            "specialEducationCategoryCode": null,
+                            "schoolFundingCode": "20",
+                            "nativeAncestryInd": "N",
+                            "homeLanguageSpokenCode": "943",
+                            "otherCourses": "0",
+                            "supportBlocks": null,
+                            "enrolledGradeCode": "07",
+                            "careerProgramCode": null,
+                            "numberOfCourses": "0700",
+                            "bandCode": "0684",
+                            "postalCode": "V8R2Y9",
+                            "enrolledProgramCodes": "40",
+                            "sdcSchoolCollectionStudentStatusCode": "FIXABLE",
+                            "isAdult": "false",
+                            "isSchoolAged": "true",
+                            "fte": 0.875,
+                            "fteZeroReasonCode": null,
+                            "frenchProgramNonEligReasonCode": null,
+                            "ellNonEligReasonCode": "NTENRELL",
+                            "indigenousSupportProgramNonEligReasonCode": "NTENRINDIG",
+                            "careerProgramNonEligReasonCode": "NTENRCAREE",
+                            "specialEducationNonEligReasonCode": "NOSPECIAL",
+                            "isGraduated": "false",
+                            "assignedStudentId": null,
+                            "assignedPen": null,
+                            "sdcSchoolCollectionStudentValidationIssues": [],
+                            "sdcSchoolCollectionStudentEnrolledPrograms": [
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "40"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "40"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "08"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "updateUser": null,
+                                    "createDate": null,
+                                    "updateDate": null,
+                                    "enrolledProgramCode": "08"
+                                }
+                            ]
+                        },
+                    ]
+                }
+
             }
 
         } else {

@@ -8,7 +8,8 @@ describe('SDC School Collection View', () => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollection>('setup-collections', {
           school: res.school,
-          loadWithStudentAndValidations: true 
+          loadWithStudentAndValidations: true,
+          seedData: 'stepTwoSeedData'
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });

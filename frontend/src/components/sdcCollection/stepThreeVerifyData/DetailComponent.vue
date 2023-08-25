@@ -73,7 +73,10 @@
 
       <v-row justify="space-between">
         <v-col cols="4">
-          <span class="bold">Students Found:  {{ totalElements }} </span>
+          <span
+            id="studentsFound"
+            class="bold"
+          >Students Found:  {{ totalElements }} </span>
           <v-icon
             small
             class="ml-1"
