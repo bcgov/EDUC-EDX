@@ -127,7 +127,6 @@ export default {
           compare: this.compareSwitch
         }
       }).then(response => {
-        console.log(response.data.headcountHeaders[0].columns);
         this.headcountHeaders = response.data.headcountHeaders;
         this.headcountTableDataList = response.data.headcountTableDataList;
       }).catch(error => {
@@ -136,11 +135,6 @@ export default {
       }).finally(() => {
         this.isLoading = false;
       });
-    },
-    colsize(index) {
-      if(index== 0) {
-        return 3;
-      }
     },
     getComparisonIcon(comparisonValue, currentValue) {
       if(comparisonValue > currentValue) {

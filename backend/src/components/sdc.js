@@ -235,7 +235,6 @@ async function getStudentHeadcounts(req, res) {
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
-    console.log(req);
 
     const params = {
       params: {
@@ -247,7 +246,7 @@ async function getStudentHeadcounts(req, res) {
     let headCounts = await getDataWithParams(token,`${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params ,req.session?.correlationID);
     return res.status(HttpStatus.OK).json(headCounts);
   }catch (e) {
-    log.error('Error deleting SDC School Collection Student.', e.stack);
+    log.error('Error getting Student headcount.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
