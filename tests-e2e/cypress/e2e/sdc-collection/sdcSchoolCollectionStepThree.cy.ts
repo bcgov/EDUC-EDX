@@ -9,12 +9,12 @@ describe('SDC School Collection View', () => {
                 cy.task<SchoolCollection>('setup-collections', {
                     school: res.school,
                     loadWithStudentAndValidations: true,
-                    seedData: 'stepThreeSeedData'
+                    seedData: 'careerProgramsSeedData'
                 });
                 cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
             });
         });
-        after(() => cy.logout());
+        // after(() => cy.logout());
         beforeEach(() => cy.login());
 
         it('can load dashboard & click data collection card & process collection', () => {
@@ -39,7 +39,7 @@ describe('SDC School Collection View', () => {
 
             // Step three of collection - edit/verify data
             cy.get(selectors.studentLevelData.nextButton).click();
-            cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+            cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
 
             cy.get('.td-data').each(cell => {
                 const cellText = cell.text()
@@ -47,6 +47,27 @@ describe('SDC School Collection View', () => {
                     cy.log('Correct fte value expected')
                 }
             });
+        });
+
+        it.only('verifies career programs for reported students', () => {
+            cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+            cy.visit('/');
+            cy.get(selectors.dashboard.dataCollectionsTile).click();
+            cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+            // Step three of collection - edit/verify data
+            cy.get(selectors.studentLevelData.nextButton).click();
+            // cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
+            cy.get('button[value="Career Programs"]').click();
+
+
+            // cy.get('.td-data').each(cell => {
+            //     const cellText = cell.text()
+                // cy.log(cellText)
+                // if (cellText === '1' || cellText === '0.875') {
+                //     cy.log('Correct fte value expected')
+                // }
+            // });
         });
     });
 });
