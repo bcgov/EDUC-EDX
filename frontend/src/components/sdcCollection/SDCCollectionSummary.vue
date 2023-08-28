@@ -10,7 +10,10 @@
         </h2>
       </v-col>
     </v-row>
-    <v-row no-gutters class="mt-2 mb-2 d-flex justify-start">
+    <v-row
+      no-gutters
+      class="mt-2 mb-2 d-flex justify-start"
+    >
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
           small
@@ -97,7 +100,7 @@ import router from '../../router';
 import {capitalize} from 'lodash';
 
 export default {
-  name: 'sdcCollectionSummary',
+  name: 'SdcCollectionSummary',
   components: {
     DoughnutChart
   },
