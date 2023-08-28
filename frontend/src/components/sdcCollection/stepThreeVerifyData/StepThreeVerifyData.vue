@@ -10,8 +10,8 @@
       >
         <v-tab
           v-for="name in tabs"
-          class="divider"
           :key="name"
+          class="divider"
           :value="name"
         >
           {{ name }}

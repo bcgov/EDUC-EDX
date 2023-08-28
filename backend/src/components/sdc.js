@@ -229,6 +229,29 @@ async function deleteSDCSchoolCollectionStudent (req, res) {
   }
 }
 
+async function getStudentHeadcounts(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+    console.log(req);
+
+    const params = {
+      params: {
+        type: req.query.type, 
+      compare: req.query.compare
+      }
+    };
+    
+    let headCounts = await getDataWithParams(token,`${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params ,req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(headCounts);
+  }catch (e) {
+    log.error('Error deleting SDC School Collection Student.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
   const urlGetCollection = `${config.get('sdc:rootURL')}/sdcSchoolCollection/${sdcSchoolCollectionID}`;
   const sdcSchoolCollection = await getData(token, urlGetCollection, null);
@@ -292,5 +315,6 @@ module.exports = {
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
-  deleteSDCSchoolCollectionStudent
+  deleteSDCSchoolCollectionStudent,
+  getStudentHeadcounts
 };
