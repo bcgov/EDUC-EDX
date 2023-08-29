@@ -26,18 +26,23 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent />
+    </div>
   </v-container>
 </template>
     
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
+import SummaryComponent from './SummaryComponent.vue';
 import { FTE } from '../../../utils/sdc/TableConfiguration';
   
 export default {
   name: 'FTEComponent',
   components: {
-    DetailComponent
+    DetailComponent,
+    SummaryComponent
   },
   mixins: [alertMixin],
   props: {
