@@ -161,6 +161,14 @@ export default {
     viewFirstSchoolContactsButton: '#viewContactsButton0',
     schoolRow: '.hoverTable'
   },
+  sdcSchoolStudentCollection: {
+    sdcCollectionStepTwo: {
+      removeRecord: '#removeRecord',
+      removeRecordRejectButton: '#rejectBtn',
+      removeRecordConfirmButton: '#resolveBtn',
+    }
+  },
+
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',

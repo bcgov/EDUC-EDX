@@ -46,5 +46,27 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).should('not.be.disabled');
       cy.get(selectors.studentLevelData.nextButton).click();
     });
+
+    it('can remove record containing validation errors', () => {
+        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+
+        cy.visit('/');
+        cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+        cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
+        cy.get(selectors.dashboard.dataCollectionsTile).click();
+
+        cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+        cy.wait('@pagination').then(({response}) => {
+            cy.get(selectors.studentLevelData.nextButton).should('be.disabled');
+        })
+        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).should('exist');
+        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
+        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordRejectButton).click();
+        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
+        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
+        cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
+    });
   });
 });
