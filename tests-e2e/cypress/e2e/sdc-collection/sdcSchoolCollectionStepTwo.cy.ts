@@ -14,7 +14,7 @@ describe('SDC School Collection View', () => {
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
-    // after(() => cy.logout());
+    after(() => cy.logout());
     beforeEach(() => cy.login());
 
     it('can load dashboard & click data collection card & process collection', () => {
@@ -47,7 +47,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).click();
     });
 
-    it.only('can remove record containing validation errors', () => {
+    it('can remove record containing validation errors', () => {
         cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
 
         cy.visit('/');
@@ -61,23 +61,12 @@ describe('SDC School Collection View', () => {
         cy.wait('@pagination').then(({response}) => {
             cy.get(selectors.studentLevelData.nextButton).should('be.disabled');
         })
-
-        // cy.get(selectors.studentLevelData.saveAndRefreshButton).click();
-
-        // cy.wait('@pagination').then(({response}) => {
-        //     cy.get(selectors.studentLevelData.nextButton).should('not.be.disabled');
-        //     cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('not.exist');
-        //     cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
-        // })
-
-        // cy.get(selectors.studentLevelData.nextButton).should('not.be.disabled');
-        // cy.get(selectors.studentLevelData.nextButton).click();
-
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).should('exist');
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordRejectButton).click();
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
+        cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
     });
   });
 });
