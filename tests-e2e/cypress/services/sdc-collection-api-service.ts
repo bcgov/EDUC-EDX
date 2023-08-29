@@ -251,20 +251,6 @@ export class SdcCollectionApiService {
                                     "updateUser": null,
                                     "createDate": null,
                                     "updateDate": null,
-                                    "enrolledProgramCode": "40"
-                                },
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
-                                    "enrolledProgramCode": "08"
-                                },
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
                                     "enrolledProgramCode": "08"
                                 }
                             ]
@@ -334,13 +320,6 @@ export class SdcCollectionApiService {
                                     "createDate": null,
                                     "updateDate": null,
                                     "enrolledProgramCode": "08"
-                                },
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
-                                    "enrolledProgramCode": "08"
                                 }
                             ]
                         },
@@ -383,13 +362,6 @@ export class SdcCollectionApiService {
                             "assignedPen": null,
                             "sdcSchoolCollectionStudentValidationIssues": [],
                             "sdcSchoolCollectionStudentEnrolledPrograms": [
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
-                                    "enrolledProgramCode": "43"
-                                },
                                 {
                                     "createUser": "EDXAT",
                                     "updateUser": null,
@@ -444,20 +416,6 @@ export class SdcCollectionApiService {
                                     "createDate": null,
                                     "updateDate": null,
                                     "enrolledProgramCode": "11"
-                                },
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
-                                    "enrolledProgramCode": "11"
-                                },
-                                {
-                                    "createUser": "EDXAT",
-                                    "updateUser": null,
-                                    "createDate": null,
-                                    "updateDate": null,
-                                    "enrolledProgramCode": "41"
                                 },
                                 {
                                     "createUser": "EDXAT",
