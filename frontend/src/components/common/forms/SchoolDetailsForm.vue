@@ -633,7 +633,7 @@
               </v-col>
             </v-row>
             <v-row
-              v-if="!editing"
+              v-if="!editing || isOffshoreSchool"
               no-gutters
             >
               <v-col>
