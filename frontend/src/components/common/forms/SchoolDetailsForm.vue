@@ -38,10 +38,7 @@
     >
       <v-col>
         <v-row class="d-flex justify-start">
-          <v-col
-            cols="11"
-            class="d-flex justify-start"
-          >
+          <v-col class="d-flex justify-start">
             <h2 id="schoolMincodeTitle">
               {{ school.mincode }}
             </h2>
@@ -63,13 +60,14 @@
           </v-col>
           <v-col
             v-if="!editing"
-            cols="1"
-            class="d-flex justify-end"
+            cols=4
+            lg=5
+            class="text-right"
           >
             <PrimaryButton
               v-if="showContactButton()"
               id="viewContactsButton"
-              class="mr-2"
+              class="mt-1"
               secondary
               icon="mdi-account-multiple-outline"
               text="View School Contacts"
@@ -78,7 +76,7 @@
             <PrimaryButton
               v-if="canEditSchoolDetails()"
               id="schoolDetailsEditButton"
-              class="mr-0"
+              class="mr-0 mt-1 ml-2"
               icon="mdi-pencil"
               text="Edit"
               :click-action="toggleEdit"
