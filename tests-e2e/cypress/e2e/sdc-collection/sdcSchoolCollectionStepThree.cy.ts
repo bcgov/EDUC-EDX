@@ -14,7 +14,7 @@ describe('SDC School Collection View', () => {
                 cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
             });
         });
-        // after(() => cy.logout());
+        after(() => cy.logout());
         beforeEach(() => cy.login());
 
         it('can load dashboard & click data collection card & process collection', () => {
