@@ -1,5 +1,6 @@
 import ApiService from '../../common/apiService';
 import { defineStore } from 'pinia';
+import {ApiRoutes} from '../../utils/constants';
 
 export const instituteStore = defineStore('institute', {
   namespaced: true,
@@ -18,7 +19,8 @@ export const instituteStore = defineStore('institute', {
     activeSchoolNeighborhoodLearningCodes: null,
     activeGradeCodes: null,
     activeProvinceCodes: null,
-    activeCountryCodes: null
+    activeCountryCodes: null,
+    schoolContactTypeCodes: null
   }),
   getters: {
     facilityTypeCodesGet: state => state.facilityTypeCodes,
@@ -36,6 +38,9 @@ export const instituteStore = defineStore('institute', {
     activeGradeCodesGet: state => state.activeGradeCodes,
     activeProvinceCodesGet: state => state.activeProvinceCodes,
     activeCountryCodesGet: state => state.activeCountryCodes,
+    independentAuthoritySchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.offshoreOnly),
+    offshoreSchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly),
+    regularSchoolContactTypes: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly && !type.offshoreOnly)
   },
   actions: {
     async setFacilityTypeCodes(facilityTypeCodes) {
@@ -82,6 +87,9 @@ export const instituteStore = defineStore('institute', {
     },
     async setActiveCountryCodes(activeCountryCodes) {
       this.activeCountryCodes = activeCountryCodes;
+    },
+    async setSchoolContactTypeCodes(schoolContactTypeCodes) {
+      this.schoolContactTypeCodes = schoolContactTypeCodes;
     },
     async getFacilityTypeCodes() {
       const response = await ApiService.getFacilityTypeCodes();
@@ -143,5 +151,9 @@ export const instituteStore = defineStore('institute', {
       const response = await ApiService.getAllActiveInstituteCountryCodes();
       await this.setActiveCountryCodes(response.data);
     },
+    async getSchoolContactTypeCodes() {
+      const response = await ApiService.apiAxios.get(ApiRoutes.institute.SCHOOL_CONTACT_TYPE_CODES);
+      await this.setSchoolContactTypeCodes(response.data);
+    }
   }
 });
