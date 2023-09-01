@@ -86,6 +86,21 @@
           v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)"
           cols="2"
         >
+          <v-row v-if="schoolContactType.schoolContactTypeCode === SCHOOL_CONTACT_TYPES.SAFE_COORD">
+            <v-col>
+              <v-alert
+                :id="`publiclyAvailableAlert${schoolContactType.label}`"
+                color="#003366"
+                density="compact"
+                type="info"
+                variant="tonal"
+              >
+                <p style="color: #003366">
+                  Contacts of this type are only available to the ministry and not available to public.
+                </p>
+              </v-alert>
+            </v-col>
+          </v-row>
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
             :key="contact.schoolId"
@@ -167,6 +182,8 @@ import NewSchoolContactPage from '../../school/NewSchoolContactPage.vue';
 import EditSchoolContactPage from '../../school/EditSchoolContactPage.vue';
 import SchoolContact from '../../school/SchoolContact.vue';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {instituteStore} from '../../../store/modules/institute';
+import {SCHOOL_CONTACT_TYPES} from '../../../utils/constants/SchoolContactTypes';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -205,29 +222,41 @@ export default {
       editContact: {},
       newContactSheet: false,
       editContactSheet: false,
-      selectedSchoolId: null
+      selectedSchoolId: null,
+      SCHOOL_CONTACT_TYPES: SCHOOL_CONTACT_TYPES
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
+    ...mapState(instituteStore, ['schoolContactTypeCodes', 'independentAuthoritySchoolContacts', 'offshoreSchoolContacts', 'regularSchoolContactTypes']),
     isLoading() {
       return this.loadingCount !== 0;
     }
   },
+  watch: {
+    async school(value) {
+      if (!this.schoolContactTypeCodes) {
+        await this.loadSchoolContactTypeCodes();
+      }
+      if (value?.schoolCategoryCode === 'OFFSHORE') {
+        this.schoolContactTypes = this.offshoreSchoolContacts;
+      } else if (value?.schoolCategoryCode === 'INDEPEND') {
+        this.schoolContactTypes = this.independentAuthoritySchoolContacts;
+      } else {
+        this.schoolContactTypes = this.regularSchoolContactTypes;
+      }
+    }
+  },
   created() {
-    this.getSchoolContactTypeCodes();
     this.getThisSchoolsContacts();
   },
   methods: {
     redirectToSchoolDetails() {
       this.$router.push({name: 'schoolDetails', params: {schoolID: this.school.schoolId}});
     },
-    getSchoolContactTypeCodes() {
+    async loadSchoolContactTypeCodes() {
       this.loadingCount += 1;
-      ApiService.apiAxios.get(ApiRoutes.institute.SCHOOL_CONTACT_TYPE_CODES)
-        .then(response => {
-          this.schoolContactTypes = response.data;
-        })
+      await instituteStore().getSchoolContactTypeCodes()
         .catch(error => {
           console.error(error);
           let fallback =  'An error occurred while trying to get the details of available School' +

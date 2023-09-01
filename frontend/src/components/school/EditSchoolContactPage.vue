@@ -12,18 +12,28 @@
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert
-              color="#E9EBEF"
-              dense
+              v-if="editContact.schoolContactTypeCode === SCHOOL_CONTACT_TYPES.SAFE_COORD"
+              color="#003366"
+              density="compact"
               type="info"
+              variant="tonal"
             >
               <p style="color: #003366">
+                Contacts of this type are only available to the ministry and not available to public.
+              </p>
+            </v-alert>
+            <v-alert
+              v-else
+              color="#003366"
+              density="compact"
+              type="info"
+              variant="tonal"
+            >
+              <p>
                 School contacts will be
                 <strong>available to the public as of start date.</strong>
               </p>
-              <p
-                style="color: #003366"
-                class="mb-1"
-              >
+              <p class="mb-1">
                 Please be sure to review the new contact details carefully before saving.
               </p>
             </v-alert>
@@ -239,6 +249,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 
 import PrimaryButton from '../util/PrimaryButton.vue';
 import moment from 'moment/moment';
+import {SCHOOL_CONTACT_TYPES} from '../../utils/constants/SchoolContactTypes';
 
 export default {
   name: 'EditSchoolContactPage',
@@ -285,6 +296,7 @@ export default {
       rules: Rules,
       editContactExpiryDatePicker: null,
       editContactEffectiveDatePicker: null,
+      SCHOOL_CONTACT_TYPES: SCHOOL_CONTACT_TYPES
     };
   },
   watch: {
