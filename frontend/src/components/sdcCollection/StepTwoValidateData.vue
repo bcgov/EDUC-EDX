@@ -51,7 +51,7 @@
               <v-col cols="4" class="ml-4 mr-4">
                 <v-row>
                   <v-col class="d-flex justify-start">
-                    <span>Funding Warnings</span>
+                    <span style="white-space: nowrap">Funding Warnings</span>
                   </v-col>
                 </v-row>
                 <v-row
@@ -76,10 +76,10 @@
                 class="border-opacity-75"
                 vertical
               />
-              <v-col class="ml-4 mr-5">
+              <v-col class="ml-3 mr-4">
                 <v-row>
                   <v-col class="d-flex justify-center">
-                    <span>Info Warnings</span>
+                    <span style="white-space: nowrap">Info Warnings</span>
                   </v-col>
                 </v-row>
                 <v-row
