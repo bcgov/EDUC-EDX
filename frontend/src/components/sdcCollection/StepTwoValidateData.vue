@@ -694,14 +694,12 @@
           </div>
         </v-col>
         <v-col v-else>
-          <v-row>
-            <v-col class="d-flex justify-start">
-              <h3>Student Record</h3>
-            </v-col>
-          </v-row>
-          <p class="clear-message">
+          <v-alert
+            dismissible="true"
+            class="clear-message"
+          >
             Congratulations! There are no errors or warnings in the 1701 Submission
-          </p>
+          </v-alert>
         </v-col>
       </v-row>
       <v-row
@@ -1149,7 +1147,7 @@ const isLoading = () => {
   }
 
   .clear-message {
-    background-color: palegreen;
+    background-color: #bee7be;
     padding: 5px;
   }
 
