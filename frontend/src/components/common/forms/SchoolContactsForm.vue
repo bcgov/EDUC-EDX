@@ -95,7 +95,7 @@
                 type="info"
                 variant="tonal"
               >
-                <p style="color: #003366">
+                <p>
                   Contacts of this type are only available to the ministry and not available to public.
                 </p>
               </v-alert>
