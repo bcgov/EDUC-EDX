@@ -8,6 +8,7 @@
           id="detailButton"
           size="large"
           class="detail-button"
+          :class="{ 'active-button': reportView === 'detail' }"
           @click="showDetail"
         >
           Detail View
@@ -16,6 +17,7 @@
           id="summaryButton"
           size="large"
           class="summary-button"
+          :class="{ 'active-button': reportView === 'summary' }"
           @click="showSummary"
         >
           Summary View
@@ -67,19 +69,22 @@ export default {
   }
 };
 </script>
-      
-      <style scoped>
-      .detail-button {
-        background-color: #003366 !important;
+
+<style scoped>
+.detail-button {
+  border: 1px solid lightgray;
+}
+
+.summary-button {
+  border: 1px solid lightgray;
+}
+
+.active-button {
+  background-color: #003366 !important;
   color: white !important;
-      }
-
-      .summary-button {
-        color: #003366;
-        border: 1px solid #003366;
-      }
-
-      </style>
+  border: 1px solid #003366;
+}
+</style>
       
       
     
