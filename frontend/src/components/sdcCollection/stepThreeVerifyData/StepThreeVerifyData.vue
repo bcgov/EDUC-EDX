@@ -69,6 +69,8 @@ import SpecialEduComponent from './SpecialEduComponent.vue';
 import EnglishLangComponent from './EnglishLangComponent.vue';
 import RefugeeComponent from './RefugeeComponent.vue';
 import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -108,7 +110,23 @@ export default {
     next() {
       if(this.currentStepInCollectionProcess.isComplete) {
         this.$emit('next');
-      } 
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    markStepAsComplete() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'SCH_D_VRFD'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying data. Please try again later.');
+        });
     }
   }
 };
