@@ -86,21 +86,22 @@
           v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)"
           cols="2"
         >
-          <v-row v-if="schoolContactType.schoolContactTypeCode === SCHOOL_CONTACT_TYPES.SAFE_COORD">
-            <v-col>
-              <v-alert
-                :id="`publiclyAvailableAlert${schoolContactType.label}`"
-                color="#003366"
-                density="compact"
-                type="info"
-                variant="tonal"
-              >
-                <p>
-                  Contacts of this type are only available to the ministry and not available to public.
-                </p>
-              </v-alert>
-            </v-col>
-          </v-row>
+          <v-col
+            v-if="schoolContactType.schoolContactTypeCode === SCHOOL_CONTACT_TYPES.SAFE_COORD"
+            cols="12"
+          >
+            <v-alert
+              :id="`publiclyAvailableAlert${schoolContactType.label}`"
+              color="#003366"
+              density="compact"
+              type="info"
+              variant="tonal"
+            >
+              <p>
+                Contacts of this type are only available to the ministry and not available to public.
+              </p>
+            </v-alert>
+          </v-col>
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
             :key="contact.schoolId"
