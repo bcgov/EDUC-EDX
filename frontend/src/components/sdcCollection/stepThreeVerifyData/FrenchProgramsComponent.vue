@@ -28,6 +28,11 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.headcountEndpoint"
+      />
+    </div>
   </v-container>
 </template>
     
@@ -35,10 +40,12 @@
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { FRENCH_PR } from '../../../utils/sdc/TableConfiguration';
+import SummaryComponent from './SummaryComponent.vue';
   
 export default {
   name: 'FrenchProgramsComponent',
   components: {
+    SummaryComponent,
     DetailComponent
   },
   mixins: [alertMixin],

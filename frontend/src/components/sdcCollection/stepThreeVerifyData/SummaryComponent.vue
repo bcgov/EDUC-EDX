@@ -102,7 +102,10 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-
+    headcountType: {
+      type: String,
+      required: true,
+    }
   },
   emits: [],
   data() {
@@ -123,7 +126,7 @@ export default {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
         params: {
-          type: 'enrollment',
+          type: this.headcountType,
           compare: this.compareSwitch
         }
       }).then(response => {

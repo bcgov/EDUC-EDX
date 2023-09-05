@@ -10,6 +10,7 @@ export const FTE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
     ],
+    headcountEndpoint: 'enroll'
   }  
 );
 
@@ -25,6 +26,7 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram'},
     ],
+    headcountEndpoint: 'french'
   }  
 );
 
