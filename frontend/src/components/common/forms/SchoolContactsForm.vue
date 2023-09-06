@@ -131,7 +131,8 @@
     <v-bottom-sheet
       v-model="newContactSheet"
       transition="no-click-animation"
-      max-width="50%"
+      content-class="newContactBottomSheet"
+      max-width="30%"
       persistent
     >
       <NewSchoolContactPage
@@ -356,9 +357,12 @@ export default {
 
   <style scoped>
 
-  :deep(div.v-overlay__content.v-bottom-sheet__content) {
+  :global(.newContactBottomSheet) {
     left:auto;
     right:auto;
+    margin-bottom: 0 !important;
+    align-self: flex-end;
+    transition-duration: 0.2s;
   }
 
   .containerSetup{
