@@ -29,17 +29,17 @@
               class="pl-2 hoverTable"
               :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
               style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectSchool(item.value.schoolID)"
+              @click="selectSchool(item.raw.schoolID)"
             >
               <v-col class="pa-1">
                 <h3
                   class="mt-1 mb-1"
                   style="color: black;"
                 >
-                  {{ item.value.displayName }}
+                  {{ item.raw.displayName }}
                 </h3>
                 <h3 style="color: grey;">
-                  {{ item.value.mincode }}
+                  {{ item.raw.mincode }}
                 </h3>
               </v-col>
             </v-row>
@@ -64,17 +64,17 @@
               class="pl-2 hoverTable"
               :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
               style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectDistrict(item.value.districtID)"
+              @click="selectDistrict(item.raw.districtID)"
             >
               <v-col class="pa-1">
                 <h3
                   class="mt-1 mb-1"
                   style="color: black;"
                 >
-                  {{ item.value.displayName }}
+                  {{ item.raw.displayName }}
                 </h3>
                 <h3 style="color: grey;">
-                  {{ item.value.districtNumber }}
+                  {{ item.raw.districtNumber }}
                 </h3>
               </v-col>
             </v-row>

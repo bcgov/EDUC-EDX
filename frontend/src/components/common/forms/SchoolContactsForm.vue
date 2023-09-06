@@ -75,7 +75,7 @@
         v-for="schoolContactType in schoolContactTypes"
         :key="schoolContactType.code"
       >
-        <v-row>
+        <v-row class="bottom-sheets">
           <v-col>
             <h2 style="color:#1A5A96">
               {{ schoolContactType.label }}
@@ -128,13 +128,10 @@
       </div>
     </template>
     <!--    new contact sheet -->
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="newContactSheet"
-      inset
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      no-click-animation
-      scrollable
+      transition="no-click-animation"
+      max-width="50%"
       persistent
     >
       <NewSchoolContactPage
@@ -144,7 +141,7 @@
         @new-school-contact:close-new-school-contact-page="newContactSheet = !newContactSheet"
         @new-school-contact:add-new-school-contact="newSchoolContactAdded"
       />
-    </v-navigation-drawer>
+    </v-bottom-sheet>
     <v-navigation-drawer
       v-model="editContactSheet"
       inset
@@ -358,6 +355,11 @@ export default {
 </script>
 
   <style scoped>
+
+  :deep(div.v-overlay__content.v-bottom-sheet__content) {
+    left:auto;
+    right:auto;
+  }
 
   .containerSetup{
     padding-right: 32em !important;

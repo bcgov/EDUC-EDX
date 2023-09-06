@@ -142,7 +142,7 @@
               <v-row
                 no-gutters
                 class="hoverTable pt-1"
-                @click="openSchool(item.value.schoolId)"
+                @click="openSchool(item.raw.schoolId)"
               >
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
                   <v-row
@@ -150,20 +150,20 @@
                     class="mb-n1"
                   >
                     <v-col cols="6">
-                      <span class="subjectHeading">{{ item.value.mincode }} - {{ item.value.displayName }}</span>
+                      <span class="subjectHeading">{{ item.raw.mincode }} - {{ item.raw.displayName }}</span>
                     </v-col>
                     <v-col
                       cols="2"
                     >
                       <v-icon
                         class="ml-0 mb-1"
-                        :color="getStatusColorAuthorityOrSchool(item.value.status)"
+                        :color="getStatusColorAuthorityOrSchool(item.raw.status)"
                         right
                         dark
                       >
                         mdi-circle-medium
                       </v-icon>
-                      <span class="statusCodeLabel">{{ item.value.status }}</span>
+                      <span class="statusCodeLabel">{{ item.raw.status }}</span>
                     </v-col>
                     <v-col class="d-flex">
                       <v-icon
@@ -175,7 +175,7 @@
                       <span
                         class="principalName statusCodeLabel"
                         style="color: black"
-                      >{{ item.value.principalsName }}</span>
+                      >{{ item.raw.principalsName }}</span>
                     </v-col>
                     <v-col
                       class="d-flex justify-end mr-4"
@@ -190,7 +190,7 @@
                             class="schoolContactsButton mt-0 pt-0 filterButton"
                             style="text-transform: initial"
                             v-bind="props"
-                            @click.stop.prevent="openSchoolContacts(item.value.schoolId)"
+                            @click.stop.prevent="openSchoolContacts(item.raw.schoolId)"
                           >
                             <v-icon
                               color="white"
@@ -211,8 +211,8 @@
                         class="ministryLine"
                         style="color: black"
                       >{{
-                        item.value.schoolCategory
-                      }} | {{ item.value.facilityType }}</span>
+                        item.raw.schoolCategory
+                      }} | {{ item.raw.facilityType }}</span>
                     </v-col>
                     <v-col
                       cols="2"
@@ -223,7 +223,7 @@
                       >
                         mdi-phone-outline
                       </v-icon>
-                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.value.phoneNumber) }}</span>
+                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.raw.phoneNumber) }}</span>
                     </v-col>
                     <v-col
                       cols="4"
@@ -235,7 +235,7 @@
                       >
                         mdi-at
                       </v-icon>
-                      <span class="statusCodeLabel centerSpan">{{ item.value.email }}</span>
+                      <span class="statusCodeLabel centerSpan">{{ item.raw.email }}</span>
                     </v-col>
                   </v-row>
                 </v-col>
