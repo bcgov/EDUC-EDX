@@ -127,60 +127,60 @@
         v-for="districtContactType in districtContactTypes"
         :key="districtContactType.code"
       >
-      <div v-if="hasContactsWhenFiltered(districtContactType)">
-        <v-row>
-          <v-col>
-            <h2 style="color:#1A5A96">
-              {{ districtContactType.label }}
-            </h2>
-          </v-col>
-        </v-row>
-        <v-row v-if="!districtContactType.publiclyAvailable">
-          <v-col
-            cols="12"
-            lg="8"
+        <div v-if="hasContactsWhenFiltered(districtContactType)">
+          <v-row>
+            <v-col>
+              <h2 style="color:#1A5A96">
+                {{ districtContactType.label }}
+              </h2>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="!districtContactType.publiclyAvailable"
+            cols="2"
           >
-            <v-alert
-              :id="`publiclyAvailableAlert${districtContactType.label}`"
-              color="#E9EBEF"
-              dense
-              type="info"
+            <v-col cols="12">
+              <v-alert
+                :id="`publiclyAvailableAlert${districtContactType.label}`"
+                color="#003366"
+                density="compact"
+                type="info"
+                variant="tonal"
+              >
+                <p>
+                  Contacts of this type are only available to the ministry and not available to public.
+                </p>
+              </v-alert>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="hasContactsForThisType(districtContactType)"
+            cols="2"
+          >
+            <v-col
+              v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
+              :key="contact.schoolId"
+              cols="5"
+              lg="4"
             >
-              <p style="color: #003366">
-                Contacts of this type are only available to the ministry and not available to public.
-              </p>
-            </v-alert>
-          </v-col>
-          <v-spacer />
-        </v-row>
-        <v-row
-          v-if="hasContactsForThisType(districtContactType)"
-          cols="2"
-        >
-          <v-col
-            v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
-            :key="contact.schoolId"
-            cols="5"
-            lg="4"
+              <DistrictContact
+                :contact="contact"
+                :district-i-d="$route.params.districtID"
+                :can-edit-district-contact="canEditDistrictContact"
+                :handle-open-editor="() => openEditContactSheet(contact)"
+                @remove-district-contact:show-confirmation-prompt="removeContact"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            v-else
+            cols="2"
           >
-            <DistrictContact
-              :contact="contact"
-              :district-i-d="$route.params.districtID"
-              :can-edit-district-contact="canEditDistrictContact"
-              :handle-open-editor="() => openEditContactSheet(contact)"
-              @remove-district-contact:show-confirmation-prompt="removeContact"
-            />
-          </v-col>
-        </v-row>
-        <v-row
-          v-else
-          cols="2"
-        >
-          <v-col>
-            <p>No contacts of this type have been listed.</p>
-          </v-col>
-        </v-row>
-       </div>
+            <v-col>
+              <p>No contacts of this type have been listed.</p>
+            </v-col>
+          </v-row>
+        </div>
       </div>
     </template>
     <v-navigation-drawer
