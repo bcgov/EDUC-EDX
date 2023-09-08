@@ -436,7 +436,6 @@ export default {
             this.fileLoaded = false;
             this.processing = false;
           }else if(this.totalStudents === this.totalProcessed){
-            console.log('Hello Marco' + this.sdcSchoolProgress.fileName);
             //Show summary
             this.hasFileAttached = true;
             this.fileLoaded = true;

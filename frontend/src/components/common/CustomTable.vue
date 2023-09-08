@@ -23,7 +23,7 @@
             v-for="column in headers"
             id="header"
             :key="column.key"
-          >       
+          >
             <div v-if="column.title === 'select'">
               <span @click="toggle()">
                 <v-checkbox 
@@ -55,40 +55,40 @@
           >
             <v-checkbox
               v-if="column.title === 'select'"
-              :model-value="isSelected(props.item.value) !== undefined"
+              :model-value="isSelected(props.item.raw) !== undefined"
               @click="onClick(props)"
             /> 
             <div v-else>
               <div v-if="column.key === 'legalName'">
-                <span v-if="props.item.value['legalLastName']">{{ props.item.value['legalLastName'] }}</span>,
-                <span v-if="props.item.value['legalFirstName']">{{ props.item.value['legalFirstName'] }}</span>
-                <span v-if="props.item.value['legalMiddleNames']">({{ props.item.value['legalMiddleNames'] }})</span>
+                <span v-if="props.item.raw['legalLastName']">{{ props.item.raw['legalLastName'] }}</span>,
+                <span v-if="props.item.raw['legalFirstName']">{{ props.item.raw['legalFirstName'] }}</span>
+                <span v-if="props.item.raw['legalMiddleNames']">({{ props.item.raw['legalMiddleNames'] }})</span>
               </div>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item.value['isAdult'] !== null || props.item.value['isAdult' !== undefined]">{{ props.item.value['isAdult'] ==="true" ? 'Yes' :'No' }}</span>
+                <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] ==="true" ? 'Yes' :'No' }}</span>
               </div>
 
               <div v-else-if="column.key === 'fte'">
-                <span>{{ props.item.value['fte'] === 0 ? 0 : props.item.value['fte'] }}</span>
+                <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
               </div>
 
-              <span v-else-if="props.item.value[column.key]">{{ props.item.value[column.key] }}</span>
+              <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
               <span v-else>-</span>
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
-                  <div v-if="props.item.value['usualLastName'] || props.item.value['usualFirstName'] || props.item.value['usualMiddleNames']">
-                    <span v-if="props.item.value['usualLastName']">{{ props.item.value['usualLastName'] }}</span>,
-                    <span v-if="props.item.value['usualFirstName']">{{ props.item.value['usualFirstName'] }}</span>
-                    <span v-if="props.item.value['usualMiddleNames']">({{ props.item.value['usualMiddleNames'] }})</span>
+                  <div v-if="props.item.raw['usualLastName'] || props.item.raw['usualFirstName'] || props.item.raw['usualMiddleNames']">
+                    <span v-if="props.item.raw['usualLastName']">{{ props.item.raw['usualLastName'] }}</span>,
+                    <span v-if="props.item.raw['usualFirstName']">{{ props.item.raw['usualFirstName'] }}</span>
+                    <span v-if="props.item.raw['usualMiddleNames']">({{ props.item.raw['usualMiddleNames'] }})</span>
                   </div>
                   <span v-else>-</span>
                 </div>
                 <div v-else-if="column.subHeader.key === 'isGraduated'">
-                  <span v-if="props.item.value['isGraduated'] !== null || props.item.value['isGraduated'] !== undefined">{{ props.item.value['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
+                  <span v-if="props.item.raw['isGraduated'] !== null || props.item.raw['isGraduated'] !== undefined">{{ props.item.raw['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
                 </div>
-                <span v-else-if="props.item.value[column.subHeader.key]">{{ props.item.value[column.subHeader.key] }}</span>
+                <span v-else-if="props.item.raw[column.subHeader.key]">{{ props.item.raw[column.subHeader.key] }}</span>
                 <span v-else>-</span>
               </div>
             </div>
@@ -159,11 +159,11 @@ export default {
   },
   methods: {
     onClick(prop) {
-      let selectedValue = prop.item.value;
+      let selectedValue = prop.item.raw;
       if(this.isSelected(selectedValue)) {
         this.selected.splice(this.selected.findIndex(value => value.sdcSchoolCollectionStudentID === selectedValue.sdcSchoolCollectionStudentID), 1);
       } else {
-        this.selected.push(prop.item.value);
+        this.selected.push(prop.item.raw);
       }
       this.masterCheckbox = this.selected.length > 0 && this.isAllSelected();
     },

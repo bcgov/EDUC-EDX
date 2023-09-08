@@ -205,29 +205,29 @@
               <template #item="{ item, index }">
                 <v-row
                   id="sdcStudentDataRow"
-                  :class="tableRowClass(item.value.sdcSchoolCollectionStudentID, index)"
+                  :class="tableRowClass(item.raw.sdcSchoolCollectionStudentID, index)"
                   no-gutters
                   style="border-bottom-style: groove; border-bottom-color: rgb(255 255 255 / 45%);"
-                  @click="studentSelected(item.value.sdcSchoolCollectionStudentID)"
+                  @click="studentSelected(item.raw.sdcSchoolCollectionStudentID)"
                 >
                   <v-col cols="1">
                     <v-icon
                       class="mt-2 mr-3"
                       size="25"
-                      :color="getIssueIconColor(getStudentStatus(item.value))"
+                      :color="getIssueIconColor(getStudentStatus(item.raw))"
                     >
-                      {{ getIssueIcon(getStudentStatus(item.value)) }}
+                      {{ getIssueIcon(getStudentStatus(item.raw)) }}
                     </v-icon>
                   </v-col>
                   <v-col cols="5">
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.studentPen) }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.raw.studentPen) }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
-                        <span class="tableItemVal">{{ fieldOrHyphen(item.value.localID) }}</span>
+                        <span class="tableItemVal">{{ fieldOrHyphen(item.raw.localID) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -235,14 +235,14 @@
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ getLegalName(item.value.legalFirstName, item.value.legalMiddleNames, item.value.legalLastName) }}
+                          {{ getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
                         </span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col>
                         <span class="tableItemVal">
-                          {{ getLegalName(item.value.usualFirstName, item.value.usualMiddleNames, item.value.usualLastName) }}
+                          {{ getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
                         </span>
                       </v-col>
                     </v-row>

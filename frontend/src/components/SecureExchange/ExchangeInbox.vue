@@ -313,7 +313,7 @@
                   no-gutters
                   :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
                   style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%); border-width:2px"
-                  @click="openExchange(item.value.secureExchangeID)"
+                  @click="openExchange(item.raw.secureExchangeID)"
                 >
                   <v-col
                     cols="8"
@@ -331,8 +331,8 @@
                       >
                         <span
                           class="subjectHeading"
-                          :style="{color: item.value.isReadByExchangeContact ? 'black': '#1f7cef'}"
-                        >{{ getSubject(item.value.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item.value) }}</span>
+                          :style="{color: item.raw.isReadByExchangeContact ? 'black': '#1f7cef'}"
+                        >{{ getSubject(item.raw.subject) }}</span><span style="color: gray"> - {{ getLatestComment(item.raw) }}</span>
                         <v-icon
                           v-if="item?.raw?.documentList?.length > 0"
                           size="x-small"
@@ -351,8 +351,8 @@
                           class="ministryLine"
                           style="color: black"
                         >{{
-                          getMinistryTeamName(item.value.ministryOwnershipTeamID)
-                        }} - {{ item.value.createDate }}</span>
+                          getMinistryTeamName(item.raw.ministryOwnershipTeamID)
+                        }} - {{ item.raw.createDate }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -367,13 +367,13 @@
                       <v-col class="pb-1 pt-2">
                         <v-icon
                           class="pb-1"
-                          :color="getStatusColor(item.value.secureExchangeStatusCode)"
+                          :color="getStatusColor(item.raw.secureExchangeStatusCode)"
                           right
                           dark
                         >
                           mdi-circle-medium
                         </v-icon>
-                        <span class="statusCodeLabel">{{ item.value.secureExchangeStatusCode }}</span>
+                        <span class="statusCodeLabel">{{ item.raw.secureExchangeStatusCode }}</span>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
@@ -386,7 +386,7 @@
                         >
                           mdi-pound
                         </v-icon>
-                        <span class="statusCodeLabel">{{ item.value.sequenceNumber }}</span>
+                        <span class="statusCodeLabel">{{ item.raw.sequenceNumber }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
