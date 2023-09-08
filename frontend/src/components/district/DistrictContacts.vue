@@ -135,23 +135,23 @@
               </h2>
             </v-col>
           </v-row>
-          <v-row v-if="!districtContactType.publiclyAvailable">
-            <v-col
-              cols="12"
-              lg="8"
-            >
+          <v-row
+            v-if="!districtContactType.publiclyAvailable"
+            cols="2"
+          >
+            <v-col cols="12">
               <v-alert
                 :id="`publiclyAvailableAlert${districtContactType.label}`"
-                color="#E9EBEF"
-                dense
+                color="#003366"
+                density="compact"
                 type="info"
+                variant="tonal"
               >
-                <p style="color: #003366">
+                <p>
                   Contacts of this type are only available to the ministry and not available to public.
                 </p>
               </v-alert>
             </v-col>
-            <v-spacer />
           </v-row>
           <v-row
             v-if="hasContactsForThisType(districtContactType)"
