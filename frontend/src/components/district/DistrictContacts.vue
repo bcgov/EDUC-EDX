@@ -183,13 +183,11 @@
         </div>
       </div>
     </template>
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="newContactSheet"
-      inset
-      no-click-animation
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      scrollable
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <NewDistrictContactPage
@@ -199,14 +197,12 @@
         @new-district-contact:close-new-district-contact-page="newContactSheet = !newContactSheet"
         @new-district-contact:add-new-district-contact="newDistrictContactAdded"
       />
-    </v-navigation-drawer>
-    <v-navigation-drawer
+    </v-bottom-sheet>
+    <v-bottom-sheet
       v-model="editContactSheet"
-      inset
-      no-click-animation
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      scrollable
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <EditDistrictContactPage
@@ -217,7 +213,7 @@
         :close-handler="() => editContactSheet = false"
         :on-success-handler="contactEditSuccess"
       />
-    </v-navigation-drawer>
+    </v-bottom-sheet>
     <ConfirmationDialog ref="confirmationDialog" />
   </v-container>
 </template>

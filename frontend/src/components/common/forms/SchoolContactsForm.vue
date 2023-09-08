@@ -75,7 +75,7 @@
         v-for="schoolContactType in schoolContactTypes"
         :key="schoolContactType.code"
       >
-        <v-row>
+        <v-row class="bottom-sheets">
           <v-col>
             <h2 style="color:#1A5A96">
               {{ schoolContactType.label }}
@@ -130,13 +130,11 @@
       </div>
     </template>
     <!--    new contact sheet -->
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="newContactSheet"
-      inset
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      no-click-animation
-      scrollable
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <NewSchoolContactPage
@@ -146,13 +144,12 @@
         @new-school-contact:close-new-school-contact-page="newContactSheet = !newContactSheet"
         @new-school-contact:add-new-school-contact="newSchoolContactAdded"
       />
-    </v-navigation-drawer>
-    <v-navigation-drawer
+    </v-bottom-sheet>
+    <v-bottom-sheet
       v-model="editContactSheet"
-      inset
-      location="bottom"
-      no-click-animation
-      style="width: 50%; height: max-content; left: 25%;"
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <EditSchoolContactPage
@@ -163,7 +160,7 @@
         :close-handler="() => editContactSheet = false"
         :on-success-handler="() => contactEditSuccess()"
       />
-    </v-navigation-drawer>
+    </v-bottom-sheet>
     <ConfirmationDialog ref="confirmationDialog" />
   </div>
 </template>
