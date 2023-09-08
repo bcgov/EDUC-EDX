@@ -185,4 +185,12 @@ h1 {
   background-color: rgba(0,0,0,.12)!important;
 }
 
+.max-width-bottom-sheet {
+  left:auto;
+  right:auto;
+  margin-bottom: 0 !important;
+  align-self: flex-end;
+  transition-duration: 0.2s;
+}
+
 </style>

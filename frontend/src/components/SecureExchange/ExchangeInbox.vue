@@ -397,13 +397,11 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="newMessageSheet"
-      inset
-      no-click-animation
-      scrollable
-      style="width: 50%; height: max-content; left: 25%;z-index: 1999;"
-      location="bottom"
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <v-card
@@ -421,7 +419,7 @@
           />
         </v-card-text>
       </v-card>
-    </v-navigation-drawer>
+    </v-bottom-sheet>
   </v-container>
 </template>
 

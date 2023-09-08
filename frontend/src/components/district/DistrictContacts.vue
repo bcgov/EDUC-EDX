@@ -127,69 +127,67 @@
         v-for="districtContactType in districtContactTypes"
         :key="districtContactType.code"
       >
-      <div v-if="hasContactsWhenFiltered(districtContactType)">
-        <v-row>
-          <v-col>
-            <h2 style="color:#1A5A96">
-              {{ districtContactType.label }}
-            </h2>
-          </v-col>
-        </v-row>
-        <v-row v-if="!districtContactType.publiclyAvailable">
-          <v-col
-            cols="12"
-            lg="8"
-          >
-            <v-alert
-              :id="`publiclyAvailableAlert${districtContactType.label}`"
-              color="#E9EBEF"
-              dense
-              type="info"
+        <div v-if="hasContactsWhenFiltered(districtContactType)">
+          <v-row>
+            <v-col>
+              <h2 style="color:#1A5A96">
+                {{ districtContactType.label }}
+              </h2>
+            </v-col>
+          </v-row>
+          <v-row v-if="!districtContactType.publiclyAvailable">
+            <v-col
+              cols="12"
+              lg="8"
             >
-              <p style="color: #003366">
-                Contacts of this type are only available to the ministry and not available to public.
-              </p>
-            </v-alert>
-          </v-col>
-          <v-spacer />
-        </v-row>
-        <v-row
-          v-if="hasContactsForThisType(districtContactType)"
-          cols="2"
-        >
-          <v-col
-            v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
-            :key="contact.schoolId"
-            cols="5"
-            lg="4"
+              <v-alert
+                :id="`publiclyAvailableAlert${districtContactType.label}`"
+                color="#E9EBEF"
+                dense
+                type="info"
+              >
+                <p style="color: #003366">
+                  Contacts of this type are only available to the ministry and not available to public.
+                </p>
+              </v-alert>
+            </v-col>
+            <v-spacer />
+          </v-row>
+          <v-row
+            v-if="hasContactsForThisType(districtContactType)"
+            cols="2"
           >
-            <DistrictContact
-              :contact="contact"
-              :district-i-d="$route.params.districtID"
-              :can-edit-district-contact="canEditDistrictContact"
-              :handle-open-editor="() => openEditContactSheet(contact)"
-              @remove-district-contact:show-confirmation-prompt="removeContact"
-            />
-          </v-col>
-        </v-row>
-        <v-row
-          v-else
-          cols="2"
-        >
-          <v-col>
-            <p>No contacts of this type have been listed.</p>
-          </v-col>
-        </v-row>
-       </div>
+            <v-col
+              v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
+              :key="contact.schoolId"
+              cols="5"
+              lg="4"
+            >
+              <DistrictContact
+                :contact="contact"
+                :district-i-d="$route.params.districtID"
+                :can-edit-district-contact="canEditDistrictContact"
+                :handle-open-editor="() => openEditContactSheet(contact)"
+                @remove-district-contact:show-confirmation-prompt="removeContact"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            v-else
+            cols="2"
+          >
+            <v-col>
+              <p>No contacts of this type have been listed.</p>
+            </v-col>
+          </v-row>
+        </div>
       </div>
     </template>
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="newContactSheet"
-      inset
-      no-click-animation
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      scrollable
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <NewDistrictContactPage
@@ -199,14 +197,12 @@
         @new-district-contact:close-new-district-contact-page="newContactSheet = !newContactSheet"
         @new-district-contact:add-new-district-contact="newDistrictContactAdded"
       />
-    </v-navigation-drawer>
-    <v-navigation-drawer
+    </v-bottom-sheet>
+    <v-bottom-sheet
       v-model="editContactSheet"
-      inset
-      no-click-animation
-      location="bottom"
-      style="width: 50%; height: max-content; left: 25%;"
-      scrollable
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <EditDistrictContactPage
@@ -217,7 +213,7 @@
         :close-handler="() => editContactSheet = false"
         :on-success-handler="contactEditSuccess"
       />
-    </v-navigation-drawer>
+    </v-bottom-sheet>
     <ConfirmationDialog ref="confirmationDialog" />
   </v-container>
 </template>

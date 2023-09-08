@@ -131,7 +131,7 @@
     <v-bottom-sheet
       v-model="newContactSheet"
       transition="no-click-animation"
-      content-class="newContactBottomSheet"
+      content-class="max-width-bottom-sheet"
       max-width="30%"
       persistent
     >
@@ -143,12 +143,11 @@
         @new-school-contact:add-new-school-contact="newSchoolContactAdded"
       />
     </v-bottom-sheet>
-    <v-navigation-drawer
+    <v-bottom-sheet
       v-model="editContactSheet"
-      inset
-      location="bottom"
-      no-click-animation
-      style="width: 50%; height: max-content; left: 25%;"
+      transition="no-click-animation"
+      content-class="max-width-bottom-sheet"
+      max-width="30%"
       persistent
     >
       <EditSchoolContactPage
@@ -159,7 +158,7 @@
         :close-handler="() => editContactSheet = false"
         :on-success-handler="() => contactEditSuccess()"
       />
-    </v-navigation-drawer>
+    </v-bottom-sheet>
     <ConfirmationDialog ref="confirmationDialog" />
   </div>
 </template>
@@ -356,14 +355,6 @@ export default {
 </script>
 
   <style scoped>
-
-  :global(.newContactBottomSheet) {
-    left:auto;
-    right:auto;
-    margin-bottom: 0 !important;
-    align-self: flex-end;
-    transition-duration: 0.2s;
-  }
 
   .containerSetup{
     padding-right: 32em !important;

@@ -240,13 +240,11 @@
           </v-col>
         </v-row>
 
-        <v-navigation-drawer
+        <v-bottom-sheet
           v-model="newUserInviteSheet"
-          inset
-          no-click-animation
-          style="width: 50%; height: max-content; left: 25%;"
-          location="bottom"
-          scrollable
+          transition="no-click-animation"
+          content-class="max-width-bottom-sheet"
+          max-width="30%"
           persistent
         >
           <v-card
@@ -275,7 +273,7 @@
               />
             </v-card-text>
           </v-card>
-        </v-navigation-drawer>
+        </v-bottom-sheet>
       </div>
       <div v-else>
         <v-row>
