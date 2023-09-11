@@ -843,7 +843,7 @@ const getSummaryCounts = () => {
 //sdc school collection student list pagination
 const headerSearchParams = ref({
   penNumber: '',
-  validationIssueSeverityCode: 'ERROR,INFO_WARNING,FUNDING_WARNING'
+  sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN'
 });
 
 const pageNumber = ref(1);
@@ -866,6 +866,9 @@ const getSDCSchoolCollectionStudentPaginated = () => {
       pageNumber: pageNumber.value - 1,
       pageSize: pageSize.value,
       searchParams: omitBy(headerSearchParams.value, isEmpty),
+      sort: {
+        sdcSchoolCollectionStudentStatusCode: 'ASC'
+    },
     }
   }).then(response => {
     studentListData.value = response.data.content;
@@ -1072,12 +1075,12 @@ const formatAndSortValidationIssues = (validationIssues = []) => {
 };
 
 const getStudentStatus = (student)  => {
-  let studentValidationIssues = student.sdcSchoolCollectionStudentValidationIssues;
-  if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'ERROR')) {
+  let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
+  if(studentValidationIssueStatus === 'ERROR') {
     return 'ERROR';
-  } else if(studentValidationIssues.find(issue => issue.validationIssueSeverityCode === 'FUNDING_WARNING')) {
+  } else if(studentValidationIssueStatus === 'FUNDWARN') {
     return 'FUNDING_WARNING';
-  } else {
+  } else if(studentValidationIssueStatus === 'INFOWARN') {
     return 'INFO_WARNING';
   }
 };

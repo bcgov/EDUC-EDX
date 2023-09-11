@@ -170,7 +170,7 @@ export default {
       searchText: '',
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
-        sdcSchoolCollectionStudentStatusCode: 'LOADED,ERROR,INFO_WARNING,FUNDING_WARNING,VERIFIED,FIXABLE',
+        sdcSchoolCollectionStudentStatusCode: 'LOADED,INFOWARN,FUNDWARN,VERIFIED,FIXABLE',
       },
     };
   },
