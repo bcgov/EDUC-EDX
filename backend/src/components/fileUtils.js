@@ -4,7 +4,7 @@ const config = require('../config');
 const HttpStatus = require('http-status-codes');
 
 async function scanFilePayload(req, res, next) {
-  const valid = await scanFile(req.body.documentData);
+  const valid = await scanFile(req.body.documentData ? req.body.documentData : req.body.fileContents);
 
   if (!valid) {
     return res.status(HttpStatus.NOT_ACCEPTABLE).json({
