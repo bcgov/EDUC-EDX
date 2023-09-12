@@ -6,8 +6,10 @@ const { getCollectionBySchoolId, uploadFile, getSdcFileProgress, updateSchoolCol
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
+const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
+const {verifyRequest} = require("../components/secureExchange");
 
 //cached code table calls
 router.get('/band-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCachedSDCData(constants.CACHE_KEYS.SDC_BAND_CODES, 'sdc:bandCodesURL'));
@@ -23,7 +25,9 @@ router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session
 
 router.get('/getCollectionBySchoolId/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCollectionBySchoolId);
 router.get('/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSchoolCollectionById);
-router.post('/:sdcSchoolCollectionID/file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, uploadFile);
+// router.post('/exchange/:id/documents', passport.authenticate('jwt', {session: false}), isValidBackendToken, [verifyRequest, scanFilePayload, uploadFile]);
+
+router.post('/:sdcSchoolCollectionID/file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, [scanFilePayload, uploadFile]);
 router.get('/:sdcSchoolCollectionID/file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSdcFileProgress);
 router.put('/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateSchoolCollection);
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentPaginated);
