@@ -9,7 +9,6 @@ const constants = require('../util/constants');
 const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
-const {verifyRequest} = require("../components/secureExchange");
 
 //cached code table calls
 router.get('/band-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getCachedSDCData(constants.CACHE_KEYS.SDC_BAND_CODES, 'sdc:bandCodesURL'));
