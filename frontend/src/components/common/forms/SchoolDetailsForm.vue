@@ -445,7 +445,7 @@
                   v-if="isGradeOfferedUpdateAllowed && editing"
                   id="schoolGrades"
                   v-model="schoolDetailsCopy.grades"
-                  :items="gradeCodes"
+                  :items="gradeOptions"
                   item-title="label"
                   item-value="schoolGradeCode"
                   variant="underlined"
@@ -1089,6 +1089,17 @@ export default {
     isGradeOfferedUpdateAllowed() {
       return this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND';
     },
+    gradeOptions(){
+      const gradeOptionList = [];
+      for (let i=0; i < this.gradeCodes.length; i++){
+        if((this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND' && this.gradeCodes[i].schoolGradeCode === 'KINDHALF') ||
+        (this.gradeCodes[i].schoolGradeCode === 'ELEMUNGR' || this.gradeCodes[i].schoolGradeCode === 'SECUNGR')){
+          continue;
+        }
+        gradeOptionList.push(this.gradeCodes[i]);
+      }
+      return gradeOptionList;
+    }
   },
   watch: {
     schoolDetailsFormValid(value) {
