@@ -40,7 +40,8 @@ export const instituteStore = defineStore('institute', {
     activeCountryCodesGet: state => state.activeCountryCodes,
     independentAuthoritySchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.offshoreOnly),
     offshoreSchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly),
-    regularSchoolContactTypes: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly && !type.offshoreOnly)
+    regularSchoolContactTypes: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly && !type.offshoreOnly),
+    gradeOptions: state => state.gradeCodes.filter(grade => !['KINDHALF', 'ELEMENUNGR', 'SECUNGR'].includes(grade) )
   },
   actions: {
     async setFacilityTypeCodes(facilityTypeCodes) {

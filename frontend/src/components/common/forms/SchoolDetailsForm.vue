@@ -1062,6 +1062,7 @@ export default {
     ...mapState(instituteStore, ['provinceCodes']),
     ...mapState(instituteStore, ['countryCodes']),
     ...mapState(instituteStore, ['gradeCodes']),
+    ...mapState(instituteStore, ['gradeOptions']),
     dataReady: function () {
       return this.userInfo;
     },
@@ -1396,15 +1397,6 @@ export default {
           'countryCode': null
         });
       }
-    },
-    sortGrades() {
-      const gradeList = [];
-      for (const grade of this.schoolGradeTypes) {
-        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode)) {
-          gradeList.push(grade);
-        }
-      }
-      this.schoolDetailsCopy.grades = gradeList;
     },
   }
 };
