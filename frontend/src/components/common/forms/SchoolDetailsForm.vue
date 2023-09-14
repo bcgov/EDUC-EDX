@@ -1089,17 +1089,6 @@ export default {
     },
     isGradeOfferedUpdateAllowed() {
       return this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND';
-    },
-    gradeOptions(){
-      const gradeOptionList = [];
-      for (let i=0; i < this.gradeCodes.length; i++){
-        if((this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND' && this.gradeCodes[i].schoolGradeCode === 'KINDHALF') ||
-        (this.gradeCodes[i].schoolGradeCode === 'ELEMUNGR' || this.gradeCodes[i].schoolGradeCode === 'SECUNGR')){
-          continue;
-        }
-        gradeOptionList.push(this.gradeCodes[i]);
-      }
-      return gradeOptionList;
     }
   },
   watch: {
@@ -1401,7 +1390,7 @@ export default {
     sortGrades() {
       const gradeList = [];
       for (const grade of this.schoolGradeTypes) {
-        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode)) {
+        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode )) {
           gradeList.push(grade);
         }
       }

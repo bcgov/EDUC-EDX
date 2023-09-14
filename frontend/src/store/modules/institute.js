@@ -41,7 +41,7 @@ export const instituteStore = defineStore('institute', {
     independentAuthoritySchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.offshoreOnly),
     offshoreSchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly),
     regularSchoolContactTypes: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly && !type.offshoreOnly),
-    gradeOptions: state => state.gradeCodes.filter(grade => !['KINDHALF', 'ELEMENUNGR', 'SECUNGR'].includes(grade) )
+    gradeOptions: state => state.gradeCodes?.filter(grade => !['KINDHALF', 'ELEMUNGR', 'SECUNGR'].includes(grade.schoolGradeCode))
   },
   actions: {
     async setFacilityTypeCodes(facilityTypeCodes) {
