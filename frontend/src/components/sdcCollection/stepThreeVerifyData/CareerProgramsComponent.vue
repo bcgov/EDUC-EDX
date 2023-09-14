@@ -1,5 +1,6 @@
 <template>
-  <v-container 
+  <v-container
+    id="careerTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
@@ -14,7 +15,7 @@
           Detail View
         </v-btn>
         <v-btn
-          id="summaryButton"
+          id="careerSummaryButton"
           size="large"
           class="summary-button"
           :class="{ 'active-button': reportView === 'summary' }"

@@ -71,6 +71,20 @@ export default {
   dropdown: { //common component
     listItem: '.v-list-item'
   },
+  frenchComponent: {
+    tab: '#frenchTab',
+    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
+    summaryButton: '#frenchSummaryButton',
+    headcountHeaderList: '.french-headcount-header',
+    headcountHeaderColumn: '.french-headcount-header-column'
+  },
+  fteComponent: {
+    tab: '#enrollmentTab',
+    summaryButton: '#fteSummaryButton',
+    headcountHeaderList: '.enrollment-headcount-header',
+    headcountHeaderColumn: '.enrollment-headcount-header-column'
+
+  },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
     districtUserManagementOption: '#DistrictUserManagementMenuBtn',
