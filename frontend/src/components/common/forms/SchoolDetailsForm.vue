@@ -445,7 +445,7 @@
                   v-if="isGradeOfferedUpdateAllowed && editing"
                   id="schoolGrades"
                   v-model="schoolDetailsCopy.grades"
-                  :items="gradeCodes"
+                  :items="gradeOptions"
                   item-title="label"
                   item-value="schoolGradeCode"
                   variant="underlined"
@@ -1062,6 +1062,7 @@ export default {
     ...mapState(instituteStore, ['provinceCodes']),
     ...mapState(instituteStore, ['countryCodes']),
     ...mapState(instituteStore, ['gradeCodes']),
+    ...mapState(instituteStore, ['gradeOptions']),
     dataReady: function () {
       return this.userInfo;
     },
@@ -1088,7 +1089,7 @@ export default {
     },
     isGradeOfferedUpdateAllowed() {
       return this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND';
-    },
+    }
   },
   watch: {
     schoolDetailsFormValid(value) {
@@ -1389,7 +1390,7 @@ export default {
     sortGrades() {
       const gradeList = [];
       for (const grade of this.schoolGradeTypes) {
-        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode)) {
+        if (this.schoolDetailsCopy.grades.find((rawGrade) => rawGrade.schoolGradeCode === grade.schoolGradeCode )) {
           gradeList.push(grade);
         }
       }
