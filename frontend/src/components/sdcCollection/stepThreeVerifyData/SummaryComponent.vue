@@ -42,7 +42,7 @@
               v-for="(header, index) in headcountHeaders"
               :key="index"
             >
-              <div class="border ma-1">
+              <div :class="headcountType + '-headcount-header border ma-1'">
                 <v-row>
                   <v-col class="column-header">
                     {{ header.title }}
@@ -59,7 +59,7 @@
                     :key="key"
                     class="divider"
                   >       
-                    <v-col class="column-data">
+                    <v-col :class="headcountType + '-headcount-header-column column-data'">
                       <div>{{ key }} </div>
                       <span
                         v-if="header.columns[key].comparisonValue !== null"
