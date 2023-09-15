@@ -1052,9 +1052,11 @@ const fieldOrHyphen = (field) => field || '-';
 
 const getLegalName = (first, middle, last) => {
   if(first && middle){
-    return last + ', ' + first + ', ' + middle;
+    return last + ', ' + first + ' ' + middle;
   }else if(first){
     return last + ', ' + first;
+  }else if(middle){
+    return last + ', ' + middle;
   }else if(last){
     return last;
   }
