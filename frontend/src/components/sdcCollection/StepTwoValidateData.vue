@@ -1029,7 +1029,7 @@ const getSchoolFundingCodeLabel = (key) => {
 const getSpecialEducationCodesLabel = (key) => {
   let label = key;
   if (sdcCollectionStore.specialEducationCodesMap.get(key)) {
-    label = `${sdcCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCode} - ${sdcCollectionStore.specialEducationCodesMap.get(key)?.label}`;
+    label = `${sdcCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCategoryCode} - ${sdcCollectionStore.specialEducationCodesMap.get(key)?.label}`;
   }
   return label || '-';
 };

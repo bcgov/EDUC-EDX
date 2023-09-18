@@ -127,7 +127,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-
+    
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
@@ -204,7 +204,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
-    
+
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -295,9 +295,6 @@ function createSearchCriteria(searchParams = []) {
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
-    }
-    if (key === 'validationIssueSeverityCode') {
-      searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
   });
 

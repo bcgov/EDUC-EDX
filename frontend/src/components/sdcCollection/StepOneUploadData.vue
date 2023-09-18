@@ -214,7 +214,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
@@ -236,31 +236,12 @@ export default {
       default: null
     }
   },
-  emits: ['next'],
+  emits: ['next', 'refreshStore'],
   data() {
     return {
       acceptableFileExtensions: ['.std', '.ver'],
       requiredRules: [v => !!v || 'Required'],
-      fileRules: [
-        value => {
-          let ret = !value || value.length === 0 || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
-          if (ret !== true) {
-            this.setFailureAlert(ret);
-          }
-          return ret;
-        },
-        value => {
-          const extension = `.${value[0].name.split('.').slice(-1)}`;
-          const failMessage = 'File extension is invalid. Extension must be ".ver" or ".std".';
-
-          if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
-            return true;
-          }
-
-          this.setFailureAlert(failMessage);
-          return failMessage;
-        }
-      ],
+      fileRules: [],
       isReadingFile: false,
       uploadFileValue: null,
       fileInputError: [],
@@ -282,7 +263,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess']),
+    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
     collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
@@ -340,8 +321,10 @@ export default {
     await this.fireFileProgress();
   },
   methods: {
+    ...mapActions(useSdcCollectionStore, ['setSchoolCollection']),
     async fireFileProgress(){
       await this.getFileProgress();
+      this.getFileRules();
       if(this.processing){
         this.startPollingStatus();
       }
@@ -352,6 +335,28 @@ export default {
         return;
       }
       await this.handleFileImport();
+    },
+    getFileRules() {
+      this.fileRules = [
+      value => {
+          let ret = !value || value.length === 0 || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
+          if (ret !== true) {
+            this.setFailureAlert(ret);
+          }
+          return ret;
+        },
+        value => {
+          const extension = `.${value[0].name.split('.').slice(-1)}`;
+          const failMessage = 'File extension is invalid. Extension must be ".ver" or ".std".';
+
+          if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+            return true;
+          }
+
+          this.setFailureAlert(failMessage);
+          return failMessage;
+        }
+      ]
     },
     next() {
       if(this.currentStepInCollectionProcess.isComplete) {
@@ -421,7 +426,9 @@ export default {
         console.error(e);
         this.fileUploadErrorMessage = 'The file could not be processed due to the following issue: ' + e.response.data;
       } finally {
+        this.setSchoolCollection(null);
         this.isReadingFile = false;
+        this.$emit('refreshStore');
       }
     },
     async getFileProgress() {
