@@ -38,7 +38,10 @@
     >
       <v-col>
         <v-row class="d-flex justify-start">
-          <v-col class="d-flex justify-start">
+          <v-col
+            cols="9"
+            class="d-flex justify-start"
+          >
             <h2 id="schoolMincodeTitle">
               {{ school.mincode }}
             </h2>
@@ -60,8 +63,7 @@
           </v-col>
           <v-col
             v-if="!editing"
-            cols=4
-            lg=5
+            cols="3"
             class="text-right"
           >
             <PrimaryButton
@@ -84,8 +86,8 @@
           </v-col>
           <v-col
             v-else
-            cols="1"
-            class="d-flex justify-end mt-2"
+            cols="3"
+            class="d-flex justify-end mt-1"
           >
             <PrimaryButton
               id="cancelButton"
