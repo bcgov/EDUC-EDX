@@ -67,6 +67,7 @@
         <router-view
           :school-collection-object="schoolCollectionObject"
           @next="next"
+          @refreshStore="refreshStore"
         />
       </v-col>
     </v-row>
@@ -122,6 +123,13 @@ export default {
     },
     navigationCompleted() {
       this.registerNextEvent = false;
+    },
+    refreshStore() {
+      useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+      this.schoolCollectionObject = this.schoolCollection;
+      this.schoolID = this.schoolCollection.schoolID;
+      this.steps = [...this.stepsInCollectionProcess];
+    });
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcCollectionSummary', params: {schoolID: this.schoolID}});
