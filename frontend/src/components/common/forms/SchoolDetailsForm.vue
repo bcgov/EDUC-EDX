@@ -64,7 +64,7 @@
           <v-col
             v-if="!editing"
             cols="3"
-            class="text-right"
+            class="d-flex justify-end"
           >
             <PrimaryButton
               v-if="showContactButton()"
