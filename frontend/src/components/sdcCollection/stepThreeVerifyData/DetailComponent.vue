@@ -139,7 +139,7 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy } from 'lodash';
+import {isEmpty, omitBy, capitalize } from 'lodash';
 import { mapState } from 'pinia';
 import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
 import { enrolledProgram } from '../../../utils/sdc/enrolledProgram';
@@ -175,7 +175,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap']),
+    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap']),
   },
   created() {
     useSdcCollectionStore().getCodes().then(() => {
@@ -215,7 +215,7 @@ export default {
         .filter(programCode => enrolledProgramFilter.includes(programCode))
         .map(programCode => {
           const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
-          return enrolledProgram ? `${programCode}-${enrolledProgram.label}` : programCode;
+          return enrolledProgram ? `${programCode}-${capitalize(enrolledProgram.description)}` : programCode;
         })
         .join('\n');
 
@@ -223,10 +223,16 @@ export default {
     },
 
     mapStudentData(student) {
-      student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES)  ;
-      student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES)  ;
-      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode + '-' +  this.careerProgramCodesMap.get(student.careerProgramCode)?.description : null;
+      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
+      student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
+      student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
+      student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
+      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? this.bandCodesMap.get(student.bandCode)?.bandCode + '-' + capitalize(this.bandCodesMap.get(student.bandCode)?.description) : null;
+      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode + '-' +  capitalize(this.careerProgramCodesMap.get(student.careerProgramCode)?.description) : null;
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
+      student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);

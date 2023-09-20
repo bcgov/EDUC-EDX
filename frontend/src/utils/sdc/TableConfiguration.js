@@ -19,7 +19,7 @@ export const FRENCH_PR = Object.freeze(
     defaultFilter: {label: 'FRENCH_PR', description:'Has French Program', enrolledProgramCodeValues: '05,08,11,14'},
     tableHeaders: [
       { title: 'select', key: 'select' },
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'frenchProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
@@ -35,7 +35,7 @@ export const CAREER_PR = Object.freeze(
     defaultFilter: {label: 'CAREER_PR' ,description: 'Has Career Program', enrolledProgramCodeValues: '40,41,42,43'},
     tableHeaders: [
       { title: 'select', key: 'select' },
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'careerProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
@@ -50,13 +50,13 @@ export const INDSUPPORT_PR = Object.freeze(
     defaultFilter: {label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program', enrolledProgramCodeValues: '29,33,36'},
     tableHeaders: [
       { title: 'select', key: 'select' },
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'indProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
-      { title: 'Indigenous Ancestry', key: 'nativeAncestryInd', subHeader: {title: 'Band Code', key: 'bandCode'}},
-      { title: 'Indigenous Support Program', key: 'mappedIndegenousEnrolledProgram'},
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: {title: 'Band Code', key: 'mappedBandCode'}},
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram'},
     ],
   }  
 );
