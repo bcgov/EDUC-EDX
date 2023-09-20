@@ -67,7 +67,9 @@
             type="info"
             class="pa-2"
           >
-            <p style="color: #003366">The date in the uploaded file is <strong>{{ fileReportDateFormatted }}</strong>. Please ensure that you have uploaded the correct data for this collection before continuing.</p>
+            <p style="color: #003366">
+              The date in the uploaded file is <strong>{{ fileReportDateFormatted }}</strong>. Please ensure that you have uploaded the correct data for this collection before continuing.
+            </p>
           </v-alert>
         </v-col>
       </v-row>
@@ -338,7 +340,7 @@ export default {
     },
     getFileRules() {
       this.fileRules = [
-      value => {
+        value => {
           let ret = !value || value.length === 0 || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
           if (ret !== true) {
             this.setFailureAlert(ret);
@@ -356,7 +358,7 @@ export default {
           this.setFailureAlert(failMessage);
           return failMessage;
         }
-      ]
+      ];
     },
     next() {
       if(this.currentStepInCollectionProcess.isComplete) {
@@ -393,6 +395,7 @@ export default {
     },
     async importFile() {
       if(this.uploadFileValue) {
+        this.isDisabled = true;
         this.isReadingFile = true;
         let data = null;
 
@@ -442,6 +445,7 @@ export default {
             this.hasFileAttached = false;
             this.fileLoaded = false;
             this.processing = false;
+            this.isDisabled = true;
           }else if(this.totalStudents === this.totalProcessed){
             //Show summary
             this.hasFileAttached = true;
@@ -450,12 +454,12 @@ export default {
             this.fileName = this.sdcSchoolProgress.fileName;
             this.isDisabled = false;
             clearInterval(this.interval);
-            this.isDisabled = false;
           }else{
             //Show in progress
             this.hasFileAttached = true;
             this.fileLoaded = false;
             this.processing = true;
+            this.isDisabled = true;
             this.progress = Math.floor(this.totalProcessed/this.totalStudents * 100);
           }
         });
