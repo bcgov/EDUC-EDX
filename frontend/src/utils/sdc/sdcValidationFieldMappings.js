@@ -31,8 +31,8 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   OTHER_COURSES: {label: 'Other Courses', key: 'otherCourses', type: 'input', options: {}},
   SUPPORT_BLOCKS: {label: 'Support Blocks', key: 'supportBlocks', type: 'input', options: {}},
   ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
-  ENROLLED_PROGRAM_CODE: {label: 'Enrolled Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}},
-  CAREER_PROGRAM_CODE: {label: 'Career Program Code', key: 'careerProgramCode', type: 'select', options: {items: 'careerProgramCodes', itemValue: 'careerProgramCode'}},
+  ENROLLED_PROGRAM_CODE: {label: 'Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}},
+  CAREER_PROGRAM_CODE: {label: 'Career Code', key: 'careerProgramCode', type: 'select', options: {items: 'careerProgramCodes', itemValue: 'careerProgramCode'}},
   NUMBER_OF_COURSES: {label: 'Number of Courses', key: 'numberOfCourses', type: 'input', options: {}},
   BAND_CODE: {label: 'Band Codes', key: 'bandCode', type: 'select', options: {items: 'bandCodes', itemValue: 'bandCode'}},
   POSTAL_CODE: {label: 'Postal Code', key: 'postalCode', type: 'input', options: {}}
