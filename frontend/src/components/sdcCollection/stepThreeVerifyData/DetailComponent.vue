@@ -222,7 +222,7 @@ export default {
       return mappedEnrolledPrograms;
     },
     mapStudentData(student) {
-      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : nativeAncestryInd();
+      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd();
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
