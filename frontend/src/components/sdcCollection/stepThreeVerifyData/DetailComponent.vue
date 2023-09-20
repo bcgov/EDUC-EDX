@@ -221,9 +221,8 @@ export default {
 
       return mappedEnrolledPrograms;
     },
-
     mapStudentData(student) {
-      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
+      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : nativeAncestryInd();
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
@@ -238,7 +237,9 @@ export default {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
       }
     },
-
+    nativeAncestryInd() {
+      return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No'
+    },
     reload(value) {
       if(value?.pageSize) {
         this.pageSize = value?.pageSize;
