@@ -63,15 +63,15 @@ export const INDSUPPORT_PR = Object.freeze(
 
 export const SPECIALED_PR = Object.freeze(
   {
-    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category'},
+    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category', spedCodeValues: 'A,B,C,D,E,F,G,H,K,P,Q,R'},
     tableHeaders: [
       { title: 'select', key: 'select' },
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'spedProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
-      { title: 'Special Education Category', key: 'specialEducationCategoryCode'},
+      { title: 'Special Education Category', key: 'mappedSpedCode'},
     ],
   }  
 );
