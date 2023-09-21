@@ -1,0 +1,11 @@
+export const SCHOOL_CATEGORY_CODES
+  = Object.freeze({
+    PUBLIC: 'PUBLIC',
+    INDEPEND: 'INDEPEND',
+    FED_BAND: 'FED_BAND',
+    OFFSHORE: 'OFFSHORE',
+    EAR_LEARN: 'EAR_LEARN',
+    YUKON: 'YUKON',
+    POST_SEC: 'POST_SEC',
+    INDP_FNS: 'INDP_FNS'
+  });
