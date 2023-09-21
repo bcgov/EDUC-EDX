@@ -16,7 +16,7 @@
           type="info"
           variant="tonal"
         >
-          <span v-if="isOffshoreSchool">Require updates to school details? Please contact {{ emailBox }}</span>
+          <span v-if="isOffshoreSchool">Require updates to school details? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
           <span v-else>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
@@ -1053,7 +1053,8 @@ export default {
       countryCodeValues: [],
       selectedNLCs: [],
       rules: Rules,
-      SCHOOL_CATEGORY_CODES: SCHOOL_CATEGORY_CODES
+      SCHOOL_CATEGORY_CODES: SCHOOL_CATEGORY_CODES,
+      MINISTRY_CONTACTS: MINISTRY_CONTACTS
     };
   },
   computed: {
