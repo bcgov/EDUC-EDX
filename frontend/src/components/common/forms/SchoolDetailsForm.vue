@@ -4,7 +4,7 @@
     v-model="schoolDetailsFormValid"
   >
     <v-row
-      v-if="!loading && editing"
+      v-if="!loading && (editing || isOffshoreSchool)"
       class="d-flex justify-center mb-0"
     >
       <v-col>
@@ -16,7 +16,8 @@
           type="info"
           variant="tonal"
         >
-          <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
+          <span v-if="isOffshoreSchool">Require updates to school details? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
+          <span v-else>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
         </v-alert>
       </v-col>
     </v-row>
@@ -107,7 +108,7 @@
           </v-col>
         </v-row>
         <v-row
-          v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)"
+          v-if="![SCHOOL_CATEGORY_CODES.OFFSHORE, SCHOOL_CATEGORY_CODES.INDEPEND].includes(school.schoolCategoryCode)"
           class="d-flex justify-start"
         >
           <v-col class="d-flex pt-0">
@@ -1006,6 +1007,8 @@ import * as Rules from '../../../utils/institute/formRules';
 import {isNumber} from '../../../utils/institute/formInput';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {sortBy} from 'lodash';
+import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
+import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
   
 export default {
   name: 'SchoolDetailsPage',
@@ -1049,7 +1052,9 @@ export default {
       provinceCodeValues: [],
       countryCodeValues: [],
       selectedNLCs: [],
-      rules: Rules
+      rules: Rules,
+      SCHOOL_CATEGORY_CODES: SCHOOL_CATEGORY_CODES,
+      MINISTRY_CONTACTS: MINISTRY_CONTACTS
     };
   },
   computed: {
@@ -1069,18 +1074,18 @@ export default {
       return this.userInfo;
     },
     emailBox(){
-      if(this.school.schoolCategoryCode === 'INDEPEND'){
-        return 'educ.independentschoolsoffice@gov.bc.ca';
-      } else if(this.school.schoolCategoryCode === 'OFFSHORE'){
-        return 'offshore.administrator@gov.bc.ca';
+      if(this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.INDEPEND){
+        return MINISTRY_CONTACTS.INDEPENDENT_SCHOOL_OFFICE;
+      } else if(this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE){
+        return MINISTRY_CONTACTS.OFFSHORE_ADMIN;
       }
-      return 'data.management@gov.bc.ca';
+      return MINISTRY_CONTACTS.DATA_MANAGEMENT;
     },
     hasSamePhysicalAddress(){
       return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
     isOffshoreSchool(){
-      return this.school.schoolCategoryCode === 'OFFSHORE';
+      return this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
     },
     schoolReportingRequirementType() {
       const code = this.school.schoolReportingRequirementCode;
@@ -1090,7 +1095,7 @@ export default {
       return type;
     },
     isGradeOfferedUpdateAllowed() {
-      return this.school.schoolCategoryCode !== 'INDP_FNS' && this.school.schoolCategoryCode !== 'INDEPEND';
+      return this.school.schoolCategoryCode !== SCHOOL_CATEGORY_CODES.INDP_FNS && this.school.schoolCategoryCode !== SCHOOL_CATEGORY_CODES.INDEPEND;
     }
   },
   watch: {
@@ -1286,7 +1291,7 @@ export default {
     canEditSchoolDetails(){
       const hasPermission = this.userInfo?.activeInstitutePermissions?.
         filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
-      return hasPermission;
+      return hasPermission && !this.isOffshoreSchool;
     },
     async clickSameAsAddressButton() {
       await this.$nextTick();

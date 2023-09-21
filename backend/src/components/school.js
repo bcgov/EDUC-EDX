@@ -3,6 +3,7 @@ const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
   checkEDXUserAccessForSchoolAdminFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
   handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
+const { checkIfActionOnOffshoreSchool } = require('./schoolUtils');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
@@ -33,6 +34,7 @@ async function updateSchool(req, res){
     validateAccessToken(token);
     verifyQueryParamValueMatchesBodyValue(req, 'schoolID', 'schoolId');
     checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkIfActionOnOffshoreSchool(req.params.schoolId);
 
     const payload = req.body;
 
@@ -105,6 +107,7 @@ async function addSchoolContact(req, res) {
     validateAccessToken(token, res);
 
     checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkIfActionOnOffshoreSchool(req.params.schoolId);
 
     const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
 
@@ -139,6 +142,7 @@ async function updateSchoolContact(req, res) {
     validateAccessToken(token, res);
 
     checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
+    checkIfActionOnOffshoreSchool(req.body.schoolId);
 
     const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 

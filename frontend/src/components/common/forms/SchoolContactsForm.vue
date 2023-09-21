@@ -13,7 +13,24 @@
       </v-col>
     </v-row>
     <template v-if="!isLoading">
-      <v-row>
+      <v-row
+        v-if="isOffshoreSchool"
+        class="d-flex justify-center mb-0"
+      >
+        <v-col>
+          <v-alert
+            id="nonEditableAlert"
+            density="compact"
+            color="#003366"
+            icon="mdi-help-circle-outline"
+            type="info"
+            variant="tonal"
+          >
+            <span>Require updates to school contacts? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row class="mt-n3">
         <v-col
           cols="12"
           class="d-flex justify-start"
@@ -115,6 +132,7 @@
               :contact="contact"
               :school-i-d="selectedSchoolId"
               :can-edit-school-contact="canEditSchoolContacts()"
+              :can-remove-school-contact="hasSchoolAdminPermission()"
               @remove-school-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
@@ -184,6 +202,8 @@ import SchoolContact from '../../school/SchoolContact.vue';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {instituteStore} from '../../../store/modules/institute';
 import {SCHOOL_CONTACT_TYPES} from '../../../utils/constants/SchoolContactTypes';
+import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
+import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
 
 // checks the expiry of a contact
 function isExpired(contact) {
@@ -223,7 +243,8 @@ export default {
       newContactSheet: false,
       editContactSheet: false,
       selectedSchoolId: null,
-      SCHOOL_CONTACT_TYPES: SCHOOL_CONTACT_TYPES
+      SCHOOL_CONTACT_TYPES: SCHOOL_CONTACT_TYPES,
+      MINISTRY_CONTACTS: MINISTRY_CONTACTS
     };
   },
   computed: {
@@ -231,6 +252,9 @@ export default {
     ...mapState(instituteStore, ['schoolContactTypeCodes', 'independentAuthoritySchoolContacts', 'offshoreSchoolContacts', 'regularSchoolContactTypes']),
     isLoading() {
       return this.loadingCount !== 0;
+    },
+    isOffshoreSchool(){
+      return this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
     }
   },
   watch: {
@@ -238,9 +262,9 @@ export default {
       if (!this.schoolContactTypeCodes) {
         await this.loadSchoolContactTypeCodes();
       }
-      if (value?.schoolCategoryCode === 'OFFSHORE') {
+      if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE) {
         this.schoolContactTypes = this.offshoreSchoolContacts;
-      } else if (value?.schoolCategoryCode === 'INDEPEND') {
+      } else if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.INDEPEND) {
         this.schoolContactTypes = this.independentAuthoritySchoolContacts;
       } else {
         this.schoolContactTypes = this.regularSchoolContactTypes;
@@ -308,10 +332,13 @@ export default {
       this.newContactSheet = !this.newContactSheet;
       this.getThisSchoolsContacts();
     },
-    canEditSchoolContacts() {
+    hasSchoolAdminPermission() {
       let permissions = this.userInfo?.activeInstitutePermissions;
       if (permissions === undefined) return false;
       return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+    },
+    canEditSchoolContacts() {
+      return this.hasSchoolAdminPermission() && !this.isOffshoreSchool;
     },
     openNewContactSheet(){
       this.newContactSheet = !this.newContactSheet;

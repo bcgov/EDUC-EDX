@@ -39,7 +39,7 @@
             />
           </v-btn>
           <v-btn
-            v-if="canEditSchoolContact"
+            v-if="canRemoveSchoolContact"
             id="removeContactButton"
             title="Remove"
             color="white"
@@ -181,6 +181,10 @@ export default {
       required: true
     },
     canEditSchoolContact: {
+      type: Boolean,
+      required: true
+    },
+    canRemoveSchoolContact: {
       type: Boolean,
       required: true
     },
