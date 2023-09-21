@@ -175,7 +175,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap']),
+    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
   },
   created() {
     useSdcCollectionStore().getCodes().then(() => {
@@ -222,6 +222,7 @@ export default {
       return mappedEnrolledPrograms;
     },
     mapStudentData(student) {
+      student.mappedSpedCode  = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  capitalize(this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description) : null;
       student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd(student);
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
@@ -232,6 +233,7 @@ export default {
       student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);

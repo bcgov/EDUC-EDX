@@ -289,6 +289,9 @@ function createSearchCriteria(searchParams = []) {
       if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR'].includes(searchParams[key].label)) {
         searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
+      if(searchParams[key].label === 'SPECIALED_PR') {
+        searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: searchParams[key].spedCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
     }
     if (key === 'studentPen') {
       searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
@@ -297,7 +300,6 @@ function createSearchCriteria(searchParams = []) {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
   });
-
   return searchCriteriaList;
 }
 
