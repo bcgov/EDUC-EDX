@@ -616,6 +616,8 @@
                                   item-title="dropdownText"
                                   :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
                                   multiple
+                                  placeholder="No Program Codes"
+                                  :persistent-placeholder="true"
                                   :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
                                   @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
                                   @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
