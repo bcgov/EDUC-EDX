@@ -138,7 +138,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
       }
     },
     setCollectionMetaData(sdcSchoolCollectionStatusCode) {
-      console.log('Setting Status: ' + sdcSchoolCollectionStatusCode);
       switch(sdcSchoolCollectionStatusCode) {
       case 'NEW':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
