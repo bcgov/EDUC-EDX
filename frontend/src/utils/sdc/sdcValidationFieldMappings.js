@@ -25,7 +25,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   GENDER_CODE: {label: 'Gender', key: 'gender', type: 'select', options: {items: 'genderCodes', itemValue: 'genderCode'}},
   GRADE_CODE: {label: 'Grade Code', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
   SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCategoryCodes', itemValue: 'specialEducationCategoryCode'}},
-  SCHOOL_FUNDING_CODE: {label: 'School Funding', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},
+  SCHOOL_FUNDING_CODE: {label: 'Funding Code', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},
   NATIVE_ANCESTRY_IND: {label: 'Native Ancestry', key: 'nativeAncestryInd', type: 'input', options: {}},
   HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: 'homeLanguageSpokenCode', type: 'select', options: {items: 'homeLanguageSpokenCodes', itemValue: 'homeLanguageSpokenCode'}},
   OTHER_COURSES: {label: 'Other Courses', key: 'otherCourses', type: 'input', options: {}},

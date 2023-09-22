@@ -72,7 +72,6 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
       this.enrolledProgramCodes = enrolledProgramCodes.map(item => {
         return {...item, dropdownText: `${item.enrolledProgramCode} - ${item.label}`};
       });
-      this.enrolledProgramCodes.push({'enrolledProgramCode': '', 'dropdownText': 'No Program Code'});
       this.enrolledProgramCodesMap = new Map();
       enrolledProgramCodes.forEach(enrolledProgramCode => {
         this.enrolledProgramCodesMap.set(enrolledProgramCode.enrolledProgramCode, enrolledProgramCode);
@@ -110,6 +109,7 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.schoolFundingCode} - ${item.label}`};
       });
       this.schoolFundingCodesMap = new Map();
+      this.schoolFundingCodes.push({'schoolFundingCode': '', 'dropdownText': 'No Funding Code'});
       schoolFundingCodes.forEach(schoolFundingCode => {
         this.schoolFundingCodesMap.set(schoolFundingCode.schoolFundingCode, schoolFundingCode);
       });
