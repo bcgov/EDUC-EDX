@@ -137,7 +137,8 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
         this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
       }
     },
-    setCollectionMetaData(sdcSchoolCollectionStatusCode) {    
+    setCollectionMetaData(sdcSchoolCollectionStatusCode) {
+      console.log('Setting Status: ' + sdcSchoolCollectionStatusCode);
       switch(sdcSchoolCollectionStatusCode) {
       case 'NEW':
         this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
@@ -162,8 +163,9 @@ export const useSdcCollectionStore = defineStore('sdcCollection', {
     },
     setStepsProgressState() {
       this.stepsInCollectionProcess.forEach(step => {
-        if (step.index <= this.currentStepInCollectionProcess.index) {
+        if (step.index === this.currentStepInCollectionProcess.index) {
           step.isStarted = true;
+          step.isComplete = false;
         } 
         if(step.index < this.currentStepInCollectionProcess.index) {
           step.isComplete = true;

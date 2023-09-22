@@ -126,10 +126,10 @@ export default {
     },
     refreshStore() {
       useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
-      this.schoolCollectionObject = this.schoolCollection;
-      this.schoolID = this.schoolCollection.schoolID;
-      this.steps = [...this.stepsInCollectionProcess];
-    });
+        this.schoolCollectionObject = this.schoolCollection;
+        this.schoolID = this.schoolCollection.schoolID;
+        this.steps = [...this.stepsInCollectionProcess];
+      });
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcCollectionSummary', params: {schoolID: this.schoolID}});
