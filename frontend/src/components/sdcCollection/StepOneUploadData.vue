@@ -40,22 +40,33 @@
           </v-icon>
           <div
             style="margin-top: 0.3em"
-            class="ml-2"
           >
             {{ fileName }}
           </div>
+        </v-col>
+        <v-col>
           <v-btn
             id="uploadAgainButton"
             prepend-icon="mdi-file-upload"
             :loading="isReadingFile"
             style="font-size: 16px;"
             color="#1976d2"
-            class="ml-16"
             variant="text"
             @click="clickFileReUpload"
           >
             Upload Replacement File
           </v-btn>
+          <div class="pl-4">
+            More information on the
+            <a
+              :href="getLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: rgb(56, 89, 138); text-decoration: underline"
+            >
+              1701 submission requirements.
+            </a>
+          </div>
         </v-col>
       </v-row>
       <v-row v-if="showFileReportDateWarning">
