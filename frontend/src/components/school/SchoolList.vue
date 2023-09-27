@@ -127,7 +127,7 @@
               'items-per-page-options': itemsPerPageOptions
             }"
             :loading="loadingTable"
-            class="elevation-1"
+            class="elevation-1 rounded"
             hide-default-header
             mobile-breakpoint="0"
           >
@@ -240,6 +240,7 @@
                   </v-row>
                 </v-col>
               </v-row>
+              <v-divider />
             </template>
           </v-data-table-server>
         </v-col>
@@ -526,17 +527,6 @@ export default {
 .centerSpan {
   display: inline-flex;
   align-items: center;
-}
-
-.hoverTable {
-  border-bottom-style: groove;
-  border-left-style: groove;
-  border-right-style: groove;
-  border-color: rgb(255 255 255 / 45%);
-}
-
-.hoverTable:nth-child(1) {
-  border-top-style: groove;
 }
 
 .hoverTable:hover{
