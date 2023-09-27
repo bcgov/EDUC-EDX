@@ -54,6 +54,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.bandCode} - ${item.label}`};
       });
       this.bandCodesMap = new Map();
+      this.bandCodes.unshift({'bandCode': '', 'dropdownText': 'No Band Code'});
       bandCodes.forEach(bandCode => {
         this.bandCodesMap.set(bandCode.bandCode, bandCode);
       });
@@ -63,7 +64,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.careerProgramCode} - ${item.label}`};
       });
       this.careerProgramCodesMap = new Map();
-      this.careerProgramCodes.push({'careerProgramCode': '', 'dropdownText': 'No Career Code'});
+      this.careerProgramCodes.unshift({'careerProgramCode': '', 'dropdownText': 'No Career Code'});
       careerProgramCodes.forEach(careerProgramCode => {
         this.careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
       });
@@ -100,6 +101,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.homeLanguageSpokenCode} - ${item.label}`};
       });
       this.homeLanguageSpokenCodesMap = new Map();
+      this.homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': '', 'dropdownText': 'No Home Language Code'});
       homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
         this.homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
       });
@@ -109,16 +111,17 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.schoolFundingCode} - ${item.label}`};
       });
       this.schoolFundingCodesMap = new Map();
-      this.schoolFundingCodes.push({'schoolFundingCode': '', 'dropdownText': 'No Funding Code'});
+      this.schoolFundingCodes.unshift({'schoolFundingCode': '', 'dropdownText': 'No Funding Code'});
       schoolFundingCodes.forEach(schoolFundingCode => {
         this.schoolFundingCodesMap.set(schoolFundingCode.schoolFundingCode, schoolFundingCode);
       });
     },
     setSpecialEducationCodes(specialEducationCodes) {
       this.specialEducationCodes = specialEducationCodes.map(item => {
-        return {...item, dropdownText: `${item.specialEducationCode} - ${item.label}`};
+        return {...item, dropdownText: `${item.specialEducationCategoryCode} - ${item.label}`};
       });
       this.specialEducationCodesMap = new Map();
+      this.specialEducationCodes.unshift({'specialEducationCategoryCode': '', 'dropdownText': 'No Special Ed Category Code'});
       specialEducationCodes.forEach(specialEducationCategoryCode => {
         this.specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
       });
