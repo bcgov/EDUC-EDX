@@ -338,7 +338,7 @@ function createSearchCriteria(searchParams = []) {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'fundingWarningCategory') {
-      var fundingCat = fundingWarningCategories.filter(function(fund){
+      let fundingCat = fundingWarningCategories.filter(function(fund){
         return fund.categoryCode === pValue;
       });
       if(fundingCat){
