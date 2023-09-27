@@ -346,7 +346,7 @@ import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import { useSdcCollectionStore } from '../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../store/modules/sdcCollection';
 
 export default {
   name: 'DashboardTable',
@@ -424,7 +424,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },

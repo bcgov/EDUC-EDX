@@ -41,7 +41,7 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import { mapActions, mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'StepperComponent',
@@ -66,7 +66,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess'])
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess'])
   },
   watch: {
     nextEvent(value) {
@@ -79,7 +79,7 @@ export default {
     this.loadDefaultStep();
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentStepInCollectionProcess']),
+    ...mapActions(sdcCollectionStore, ['setCurrentStepInCollectionProcess']),
     onStepClick(step) {
       if (step.index >= this.currentStepInCollectionProcess.index) {
         return;

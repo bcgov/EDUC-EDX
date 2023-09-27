@@ -239,7 +239,7 @@ async function getStudentHeadcounts(req, res) {
     const params = {
       params: {
         type: req.query.type, 
-      compare: req.query.compare
+        compare: req.query.compare
       }
     };
     
@@ -279,6 +279,44 @@ function validateAccessToken(token, res) {
  */
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
+  let fundingWarningCategories = [
+    {
+      categoryCode: 'NOPROGFUNDINGHS',
+      validationErrors: ['PROGRAMCODEHSLANG', 'PROGRAMCODEHSIND', 'PROGRAMCODEHSCAREER', 'PROGRAMCODEHSSPED']
+    },
+    {
+      categoryCode: 'ZEROCOURSE',
+      validationErrors: ['CHANGEME']
+    },
+    {
+      categoryCode: 'STUDTOOYOUNG',
+      validationErrors: ['AGELESSTHANFIVE']
+    },
+    {
+      categoryCode: 'NOINDIGFUND',
+      validationErrors: ['PROGRAMCODEIND']
+    },
+    {
+      categoryCode: 'NOPROGFUNDINGOOP',
+      validationErrors: ['ENROLLEDCODEFUNDINGERR', 'ENROLLEDCODEINDERR', 'ENROLLEDCODECAREERERR']
+    },
+    {
+      categoryCode: 'NOFUNDSUPPORT',
+      validationErrors: ['SUPPORTFACILITYNA', 'ADULTSUPPORTERR', 'CHANGEME']
+    },
+    {
+      categoryCode: 'NOFUNDSPED',
+      validationErrors: ['SPEDOFFSHOREERR']
+    },
+    {
+      categoryCode: 'NOFUNDGRADADULT',
+      validationErrors: ['CHANGEME']
+    },
+    {
+      categoryCode: 'NOCAREERPROGFUND',
+      validationErrors: ['CAREEROFFSHOREERR']
+    }
+  ];
 
   Object.keys(searchParams).forEach(function (key) {
     let pValue = searchParams[key];
@@ -298,6 +336,14 @@ function createSearchCriteria(searchParams = []) {
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
       searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
+    if (key === 'fundingWarningCategory') {
+      let fundingCat = fundingWarningCategories.filter(function(fund){
+        return fund.categoryCode === pValue;
+      });
+      if(fundingCat){
+        searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueCode', operation: FILTER_OPERATION.IN, value: fundingCat[0].validationErrors.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      }
     }
   });
   return searchCriteriaList;

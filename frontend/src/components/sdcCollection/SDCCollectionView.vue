@@ -79,7 +79,7 @@ import alertMixin from '../../mixins/alertMixin';
 import StepperComponent from '../common/StepperComponent.vue';
 import RouterView from '../RouterView.vue';
 import { mapState, mapActions } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'SDCCollectionView',
@@ -105,19 +105,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection'])
+    ...mapState(sdcCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection'])
   },
   created() {
     this.isLoading = !this.isLoading;
     this.steps = [...this.stepsInCollectionProcess];
-    useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+    sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
       this.isLoading = !this.isLoading;
     });
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentStepInCollectionProcess']),
+    ...mapActions(sdcCollectionStore, ['setCurrentStepInCollectionProcess']),
     next() {
       this.registerNextEvent = true;
     },
@@ -125,7 +125,7 @@ export default {
       this.registerNextEvent = false;
     },
     refreshStore() {
-      useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+      sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
         this.steps = [...this.stepsInCollectionProcess];

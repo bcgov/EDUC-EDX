@@ -141,7 +141,7 @@ import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy, capitalize } from 'lodash';
 import { mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import { enrolledProgram } from '../../../utils/sdc/enrolledProgram';
 
 export default {
@@ -175,10 +175,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
+    ...mapState(sdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
   },
   created() {
-    useSdcCollectionStore().getCodes().then(() => {
+    sdcCollectionStore().getCodes().then(() => {
       this.loadStudents();      
     });
     
@@ -240,7 +240,7 @@ export default {
       }
     },
     nativeAncestryInd(student) {
-      return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No'
+      return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
     },
     reload(value) {
       if(value?.pageSize) {
