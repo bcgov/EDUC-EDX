@@ -15,71 +15,56 @@
             <h2>School Dashboard</h2>
           </v-col>
         </v-row>
-        <v-data-table
-          v-if="activeUserSchools.length>0"
-          id="schools-dashboard-items"
-          :items="activeUserSchools"
-          :loading="isTableLoading"
-          items-per-page="-1"
-          class="elevation-1"
+        <v-list
+            v-if="activeUserSchools.length>0"
+            id="schools-dashboard-items"
+            elevation="1"
+            :border="true"
+            :rounded="true"
+            :loading="isTableLoading"
         >
-          <template #item="{ item, index }">
-            <v-row
-              no-gutters
-              class="pl-2 hoverTable"
-              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectSchool(item.raw.schoolID)"
+          <div
+            v-for="(item, index) in activeUserSchools"
+            :key="item.mincode"
+          >
+            <v-list-item
+                :title="item.displayName"
+                :subtitle="item.mincode"
+                lines="two"
+                @click="selectSchool(item.schoolID)"
             >
-              <v-col class="pa-1">
-                <h3
-                  class="mt-1 mb-1"
-                  style="color: black;"
-                >
-                  {{ item.raw.displayName }}
-                </h3>
-                <h3 style="color: grey;">
-                  {{ item.raw.mincode }}
-                </h3>
-              </v-col>
-            </v-row>
-          </template>
-        </v-data-table>
+            </v-list-item>
+            <v-divider v-if="index !== activeUserSchools.length-1"></v-divider>
+          </div>
+        </v-list>
+
         <v-row v-if="activeUserDistricts.length>0">
           <v-col class="mt-6 mb-3">
             <h2>District Dashboard</h2>
           </v-col>
         </v-row>
-        <v-data-table
+        <v-list
           v-if="activeUserDistricts.length>0"
           id="schools-district-items"
-          :items="activeUserDistricts"
-          class="elevation-1"
-          items-per-page="-1"
+          elevation="1"
+          :border="true"
+          :rounded="true"
           :loading="isTableLoading"
         >
-          <template #item="{ item, index }">
-            <v-row
-              no-gutters
-              class="pl-2 hoverTable"
-              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectDistrict(item.raw.districtID)"
+          <div
+            v-for="(item, index) in activeUserDistricts"
+            :key="item.districtNumber"
+          >
+            <v-list-item
+              :title="item.displayName"
+              :subtitle="item.districtNumber"
+              lines="two"
+              @click="selectDistrict(item.districtID)"
             >
-              <v-col class="pa-1">
-                <h3
-                  class="mt-1 mb-1"
-                  style="color: black;"
-                >
-                  {{ item.raw.displayName }}
-                </h3>
-                <h3 style="color: grey;">
-                  {{ item.raw.districtNumber }}
-                </h3>
-              </v-col>
-            </v-row>
-          </template>
-        </v-data-table>
+            </v-list-item>
+            <v-divider v-if="index !== activeUserDistricts.length-1"></v-divider>
+          </div>
+        </v-list>
       </v-col>
       <v-spacer />
     </v-row>
@@ -186,26 +171,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.top-banner{
-  background-color: aliceblue;
-  background-size: cover;
-  align-items: center;
-  display: flex;
-}
-
-.hoverTable:hover{
-  background-color: #e8e8e8;
-  cursor: pointer;
-}
-
 .full-height{
   height: 50%;
 }
-
-:deep(.v-data-table-footer) {
-  display: none;
-}
-
-
 </style>
 

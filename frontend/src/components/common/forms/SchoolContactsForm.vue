@@ -91,9 +91,10 @@
       <div
         v-for="schoolContactType in schoolContactTypes"
         :key="schoolContactType.code"
+        class="pb-4"
       >
         <v-row class="bottom-sheets">
-          <v-col>
+          <v-col class="pb-0">
             <h2 style="color:#1A5A96">
               {{ schoolContactType.label }}
             </h2>
@@ -103,7 +104,7 @@
           v-if="!schoolContactType.publiclyAvailable"
           cols="2"
         >
-          <v-col cols="12">
+          <v-col class="pt-0" cols="12">
             <v-alert
               :id="`publiclyAvailableAlert${schoolContactType.label}`"
               color="#003366"
@@ -124,6 +125,7 @@
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
             :key="contact.schoolId"
+            class="pt-0"
             cols="5"
             lg="4"
           >
@@ -141,7 +143,7 @@
           v-else
           cols="2"
         >
-          <v-col>
+          <v-col class="pt-0">
             <p>No contacts of this type have been listed.</p>
           </v-col>
         </v-row>

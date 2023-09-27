@@ -118,6 +118,7 @@
                       item-value="categoryCode"
                       placeholder="Funding Warning Category"
                       density="compact"
+                      variant="underlined"
                     />
                   </v-col>
                 </v-row>
@@ -132,6 +133,7 @@
                       v-model="legalUsualNameFilter"
                       placeholder="Legal or Usual Name"
                       density="compact"
+                      variant="underlined"
                     />
                   </v-col>
                 </v-row>
@@ -152,6 +154,7 @@
                       placeholder="PEN"
                       v-model="penFilter"
                       density="compact"
+                      variant="underlined"
                     />
                   </v-col>
                   <v-col class="d-flex justify-end">
