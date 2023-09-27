@@ -228,7 +228,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState, mapActions } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
@@ -276,7 +276,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
     collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
@@ -334,7 +334,7 @@ export default {
     await this.fireFileProgress();
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setSchoolCollection']),
+    ...mapActions(sdcCollectionStore, ['setSchoolCollection']),
     async fireFileProgress(){
       await this.getFileProgress();
       this.getFileRules();

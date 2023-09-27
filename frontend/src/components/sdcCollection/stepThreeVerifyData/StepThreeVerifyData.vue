@@ -60,7 +60,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import { SDC_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
@@ -102,7 +102,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
   },

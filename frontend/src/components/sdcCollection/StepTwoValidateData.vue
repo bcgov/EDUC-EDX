@@ -20,7 +20,10 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="2" class="ml-4 mr-4">
+              <v-col
+                cols="2"
+                class="ml-4 mr-4"
+              >
                 <v-row>
                   <v-col class="d-flex justify-end">
                     <span>Errors</span>
@@ -48,7 +51,10 @@
                 class="border-opacity-75"
                 vertical
               />
-              <v-col cols="4" class="ml-4 mr-4">
+              <v-col
+                cols="4"
+                class="ml-4 mr-4"
+              >
                 <v-row>
                   <v-col class="d-flex justify-start">
                     <span style="white-space: nowrap">Funding Warnings</span>
@@ -91,7 +97,7 @@
                       size="35"
                       color="blue"
                     >
-                    mdi-alert-circle-outline
+                      mdi-alert-circle-outline
                     </v-icon>
                     <span style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
                   </v-col>
@@ -102,10 +108,28 @@
           <div style="border-radius: 5px; background-color: #f6f5f5">
             <v-row>
               <v-col class="mx-4 mt-1">
+                <v-row no-gutters>
+                  <v-col class="d-flex justify-center">
+                    <v-select
+                      id="fundingWarningCategorySelect"
+                      v-model="fundingWarningCategoryFilter"
+                      :items="fundingWarningCategories"
+                      item-title="category"
+                      item-value="categoryCode"
+                      placeholder="Funding Warning Category"
+                      density="compact"
+                    />
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mx-4">
                 <v-row>
                   <v-col class="d-flex justify-center">
                     <v-text-field
                       id="legalUsualNameSearch"
+                      v-model="legalUsualNameFilter"
                       placeholder="Legal or Usual Name"
                       density="compact"
                     />
@@ -126,12 +150,14 @@
                     <v-text-field
                       id="penSearch"
                       placeholder="PEN"
+                      v-model="penFilter"
                       density="compact"
                     />
                   </v-col>
                   <v-col class="d-flex justify-end">
                     <PrimaryButton
                       id="clearSearch"
+                      :click-action="clearSearchFields"
                       secondary
                       width="3em"
                       text="Clear"
@@ -141,6 +167,7 @@
                   <v-col>
                     <PrimaryButton
                       id="searchButton"
+                      :click-action="getSDCSchoolCollectionStudentPaginated"
                       text="Search"
                       width="6em"
                       class="mr-2"
@@ -586,43 +613,43 @@
                                 :key="field"
                               >
                                 <v-text-field
-                                  v-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'input'"
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field]?.key}ValidationTextInput`"
-                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field]?.key]"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field]?.label"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field]?.options.rules"
+                                  v-if="sdcFieldMappings[field]?.type === 'input'"
+                                  :id="`${sdcFieldMappings[field]?.key}ValidationTextInput`"
+                                  v-model:model-value="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field]?.key]"
+                                  :label="sdcFieldMappings[field]?.label"
+                                  :rules="sdcFieldMappings[field]?.options.rules"
                                   density="compact"
                                   variant="underlined"
-                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
+                                  @update:focused="onFieldClick(sdcFieldMappings[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <v-autocomplete
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'select'"
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDropdown`"
-                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                  v-else-if="sdcFieldMappings[field]?.type === 'select'"
+                                  :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                                  :rules="sdcFieldMappings[field].options.rules"
+                                  :items="sdcCollection[sdcFieldMappings[field].options.items]"
+                                  :item-value="sdcFieldMappings[field].options.itemValue"
                                   item-title="dropdownText"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
-                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
+                                  :label="sdcFieldMappings[field].label"
+                                  @update:focused="onFieldClick(sdcFieldMappings[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <v-autocomplete
-                                  v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'multiselect'"
-                                  :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationMultiSelect`"
-                                  v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                  :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
-                                  :items="sdcCollectionStore[SDC_VALIDATION_FIELD_MAPPINGS[field].options.items]"
-                                  :item-value="SDC_VALIDATION_FIELD_MAPPINGS[field].options.itemValue"
+                                  v-else-if="sdcFieldMappings[field]?.type === 'multiselect'"
+                                  :id="`${sdcFieldMappings[field].key}ValidationMultiSelect`"
+                                  v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                                  :rules="sdcFieldMappings[field].options.rules"
+                                  :items="sdcCollection[sdcFieldMappings[field].options.items]"
+                                  :item-value="sdcFieldMappings[field].options.itemValue"
                                   item-title="dropdownText"
-                                  :label="SDC_VALIDATION_FIELD_MAPPINGS[field].label"
+                                  :label="sdcFieldMappings[field].label"
                                   multiple
                                   placeholder="No Program Codes"
                                   :persistent-placeholder="true"
-                                  :selectable="() => sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key].length < 8"
+                                  :selectable="() => sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key].length < 8"
                                   @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
-                                  @update:focused="onFieldClick(SDC_VALIDATION_FIELD_MAPPINGS[field]?.key, $event, issue?.validationIssueSeverityCode)"
+                                  @update:focused="onFieldClick(sdcFieldMappings[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
-                                <div v-else-if="SDC_VALIDATION_FIELD_MAPPINGS[field]?.type === 'datePicker'">
+                                <div v-else-if="sdcFieldMappings[field]?.type === 'datePicker'">
                                   <v-menu
                                     id="dobValidationDatePicker"
                                     ref="dobDateFilter"
@@ -633,9 +660,9 @@
                                   >
                                     <template #activator="{ on, attrs }">
                                       <v-text-field
-                                        :id="`${SDC_VALIDATION_FIELD_MAPPINGS[field].key}ValidationDatePicker`"
-                                        v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                        :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                        :id="`${sdcFieldMappings[field].key}ValidationDatePicker`"
+                                        v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                                        :rules="sdcFieldMappings[field].options.rules"
                                         class="pt-0 mt-0"
                                         variant="underlined"
                                         label="Start Date"
@@ -650,8 +677,8 @@
                                   </v-menu>
                                   <VueDatePicker
                                     ref="dobDatePicker"
-                                    v-model="sdcSchoolCollectionStudentDetailCopy[SDC_VALIDATION_FIELD_MAPPINGS[field].key]"
-                                    :rules="SDC_VALIDATION_FIELD_MAPPINGS[field].options.rules"
+                                    v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                                    :rules="sdcFieldMappings[field].options.rules"
                                     :enable-time-picker="false"
                                     format="yyyy-MM-dd"
                                     @update:model-value="saveDobDate"
@@ -695,7 +722,7 @@
             </v-row>
           </div>
         </v-col>
-        <v-col v-else>
+        <v-col v-else-if="!nextButtonIsDisabled()">
           <v-alert
             dismissible="true"
             class="clear-message"
@@ -731,413 +758,426 @@
   </v-container>
 </template>
 
-<script setup>
-import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
-const route = useRoute();
+<script>
+
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {isEmpty, omitBy, cloneDeep, sortBy} from 'lodash';
 import {formatDate} from '../../utils/format';
 import moment from 'moment/moment';
-
-//components
 import Spinner from '../common/Spinner.vue';
-import PrimaryButton from '../util/PrimaryButton.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
-
+import PrimaryButton from '../util/PrimaryButton.vue';
 import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
-
-//pinia store
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
-const sdcCollectionStore = useSdcCollectionStore();
 
-const props = defineProps({
-  schoolCollectionObject: {
-    type: Object,
-    required: true,
-    default: null
-  }
-});
-const isValid = ref(false);
-const form = ref<HTMLFormElement>(null);
-
-const emit = defineEmits(['next']);
-
-const confirmRemovalOfStudentRecord = ref(null);
-
-onMounted(() => {
-  sdcCollectionStore.getCodes().then(() => {
-    getSummaryCounts();
-    getSDCSchoolCollectionStudentPaginated();
-  });
-});
-
-//next logic
-const next = () => {
-  if(sdcCollectionStore.currentStepInCollectionProcess.isComplete) {
-    emit('next');
-  } else {
-    markStepAsComplete();
-  }
-};
-
-const onFieldClick = (fieldName, $event, errorType) => {
-  if($event) {
-    if(errorType === 'ERROR') {
-      document.getElementById(fieldName).style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
-    } else {
-      document.getElementById(fieldName).style.backgroundColor = 'lightblue';
+export default {
+  name: 'StepTwoValidateData',
+  components: {
+    ConfirmationDialog,
+    Spinner,
+    PrimaryButton,
+    VueDatePicker
+  },
+  props: {
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
     }
-    
-    document.getElementById(fieldName).style.marginTop = '7px';
-    document.getElementById(fieldName).style.marginRight = '20px';
-  } else {
-    document.getElementById(fieldName).style.backgroundColor = 'transparent';
-  }
-  
-};
+  },
+  emits: ['next'],
+  data() {
+    return {
+      sdcFieldMappings: SDC_VALIDATION_FIELD_MAPPINGS,
+      pageNumber: 1,
+      pageSize: 10,
+      studentListData: [],
+      totalStudents: 0,
+      sdcCollection: sdcCollectionStore(),
+      dobDatePicker: null,
+      legalUsualNameFilter: null,
+      penFilter: null,
+      from: 'uuuuMMdd',
+      pickerFormat: 'uuuu-MM-dd',
+      selectedSdcStudentID: null,
+      selectedSdcStudentIndex: 0,
+      fundingWarningCategoryFilter: null,
+      isValid: false,
+      sdcSchoolCollectionStudentDetail: {},
+      sdcSchoolCollectionStudentDetailCopy: {},
+      loadingCount: 0,
+      confirmRemovalOfStudentRecord: null,
+      summaryCounts: {error: 0, infoWarning: 0, fundingWarning:0},
+      headerSearchParams: {
+        penNumber: '',
+        sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN'
+      },
+      fundingWarningCategories: [
+        {
+          category: 'No program funding for home school students',
+          categoryCode: 'NOPROGFUNDINGHS'
+        },
+        {
+          category: 'Zero courses reported',
+          categoryCode: 'ZEROCOURSE'
+        },
+        {
+          category: 'Student too young',
+          categoryCode: 'STUDTOOYOUNG'
+        },
+        {
+          category: 'No Indigenous Support Program funding',
+          categoryCode: 'NOINDIGFUND'
+        },
+        {
+          category: 'No program funding for Out-of-Province/International Students',
+          categoryCode: 'NOPROGFUNDINGOOP'
+        },
+        {
+          category: 'No funding for Support Blocks',
+          categoryCode: 'NOFUNDSUPPORT'
+        },
+        {
+          category: 'No funding for Special Education',
+          categoryCode: 'NOFUNDSPED'
+        },
+        {
+          category: 'No funding for Graduated Adults',
+          categoryCode: 'NOFUNDGRADADULT'
+        },
+        {
+          category: 'No career program funding',
+          categoryCode: 'NOCAREERPROGFUND'
+        }
+      ]
+    };
+  },
+  computed: {
 
-const markStepAsComplete = () => {
-  let updateCollection = {
-    schoolCollection: props.schoolCollectionObject,
-    status: 'REVIEWED'
-  };
-  ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${route.params.schoolCollectionID}`, updateCollection)
-    .then(() => {
-      emit('next');
-    })
-    .catch(error => {
-      console.error(error);
-      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
-    });
-};
-
-const nextButtonIsDisabled = () => {
-  return summaryCounts.value.error > 0 || isLoading();
-};
-//end next logic
-
-const showStudentDetails = () => {
-  return totalStudents.value > 0;
-};
-
-//page summary counts
-const loadingCount = ref(0);
-const summaryCounts = ref({error: 0, infoWarning: 0, fundingWarning:0});
-
-const getSummaryCounts = () => {
-  loadingCount.value += 1;
-
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/stats/error-warning-count/${route.params.schoolCollectionID}`, {
-  }).then(response => {
-    summaryCounts.value = response.data;
-  }).catch(error => {
-    console.error(error);
-    setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.');
-  }).finally(() => {
-    loadingCount.value -= 1;
-  });
-};
-
-//sdc school collection student list pagination
-const headerSearchParams = ref({
-  penNumber: '',
-  sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN'
-});
-
-const pageNumber = ref(1);
-const pageSize = ref(10);
-const studentListData = ref([]);
-const totalStudents = ref(0);
-
-const selectedSdcStudentID = ref();
-const selectedSdcStudentIndex = ref(0);
-
-watch(pageNumber, () => {
-  getSDCSchoolCollectionStudentPaginated();
-});
-
-const getSDCSchoolCollectionStudentPaginated = () => {
-  loadingCount.value += 1;
-
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/paginated`, {
-    params: {
-      pageNumber: pageNumber.value - 1,
-      pageSize: pageSize.value,
-      searchParams: omitBy(headerSearchParams.value, isEmpty),
-      sort: {
-        sdcSchoolCollectionStudentStatusCode: 'ASC'
+  },
+  watch: {
+    pageNumber: {
+      handler() {
+        this.getSDCSchoolCollectionStudentPaginated();
+      },
+      immediate: true
     },
+    selectedSdcStudentID: {
+      handler(sdcSchoolCollectionStudentID) {
+        if(this.selectedSdcStudentID) {
+          this.getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
+        }
+      },
+      immediate: true
     }
-  }).then(response => {
-    studentListData.value = response.data.content;
-    totalStudents.value = response.data.totalElements;
-    selectedSdcStudentID.value = response.data.content[0]?.sdcSchoolCollectionStudentID;
-  }).catch(error => {
-    console.error(error);
-    setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
-  }).finally(() => {
-    loadingCount.value -= 1;
-  });
-};
-
-//arrow navigation
-watch(selectedSdcStudentID, (sdcSchoolCollectionStudentID) => {
-  if(selectedSdcStudentID.value) {
-    getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID);
-  }
-});
-
-const studentSelected = (sdcSchoolCollectionStudentID) => {
-  selectedSdcStudentID.value = sdcSchoolCollectionStudentID;
-};
-
-const nextSdcSchoolCollectionStudent = () => {
-  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value + 1;
-  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
-};
-
-const previousSdcSchoolCollectionStudent = () => {
-  selectedSdcStudentIndex.value = selectedSdcStudentIndex.value - 1;
-  selectedSdcStudentID.value = studentListData.value[selectedSdcStudentIndex.value].sdcSchoolCollectionStudentID;
-};
-
-const disableNextSdcSchoolCollectionStudentNavigation = () => {
-  return selectedSdcStudentIndex.value === studentListData.value.length - 1;
-};
-
-const disablePreviousSdcSchoolCollectionStudentNavigation = () => {
-  return selectedSdcStudentIndex.value === 0;
-};
-
-const tableRowClass = (sdcSchoolCollectionStudentID, index) => {
-  let rowClass = ['hoverTable'];
-  if (sdcSchoolCollectionStudentID === selectedSdcStudentID.value) {
-    rowClass.push('isSelected');
-    selectedSdcStudentIndex.value = index;
-  }
-  return  rowClass;
-};
-//end arrow navigation
-
-//sdc student details
-let sdcSchoolCollectionStudentDetail = ref({});
-let sdcSchoolCollectionStudentDetailCopy = ref({});
-
-const getSdcSchoolCollectionStudentDetail = (sdcSchoolCollectionStudentID) => {
-  loadingCount.value += 1;
-
-  ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
-    .then(response => {
-      let filteredResponse = {...response.data, filteredEnrolledProgramCodes: filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, from, pickerFormat)};
-      sdcSchoolCollectionStudentDetail.value = filteredResponse;
-      sdcSchoolCollectionStudentDetailCopy.value = cloneDeep(filteredResponse);
-    }).catch(error => {
-      console.error(error);
-      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
-    }).finally(() => {
-      loadingCount.value -= 1;
+  },
+  mounted() {
+    sdcCollectionStore().getCodes().then(() => {
+      this.getSummaryCounts();
+      this.getSDCSchoolCollectionStudentPaginated();
     });
-};
+  },
+  async created() {
 
+  },
+  methods: {
+    next() {
+      if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
+        this.emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
+    },
+    onFieldClick(fieldName, $event, errorType) {
+      if ($event) {
+        if (errorType === 'ERROR') {
+          document.getElementById(fieldName).style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+        } else {
+          document.getElementById(fieldName).style.backgroundColor = 'lightblue';
+        }
 
-const save = () => {
-  ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/student/${selectedSdcStudentID.value}`, sdcSchoolCollectionStudentDetailCopy.value)
-    .then(() => {
-      setSuccessAlert('Success! The student details have been updated.');
-    }).catch(error => {
-      console.error(error);
-      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
-    }).finally(() => {
-      selectedSdcStudentID.value= null;
-      getSummaryCounts();
-      getSDCSchoolCollectionStudentPaginated();
-    });
-};
+        document.getElementById(fieldName).style.marginTop = '7px';
+        document.getElementById(fieldName).style.marginRight = '20px';
+      } else {
+        document.getElementById(fieldName).style.backgroundColor = 'transparent';
+      }
+    },
+    markStepAsComplete(){
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'REVIEWED'
+      };
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}`, updateCollection)
+        .then(() => {
+          this.emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+        });
+    },
+    nextButtonIsDisabled(){
+      return this.summaryCounts.error > 0 || this.isLoading();
+    },
+    showStudentDetails(){
+      return this.totalStudents > 0;
+    },
+    getSummaryCounts(){
+      this.loadingCount += 1;
 
-const deleteSdcSchoolCollectionStudent = async () => {
-  const confirmation = await confirmRemovalOfStudentRecord.value.open('Confirm Removal of Student Record', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
-  if (!confirmation) {
-    return;
-  }
-  loadingCount.value += 1;
-  ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${route.params.schoolCollectionID}/student/${selectedSdcStudentID.value}`, sdcSchoolCollectionStudentDetailCopy.value)
-    .then(() => {
-      setSuccessAlert('Success! The student details have been deleted.');
-    }).catch(error => {
-      console.error(error);
-      setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
-    }).finally(() => {
-      selectedSdcStudentID.value = null;
-      loadingCount.value -= 1;
-      getSummaryCounts();
-      getSDCSchoolCollectionStudentPaginated();
-    });
-};
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/stats/error-warning-count/${this.$route.params.schoolCollectionID}`, {
+      }).then(response => {
+        this.summaryCounts = response.data;
+      }).catch(error => {
+        console.error(error);
+        setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.');
+      }).finally(() => {
+        this.loadingCount -= 1;
+      });
+    },
+    getSDCSchoolCollectionStudentPaginated(){
+      this.loadingCount += 1;
 
-const filterEnrolledProgramCodes = (enrolledProgramCodes = []) => {
-  if(enrolledProgramCodes) {
-    return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore.enrolledProgramCodesMap.has(enrolledProgramCode));
-  } 
-};
+      this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
 
-const syncWithEnrolledProgramCodeOnUserInput = (value) => {
-  sdcSchoolCollectionStudentDetailCopy.value.enrolledProgramCodes = value;
-};
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
+        params: {
+          pageNumber: this.pageNumber - 1,
+          pageSize: this.pageSize,
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          sort: {
+            sdcSchoolCollectionStudentStatusCode: 'ASC'
+          },
+        }
+      }).then(response => {
+        this.studentListData = response.data.content;
+        this.totalStudents = response.data.totalElements;
+        this.selectedSdcStudentID = response.data.content[0]?.sdcSchoolCollectionStudentID;
+      }).catch(error => {
+        console.error(error);
+        setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
+      }).finally(() => {
+        this.loadingCount -= 1;
+      });
+    },
+    studentSelected(sdcSchoolCollectionStudentID) {
+      this.selectedSdcStudentID = sdcSchoolCollectionStudentID;
+    },
+    nextSdcSchoolCollectionStudent(){
+      this.selectedSdcStudentIndex = this.selectedSdcStudentIndex + 1;
+      this.selectedSdcStudentID = this.studentListData[this.selectedSdcStudentIndex].sdcSchoolCollectionStudentID;
+    },
+    previousSdcSchoolCollectionStudent(){
+      this.selectedSdcStudentIndex = this.selectedSdcStudentIndex - 1;
+      this.selectedSdcStudentID = this.studentListData[this.selectedSdcStudentIndex].sdcSchoolCollectionStudentID;
+    },
+    isLoading(){
+      return this.loadingCount > 0;
+    },
+    disableNextSdcSchoolCollectionStudentNavigation(){
+      return this.selectedSdcStudentIndex === this.studentListData.length - 1;
+    },
+    disablePreviousSdcSchoolCollectionStudentNavigation(){
+      return this.selectedSdcStudentIndex === 0;
+    },
+    tableRowClass(sdcSchoolCollectionStudentID, index){
+      let rowClass = ['hoverTable'];
+      if (sdcSchoolCollectionStudentID === this.selectedSdcStudentID) {
+        rowClass.push('isSelected');
+        this.selectedSdcStudentIndex = index;
+      }
+      return  rowClass;
+    },
+    getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID) {
+      this.loadingCount += 1;
 
-const getBandCodesLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.bandCodesMap.get(key)) {
-    label = `${sdcCollectionStore.bandCodesMap.get(key)?.bandCode} - ${sdcCollectionStore.bandCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
+        .then(response => {
+          let filteredResponse = {...response.data, filteredEnrolledProgramCodes: this.filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, this.from, this.pickerFormat)};
+          this.sdcSchoolCollectionStudentDetail = filteredResponse;
+          this.sdcSchoolCollectionStudentDetailCopy = cloneDeep(filteredResponse);
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
+    },
+    save(){
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+        }).finally(() => {
+          this.selectedSdcStudentID = null;
+          this.getSummaryCounts();
+          this.getSDCSchoolCollectionStudentPaginated();
+        });
+    },
+    async deleteSdcSchoolCollectionStudent(){
+      const confirmation = await this.confirmRemovalOfStudentRecord.open('Confirm Removal of Student Record', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
+      this.loadingCount += 1;
+      ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been deleted.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+        }).finally(() => {
+          this.selectedSdcStudentID = null;
+          this.loadingCount -= 1;
+          this.getSummaryCounts();
+          this.getSDCSchoolCollectionStudentPaginated();
+        });
+    },
+    filterEnrolledProgramCodes(enrolledProgramCodes = []){
+      if(enrolledProgramCodes) {
+        return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore().enrolledProgramCodesMap.has(enrolledProgramCode));
+      }
+    },
+    syncWithEnrolledProgramCodeOnUserInput(value){
+      this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = value;
+    },
+    getBandCodesLabel(key){
+      let label = key;
+      if (sdcCollectionStore().bandCodesMap.get(key)) {
+        label = `${sdcCollectionStore().bandCodesMap.get(key)?.bandCode} - ${sdcCollectionStore().bandCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    getCareerProgramCodesLabel(key){
+      let label = key;
+      if (sdcCollectionStore().careerProgramCodesMap.get(key)) {
+        label = `${sdcCollectionStore().careerProgramCodesMap.get(key)?.careerProgramCode} - ${sdcCollectionStore().careerProgramCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    getEnrolledGradeCodesLabel(key){
+      let label = key;
+      if (sdcCollectionStore().enrolledGradeCodesMap.get(key)) {
+        label = `${sdcCollectionStore().enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sdcCollectionStore().enrolledGradeCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    getHomeLanguageSpokenCodesLabel(key) {
+      let label = key;
+      if (sdcCollectionStore().homeLanguageSpokenCodesMap.get(key)) {
+        label = `${sdcCollectionStore().homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sdcCollectionStore().homeLanguageSpokenCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    getSchoolFundingCodeLabel(key){
+      let label = key;
+      if (sdcCollectionStore().schoolFundingCodesMap.get(key)) {
+        label = `${sdcCollectionStore().schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sdcCollectionStore().schoolFundingCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    getSpecialEducationCodesLabel(key){
+      let label = key;
+      if (sdcCollectionStore().specialEducationCodesMap.get(key)) {
+        label = `${sdcCollectionStore().specialEducationCodesMap.get(key)?.specialEducationCategoryCode} - ${sdcCollectionStore().specialEducationCodesMap.get(key)?.label}`;
+      }
+      return label || '-';
+    },
+    clearSearchFields(){
+      this.fundingWarningCategoryFilter = null;
+      this.legalUsualNameFilter = null;
+      this.penFilter = null;
+      this.getSDCSchoolCollectionStudentPaginated();
+    },
+    getValidationIssueTypeCodesDescription(key){
+      return sdcCollectionStore().validationIssueTypeCodesMap.get(key)?.message;
+    },
+    getValidationIssueSeverityCodeLabel(severityCode){
+      if (severityCode === 'ERROR') {
+        return 'Error';
+      } else if (severityCode === 'INFO_WARNING') {
+        return 'Info Warning';
+      } else if (severityCode === 'FUNDING_WARNING') {
+        return 'Funding Warning';
+      }
+    },
+    fieldOrHyphen(field){
+      return field || '-';
+    },
+    getLegalName(first, middle, last){
+      if(first && middle){
+        return last + ', ' + first + ' ' + middle;
+      }else if(first){
+        return last + ', ' + first;
+      }else if(middle){
+        return last + ', ' + middle;
+      }else if(last){
+        return last;
+      }
+      return '';
+    },
+    formatAndSortValidationIssues(validationIssues = []){
+      let validationIssueMap = new Map();
+      for (let issue of validationIssues) {
+        if (!validationIssueMap.has(issue.validationIssueCode)) {
+          validationIssueMap.set(issue.validationIssueCode, {...issue, validationIssueFieldCode: [issue.validationIssueFieldCode]});
+        } else {
+          validationIssueMap.get(issue.validationIssueCode).validationIssueFieldCode.push(issue.validationIssueFieldCode);
+        }
+      }
 
-const getCareerProgramCodesLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.careerProgramCodesMap.get(key)) {
-    label = `${sdcCollectionStore.careerProgramCodesMap.get(key)?.careerProgramCode} - ${sdcCollectionStore.careerProgramCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
-
-const getEnrolledGradeCodesLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.enrolledGradeCodesMap.get(key)) {
-    label = `${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.enrolledGradeCode} - ${sdcCollectionStore.enrolledGradeCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
-
-const getHomeLanguageSpokenCodesLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)) {
-    label = `${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.homeLanguageSpokenCode} - ${sdcCollectionStore.homeLanguageSpokenCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
-
-const getSchoolFundingCodeLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.schoolFundingCodesMap.get(key)) {
-    label = `${sdcCollectionStore.schoolFundingCodesMap.get(key)?.schoolFundingCode} - ${sdcCollectionStore.schoolFundingCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
-
-const getSpecialEducationCodesLabel = (key) => {
-  let label = key;
-  if (sdcCollectionStore.specialEducationCodesMap.get(key)) {
-    label = `${sdcCollectionStore.specialEducationCodesMap.get(key)?.specialEducationCategoryCode} - ${sdcCollectionStore.specialEducationCodesMap.get(key)?.label}`;
-  }
-  return label || '-';
-};
-
-const getValidationIssueTypeCodesDescription = (key) => {
-  return sdcCollectionStore.validationIssueTypeCodesMap.get(key)?.message;
-};
-
-const getValidationIssueSeverityCodeLabel = (severityCode) => {
-  if (severityCode === 'ERROR') {
-    return 'Error';
-  } else if (severityCode === 'INFO_WARNING') {
-    return 'Info Warning';
-  } else if (severityCode === 'FUNDING_WARNING') {
-    return 'Funding Warning';
-  }
-};
-
-const fieldOrHyphen = (field) => field || '-';
-
-const getLegalName = (first, middle, last) => {
-  if(first && middle){
-    return last + ', ' + first + ' ' + middle;
-  }else if(first){
-    return last + ', ' + first;
-  }else if(middle){
-    return last + ', ' + middle;
-  }else if(last){
-    return last;
-  }
-  return '';
-};
-
-const formatAndSortValidationIssues = (validationIssues = []) => {
-  let validationIssueMap = new Map();
-  for (let issue of validationIssues) {
-    if (!validationIssueMap.has(issue.validationIssueCode)) {
-      validationIssueMap.set(issue.validationIssueCode, {...issue, validationIssueFieldCode: [issue.validationIssueFieldCode]});
-    } else {
-      validationIssueMap.get(issue.validationIssueCode).validationIssueFieldCode.push(issue.validationIssueFieldCode);
+      return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
+    },
+    getStudentStatus(student){
+      let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
+      if(studentValidationIssueStatus === 'ERROR') {
+        return 'ERROR';
+      } else if(studentValidationIssueStatus === 'FUNDWARN') {
+        return 'FUNDING_WARNING';
+      } else if(studentValidationIssueStatus === 'INFOWARN') {
+        return 'INFO_WARNING';
+      }
+    },
+    getIssueIcon(issue){
+      switch (issue) {
+      case 'ERROR':
+        return 'mdi-alert-circle-outline';
+      case 'INFO_WARNING':
+        return 'mdi-alert-circle-outline';
+      case 'FUNDING_WARNING':
+        return 'mdi-alert-outline';
+      default:
+        return '';
+      }
+    },
+    getIssueIconColor(issue){
+      switch (issue) {
+      case 'ERROR':
+        return '#d90606';
+      case 'INFO_WARNING':
+        return '#2196F3';
+      case 'FUNDING_WARNING':
+        return '#ff9800';
+      default:
+        return '';
+      }
+    },
+    clearDobDate(){
+      this.sdcSchoolCollectionStudentDetailCopy.value.dob = null;
+    },
+    openDobDatePicker(){
+      this.dobDatePicker.value[0].openMenu();
+    },
+    saveDobDate(){
+      this.sdcSchoolCollectionStudentDetailCopy.value.dob = moment(this.sdcSchoolCollectionStudentDetailCopy.value.dob).format('YYYY-MM-DD').toString();
     }
   }
-
-  return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
 };
-
-const getStudentStatus = (student)  => {
-  let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
-  if(studentValidationIssueStatus === 'ERROR') {
-    return 'ERROR';
-  } else if(studentValidationIssueStatus === 'FUNDWARN') {
-    return 'FUNDING_WARNING';
-  } else if(studentValidationIssueStatus === 'INFOWARN') {
-    return 'INFO_WARNING';
-  }
-};
-
-const getIssueIcon = (issue) => {
-  switch (issue) {
-  case 'ERROR':
-    return 'mdi-alert-circle-outline';
-  case 'INFO_WARNING':
-    return 'mdi-alert-circle-outline';
-  case 'FUNDING_WARNING':
-    return 'mdi-alert-outline';
-  default:
-    return '';
-  }
-};
-
-const getIssueIconColor = (issue) => {
-  switch (issue) {
-  case 'ERROR':
-    return '#d90606';
-  case 'INFO_WARNING':
-    return '#2196F3';
-  case 'FUNDING_WARNING':
-    return '#ff9800';
-  default:
-    return '';
-  }
-};
-//end sdc student details
-
-//date picker functions
-const dobDatePicker = ref(null);
-const from = 'uuuuMMdd';
-const pickerFormat = 'uuuu-MM-dd';
-
-const clearDobDate = () => {
-  sdcSchoolCollectionStudentDetailCopy.value.dob = null;
-};
-
-const openDobDatePicker = () => {
-  dobDatePicker.value[0].openMenu();
-};
-
-const saveDobDate = () => {
-  sdcSchoolCollectionStudentDetailCopy.value.dob = moment(sdcSchoolCollectionStudentDetailCopy.value.dob).format('YYYY-MM-DD').toString();
-};
-//end date picker functions
-
-const isLoading = () => {
-  return loadingCount.value > 0;
-};
-
 </script>
 
 <style scoped>

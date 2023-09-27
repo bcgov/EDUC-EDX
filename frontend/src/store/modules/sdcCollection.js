@@ -4,7 +4,7 @@ import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
 
-export const useSdcCollectionStore = defineStore('sdcCollection', {
+export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
   state: () => ({
     currentStepInCollectionProcess: null,

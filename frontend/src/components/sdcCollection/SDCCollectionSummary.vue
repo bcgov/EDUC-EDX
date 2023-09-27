@@ -95,7 +95,7 @@ import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
 import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState, mapActions } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
 
@@ -121,13 +121,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess',])
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess',])
   },
   created() {
     this.getSDCCollectionBySchoolId();
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
     startCollection() {
       router.push({name: 'sdcCollection', params: {schoolCollectionID: this.schoolCollectionID}});
     },
