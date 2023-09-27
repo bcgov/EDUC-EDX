@@ -23,7 +23,10 @@
             :rounded="true"
             :loading="isTableLoading"
         >
-          <div v-for="(item, index) in activeUserSchools">
+          <div
+            v-for="(item, index) in activeUserSchools"
+            :key="item.mincode"
+          >
             <v-list-item
                 :title="item.displayName"
                 :subtitle="item.mincode"
@@ -48,7 +51,10 @@
           :rounded="true"
           :loading="isTableLoading"
         >
-          <div v-for="(item, index) in activeUserDistricts">
+          <div
+            v-for="(item, index) in activeUserDistricts"
+            :key="item.districtNumber"
+          >
             <v-list-item
               :title="item.displayName"
               :subtitle="item.districtNumber"
