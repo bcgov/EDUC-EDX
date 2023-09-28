@@ -1,20 +1,17 @@
 <template>
-  <v-container :fluid="true">
+  <v-container>
     <v-row
-      no-gutters
       justify="center"
+      align="center"
     >
       <v-col
         v-if="hasRequiredPermission('SECURE_EXCHANGE')"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="secureMessageInboxCard"
-          class="mt-0"
-          min-width="22em"
+          class="mx-auto"
+          width="24em"
           outlined
           rounded
           @click="redirectToInbox()"
@@ -68,15 +65,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="districtDetailsCard"
-          min-width="22em"
-          class="mt-0"
+          width="24em"
+          class="mx-auto"
           outlined
           rounded
           @click="redirectToDistrictDetails()"
@@ -104,10 +98,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ districtLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -117,15 +107,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="schoolContactsCard"
-          class="mt-0"
-          min-width="22em"
+          class="mx-auto"
+          width="24em"
           outlined
           rounded
           @click="redirectToSchoolContacts()"
@@ -153,10 +140,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolContactsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -166,15 +149,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="districtContactsCard"
-          min-width="22em"
-          class="mt-0"
+          width="24em"
+          class="mx-auto"
           outlined
           rounded
           @click="redirectToDistrictContacts()"
@@ -202,10 +182,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ districtContactsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -215,15 +191,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="districtUserSchoolContactsCard"
-          min-width="22em"
-          class="mt-0"
+          width="24em"
+          class="mx-auto"
           outlined
           rounded
           @click="redirectToSchools()"
@@ -251,10 +224,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -264,15 +233,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="schoolDetailsCard"
-          class="mt-0"
-          min-width="22em"
+          class="mx-auto"
+          width="24em"
           outlined
           rounded
           @click="redirectToSchoolDetails()"
@@ -299,10 +265,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -312,15 +274,12 @@
       </v-col>
       <v-col
         v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
-        class="px-2 mx-2 py-1 my-1 py-lg-2 my-lg-2"
-        cols="8"
-        lg="4"
-        xl="3"
+        cols="auto"
       >
         <v-card
           id="studentDataCollectionCard"
-          class="mt-0"
-          min-width="22em"
+          class="mx-auto"
+          width="24em"
           outlined
           rounded
           @click="openSDCCollection()"
@@ -430,13 +389,13 @@ export default {
       this.getExchangesCount();
     }
 
-    if(this.isLoggedInSchoolUser) { 
+    if(this.isLoggedInSchoolUser) {
       if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
         this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
-      this.isSchoolActive();  
+      this.isSchoolActive();
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
