@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row
-      justify="space-evenly"
+      justify="center"
       align="center"
     >
       <v-col
@@ -11,7 +11,7 @@
         <v-card
           id="secureMessageInboxCard"
           class="mx-auto"
-          width="22em"
+          width="24em"
           outlined
           rounded
           @click="redirectToInbox()"
@@ -65,12 +65,11 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-          
         cols="auto"
       >
         <v-card
           id="districtDetailsCard"
-          width="22em"
+          width="24em"
           class="mx-auto"
           outlined
           rounded
@@ -99,10 +98,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ districtLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -112,13 +107,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-          
         cols="auto"
       >
         <v-card
           id="schoolContactsCard"
           class="mx-auto"
-          width="22em"
+          width="24em"
           outlined
           rounded
           @click="redirectToSchoolContacts()"
@@ -146,10 +140,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolContactsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -159,12 +149,11 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-          
         cols="auto"
       >
         <v-card
           id="districtContactsCard"
-          width="22em"
+          width="24em"
           class="mx-auto"
           outlined
           rounded
@@ -193,10 +182,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ districtContactsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -206,12 +191,11 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-          
         cols="auto"
       >
         <v-card
           id="districtUserSchoolContactsCard"
-          width="22em"
+          width="24em"
           class="mx-auto"
           outlined
           rounded
@@ -240,10 +224,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolsLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -253,13 +233,12 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-          
         cols="auto"
       >
         <v-card
           id="schoolDetailsCard"
           class="mx-auto"
-          width="22em"
+          width="24em"
           outlined
           rounded
           @click="redirectToSchoolDetails()"
@@ -286,10 +265,6 @@
               <v-row no-gutters>
                 <v-col>
                   <span>Last updated:</span>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
                   <span>{{ schoolLastUpdateDate }}</span>
                 </v-col>
               </v-row>
@@ -299,13 +274,12 @@
       </v-col>
       <v-col
         v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
-          
         cols="auto"
       >
         <v-card
           id="studentDataCollectionCard"
           class="mx-auto"
-          width="22em"
+          width="24em"
           outlined
           rounded
           @click="openSDCCollection()"
@@ -415,13 +389,13 @@ export default {
       this.getExchangesCount();
     }
 
-    if(this.isLoggedInSchoolUser) { 
+    if(this.isLoggedInSchoolUser) {
       if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
         this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
-      this.isSchoolActive();  
+      this.isSchoolActive();
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
