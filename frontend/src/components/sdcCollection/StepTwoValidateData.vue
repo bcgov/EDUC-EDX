@@ -653,38 +653,17 @@
                                   @update:focused="onFieldClick(sdcFieldMappings[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <div v-else-if="sdcFieldMappings[field]?.type === 'datePicker'">
-                                  <v-menu
-                                    id="dobValidationDatePicker"
-                                    ref="dobDateFilter"
-                                    :close-on-content-click="false"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="auto"
-                                  >
-                                    <template #activator="{ on, attrs }">
-                                      <v-text-field
-                                        :id="`${sdcFieldMappings[field].key}ValidationDatePicker`"
-                                        v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
-                                        :rules="sdcFieldMappings[field].options.rules"
-                                        class="pt-0 mt-0"
-                                        variant="underlined"
-                                        label="Start Date"
-                                        prepend-inner-icon="mdi-calendar"
-                                        clearable
-                                        readonly
-                                        v-bind="attrs"
-                                        @click:clear="clearDobDate"
-                                        @click="openDobDatePicker"
-                                      />
-                                    </template>
-                                  </v-menu>
-                                  <VueDatePicker
-                                    ref="dobDatePicker"
+                                  <v-text-field
+                                    :id="`${sdcFieldMappings[field].key}ValidationDatePicker`"
                                     v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
                                     :rules="sdcFieldMappings[field].options.rules"
-                                    :enable-time-picker="false"
-                                    format="yyyy-MM-dd"
-                                    @update:model-value="saveDobDate"
+                                    class="pt-0 mt-0"
+                                    variant="underlined"
+                                    :label="sdcFieldMappings[field].label"
+                                    prepend-inner-icon="mdi-calendar"
+                                    :clearable="true"
+                                    type="date"
+                                    @click:clear="clearDobDate"
                                   />
                                 </div>
                               </div>
@@ -768,9 +747,7 @@ import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {isEmpty, omitBy, cloneDeep, sortBy} from 'lodash';
 import {formatDate} from '../../utils/format';
-import moment from 'moment/moment';
 import Spinner from '../common/Spinner.vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
@@ -781,8 +758,7 @@ export default {
   components: {
     ConfirmationDialog,
     Spinner,
-    PrimaryButton,
-    VueDatePicker
+    PrimaryButton
   },
   props: {
     schoolCollectionObject: {
@@ -800,7 +776,6 @@ export default {
       studentListData: [],
       totalStudents: 0,
       sdcCollection: sdcCollectionStore(),
-      dobDatePicker: null,
       legalUsualNameFilter: null,
       penFilter: null,
       from: 'uuuuMMdd',
@@ -1171,13 +1146,7 @@ export default {
       }
     },
     clearDobDate(){
-      this.sdcSchoolCollectionStudentDetailCopy.value.dob = null;
-    },
-    openDobDatePicker(){
-      this.dobDatePicker.value[0].openMenu();
-    },
-    saveDobDate(){
-      this.sdcSchoolCollectionStudentDetailCopy.value.dob = moment(this.sdcSchoolCollectionStudentDetailCopy.value.dob).format('YYYY-MM-DD').toString();
+      this.sdcSchoolCollectionStudentDetailCopy.dob = null;
     }
   }
 };
@@ -1240,19 +1209,6 @@ export default {
    overflow-y: auto;
    overflow-x: hidden;
    height: 100vh;
- }
-
- :deep(.dp__input_wrap){
-   height: 0px;
-   width: 0px;
- }
-
- :deep(.dp__input){
-   display: none;
- }
-
- :deep(.dp__icon){
-   display: none;
  }
 
  .form-hint{
