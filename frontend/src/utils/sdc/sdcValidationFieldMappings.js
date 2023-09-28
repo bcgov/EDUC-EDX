@@ -21,7 +21,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   USUAL_FIRST_NAME: {label: 'Usual Given', key: 'usualFirstName', type: 'input', options: {}},
   USUAL_MIDDLE_NAMES: {label: 'Usual Middle', key: 'usualMiddleNames', type: 'input', options: {}},
   USUAL_LAST_NAME: {label: 'Usual Surname', key: 'usualLastName', type: 'input', options: {}},
-  DOB: {label: 'DOB', key: 'dob', type: 'datePicker', options: {}},
+  DOB: {label: 'Birthdate', key: 'dob', type: 'datePicker', options: {}},
   GENDER_CODE: {label: 'Gender', key: 'gender', type: 'select', options: {items: 'genderCodes', itemValue: 'genderCode'}},
   GRADE_CODE: {label: 'Grade Code', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
   SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCategoryCodes', itemValue: 'specialEducationCategoryCode'}},
