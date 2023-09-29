@@ -279,7 +279,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
+        v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser && !disableSdcFunctionality"
         cols="12"
         md="6"
       >
@@ -375,11 +375,12 @@ export default {
         createDate: [],
         secureExchangeStatusCode: ''
       },
-      PAGE_TITLES: PAGE_TITLES
+      PAGE_TITLES: PAGE_TITLES,
+      disableSdcFunctionality: null
     };
   },
   computed: {
-    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap','config']),
     ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
@@ -410,6 +411,7 @@ export default {
       this.getDistrictContactsLastUpdate();
       this.isDistrictActive();
     }
+    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
