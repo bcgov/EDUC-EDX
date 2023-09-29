@@ -1,12 +1,13 @@
 <template>
   <v-container>
     <v-row
-      justify="center"
+      justify="start"
       align="center"
     >
       <v-col
         v-if="hasRequiredPermission('SECURE_EXCHANGE')"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="secureMessageInboxCard"
@@ -65,7 +66,8 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="districtDetailsCard"
@@ -107,7 +109,8 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="schoolContactsCard"
@@ -149,7 +152,8 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="districtContactsCard"
@@ -191,7 +195,8 @@
       </v-col>
       <v-col
         v-if="isLoggedInDistrictUser && isDistrictActive"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="districtUserSchoolContactsCard"
@@ -233,7 +238,8 @@
       </v-col>
       <v-col
         v-if="isLoggedInSchoolUser && isSchoolActive"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="schoolDetailsCard"
@@ -274,7 +280,8 @@
       </v-col>
       <v-col
         v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
-        cols="auto"
+        cols="12"
+        md="6"
       >
         <v-card
           id="studentDataCollectionCard"
@@ -597,6 +604,9 @@ export default {
 .dashboard-title {
   word-break: break-word;
   font-size: 20px;
+}
+.v-container {
+  max-width: 51.5em !important;
 }
 </style>
 
