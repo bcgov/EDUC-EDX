@@ -123,6 +123,7 @@ nconf.defaults({
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,
+    disableSdcFunctionality: process.env.DISABLE_SDC_FUNCTIONALITY
   },
   clamav: {
     host: process.env.CLAMAV_HOST,

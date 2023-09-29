@@ -135,7 +135,7 @@
               v-model="searchFilter.roleName"
               variant="underlined"
               clearable
-              :items="schoolRoles"
+              :items="filteredSchoolRoles"
               item-title="label"
               item-value="edxRoleCode"
               label="Role"
@@ -193,7 +193,7 @@
               :user-roles="getCurrentUserSchoolRoles(user)"
               :user="user"
               :institute-code="schoolID"
-              :institute-roles="schoolRoles"
+              :institute-roles="filteredSchoolRoles"
               institute-type-code="SCHOOL"
               institute-type-label="School"
               @refresh="getUsersData"
@@ -261,7 +261,7 @@
             <v-divider />
             <v-card-text>
               <InviteUserPage
-                :user-roles="schoolRoles"
+                :user-roles="filteredSchoolRoles"
                 :institute-code="schoolID"
                 institute-type-code="SCHOOL"
                 institute-type-label="School"
@@ -362,6 +362,7 @@ import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import { ROLES } from '../../utils/constants/Roles.js';
+import { PERMISSION } from '../../utils/constants/Permission';
 
 export default {
   name: 'AccessSchoolUsersPage',
@@ -391,13 +392,16 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap']),
+    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
     hasAdminUsers() {
       return this.users.filter(user => {
         return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
       })?.length > 0;
+    },
+    filteredSchoolRoles() {
+      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => role.edxRoleCode !== PERMISSION.STUDENT_DATA_COLLECTION) : this.schoolRoles;
     }
   },
   async beforeMount() {
