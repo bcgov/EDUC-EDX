@@ -15,13 +15,14 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay.vue';
 import ExchangePage from './components/SecureExchange/ExchangeInbox.vue';
 import NewMessagePage from './components/SecureExchange/NewMessagePage.vue';
 import RouterView from './components/RouterView.vue';
-import AccessSchoolUsersPage from './components/SecureExchange/AccessSchoolUsersPage.vue';
+import AccessSchoolUsersPage from './components/admin/AccessSchoolUsersPage.vue';
 import InstituteSelection from './components/InstituteSelection.vue';
 import ActivateEdxUserAccount from './components/common/ActivateEdxUserAccount.vue';
 import SchoolListPage from './components/school/SchoolList.vue';
 import SchoolContactsPage from './components/school/SchoolContacts.vue';
 import SchoolDetailsPage from './components/school/SchoolDetails.vue';
-import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
+import AccessDistrictUsersPage from './components/admin/AccessDistrictUsersPage.vue';
+import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
 import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
@@ -153,6 +154,16 @@ const router = createRouter({
       component: AccessDistrictUsersPage,
       meta: {
         pageTitle: PAGE_TITLES.DISTRICT_EXCHANGE_USERS,
+        requiresAuth: true,
+        permission: 'EDX_USER_DISTRICT_ADMIN'
+      }
+    },
+    {
+      path: '/districtSchools',
+      name: 'districtSchools',
+      component: ViewAllDistrictSchoolUsersPage,
+      meta: {
+        pageTitle: PAGE_TITLES.ALL_DISTRICT_SCHOOL_USERS,
         requiresAuth: true,
         permission: 'EDX_USER_DISTRICT_ADMIN'
       }

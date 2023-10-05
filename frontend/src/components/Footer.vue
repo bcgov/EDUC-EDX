@@ -3,7 +3,7 @@
     color="#003366"
     dark
     absolute
-    height="20px"
+    height="48px"
   >
     <v-row no-gutters>
       <v-col class="d-flex justify-center">

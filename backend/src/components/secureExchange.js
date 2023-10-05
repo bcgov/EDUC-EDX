@@ -726,6 +726,23 @@ function incrementNumberOfRetriesCounter(req) {
     req.session['activationAttempts'] = 1;
   }
 }
+
+async function getAllDistrictSchoolEdxUsers(req, res) {
+  const token = getAccessToken(req);
+  try {
+    validateAccessToken(token);
+    checkEDXUserDistrictAdminPermission(req);
+    checkEDXUserAccess(req, 'DISTRICT', req.query.districtID);
+
+    let response = await getData(token, config.get('edx:edxUsersURL') + '/districtSchools/' + req.query.districtID, req.session.correlationID);
+
+    return res.status(HttpStatus.OK).json(response);
+  } catch (e) {
+    log.error(e, 'getAllDistrictSchoolEdxUsers', 'Error getting all district school EDX users');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getEdxUsers(req, res) {
   const token = getAccessToken(req);
   try {
@@ -1165,6 +1182,7 @@ module.exports = {
   instituteSelection,
   getEdxUsers,
   districtUserActivationInvite,
+  getAllDistrictSchoolEdxUsers,
   schoolUserActivationInvite,
   updateEdxUserSchoolRoles,
   updateEdxUserDistrictRoles,
