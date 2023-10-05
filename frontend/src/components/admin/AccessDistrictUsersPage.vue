@@ -242,7 +242,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import AccessUserCard from './AccessUserCard.vue';
 import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
-import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
+import InviteUserPage from './InviteUserPage.vue';
 import alertMixin from '../../mixins/alertMixin';
 
 export default {

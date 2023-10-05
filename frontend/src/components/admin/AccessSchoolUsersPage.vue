@@ -206,9 +206,9 @@
           >
             <v-card class="add-new-user h-100">
               <v-row
-                 class="add-new-user"
-                 align="center"
-                 justify="center"
+                class="add-new-user"
+                align="center"
+                justify="center"
               >
                 <v-col class="d-flex justify-center">
                   <PrimaryButton
@@ -232,7 +232,10 @@
                     type="info"
                     class="pa-2"
                   >
-                    <span id="no-activation-code-banner" style="color: #003366">Before adding users, a Primary Activation Code must be generated.</span>
+                    <span
+                      id="no-activation-code-banner"
+                      style="color: #003366"
+                    >Before adding users, a Primary Activation Code must be generated.</span>
                   </v-alert>
                 </v-col>
               </v-row>
@@ -295,7 +298,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row no-gutters class="mt-2">
           <v-col class="d-flex justify-center">
             <v-card
               min-width="55em"
@@ -312,7 +315,7 @@
                 </v-row>
               </v-card-title>
               <v-card-text>
-                <v-row justify="center">
+                <v-row>
                   <v-col class="mx-2 d-flex justify-center">
                     <v-autocomplete
                       id="selectInstituteName"
@@ -339,6 +342,19 @@
             </v-card>
           </v-col>
         </v-row>
+        <v-row no-gutters v-if="isDistrictUser">
+          <v-col class="d-flex justify-center">
+            <v-card
+              flat
+              min-width="55em"
+            >
+              <a
+                class="d-flex justify-end mt-1"
+                @click="seeAllDistrictSchoolUsersClick"
+              >See all school users</a>
+            </v-card>
+          </v-col>
+        </v-row>
       </div>
     </div>
   </v-container>
@@ -356,7 +372,7 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import AccessUserCard from './AccessUserCard.vue';
-import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
+import InviteUserPage from './InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
 import {sortBy} from 'lodash';
@@ -496,6 +512,9 @@ export default {
       }else{
         this.$router.push({name: 'home'});
       }
+    },
+    seeAllDistrictSchoolUsersClick() {
+      this.$router.push({name: 'districtSchools'});
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
