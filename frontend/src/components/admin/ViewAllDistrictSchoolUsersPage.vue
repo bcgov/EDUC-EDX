@@ -25,17 +25,17 @@
       </v-row>
       <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
         <v-col
-          cols="5"
+          cols="4"
           class="pt-1 pb-1"
         >
           <v-autocomplete
-            id="roleName-select-field"
-            variant="underlined"
+            id="schoolname-select-field"
             v-model="schoolFilter"
-            @update:model-value="applyFilter"
+            variant="underlined"
             clearable
             :items="schoolSearchNames"
             label="School"
+            @update:model-value="applyFilter"
           />
         </v-col>
         <v-col
@@ -45,8 +45,22 @@
             id="name-text-field"
             v-model="search"
             variant="underlined"
-            label="Search by User's Name, Email or Role name"
+            label="Search by User's Name or Email"
             clearable
+          />
+        </v-col>
+        <v-col
+          cols="4"
+          class="pt-1 pb-1"
+        >
+          <v-select
+            id="roleName-select-field"
+            v-model="roleFilter"
+            variant="underlined"
+            clearable
+            :items="roleSearchNames"
+            label="Role"
+            @update:model-value="applyFilter"
           />
         </v-col>
       </v-row>
@@ -58,15 +72,13 @@
           class="pb-0"
         >
           <div>
-            <h3 class="mb-2 mt-2">
+            <h3 @click="openSchool(school.schoolID)" class="mb-2 mt-2 hoverTable">
               {{ school.name }}
             </h3>
             <v-data-table
               v-model:items-per-page="itemsPerPage"
               :headers="headers"
               density="compact"
-              @click="openSchool(school.schoolID)"
-              class="hoverTable"
               :search="search"
               :items="school.edxDistrictSchoolUsers"
             />
@@ -87,6 +99,7 @@ import { mapState } from 'pinia';
 import Spinner from '../common/Spinner.vue';
 import alertMixin from '../../mixins/alertMixin';
 import {sortBy} from 'lodash';
+import {deepCloneObject} from '../../utils/common';
 
 export default {
   name: 'ViewAllDistrictSchoolUsersPage',
@@ -104,10 +117,12 @@ export default {
       loading: true,
       itemsPerPage: 1000,
       schoolFilter: null,
+      roleFilter: null,
       schoolsList: [],
       filteredSchools: [],
       isDistrictUser: false,
-      schoolSearchNames: []
+      schoolSearchNames: [],
+      roleSearchNames: []
     };
   },
   computed: {
@@ -137,8 +152,12 @@ export default {
           this.schoolsList = response.data;
           this.schoolsList.forEach(school => {
             school.edxDistrictSchoolUsers.forEach(user => {
+              user.schoolRoles.forEach(role => {
+                this.roleSearchNames.push(role);
+              });
               user.roleList = user.schoolRoles.join(', ');
-              school.fullSearch += ' ' + user.fullName + ' ' + user.roleList.toUpperCase() + ' ' + user.email;
+              user.fullSearch = user.fullName + ' ' + user.email;
+              school.fullSearch += ' ' + user.fullName + ' ' + user.roleList + ' ' + user.email;
             });
             school.name = this.getSchoolNameFromID(school.schoolID);
             this.schoolSearchNames.push(school.name);
@@ -146,22 +165,36 @@ export default {
           this.schoolsList = sortBy(this.schoolsList, ['name']);
           this.schoolSearchNames = sortBy(this.schoolSearchNames);
           this.filteredSchools = this.schoolsList;
+          this.roleSearchNames = this.roleSearchNames.filter(this.onlyUnique);
         }).finally(() => {
           this.loading = false;
         });
+    },
+    onlyUnique(value, index, array) {
+      return array.indexOf(value) === index;
     },
     getSchoolNameFromID(schoolID){
       let curSchool = this.schoolsMap.get(schoolID);
       return curSchool.mincode + ' - ' + curSchool.schoolName;
     },
+    deepCloneObject,
     applyFilter(){
-      let tempSchools = [...this.schoolsList];
+      let tempSchools = deepCloneObject(this.schoolsList);
 
       if(this.schoolFilter){
         tempSchools = tempSchools.filter(school => school.name.includes(this.schoolFilter));
       }
+      if(this.roleFilter){
+        tempSchools = tempSchools.filter(school => school.fullSearch.includes(this.roleFilter));
+        tempSchools.forEach(school => {
+          school.edxDistrictSchoolUsers = school.edxDistrictSchoolUsers.filter(user => user.schoolRoles.includes(this.roleFilter));
+        });
+      }
       if(this.search){
         tempSchools = tempSchools.filter(school => school.fullSearch.includes(this.search.toUpperCase()));
+        tempSchools.forEach(school => {
+          school.edxDistrictSchoolUsers = school.edxDistrictSchoolUsers.filter(user => user.fullSearch.includes(this.search.toUpperCase()));
+        });
       }
 
       this.filteredSchools = tempSchools;
@@ -188,7 +221,6 @@ export default {
 }
 
 .hoverTable:hover{
-  background-color: #e8e8e8;
   cursor: pointer;
 }
 
