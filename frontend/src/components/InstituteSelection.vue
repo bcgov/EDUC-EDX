@@ -18,6 +18,7 @@
         <v-list
             v-if="activeUserSchools.length>0"
             id="schools-dashboard-items"
+            style="padding-top: 0;padding-bottom: 0;"
             elevation="1"
             :border="true"
             :rounded="true"
@@ -46,6 +47,7 @@
         <v-list
           v-if="activeUserDistricts.length>0"
           id="schools-district-items"
+          style="padding-top: 0;padding-bottom: 0;"
           elevation="1"
           :border="true"
           :rounded="true"
