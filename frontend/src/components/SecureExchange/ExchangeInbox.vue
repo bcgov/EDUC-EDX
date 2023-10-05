@@ -118,38 +118,11 @@
                       md="4"
                       :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}"
                     >
-                      <v-menu
-                        id="messageDate"
-                        ref="messageDateFilter"
-                        v-model="messageDateFilter"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template #activator="{ on, attrs }">
-                          <v-text-field
-                            id="messageDateTextField"
-                            v-model="messageDateMoment"
-                            density="compact"
-                            class="pt-0 mt-0"
-                            variant="underlined"
-                            label="Message Date"
-                            @keyup.enter="filterRequests()"
-                            prepend-icon="mdi-calendar"
-                            clearable
-                            readonly
-                            v-bind="attrs"
-                            @click="openMessageDatePicker"
-                          />
-                        </template>
-                      </v-menu>
-                      <VueDatePicker
-                        ref="messageDatePicker"
+                      <DatePicker
+                        id="messageDateTextField"
                         v-model="messageDate"
-                        :enable-time-picker="false"
-                        format="yyyy-MM-dd"
-                        @update:model-value="saveMessageDate"
+                        label="Message Date"
+                        @keyup.enter="filterRequests()"
                       />
                     </v-col>
                     <v-col
@@ -435,19 +408,17 @@ import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import {appStore} from '../../store/modules/app';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import moment from 'moment';
 import {isNumber} from '../../utils/institute/formInput';
 import Spinner from '../common/Spinner.vue';
+import DatePicker from '../util/DatePicker.vue';
 
 export default {
   name: 'ExchangeInbox',
   components: {
+    DatePicker,
     Spinner,
     PrimaryButton,
-    NewMessagePage,
-    VueDatePicker
+    NewMessagePage
   },
   mixins: [alertMixin],
   data() {
@@ -456,10 +427,8 @@ export default {
       statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
-      messageDateFilter: false,
       activeMessageDatePicker: null,
       messageDate: null,
-      messageDateMoment: null,
       subjectFilter: '',
       filterText: 'More Filters',
       contactNameFilter: '',
@@ -537,9 +506,6 @@ export default {
       this.statusSelectFilter = [];
       this.statusSelectFilter.push(item.raw);
     },
-    openMessageDatePicker(){
-      this.$refs.messageDatePicker.openMenu();
-    },
     openExchange(secureExchangeID){
       this.$router.push({name: 'viewExchange', params: {secureExchangeID: secureExchangeID}});
     },
@@ -567,8 +533,6 @@ export default {
     clearSearch(runSearch = true){
       this.subjectFilter = null;
       this.messageDate = null;
-      this.messageDateMoment = null;
-      this.messageDateFilter = null;
       this.statusSelectFilter = null;
       this.contactNameFilter = null;
       this.messageIDFilter =null;
@@ -596,9 +560,6 @@ export default {
         this.clearSearch();
       }
 
-    },
-    saveMessageDate() {
-      this.messageDateMoment = moment(this.messageDate).format('YYYY-MM-DD').toString();
     },
     getStatusColor(status) {
       if (status === 'Open') {
@@ -672,7 +633,7 @@ export default {
       };
 
       this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDateMoment === null ? null : [this.messageDateMoment];
+      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
       this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       this.headerSearchParams.studentPEN = this.studentIDFilter;
@@ -721,15 +682,6 @@ export default {
   color: #123262;
 }
 
-:deep(.dp__input_wrap) {
-  height: 0;
-  width: 0;
-}
-
-:deep(.dp__input){
-  display: none;
-}
-
 :deep(#subjectInput){
   padding-top: 0.6em;
 }
@@ -752,10 +704,6 @@ export default {
 
 :deep(#studentIDInput){
   padding-top: 0.8em;
-}
-
-:deep(.dp__icon){
-  display: none;
 }
 
 .subjectHeading {
