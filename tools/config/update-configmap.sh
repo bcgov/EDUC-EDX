@@ -111,7 +111,6 @@ then
   bannerEnvironment="TEST"
   bannerColor="#8d28d7"
   disableSdcFunctionality=false
-fi
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=true
