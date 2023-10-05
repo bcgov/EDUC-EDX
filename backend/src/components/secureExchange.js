@@ -661,7 +661,7 @@ async function updateEdxUserDistrictRoles(req, res) {
 
     selectedUserDistrict.updateDate = null;
     selectedUserDistrict.createDate = null;
-    selectedUserSchool.expiryDate = req.body.params.expiryDate ? LocalDate.parse(req.body.params.expiryDate).atStartOfDay().format(formatter) : null;
+    selectedUserDistrict.expiryDate = req.body.params.expiryDate ? LocalDate.parse(req.body.params.expiryDate).atStartOfDay().format(formatter) : null;
 
     const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
