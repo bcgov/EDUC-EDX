@@ -114,44 +114,61 @@
         >
           {{ getRoleLabel(role) }}
         </v-chip>
-      </div>
-      <v-list
-        v-else
-        :id="`access-user-roles-${user.edxUserID}`"
-        v-model:selected="selectedRoles"
-        lines="two"
-        return-object
-        select-strategy="classic"
-        style="background-color: #e7ebf0"
-        @update:selected="selectedRolesChanged"
-      >
-        <div
-          v-for="newrole in instituteRoles"
-          :key="newrole.edxRoleCode"
-          :value="newrole.edxRoleCode"
+        <p
+          v-if="user.edxUserSchools[0].expiryDate"
+          class="expiry-date"
         >
-          <v-list-item
-            :disabled="roleDisabled(newrole)"
+          <v-icon size="large">
+            mdi-delete-clock-outline
+          </v-icon>
+          {{ formatExpiryDate(user.edxUserSchools[0].expiryDate) }}
+        </p>
+      </div>
+      <div v-else>
+        <v-list
+          :id="`access-user-roles-${user.edxUserID}`"
+          v-model:selected="selectedRoles"
+          lines="two"
+          return-object
+          select-strategy="classic"
+          style="background-color: #e7ebf0"
+          @update:selected="selectedRolesChanged"
+        >
+          <div
+            v-for="newrole in instituteRoles"
+            :key="newrole.edxRoleCode"
             :value="newrole.edxRoleCode"
           >
-            <template #prepend="{ isActive }">
-              <v-list-item-action>
-                <v-checkbox-btn :model-value="isActive" />
-              </v-list-item-action>
-            </template>
+            <v-list-item
+              :disabled="roleDisabled(newrole)"
+              :value="newrole.edxRoleCode"
+            >
+              <template #prepend="{ isActive }">
+                <v-list-item-action>
+                  <v-checkbox-btn :model-value="isActive" />
+                </v-list-item-action>
+              </template>
 
-            <v-list-item-title>{{ newrole.label }}</v-list-item-title>
+              <v-list-item-title>{{ newrole.label }}</v-list-item-title>
 
-            <v-list-item-subtitle v-if="newrole.edxRoleCode === edxInstituteAdminRole">
-              EDX {{ instituteTypeLabel }} Admin users will be set up with all
-              {{ instituteTypeLabel.toLowerCase() }} roles.
-            </v-list-item-subtitle>
-            <v-list-item-subtitle v-else>
-              {{ newrole.roleDescription }}
-            </v-list-item-subtitle>
-          </v-list-item>
-        </div>
-      </v-list>
+              <v-list-item-subtitle v-if="newrole.edxRoleCode === edxInstituteAdminRole">
+                EDX {{ instituteTypeLabel }} Admin users will be set up with all
+                {{ instituteTypeLabel.toLowerCase() }} roles.
+              </v-list-item-subtitle>
+              <v-list-item-subtitle v-else>
+                {{ newrole.roleDescription }}
+              </v-list-item-subtitle>
+            </v-list-item>
+          </div>
+        </v-list>
+
+        <DatePicker
+          id="accessExpiryDate"
+          v-model="accessExpiryDate"
+          label="Access Expiry Date"
+          @clear-date="clearExpiryDate"
+        />
+      </div>
     </v-card-text>
     <Transition name="bounce">
       <v-card-text
@@ -285,10 +302,12 @@ import {ApiRoutes, EDX_SAGA_REQUEST_DELAY_MILLISECONDS} from '../../utils/consta
 import { authStore } from '../../store/modules/auth';
 import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
+import {formatDate} from '../../utils/format';
+import DatePicker from '../util/DatePicker.vue';
 
 export default {
   name: 'AccessUserCard',
-  components: {PrimaryButton},
+  components: {PrimaryButton, DatePicker},
   mixins: [alertMixin],
   props: {
     user: {
@@ -322,7 +341,10 @@ export default {
       editState: false,
       deleteState: false,
       relinkState: false,
-      selectedRoles: []
+      selectedRoles: [],
+      accessExpiryDate: null,
+      from: 'uuuu-MM-dd\'T\'HH:mm:ss',
+      pickerFormat: 'uuuu-MM-dd',
     };
   },
   computed: {
@@ -347,6 +369,9 @@ export default {
         return false;
       }
       return this.isEDXInstituteAdminSelected;
+    },
+    formatExpiryDate(date) {
+      return formatDate(date, this.from, this.pickerFormat);
     },
     selectedRolesChanged() {
       if (!this.isEDXInstituteAdminSelected) {
@@ -453,7 +478,8 @@ export default {
       const payload = {
         params: {
           edxUserID: this.user.edxUserID,
-          selectedRoles: this.selectedRoles
+          selectedRoles: this.selectedRoles,
+          expiryDate: this.accessExpiryDate
         }
       };
       let url = ApiRoutes.edx.EXCHANGE_ACCESS_ROLES_URL;
@@ -490,9 +516,13 @@ export default {
       });
 
       this.selectedRoles = [...mySelection];
+      this.accessExpiryDate = this.formatExpiryDate(this.user.edxUserSchools[0].expiryDate);
     },
     isNotSameEdxUser() {
       return this.userInfo.edxUserID !== this.user.edxUserID;
+    },
+    clearExpiryDate(){
+      this.accessExpiryDate = null;
     },
   }
 };
@@ -510,6 +540,11 @@ export default {
 
 .bounce-leave-active {
   animation: bounce-in 0.1s reverse;
+}
+
+.expiry-date {
+  color: grey;
+  text-align: right;
 }
 
 @keyframes bounce-in {

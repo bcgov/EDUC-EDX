@@ -151,8 +151,8 @@
                   >
                     <v-text-field
                       id="penSearch"
-                      placeholder="PEN"
                       v-model="penFilter"
+                      placeholder="PEN"
                       density="compact"
                       variant="underlined"
                     />
@@ -653,17 +653,10 @@
                                   @update:focused="onFieldClick(sdcFieldMappings[field]?.key, $event, issue?.validationIssueSeverityCode)"
                                 />
                                 <div v-else-if="sdcFieldMappings[field]?.type === 'datePicker'">
-                                  <v-text-field
-                                    :id="`${sdcFieldMappings[field].key}ValidationDatePicker`"
+                                  <DatePicker
                                     v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                                    :label="sdcFieldMappings[field]?.label"
                                     :rules="sdcFieldMappings[field].options.rules"
-                                    class="pt-0 mt-0"
-                                    variant="underlined"
-                                    :label="sdcFieldMappings[field].label"
-                                    prepend-inner-icon="mdi-calendar"
-                                    :clearable="true"
-                                    type="date"
-                                    @click:clear="clearDobDate"
                                   />
                                 </div>
                               </div>
@@ -752,13 +745,15 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import DatePicker from '../util/DatePicker.vue';
 
 export default {
   name: 'StepTwoValidateData',
   components: {
     ConfirmationDialog,
     Spinner,
-    PrimaryButton
+    PrimaryButton,
+    DatePicker
   },
   props: {
     schoolCollectionObject: {
@@ -1144,9 +1139,6 @@ export default {
       default:
         return '';
       }
-    },
-    clearDobDate(){
-      this.sdcSchoolCollectionStudentDetailCopy.dob = null;
     }
   }
 };
