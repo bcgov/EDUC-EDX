@@ -3,7 +3,6 @@ import {defineComponent} from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import moment from 'moment';
-import '@vuepic/vue-datepicker/dist/main.css';
 
 export default defineComponent({
   name: 'DatePicker',
