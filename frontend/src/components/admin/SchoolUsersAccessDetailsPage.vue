@@ -5,7 +5,7 @@
       flat
     />
     <div v-else>
-      <div v-if="schoolID">
+      <div>
         <v-row>
           <v-col
             cols="12"
@@ -115,7 +115,7 @@
           <v-col
             cols="12"
             md="4"
-            class="mt-6"
+            class="py-0 my-0"
           >
             <v-text-field
               id="name-text-field"
@@ -128,7 +128,7 @@
           <v-col
             cols="12"
             md="4"
-            class="mt-6"
+            class="py-0 my-0"
           >
             <v-select
               id="roleName-select-field"
@@ -215,7 +215,7 @@
                     id="new-user-button"
                     icon="mdi-plus"
                     :large-icon="true"
-                    :secondary="primaryEdxActivationCode"
+                    :secondary="primaryEdxActivationCode != null"
                     :disabled="!primaryEdxActivationCode"
                     icon-left
                     text="Add New User"
@@ -278,84 +278,6 @@
           </v-card>
         </v-bottom-sheet>
       </div>
-      <div v-else>
-        <v-row>
-          <v-col class="d-flex justify-center">
-            <v-card
-              flat
-              min-width="55em"
-            >
-              <v-icon
-                small
-                color="#1976d2"
-              >
-                mdi-arrow-left
-              </v-icon>
-              <a
-                class="ml-1 mt-1"
-                @click="backButtonClick"
-              >Return to Dashboard</a>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="mt-2">
-          <v-col class="d-flex justify-center">
-            <v-card
-              min-width="55em"
-              color="#F2F2F2"
-            >
-              <v-card-title>
-                <v-row
-                  class="mt-0"
-                  justify="center"
-                >
-                  <v-col class="d-flex justify-center">
-                    <strong>Search a school below to manage their EDX Access</strong>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-card-text>
-                <v-row>
-                  <v-col class="mx-2 d-flex justify-center">
-                    <v-autocomplete
-                      id="selectInstituteName"
-                      v-model="instituteCode"
-                      variant="underlined"
-                      :items="schoolSearchNames"
-                      color="#003366"
-                      :label="instituteTypeLabel"
-                      single-line
-                      clearable
-                      item-title="schoolCodeName"
-                      item-value="schoolID"
-                    />
-                    <PrimaryButton
-                      id="manageSchoolButton"
-                      class="ml-4 mt-3"
-                      text="Manage School Access"
-                      :click-action="manageSchoolButtonClicked"
-                      :disabled="!instituteCode"
-                    />
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row no-gutters v-if="isDistrictUser">
-          <v-col class="d-flex justify-center">
-            <v-card
-              flat
-              min-width="55em"
-            >
-              <a
-                class="d-flex justify-end mt-1"
-                @click="seeAllDistrictSchoolUsersClick"
-              >See all school users</a>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
     </div>
   </v-container>
 </template>
@@ -375,19 +297,23 @@ import AccessUserCard from './AccessUserCard.vue';
 import InviteUserPage from './InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
 import ClipboardButton from '../util/ClipboardButton.vue';
-import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import { ROLES } from '../../utils/constants/Roles.js';
 import { PERMISSION } from '../../utils/constants/Permission';
 
 export default {
-  name: 'AccessSchoolUsersPage',
+  name: 'SchoolUsersAccessDetailsPage',
   components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
   mixins: [alertMixin],
+  props: {
+    schoolID: {
+      type: String,
+      required: true
+    },
+  },
   data() {
     return {
       newUserInviteSheet: false,
-      schoolID: '',
       users: [],
       loading: true,
       schoolName: '',
@@ -432,20 +358,15 @@ export default {
     authStore().getUserInfo().then(() => {
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.isDistrictUser = false;
-        this.schoolID = this.userInfo.activeInstituteIdentifier;
-        this.getPrimaryEdxActivationCodeSchool();
-        this.getUsersData();
-        appStore().getInstitutesData().then(() => {
-          this.setupSchoolFields();
-          this.loading = false;
-        });
       }else{
         this.isDistrictUser = true;
-        appStore().getInstitutesData().then(() => {
-          this.setupSchoolFields();
-          this.loading = false;
-        });
       }
+      appStore().getInstitutesData().then(() => {
+        this.setupSchoolFields();
+        this.getPrimaryEdxActivationCodeSchool();
+        this.getUsersData();
+        this.loading = false;
+      });
     });
   },
   methods: {
@@ -458,12 +379,6 @@ export default {
         }
         return 0;
       } );
-    },
-    manageSchoolButtonClicked(){
-      this.schoolID = this.instituteCode;
-      this.setupSchoolFields();
-      this.getPrimaryEdxActivationCodeSchool();
-      this.getUsersData();
     },
     getUsersData() {
       this.loadingUsers = true;
@@ -502,19 +417,7 @@ export default {
       return true;
     },
     backButtonClick() {
-      if(this.isDistrictUser && this.schoolID){
-        this.loading = true;
-        this.schoolID = '';
-        this.instituteCode = '';
-        this.setupSchoolFields();
-        this.loading = false;
-        this.doShowGenerateNewPrimaryEdxActivationCodeDialog = false;
-      }else{
-        this.$router.push({name: 'home'});
-      }
-    },
-    seeAllDistrictSchoolUsersClick() {
-      this.$router.push({name: 'districtSchools'});
+      this.$router.push({name: 'schoolAccess'});
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
@@ -523,12 +426,8 @@ export default {
       edxStore().setDistrictRoles(newValue);
     },
     setupSchoolFields() {
-      if(this.schoolID){
-        this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
-        this.schoolMincode = this.schoolsMap.get(this.schoolID).mincode;
-      }else{
-        this.setupSchoolList();
-      }
+      this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
+      this.schoolMincode = this.schoolsMap.get(this.schoolID).mincode;
     },
     closeNewUserModal(){
       edxStore().setSchoolRoles(JSON.parse(JSON.stringify(this.schoolRolesCopy)));
@@ -557,18 +456,6 @@ export default {
           this.setFailureAlert('There was an error generating the Primary Activation code. Please try again.',);
           console.log(e);
         });
-    },
-    setupSchoolList(){
-      this.schoolSearchNames = [];
-      for(const school of this.notClosedSchoolsMap.values()){
-        let schoolItem = {
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolID: school.schoolID,
-          districtID: school.districtID,
-        };
-        this.schoolSearchNames.push(schoolItem);
-      }
-      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
     },
     getPrimaryEdxActivationCodeSchool() {
       ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.schoolID}`)
@@ -608,10 +495,9 @@ export default {
 }
 
 .searchBox {
+  margin: 0;
   padding-left: 1em;
   padding-right: 1em;
-  margin-left: 0;
-  margin-right: 0;
   border-radius: 5px;
   background-color: #F2F2F2;
 }

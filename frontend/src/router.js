@@ -15,13 +15,13 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay.vue';
 import ExchangePage from './components/SecureExchange/ExchangeInbox.vue';
 import NewMessagePage from './components/SecureExchange/NewMessagePage.vue';
 import RouterView from './components/RouterView.vue';
-import AccessSchoolUsersPage from './components/admin/AccessSchoolUsersPage.vue';
+import AccessSchoolUsersPage from './components/admin/SchoolUsersAccessPage.vue';
 import InstituteSelection from './components/InstituteSelection.vue';
 import ActivateEdxUserAccount from './components/common/ActivateEdxUserAccount.vue';
 import SchoolListPage from './components/school/SchoolList.vue';
 import SchoolContactsPage from './components/school/SchoolContacts.vue';
 import SchoolDetailsPage from './components/school/SchoolDetails.vue';
-import AccessDistrictUsersPage from './components/admin/AccessDistrictUsersPage.vue';
+import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import DistrictContactsPage from './components/district/DistrictContacts.vue';
@@ -33,6 +33,7 @@ import StepTwoValidateData from './components/sdcCollection/StepTwoValidateData.
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
+import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -142,6 +143,17 @@ const router = createRouter({
       path: '/schoolAccess',
       name: 'schoolAccess',
       component: AccessSchoolUsersPage,
+      meta: {
+        pageTitle: PAGE_TITLES.SCHOOL_EXCHANGE_USERS,
+        requiresAuth: true,
+        permission: 'EDX_USER_SCHOOL_ADMIN'
+      }
+    },
+    {
+      path: '/schoolAccessDetail/:schoolID',
+      name: 'schoolAccessDetail',
+      props: true,
+      component: AccessSchoolUsersDetailsPage,
       meta: {
         pageTitle: PAGE_TITLES.SCHOOL_EXCHANGE_USERS,
         requiresAuth: true,
