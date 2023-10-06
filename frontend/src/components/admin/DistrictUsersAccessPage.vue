@@ -86,7 +86,7 @@
     </v-expand-transition>
     <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
       <v-col
-        class="mt-3"
+        class="py-0 my-0"
         cols="12"
         md="4"
       >
@@ -99,7 +99,7 @@
         />
       </v-col>
       <v-col
-        class="mt-3"
+        class="py-0 my-0"
         cols="12"
         md="4"
       >
@@ -246,7 +246,7 @@ import InviteUserPage from './InviteUserPage.vue';
 import alertMixin from '../../mixins/alertMixin';
 
 export default {
-  name: 'AccessDistrictUsersPage',
+  name: 'DistrictUsersAccessPage',
   components: {ClipboardButton, InviteUserPage, PrimaryButton, AccessUserCard, Spinner},
   mixins: [alertMixin],
   data() {

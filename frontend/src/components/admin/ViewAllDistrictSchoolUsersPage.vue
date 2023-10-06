@@ -25,8 +25,7 @@
       </v-row>
       <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
         <v-col
-          cols="4"
-          class="pt-1 pb-1"
+          class="d-flex pt-1 pb-1"
         >
           <v-autocomplete
             id="schoolname-select-field"
@@ -50,8 +49,7 @@
           />
         </v-col>
         <v-col
-          cols="4"
-          class="pt-1 pb-1"
+          class="d-flex pt-1 pb-1"
         >
           <v-select
             id="roleName-select-field"
@@ -200,7 +198,7 @@ export default {
       this.filteredSchools = tempSchools;
     },
     openSchool(schoolId){
-      const routeData = this.$router.resolve({name: 'schoolDetails', params: {schoolID: schoolId}});
+      const routeData = this.$router.resolve({name: 'schoolAccessDetail', params: {schoolID: schoolId}});
       window.open(routeData.href, '_blank');
     },
     backButtonClick() {

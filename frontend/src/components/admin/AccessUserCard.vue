@@ -115,13 +115,13 @@
           {{ getRoleLabel(role) }}
         </v-chip>
         <p
-          v-if="user.edxUserSchools[0].expiryDate"
+          v-if="getExpiryDate(user)"
           class="expiry-date"
         >
           <v-icon size="large">
             mdi-delete-clock-outline
           </v-icon>
-          {{ formatExpiryDate(user.edxUserSchools[0].expiryDate) }}
+          {{ formatExpiryDate(getExpiryDate(user)) }}
         </p>
       </div>
       <div v-else>
@@ -370,6 +370,9 @@ export default {
       }
       return this.isEDXInstituteAdminSelected;
     },
+    isDistrictUser(){
+      return this.instituteTypeCode === 'DISTRICT';
+    },
     formatExpiryDate(date) {
       return formatDate(date, this.from, this.pickerFormat);
     },
@@ -501,6 +504,12 @@ export default {
         }).finally(() => {
           this.$emit('refresh');
         });
+    },
+    getExpiryDate(user){
+      if(!this.isDistrictUser()){
+        return user.edxUserSchools[0].expiryDate;
+      }
+      return user.edxUserDistricts[0].expiryDate;
     },
     setUserRolesAsSelected() {
       let mySelection = [];
