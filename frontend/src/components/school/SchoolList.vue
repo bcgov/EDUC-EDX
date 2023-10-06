@@ -24,13 +24,13 @@
       </v-row>
       <v-row
         style="background: rgb(235, 237, 239);border-radius: 8px;"
-        class="px-3 pt-4"
+        class="px-3 py-0 align-center"
       >
         <v-col
           cols="12"
           md="4"
           lg="5"
-          class="d-flex justify-start"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-autocomplete
             id="name-text-field"
@@ -46,7 +46,7 @@
         <v-col
           cols="12"
           md="2"
-          class="d-flex justify-start"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-select
             id="status-select-field"
@@ -80,7 +80,7 @@
         <v-col
           cols="12"
           md="3"
-          class="d-flex justify-start"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-select
             id="status-select-field"
@@ -97,7 +97,7 @@
           cols="12"
           md="3"
           lg="2"
-          class="mt-2 d-flex justify-end"
+          class="d-flex justify-end"
         >
           <PrimaryButton
             id="user-search-button"
