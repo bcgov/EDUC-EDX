@@ -25,7 +25,7 @@
       </v-row>
       <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
         <v-col
-          class="d-flex py-0 my-0"
+          class="d-flex pt-1 pb-0"
         >
           <v-autocomplete
             id="schoolname-select-field"
@@ -38,7 +38,7 @@
           />
         </v-col>
         <v-col
-          class="d-flex py-0 my-0"
+          class="d-flex pt-1 pb-0"
         >
           <v-text-field
             id="name-text-field"
@@ -49,7 +49,7 @@
           />
         </v-col>
         <v-col
-          class="d-flex py-0 my-0"
+          class="d-flex pt-1 pb-0"
         >
           <v-select
             id="roleName-select-field"
