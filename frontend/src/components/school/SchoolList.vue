@@ -534,6 +534,10 @@ export default {
   cursor: pointer;
 }
 
+:deep(.v-data-table-footer__items-per-page) {
+  display: none;
+}
+
 @media screen and (max-width: 801px){
   .subjectHeading {
     font-size: medium;
