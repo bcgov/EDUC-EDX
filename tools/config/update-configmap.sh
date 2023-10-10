@@ -110,7 +110,7 @@ elif [ "$envValue" = "test" ]
 then
   bannerEnvironment="TEST"
   bannerColor="#8d28d7"
-  disableSdcFunctionality=false
+  disableSdcFunctionality=true
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=true
