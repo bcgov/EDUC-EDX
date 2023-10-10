@@ -242,13 +242,18 @@ export default {
             {
               title: 'School User Management',
               link: { name: 'schoolAccess'},
-              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
+              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
             },
             {
               title: 'District User Management',
               link: { name: 'districtAccess'},
               authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
-            }
+            },
+            {
+              title: 'School User Management',
+              link: { name: 'schoolAccessDetail', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+              authorized: this.hasRequiredSchoolPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
+            },
           ],
         }
       ];
@@ -256,6 +261,11 @@ export default {
     },
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
+    },
+    hasRequiredSchoolPermission(permission){
+      let hasCorrectRole  = this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0;
+      let hasDistrictRole = this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return (hasCorrectRole && !hasDistrictRole);
     },
     setActive(item) {
       let index = this.items.findIndex(obj => obj.title === item.title);
