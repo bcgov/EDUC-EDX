@@ -393,12 +393,12 @@ export default {
     },
   },
   created() {
+    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
     if(this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
-
     if(this.isLoggedInSchoolUser) {
-      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
+      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION') && !this.disableSdcFunctionality) {
         this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
@@ -411,7 +411,6 @@ export default {
       this.getDistrictContactsLastUpdate();
       this.isDistrictActive();
     }
-    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),

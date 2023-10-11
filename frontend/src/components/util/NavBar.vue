@@ -162,7 +162,8 @@ export default {
       items: [],
       hasAnyItems: false,
       bannerEnvironment: null,
-      bannerColor: null
+      bannerColor: null,
+      disableSdcFunctionality: null
     };
   },
   computed: {
@@ -191,6 +192,7 @@ export default {
   async created(){
     this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
     this.bannerColor = this.config.BANNER_COLOR;
+    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
   },
   methods: {
     refreshUserPermissions(){
@@ -218,7 +220,7 @@ export default {
         {
           title: PAGE_TITLES.DATA_COLLECTION,
           link: { name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableSdcFunctionality,
         },
         {
           title: PAGE_TITLES.SCHOOLS,
