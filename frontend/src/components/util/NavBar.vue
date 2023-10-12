@@ -187,6 +187,13 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    disableSdcFunctionality: {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
     }
   },
   async created(){
