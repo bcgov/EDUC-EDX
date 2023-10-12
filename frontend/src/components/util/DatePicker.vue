@@ -69,7 +69,6 @@ export default defineComponent({
         :label="label"
         variant="underlined"
         placeholder="yyyy/mm/dd"
-        :persistent-placeholder="true"
         :clearable="true"
         @input="onInput"
         @keydown.enter.prevent="onEnter"
