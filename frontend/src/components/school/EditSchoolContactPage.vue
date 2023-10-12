@@ -149,6 +149,7 @@
                   v-model="editContact.effectiveDate"
                   label="Start Date"
                   :rules="[rules.required()]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearEffectiveDate"
                 />
@@ -159,6 +160,7 @@
                   v-model="editContact.expiryDate"
                   label="End Date"
                   :rules="[rules.endDateRule(editContact.effectiveDate, editContact.expiryDate)]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearExpiryDate"
                 />
@@ -191,8 +193,6 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
-import {formatContactName, formatPhoneNumber} from '../../utils/format';
-import {getStatusColor} from '../../utils/institute/status';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
 import {cloneDeep} from 'lodash';
@@ -233,19 +233,13 @@ export default {
   data() {
     return {
       processing: false,
-      from: 'uuuu-MM-dd\'T\'HH:mm:ss',
-      pickerFormat: 'uuuu-MM-dd',
       school: {},
       isFormValid: false,
       expandEdit: false,
       saveEnabled: true,
       ecFormValid: false,
-      effDateMenu: false,
-      expDateMenu: false,
       editContact: '',
       rules: Rules,
-      editContactExpiryDatePicker: null,
-      editContactEffectiveDatePicker: null,
       SCHOOL_CONTACT_TYPES: SCHOOL_CONTACT_TYPES
     };
   },
@@ -287,10 +281,7 @@ export default {
       const valid = await this.$refs.editContactForm.validate();
       this.isFormValid = valid.valid;
     },
-    formatPhoneNumber,
-    getStatusColor,
-    isNumber,
-    formatContactName
+    isNumber
   }
 };
 </script>

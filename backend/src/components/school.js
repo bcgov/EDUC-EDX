@@ -8,7 +8,7 @@ const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
 const _ = require('lodash');
-const {LocalDate, LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -110,8 +110,6 @@ async function addSchoolContact(req, res) {
 
     const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
 
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-
     const payload = {
       schoolContactTypeCode: req.body.schoolContactTypeCode,
       firstName: req.body.firstName,
@@ -122,8 +120,8 @@ async function addSchoolContact(req, res) {
       phoneExtension: req.body.phoneExtension,
       alternatePhoneNumber: req.body.alternatePhoneNumber,
       alternatePhoneExtension: req.body.alternatePhoneExtension,
-      effectiveDate: req.body.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null,
-      expiryDate: req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null
+      effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
+      expiryDate: req.body.expiryDate ? req.body.expiryDate : null
     };
 
     const data = await postData(token, payload, url, req.session?.correlationID);
@@ -143,13 +141,11 @@ async function updateSchoolContact(req, res) {
     checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
     checkIfActionOnOffshoreSchool(req.body.schoolID);
 
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-
     const params = req.body;
     params.updateDate = null;
     params.createDate = null;
-    params.effectiveDate = params.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
-    params.expiryDate = req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
+    params.effectiveDate = params.effectiveDate ? req.body.effectiveDate : null;
+    params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
 
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -161,8 +157,6 @@ async function updateSchoolContact(req, res) {
 
 async function removeSchoolContact(req, res) {
   try {
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
@@ -177,7 +171,7 @@ async function removeSchoolContact(req, res) {
 
     contact.createDate = null;
     contact.updateDate = null;
-    contact.expiryDate = LocalDateTime.now().format(formatter);
+    contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);

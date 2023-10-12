@@ -138,6 +138,7 @@
                   v-model="newContact.effectiveDate"
                   label="Start Date"
                   :rules="[rules.required()]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearEffectiveDate"
                 />
@@ -148,6 +149,7 @@
                   v-model="newContact.expiryDate"
                   label="End Date"
                   :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearExpiryDate"
                 />
@@ -185,7 +187,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
-import {LocalDate} from '@js-joda/core';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import DatePicker from '../util/DatePicker.vue';
 
 export default {
@@ -220,13 +222,10 @@ export default {
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: LocalDate.now().toString(),
+        effectiveDate: LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString(),
         expiryDate: null
       },
-      rules: Rules,
-      effectiveDateFilter: false,
-      expiryDateFilter: false,
-      newContactExpiryDatePicker: null
+      rules: Rules
     };
   },
   computed: {

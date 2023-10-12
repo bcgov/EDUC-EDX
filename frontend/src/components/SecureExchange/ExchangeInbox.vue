@@ -100,49 +100,70 @@
                     <v-col
                       cols="12"
                       md="4"
+                      class="pt-0 px-7"
+                    >
+                      <v-select
+                        id="contactNameSelect"
+                        v-model="contactNameFilter"
+                        label="Contact"
+                        variant="underlined"
+                        item-title="teamName"
+                        item-value="ministryOwnershipTeamId"
+                        :items="ministryContactName"
+                        prepend-inner-icon="mdi-card-account-mail-outline"
+                        :clearable="true"
+                      >
+                        <template #selection="{ item, index }">
+                          <span id="contactNameLabel">{{ item.title }}</span>
+                        </template>
+                      </v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="subjectInput"
                         v-model="subjectFilter"
-                        density="compact"
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
+                        prepend-inner-icon="mdi-book-open-variant"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        prepend-icon="mdi-book-open-variant"
-                        clearable
                       />
                     </v-col>
                     <v-col
                       cols="12"
                       md="4"
-                      :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}"
+                      :class="{'pt-0 px-7': $vuetify.display.mdAndUp}"
                     >
                       <DatePicker
                         id="messageDateTextField"
                         v-model="messageDate"
                         label="Message Date"
+                        model-type="yyyy-MM-dd'T'00:00:00"
                         @keyup.enter="filterRequests()"
                       />
                     </v-col>
                     <v-col
                       cols="12"
                       md="4"
+                      class="pt-0 px-7"
                     >
                       <v-select
                         id="statusSelector"
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
                         label="Status"
-                        density="compact"
-                        style="margin-top: 0.3em"
                         variant="underlined"
                         :menu-props="{
                           closeOnClick: true,
                           closeOnContentClick: true,
                         }"
                       >
-                        <template #prepend>
+                        <template #prepend-inner>
                           <v-icon :color="getStatusColor(statusSelectFilter ? statusSelectFilter[0].label : '')">
                             mdi-circle-medium
                           </v-icon>
@@ -165,63 +186,35 @@
                     <v-col
                       cols="12"
                       md="4"
-                      class="pt-0"
-                    >
-                      <v-select
-                        id="contactNameSelect"
-                        v-model="contactNameFilter"
-                        label="Contact Name"
-                        density="compact"
-                        style="margin-top: 0.1em"
-                        variant="underlined"
-                        item-title="teamName"
-                        item-value="ministryOwnershipTeamId"
-                        :items="ministryContactName"
-                        prepend-icon="mdi-book-open-variant"
-                        clearable
-                      >
-                        <template #selection="{ item, index }">
-                          <span id="contactNameLabel">{{ item.title }}</span>
-                        </template>
-                      </v-select>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                      class="pt-0"
-                      :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}"
+                      :class="{'pt-0 px-7': $vuetify.display.mdAndUp}"
                     >
                       <v-text-field
                         id="messageIdInput"
                         v-model="messageIDFilter"
                         variant="underlined"
                         class="pt-0 mt-0"
-                        density="compact"
                         label="Message ID"
+                        prepend-inner-icon="mdi-pound"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        prepend-icon="mdi-pound"
-                        clearable
                         @keypress="isNumber($event)"
                       />
                     </v-col>
-                  </v-row>
-                  <v-row>
                     <v-col
                       cols="12"
                       md="4"
-                      class="pt-0"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="studentIDInput"
                         v-model="studentIDFilter"
                         variant="underlined"
-                        density="compact"
                         label="Student PEN"
-                        prepend-icon="mdi-account"
+                        prepend-inner-icon="mdi-account"
                         maxlength="9"
                         counter="9"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        clearable
                         @keypress="isNumber($event)"
                       />
                     </v-col>
@@ -427,7 +420,6 @@ export default {
       statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
-      activeMessageDatePicker: null,
       messageDate: null,
       subjectFilter: '',
       filterText: 'More Filters',
@@ -452,7 +444,6 @@ export default {
         {value: 50, title: '50'}
       ],
       loadingTable: false,
-      dateMenu: false,
       headerSearchParams: {
         sequenceNumber: '',
         contact: '',
@@ -682,29 +673,6 @@ export default {
   color: #123262;
 }
 
-:deep(#subjectInput){
-  padding-top: 0.6em;
-}
-
-:deep(#messageDateTextField){
-  padding-top: 0.6em;
-}
-
-:deep(#statusLabel){
-  margin-top: -0.5em;
-}
-
-:deep(#contactNameLabel){
-  margin-top: -0.3em;
-}
-
-:deep(#messageIdInput){
-  padding-top: 0.5em;
-}
-
-:deep(#studentIDInput){
-  padding-top: 0.8em;
-}
 
 .subjectHeading {
   font-size: large;

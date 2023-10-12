@@ -336,7 +336,7 @@
                       <v-col>
                         <v-text-field
                           id="dob"
-                          :model-value="fieldOrHyphen(sdcSchoolCollectionStudentDetailCopy.dob)"
+                          :model-value="fieldOrHyphen(formatDob(sdcSchoolCollectionStudentDetailCopy.dob))"
                           label="Birthdate"
                           density="compact"
                           variant="plain"
@@ -657,6 +657,7 @@
                                     v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
                                     :label="sdcFieldMappings[field]?.label"
                                     :rules="sdcFieldMappings[field].options.rules"
+                                    model-type="yyyyMMdd"
                                   />
                                 </div>
                               </div>
@@ -739,7 +740,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {isEmpty, omitBy, cloneDeep, sortBy} from 'lodash';
-import {formatDate} from '../../utils/format';
+import {formatDob} from '../../utils/format';
 import Spinner from '../common/Spinner.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
@@ -773,8 +774,6 @@ export default {
       sdcCollection: sdcCollectionStore(),
       legalUsualNameFilter: null,
       penFilter: null,
-      from: 'uuuuMMdd',
-      pickerFormat: 'uuuu-MM-dd',
       selectedSdcStudentID: null,
       selectedSdcStudentIndex: 0,
       fundingWarningCategoryFilter: null,
@@ -969,7 +968,7 @@ export default {
 
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
         .then(response => {
-          let filteredResponse = {...response.data, filteredEnrolledProgramCodes: this.filterEnrolledProgramCodes(response.data.enrolledProgramCodes), dob: formatDate(response.data.dob, this.from, this.pickerFormat)};
+          let filteredResponse = {...response.data, filteredEnrolledProgramCodes: this.filterEnrolledProgramCodes(response.data.enrolledProgramCodes)};
           this.sdcSchoolCollectionStudentDetail = filteredResponse;
           this.sdcSchoolCollectionStudentDetailCopy = cloneDeep(filteredResponse);
         }).catch(error => {
@@ -1139,7 +1138,8 @@ export default {
       default:
         return '';
       }
-    }
+    },
+    formatDob
   }
 };
 </script>

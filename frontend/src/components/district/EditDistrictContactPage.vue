@@ -135,6 +135,7 @@
                   v-model="editContact.effectiveDate"
                   label="Start Date"
                   :rules="[rules.required()]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearEffectiveDate"
                 />
@@ -145,6 +146,7 @@
                   v-model="editContact.expiryDate"
                   label="End Date"
                   :rules="[rules.endDateRule(editContact.effectiveDate, editContact.expiryDate)]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
                   @update:model-value="validateForm"
                   @clear-date="clearExpiryDate"
                 />
