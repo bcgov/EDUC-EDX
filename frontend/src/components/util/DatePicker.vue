@@ -29,7 +29,7 @@ export default defineComponent({
     },
     modelType: {
       type: String,
-      default: 'format'
+      required: true
     }
   },
   emits: ['update:modelValue', 'clearDate'],
