@@ -4,7 +4,6 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
-const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -196,10 +195,6 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
 
     if(payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
-    }
-
-    if(payload?.dob) {
-      payload.dob = LocalDate.parse(payload.dob, DateTimeFormatter.ofPattern('uuuu-MM-dd')).format(DateTimeFormatter.ofPattern('uuuuMMdd'));
     }
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;

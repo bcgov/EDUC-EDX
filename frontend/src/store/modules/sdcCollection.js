@@ -179,7 +179,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     async getCodes() {
-      if(localStorage.getItem('jwtToken') && !this.config.DISABLE_SDC_FUNCTIONALITY) { // DONT Call api if there is no token.
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
         if(this.bandCodesMap.size === 0) {
           const response = await ApiService.getAllActiveBandCodes();
           this.setBandCodes(response.data);

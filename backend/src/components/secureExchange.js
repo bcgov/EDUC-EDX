@@ -24,7 +24,7 @@ const log = require('./logger');
 
 const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
-const {LocalDateTime, LocalDate, DateTimeFormatter} = require('@js-joda/core');
+const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('../util/constants');
 const {getApiCredentials} = require('./auth');
 const cacheService = require('./cache-service');
@@ -328,10 +328,6 @@ async function getExchanges(req, res) {
               element['contactIdentifierName'] = tempMinTeam.teamName;
             }
           }
-          if (element['createDate']) {
-            element['createDate'] = LocalDateTime.parse(element['createDate']).format(DateTimeFormatter.ofPattern('uuuu/MM/dd'));
-          }
-
           //we need to remove references to notesList since the school/district should not have access to this information.
           delete element.noteList;
         });
@@ -591,7 +587,6 @@ async function updateEdxUserSchoolRoles(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccessForSchoolAdminFunctions(req, req.body.params.schoolID);
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
     let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolID);
@@ -618,7 +613,7 @@ async function updateEdxUserSchoolRoles(req, res) {
 
     selectedUserSchool.updateDate = null;
     selectedUserSchool.createDate = null;
-    selectedUserSchool.expiryDate = req.body.params.expiryDate ? LocalDate.parse(req.body.params.expiryDate).atStartOfDay().format(formatter) : null;
+    selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
 
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -634,7 +629,6 @@ async function updateEdxUserDistrictRoles(req, res) {
     validateAccessToken(token);
     checkEDXUserDistrictAdminPermission(req);
     checkEDXUserAccess(req, 'DISTRICT', req.body.params.districtId);
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
     let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
     let selectedUserDistricts = edxUser.edxUserDistricts.filter(district => district.districtID === req.body.params.districtId);
@@ -661,7 +655,7 @@ async function updateEdxUserDistrictRoles(req, res) {
 
     selectedUserDistrict.updateDate = null;
     selectedUserDistrict.createDate = null;
-    selectedUserDistrict.expiryDate = req.body.params.expiryDate ? LocalDate.parse(req.body.params.expiryDate).atStartOfDay().format(formatter) : null;
+    selectedUserDistrict.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
 
     const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -790,7 +784,6 @@ async function getEdxUsers(req, res) {
 async function districtUserActivationInvite(req, res) {
   checkEDXUserDistrictAdminPermission(req);
   checkEDXUserAccess(req, 'DISTRICT', req.body.districtID);
-  const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
   const token = getAccessToken(req);
   try {
     validateAccessToken(token);
@@ -803,7 +796,7 @@ async function districtUserActivationInvite(req, res) {
 
     const payload = {
       ...req.body,
-      edxUserExpiryDate: req.body.edxUserExpiryDate ? LocalDate.parse(req.body.edxUserExpiryDate).atStartOfDay().format(formatter) : null
+      edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
     const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
     return res.status(200).json(response);
@@ -816,7 +809,6 @@ async function districtUserActivationInvite(req, res) {
 async function schoolUserActivationInvite(req, res) {
   try {
     checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
     const token = getAccessToken(req);
     validateAccessToken(token);
 
@@ -828,7 +820,7 @@ async function schoolUserActivationInvite(req, res) {
 
     const payload = {
       ...req.body,
-      edxUserExpiryDate: req.body.edxUserExpiryDate ? LocalDate.parse(req.body.edxUserExpiryDate).atStartOfDay().format(formatter) : null
+      edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
 
     const response = await postData(token, payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
@@ -1018,9 +1010,6 @@ const createSearchParamObject = (key, value) => {
   }
 
   if (key === 'createDate') {
-    value.forEach((date, index) => {
-      value[index] = date + 'T00:00:00';
-    });
     if (value.length === 1) {
       value.push(LocalDateTime.parse(value[0]).plusHours(23).plusMinutes(59).plusSeconds(59));
     }

@@ -109,6 +109,7 @@
                             v-model="accessExpiryDate"
                             class="pb-3 mt-0 pt-0"
                             label="Access Expiry Date"
+                            model-type="yyyy-MM-dd'T'00:00:00"
                             @clear-date="clearExpiryDate"
                             @update:model-value="validateForm"
                           />

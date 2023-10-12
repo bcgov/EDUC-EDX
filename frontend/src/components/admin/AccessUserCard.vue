@@ -166,6 +166,7 @@
           id="accessExpiryDate"
           v-model="accessExpiryDate"
           label="Access Expiry Date"
+          model-type="yyyy-MM-dd'T'00:00:00"
           @clear-date="clearExpiryDate"
         />
       </div>
@@ -342,9 +343,7 @@ export default {
       deleteState: false,
       relinkState: false,
       selectedRoles: [],
-      accessExpiryDate: null,
-      from: 'uuuu-MM-dd\'T\'HH:mm:ss',
-      pickerFormat: 'uuuu-MM-dd',
+      accessExpiryDate: null
     };
   },
   computed: {
@@ -374,7 +373,7 @@ export default {
       return this.instituteTypeCode === 'DISTRICT';
     },
     formatExpiryDate(date) {
-      return formatDate(date, this.from, this.pickerFormat);
+      return formatDate(date);
     },
     selectedRolesChanged() {
       if (!this.isEDXInstituteAdminSelected) {
@@ -396,7 +395,7 @@ export default {
     },
     getRoleLabel(curRole) {
       if (this.instituteRoles.length > 0) {
-        return this.instituteRoles.find((role) => role.edxRoleCode === curRole.edxRoleCode).label;
+        return this.instituteRoles.find((role) => role.edxRoleCode === curRole.edxRoleCode)?.label;
       }
       return '';
     },
@@ -518,14 +517,12 @@ export default {
         let result = this.userRoles.find((userRole) =>
           userRole.edxRoleCode === role.edxRoleCode
         );
-
         if (result) {
           mySelection.push(role.edxRoleCode);
         }
       });
-
       this.selectedRoles = [...mySelection];
-      this.accessExpiryDate = this.formatExpiryDate(this.user.edxUserSchools[0].expiryDate);
+      this.accessExpiryDate = this.getExpiryDate(this.user);
     },
     isNotSameEdxUser() {
       return this.userInfo.edxUserID !== this.user.edxUserID;
