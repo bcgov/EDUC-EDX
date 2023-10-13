@@ -318,7 +318,7 @@
                           style="color: black"
                         >{{
                           getMinistryTeamName(item.raw.ministryOwnershipTeamID)
-                        }} - {{ item.raw.createDate }}</span>
+                        }} - {{ formatDate(item.raw.createDate) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -404,6 +404,7 @@ import {appStore} from '../../store/modules/app';
 import {isNumber} from '../../utils/institute/formInput';
 import Spinner from '../common/Spinner.vue';
 import DatePicker from '../util/DatePicker.vue';
+import {formatDate} from '../../utils/format';
 
 export default {
   name: 'ExchangeInbox',
@@ -493,6 +494,7 @@ export default {
     this.getExchanges();
   },
   methods: {
+    formatDate,
     selectItem(item){
       this.statusSelectFilter = [];
       this.statusSelectFilter.push(item.raw);
