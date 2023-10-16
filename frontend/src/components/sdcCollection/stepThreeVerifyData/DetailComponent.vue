@@ -104,7 +104,7 @@
             text="Remove"
             class="mr-1 mb-1"
             large-icon
-            icon="mdi-trash-can-outline"
+            icon="mdi-delete"
           />
 
           <PrimaryButton

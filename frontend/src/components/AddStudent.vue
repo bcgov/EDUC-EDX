@@ -18,7 +18,6 @@
       <v-row>
         <v-col
           class="d-flex justify-center px-5"
-          style="min-width: 50em"
         >
           <v-text-field
             id="studentPenTextField"
@@ -249,8 +248,7 @@ export default {
 <style scoped>
 .add-student {
   padding: 1.1rem;
-  max-width: 50rem;
-  min-width: 10rem;
+  width: 50rem;
 }
 
 p {

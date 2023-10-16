@@ -17,7 +17,7 @@
       <v-col style="text-align: end">
         <v-chip
           :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
-          class="mr-1"
+          class="mr-1 mb-1"
         >
           <v-icon left>
             mdi-shield-key-outline
@@ -32,7 +32,7 @@
           id="copyPrimaryEdxActivationCodeButton"
           :copy-text="primaryEdxActivationCode.activationCode"
           icon="mdi-content-copy"
-          class="color: white"
+          btn-style="mb-1"
         />
         <PrimaryButton
           id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
@@ -40,7 +40,7 @@
           secondary
           icon="mdi-sync"
           text="Generate"
-          class="mt-n1 ml-2 pl-2 pr-2"
+          class="mb-1 ml-2 pl-2 pr-2"
           :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
         />
       </v-col>
@@ -51,7 +51,6 @@
         id="generateNewPrimaryEdxActivationCodeDialog"
         :class="['d-sm-flex', 'align-center', 'searchBox']"
         class="px-2 mb-4"
-        style="margin-right: 14em;margin-left: 14em;"
       >
         <v-col>
           <v-row no-gutters>
@@ -144,8 +143,9 @@
       <v-col
         v-for="user in filteredUsers"
         :key="user.digitalID"
-        xl="4"
-        cols="6"
+        lg="4"
+        sm="6"
+        cols="12"
         class="pb-0"
       >
         <AccessUserCard
@@ -159,8 +159,9 @@
         />
       </v-col>
       <v-col
-        xl="4"
-        cols="6"
+        lg="4"
+        sm="6"
+        cols="12"
         class="pb-0"
       >
         <v-card class="add-new-user h-100">
@@ -433,5 +434,4 @@ export default {
   border-radius: 5px;
   background-color: #F2F2F2;
 }
-
 </style>

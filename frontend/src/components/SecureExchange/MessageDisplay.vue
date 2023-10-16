@@ -344,7 +344,7 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
-                          icon="mdi-trash-can-outline"
+                          icon="mdi-delete"
                           @click="toggleRemoveDoc(index)"
                         />
                       </v-card-actions>
@@ -507,7 +507,7 @@
                           density="compact"
                           elevation="0"
                           :disabled="!isEditable()"
-                          icon="mdi-trash-can-outline"
+                          icon="mdi-delete"
                           @click="toggleRemoveStudent(index)"
                         />
                       </v-card-actions>

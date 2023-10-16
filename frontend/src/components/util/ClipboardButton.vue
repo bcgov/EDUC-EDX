@@ -14,6 +14,7 @@
         icon
         v-bind="props"
         :title="`Copy ${copyText} to the clipboard.`"
+        :class="btnStyle"
         @click.stop.prevent="copy(copyText)"
       >
         <v-icon
@@ -54,6 +55,10 @@ export default {
       type: String,
       default: null
     },
+    btnStyle: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {

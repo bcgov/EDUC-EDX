@@ -192,5 +192,7 @@ h1 {
   align-self: flex-end;
   transition-duration: 0.2s;
 }
-
+.viewer-open {
+  padding-right: 0 !important;
+}
 </style>
