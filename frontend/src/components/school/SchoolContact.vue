@@ -55,7 +55,7 @@
               color="#003366"
               dark
             >
-              mdi-trash-can-outline
+              mdi-delete
             </v-icon>
           </v-btn>
         </v-col>

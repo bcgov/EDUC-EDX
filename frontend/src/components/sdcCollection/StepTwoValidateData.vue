@@ -301,7 +301,7 @@
                       id="removeRecord"
                       secondary
                       large-icon
-                      icon="mdi-trash-can-outline"
+                      icon="mdi-delete"
                       text="Remove Record"
                       class="mt-n1"
                       :click-action="deleteSdcSchoolCollectionStudent"

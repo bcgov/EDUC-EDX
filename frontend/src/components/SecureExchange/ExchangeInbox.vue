@@ -262,7 +262,7 @@
               v-model:items-length="totalRequests"
               :items-per-page-options="itemsPerPageOptions"
               :loading="loadingTable"
-              class="elevation-1"
+              class="elevation-1 rounded"
               hide-default-header
               mobile-breakpoint="0"
             >
@@ -277,8 +277,6 @@
                 <v-row
                   class="hoverTable pl-3 pt-1 pb-1 pr-3"
                   no-gutters
-                  :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-                  style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%); border-width:2px"
                   @click="openExchange(item.raw.secureExchangeID)"
                 >
                   <v-col
@@ -357,6 +355,7 @@
                     </v-row>
                   </v-col>
                 </v-row>
+                <v-divider />
               </template>
             </v-data-table-server>
           </v-col>

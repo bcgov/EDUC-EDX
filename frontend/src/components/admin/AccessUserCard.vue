@@ -165,8 +165,10 @@
         <DatePicker
           id="accessExpiryDate"
           v-model="accessExpiryDate"
+          class="pl-7"
           label="Access Expiry Date"
           model-type="yyyy-MM-dd'T'00:00:00"
+          :min-date="minExpiryDate"
           @clear-date="clearExpiryDate"
         />
       </div>
@@ -305,6 +307,7 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import {formatDate} from '../../utils/format';
 import DatePicker from '../util/DatePicker.vue';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'AccessUserCard',
@@ -343,7 +346,8 @@ export default {
       deleteState: false,
       relinkState: false,
       selectedRoles: [],
-      accessExpiryDate: null
+      accessExpiryDate: null,
+      minExpiryDate: LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString()
     };
   },
   computed: {
