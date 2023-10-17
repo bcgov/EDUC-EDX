@@ -281,7 +281,7 @@ function createSearchCriteria(searchParams = []) {
     },
     {
       categoryCode: 'ZEROCOURSE',
-      validationErrors: ['CHANGEME']
+      validationErrors: ['ADULTZEROCOURSEH', 'SCHOOLAGEDZEROCOURSEH']
     },
     {
       categoryCode: 'STUDTOOYOUNG',
