@@ -894,7 +894,7 @@ function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
       email: edxUserDetails.email,
       edxUserId: requestParams.userToRelink,
       edxUserSchoolID: requestParams.userSchoolID,
-      edxUserExpiryDate: req.body.params.edxUserExpiryDate
+      edxUserExpiryDate: requestParams.edxUserExpiryDate
     };
   } else {
     let userDistrict = edxUserDetails.edxUserDistricts.find(district => district.districtID === requestParams.districtID);
@@ -909,7 +909,7 @@ function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
       email: edxUserDetails.email,
       edxUserId: requestParams.userToRelink,
       edxUserDistrictID: requestParams.edxUserDistrictID,
-      edxUserExpiryDate: req.body.params.edxUserExpiryDate
+      edxUserExpiryDate: requestParams.edxUserExpiryDate
     };
   }
 }
