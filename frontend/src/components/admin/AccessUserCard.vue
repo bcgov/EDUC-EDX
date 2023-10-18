@@ -423,6 +423,7 @@ export default {
       const payload = {
         params:{
           userToRelink: this.user.edxUserID,
+          edxUserExpiryDate: this.getExpiryDate(this.user)
         }
       };
       if (this.instituteTypeCode === 'SCHOOL') {
