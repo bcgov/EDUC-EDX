@@ -92,150 +92,172 @@
               />
             </v-col>
           </v-row>
+
           <v-row class="d-flex justify-start">
-            <v-col
-              class="d-flex"
-              :class="editing ? 'mt-5': ''"
-            >
-              <v-icon
-                class="pb-1"
-                :color="getStatusColor()"
-                right
-                dark
-              >
-                mdi-circle-medium
-              </v-icon>
-              <span v-if="!editing">{{ getStatusText() }}</span>
-              <span v-else>{{ getStatusText() }}</span>
+            <v-col cols="2">
+              <v-row>
+                <v-col
+                  class="d-flex"
+                  :class="editing ? 'mt-5': ''"
+                >
+                  <v-icon
+                    class="pb-1"
+                    :color="getStatusColor()"
+                    right
+                    dark
+                  >
+                    mdi-circle-medium
+                  </v-icon>
+                  <span v-if="!editing">{{ getStatusText() }}</span>
+                  <span v-else>{{ getStatusText() }}</span>
+                </v-col>
+              </v-row>
             </v-col>
-            <v-col class="d-flex">
-              <v-icon
-                v-if="!editing"
-                class="mr-1"
-                aria-hidden="false"
-              >
-                mdi-phone-outline
-              </v-icon>
-              <div v-if="!editing">
-                <span
-                  v-if="district.phoneNumber"
-                  class="ml-n1"
-                >{{ formatPhoneNumber(district.phoneNumber) }}</span>
-                <a
-                  v-if="showEditLinks(district.phoneNumber)"
-                  class="editField"
-                  @click="toggleEdit"
-                >+Phone</a>
-              </div>
-              <v-text-field
-                v-else
-                id="districtPhone"
-                v-model="districtCopy.phoneNumber"
-                prepend-icon="mdi-phone-outline"
-                variant="underlined"
-                class="py-0"
-                required
-                :maxlength="10"
-                :rules="[rules.required(), rules.phoneNumber()]"
-                @keypress="isNumber($event)"
-              />
+
+
+            <v-col>
+              <v-row>
+                <v-col class="d-flex" cols="3">
+                  <v-icon
+                    v-if="!editing"
+                    class="mr-1"
+                    aria-hidden="false"
+                  >
+                    mdi-phone-outline
+                  </v-icon>
+                  <div v-if="!editing">
+                    <span
+                      v-if="district.phoneNumber"
+                      class="ml-n1"
+                    >{{ formatPhoneNumber(district.phoneNumber) }}</span>
+                    <a
+                      v-if="showEditLinks(district.phoneNumber)"
+                      class="editField"
+                      @click="toggleEdit"
+                    >+Phone</a>
+                  </div>
+                  <v-text-field
+                    v-else
+                    id="districtPhone"
+                    v-model="districtCopy.phoneNumber"
+                    prepend-icon="mdi-phone-outline"
+                    variant="underlined"
+                    class="py-0"
+                    required
+                    :maxlength="10"
+                    :rules="[rules.required(), rules.phoneNumber()]"
+                    @keypress="isNumber($event)"
+                  />
+                </v-col>
+
+                <v-col class="d-flex" cols="6">
+                  <v-icon
+                    v-if="!editing"
+                    class="mb-1 mr-1"
+                    aria-hidden="false"
+                  >
+                    mdi-at
+                  </v-icon>
+                  <div v-if="!editing">
+                    <span
+                      v-if="district.email"
+                      class="ml-n1"
+                      style="word-break: break-all;"
+                    >{{ district.email }}</span>
+                    <a
+                      v-if="showEditLinks(district.email)"
+                      class="editField"
+                      @click="toggleEdit"
+                    >+Email</a>
+                  </div>
+                  <v-text-field
+                    v-else
+                    id="districtEmail"
+                    v-model="districtCopy.email"
+                    prepend-icon="mdi-at"
+                    variant="underlined"
+                    class="py-0"
+                    required
+                    :rules="[rules.required(), rules.email()]"
+                    :maxlength="255"
+                  />
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col class="d-flex" cols="3">
+                  <v-icon
+                    v-if="!editing"
+                    class="mb-1 mr-1"
+                    aria-hidden="false"
+                  >
+                    mdi-fax
+                  </v-icon>
+                  <div v-if="!editing">
+                    <span
+                      v-if="district.faxNumber"
+                      class="ml-n1"
+                    >{{ formatPhoneNumber(district.faxNumber) }}</span>
+                    <a
+                      v-if="showEditLinks(district.faxNumber)"
+                      class="editField"
+                      @click="toggleEdit"
+                    >+Fax</a>
+                  </div>
+                  <v-text-field
+                    v-else
+                    id="districtFax"
+                    v-model="districtCopy.faxNumber"
+                    prepend-icon="mdi-fax"
+                    variant="underlined"
+                    class="py-0"
+                    :rules="[rules.phoneNumber('Fax number must be valid')]"
+                    :maxlength="10"
+                    @keypress="isNumber($event)"
+                  />
+                </v-col>
+
+                <v-col class="d-flex" cols="6">
+                  <v-icon
+                    v-if="!editing"
+                    class="mb-1 mr-1"
+                    aria-hidden="false"
+                  >
+                    mdi-web
+                  </v-icon>
+                  <div v-if="!editing">
+                    <a
+                      v-if="cleanWebsiteUrl"
+                      :href="cleanWebsiteUrl"
+                      style="word-break: break-all;"
+                      target="_blank"
+                    >{{ cleanWebsiteUrl }}</a>
+                    <a
+                      v-if="showEditLinks(cleanWebsiteUrl)"
+                      id="addWebsiteLink"
+                      class="editField"
+                      @click="toggleEdit"
+                    >+Website</a>
+                  </div>
+                  <v-text-field
+                    v-if="editing"
+                    id="districtDetailsWebsite"
+                    v-model="districtCopy.website"
+                    prepend-icon="mdi-web"
+                    variant="underlined"
+                    class="py-0"
+                    :rules="[rules.website()]"
+                    :maxlength="255"
+                  />
+                </v-col>
+              </v-row>
             </v-col>
-            <v-col class="d-flex">
-              <v-icon
-                v-if="!editing"
-                class="mb-1 mr-1"
-                aria-hidden="false"
-              >
-                mdi-fax
-              </v-icon>
-              <div v-if="!editing">
-                <span
-                  v-if="district.faxNumber"
-                  class="ml-n1"
-                >{{ formatPhoneNumber(district.faxNumber) }}</span>
-                <a
-                  v-if="showEditLinks(district.faxNumber)"
-                  class="editField"
-                  @click="toggleEdit"
-                >+Fax</a>
-              </div>
-              <v-text-field
-                v-else
-                id="districtFax"
-                v-model="districtCopy.faxNumber"
-                prepend-icon="mdi-fax"
-                variant="underlined"
-                class="py-0"
-                :rules="[rules.phoneNumber('Fax number must be valid')]"
-                :maxlength="10"
-                @keypress="isNumber($event)"
-              />
-            </v-col>
-            <v-col class="d-flex">
-              <v-icon
-                v-if="!editing"
-                class="mb-1 mr-1"
-                aria-hidden="false"
-              >
-                mdi-at
-              </v-icon>
-              <div v-if="!editing">
-                <span
-                  v-if="district.email"
-                  class="ml-n1"
-                  style="word-break: break-all;"
-                >{{ district.email }}</span>
-                <a
-                  v-if="showEditLinks(district.email)"
-                  class="editField"
-                  @click="toggleEdit"
-                >+Email</a>
-              </div>
-              <v-text-field
-                v-else
-                id="districtEmail"
-                v-model="districtCopy.email"
-                prepend-icon="mdi-at"
-                variant="underlined"
-                class="py-0"
-                required
-                :rules="[rules.required(), rules.email()]"
-                :maxlength="255"
-              />
-            </v-col>
-            <v-col class="d-flex">
-              <v-icon
-                v-if="!editing"
-                class="mb-1 mr-1"
-                aria-hidden="false"
-              >
-                mdi-web
-              </v-icon>
-              <div v-if="!editing">
-                <a
-                  v-if="cleanWebsiteUrl"
-                  :href="cleanWebsiteUrl"
-                  style="word-break: break-all;"
-                  target="_blank"
-                >{{ cleanWebsiteUrl }}</a>
-                <a
-                  v-if="showEditLinks(cleanWebsiteUrl)"
-                  id="addWebsiteLink"
-                  class="editField"
-                  @click="toggleEdit"
-                >+Website</a>
-              </div>
-              <v-text-field
-                v-if="editing"
-                id="districtDetailsWebsite"
-                v-model="districtCopy.website"
-                prepend-icon="mdi-web"
-                variant="underlined"
-                class="py-0"
-                :rules="[rules.website()]"
-                :maxlength="255"
-              />
-            </v-col>
+            
+
+            
+            
+            
+            
           </v-row>
           <v-row>
             <v-col>
