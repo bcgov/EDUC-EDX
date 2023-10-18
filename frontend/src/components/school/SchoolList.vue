@@ -312,7 +312,7 @@ export default {
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['schoolsMap']),
-    ...mapState(instituteStore, ['facilityTypeCodes','activeFacilityTypeCodes','schoolCategoryTypeCodes']),
+    ...mapState(instituteStore, ['facilityTypeCodes','validFacilityTypeCodes','schoolCategoryTypeCodes']),
     getSheetWidth(){
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -338,7 +338,7 @@ export default {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
     instituteStore().getAllActiveFacilityTypeCodes().then(() => {
-      this.schoolActiveFacilityTypes = this.activeFacilityTypeCodes;
+      this.schoolActiveFacilityTypes = this.validFacilityTypeCodes;
     });
     instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
