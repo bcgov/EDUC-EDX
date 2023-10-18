@@ -59,7 +59,6 @@
               v-model="editContact.firstName"
               variant="underlined"
               class="pt-0"
-              :rules="[rules.noSpecialCharactersContactName()]"
               :maxlength="255"
               label="First Name"
             />
