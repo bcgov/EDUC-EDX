@@ -64,13 +64,23 @@
       </v-row>
       <v-row>
         <v-col
+          v-if="filteredSchools.length === 0"
+          cols="12"
+          class="d-flex justify-center"
+        >
+          <p>No school users. <a @click="backButtonClick">Manage School Users.</a></p>
+        </v-col>
+        <v-col
           v-for="school in filteredSchools"
           :key="school.schoolID"
           cols="12"
           class="pb-0"
         >
           <div>
-            <h3 @click="openSchool(school.schoolID)" class="mb-2 mt-2 hoverTable">
+            <h3
+              class="mb-2 mt-2 hoverTable"
+              @click="openSchool(school.schoolID)"
+            >
               {{ school.name }}
             </h3>
             <v-data-table
