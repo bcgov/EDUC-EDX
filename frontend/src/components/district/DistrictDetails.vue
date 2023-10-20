@@ -5,7 +5,7 @@
   >
     <v-container
       class="containerSetup"
-      fluid
+      :fluid="true"
     >
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
@@ -55,7 +55,7 @@
                 class="mr-2 mb-3"
                 secondary
                 icon="mdi-account-multiple-outline"
-                text="View District Contacts"
+                text="View Contacts"
                 :click-action="redirectToDistrictContacts"
               />
               <PrimaryButton
@@ -117,7 +117,10 @@
 
             <v-col>
               <v-row>
-                <v-col class="d-flex" cols="3">
+                <v-col
+                  class="d-flex"
+                  cols="3"
+                >
                   <v-icon
                     v-if="!editing"
                     class="mr-1"
@@ -150,7 +153,10 @@
                   />
                 </v-col>
 
-                <v-col class="d-flex" cols="6">
+                <v-col
+                  class="d-flex"
+                  cols="6"
+                >
                   <v-icon
                     v-if="!editing"
                     class="mb-1 mr-1"
@@ -185,7 +191,10 @@
               </v-row>
 
               <v-row>
-                <v-col class="d-flex" cols="3">
+                <v-col
+                  class="d-flex"
+                  cols="3"
+                >
                   <v-icon
                     v-if="!editing"
                     class="mb-1 mr-1"
@@ -217,7 +226,10 @@
                   />
                 </v-col>
 
-                <v-col class="d-flex" cols="6">
+                <v-col
+                  class="d-flex"
+                  cols="6"
+                >
                   <v-icon
                     v-if="!editing"
                     class="mb-1 mr-1"
@@ -252,12 +264,6 @@
                 </v-col>
               </v-row>
             </v-col>
-            
-
-            
-            
-            
-            
           </v-row>
           <v-row>
             <v-col>
