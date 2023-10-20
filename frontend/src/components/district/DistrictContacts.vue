@@ -1,8 +1,5 @@
 <template>
-  <v-container
-    class="containerSetup"
-    fluid
-  >
+  <v-container class="containerSetup">
     <v-col class="mt-1 d-flex justify-start">
       <v-icon
         small
@@ -28,8 +25,12 @@
       </v-col>
     </v-row>
     <template v-if="!loading">
-      <v-row cols="2">
-        <v-col class="d-flex justify-start">
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+          class="d-flex justify-start"
+        >
           <v-chip
             variant="elevated"
             class="text-black mr-3"
@@ -52,18 +53,23 @@
             Pending End Date
           </v-chip>
         </v-col>
-        <v-col class="d-flex justify-end">
+        <v-col
+          cols="12"
+          md="6"
+          class="d-flex justify-md-end justify-start"
+        >
           <PrimaryButton
             id="viewDetailsButton"
             class="mr-2 mb-3"
             secondary
             icon="mdi-domain"
-            text="View District Details"
+            text="View Details"
             :click-action="redirectToDistrictDetails"
           />
           <PrimaryButton
             v-if="canEditDistrictContact"
             id="newContactButton"
+            class="mb-3"
             width="12em"
             icon="mdi-plus-thick"
             text="New Contact"
@@ -75,39 +81,56 @@
         :class="['d-sm-flex', 'align-center', 'searchBox', 'elevation-2', 'mb-3']"
         @keydown.enter="searchButtonClicked"
       >
-        <v-col>
+        <v-col
+          cols="12"
+          md="3"
+          class="pb-0 pb-md-7"
+        >
           <v-select
             id="status-select-field"
             v-model="searchFilter.districtContactTypeCode"
-            clearable
+            :clearable="true"
             :items="districtContactTypes"
             item-title="label"
             variant="underlined"
             item-value="districtContactTypeCode"
             :menu-props="{closeOnContentClick:true}"
             label="Contact Type"
+            hide-details="auto"
           />
         </v-col>
-        <v-col>
+        <v-col
+          cols="12"
+          md="3"
+          class="pb-0 pb-md-7"
+        >
           <v-text-field
             id="first-name-search-text-field"
             v-model="searchFilter.firstName"
             variant="underlined"
             label="Contact First Name"
-            clearable
+            :clearable="true"
+            hide-details="auto"
           />
         </v-col>
-        <v-col>
+        <v-col
+          cols="12"
+          md="3"
+          class="pb-0 pb-md-7"
+        >
           <v-text-field
             id="last-name-search-text-field"
             v-model="searchFilter.lastName"
             variant="underlined"
             label="Contact Last Name"
-            clearable
+            :clearable="true"
+            hide-details="auto"
           />
         </v-col>
         <v-col
-          :class="['text-right']"
+          cols="12"
+          md="3"
+          class="d-flex justify-end"
         >
           <PrimaryButton
             id="district-clear-button"
@@ -140,7 +163,10 @@
             v-if="!districtContactType.publiclyAvailable"
             cols="2"
           >
-            <v-col class="pt-0" cols="12">
+            <v-col
+              class="pt-0"
+              cols="12"
+            >
               <v-alert
                 :id="`publiclyAvailableAlert${districtContactType.label}`"
                 color="#003366"
@@ -161,9 +187,10 @@
             <v-col
               v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
               :key="contact.schoolId"
-              class="pt-0"
-              cols="5"
               lg="4"
+              sm="6"
+              cols="12"
+              class="pt-0"
             >
               <DistrictContact
                 :contact="contact"
@@ -187,10 +214,9 @@
     </template>
     <v-bottom-sheet
       v-model="newContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <NewDistrictContactPage
         v-if="newContactSheet"
@@ -202,10 +228,9 @@
     </v-bottom-sheet>
     <v-bottom-sheet
       v-model="editContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <EditDistrictContactPage
         v-if="editContactSheet"
@@ -414,21 +439,13 @@ export default {
 }
 
 .containerSetup{
-  padding-right: 32em !important;
-  padding-left: 32em !important;
+  padding-right: 2em;
+  padding-left: 2em;
 }
 
-@media screen and (max-width: 1950px) {
+@media screen and (min-width: 1920px) {
   .containerSetup{
-    padding-right: 20em !important;
-    padding-left: 20em !important;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .containerSetup{
-    padding-right: 4em !important;
-    padding-left: 4em !important;
+    max-width: 1200px;
   }
 }
 

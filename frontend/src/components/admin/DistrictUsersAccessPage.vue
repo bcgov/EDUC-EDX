@@ -14,35 +14,42 @@
           @click="backButtonClick"
         >Return to Dashboard</a>
       </v-col>
-      <v-col style="text-align: end">
-        <v-chip
-          :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
-          class="mr-1 mb-1"
+      <v-col class="d-flex justify-end">
+        <v-tooltip
+          v-model="showTooltip"
+          location="right"
+          :open-on-hover="false"
         >
-          <v-icon left>
-            mdi-shield-key-outline
-          </v-icon>
-          Primary Activation Code:
-          <span id="primaryEdxActivationCode">
-            {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
-          </span>
-        </v-chip>
-        <ClipboardButton
-          v-if="primaryEdxActivationCode"
-          id="copyPrimaryEdxActivationCodeButton"
-          :copy-text="primaryEdxActivationCode.activationCode"
-          icon="mdi-content-copy"
-          btn-style="mb-1"
-        />
-        <PrimaryButton
-          id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
-          short
-          secondary
-          icon="mdi-sync"
-          text="Generate"
-          class="mb-1 ml-2 pl-2 pr-2"
-          :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
-        />
+          <template #activator="{ props }">
+            <v-chip
+              :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
+              v-bind="props"
+              class="mr-1 my-1"
+              append-icon="mdi-content-copy"
+              @click="copy(primaryEdxActivationCode?.activationCode)"
+            >
+              <v-icon left>
+                mdi-shield-key-outline
+              </v-icon>
+              <span class="hidden-sm-and-down">
+                Primary Activation Code:
+              </span>
+              <span id="primaryEdxActivationCode">
+                {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
+              </span>
+            </v-chip>
+            <PrimaryButton
+              id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
+              short
+              secondary
+              icon="mdi-sync"
+              text="Generate"
+              class="mb-1 ml-2 pl-2 pr-2"
+              :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
+            />
+          </template>
+          <span>Copied {{ primaryEdxActivationCode?.activationCode }}.</span>
+        </v-tooltip>
       </v-col>
     </v-row>
     <v-expand-transition>
@@ -94,7 +101,7 @@
           v-model="searchFilter.name"
           variant="underlined"
           label="Name"
-          clearable
+          :clearable="true"
         />
       </v-col>
       <v-col
@@ -106,7 +113,7 @@
           id="roleName-select-field"
           v-model="searchFilter.roleName"
           variant="underlined"
-          clearable
+          :clearable="true"
           :items="districtRoles"
           item-title="label"
           item-value="edxRoleCode"
@@ -194,10 +201,9 @@
 
     <v-bottom-sheet
       v-model="newUserInviteSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <v-card
         v-if="newUserInviteSheet"
@@ -242,13 +248,12 @@ import { mapState } from 'pinia';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import AccessUserCard from './AccessUserCard.vue';
 import Spinner from '../common/Spinner.vue';
-import ClipboardButton from '../util/ClipboardButton.vue';
 import InviteUserPage from './InviteUserPage.vue';
 import alertMixin from '../../mixins/alertMixin';
 
 export default {
   name: 'DistrictUsersAccessPage',
-  components: {ClipboardButton, InviteUserPage, PrimaryButton, AccessUserCard, Spinner},
+  components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner},
   mixins: [alertMixin],
   data() {
     return {
@@ -266,7 +271,8 @@ export default {
       },
       primaryEdxActivationCode: null,
       instituteTypeLabel: 'District',
-      doShowGenerateNewPrimaryEdxActivationCodeDialog: false
+      doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
+      showTooltip: false
     };
   },
   computed: {
@@ -403,6 +409,12 @@ export default {
           console.log(e);
         });
     },
+    copy(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showTooltip = true;
+        setTimeout(() => this.showTooltip = false, 2000);
+      });
+    }
   }
 };
 </script>

@@ -1,7 +1,6 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
   >
     <v-row>
       <v-col class="mt-1 d-flex justify-start">
@@ -79,21 +78,13 @@ export default {
 <style scoped>
 
 .containerSetup{
-  padding-right: 32em !important;
-  padding-left: 32em !important;
+  padding-right: 2em;
+  padding-left: 2em;
 }
 
-@media screen and (max-width: 1950px) {
+@media screen and (min-width: 1920px) {
   .containerSetup{
-    padding-right: 20em !important;
-    padding-left: 20em !important;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .containerSetup{
-    padding-right: 4em !important;
-    padding-left: 4em !important;
+    max-width: 1200px;
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
+    :fluid="true"
   >
     <v-row>
       <v-col>
@@ -50,7 +50,7 @@
                     class="mt-4"
                     :disabled="!statusRadioGroupEnabled"
                     direction="horizontal"
-                    inline
+                    :inline="true"
                   >
                     <v-radio
                       label="Active Only"
@@ -137,7 +137,7 @@
                     <v-col
                       cols="12"
                       md="4"
-                      :class="{'pt-0 px-7': $vuetify.display.mdAndUp}"
+                      class="pt-0 px-7"
                     >
                       <DatePicker
                         id="messageDateTextField"
@@ -186,7 +186,7 @@
                     <v-col
                       cols="12"
                       md="4"
-                      :class="{'pt-0 px-7': $vuetify.display.mdAndUp}"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="messageIdInput"
@@ -364,10 +364,9 @@
     </v-row>
     <v-bottom-sheet
       v-model="newMessageSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <v-card
         v-if="newMessageSheet"

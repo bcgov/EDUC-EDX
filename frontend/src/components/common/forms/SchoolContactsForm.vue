@@ -44,8 +44,12 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-row cols="2">
-        <v-col>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+          class="d-flex justify-start"
+        >
           <v-chip
             variant="elevated"
             class="text-black mr-3"
@@ -68,14 +72,18 @@
             Pending End Date
           </v-chip>
         </v-col>
-        <v-col class="d-flex justify-end">
+        <v-col
+          cols="12"
+          sm="6"
+          class="d-flex justify-md-end justify-start"
+        >
           <PrimaryButton
             v-if="showDetailsButton()"
             id="viewDetailsButton"
             class="mr-2 mb-3"
             secondary
             icon="mdi-domain"
-            text="View School Details"
+            text="View Details"
             :click-action="redirectToSchoolDetails"
           />
           <PrimaryButton
@@ -104,7 +112,10 @@
           v-if="!schoolContactType.publiclyAvailable"
           cols="2"
         >
-          <v-col class="pt-0" cols="12">
+          <v-col
+            class="pt-0"
+            cols="12"
+          >
             <v-alert
               :id="`publiclyAvailableAlert${schoolContactType.label}`"
               color="#003366"
@@ -125,9 +136,10 @@
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
             :key="contact.schoolId"
-            class="pt-0"
-            cols="5"
             lg="4"
+            sm="6"
+            cols="12"
+            class="pt-0"
           >
             <SchoolContact
               :handle-open-editor="() => openEditContactSheet(contact)"
@@ -152,10 +164,9 @@
     <!--    new contact sheet -->
     <v-bottom-sheet
       v-model="newContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <NewSchoolContactPage
         v-if="newContactSheet"
@@ -167,10 +178,9 @@
     </v-bottom-sheet>
     <v-bottom-sheet
       v-model="editContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <EditSchoolContactPage
         v-if="editContactSheet"
@@ -385,27 +395,4 @@ export default {
   }
 };
 </script>
-
-  <style scoped>
-
-  .containerSetup{
-    padding-right: 32em !important;
-    padding-left: 32em !important;
-  }
-
-  @media screen and (max-width: 1950px) {
-    .containerSetup{
-      padding-right: 20em !important;
-      padding-left: 20em !important;
-    }
-  }
-
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 4em !important;
-      padding-left: 4em !important;
-    }
-  }
-
-  </style>
 
