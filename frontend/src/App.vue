@@ -4,7 +4,7 @@
     <Header />
     <SnackBar />
     <NavBar
-      v-if="pageTitle && authStore().isAuthenticated"
+      v-if="pageTitle && authStore().isAuthenticated && !isInstituteSelectionPage()"
       :title="pageTitle"
     />
     <v-main
@@ -29,6 +29,7 @@ import ModalIdle from './components/ModalIdle.vue';
 import MsieBanner from './components/MsieBanner.vue';
 import SnackBar from './components/util/SnackBar.vue';
 import NavBar from './components/util/NavBar.vue';
+import {PAGE_TITLES} from './utils/constants';
 
 export default {
   name: 'App',
@@ -65,6 +66,9 @@ export default {
     appStore,
     ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
     ...mapActions(appStore, ['getConfig']),
+    isInstituteSelectionPage(){
+      return PAGE_TITLES.SELECTION === this.pageTitle;
+    }
   }
 };
 </script>
