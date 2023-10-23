@@ -147,69 +147,67 @@
         </v-col>
       </v-row>
       <div
-        v-for="districtContactType in districtContactTypes"
+        v-for="districtContactType in filteredDistrictContactTypes"
         :key="districtContactType.code"
         class="pb-4"
       >
-        <div v-if="hasContactsWhenFiltered(districtContactType)">
-          <v-row>
-            <v-col class="pb-0">
-              <h2 style="color:#1A5A96">
-                {{ districtContactType.label }}
-              </h2>
-            </v-col>
-          </v-row>
-          <v-row
-            v-if="!districtContactType.publiclyAvailable"
-            cols="2"
+        <v-row>
+          <v-col class="pb-0">
+            <h2 style="color:#1A5A96">
+              {{ districtContactType.label }}
+            </h2>
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="!districtContactType.publiclyAvailable"
+          cols="2"
+        >
+          <v-col
+            class="pt-0"
+            cols="12"
           >
-            <v-col
-              class="pt-0"
-              cols="12"
+            <v-alert
+              :id="`publiclyAvailableAlert${districtContactType.label}`"
+              color="#003366"
+              density="compact"
+              type="info"
+              variant="tonal"
             >
-              <v-alert
-                :id="`publiclyAvailableAlert${districtContactType.label}`"
-                color="#003366"
-                density="compact"
-                type="info"
-                variant="tonal"
-              >
-                <p>
-                  Contacts of this type are only available to the ministry and not available to public.
-                </p>
-              </v-alert>
-            </v-col>
-          </v-row>
-          <v-row
-            v-if="hasContactsForThisType(districtContactType)"
-            cols="2"
+              <p>
+                Contacts of this type are only available to the ministry and not available to public.
+              </p>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="hasContactsForThisType(districtContactType)"
+          cols="2"
+        >
+          <v-col
+            v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
+            :key="contact.schoolId"
+            lg="4"
+            sm="6"
+            cols="12"
+            class="pt-0"
           >
-            <v-col
-              v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
-              :key="contact.schoolId"
-              lg="4"
-              sm="6"
-              cols="12"
-              class="pt-0"
-            >
-              <DistrictContact
-                :contact="contact"
-                :district-i-d="$route.params.districtID"
-                :can-edit-district-contact="canEditDistrictContact"
-                :handle-open-editor="() => openEditContactSheet(contact)"
-                @remove-district-contact:show-confirmation-prompt="removeContact"
-              />
-            </v-col>
-          </v-row>
-          <v-row
-            v-else
-            cols="2"
-          >
-            <v-col class="pt-0">
-              <p>No contacts of this type have been listed.</p>
-            </v-col>
-          </v-row>
-        </div>
+            <DistrictContact
+              :contact="contact"
+              :district-i-d="$route.params.districtID"
+              :can-edit-district-contact="canEditDistrictContact"
+              :handle-open-editor="() => openEditContactSheet(contact)"
+              @remove-district-contact:show-confirmation-prompt="removeContact"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          v-else
+          cols="2"
+        >
+          <v-col class="pt-0">
+            <p>No contacts of this type have been listed.</p>
+          </v-col>
+        </v-row>
       </div>
     </template>
     <v-bottom-sheet
@@ -304,6 +302,12 @@ export default {
     canEditDistrictContact() {
       return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
     },
+    filteredDistrictContactTypes() {
+      if (!this.isFiltered) {
+        return this.districtContactTypes;
+      }
+      return this.districtContactTypes.filter(districtContactType => this.hasContactsForThisType(districtContactType));
+    }
   },
   created() {
     this.getDistrictContactTypeCodes();
@@ -332,13 +336,6 @@ export default {
     },
     hasContactsForThisType(districtContactType) {
       return this.filteredDistrictContacts.has(districtContactType.districtContactTypeCode) && this.filteredDistrictContacts.get(districtContactType.districtContactTypeCode)?.length !== 0;
-    },
-    hasContactsWhenFiltered(districtContactType) {
-      if(this.isFiltered) {
-        return this.hasContactsForThisType(districtContactType);
-      } else {
-        return true;
-      }
     },
     getDistrictContactTypeCodes() {
       this.loadingCount += 1;
