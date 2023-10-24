@@ -300,7 +300,7 @@ export default {
       return this.loadingCount !== 0;
     },
     canEditDistrictContact() {
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_DISTRICT_EDIT).length > 0;
     },
     filteredDistrictContactTypes() {
       if (!this.isFiltered) {

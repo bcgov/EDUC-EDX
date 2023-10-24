@@ -227,7 +227,7 @@ export default {
         {
           title: PAGE_TITLES.DATA_COLLECTION,
           link: { name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableSdcFunctionality,
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && this.hasRequiredPermission(PERMISSION.STUDENT_DATA_COLLECTION) && !this.disableSdcFunctionality,
         },
         {
           title: PAGE_TITLES.SCHOOLS,

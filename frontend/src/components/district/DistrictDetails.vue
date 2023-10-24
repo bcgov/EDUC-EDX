@@ -675,6 +675,7 @@ import { instituteStore } from '../../store/modules/institute';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
 import ConfirmationDialog from '../../components/util/ConfirmationDialog.vue';
+import {PERMISSION} from '../../utils/constants/Permission';
 
 export default {
   name: 'DistrictDetailsPage',
@@ -724,7 +725,7 @@ export default {
     isNumber,
     deepCloneObject,
     canEditDistrict(){
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === 'EDX_USER_DISTRICT_ADMIN').length > 0;
+      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_DISTRICT_EDIT).length > 0;
     },
     getDistrict() {
       this.loading = true;
