@@ -1,6 +1,5 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
-  checkEDXUserAccessForSchoolAdminFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, checkEDXUserAccessForSchoolEditFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
   handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
@@ -32,7 +31,7 @@ async function updateSchool(req, res){
     const token = getAccessToken(req);
     validateAccessToken(token);
     verifyQueryParamValueMatchesBodyValue(req, 'schoolID', 'schoolId');
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
     checkIfActionOnOffshoreSchool(req.params.schoolID);
 
     const payload = req.body;
@@ -40,11 +39,6 @@ async function updateSchool(req, res){
     payload.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
-    });
-
-    payload.notes.forEach(function(note) {
-      note.updateDate = null;
-      note.createDate = null;
     });
 
     payload.contacts.forEach(function(contact) {
@@ -105,7 +99,7 @@ async function addSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
     checkIfActionOnOffshoreSchool(req.params.schoolID);
 
     const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
@@ -138,7 +132,7 @@ async function updateSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.body.schoolID);
     checkIfActionOnOffshoreSchool(req.body.schoolID);
 
     const params = req.body;
@@ -160,7 +154,7 @@ async function removeSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
 
     const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
 

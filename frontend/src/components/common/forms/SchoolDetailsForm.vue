@@ -1036,6 +1036,7 @@ import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {sortBy} from 'lodash';
 import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
 import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
+import {PERMISSION} from '../../../utils/constants/Permission';
   
 export default {
   name: 'SchoolDetailsPage',
@@ -1317,7 +1318,7 @@ export default {
     },
     canEditSchoolDetails(){
       const hasPermission = this.userInfo?.activeInstitutePermissions?.
-        filter(perm => perm === 'EDX_USER_SCHOOL_ADMIN').length > 0;
+        filter(perm => perm === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
       return hasPermission && !this.isOffshoreSchool;
     },
     async clickSameAsAddressButton() {

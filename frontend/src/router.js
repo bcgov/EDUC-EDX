@@ -34,6 +34,7 @@ import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummar
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
+import {PERMISSION} from './utils/constants/Permission';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -235,7 +236,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SCHOOLS,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            permission: PERMISSION.EDX_DISTRICT_EDIT
           }
         },
         {
@@ -246,7 +247,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.DISTRICT_DETAILS,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            permission: PERMISSION.EDX_DISTRICT_EDIT
           }
         },
         {
@@ -257,7 +258,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.DISTRICT_CONTACTS,
             requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            permission: PERMISSION.EDX_DISTRICT_EDIT
           }
         },
         {

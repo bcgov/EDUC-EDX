@@ -146,7 +146,7 @@
               :contact="contact"
               :school-i-d="selectedSchoolId"
               :can-edit-school-contact="canEditSchoolContacts()"
-              :can-remove-school-contact="hasSchoolAdminPermission()"
+              :can-remove-school-contact="hasSchoolEditPermission()"
               @remove-school-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
@@ -344,13 +344,13 @@ export default {
       this.newContactSheet = !this.newContactSheet;
       this.getThisSchoolsContacts();
     },
-    hasSchoolAdminPermission() {
+    hasSchoolEditPermission() {
       let permissions = this.userInfo?.activeInstitutePermissions;
       if (permissions === undefined) return false;
-      return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+      return permissions.filter(p => p === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
     },
     canEditSchoolContacts() {
-      return this.hasSchoolAdminPermission() && !this.isOffshoreSchool;
+      return this.hasSchoolEditPermission() && !this.isOffshoreSchool;
     },
     openNewContactSheet(){
       this.newContactSheet = !this.newContactSheet;

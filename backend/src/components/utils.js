@@ -355,18 +355,19 @@ function unauthorizedError(res) {
   });
 }
 
-function checkEDXUserSchoolAdminPermission(req) {
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_SCHOOL_ADMIN');
-  if (!permission) {
+function checkEDXUserHasPermission(req, permission) {
+  let hasPermission = req.session.activeInstitutePermissions.includes(permission);
+  if (!hasPermission) {
     throw new Error('403');
   }
 }
 
+function checkEDXUserSchoolAdminPermission(req) {
+  checkEDXUserHasPermission(req, 'EDX_USER_SCHOOL_ADMIN');
+}
+
 function checkEDXUserDistrictAdminPermission(req) {
-  let permission = req.session.activeInstitutePermissions.includes('EDX_USER_DISTRICT_ADMIN');
-  if (!permission) {
-    throw new Error('403');
-  }
+  checkEDXUserHasPermission(req, 'EDX_USER_DISTRICT_ADMIN');
 }
 
 function checkEDXCollectionPermission(req) {
@@ -426,6 +427,16 @@ function verifyQueryParamValueMatchesBodyValue(req, paramKey, bodyKey) {
  */
 function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
   checkEDXUserSchoolAdminPermission(req);
+
+  if (req.session.activeInstituteType === 'SCHOOL') {
+    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
+  } else {
+    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
+  }
+}
+
+function checkEDXUserAccessForSchoolEditFunctions(req, instituteIdentifier) {
+  checkEDXUserHasPermission(req, 'EDX_SCHOOL_EDIT');
 
   if (req.session.activeInstituteType === 'SCHOOL') {
     checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
@@ -494,6 +505,8 @@ const utils = {
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
+  checkEDXUserAccessForSchoolEditFunctions,
+  checkEDXUserHasPermission,
   verifyQueryParamValueMatchesBodyValue,
   logApiError,
   checkEDXCollectionPermission,

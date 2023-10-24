@@ -1,5 +1,5 @@
 'use strict';
-const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserDistrictAdminPermission, putData, postData, handleExceptionResponse} = require('./utils');
+const { errorResponse, getAccessToken, getData, checkEDXUserAccess, checkEDXUserHasPermission, putData, postData, handleExceptionResponse} = require('./utils');
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
@@ -26,18 +26,13 @@ async function updateDistrict(req, res){
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserDistrictAdminPermission(req);
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
     const params = req.body;
 
     params.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
-    });
-
-    params.notes.forEach(function(note) {
-      note.updateDate = null;
-      note.createDate = null;
     });
 
     params.contacts.forEach(function(contact) {
@@ -98,7 +93,7 @@ async function updateDistrictContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.body.districtId);
-    checkEDXUserDistrictAdminPermission(req);
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
 
     const payload = req.body;
@@ -120,7 +115,7 @@ async function removeDistrictContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserDistrictAdminPermission(req);
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
     const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
 
