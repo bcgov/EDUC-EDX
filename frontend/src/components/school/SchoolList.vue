@@ -1,7 +1,7 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
+    :fluid="true"
   >
     <Spinner
       v-if="loadingTable"
@@ -29,7 +29,7 @@
         <v-col
           cols="12"
           md="4"
-          lg="5"
+          lg="4"
           class="d-flex justify-start pb-0 pt-1"
         >
           <v-autocomplete
@@ -40,7 +40,7 @@
             item-value="schoolID"
             item-title="schoolCodeName"
             :items="schoolSearchNames"
-            clearable
+            :clearable="true"
           />
         </v-col>
         <v-col
@@ -51,7 +51,7 @@
           <v-select
             id="status-select-field"
             v-model="schoolStatusFilter"
-            clearable
+            :clearable="true"
             :items="schoolStatus"
             item-title="name"
             item-value="code"
@@ -85,7 +85,7 @@
           <v-select
             id="status-select-field"
             v-model="schoolFacilityTypeFilter"
-            clearable
+            :clearable="true"
             variant="underlined"
             :items="schoolActiveFacilityTypes"
             item-title="label"
@@ -96,7 +96,6 @@
         <v-col
           cols="12"
           md="3"
-          lg="2"
           class="d-flex justify-end"
         >
           <PrimaryButton
@@ -240,6 +239,7 @@
                   </v-row>
                 </v-col>
               </v-row>
+
               <v-divider />
             </template>
           </v-data-table-server>
@@ -509,18 +509,15 @@ export default {
 <style scoped>
 
 .subjectHeading {
-  font-size: large;
   cursor: pointer;
   font-weight: bold;
 }
 
 .ministryLine {
   color: black;
-  font-size: medium;
 }
 
 .statusCodeLabel {
-  font-size: large;
   word-break: break-word;
 }
 
@@ -538,17 +535,14 @@ export default {
   display: none;
 }
 
-@media screen and (max-width: 801px){
-  .subjectHeading {
-    font-size: medium;
-  }
+@media screen and (max-width: 1200px){
 
   .statusCodeLabel{
-    font-size: inherit;
+    font-size: .9rem;
   }
 
   .ministryLine{
-    font-size: inherit;
+    font-size: .9rem;
   }
 }
 
