@@ -139,10 +139,10 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy, capitalize } from 'lodash';
-import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import { enrolledProgram } from '../../../utils/sdc/enrolledProgram';
+import {capitalize, isEmpty, omitBy} from 'lodash';
+import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
 
 export default {
   name: 'DetailComponent',
@@ -210,7 +210,10 @@ export default {
 
 
     enrolledProgramMapping(student, enrolledProgramFilter) {
-      const mappedEnrolledPrograms = student.enrolledProgramCodes
+      if(!student.enrolledProgramCodes) {
+        return '';
+      }
+      return student.enrolledProgramCodes
         .match(/.{1,2}/g)
         .filter(programCode => enrolledProgramFilter.includes(programCode))
         .map(programCode => {
@@ -218,8 +221,6 @@ export default {
           return enrolledProgram ? `${programCode}-${capitalize(enrolledProgram.description)}` : programCode;
         })
         .join('\n');
-
-      return mappedEnrolledPrograms;
     },
     mapStudentData(student) {
       student.mappedSpedCode  = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  capitalize(this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description) : null;
