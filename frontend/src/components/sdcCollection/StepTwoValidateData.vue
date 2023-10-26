@@ -858,7 +858,7 @@ export default {
   methods: {
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
-        this.emit('next');
+        this.$emit('next');
       } else {
         this.markStepAsComplete();
       }
@@ -884,7 +884,7 @@ export default {
       };
       ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}`, updateCollection)
         .then(() => {
-          this.emit('next');
+          this.$emit('next');
         })
         .catch(error => {
           console.error(error);
