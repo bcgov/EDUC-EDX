@@ -524,7 +524,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
               if (this.schoolContactsLastUpdateDate === '' || thisContactLastUpdated.isAfter(this.schoolContactsLastUpdateDate)) {
@@ -546,7 +546,7 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
               if (this.districtContactsLastUpdateDate === '' ||  thisContactLastUpdated.isAfter(this.districtContactsLastUpdateDate)) {
