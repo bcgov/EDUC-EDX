@@ -64,7 +64,6 @@
                                     <div
                                       class="body-2"
                                       style="color: black;"
-                                      :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}"
                                     >
                                       {{ item.raw.description }}
                                     </div>

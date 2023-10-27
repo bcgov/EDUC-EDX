@@ -4,7 +4,7 @@
     class="schoolContactCard"
     height="100%"
   >
-    <v-card-title class="text-wrap">
+    <v-card-title class="text-wrap pb-0">
       <v-row no-gutters>
         <v-col cols="10">
           <v-icon
@@ -62,7 +62,7 @@
       </v-row>
     </v-card-title>
     <v-card-text class="pb-0">
-      <v-list density="compact">
+      <v-list density="compact" class="pt-0">
         <v-list-item
           v-if="contact.jobTitle"
           class="pl-0"
