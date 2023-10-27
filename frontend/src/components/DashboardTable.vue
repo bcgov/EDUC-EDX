@@ -333,7 +333,6 @@ import { mapState, mapActions } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
 import {formatDateTime} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import { sdcCollectionStore } from '../store/modules/sdcCollection';
 
 export default {
