@@ -41,7 +41,30 @@
             item-title="schoolCodeName"
             :items="schoolSearchNames"
             :clearable="true"
-          />
+          >
+            <template #prepend-inner>
+              <v-icon
+                v-if="schoolCodeNameFilter"
+                :color="getStatusColor(schoolSearchNames.find(item=>item.schoolID===schoolCodeNameFilter)?.status)"
+              >
+                mdi-circle-medium
+              </v-icon>
+            </template>
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                prepend-icon="mdi-circle-medium"
+                :base-color="getStatusColor(item.raw.status)"
+                title=""
+              >
+                <v-list-item-title style="color: black !important;">
+                  {{
+                    item.raw.schoolCodeName
+                  }}
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
         </v-col>
         <v-col
           cols="12"
@@ -62,6 +85,14 @@
               closeOnContentClick: true,
             }"
           >
+            <template #prepend-inner>
+              <v-icon
+                v-if="schoolStatusFilter"
+                :color="getStatusColor(schoolStatusFilter[0].code)"
+              >
+                mdi-circle-medium
+              </v-icon>
+            </template>
             <template #selection="{ item, index }">
               {{ item.title }}
             </template>
@@ -371,6 +402,7 @@ export default {
           let schoolItem = {
             schoolCodeName: school.mincode +' - '+school.displayName,
             schoolID: school.schoolId,
+            status: getStatusAuthorityOrSchool(school)
           };
           this.schoolSearchNames.push(schoolItem);
         }
