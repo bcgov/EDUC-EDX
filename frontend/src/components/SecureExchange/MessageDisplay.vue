@@ -120,6 +120,7 @@
                   id="markAsButton"
                   :disabled="!isEditable()"
                   class="my-4"
+                  variant="outlined"
                   color="#003366"
                   :loading="loadingReadStatus"
                   @click="clickMarkAsButton"
