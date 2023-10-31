@@ -334,7 +334,7 @@ import alertMixin from '../mixins/alertMixin';
 import {formatDateTime, getDateFormatter} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import { sdcCollectionStore } from '../store/modules/sdcCollection';
-import {LocalDate, LocalDateTime} from '@js-joda/core';
+import {LocalDate} from '@js-joda/core';
 
 export default {
   name: 'DashboardTable',
