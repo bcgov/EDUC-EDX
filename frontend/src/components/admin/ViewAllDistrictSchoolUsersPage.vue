@@ -23,7 +23,7 @@
           >Return to School User Management</a>
         </v-col>
       </v-row>
-      <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
+      <v-row class="d-sm-flex align-center searchBox">
         <v-col
           class="d-flex pt-1 pb-0"
         >
@@ -220,12 +220,11 @@ export default {
 
 <style scoped>
 .searchBox {
+  margin: 0;
   padding-left: 1em;
   padding-right: 1em;
-  margin-left: 0;
-  margin-right: 0;
   border-radius: 5px;
-  background-color: #F2F2F2;
+  background-color: rgb(235, 237, 239);
 }
 
 .hoverTable:hover{

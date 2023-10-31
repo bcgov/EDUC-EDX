@@ -23,8 +23,7 @@
         </v-col>
       </v-row>
       <v-row
-        style="background: rgb(235, 237, 239);border-radius: 8px;"
-        class="px-3 py-0 align-center"
+        class="px-3 py-0 align-center searchBox"
       >
         <v-col
           cols="12"
@@ -565,6 +564,13 @@ export default {
 
 :deep(.v-data-table-footer__items-per-page) {
   display: none;
+}
+
+.searchBox {
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 5px;
+  background-color: rgb(235, 237, 239);
 }
 
 @media screen and (max-width: 1200px){

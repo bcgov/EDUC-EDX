@@ -105,7 +105,7 @@
               </v-col>
             </v-row>
           </div>
-          <div style="border-radius: 5px; background-color: #f6f5f5">
+          <div class="searchBox">
             <v-row>
               <v-col class="mx-4 mt-1">
                 <v-row no-gutters>
@@ -116,7 +116,7 @@
                       :items="fundingWarningCategories"
                       item-title="category"
                       item-value="categoryCode"
-                      placeholder="Funding Warning Category"
+                      label="Funding Warning Category"
                       density="compact"
                       variant="underlined"
                     />
@@ -131,7 +131,7 @@
                     <v-text-field
                       id="legalUsualNameSearch"
                       v-model="legalUsualNameFilter"
-                      placeholder="Legal or Usual Name"
+                      label="Legal or Usual Name"
                       density="compact"
                       variant="underlined"
                     />
@@ -152,7 +152,7 @@
                     <v-text-field
                       id="penSearch"
                       v-model="penFilter"
-                      placeholder="PEN"
+                      label="PEN"
                       density="compact"
                       variant="underlined"
                     />
@@ -1206,5 +1206,12 @@ export default {
  .form-hint{
    color: rgb(56, 89, 138);
    font-size: 14px;
+ }
+
+ .searchBox {
+   padding-left: 1em;
+   padding-right: 1em;
+   border-radius: 5px;
+   background-color: rgb(235, 237, 239);
  }
 </style>

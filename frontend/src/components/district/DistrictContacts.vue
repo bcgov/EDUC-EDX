@@ -78,7 +78,7 @@
         </v-col>
       </v-row>
       <v-row
-        :class="['d-sm-flex', 'align-center', 'searchBox', 'elevation-2', 'mb-3']"
+        class="d-sm-flex mb-3 align-center searchBox"
         @keydown.enter="searchButtonClicked"
       >
         <v-col
@@ -447,12 +447,11 @@ export default {
 }
 
 .searchBox {
+  margin: 0;
   padding-left: 1em;
   padding-right: 1em;
   border-radius: 5px;
-  margin-left: 0;
-  margin-right: 0;
-  background-color: #F2F2F2;
+  background-color: rgb(235, 237, 239);
 }
 
 </style>
