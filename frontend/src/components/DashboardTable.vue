@@ -331,9 +331,10 @@ import { authStore } from '../store/modules/auth';
 import { appStore } from '../store/modules/app';
 import { mapState, mapActions } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
-import {formatDateTime} from '../utils/format';
+import {formatDateTime, getDateFormatter} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import { sdcCollectionStore } from '../store/modules/sdcCollection';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'DashboardTable',
@@ -357,6 +358,7 @@ export default {
   },
   data() {
     return {
+      toFormatter: getDateFormatter('uuuu/MM/dd'),
       exchangeCount: '',
       unreadExchangeCount: '',
       schoolsLastUpdateDate: '',
@@ -526,7 +528,7 @@ export default {
             let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
-              if (this.schoolContactsLastUpdateDate === '' || thisContactLastUpdated.isAfter(this.schoolContactsLastUpdateDate)) {
+              if (this.schoolContactsLastUpdateDate === '' || this.getLocalDate(thisContactLastUpdated).isAfter(this.getLocalDate(this.schoolContactsLastUpdateDate))) {
                 this.schoolContactsLastUpdateDate = thisContactLastUpdated;
               }
             }
@@ -539,6 +541,9 @@ export default {
         });
       }
     },
+    getLocalDate(date){
+      return LocalDate.parse(date, this.toFormatter);
+    },
     getDistrictContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'DISTRICT') {
         ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.userInfo.activeInstituteIdentifier).then(response => {
@@ -548,7 +553,7 @@ export default {
             let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
-              if (this.districtContactsLastUpdateDate === '' ||  thisContactLastUpdated.isAfter(this.districtContactsLastUpdateDate)) {
+              if (this.districtContactsLastUpdateDate === '' ||  this.getLocalDate(thisContactLastUpdated).isAfter(this.getLocalDate(this.districtContactsLastUpdateDate))) {
                 this.districtContactsLastUpdateDate = thisContactLastUpdated;
               }
             }
