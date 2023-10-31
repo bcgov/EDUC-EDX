@@ -29,7 +29,7 @@
           <v-col class="d-flex justify-center">
             <v-card
               min-width="55em"
-              color="#F2F2F2"
+              color="rgb(235, 237, 239)"
             >
               <v-card-title>
                 <v-row
@@ -206,15 +206,6 @@ export default {
 .secondary_color {
   background-color: #424242;
   color: white;
-}
-
-.searchBox {
-  padding-left: 1em;
-  padding-right: 1em;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 5px;
-  background-color: #F2F2F2;
 }
 
 :deep(.mdi-information){

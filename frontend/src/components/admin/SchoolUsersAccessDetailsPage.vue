@@ -82,8 +82,7 @@
           <v-row
             v-if="doShowGenerateNewPrimaryEdxActivationCodeDialog"
             id="generateNewPrimaryEdxActivationCodeDialog"
-            :class="['d-sm-flex', 'align-center', 'searchBox']"
-            class="px-2 mb-4"
+            class="px-2 mb-4 d-sm-flex align-center searchBox"
           >
             <v-col>
               <v-row no-gutters>
@@ -116,7 +115,7 @@
             </v-col>
           </v-row>
         </v-expand-transition>
-        <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
+        <v-row class="d-sm-flex align-center searchBox">
           <v-col
             cols="12"
             md="4"
@@ -511,7 +510,7 @@ export default {
   padding-left: 1em;
   padding-right: 1em;
   border-radius: 5px;
-  background-color: #F2F2F2;
+  background-color: rgb(235, 237, 239);
 }
 
 :deep(.mdi-information){
