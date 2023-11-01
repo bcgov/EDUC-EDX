@@ -145,6 +145,7 @@
       v-else-if="filteredUsers.length"
       class="d-flex"
       align="stretch"
+      style="min-height: 5em"
     >
       <v-col
         v-for="user in filteredUsers"
@@ -170,9 +171,8 @@
         cols="12"
         class="pb-0"
       >
-        <v-card class="add-new-user h-100">
+        <v-card class="add-new-user d-flex" style="min-height: 17.5em">
           <v-row
-            class="h-100"
             align="center"
             justify="center"
             no-gutters
@@ -420,21 +420,12 @@ export default {
 
 <style scoped>
 .add-new-user { min-height: 160px; }
+
 .sheetHeader {
   background-color: #003366;
   color: white;
   font-size: medium !important;
   font-weight: bolder !important;
-}
-
-.primary_color {
-    background-color: #4caf50;
-    color: white;
-}
-
-.secondary_color {
-    background-color: #424242;
-    color: white;
 }
 
 .searchBox {
