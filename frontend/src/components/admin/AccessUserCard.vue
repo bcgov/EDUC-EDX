@@ -1,94 +1,38 @@
 <template>
   <v-card
     :id="`edxUser-${user.edxUserID}`"
-    class="h-100"
+    style="min-height: 17.5em"
+    class="d-flex flex-column"
   >
     <v-card-title class="pb-0">
       <v-row no-gutters>
-        <v-col>
-          <v-row no-gutters>
             <v-col cols="9">
               <span style="white-space: break-spaces">
-                <strong>{{ `${user.firstName} ${user.lastName}` }}</strong>
+                <strong class="contactName">{{ `${user.firstName} ${user.lastName}` }}</strong>
               </span>
             </v-col>
-            <v-col
-              v-if="isNotSameEdxUser()"
-              cols="3"
-              class="d-flex justify-end"
-            >
-              <v-btn
-                :id="`user-edit-button-${user.edxUserID}`"
-                title="Edit"
-                color="white"
-                width="0.5em"
-                min-width="0.5em"
-                depressed
-                small
-                class="mr-2"
-                variant="flat"
-                @click="clickEditButton"
-              >
-                <v-icon
-                  size="x-large"
-                  color="#003366"
-                  dark
-                >
-                  mdi-pencil
-                </v-icon>
-              </v-btn>
-              <v-btn
-                :id="`user-remove-button-${user.edxUserID}`"
-                title="Remove"
-                color="white"
-                width="0.5em"
-                min-width="0.5em"
-                depressed
-                small
-                class="mr-2"
-                variant="flat"
-                @click="clickDeleteButton"
-              >
-                <v-icon
-                  size="x-large"
-                  color="#003366"
-                  dark
-                >
-                  mdi-delete
-                </v-icon>
-              </v-btn>
-              <v-btn
-                :id="`user-relink-button-${user.edxUserID}`"
-                title="Re-Link"
-                color="white"
-                width="0.5em"
-                min-width="0.5em"
-                depressed
-                small
-                variant="flat"
-                @click="clickRelinkButton"
-              >
-                <v-icon
-                  size="x-large"
-                  color="#003366"
-                  dark
-                >
-                  mdi-backup-restore
-                </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
           <v-row no-gutters>
             <v-col
               cols="12"
               class="pt-1"
             />
           </v-row>
-        </v-col>
       </v-row>
     </v-card-title>
+    <v-card-subtitle>
+
+    </v-card-subtitle>
+    <v-card-subtitle>
+      <p
+          v-if="getExpiryDate(user)"
+          class="expiry-date"
+      >
+        {{ formatExpiryDate(getExpiryDate(user)) }}
+      </p>
+    </v-card-subtitle>
+
     <v-card-text class="pb-0">
-      <v-list density="compact">
+      <v-list class="pt-0">
         <v-list-item
           v-if="user.email"
           class="pl-0"
@@ -103,7 +47,7 @@
       </v-list>
     </v-card-text>
     <v-card-text
-      class="pt-2"
+      class="pt-0"
       :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
     >
       <div v-if="!editState">
@@ -111,18 +55,11 @@
           v-for="role in userRoles"
           :key="role.edxRoleCode"
           disabled
+          class="ma-1"
         >
           {{ getRoleLabel(role) }}
         </v-chip>
-        <p
-          v-if="getExpiryDate(user)"
-          class="expiry-date"
-        >
-          <v-icon size="large">
-            mdi-delete-clock-outline
-          </v-icon>
-          {{ formatExpiryDate(getExpiryDate(user)) }}
-        </p>
+
       </div>
       <div v-else>
         <v-list
@@ -295,6 +232,12 @@
         </v-row>
       </v-card-text>
     </Transition>
+    <v-spacer></v-spacer>
+    <v-card-actions v-if="isNotSameEdxUser() && !editState && !relinkState && !deleteState" class="justify-start" >
+      <v-btn color="#003366" variant="text" @click="clickEditButton">Edit</v-btn>
+      <v-btn color="red" variant="text" @click="clickDeleteButton">Remove</v-btn>
+      <v-btn color="#003366" variant="text" @click="clickRelinkButton">Re-link</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 <script>
@@ -553,9 +496,14 @@ export default {
   animation: bounce-in 0.1s reverse;
 }
 
+.contactName{
+  font-size: 0.85em;
+}
+
 .expiry-date {
   color: grey;
-  text-align: right;
+  font-style: italic;
+  font-size: 0.95em
 }
 
 @keyframes bounce-in {
