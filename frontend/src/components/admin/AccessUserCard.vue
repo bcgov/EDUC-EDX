@@ -6,26 +6,24 @@
   >
     <v-card-title class="pb-0">
       <v-row no-gutters>
-            <v-col cols="9">
-              <span style="white-space: break-spaces">
-                <strong class="contactName">{{ `${user.firstName} ${user.lastName}` }}</strong>
-              </span>
-            </v-col>
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              class="pt-1"
-            />
-          </v-row>
+        <v-col cols="9">
+          <span style="white-space: break-spaces">
+            <strong class="contactName">{{ `${user.firstName} ${user.lastName}` }}</strong>
+          </span>
+        </v-col>
+        <v-row no-gutters>
+          <v-col
+            cols="12"
+            class="pt-1"
+          />
+        </v-row>
       </v-row>
     </v-card-title>
-    <v-card-subtitle>
-
-    </v-card-subtitle>
+    <v-card-subtitle />
     <v-card-subtitle>
       <p
-          v-if="getExpiryDate(user)"
-          class="expiry-date"
+        v-if="getExpiryDate(user)"
+        class="expiry-date"
       >
         {{ formatExpiryDate(getExpiryDate(user)) }}
       </p>
@@ -59,9 +57,19 @@
         >
           {{ getRoleLabel(role) }}
         </v-chip>
-
       </div>
       <div v-else>
+        <v-alert
+          v-if="!isNotSameEdxUser()"
+          id="logoutAlert"
+          class="mt-4"
+          color="#003366"
+          density="compact"
+          type="info"
+          variant="tonal"
+        >
+          <span>For access changes to take affect, you will need to log out and back in.</span>
+        </v-alert>
         <v-list
           :id="`access-user-roles-${user.edxUserID}`"
           v-model:selected="selectedRoles"
@@ -69,7 +77,6 @@
           return-object
           select-strategy="classic"
           style="background-color: #e7ebf0"
-          @update:selected="selectedRolesChanged"
         >
           <div
             v-for="newrole in instituteRoles"
@@ -77,7 +84,6 @@
             :value="newrole.edxRoleCode"
           >
             <v-list-item
-              :disabled="roleDisabled(newrole)"
               :value="newrole.edxRoleCode"
             >
               <template #prepend="{ isActive }">
@@ -87,12 +93,7 @@
               </template>
 
               <v-list-item-title>{{ newrole.label }}</v-list-item-title>
-
-              <v-list-item-subtitle v-if="newrole.edxRoleCode === edxInstituteAdminRole">
-                EDX {{ instituteTypeLabel }} Admin users will be set up with all
-                {{ instituteTypeLabel.toLowerCase() }} roles.
-              </v-list-item-subtitle>
-              <v-list-item-subtitle v-else>
+              <v-list-item-subtitle>
                 {{ newrole.roleDescription }}
               </v-list-item-subtitle>
             </v-list-item>
@@ -232,11 +233,32 @@
         </v-row>
       </v-card-text>
     </Transition>
-    <v-spacer></v-spacer>
-    <v-card-actions v-if="isNotSameEdxUser() && !editState && !relinkState && !deleteState" class="justify-start" >
-      <v-btn color="#003366" variant="text" @click="clickEditButton">Edit</v-btn>
-      <v-btn color="red" variant="text" @click="clickDeleteButton">Remove</v-btn>
-      <v-btn color="#003366" variant="text" @click="clickRelinkButton">Re-link</v-btn>
+    <v-spacer />
+    <v-card-actions
+      v-if="(isNotSameEdxUser() || hasEDXUserAdminPermission()) && !editState && !relinkState && !deleteState"
+      class="justify-start"
+    >
+      <v-btn
+        color="#003366"
+        variant="text"
+        @click="clickEditButton"
+      >
+        Edit
+      </v-btn>
+      <v-btn
+        color="red"
+        variant="text"
+        @click="clickDeleteButton"
+      >
+        Remove
+      </v-btn>
+      <v-btn
+        color="#003366"
+        variant="text"
+        @click="clickRelinkButton"
+      >
+        Re-link
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -251,6 +273,7 @@ import { mapState } from 'pinia';
 import {formatDate} from '../../utils/format';
 import DatePicker from '../util/DatePicker.vue';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {PERMISSION} from '../../utils/constants/Permission';
 
 export default {
   name: 'AccessUserCard',
@@ -296,49 +319,16 @@ export default {
   computed: {
     ...mapState(edxStore, ['schoolRoles']),
     ...mapState(authStore, ['userInfo']),
-    isEDXInstituteAdminSelected() {
-      return this.selectedRoles.includes(this.edxInstituteAdminRole);
-    },
     minimumRolesSelected() {
       return this.selectedRoles.length > 0;
     },
-    edxInstituteAdminRole() {
-      if (this.instituteTypeCode === 'SCHOOL') {
-        return 'EDX_SCHOOL_ADMIN';
-      }
-      return 'EDX_DISTRICT_ADMIN';
-    }
   },
   methods: {
-    roleDisabled(role) {
-      if (role.edxRoleCode === this.edxInstituteAdminRole) {
-        return false;
-      }
-      return this.isEDXInstituteAdminSelected;
-    },
     isDistrictUser(){
       return this.instituteTypeCode === 'DISTRICT';
     },
     formatExpiryDate(date) {
       return formatDate(date);
-    },
-    selectedRolesChanged() {
-      if (!this.isEDXInstituteAdminSelected) {
-        return;
-      }
-      this.selectedRoles = [this.edxInstituteAdminRole];
-    },
-    getButtonWidth() {
-      switch (this.$vuetify.display.name) {
-      case 'xs':
-      case 'sm':
-      case 'md':
-        return '2em';
-      case 'lg':
-      case 'xl':
-      default:
-        return '7em';
-      }
     },
     getRoleLabel(curRole) {
       if (this.instituteRoles.length > 0) {
@@ -478,6 +468,9 @@ export default {
     clearExpiryDate(){
       this.accessExpiryDate = null;
     },
+    hasEDXUserAdminPermission() {
+      return this.userInfo?.activeInstitutePermissions?.includes(PERMISSION.EDX_USER_DISTRICT_ADMIN) || this.userInfo?.activeInstitutePermissions?.includes(PERMISSION.EDX_USER_SCHOOL_ADMIN);
+    }
   }
 };
 </script>
