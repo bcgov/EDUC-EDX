@@ -34,7 +34,6 @@
                             variant="underlined"
                             class="pt-0"
                             maxlength="255"
-                            :rules="requiredRules"
                           />
                           <v-text-field
                             id="newUserLastName"
