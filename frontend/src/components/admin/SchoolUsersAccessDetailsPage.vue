@@ -210,7 +210,7 @@
             cols="12"
             class="pb-0"
           >
-            <v-card class="add-new-user d-flex" style="min-height: 17.5em">
+            <v-card class="add-new-user" min-height="17.5em">
               <v-row
                 class="add-new-user"
                 align="center"
@@ -226,6 +226,7 @@
                     icon-left
                     text="Add New User"
                     :click-action="openInviteUserSheet"
+                    class="ma-10"
                   />
                 </v-col>
               </v-row>
