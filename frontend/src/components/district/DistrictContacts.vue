@@ -446,6 +446,10 @@ export default {
   }
 }
 
+:deep(.v-alert){
+  display: inline-flex;
+}
+
 .searchBox {
   margin: 0;
   padding-left: 1em;

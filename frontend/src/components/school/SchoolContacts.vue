@@ -88,4 +88,7 @@ export default {
   }
 }
 
+:deep(.v-alert){
+  display: inline-flex;
+}
 </style>
