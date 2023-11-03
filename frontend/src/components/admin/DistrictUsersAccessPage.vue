@@ -225,7 +225,6 @@
             :district-name="districtName"
             :district-number="districtNumber"
             @access-user:message-sent="closeNewUserModal"
-            @access-user:update-roles="updateUserRoles"
             @access-user:cancel-message="closeNewUserModal"
           />
         </v-card-text>
@@ -382,9 +381,6 @@ export default {
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
-    },
-    updateUserRoles(newValue){
-      edxStore().setDistrictRoles(newValue);
     },
     getChipColor(){
       if(this.primaryEdxActivationCode){

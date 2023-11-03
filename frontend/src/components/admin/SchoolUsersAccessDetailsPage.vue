@@ -277,7 +277,6 @@
                 :school-name="schoolName"
                 :school-mincode="schoolMincode"
                 @access-user:message-sent="closeNewUserModal"
-                @access-user:update-roles="updateUserRoles"
                 @access-user:cancel-message="closeNewUserModal"
               />
             </v-card-text>
@@ -427,9 +426,6 @@ export default {
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
-    },
-    updateUserRoles(newValue){
-      edxStore().setDistrictRoles(newValue);
     },
     setupSchoolFields() {
       this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
