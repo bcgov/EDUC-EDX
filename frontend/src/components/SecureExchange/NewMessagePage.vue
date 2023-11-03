@@ -46,6 +46,7 @@
                             :menu-props="{
                               closeOnClick: true,
                               closeOnContentClick: true,
+                              maxWidth:0
                             }"
                           >
                             <template #item="{ item, index }">
