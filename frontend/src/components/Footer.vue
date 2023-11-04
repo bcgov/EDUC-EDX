@@ -63,13 +63,30 @@
         >
           Contact Us
         </v-btn>
+        <v-btn
+          id="footer-contact"
+          variant="text"
+          color="white"
+          target="_blank"
+          :href="config.HELP_URL"
+        >
+          Help
+        </v-btn>
       </v-col>
     </v-row>
   </v-footer>
 </template>
 
 <script>
-export default {};
+import {mapState} from 'pinia';
+import {appStore} from '../store/modules/app';
+
+export default {
+  name: 'Footer',
+  computed: {
+    ...mapState(appStore, ['config'])
+  }
+};
 </script>
 
 <style>
