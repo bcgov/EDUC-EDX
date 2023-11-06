@@ -210,13 +210,13 @@
             cols="12"
             class="pb-0"
           >
-            <v-card class="add-new-user" min-height="17.5em">
+            <v-card class="add-new-user d-flex align-center flex-column" min-height="17.5em">
               <v-row
                 class="add-new-user"
                 align="center"
                 justify="center"
               >
-                <v-col class="d-flex justify-center">
+                <v-col class="justify-center">
                   <PrimaryButton
                     id="new-user-button"
                     icon="mdi-plus"
@@ -226,11 +226,10 @@
                     icon-left
                     text="Add New User"
                     :click-action="openInviteUserSheet"
-                    class="ma-10"
                   />
                 </v-col>
               </v-row>
-              <v-row v-if="!primaryEdxActivationCode">
+              <v-row class="align-end h-0 mt-n16" v-if="!primaryEdxActivationCode">
                 <v-col class="mx-3 mb-3">
                   <v-alert
                     dense
@@ -499,6 +498,17 @@ export default {
   border-radius: 5px;
   background-color: rgb(235, 237, 239);
 }
+
+.primary_color {
+  background-color: #4caf50;
+  color: white;
+}
+
+.secondary_color {
+  background-color: #424242;
+  color: white;
+}
+
 
 :deep(.mdi-information){
   color: #003366;

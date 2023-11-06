@@ -198,16 +198,6 @@ export default {
   font-weight: bolder !important;
 }
 
-.primary_color {
-  background-color: #4caf50;
-  color: white;
-}
-
-.secondary_color {
-  background-color: #424242;
-  color: white;
-}
-
 :deep(.mdi-information){
   color: #003366;
 }
