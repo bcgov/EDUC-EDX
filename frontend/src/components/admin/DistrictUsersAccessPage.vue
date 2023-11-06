@@ -424,6 +424,17 @@ export default {
   font-weight: bolder !important;
 }
 
+.primary_color {
+  background-color: #4caf50;
+  color: white;
+}
+
+.secondary_color {
+  background-color: #424242;
+  color: white;
+}
+
+
 .searchBox {
   margin: 0;
   padding-left: 1em;
