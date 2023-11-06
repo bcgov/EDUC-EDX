@@ -239,6 +239,7 @@
       class="justify-start"
     >
       <v-btn
+        :id="`user-edit-button-${user.edxUserID}`"
         color="#003366"
         variant="text"
         @click="clickEditButton"
@@ -246,6 +247,7 @@
         Edit
       </v-btn>
       <v-btn
+        :id="`user-remove-button-${user.edxUserID}`"
         color="red"
         variant="text"
         @click="clickDeleteButton"
@@ -253,6 +255,7 @@
         Remove
       </v-btn>
       <v-btn
+        :id="`user-relink-button-${user.edxUserID}`"
         color="#003366"
         variant="text"
         @click="clickRelinkButton"

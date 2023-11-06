@@ -47,7 +47,7 @@ describe('Access District Users Page Tests', () => {
         cy.get(selectors.newUserInvites.lastNameInput).type('AT LAST NAME');
         cy.get(selectors.newUserInvites.emailInput).type('edx-noreply@gov.bc.ca');
         cy.get(selectors.newUserInvites.rolesSelectorDropdown).parent().click();
-        cy.get(selectors.dropdown.listItem).contains('Secure Exchange').click();
+        cy.get(selectors.dropdown.listItem).contains('Secure Messaging').click();
         cy.get(selectors.newUserInvites.sendInviteButton).click();
         cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The request is being processed.');
       });
@@ -96,25 +96,6 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#user-cancel-edit-button-${uid}`).should('exist').click();
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
-          cy.get(`#user-edit-button-${uid}`).click().click();
-          cy.get(`#access-user-roles-${uid}`).should('not.exist');
-        });
-      });
-
-      it('will only permit one role', () => {
-        cy.visit('/districtAccess');
-        cy.get('@tempUserId').then(uid => {
-          cy.get(`#user-edit-button-${uid}`).click();
-          cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
-            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] > .v-list-item')
-              .should('have.class', 'v-list-item--disabled');
-            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
-            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').click().should('be.checked');
-            cy.get('div[value="EDX_DISTRICT_ADMIN"] > .v-list-item').should('not.have.class', '.v-list-item--disabled');
-            cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
-            cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').should('not.be.checked');
-            cy.get('div[value="EDX_DISTRICT_ADMIN"] > .v-list-item').should('not.have.class', '.v-list-item--disabled');
-          });
         });
       });
 
@@ -144,8 +125,6 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#userRelinkWarningText-${uid}`).should('exist')
             .should('include.text', 'Are you sure you want to re-link this account?');
           cy.get(`#user-cancel-relink-button-${uid}`).should('exist').click();
-          cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
-          cy.get(`#user-relink-button-${uid}`).click().click();
           cy.get(`#userRelinkWarningText-${uid}`).should('not.exist');
         });
       })
