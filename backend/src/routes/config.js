@@ -1,12 +1,9 @@
 const express = require('express');
-const passport = require('passport');
 const HttpStatus = require('http-status-codes');
 const router = express.Router();
-const auth = require('../components/auth');
 const config = require('../config');
-const isValidBackendToken= auth.isValidBackendToken();
 
-router.get('/', passport.authenticate('jwt', {session: false}), isValidBackendToken, getConfig);
+router.get('/', getConfig);
 
 async function getConfig(req, res) {
   const frontendConfig = config.get('frontendConfig');
