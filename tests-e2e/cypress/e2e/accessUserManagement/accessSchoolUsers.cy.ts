@@ -124,6 +124,7 @@ describe('Access School Users Page', () => {
     it('can generate a primary activation code', () => {
       cy.intercept(Cypress.env("interceptors").activation_code).as("activationCodeUpdate");
       cy.visit("/schoolAccess");
+      navigateToAccessSchoolUsers();
       cy.wait("@activationCodeUpdate");
 
       cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").as("initialCode");
@@ -208,6 +209,7 @@ describe('Access School Users Page', () => {
             cy.get('div[value="EDX_SCHOOL_ADMIN"]').click();
             cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
             cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
+            cy.get('div[value="EDX_EDIT_SCHOOL"]').click();
           });
           cy.get('@tempUserFirstName').then(fname => {
             cy.get(selectors.accessUsersPage.accessUserFeedback)
@@ -284,7 +286,7 @@ describe('Access School Users Page', () => {
             cy.get('div[value="EDX_SCHOOL_ADMIN"]').click().click();
           });
           cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
-          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been updated. Close');
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {

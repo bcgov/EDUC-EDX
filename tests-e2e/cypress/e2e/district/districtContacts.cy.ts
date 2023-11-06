@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
@@ -32,10 +32,12 @@ describe('District Contacts Page', () => {
       cy.get(selectors.dashboard.districtContactsCard).click();
       cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
       cy.get(selectors.districtContacts.newContactButton).click();
-      cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      });
+      cy.get(selectors.districtContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can edit contact details', () => {
