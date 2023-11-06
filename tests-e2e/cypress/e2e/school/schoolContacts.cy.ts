@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 function navigateToSchoolContactsSchoolUser() {
   cy.visit('/');
@@ -22,10 +22,12 @@ describe('School Contacts Page', () => {
     it('Check new contact page has current effective date', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.newContactButton).click();
-      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      })
+      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can create a new contact', () => {
@@ -87,10 +89,12 @@ describe('School Contacts Page', () => {
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
       cy.get(selectors.schoolContacts.newContactButton).click();
-      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      });
+      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can create a new school contact - vice principal', () => {

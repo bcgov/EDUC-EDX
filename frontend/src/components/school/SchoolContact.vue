@@ -130,8 +130,8 @@
     </v-card-text>
     <v-spacer></v-spacer>
     <v-card-actions class="justify-start">
-      <v-btn color="#003366" variant="text" @click="handleOpenEditor">Edit</v-btn>
-      <v-btn color="red" variant="text" @click="callShowRemoveContactConfirmation">Remove</v-btn>
+      <v-btn id="editContactButton" color="#003366" variant="text" @click="handleOpenEditor">Edit</v-btn>
+      <v-btn id="removeContactButton" color="red" variant="text" @click="callShowRemoveContactConfirmation">Remove</v-btn>
     </v-card-actions>
   </v-card>
 </template>

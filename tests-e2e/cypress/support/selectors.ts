@@ -133,7 +133,7 @@ export default {
     listItem: '.v-list-item',
     newContactButton: '#addSchoolContactBtn',
     newContactCalendar: '.dp__outer_menu_wrap',
-    newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
+    newContactEffectiveDateTextField: '#newContactEffectiveDatePicker',
     newContactEmailInput: '#newContactEmailInput',
     newContactFirstNameInput: '#newContactFirstNameInput',
     newContactLastNameInput: '#newContactLastNameInput',

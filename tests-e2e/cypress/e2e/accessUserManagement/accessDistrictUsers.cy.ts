@@ -127,7 +127,7 @@ describe('Access District Users Page Tests', () => {
             cy.get('div[value="SECURE_EXCHANGE_DISTRICT"]').click();
           });
           cy.get(`#user-save-action-button-${uid}`).should('not.be.disabled').click();
-          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User roles have been updated. Close');
+          cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been updated. Close');
           cy.get(`#access-user-roles-${uid}`).should('not.exist');
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
