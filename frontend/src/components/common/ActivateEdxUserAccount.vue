@@ -82,12 +82,11 @@
               />
             </v-col>
           </v-row>
-          <v-row class="d-flex justify-center">
+          <v-row no-gutters class="d-flex justify-center">
             <v-col cols="8">
-              <v-checkbox
+              <v-checkbox-btn
                 id="acceptTOU"
                 v-model="acceptTOU"
-                hide-details
                 :label="`I accept the `"
               >
                 <template #label>
@@ -109,7 +108,7 @@
                     </v-tooltip>
                   </div>
                 </template>
-              </v-checkbox>
+              </v-checkbox-btn>
             </v-col>
           </v-row>
           <v-row>
