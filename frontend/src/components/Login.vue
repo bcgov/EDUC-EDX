@@ -71,6 +71,22 @@
           </v-row>
         </v-card>
       </v-row>
+      <v-row no-gutters>
+        <v-col class="pt-6 d-flex justify-center need-help">
+          <div>
+            Need
+              <a
+                class="touLink"
+                target="_blank"
+                :href="config.TERMS_OF_USE_URL"
+                @click.stop
+              >
+                help
+              </a>
+              logging in?
+          </div>
+        </v-col>
+      </v-row>
     </article>
   </v-container>
 </template>
@@ -79,6 +95,7 @@
 import { authStore } from '../store/modules/auth';
 import { mapState } from 'pinia';
 import { AuthRoutes } from '../utils/constants';
+import {appStore} from '../store/modules/app';
 
 export default {
   name: 'Login',
@@ -93,6 +110,7 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated']),
+    ...mapState(appStore, ['config'])
   },
   methods: {
     clearStorage() {
@@ -111,5 +129,9 @@ export default {
     margin-top: 15rem;
     background-color: #003366;
     color: white;
+  }
+
+  .need-help{
+    margin-left: 10em;
   }
 </style>

@@ -50,8 +50,9 @@ export default {
   },
   async created() {
     await this.setLoading(true);
+    await this.getConfig();
     this.getJwtToken().then(() =>
-      Promise.all([this.getUserInfo(), this.getConfig()])
+      Promise.all([this.getUserInfo()])
     ).catch(e => {
       if(! e.response || e.response.status !== HttpStatus.UNAUTHORIZED) {
         this.logout();
