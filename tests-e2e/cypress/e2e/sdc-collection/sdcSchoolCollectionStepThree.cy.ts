@@ -74,7 +74,7 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
                 cy.wrap($cell).children().last().invoke('text').then((text) => {
                     expect(text).to.satisfy((value: string) => {
-                        return value === '08-CORE FRENCH' || value === '11-EARLY FRENCH IM';
+                        return value === '08-Core french' || value === '11-Early french immersion';
                     });
                 });
             })
