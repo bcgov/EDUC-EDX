@@ -24,6 +24,7 @@ function clickingSubmitButtonTooManyTimes() {
     cy.get(selectors.userActivationPage.primaryTextActivationCodeInput).type('1234567890');
     cy.get(selectors.userActivationPage.userActivationSubmitButton).should('be.disabled');
     cy.get(selectors.userActivationPage.personalActivationCodeInput).type('1234567890');
+    cy.get(selectors.userActivationPage.acceptTermsCheckbox).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).should('be.enabled');
 
     // Click the submit button 4 times for disabling the submit button
@@ -54,6 +55,7 @@ function enterIncorrectActivationCodes(mincode: string) {
     cy.get(selectors.userActivationPage.mincodeInput, {timeout:15000}).type(mincode);
     cy.get(selectors.userActivationPage.primaryTextActivationCodeInput).type('1234567890');
     cy.get(selectors.userActivationPage.personalActivationCodeInput).type('1234567890');
+    cy.get(selectors.userActivationPage.acceptTermsCheckbox).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
 
     // Exception made for timeout due to multiple api requests
@@ -78,6 +80,7 @@ function enterCorrectActivationCode(mincode: string) {
     cy.get<string>('@personalCode').then((personalCode: string) => {
       cy.get(selectors.userActivationPage.personalActivationCodeInput).type(personalCode);
     });
+    cy.get(selectors.userActivationPage.acceptTermsCheckbox).click();
     cy.get(selectors.userActivationPage.userActivationSubmitButton).click();
     cy.get(selectors.userActivationPage.userActivationSnackBar, {timeout:15000}).should('include.text',
         'User Activation Completed Successfully. Redirecting to your Dashboard...');

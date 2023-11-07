@@ -75,7 +75,7 @@ describe('School Contacts Page', () => {
   context('As an EDX district admin', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT', ], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
