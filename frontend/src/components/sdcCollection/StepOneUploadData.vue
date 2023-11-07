@@ -34,14 +34,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="d-flex justify-center">
-          <v-icon style="margin-top: 0.2em">
-            mdi-file
-          </v-icon>
-          <div
-            style="margin-top: 0.3em"
-          >
-            {{ fileName }}
+        <v-col style="text-align: center;">
+          <div style="margin-top: 0.2em">
+            <v-icon>
+              mdi-file
+            </v-icon>
+            <span style="padding-top: 0.1em;">{{ fileName }}</span>
+          </div>
+          <div style="font-size: small; font-style: italic;">
+            Uploaded {{ fileUploadDateFormatted }}
           </div>
         </v-col>
         <v-col>
@@ -307,6 +308,19 @@ export default {
         return true;
       }
       return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
+    },
+    fileUploadDate() {
+      try {
+        return LocalDate.parse(this.sdcSchoolProgress?.uploadDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+      } catch (e) {
+        return null;
+      }
+    },
+    fileUploadDateFormatted() {
+      if (!this.fileUploadDate) {
+        return 'n/a';
+      }
+      return this.fileUploadDate.toLocaleString();
     },
     getLink() {
       let collectionLink = '';
