@@ -19,8 +19,8 @@ interface ActivationCodeEntity extends BaseApiEntity {
   edxActivationRoles: EdxActivationRoleEntity[];
 }
 
-type DistrictRole = 'SECURE_EXCHANGE' | 'EDX_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION';
-type SchoolRole = 'SECURE_EXCHANGE_SCHOOL' | 'EDX_SCHOOL_ADMIN' | 'STUDENT_DATA_COLLECTION';
+type DistrictRole = 'SECURE_EXCHANGE_DISTRICT' | 'EDX_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION' | 'EDX_EDIT_DISTRICT';
+type SchoolRole = 'SECURE_EXCHANGE_SCHOOL' | 'EDX_SCHOOL_ADMIN' | 'STUDENT_DATA_COLLECTION' | 'EDX_EDIT_SCHOOL';
 type InstituteTypeCode = 'SCHOOL' | 'DISTRICT';
 
 interface EdxUserDistrictRoleEntity extends EdxActivationRoleEntity {

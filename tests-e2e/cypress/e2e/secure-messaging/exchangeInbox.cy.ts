@@ -163,7 +163,7 @@ describe('Exchange Inbox Page', () => {
 
   context('As an EDX district administrator', () => {
     before(() => {
-      const districtUserOptions: DistrictUserOptions = {districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998']};
+      const districtUserOptions: DistrictUserOptions = {districtRoles: ['SECURE_EXCHANGE_DISTRICT'], districtCodes: ['998']};
 
       cy.task('dataLoad').then(() => {
         cy.task('cleanup-secure-exchange', 'EDX automation test');

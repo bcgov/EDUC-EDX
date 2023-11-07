@@ -243,5 +243,6 @@ export default {
     userActivationSubmitButton: '#edxUserActivationSubmitBtn',
     userActivationSnackBar: '.v-snackbar__content',
     userActivationErrorMessaageSnackBar: '#user_activation_error_message',
+    acceptTermsCheckbox: '#acceptTOU'
   }
 }
