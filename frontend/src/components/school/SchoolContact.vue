@@ -12,7 +12,7 @@
             class="pb-1"
             size="x-small"
             :color="getStatusColor(contact)"
-            start
+            :start="true"
           />
           <strong class="contactName">{{ formatContactName(contact) }}</strong>
         </v-col>
@@ -48,7 +48,7 @@
             <v-icon
               icon="mdi-alert"
               color="#ff5252"
-              start
+              :start="true"
             />
             <span>Add missing email or phone</span>
           </a>
@@ -78,11 +78,14 @@
             <v-col cols="1">
               <v-icon
                 icon="mdi-email"
-                start
+                :start="true"
               />
             </v-col>
             <v-col class="d-flex ml-1">
-              <span id="contactEmail" class="contactEmailBreak"> {{ contact.email }}</span>
+              <span
+                id="contactEmail"
+                class="contactEmailBreak"
+              > {{ contact.email }}</span>
             </v-col>
           </v-row>
         </v-list-item>
@@ -95,7 +98,7 @@
             <v-col cols="1">
               <v-icon
                 icon="mdi-phone"
-                start
+                :start="true"
               />
             </v-col>
             <v-col class="d-flex ml-1">
@@ -113,7 +116,7 @@
             <v-col cols="1">
               <v-icon
                 icon="mdi-phone-outline"
-                start
+                :start="true"
               />
             </v-col>
             <v-col class="d-flex ml-1">
@@ -128,10 +131,27 @@
         </v-list-item>
       </v-list>
     </v-card-text>
-    <v-spacer></v-spacer>
-    <v-card-actions class="justify-start">
-      <v-btn id="editContactButton" color="#003366" variant="text" @click="handleOpenEditor">Edit</v-btn>
-      <v-btn id="removeContactButton" color="red" variant="text" @click="callShowRemoveContactConfirmation">Remove</v-btn>
+    <v-spacer />
+    <v-card-actions
+      v-if="canEditSchoolContact"
+      class="justify-start"
+    >
+      <v-btn
+        id="editContactButton"
+        color="#003366"
+        variant="text"
+        @click="handleOpenEditor"
+      >
+        Edit
+      </v-btn>
+      <v-btn
+        id="removeContactButton"
+        color="red"
+        variant="text"
+        @click="callShowRemoveContactConfirmation"
+      >
+        Remove
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
