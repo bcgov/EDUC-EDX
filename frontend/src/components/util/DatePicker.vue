@@ -60,7 +60,8 @@ export default defineComponent({
     :teleport="true"
     @update:model-value="saveDate"
     auto-apply
-    position="center"
+    position="left"
+    :auto-position="true"
   >
     <template #dp-input="{ value, onInput, onEnter, onTab }">
       <v-text-field
