@@ -106,7 +106,7 @@ describe('Access School Users Page', () => {
       cy.get(selectors.newUserInvites.lastNameInput).clear().type('TESTLASTNAME');
       cy.get(selectors.newUserInvites.emailInput).clear().type('validEmail@bc.gov.ca');
       cy.get(selectors.newUserInvites.rolesSelectorDropdown).click({force: true});
-      cy.get(selectors.dropdown.listItem).contains('Secure Messaging').click({force: true});
+      cy.get('.v-overlay').find(selectors.dropdown.listItem).contains('Secure Messaging').click();
       cy.get(selectors.newUserInvites.sendInviteButton).should('be.enabled');
     });
 
@@ -116,7 +116,7 @@ describe('Access School Users Page', () => {
       cy.get(selectors.newUserInvites.lastNameInput).type("Stallman");
       cy.get(selectors.newUserInvites.emailInput).type("rms@gov.bc.ca");
       cy.get(selectors.newUserInvites.rolesSelectorDropdown).click({force: true});
-      cy.get(selectors.dropdown.listItem).contains('Secure Messaging').click({force: true});
+      cy.get('.v-overlay').find(selectors.dropdown.listItem).contains('Secure Messaging').click();
       cy.get(selectors.newUserInvites.sendInviteButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The request is being processed.');
     });
