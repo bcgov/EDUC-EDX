@@ -13,7 +13,7 @@
           <div
             v-else
             class="inner-border"
-            style="padding: 0; min-width: 100px;"
+            style="padding: 0;"
           >
             <v-row>
               <v-col
@@ -1122,10 +1122,11 @@ export default {
   }
 
  .inner-border {
-     border: 1px solid grey;
-     border-radius: 5px;
-     padding: 20px;
-     margin-bottom: 2em;
+   display: inline-block;
+   border: 1px solid grey;
+   border-radius: 5px;
+   padding: 2em;
+   margin-bottom: 2em;
  }
 
   @media screen and (max-width: 1200px) {
@@ -1175,8 +1176,8 @@ export default {
  }
 
  #warningAndErrorSummary div {
-   padding: 10px;
-   margin-bottom: 10px;
+   padding: 1em;
+   margin-bottom: 1em;
    box-shadow: 0 0 0 0 grey, 1px 0 0 0 grey;
  }
 
