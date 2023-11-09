@@ -84,8 +84,6 @@ describe('School Contacts Page', () => {
     it('Check new school contact page has current effective date', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-      cy.intercept(Cypress.env('interceptors').district_details_by_id).as('districtDetails');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
