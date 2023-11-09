@@ -123,7 +123,8 @@ export default {
       primaryEdxActivationCode: null,
       instituteCode: '',
       instituteTypeLabel: 'School',
-      doShowGenerateNewPrimaryEdxActivationCodeDialog: false
+      doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
+      allowedSchoolCategories: ['PUBLIC', 'EAR_LEARN']
     };
   },
   computed: {
@@ -173,12 +174,14 @@ export default {
     setupSchoolList(){
       this.schoolSearchNames = [];
       for(const school of this.notClosedSchoolsMap.values()){
-        let schoolItem = {
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolID: school.schoolID,
-          districtID: school.districtID,
-        };
-        this.schoolSearchNames.push(schoolItem);
+        if(this.allowedSchoolCategories.includes(school.schoolCategoryCode)) {
+          let schoolItem = {
+            schoolCodeName: school.schoolName + ' - ' + school.mincode,
+            schoolID: school.schoolID,
+            districtID: school.districtID,
+          };
+          this.schoolSearchNames.push(schoolItem);
+        }
       }
       this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
     }
