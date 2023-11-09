@@ -140,11 +140,20 @@
                   </h4>
                 </v-col>
               </v-row>
-              <v-row no-gutters>
+              <v-row
+                v-if="schoolContactsLastUpdateDate"
+                no-gutters
+              >
                 <v-col>
                   <span>Last updated:</span>
                   <span>{{ schoolContactsLastUpdateDate }}</span>
                 </v-col>
+              </v-row>
+              <v-row
+                v-else
+                no-gutters
+              >
+                <span>No contacts listed</span>
               </v-row>
             </v-col>
           </v-row>
@@ -183,11 +192,20 @@
                   </h4>
                 </v-col>
               </v-row>
-              <v-row no-gutters>
+              <v-row
+                v-if="districtContactsLastUpdateDate"
+                no-gutters
+              >
                 <v-col>
                   <span>Last updated:</span>
                   <span>{{ districtContactsLastUpdateDate }}</span>
                 </v-col>
+              </v-row>
+              <v-row
+                v-else
+                no-gutters
+              >
+                <span>No contacts listed</span>
               </v-row>
             </v-col>
           </v-row>

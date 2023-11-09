@@ -75,15 +75,15 @@
         <v-col class="pt-6 d-flex justify-center need-help">
           <div>
             Need
-              <a
-                class="touLink"
-                target="_blank"
-                :href="config.TERMS_OF_USE_URL"
-                @click.stop
-              >
-                help
-              </a>
-              logging in?
+            <a
+              class="touLink"
+              target="_blank"
+              :href="config.TERMS_OF_USE_URL"
+              @click.stop
+            >
+              help
+            </a>
+            logging in?
           </div>
         </v-col>
       </v-row>
@@ -133,5 +133,9 @@ export default {
 
   .need-help{
     margin-left: 10em;
+  }
+
+  .touLink{
+    color: #1976d2 !important;
   }
 </style>

@@ -37,7 +37,7 @@
             <a
               v-else
               class="ml-1 mt-1"
-              @click="backButtonClick"
+              @click="backToHome"
             >Return to Dashboard</a>
           </v-col>
           <v-col class="d-flex justify-end">
@@ -422,6 +422,9 @@ export default {
     },
     backButtonClick() {
       this.$router.push({name: 'schoolAccess'});
+    },
+    backToHome() {
+      this.$router.push({name: 'home'});
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
