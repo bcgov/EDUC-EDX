@@ -35,11 +35,7 @@ async function updateDistrict(req, res){
       addy.createDate = null;
     });
 
-    params.contacts.forEach(function(contact) {
-      contact.updateDate = null;
-      contact.createDate = null;
-    });
-
+    params.contacts = null;
     params.createDate = null;
     params.updateDate = null;
     const result = await putData(token, params, config.get('institute:rootURL') + '/district/' + req.params.districtID, req.session?.correlationID);
