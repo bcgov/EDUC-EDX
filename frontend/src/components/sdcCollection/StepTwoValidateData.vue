@@ -16,10 +16,8 @@
             style="padding: 0;"
           >
             <v-row>
-              <v-col
-                class="d-flex justify-center"
-              >
-                <h3 style="margin-top: 10px;">Data Issues</h3>
+              <v-col>
+                <h3 style="text-align: center; padding: 1em;">Data Issues</h3>
               </v-col>
             </v-row>
             <v-row>
@@ -1123,6 +1121,7 @@ export default {
 
  .inner-border {
    display: inline-block;
+   min-width: 100%;
    border: 1px solid grey;
    border-radius: 5px;
    padding: 2em;
