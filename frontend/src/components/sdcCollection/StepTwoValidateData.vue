@@ -13,95 +13,54 @@
           <div
             v-else
             class="inner-border"
+            style="padding: 0; min-width: 100px;"
           >
             <v-row>
-              <v-col class="d-flex justify-center">
-                <h3>Data Issues</h3>
+              <v-col
+                class="d-flex justify-center"
+              >
+                <h3 style="margin-top: 10px;">Data Issues</h3>
               </v-col>
             </v-row>
             <v-row>
               <v-col
-                cols="2"
-                class="ml-4 mr-4"
+                id="warningAndErrorSummary"
+                class="d-flex flex-wrap justify-space-evenly"
+                style="text-align: center;"
               >
-                <v-row>
-                  <v-col class="d-flex justify-end">
-                    <span>Errors</span>
-                  </v-col>
-                </v-row>
-                <v-row
-                  no-gutters
-                  class="mt-1"
-                >
-                  <v-col class="d-flex justify-end">
-                    <v-icon
-                      size="35"
-                      color="#d90606"
-                    >
-                      mdi-alert-circle-outline
-                    </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.error }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-divider
-                :thickness="1"
-                inset
-                color="#b3b0b0"
-                class="border-opacity-75"
-                vertical
-              />
-              <v-col
-                cols="4"
-                class="ml-4 mr-4"
-              >
-                <v-row>
-                  <v-col class="d-flex justify-start">
-                    <span style="white-space: nowrap">Funding Warnings</span>
-                  </v-col>
-                </v-row>
-                <v-row
-                  no-gutters
-                  class="mt-1"
-                >
-                  <v-col class="d-flex justify-center">
-                    <v-icon
-                      size="35"
-                      color="orange"
-                    >
-                      mdi-alert-outline
-                    </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-divider
-                :thickness="1"
-                inset
-                color="#b3b0b0"
-                class="border-opacity-75"
-                vertical
-              />
-              <v-col class="ml-3 mr-4">
-                <v-row>
-                  <v-col class="d-flex justify-center">
-                    <span style="white-space: nowrap">Info Warnings</span>
-                  </v-col>
-                </v-row>
-                <v-row
-                  no-gutters
-                  class="mt-1"
-                >
-                  <v-col class="d-flex justify-center">
-                    <v-icon
-                      size="35"
-                      color="blue"
-                    >
-                      mdi-alert-circle-outline
-                    </v-icon>
-                    <span style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
-                  </v-col>
-                </v-row>
+                <div class="flex-grow-1">
+                  <span>Errors</span>
+                  <br>
+                  <v-icon
+                    size="35"
+                    color="#d90606"
+                  >
+                    mdi-alert-circle-outline
+                  </v-icon>
+                  <span style="font-size: x-large">{{ summaryCounts.error }}</span>
+                </div>
+                <div class="flex-grow-1">
+                  <span>Funding Warnings</span>
+                  <br>
+                  <v-icon
+                    size="35"
+                    color="orange"
+                  >
+                    mdi-alert-outline
+                  </v-icon>
+                  <span style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
+                </div>
+                <div class="flex-grow-1">
+                  <span>Info Warnings</span>
+                  <br>
+                  <v-icon
+                    size="35"
+                    color="blue"
+                  >
+                    mdi-alert-circle-outline
+                  </v-icon>
+                  <span style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
+                </div>
               </v-col>
             </v-row>
           </div>
@@ -1200,7 +1159,7 @@ export default {
  .scroll{
    overflow-y: auto;
    overflow-x: hidden;
-   height: 100vh;
+   max-height: 100vh;
  }
 
  .form-hint{
@@ -1214,4 +1173,11 @@ export default {
    border-radius: 5px;
    background-color: rgb(235, 237, 239);
  }
+
+ #warningAndErrorSummary div {
+   padding: 10px;
+   margin-bottom: 10px;
+   box-shadow: 0 0 0 0 grey, 1px 0 0 0 grey;
+ }
+
 </style>
