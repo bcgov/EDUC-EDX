@@ -13,7 +13,7 @@ describe('School Contacts Page', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolRoles: ['EDX_EDIT_SCHOOL'], schoolCodes: ['99998'] });
       });
     })
     beforeEach(() => cy.login());
@@ -55,7 +55,7 @@ describe('School Contacts Page', () => {
     it('can edit school contact details; saves', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.editContactButton).click();
-      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');;
+      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');
       cy.get(selectors.schoolContacts.editContactEmailInput).clear().type('newvpemail@test.com');
       cy.get(selectors.schoolContacts.editContactPhoneNumberInput).clear().type('7779998888');
       cy.get(selectors.schoolContacts.editContactSaveButton).click();
@@ -75,7 +75,7 @@ describe('School Contacts Page', () => {
   context('As an EDX district admin', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT', ], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
@@ -126,7 +126,7 @@ describe('School Contacts Page', () => {
       cy.visit('/schools');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.schoolContacts.editContactButton).click();
-      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');;
+      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');
       cy.get(selectors.schoolContacts.editContactEmailInput).clear().type('newvpemail@test.com');
       cy.get(selectors.schoolContacts.editContactPhoneNumberInput).clear().type('7779998888');
       cy.get(selectors.schoolContacts.editContactSaveButton).click();

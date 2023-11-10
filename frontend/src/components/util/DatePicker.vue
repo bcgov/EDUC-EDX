@@ -57,10 +57,10 @@ export default defineComponent({
     :clearable="false"
     :min-date="minDate"
     :max-date="maxDate"
-    @update:model-value="saveDate"
     auto-apply
     position="left"
     :auto-position="true"
+    @update:model-value="saveDate"
   >
     <template #dp-input="{ value, onInput, onEnter, onTab }">
       <v-text-field

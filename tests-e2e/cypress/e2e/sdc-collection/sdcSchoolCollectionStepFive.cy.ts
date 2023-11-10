@@ -24,9 +24,11 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.dashboard.dataCollectionsTile).click();
             cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+            cy.url().should('contain', '/step-2');
             cy.get(selectors.studentLevelData.nextButton).click();
+            cy.url().should('contain', '/step-3');
             cy.get(selectors.studentLevelData.nextButton).click();
-            cy.get(selectors.studentLevelData.nextButton).click();
+            cy.url().should('contain', '/step-4');
             cy.get(selectors.studentLevelData.nextButton).click();
 
             // Step five of collection - school contacts
@@ -38,7 +40,8 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.schoolContacts.newContactEmailInput).type('fake@gmail.com');
             cy.get(selectors.schoolContacts.newContactPhoneNumberInput).type('1231231234');
             cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).click();
-            cy.get(selectors.schoolContacts.newContactCalendar).contains('Select').click();
+            cy.get(selectors.datePicker.nextArrow).click();
+            cy.get(selectors.datePicker.day).click();
             cy.get(selectors.schoolContacts.newContactPostBtn).click();
             cy.get(selectors.snackbar.mainSnackBar).should('contain', 'Success! The school contact has been created.');
         });
