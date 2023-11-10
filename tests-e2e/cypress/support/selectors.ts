@@ -20,6 +20,10 @@ export default {
     continue: '.navigate',
     title: '#navTitle > div'
   },
+  datePicker: {
+    nextArrow: 'div.dp__month_year_row > button:nth-child(3)',
+    day: '.dp__calendar_row:nth-child(2) > .dp__calendar_item:nth-child(1)'
+  },
   districtContacts: {
     deleteCancelButton: '#rejectBtn',
     deleteConfirmButton: '#resolveBtn',
@@ -30,7 +34,6 @@ export default {
     filterContactClearButton: '#district-clear-button',
     listItem: '.v-list-item',
     newContactButton: '#newContactButton',
-    newContactCalendar: '.dp__outer_menu_wrap',
     newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
     newContactEmailInput: '#newContactEmailInput',
     newContactFirstNameInput: '#newContactFirstNameInput',
@@ -132,7 +135,6 @@ export default {
     editContactSaveButton: '#editContactPostBtn',
     listItem: '.v-list-item',
     newContactButton: '#addSchoolContactBtn',
-    newContactCalendar: '.dp__outer_menu_wrap',
     newContactEffectiveDateTextField: '#newContactEffectiveDatePicker',
     newContactEmailInput: '#newContactEmailInput',
     newContactFirstNameInput: '#newContactFirstNameInput',

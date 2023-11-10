@@ -26,7 +26,7 @@ function testSendingNewUserInvites() {
   cy.get(selectors.newUserInvites.rolesSelectorBox).find('div').contains('EDX School Account Manager').click();
   cy.get(selectors.newUserInvites.sendInviteButton).click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The request is being processed.');
-};
+}
 
 function testGeneratingActivationCode() {
   cy.intercept(Cypress.env("interceptors").activation_code).as(
@@ -58,7 +58,7 @@ function testGeneratingActivationCode() {
         expect(initialCode).not.eq(newCode);
       });
   });
-};
+}
 
 function navigateToNewUserInvites() {
   cy.visit('/');
@@ -123,8 +123,11 @@ describe('Access School Users Page', () => {
 
     it('can generate a primary activation code', () => {
       cy.intercept(Cypress.env("interceptors").activation_code).as("activationCodeUpdate");
-      cy.visit("/schoolAccess");
-      navigateToAccessSchoolUsers();
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).should('exist').contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.hamburgerMenu.hamburgerMenuButton).click();
+      cy.get(selectors.hamburgerMenu.administrationMenuOption).click();
+      cy.get(selectors.hamburgerMenu.schoolUserManagementOption).click();
       cy.wait("@activationCodeUpdate");
 
       cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").as("initialCode");
