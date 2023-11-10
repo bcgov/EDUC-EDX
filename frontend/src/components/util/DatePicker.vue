@@ -57,7 +57,6 @@ export default defineComponent({
     :clearable="false"
     :min-date="minDate"
     :max-date="maxDate"
-    :teleport="true"
     @update:model-value="saveDate"
     auto-apply
     position="left"
