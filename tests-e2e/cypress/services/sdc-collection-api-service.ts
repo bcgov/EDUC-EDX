@@ -34,16 +34,16 @@ export class SdcCollectionApiService {
         const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
         const collectionsList = await this.restUtils.getData(urlGetCollections);
 
-        for (const collection of collectionsList) {
-            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
-        }
-
         const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
         try{
             const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
-            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.data.sdcSchoolCollectionID);
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
         }catch(e: any){
             //This is ok
+        }
+
+        for (const collection of collectionsList) {
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
         }
 
         const collectionPayload = {

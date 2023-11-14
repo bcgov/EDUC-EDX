@@ -11,7 +11,7 @@ describe('SDC School Collection View', () => {
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedData'
         });
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
     });
     after(() => cy.logout());
@@ -41,6 +41,24 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled');
       cy.get(selectors.studentLevelData.nextButton).click();
 
+    });
+
+    it('can re-upload a collection file', () => {
+      cy.intercept(Cypress.env('interceptors').collection).as('collection');
+      cy.intercept(Cypress.env('interceptors').collection).as('collectionFile');
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.studentLevelData.stepOne).should('exist').click();
+      cy.wait('@collection');
+      cy.wait('@collectionFile');
+      cy.get('#selectFileInput').selectFile('./cypress/uploads/sample-2-student-fnchars.std', { force: true });
+      cy.wait('@collection');
+      cy.wait('@collectionFile');
+      cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Your document was uploaded successfully.');
     });
   });
 });
