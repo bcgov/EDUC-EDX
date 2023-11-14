@@ -11,7 +11,7 @@
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
         <v-row v-if="activeUserDistricts.length>0">
-          <v-col class="mt-6 mb-3">
+          <v-col class="mb-3">
             <h2>District Dashboard</h2>
           </v-col>
         </v-row>
@@ -39,7 +39,7 @@
           </div>
         </v-list>
         <v-row v-if="activeUserSchools.length>0">
-          <v-col class="mb-3">
+          <v-col class="mt-6 mb-3">
             <h2>School Dashboard</h2>
           </v-col>
         </v-row>
