@@ -41,7 +41,7 @@ function clickingSubmitButtonTooManyTimes() {
     cy.get(selectors.userActivationPage.personalActivationCodeInput).should('be.disabled');
     cy.get(selectors.userActivationPage.userActivationSubmitButton).should('be.disabled');
   });
-};
+}
 
 function enterIncorrectActivationCodes(mincode: string) {
   cy.get<string>('@activationUrl').then((url: string) => {
@@ -62,7 +62,7 @@ function enterIncorrectActivationCodes(mincode: string) {
     cy.get(selectors.userActivationPage.userActivationSnackBar, {timeout:15000}).should('include.text',
         'Incorrect activation details have been entered. Please try again.');
   });
-};
+}
 
 function enterCorrectActivationCode(mincode: string) {
   cy.get<string>('@activationUrl').then((url: string) => {

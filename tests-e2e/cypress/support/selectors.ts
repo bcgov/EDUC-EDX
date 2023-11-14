@@ -224,6 +224,7 @@ export default {
   },
   studentLevelData: {
     documentUploadButton: '#uploadButton',
+    documentReUploadButton: '#uploadAgainButton',
     formHint: 'p.form-hint',
     legalLastNameValidationTextInput: '#legalLastNameValidationTextInput',
     nextButton: '#nextButton',
