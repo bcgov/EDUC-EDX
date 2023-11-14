@@ -10,6 +10,34 @@
         <v-row>
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
+        <v-row v-if="activeUserDistricts.length>0">
+          <v-col class="mt-6 mb-3">
+            <h2>District Dashboard</h2>
+          </v-col>
+        </v-row>
+        <v-list
+            v-if="activeUserDistricts.length>0"
+            id="schools-district-items"
+            style="padding-top: 0;padding-bottom: 0;"
+            elevation="1"
+            :border="true"
+            :rounded="true"
+            :loading="isTableLoading"
+        >
+          <div
+              v-for="(item, index) in activeUserDistricts"
+              :key="item.districtNumber"
+          >
+            <v-list-item
+                :title="item.displayName"
+                :subtitle="item.districtNumber"
+                lines="two"
+                @click="selectDistrict(item.districtID)"
+            >
+            </v-list-item>
+            <v-divider v-if="index !== activeUserDistricts.length-1"></v-divider>
+          </div>
+        </v-list>
         <v-row v-if="activeUserSchools.length>0">
           <v-col class="mb-3">
             <h2>School Dashboard</h2>
@@ -36,35 +64,6 @@
             >
             </v-list-item>
             <v-divider v-if="index !== activeUserSchools.length-1"></v-divider>
-          </div>
-        </v-list>
-
-        <v-row v-if="activeUserDistricts.length>0">
-          <v-col class="mt-6 mb-3">
-            <h2>District Dashboard</h2>
-          </v-col>
-        </v-row>
-        <v-list
-          v-if="activeUserDistricts.length>0"
-          id="schools-district-items"
-          style="padding-top: 0;padding-bottom: 0;"
-          elevation="1"
-          :border="true"
-          :rounded="true"
-          :loading="isTableLoading"
-        >
-          <div
-            v-for="(item, index) in activeUserDistricts"
-            :key="item.districtNumber"
-          >
-            <v-list-item
-              :title="item.displayName"
-              :subtitle="item.districtNumber"
-              lines="two"
-              @click="selectDistrict(item.districtID)"
-            >
-            </v-list-item>
-            <v-divider v-if="index !== activeUserDistricts.length-1"></v-divider>
           </div>
         </v-list>
       </v-col>
