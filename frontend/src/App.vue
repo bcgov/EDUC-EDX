@@ -87,7 +87,7 @@ a:hover {
   font-size: 0.8rem;
 }
 
-.v-application {
+.v-application, .v-dialog, .v-bottom-sheet {
   font-family: 'BCSans', Verdana, Arial, sans-serif !important;
 }
 .v-card--flat {

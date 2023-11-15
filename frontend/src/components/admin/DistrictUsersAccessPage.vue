@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <v-row>
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
@@ -171,7 +171,7 @@
         cols="12"
         class="pb-0"
       >
-        <v-card class="add-new-user d-flex" style="min-height: 17.5em">
+        <v-card class="add-new-user d-flex h-100" style="min-height: 12em">
           <v-row
             align="center"
             justify="center"
