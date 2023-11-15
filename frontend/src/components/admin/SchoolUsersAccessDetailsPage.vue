@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <Spinner
       v-if="loading"
       flat
@@ -210,7 +210,7 @@
             cols="12"
             class="pb-0"
           >
-            <v-card class="add-new-user d-flex align-center flex-column" min-height="17.5em">
+            <v-card class="add-new-user d-flex align-center flex-column h-100" min-height="12em">
               <v-row
                 class="add-new-user"
                 align="center"

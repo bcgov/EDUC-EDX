@@ -1,8 +1,7 @@
 <template>
   <v-card
     :id="`edxUser-${user.edxUserID}`"
-    style="min-height: 17.5em"
-    class="d-flex flex-column"
+    class="d-flex flex-column h-100"
   >
     <v-card-title class="pb-0">
       <v-row no-gutters>
@@ -46,9 +45,8 @@
     </v-card-text>
     <v-card-text
       class="pt-0"
-      :style="[editState ? {'background-color': '#e7ebf0'} : {'background-color': 'white'}]"
     >
-      <div v-if="!editState">
+      <div>
         <v-chip
           v-for="role in userRoles"
           :key="role.edxRoleCode"
@@ -58,33 +56,107 @@
           {{ getRoleLabel(role) }}
         </v-chip>
       </div>
-      <div v-else>
-        <v-alert
-          v-if="!isNotSameEdxUser()"
-          id="logoutAlert"
-          class="mt-4"
+    </v-card-text>
+    <ConfirmationDialog ref="confirmRemoveUser">
+      <template #message>
+        <p>Are you sure you want to remove this user's access for the {{ instituteTypeLabel.toLowerCase() }}?</p>
+      </template>
+    </ConfirmationDialog>
+    <ConfirmationDialog ref="confirmRelinkUser">
+      <template #message>
+        <p class="mb-4">Re-linking an account will remove the current user and resend the activation code so
+          that the user can set up EDX access with their new credentials.</p>
+        <p class="font-weight-bold">Are you sure you want to re-link this account?</p>
+      </template>
+    </ConfirmationDialog>
+    <v-spacer />
+    <v-card-actions
+      v-if="isNotSameEdxUser() || hasEDXUserAdminPermission()"
+      class="justify-start"
+    >
+      <v-btn
+        :id="`user-edit-button-${user.edxUserID}`"
+        color="#003366"
+        variant="text"
+        @click="clickEditButton"
+      >
+        Edit
+      </v-btn>
+      <v-btn
+          v-if="isNotSameEdxUser()"
+          :id="`user-remove-button-${user.edxUserID}`"
+          color="red"
+          variant="text"
+          @click="clickDeleteButton"
+      >
+        Remove
+      </v-btn>
+      <v-btn
+          v-if="isNotSameEdxUser()"
+          :id="`user-relink-button-${user.edxUserID}`"
           color="#003366"
-          density="compact"
-          type="info"
-          variant="tonal"
+          variant="text"
+          @click="clickRelinkButton"
+      >
+        Re-link
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+  <v-bottom-sheet
+      v-model="editUserSheet"
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
+  >
+    <v-card
+        v-if="editUserSheet"
+        id="editUserVCard"
+        class="information-window-v-card"
+    >
+      <v-card-title
+          id="editUserInviteVCardTitle"
+          class="sheetHeader pt-1 pb-1"
+      >
+        Edit User for {{user.firstName}} {{user.lastName}}
+      </v-card-title>
+      <v-divider />
+      <v-card-text>
+        <v-alert
+            v-if="!isNotSameEdxUser()"
+            id="logoutAlert"
+            class="mt-4"
+            color="#003366"
+            density="compact"
+            type="info"
+            variant="tonal"
         >
-          <span>For access changes to take affect, you will need to log out and back in.</span>
+          <span>For access changes to take effect, you will need to log out and back in.</span>
+        </v-alert>
+        <v-alert
+            v-if="!minimumRolesSelected"
+            id="logoutAlert"
+            class="mt-4"
+            color="#003366"
+            density="compact"
+            type="info"
+            variant="tonal"
+        >
+          <span>Please select at least one role for {{ user.firstName }}.</span>
         </v-alert>
         <v-list
-          :id="`access-user-roles-${user.edxUserID}`"
-          v-model:selected="selectedRoles"
-          lines="two"
-          return-object
-          select-strategy="classic"
-          style="background-color: #e7ebf0"
+            :id="`access-user-roles-${user.edxUserID}`"
+            v-model:selected="selectedRoles"
+            lines="two"
+            return-object
+            select-strategy="classic"
         >
           <div
-            v-for="newrole in instituteRoles"
-            :key="newrole.edxRoleCode"
-            :value="newrole.edxRoleCode"
+              v-for="newrole in instituteRoles"
+              :key="newrole.edxRoleCode"
+              :value="newrole.edxRoleCode"
           >
             <v-list-item
-              :value="newrole.edxRoleCode"
+                :value="newrole.edxRoleCode"
             >
               <template #prepend="{ isActive }">
                 <v-list-item-action>
@@ -101,169 +173,38 @@
         </v-list>
 
         <DatePicker
-          id="accessExpiryDate"
-          v-model="accessExpiryDate"
-          class="pl-7"
-          label="Access Expiry Date"
-          model-type="yyyy-MM-dd'T'00:00:00"
-          :min-date="minExpiryDate"
-          @clear-date="clearExpiryDate"
+            id="accessExpiryDate"
+            v-model="accessExpiryDate"
+            class="pl-7"
+            label="Access Expiry Date"
+            model-type="yyyy-MM-dd'T'00:00:00"
+            :min-date="minExpiryDate"
+            @clear-date="clearExpiryDate"
         />
-      </div>
-    </v-card-text>
-    <Transition name="bounce">
-      <v-card-text
-        v-if="deleteState"
-        style="background-color: #e7ebf0;"
-        class="deleteEdxUserConfirmationDialog"
-      >
-        <v-row no-gutters>
-          <v-col class="d-flex justify-center">
-            <span style="font-size: medium; font-weight: bold; color: black">
-              Are you sure you want to remove this users access for the
-              {{ instituteTypeLabel.toLowerCase() }}?
-            </span>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col class="mt-3 d-flex justify-end">
-            <PrimaryButton
-              :id="`user-cancel-remove-button-${user.edxUserID}`"
-              width="5em"
-              text="Cancel"
-              class="mr-2 cancelUserDeleteButton"
-              secondary
-              variant="flat"
-              :click-action="clickDeleteButton"
-            />
-            <PrimaryButton
-              :id="`user-remove-action-button-${user.edxUserID}`"
-              text="Remove"
-              class="confirmUserDeleteButton"
-              variant="flat"
-              :click-action="clickRemoveButton"
-            />
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </Transition>
-    <Transition name="bounce">
-      <v-card-text
-        v-if="relinkState"
-        style="background-color: #e7ebf0;"
-      >
-        <v-row no-gutters>
-          <v-col class="d-flex justify-center">
-            <span
-              class="accessUserFeedback"
-              style="font-size: medium; font-weight: bold; color: black"
-            >
-              Re-linking an account will remove the current user and resend the activation code so
-              that the user can set up EDX access with their new credential.
-            </span>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col class="pt-3 d-flex justify-start">
-            <span
-              :id="`userRelinkWarningText-${user.edxUserID}`"
-              style="font-size: medium; font-weight: bold; color: black"
-            >Are you sure you want to re-link this account?</span>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col class="mt-3 d-flex justify-end">
-            <PrimaryButton
-              :id="`user-cancel-relink-button-${user.edxUserID}`"
-              width="5em"
-              text="Cancel"
-              class="mr-2"
-              secondary
-              variant="flat"
-              :click-action="clickRelinkButton"
-            />
-            <PrimaryButton
-              :id="`user-relink-action-button-${user.edxUserID}`"
-              text="Re-Link"
-              variant="flat"
-              :click-action="clickActionRelinkButton"
-            />
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </Transition>
-    <Transition name="bounce">
-      <v-card-text
-        v-if="editState"
-        class="pt-0"
-        style="background-color: #e7ebf0;"
-      >
-        <v-row
-          v-if="!minimumRolesSelected"
-          no-gutters
-        >
-          <v-col class="mt-0 d-flex justify-start">
-            <p
-              class="accessUserFeedback"
-              style="font-weight: bolder;color: black;"
-            >
-              Please select at least one role for {{ user.firstName }}.
-            </p>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
+        <v-row no-gutters class="py-4 justify-end">
           <v-col class="mt-0 d-flex justify-end">
             <PrimaryButton
-              :id="`user-cancel-edit-button-${user.edxUserID}`"
-              width="5em"
-              text="Cancel"
-              class="mr-2"
-              secondary
-              variant="flat"
-              :click-action="clickEditButton"
+                :id="`user-cancel-edit-button-${user.edxUserID}`"
+                width="5em"
+                text="Cancel"
+                class="mr-2"
+                secondary
+                variant="flat"
+                :click-action="clickEditButton"
             />
             <PrimaryButton
-              :id="`user-save-action-button-${user.edxUserID}`"
-              text="Save"
-              :disabled="!minimumRolesSelected"
-              variant="flat"
-              :click-action="clickSaveButton"
+                :id="`user-save-action-button-${user.edxUserID}`"
+                text="Save"
+                :disabled="!minimumRolesSelected"
+                variant="flat"
+                :click-action="clickSaveButton"
             />
           </v-col>
         </v-row>
+
       </v-card-text>
-    </Transition>
-    <v-spacer />
-    <v-card-actions
-      v-if="(isNotSameEdxUser() || hasEDXUserAdminPermission()) && !editState && !relinkState && !deleteState"
-      class="justify-start"
-    >
-      <v-btn
-        :id="`user-edit-button-${user.edxUserID}`"
-        color="#003366"
-        variant="text"
-        @click="clickEditButton"
-      >
-        Edit
-      </v-btn>
-      <v-btn
-        :id="`user-remove-button-${user.edxUserID}`"
-        color="red"
-        variant="text"
-        @click="clickDeleteButton"
-      >
-        Remove
-      </v-btn>
-      <v-btn
-        :id="`user-relink-button-${user.edxUserID}`"
-        color="#003366"
-        variant="text"
-        @click="clickRelinkButton"
-      >
-        Re-link
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+    </v-card>
+  </v-bottom-sheet>
 </template>
 <script>
 import PrimaryButton from '../util/PrimaryButton.vue';
@@ -277,10 +218,11 @@ import {formatDate} from '../../utils/format';
 import DatePicker from '../util/DatePicker.vue';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {PERMISSION} from '../../utils/constants/Permission';
+import ConfirmationDialog from "../util/ConfirmationDialog.vue";
 
 export default {
   name: 'AccessUserCard',
-  components: {PrimaryButton, DatePicker},
+  components: {ConfirmationDialog, PrimaryButton, DatePicker},
   mixins: [alertMixin],
   props: {
     user: {
@@ -311,7 +253,7 @@ export default {
   emits: ['refresh'],
   data() {
     return {
-      editState: false,
+      editUserSheet: false,
       deleteState: false,
       relinkState: false,
       selectedRoles: [],
@@ -342,20 +284,48 @@ export default {
     clickEditButton() {
       this.relinkState = false;
       this.deleteState = false;
-      this.editState = !this.editState;
+      this.editUserSheet = !this.editUserSheet;
       this.setUserRolesAsSelected();
     },
-    clickDeleteButton() {
-      this.editState = false;
-      this.relinkState = false;
-      this.deleteState = !this.deleteState;
+    async clickDeleteButton(){
+      const confirmation = await this.$refs.confirmRemoveUser.open('Confirm Removal of User', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      this.loading = true;
+
+      const payload = {
+        params:{
+          userToRemove: this.user.edxUserID
+        }
+      };
+      if (this.instituteTypeCode === 'SCHOOL') {
+        const userSchool = this.user.edxUserSchools
+            .find(school => school.schoolID === this.instituteCode);
+        payload.params.schoolID = userSchool.schoolID;
+        payload.params.userSchoolID = userSchool.edxUserSchoolID;
+      } else {
+        const userDistrict = this.user.edxUserDistricts
+            .find(district => district.districtID === this.instituteCode);
+        payload.params.districtID = this.instituteCode;
+        payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
+      }
+      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
+          .then(() => {
+            this.setSuccessAlert('User has been removed.');
+          }).catch(error => {
+        this.setFailureAlert('An error occurred while removing a user. Please try again later.');
+        console.log(error);
+      }).finally(() => {
+        this.$emit('refresh');
+      });
     },
-    clickRelinkButton() {
-      this.editState = false;
-      this.deleteState = false;
-      this.relinkState = !this.relinkState;
-    },
-    clickActionRelinkButton() {
+    async clickRelinkButton() {
+      const confirmation = await this.$refs.confirmRelinkUser.open('Confirm Re-link of User', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Re-link', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      this.loading = true;
       const payload = {
         params:{
           userToRelink: this.user.edxUserID,
@@ -364,60 +334,33 @@ export default {
       };
       if (this.instituteTypeCode === 'SCHOOL') {
         const userSchool = this.user.edxUserSchools
-          .find(school => school.schoolID === this.instituteCode);
+            .find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = this.instituteCode;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
         const userDistrict = this.user.edxUserDistricts
-          .find(district => district.districtID === this.instituteCode);
+            .find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
       ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_RELINK_USER, payload)
-        .then(() => {
-          this.setSuccessAlert('User has been removed, email sent with instructions to re-link.');
-        }).catch(error => {
-          this.setFailureAlert(
+          .then(() => {
+            this.setSuccessAlert('User has been removed, email sent with instructions to re-link.');
+          }).catch(error => {
+        this.setFailureAlert(
             'An error occurred while re-linking a user. Please try again later.'
-          );
-          console.log(error);
-        }).finally(() => {
-          setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
-        });
-    },
-    clickRemoveButton() {
-      const payload = {
-        params:{
-          userToRemove: this.user.edxUserID
-        }
-      };
-      if (this.instituteTypeCode === 'SCHOOL') {
-        const userSchool = this.user.edxUserSchools
-          .find(school => school.schoolID === this.instituteCode);
-        payload.params.schoolID = userSchool.schoolID;
-        payload.params.userSchoolID = userSchool.edxUserSchoolID;
-      } else {
-        const userDistrict = this.user.edxUserDistricts
-          .find(district => district.districtID === this.instituteCode);
-        payload.params.districtID = this.instituteCode;
-        payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
-      }
-      ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
-        .then(() => {
-          this.setSuccessAlert('User has been removed.');
-        }).catch(error => {
-          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
-          console.log(error);
-        }).finally(() => {
-          this.$emit('refresh');
-        });
+        );
+        console.log(error);
+      }).finally(() => {
+        setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
+      });
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {
         this.setFailureAlert(`Please select at least one role for ${this.user.firstName}.`);
         return;
       }
-      this.editState = !this.editState;
+      this.editUserSheet = !this.editUserSheet;
       const payload = {
         params: {
           edxUserID: this.user.edxUserID,
@@ -486,6 +429,13 @@ export default {
 .actionButton {
   background-color: #003366;
   color: white;
+}
+
+.sheetHeader {
+  background-color: #003366;
+  color: white;
+  font-size: medium !important;
+  font-weight: bolder !important;
 }
 
 .bounce-leave-active {
