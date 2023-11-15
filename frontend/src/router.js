@@ -29,7 +29,7 @@ import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue'
 import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
 import StepOneUploadData from './components/sdcCollection/StepOneUploadData.vue';
-import StepTwoValidateData from './components/sdcCollection/StepTwoValidateData.vue';
+import StepTwoViewDataIssues from './components/sdcCollection/stepTwoValidateData/StepTwoViewDataIssues.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
@@ -313,7 +313,7 @@ const router = createRouter({
             {
               path: 'step-2',
               name: 'step-2',
-              component: StepTwoValidateData,
+              component: StepTwoViewDataIssues,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
