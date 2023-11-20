@@ -248,6 +248,8 @@ export default {
   data() {
     return {
       loadingCount: 0,
+      independentArray: [SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS],
+      offshoreArray: [SCHOOL_CATEGORY_CODES.OFFSHORE],
       schoolContactTypes: [],
       schoolContacts: new Map(),
       school: {},
@@ -266,7 +268,7 @@ export default {
       return this.loadingCount !== 0;
     },
     isOffshoreSchool(){
-      return this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      return this.offshoreArray.includes(this.school.schoolCategoryCode);
     }
   },
   watch: {
@@ -274,9 +276,9 @@ export default {
       if (!this.schoolContactTypeCodes) {
         await this.loadSchoolContactTypeCodes();
       }
-      if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE) {
+      if (this.offshoreArray.includes(value?.schoolCategoryCode)) {
         this.schoolContactTypes = this.offshoreSchoolContacts;
-      } else if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.INDEPEND) {
+      } else if (this.independentArray.includes(value?.schoolCategoryCode)) {
         this.schoolContactTypes = this.independentAuthoritySchoolContacts;
       } else {
         this.schoolContactTypes = this.regularSchoolContactTypes;
@@ -306,7 +308,7 @@ export default {
     getThisSchoolsContacts(){
       this.loadingCount += 1;
       this.selectedSchoolId = this.schoolID ? this.schoolID: this.userInfo.activeInstituteIdentifier;
-      ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/` + this.selectedSchoolId)
+      ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/${this.selectedSchoolId}`)
         .then(response => {
           this.schoolContacts = new Map();
           this.school = response.data;
