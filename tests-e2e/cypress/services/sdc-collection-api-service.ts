@@ -28,7 +28,7 @@ export class SdcCollectionApiService {
         console.log(schoolCollection);
         console.log(schoolCollection.school);
 
-        let curDate = LocalDateTime.now();
+        let curDate = LocalDateTime.now().minusDays(2);
         let curCloseDate = curDate.plusDays(2);
 
         const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
