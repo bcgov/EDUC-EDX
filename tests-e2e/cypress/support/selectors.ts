@@ -3,7 +3,13 @@ export default {
     manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
     selectSchoolDropdown: '#selectInstituteName',
-    accessUserFeedback: '.accessUserFeedback'
+    accessUserFeedback: '.accessUserFeedback',
+    sameUserAlert: '#sameUserAlert',
+    noRolesAlert: '#noRolesAlert'
+  },
+  confirmationDialog: {
+    resolveButton: '#resolveBtn',
+    rejectButton: '#rejectBtn'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
@@ -95,6 +101,12 @@ export default {
     hamburgerMenuButton: '#menuBtn',
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
+  },
+  indigenousSupportComponent: {
+    tab: '#indProgTab',
+    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
+    summaryButton: '#indProgSummaryButton'
+
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
