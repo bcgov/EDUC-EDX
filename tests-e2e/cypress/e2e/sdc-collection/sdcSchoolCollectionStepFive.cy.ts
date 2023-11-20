@@ -18,10 +18,19 @@ describe('SDC School Collection View', () => {
         beforeEach(() => cy.login());
 
         it('can load dashboard & click data collection card & process collection', () => {
+            cy.intercept('/api/edx/exchange/count*').as('exchangeLoaded');
+            cy.intercept('/api/sdc/getCollectionBySchoolId/*').as('collectionLoaded');
+            cy.intercept('/api/schools/schoolDetailsById/*').as('schoolDetailsLoaded');
             cy.visit('/');
+            cy.wait('@exchangeLoaded');
+            cy.wait('@collectionLoaded');
+            cy.wait('@schoolDetailsLoaded');
+            cy.wait('@schoolDetailsLoaded');
             cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
             cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
+            cy.intercept('/api/sdc/getCollectionBySchoolId/*').as('collectionLoaded');
             cy.get(selectors.dashboard.dataCollectionsTile).click();
+            cy.wait('@collectionLoaded');
             cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
             cy.url().should('contain', '/step-2');
