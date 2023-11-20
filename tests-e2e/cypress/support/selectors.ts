@@ -3,13 +3,7 @@ export default {
     manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
     selectSchoolDropdown: '#selectInstituteName',
-    accessUserFeedback: '.accessUserFeedback',
-    sameUserAlert: '#sameUserAlert',
-    noRolesAlert: '#noRolesAlert'
-  },
-  confirmationDialog: {
-    resolveButton: '#resolveBtn',
-    rejectButton: '#rejectBtn'
+    accessUserFeedback: '.accessUserFeedback'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
