@@ -94,6 +94,13 @@ export default {
   }
 }
 
+@media screen and (max-width: 1800px) {
+  .containerSetup{
+    padding-right: 10em !important;
+    padding-left: 10em !important;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .containerSetup{
     padding-right: 4em !important;

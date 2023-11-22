@@ -184,7 +184,7 @@
                     variant="underlined"
                     class="py-0"
                     required
-                    :rules="[rules.required(), rules.email()]"
+                    :rules="[rules.email()]"
                     :maxlength="255"
                   />
                 </v-col>
@@ -909,6 +909,13 @@ export default {
   .containerSetup{
     padding-right: 20em !important;
     padding-left: 20em !important;
+  }
+}
+
+@media screen and (max-width: 1800px) {
+  .containerSetup{
+    padding-right: 10em !important;
+    padding-left: 10em !important;
   }
 }
 
