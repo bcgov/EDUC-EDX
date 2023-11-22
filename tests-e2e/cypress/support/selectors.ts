@@ -96,6 +96,12 @@ export default {
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
   },
+  indigenousSupportComponent: {
+    tab: '#indProgTab',
+    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
+    summaryButton: '#indProgSummaryButton'
+
+  },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
     loginButtonMicrosoft: '#login-button-microsoft',

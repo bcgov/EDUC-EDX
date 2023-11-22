@@ -29,7 +29,7 @@ export class SdcCollectionApiService {
         console.log(schoolCollection.school);
 
         let curDate = LocalDateTime.now().minusDays(2);
-        let curCloseDate = curDate.plusDays(2);
+        let curCloseDate = curDate.plusDays(4);
 
         const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
         const collectionsList = await this.restUtils.getData(urlGetCollections);
@@ -297,7 +297,7 @@ export class SdcCollectionApiService {
                             "careerProgramCode": null,
                             "numberOfCourses": "0700",
                             "bandCode": "0684",
-                            "enrolledProgramCodes": "08",
+                            "enrolledProgramCodes": "0829",
                             "sdcSchoolCollectionStudentStatusCode": "LOADED",
                             "isAdult": "false",
                             "isSchoolAged": "true",

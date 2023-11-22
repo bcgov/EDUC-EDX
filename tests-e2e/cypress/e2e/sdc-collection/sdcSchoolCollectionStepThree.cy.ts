@@ -102,6 +102,24 @@ describe('SDC School Collection View', () => {
                     cy.log('Correct career enrolled program value expected')
                 }
             });
+        });
+
+        it('verifies indigenous programs for reported students', () => {
+            cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+            cy.visit('/');
+            cy.get(selectors.dashboard.dataCollectionsTile).click();
+            cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+            cy.get('button[value="Indigenous Students & Support Programs"]').click();
+
+            cy.get(selectors.indigenousSupportComponent.detailsLoadingBar).should('exist');
+            cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+            cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
+                cy.wrap($cell).children().last().invoke('text').then((text) => {
+                    expect(text).to.satisfy((value: string) => {
+                        return value === '29-Aboriginal language and culture';
+                    });
+                });
+            })
 
 
         });
