@@ -173,13 +173,14 @@
         </v-list>
 
         <DatePicker
-            id="accessExpiryDate"
-            v-model="accessExpiryDate"
-            class="pl-7"
-            label="Access Expiry Date"
-            model-type="yyyy-MM-dd'T'00:00:00"
-            :min-date="minExpiryDate"
-            @clear-date="clearExpiryDate"
+          id="accessExpiryDate"
+          v-model="accessExpiryDate"
+          class="pl-7"
+          label="Access Expiry Date"
+          model-type="yyyy-MM-dd'T'00:00:00"
+          :min-date="minExpiryDate"
+          :allow-teleport="true"
+          @clear-date="clearExpiryDate"
         />
         <v-row no-gutters class="py-4 justify-end">
           <v-col class="mt-0 d-flex justify-end">
