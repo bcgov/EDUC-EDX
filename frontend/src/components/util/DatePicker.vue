@@ -30,12 +30,17 @@ export default defineComponent({
     modelType: {
       type: String,
       required: true
+    },
+    allowTeleport: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
-  emits: ['update:modelValue', 'clearDate'],
+  emits: ['update:model-value', 'clearDate'],
   methods: {
     saveDate(newDate) {
-      this.$emit('update:modelValue', newDate);
+      this.$emit('update:model-value', newDate);
     }
   }
 });
@@ -46,6 +51,7 @@ export default defineComponent({
     :model-value="modelValue"
     :enable-time-picker="false"
     :model-type="modelType"
+    :menu-class-name="allowTeleport ? 'teleport-datepicker' : ''"
     format="yyyy/MM/dd"
     preview-format="yyyy/MM/dd"
     :text-input="{
@@ -57,9 +63,9 @@ export default defineComponent({
     :clearable="false"
     :min-date="minDate"
     :max-date="maxDate"
-    auto-apply
     position="left"
-    :auto-position="true"
+    :teleport="allowTeleport ? '.v-overlay-container' : false"
+    auto-apply
     @update:model-value="saveDate"
   >
     <template #dp-input="{ value, onInput, onEnter, onTab }">
@@ -86,5 +92,14 @@ export default defineComponent({
   position: relative;
   width: 100%;
   box-sizing: border-box;
+}
+.dp__action_row .dp__action_buttons .dp__action_select {
+  color: var(--dp-primary-text-color);
+}
+</style>
+<style>
+.teleport-datepicker {
+  pointer-events: auto;
+  position: fixed;
 }
 </style>
