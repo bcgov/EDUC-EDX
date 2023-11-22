@@ -225,7 +225,7 @@
                   variant="underlined"
                   class="py-0"
                   required
-                  :rules="[rules.required(), rules.email()]"
+                  :rules="[rules.email()]"
                   :maxlength="255"
                 />
               </v-col>
@@ -581,37 +581,6 @@
                   dense
                   class="pt-0 mt-0"
                 />
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col
-            cols="4"
-            lg="3"
-            class="pb-0 pt-0"
-          >
-            <v-row
-              no-gutters
-              class="d-flex justify-start"
-            >
-              <v-col
-                cols="10"
-                class="d-flex justify-start"
-              >
-                <span style="color: grey">Reporting Requirement</span>
-              </v-col>
-            </v-row>
-            <v-row
-              no-gutters
-              class="pt-2"
-            >
-              <v-col
-                cols="10"
-                class="d-flex justify-start"
-              >
-                <span
-                  class="ministryLine"
-                  style="color: black"
-                >{{ schoolReportingRequirementType.label || '' }}</span>
               </v-col>
             </v-row>
           </v-col>

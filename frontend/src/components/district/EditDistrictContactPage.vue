@@ -9,11 +9,12 @@
         ref="editContactForm"
         v-model="isFormValid"
       >
-        <v-row class="d-flex justify-center">
-          <v-col>
+        <v-row>
+          <v-col cols="12">
             <v-alert
+              width="100%"
+              density="compact"
               color="#E9EBEF"
-              dense
               type="info"
             >
               <p style="color: #003366">

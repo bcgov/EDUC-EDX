@@ -40,6 +40,7 @@
             item-title="schoolCodeName"
             :items="schoolSearchNames"
             :clearable="true"
+            @update:model-value="searchButtonClick"
           >
             <template #prepend-inner>
               <v-icon
@@ -79,6 +80,7 @@
             item-value="code"
             label="Status"
             variant="underlined"
+            @update:model-value="searchButtonClick"
             :menu-props="{
               closeOnClick: true,
               closeOnContentClick: true,
@@ -118,6 +120,7 @@
             :clearable="true"
             variant="underlined"
             :items="schoolActiveFacilityTypes"
+            @update:model-value="searchButtonClick"
             item-title="label"
             item-value="facilityTypeCode"
             label="Facility Type"
@@ -514,6 +517,7 @@ export default {
 
       this.schoolStatusFilter = [];
       this.schoolStatusFilter.push(item.raw);
+      this.searchButtonClick();
     },
     clearButtonClick() {
       this.schoolCodeNameFilter = null;
