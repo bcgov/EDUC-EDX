@@ -12,9 +12,8 @@
         :cancel="cancel"
       >
         <v-toolbar
-          :dark="options.dark"
-          :color="options.color"
           :dense="options.dense"
+          class="header"
           flat
         >
           <v-toolbar-title :class="{'text-white': options.dark, 'align-self-end': options.closeIcon, 'font-weight-bold': options.titleBold, 'dialog-subtitle': options.subtitle}">
@@ -121,5 +120,12 @@ export default {
 
   :deep(.v-toolbar-title__placeholder){
     overflow: visible;
+  }
+
+  .header {
+    background-color: #003366;
+    color: white;
+    font-size: medium !important;
+    font-weight: bolder !important;
   }
 </style>
