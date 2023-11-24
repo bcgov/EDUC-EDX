@@ -69,7 +69,7 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.dashboard.dataCollectionsTile).click();
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
             cy.get('button[value="French Programs"]').click();
-            cy.get(selectors.frenchComponent.detailsLoadingBar).should('exist');
+            cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
             cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
             cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
                 cy.wrap($cell).children().last().invoke('text').then((text) => {
@@ -111,7 +111,7 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
             cy.get('button[value="Indigenous Students & Support Programs"]').click();
 
-            cy.get(selectors.indigenousSupportComponent.detailsLoadingBar).should('exist');
+            cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
             cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
             cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
                 cy.wrap($cell).children().last().invoke('text').then((text) => {
@@ -120,8 +120,24 @@ describe('SDC School Collection View', () => {
                     });
                 });
             })
+        });
 
+        it('verifies special education category for reported students', () => {
+            cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+            cy.visit('/');
+            cy.get(selectors.dashboard.dataCollectionsTile).click();
+            cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+            cy.get('button[value="Special Education"]').click();
 
+            cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+            cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+            cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
+                cy.wrap($cell).children().last().invoke('text').then((text) => {
+                    expect(text).to.satisfy((value: string) => {
+                        return value === 'A-Physically dependent' || value === 'G-Autism spectrum disorder';
+                    });
+                });
+            })
         });
     });
 });

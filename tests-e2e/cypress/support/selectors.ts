@@ -76,7 +76,6 @@ export default {
   },
   frenchComponent: {
     tab: '#frenchTab',
-    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     summaryButton: '#frenchSummaryButton',
     headcountHeaderList: '.french-headcount-header',
     headcountHeaderColumn: '.french-headcount-header-column'
@@ -98,9 +97,7 @@ export default {
   },
   indigenousSupportComponent: {
     tab: '#indProgTab',
-    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     summaryButton: '#indProgSummaryButton'
-
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -228,7 +225,12 @@ export default {
   snackbar: {
     mainSnackBar: '#mainSnackBar'
   },
+  specialEducationComponent: {
+    tab: '#specialEdTab',
+    summaryButton: '#specialEdSummaryButton'
+  },
   studentLevelData: {
+    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     documentUploadButton: '#uploadButton',
     documentReUploadButton: '#uploadAgainButton',
     formHint: 'p.form-hint',
