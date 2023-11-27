@@ -360,16 +360,8 @@ export default {
           categoryCode: 'NOFUNDSUPPORT'
         },
         {
-          category: 'No funding for Special Education',
-          categoryCode: 'NOFUNDSPED'
-        },
-        {
           category: 'No funding for Graduated Adults',
           categoryCode: 'NOFUNDGRADADULT'
-        },
-        {
-          category: 'No career program funding',
-          categoryCode: 'NOCAREERPROGFUND'
         }
       ]
     };

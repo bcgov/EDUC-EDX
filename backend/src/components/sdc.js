@@ -277,7 +277,7 @@ function createSearchCriteria(searchParams = []) {
   let fundingWarningCategories = [
     {
       categoryCode: 'NOPROGFUNDINGHS',
-      validationErrors: ['PROGRAMCODEHSLANG', 'PROGRAMCODEHSIND', 'PROGRAMCODEHSCAREER', 'PROGRAMCODEHSSPED']
+      validationErrors: ['PROGRAMCODEHSLANG', 'PROGRAMCODEHSIND', 'PROGRAMCODEHSSPED']
     },
     {
       categoryCode: 'ZEROCOURSE',
@@ -300,16 +300,8 @@ function createSearchCriteria(searchParams = []) {
       validationErrors: ['SUPPORTFACILITYNA', 'ADULTSUPPORTERR', 'CHANGEME']
     },
     {
-      categoryCode: 'NOFUNDSPED',
-      validationErrors: ['SPEDOFFSHOREERR']
-    },
-    {
       categoryCode: 'NOFUNDGRADADULT',
       validationErrors: ['CHANGEME']
-    },
-    {
-      categoryCode: 'NOCAREERPROGFUND',
-      validationErrors: ['CAREEROFFSHOREERR']
     }
   ];
 
