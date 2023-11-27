@@ -119,7 +119,7 @@ export default {
       showStudentDetailsForMinistryStaff:false,
       penNumber: null,
       validForm: false,
-      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v))],
+      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
       studentExist: false,
       student: {},
       alert: false,
