@@ -14,6 +14,7 @@
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert
+              width="100%"
               color="#E9EBEF"
               dense
               type="info"
