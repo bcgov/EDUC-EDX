@@ -3,7 +3,7 @@
     class="containerSetup"
     fluid
   >
-    <div class="border">
+    <div  v-if="!openEditView" class="border">
       <v-row v-if="isLoading()">
         <v-col>
           <Spinner />
@@ -94,7 +94,7 @@
       </v-row>
       <v-row>
         <v-col
-          v-if="nextButtonIsDisabled()"
+          v-if="studentListData?.length > 0"
           class="pr-0"
         >
           <v-row class="searchBox"> 
@@ -163,30 +163,27 @@
             </v-col>
           </v-row>
 
-          <v-row class="justify-end">
-            <v-col
-              cols="3"
-              class="d-flex justify-end"
-            >
+          <v-row justify="end" class="pt-3 pb-3">
               <PrimaryButton
                 id="fixSelected"
-                secondary
                 text="Review & Fix Selected"
+                :click-action="toggleEditView"
+                :disabled="selectedStudents.length === 0"
+                class="mr-4"
               />
-            </v-col>
-
-            <v-col cols="2">
               <PrimaryButton
                 id="fixAll"
-                text="Review &Fix All"
+                text="Review & Fix All"
+                :loading="allIssueLoader"
+                :click-action="getAllIssuesAndNavigate"
+                :disabled="selectedStudents.length != 0"
               />
-            </v-col>
           </v-row>
           <v-row>
             <v-data-table-server
               v-model:items-per-page="pageSize"
               v-model:page="pageNumber"
-              v-model="selected"
+              v-model="selectedStudents"
               :headers="headers"
               :items-length="totalStudents"
               :items="studentListData"
@@ -244,7 +241,7 @@
             </v-data-table-server>
           </v-row>
         </v-col>
-        <v-col v-else-if="!nextButtonIsDisabled()">
+        <v-col v-else>
           <v-alert
             dismissible="true"
             class="clear-message"
@@ -279,6 +276,14 @@
         />
       </v-row>
     </div>
+    <div v-if="openEditView">
+      <EditAndFixStudentData 
+      :selectedStudents="selectedStudents"
+      :totalStudents="totalStudents"
+      @show-issues="refresh"
+      @clear-filter="clearFiltersAndReload"
+      />
+    </div>
   </v-container>
 </template>
   
@@ -291,12 +296,14 @@ import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import {setFailureAlert} from '../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import EditAndFixStudentData from './EditAndFixStudentData.vue'
   
 export default {
   name: 'StepTwoViewDataIssues',
   components: {
     Spinner,
-    PrimaryButton
+    PrimaryButton,
+    EditAndFixStudentData
   },
   props: {
     schoolCollectionObject: {
@@ -308,7 +315,8 @@ export default {
   emits: ['next'],
   data() {
     return {
-      selected: [],
+      selectedStudents: [],
+      openEditView: false,
       headers: [
         { title: 'PEN', key: 'studentPen'},
         { title: 'Local ID', key: 'localID'},
@@ -329,6 +337,7 @@ export default {
       selectedSdcStudentIndex: 0,
       fundingWarningCategoryFilter: null,
       loadingCount: 0,
+      allIssueLoader:false,
       summaryCounts: {error: 0, infoWarning: 0, fundingWarning:0},
       headerSearchParams: {
         penNumber: '',
@@ -388,6 +397,20 @@ export default {
         this.markStepAsComplete();
       }
     },
+    toggleEditView() {
+      this.openEditView = !this.openEditView;
+    },
+    refresh() {
+      this.openEditView = !this.openEditView;
+      this.getSummaryCounts();
+      this.getSDCSchoolCollectionStudentPaginated();
+      this.selectedStudents=[];
+    },
+    clearFiltersAndReload() {
+      this.openEditView = !this.openEditView;
+      this.selectedStudents=[];
+      this.getAllIssuesAndNavigate();
+    },
     markStepAsComplete(){
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
@@ -441,6 +464,31 @@ export default {
         setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
       }).finally(() => {
         this.loadingCount -= 1;
+      });
+    },
+    getAllIssuesAndNavigate() {
+      this.allIssueLoader = true;
+      this.headerSearchParams.penNumber = null;
+      this.headerSearchParams.fundingWarningCategory = null;
+  
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
+        params: {
+          pageNumber: 0,
+          pageSize: 2000,
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          sort: {
+            sdcSchoolCollectionStudentStatusCode: 'ASC'
+          },
+          returnKey: 'sdcSchoolCollectionStudentID'
+        }
+      }).then(response => {
+        this.selectedStudents = response.data;
+        this.openEditView = !this.openEditView;
+      }).catch(error => {
+        console.error(error);
+        setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
+      }).finally(() => {
+        this.allIssueLoader = false;
       });
     },
     isLoading(){

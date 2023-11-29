@@ -318,7 +318,8 @@ const router = createRouter({
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
-              }
+              },
+              props: true,
             },
             {
               path: 'step-3',
