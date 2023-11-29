@@ -326,7 +326,7 @@ function createSearchCriteria(searchParams = []) {
       searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
-      searchCriteriaList.push({key: 'sdcSchoolCollectionStudentStatusCode', operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'fundingWarningCategory') {
       let fundingCat = fundingWarningCategories.filter(function(fund){
