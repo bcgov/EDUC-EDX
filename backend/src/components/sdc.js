@@ -128,6 +128,10 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     };
     
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
+    if(req?.query?.returnKey) {
+      let result = data?.content.map((student) => student[req?.query?.returnKey]);
+      return res.status(HttpStatus.OK).json(result);
+    }
 
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
@@ -322,7 +326,7 @@ function createSearchCriteria(searchParams = []) {
       searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
-      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({key: 'sdcSchoolCollectionStudentStatusCode', operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if (key === 'fundingWarningCategory') {
       let fundingCat = fundingWarningCategories.filter(function(fund){
