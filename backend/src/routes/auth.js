@@ -58,8 +58,8 @@ function addOIDCRouterActivate(strategyName, callbackURI, redirectURL) {
 
 addOIDCRouterActivate('oidcBceidActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
 addOIDCRouterActivate('oidcBceidActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
-addOIDCRouterActivateWithTenant('oidcEntraActivateUser', '/callback_activate_user', `${config.get('server:frontend')}/user-activation`);
-addOIDCRouterActivateWithTenant('oidcEntraActivateDistrictUser', '/callback_activate_district_user', `${config.get('server:frontend')}/district-user-activation`);
+addOIDCRouterActivateWithTenant('oidcEntraActivateUser', '/callback_activate_entra_user', `${config.get('server:frontend')}/user-activation`);
+addOIDCRouterActivateWithTenant('oidcEntraActivateDistrictUser', '/callback_activate_entra_district_user', `${config.get('server:frontend')}/district-user-activation`);
 
 router.get('/callback_bceid',
   passport.authenticate('oidcBceid', {
