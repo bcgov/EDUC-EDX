@@ -123,7 +123,7 @@ jobs:
         
         oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }}
         oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }}
-        echo Route is: ${{ env.HOST_ROUTE }}
+
         # Process and apply deployment template
         oc process -f tools/openshift/backend.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ steps.get-latest-tag.outputs.tag }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }}\
         | oc apply -f -
