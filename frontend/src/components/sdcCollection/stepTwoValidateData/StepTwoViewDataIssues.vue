@@ -98,7 +98,7 @@
           class="pr-0"
         >
           <v-row class="searchBox"> 
-            <v-col class="mx-4 mt-1">
+            <v-col class="mx-4 pb-6">
               <v-row>
                 <v-col class="d-flex justify-center">
                   <v-select
@@ -108,8 +108,8 @@
                     item-title="category"
                     item-value="categoryCode"
                     label="Funding Warning Category"
-                    density="compact"
                     variant="underlined"
+                    hide-details="auto"
                   />
                 </v-col>
 
@@ -118,8 +118,8 @@
                     id="legalUsualNameSearch"
                     v-model="legalUsualNameFilter"
                     label="Legal or Usual Name"
-                    density="compact"
                     variant="underlined"
+                    hide-details="auto"
                   />
                 </v-col>
 
@@ -130,32 +130,35 @@
                   <v-text-field
                     id="penSearch"
                     v-model="penFilter"
-                    label="PEN"
-                    density="compact"
+                    label="PEN or Local ID"
                     variant="underlined"
+                    hide-details="auto"
                   />
                 </v-col>
 
                 <v-col
                   cols="1"
-                  class="d-flex justify-end"
+                  align-self="end"
                 >
                   <PrimaryButton
                     id="clearSearch"
                     :click-action="clearSearchFields"
                     secondary
-                    width="3em"
+                    width="100%"
                     text="Clear"
                     class="mr-2"
                   />
                 </v-col>
 
-                <v-col cols="1">
+                <v-col
+                  cols="1"
+                  align-self="end"
+                >
                   <PrimaryButton
                     id="searchButton"
                     :click-action="getSDCSchoolCollectionStudentPaginated"
                     text="Search"
-                    width="6em"
+                    width="100%"
                     class="mr-2"
                   />
                 </v-col>
@@ -444,8 +447,9 @@ export default {
     getSDCSchoolCollectionStudentPaginated(){
       this.loadingCount += 1;
   
-      this.headerSearchParams.penNumber = this.penFilter;
+      this.headerSearchParams.penLocalIdNumber = this.penFilter;
       this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
+      this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
   
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {

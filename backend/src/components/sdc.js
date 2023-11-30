@@ -118,6 +118,19 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
     }];
 
+    if(req.query.searchParams['multiFieldName']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createMultiFieldNameSearchCriteria(req.query.searchParams['multiFieldName'])
+      });
+    }
+    if(req.query.searchParams['penLocalIdNumber']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
+      });
+    }
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -339,6 +352,75 @@ function createSearchCriteria(searchParams = []) {
   });
   return searchCriteriaList;
 }
+function createMultiFieldNameSearchCriteria(nameString) {
+  let searchCriteriaList = [];
+  const nameParts = nameString.split(/\s+/);
+  for (const part of nameParts) {
+    searchCriteriaList.push({
+      key: 'legalFirstName',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'legalMiddleNames',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'legalLastName',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'usualFirstName',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'usualMiddleNames',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'usualLastName',
+      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+      value: `%${part}%`,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+  }
+  return searchCriteriaList;
+}
+
+function createLocalIdPenSearchCriteria(value) {
+  let searchCriteriaList = [];
+  searchCriteriaList.push({
+    key: 'studentPen',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+  searchCriteriaList.push({
+    key: 'localID',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+  return searchCriteriaList;
+}
+
 
 module.exports = {
   getCollectionBySchoolId,
