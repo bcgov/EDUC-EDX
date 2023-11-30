@@ -86,7 +86,7 @@ export const ELL = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
-      { title: 'Language Program', key: 'langProg', subHeader: {title: 'Years in ELL', key: 'years'}},
+      { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: {title: 'Years in ELL', key: 'years'}},
     ],
   }
 );

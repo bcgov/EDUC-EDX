@@ -6,6 +6,6 @@ export const enrolledProgram = Object.freeze({
 
   INDIGENOUS_ENROLLED_PROGRAM_CODES: ['29', '33', '36'],
 
-  ENGLISH_ENROLLED_PROGRAM_CODES:['17'],
+  ENGLISH_ENROLLED_PROGRAM_CODES: ['17'],
 
 });
