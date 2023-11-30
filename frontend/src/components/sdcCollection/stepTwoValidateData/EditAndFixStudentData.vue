@@ -27,24 +27,21 @@
                       large-icon
                       icon="mdi-delete"
                       text="Remove Record"
+                      class="mr-1"
                       :click-action="deleteStudent"
                     />
-      </v-col>
-      <v-col class="d-flex justify-end">
                     <PrimaryButton
                       id="revertChanges"
                       disabled
                       large-icon
                       icon="mdi-arrow-u-left-top"
                       text="Revert Changes"
-                      class="mr-n2"
+                      class="mr-1"
                     />
-                  </v-col>
-
-                  <v-col class="d-flex justify-end">
                     <PrimaryButton
                       id="saveRecord"
                       text="Validate & Save"
+                      class="mr-1"
                       :click-action="save"
                     />
       </v-col>
@@ -352,7 +349,7 @@
                 class="border-opacity-75"
                 vertical
               />
-              <v-col>
+              <v-col v-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues.length > 0">
                 <v-row>
                   <v-col class="pl-0 pr-6 scroll">
                     <v-timeline
@@ -445,6 +442,21 @@
                   </v-col>
                 </v-row>
               </v-col>
+              <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues.length === 0">
+                <v-alert
+                  dismissible="true"
+                  class="clear-message"
+                >
+                  <v-icon
+                    class="mt-2 mr-3"
+                    size="30"
+                    color="darkgreen"
+                  >
+                    mdi-check-circle-outline
+                  </v-icon>
+                  <span class="success-message">There are no errors or warnings on this student record.</span>
+                </v-alert>
+            </v-col>
             </v-row>
             <div class="text-center">
               <v-pagination 
@@ -520,7 +532,7 @@ export default {
       rules: Rules,
       studentDetailsFormValid:false,
       removeIndex: null,
-      enrolledProgramRules: [v => v.length <= 8 || 'Select a maximum of 8 Enrolled Programs']
+      enrolledProgramRules: [v => v?.length <= 8 || 'Select a maximum of 8 Enrolled Programs']
     };
   },
   computed: {
@@ -579,6 +591,7 @@ export default {
         });
     },
     save(){
+      this.loadingCount += 1;
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then(() => {
           setSuccessAlert('Success! The student details have been updated.');
@@ -586,7 +599,8 @@ export default {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
         }).finally(() => {
-          this.selectedSdcStudentID = null;
+          this.loadingCount -= 1;
+          this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
         });
     },
     async deleteStudent(){
@@ -714,8 +728,10 @@ export default {
   }
 
   .clear-message {
-    background-color: #bee7be;
-    padding: 5px;
+    border: 1px solid darkgreen;
+    color: darkgreen;
+    background-color: transparent;
+    padding: 10px;
   }
 
  .inner-border {
@@ -746,6 +762,10 @@ export default {
 
   .filter-text:hover {
   text-decoration: underline;
-}
+  }
+
+  .success-message{
+    vertical-align: sub;
+   }
 
 </style>
