@@ -11,7 +11,7 @@ export const FTE = Object.freeze(
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
     ],
     headcountEndpoint: 'enrollment'
-  }  
+  }
 );
 
 export const FRENCH_PR = Object.freeze(
@@ -27,7 +27,7 @@ export const FRENCH_PR = Object.freeze(
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram'},
     ],
     headcountEndpoint: 'french'
-  }  
+  }
 );
 
 export const CAREER_PR = Object.freeze(
@@ -42,7 +42,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerProgramCode'}},
     ],
-  }  
+  }
 );
 
 export const INDSUPPORT_PR = Object.freeze(
@@ -58,7 +58,7 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: {title: 'Band Code', key: 'mappedBandCode'}},
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram'},
     ],
-  }  
+  }
 );
 
 export const SPECIALED_PR = Object.freeze(
@@ -73,22 +73,22 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Special Education Category', key: 'mappedSpedCode'},
     ],
-  }  
+  }
 );
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: {label: 'ELL', description: 'English Language Learner' },
+    defaultFilter: { label: 'ELL', description: 'English Language Learner' },
     tableHeaders: [
       { title: 'select', key: 'select' },
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'ellProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Language Program', key: 'langProg', subHeader: {title: 'Years in ELL', key: 'years'}},
     ],
-  }  
+  }
 );
 
 export const REFUGEE = Object.freeze(
@@ -102,5 +102,5 @@ export const REFUGEE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}}
     ],
-  }  
+  }
 );
