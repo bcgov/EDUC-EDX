@@ -21,35 +21,33 @@
           >Return to List of Data Issues</a>
         </v-col>
         <v-col class="d-flex justify-end">
-                    <PrimaryButton
-                      id="removeRecord"
-                      secondary
-                      large-icon
-                      icon="mdi-delete"
-                      text="Remove Record"
-                      class="mr-1"
-                      :click-action="deleteStudent"
-                    />
-                    <PrimaryButton
-                      id="revertChanges"
-                      disabled
-                      large-icon
-                      icon="mdi-arrow-u-left-top"
-                      text="Revert Changes"
-                      class="mr-1"
-                    />
-                    <PrimaryButton
-                      id="saveRecord"
-                      text="Validate & Save"
-                      class="mr-1"
-                      :click-action="save"
-                    />
-      </v-col>
+          <PrimaryButton
+            id="removeRecord"
+            secondary
+            large-icon
+            icon="mdi-delete"
+            text="Remove Record"
+            class="mr-1"
+            :click-action="deleteStudent"
+          />
+          <PrimaryButton
+            id="revertChanges"
+            disabled
+            large-icon
+            icon="mdi-arrow-u-left-top"
+            text="Revert Changes"
+            class="mr-1"
+          />
+          <PrimaryButton
+            id="saveRecord"
+            text="Validate & Save"
+            class="mr-1"
+            :click-action="save"
+          />
+        </v-col>
       </v-row>
       <v-row>
-        
-        <v-col
-        >
+        <v-col>
           <Spinner v-if="isLoading()" />
           <div
             v-else
@@ -60,287 +58,287 @@
                   ref="studentDetailsForm"
                   v-model="studentDetailsFormValid"
                 >
-                <v-row>
-                  <v-col cols="12">
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="studentPen"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
-                          label="PEN"
-                          variant="underlined"
-                          :maxlength="9"
-                          :rules="penRules"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="localID"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.localID"
-                          label="Local ID"
-                          variant="underlined"
-                          :maxlength="12"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <DatePicker
-                          v-model="sdcSchoolCollectionStudentDetailCopy.dob"
-                          label="Birthdate"
-                          :rules="[rules.required()]"
-                          model-type="yyyyMMdd"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-select
-                          id="gender"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.gender"
-                          :items="sdcCollection.genderCodes"
-                          item-value="genderCode"
-                          item-title="dropdownText"
-                          label="Gender"
-                          dense
-                          variant="underlined"
-                          :rules="[rules.required()]"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="legalLastName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
-                          label="Legal Surname"
-                          variant="underlined"
-                          :rules="[rules.required()]"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="usualLastName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
-                          label="Usual Surname"
-                          variant="underlined"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="legalFirstName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
-                          label="Legal Given"
-                          variant="underlined"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="usualFirstName"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
-                          label="Usual Given"
-                          variant="underlined"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="legalMiddleNames"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
-                          label="Legal Middle"
-                          variant="underlined"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="usualMiddleNames"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
-                          label="Usual Middle"
-                          variant="underlined"
-                          :maxlength="225"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-select
-                          id="enrolledGradeCode"
-                          label="Grade"
-                          variant="underlined"
-                          dense
-                          v-model="sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode"
-                          :items="sdcCollection.enrolledGradeCodes"
-                          item-value="enrolledGradeCode"
-                          item-title="dropdownText"
-                          :rules="[rules.required()]"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-select
-                          id="schoolFundingCode"
-                          label="Funding Code"
-                          dense
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.schoolFundingCode"
-                          :items="sdcCollection.schoolFundingCodes"
-                          item-value="schoolFundingCode"
-                          item-title="dropdownText"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="numberOfCourses"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
-                          label="Number of Courses"
-                          variant="underlined"
-                          :maxlength="4"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="otherCourses"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
-                          label="Other Courses"
-                          variant="underlined"
-                          :maxlength="1"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          id="supportBlocks"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
-                          label="Support Blocks"
-                          variant="underlined"
-                          :maxlength="1"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-select
-                          id="specialEducationCategoryCode"
-                          label="Special Ed. Category"
-                          dense
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode"
-                          :items="sdcCollection.specialEducationCodes"
-                          item-value="specialEducationCategoryCode"
-                          item-title="dropdownText"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-select
-                          id="nativeAncestryInd"
-                          label="Indigenous Ancestry"
-                          dense
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
-                          :items="sdcCollection.ancestryItems"
-                          item-value="code"
-                          item-title="dropdownText"
-                          class="mt-n3"
-                          :rules="[rules.required()]"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-select
-                          id="bandCode"
-                          label="Band of Residence"
-                          dense
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.bandCode"
-                          :items="sdcCollection.bandCodes"
-                          item-value="bandCode"
-                          item-title="dropdownText"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-select
-                          id="homeLanguageSpokenCode"
-                          label="Home Language"
-                          dense
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode"
-                          :items="sdcCollection.homeLanguageSpokenCodes"
-                          item-value="homeLanguageSpokenCode"
-                          item-title="dropdownText"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          id="postalCode"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
-                          label="Postal Code"
-                          variant="underlined"
-                          :maxlength="6"
-                          class="mt-n3"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-select
-                          id="careerProgramCode"
-                          label="Career Code"
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.careerProgramCode"
-                          :items="sdcCollection.careerProgramCodes"
-                          item-value="careerProgramCode"
-                          item-title="dropdownText"
-                          dense
-                          class="mt-n3"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-select
-                          id="filteredEnrolledProgramCodes"
-                          label="Program Codes"
-                          variant="underlined"
-                          v-model="sdcSchoolCollectionStudentDetailCopy.filteredEnrolledProgramCodes"
-                          :items="sdcCollection.enrolledProgramCodes"
-                          item-value="enrolledProgramCode"
-                          item-title="dropdownText"
-                          multiple
-                          dense
-                          class="mt-n3"
-                          :rules="enrolledProgramRules"
-                          @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
-                        />
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-form>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="studentPen"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
+                            label="PEN"
+                            variant="underlined"
+                            :maxlength="9"
+                            :rules="penRules"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="localID"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.localID"
+                            label="Local ID"
+                            variant="underlined"
+                            :maxlength="12"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <DatePicker
+                            v-model="sdcSchoolCollectionStudentDetailCopy.dob"
+                            label="Birthdate"
+                            :rules="[rules.required()]"
+                            model-type="yyyyMMdd"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            id="gender"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.gender"
+                            :items="sdcCollection.genderCodes"
+                            item-value="genderCode"
+                            item-title="dropdownText"
+                            label="Gender"
+                            dense
+                            variant="underlined"
+                            :rules="[rules.required()]"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="legalLastName"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.legalLastName"
+                            label="Legal Surname"
+                            variant="underlined"
+                            :rules="[rules.required()]"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="usualLastName"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
+                            label="Usual Surname"
+                            variant="underlined"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="legalFirstName"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
+                            label="Legal Given"
+                            variant="underlined"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="usualFirstName"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
+                            label="Usual Given"
+                            variant="underlined"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="legalMiddleNames"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
+                            label="Legal Middle"
+                            variant="underlined"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="usualMiddleNames"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
+                            label="Usual Middle"
+                            variant="underlined"
+                            :maxlength="225"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-select
+                            id="enrolledGradeCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode"
+                            label="Grade"
+                            variant="underlined"
+                            dense
+                            :items="sdcCollection.enrolledGradeCodes"
+                            item-value="enrolledGradeCode"
+                            item-title="dropdownText"
+                            :rules="[rules.required()]"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            id="schoolFundingCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.schoolFundingCode"
+                            label="Funding Code"
+                            dense
+                            variant="underlined"
+                            :items="sdcCollection.schoolFundingCodes"
+                            item-value="schoolFundingCode"
+                            item-title="dropdownText"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="numberOfCourses"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
+                            label="Number of Courses"
+                            variant="underlined"
+                            :maxlength="4"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="otherCourses"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
+                            label="Other Courses"
+                            variant="underlined"
+                            :maxlength="1"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            id="supportBlocks"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
+                            label="Support Blocks"
+                            variant="underlined"
+                            :maxlength="1"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            id="specialEducationCategoryCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode"
+                            label="Special Ed. Category"
+                            dense
+                            variant="underlined"
+                            :items="sdcCollection.specialEducationCodes"
+                            item-value="specialEducationCategoryCode"
+                            item-title="dropdownText"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-select
+                            id="nativeAncestryInd"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
+                            label="Indigenous Ancestry"
+                            dense
+                            variant="underlined"
+                            :items="sdcCollection.ancestryItems"
+                            item-value="code"
+                            item-title="dropdownText"
+                            class="mt-n3"
+                            :rules="[rules.required()]"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            id="bandCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.bandCode"
+                            label="Band of Residence"
+                            dense
+                            variant="underlined"
+                            :items="sdcCollection.bandCodes"
+                            item-value="bandCode"
+                            item-title="dropdownText"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-select
+                            id="homeLanguageSpokenCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode"
+                            label="Home Language"
+                            dense
+                            variant="underlined"
+                            :items="sdcCollection.homeLanguageSpokenCodes"
+                            item-value="homeLanguageSpokenCode"
+                            item-title="dropdownText"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            id="postalCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.postalCode"
+                            label="Postal Code"
+                            variant="underlined"
+                            :maxlength="6"
+                            class="mt-n3"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <v-select
+                            id="careerProgramCode"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.careerProgramCode"
+                            label="Career Code"
+                            variant="underlined"
+                            :items="sdcCollection.careerProgramCodes"
+                            item-value="careerProgramCode"
+                            item-title="dropdownText"
+                            dense
+                            class="mt-n3"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            id="filteredEnrolledProgramCodes"
+                            v-model="sdcSchoolCollectionStudentDetailCopy.filteredEnrolledProgramCodes"
+                            label="Program Codes"
+                            variant="underlined"
+                            :items="sdcCollection.enrolledProgramCodes"
+                            item-value="enrolledProgramCode"
+                            item-title="dropdownText"
+                            multiple
+                            dense
+                            class="mt-n3"
+                            :rules="enrolledProgramRules"
+                            @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </v-col>
               <v-divider
                 :thickness="1"
@@ -377,7 +375,7 @@
                         </v-row>
                         <v-row>
                           <v-col>
-                            <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }}</span>
+                            <span> {{ getValidationIssueTypeCodesDescription(issue.validationIssueCode) }} </span>
                           </v-col>
                         </v-row>
                         <v-form
@@ -437,6 +435,10 @@
                             </v-col>
                           </v-row>
                         </v-form>
+                        <a
+                          v-if="issue.validationIssueCode==='STUDENTPENDUPLICATE'"
+                          @click="filterByPen"
+                        >Filter to records with this PEN</a>
                       </v-timeline-item>
                     </v-timeline>
                   </v-col>
@@ -460,15 +462,20 @@
             </v-row>
             <div class="text-center">
               <v-pagination 
-              v-model="page" 
-              :length="selectedStudents.length"
-              :total-visible="2" 
-              @update:model-value="navigate"
-              rounded="circle"/>
+                v-model="page"
+                :length="selectedStudents.length"
+                :total-visible="2"
+                rounded="circle"
+                @update:model-value="navigate"
+              />
             </div>
             <div class="text-center">
               <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-              <a class="filter-text" @click="clearFilter()" v-if="selectedStudents.length < totalStudents">- Clear Filters & Show all Records</a>
+              <a
+                v-if="selectedStudents.length < totalStudents"
+                class="filter-text"
+                @click="clearFilter()"
+              >- Clear Filters & Show all Records</a>
             </div>
           </div>
         </v-col>
@@ -517,7 +524,7 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter'],
+  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen'],
   data() {
     return {
       page: 1,
@@ -562,10 +569,10 @@ export default {
       }
     },
     backToDataIssues() {
-      this.$emit('show-issues')
+      this.$emit('show-issues');
     },
     clearFilter() {
-      this.$emit('clear-filter')
+      this.$emit('clear-filter');
     },
     navigate() {
       this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.page - 1]);
@@ -624,7 +631,7 @@ export default {
             this.removeIndex === 0 ? this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[0]) :this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.removeIndex - 1]);
           }
           else {
-            this.$emit('show-issues')
+            this.$emit('show-issues');
           }
         });
     },
@@ -632,6 +639,10 @@ export default {
       if(enrolledProgramCodes) {
         return enrolledProgramCodes.filter(enrolledProgramCode => sdcCollectionStore().enrolledProgramCodesMap.has(enrolledProgramCode));
       }
+    },
+    filterByPen() {
+      this.page=1;
+      this.$emit('filter-pen', this.sdcSchoolCollectionStudentDetailCopy.studentPen);
     },
     syncWithEnrolledProgramCodeOnUserInput(value){
       this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = value;

@@ -281,10 +281,11 @@
     </div>
     <div v-if="openEditView">
       <EditAndFixStudentData 
-      :selectedStudents="selectedStudents"
-      :totalStudents="totalStudents"
-      @show-issues="refresh"
-      @clear-filter="clearFiltersAndReload"
+        :selectedStudents="selectedStudents"
+        :totalStudents="totalStudents"
+        @show-issues="refresh"
+        @clear-filter="clearFiltersAndReload"
+        @filter-pen="filterStudentsByPen"
       />
     </div>
   </v-container>
@@ -299,7 +300,7 @@ import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import {setFailureAlert} from '../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import EditAndFixStudentData from './EditAndFixStudentData.vue'
+import EditAndFixStudentData from './EditAndFixStudentData.vue';
   
 export default {
   name: 'StepTwoViewDataIssues',
@@ -413,6 +414,9 @@ export default {
       this.openEditView = !this.openEditView;
       this.selectedStudents=[];
       this.getAllIssuesAndNavigate();
+    },
+    filterStudentsByPen(pen) {
+      this.selectedStudents = this.studentListData.filter(x=>x.studentPen === pen).map(x=>x.sdcSchoolCollectionStudentID);
     },
     markStepAsComplete(){
       let updateCollection = {
