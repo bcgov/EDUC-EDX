@@ -353,51 +353,27 @@ function createSearchCriteria(searchParams = []) {
   return searchCriteriaList;
 }
 function createMultiFieldNameSearchCriteria(nameString) {
-  let searchCriteriaList = [];
   const nameParts = nameString.split(/\s+/);
+  const fieldNames = [
+    'legalFirstName',
+    'legalMiddleNames',
+    'legalLastName',
+    'usualFirstName',
+    'usualMiddleNames',
+    'usualLastName'
+  ];
+
+  const searchCriteriaList = [];
   for (const part of nameParts) {
-    searchCriteriaList.push({
-      key: 'legalFirstName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-    searchCriteriaList.push({
-      key: 'legalMiddleNames',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-    searchCriteriaList.push({
-      key: 'legalLastName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-    searchCriteriaList.push({
-      key: 'usualFirstName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-    searchCriteriaList.push({
-      key: 'usualMiddleNames',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-    searchCriteriaList.push({
-      key: 'usualLastName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
+    for (const fieldName of fieldNames) {
+      searchCriteriaList.push({
+        key: fieldName,
+        operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+        value: `%${part}%`,
+        valueType: VALUE_TYPE.STRING,
+        condition: CONDITION.OR
+      });
+    }
   }
   return searchCriteriaList;
 }
