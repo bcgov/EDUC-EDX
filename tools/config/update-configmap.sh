@@ -19,7 +19,6 @@ then
   siteMinderLogoutUrl="https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
 else
   SERVER_FRONTEND="https://educationdataexchange.gov.bc.ca"
-  HOST_ROUTE="educationdataexchange.gov.bc.ca"
   siteMinderLogoutUrl="https://logon7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
 fi
 NATS_CLUSTER=educ_nats_cluster
