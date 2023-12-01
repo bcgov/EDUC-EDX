@@ -944,6 +944,8 @@ function mapEdxUserActivationErrorMessage(message) {
   const msg = message || 'INTERNAL SERVER ERROR';
   if (msg.includes('EdxActivationCode was not found for parameters')) {
     return 'Incorrect activation details have been entered. Please try again.';
+  } else if (msg.includes('Invalid code provided.')) {
+    return 'Incorrect activation details have been entered. Please try again.';
   } else if (msg.includes('This Activation Code has expired')) {
     return 'Your activation code has expired. Please contact your administrator for a new activation code.';
   } else if (msg.includes('This User Activation Link has expired')) {
