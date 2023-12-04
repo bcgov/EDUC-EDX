@@ -86,7 +86,7 @@
                 class="d-flex flex-wrap justify-space-evenly"
                 style="text-align: center;"
               >
-                <span style="font-size: x-large">{{ totalStudents }}</span>
+                <span style="font-size: x-large">{{ numIssueStudentsInCollection }}</span>
               </v-col>
             </v-row>
           </v-row>
@@ -282,7 +282,7 @@
     <div v-if="openEditView">
       <EditAndFixStudentData 
         :selectedStudents="selectedStudents"
-        :totalStudents="totalStudents"
+        :totalStudents="numIssueStudentsInCollection"
         @show-issues="refresh"
         @clear-filter="clearFiltersAndReload"
         @filter-pen="filterStudentsByPen"
@@ -334,6 +334,7 @@ export default {
       pageSize: 10,
       studentListData: [],
       totalStudents: 0,
+      numIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
       legalUsualNameFilter: null,
       penFilter: null,
@@ -388,9 +389,10 @@ export default {
     },
   },
   mounted() {
-    sdcCollectionStore().getCodes().then(() => {
+    sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
-      this.getSDCSchoolCollectionStudentPaginated();
+      await this.getSDCSchoolCollectionStudentPaginated();
+      this.numIssueStudentsInCollection = this.totalStudents;
     });
   },
   methods: {
@@ -413,10 +415,18 @@ export default {
     clearFiltersAndReload() {
       this.openEditView = !this.openEditView;
       this.selectedStudents=[];
+      this.penFilter = '';
+      this.fundingWarningCategoryFilter = '';
+      this.legalUsualNameFilter = '';
       this.getAllIssuesAndNavigate();
     },
-    filterStudentsByPen(pen) {
-      this.selectedStudents = this.studentListData.filter(x=>x.studentPen === pen).map(x=>x.sdcSchoolCollectionStudentID);
+    async filterStudentsByPen(pen) {
+      this.openEditView = !this.openEditView;
+      this.selectedStudents=[];
+      this.penFilter = pen;
+      this.fundingWarningCategoryFilter = '';
+      this.legalUsualNameFilter = '';
+      await this.getAllIssuesAndNavigate();
     },
     markStepAsComplete(){
       let updateCollection = {
@@ -448,14 +458,13 @@ export default {
         this.loadingCount -= 1;
       });
     },
-    getSDCSchoolCollectionStudentPaginated(){
+    async getSDCSchoolCollectionStudentPaginated(){
       this.loadingCount += 1;
-  
       this.headerSearchParams.penLocalIdNumber = this.penFilter;
       this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
       this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
-  
-      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
+
+      await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
@@ -476,8 +485,9 @@ export default {
     },
     getAllIssuesAndNavigate() {
       this.allIssueLoader = true;
-      this.headerSearchParams.penNumber = null;
-      this.headerSearchParams.fundingWarningCategory = null;
+      this.headerSearchParams.penLocalIdNumber = this.penFilter;
+      this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
+      this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
   
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
