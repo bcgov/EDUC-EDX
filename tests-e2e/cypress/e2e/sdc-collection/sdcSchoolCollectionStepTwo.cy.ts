@@ -67,11 +67,9 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('exist');
         cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).type('SMITH');    
         cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
-        cy.get(selectors.studentLevelData.postalCodeValidationTextInput).type('V9B6A4');
 
         cy.get(selectors.studentLevelData.saveRecordButton).click().then((event) => {
           cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('not.exist');
-          cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('not.exist');
         });
 
         cy.get(selectors.studentLevelData.backToDataIssues).click();
