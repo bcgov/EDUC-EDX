@@ -626,7 +626,7 @@ export default {
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
         }).finally(() => {
           this.loadingCount -= 1;
-          if(this.studeselectedStudentsnts.length > 0) {
+          if(this.selectedStudents.length > 0) {
             this.page = (this.page  === 1 ? 1 : this.page - 1);
             this.removeIndex === 0 ? this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[0]) :this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.removeIndex - 1]);
           }

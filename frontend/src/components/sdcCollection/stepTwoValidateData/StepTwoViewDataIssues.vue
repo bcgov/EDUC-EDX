@@ -40,7 +40,7 @@
                   >
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span style="font-size: x-large">{{ summaryCounts.error }}</span>
+                  <span id="errorCount" style="font-size: x-large">{{ summaryCounts.error }}</span>
                 </div>
                 <div class="divider flex-grow-1">
                   <span class="section-heading">Funding Warnings</span>
@@ -51,7 +51,7 @@
                   >
                     mdi-alert-outline
                   </v-icon>
-                  <span style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
+                  <span id="fundingWarningCount" style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
                 </div>
                 <div class="flex-grow-1">
                   <span class="section-heading">Info Warnings</span>
@@ -62,7 +62,7 @@
                   >
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
+                  <span id="infoWarningCount" style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
                 </div>
               </v-col>
             </v-row>
@@ -86,7 +86,7 @@
                 class="d-flex flex-wrap justify-space-evenly"
                 style="text-align: center;"
               >
-                <span style="font-size: x-large">{{ numIssueStudentsInCollection }}</span>
+                <span id="totalStudentsWithIssuesCount" style="font-size: x-large">{{ numIssueStudentsInCollection }}</span>
               </v-col>
             </v-row>
           </v-row>
@@ -225,10 +225,10 @@
               </template>
               
               <template #item.legalName="{ item }">
-                {{ getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
+                {{  item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
               </template>
               <template #item.usualName="{ item }">
-                {{ getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
+                {{ item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
               </template>
               <template #item.error="{ item }">
                 <td class="td-class">
@@ -527,6 +527,16 @@ export default {
         return last + '(' + middle + ')';
       }else if(last){
         return last;
+      }
+      return '';
+    },
+    getNameWithoutSurname(first, middle) {
+      if(first && middle){
+        return first + '(' + middle + ')';
+      }else if(first){
+        return first;
+      }else if(middle){
+        return '(' + middle + ')';
       }
       return '';
     },
