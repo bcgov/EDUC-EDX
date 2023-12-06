@@ -100,7 +100,7 @@ edxServiceClientSecret=$(curl -sX GET "https://$SOAM_KC/auth/admin/realms/$SOAM_
   -H "Authorization: Bearer $TKN" \
   | jq -r '.value')
 
-termsOfUseURL="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/education-data-exchange-engagement#terms"
+termsOfUseURL="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/education-data-exchange-engagement#Termsofuse"
 helpURL="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/education-data-exchange-engagement"
 if [ "$envValue" = "dev" ]
 then
