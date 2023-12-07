@@ -171,7 +171,10 @@
         cols="12"
         class="pb-0"
       >
-        <v-card class="add-new-user d-flex h-100" style="min-height: 12em">
+        <v-card
+          class="add-new-user d-flex h-100"
+          style="min-height: 12em"
+        >
           <v-row
             align="center"
             justify="center"
