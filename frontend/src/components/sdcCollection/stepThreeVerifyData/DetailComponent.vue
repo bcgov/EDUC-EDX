@@ -230,6 +230,7 @@ export default {
       student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
       student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.yearsInEll = student.sdcStudentEll ? student.sdcStudentEll.yearsInEll : '';
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
