@@ -7,7 +7,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <span style="white-space: break-spaces">
-            <strong class="contactName">{{ `${user.firstName} ${user.lastName}` }}</strong>
+            <strong class="contactName">{{ userDisplayName }}</strong>
           </span>
         </v-col>
         <v-row no-gutters>
@@ -64,9 +64,13 @@
     </ConfirmationDialog>
     <ConfirmationDialog ref="confirmRelinkUser">
       <template #message>
-        <p class="mb-4">Re-linking an account will remove the current user and resend the activation code so
-          that the user can set up EDX access with their new credentials.</p>
-        <p class="font-weight-bold">Are you sure you want to re-link this account?</p>
+        <p class="mb-4">
+          Re-linking an account will remove the current user and resend the activation code so
+          that the user can set up EDX access with their new credentials.
+        </p>
+        <p class="font-weight-bold">
+          Are you sure you want to re-link this account?
+        </p>
       </template>
     </ConfirmationDialog>
     <v-spacer />
@@ -83,80 +87,80 @@
         Edit
       </v-btn>
       <v-btn
-          v-if="isNotSameEdxUser()"
-          :id="`user-remove-button-${user.edxUserID}`"
-          color="red"
-          variant="text"
-          @click="clickDeleteButton"
+        v-if="isNotSameEdxUser()"
+        :id="`user-remove-button-${user.edxUserID}`"
+        color="red"
+        variant="text"
+        @click="clickDeleteButton"
       >
         Remove
       </v-btn>
       <v-btn
-          v-if="isNotSameEdxUser()"
-          :id="`user-relink-button-${user.edxUserID}`"
-          color="#003366"
-          variant="text"
-          @click="clickRelinkButton"
+        v-if="isNotSameEdxUser()"
+        :id="`user-relink-button-${user.edxUserID}`"
+        color="#003366"
+        variant="text"
+        @click="clickRelinkButton"
       >
         Re-link
       </v-btn>
     </v-card-actions>
   </v-card>
   <v-bottom-sheet
-      v-model="editUserSheet"
-      :no-click-animation="true"
-      :inset="true"
-      :persistent="true"
+    v-model="editUserSheet"
+    :no-click-animation="true"
+    :inset="true"
+    :persistent="true"
   >
     <v-card
-        v-if="editUserSheet"
-        id="editUserVCard"
-        class="information-window-v-card"
+      v-if="editUserSheet"
+      id="editUserVCard"
+      class="information-window-v-card"
     >
       <v-card-title
-          id="editUserInviteVCardTitle"
-          class="sheetHeader pt-1 pb-1"
+        id="editUserInviteVCardTitle"
+        class="sheetHeader pt-1 pb-1"
       >
-        Edit {{user.firstName}} {{user.lastName}}
+        Edit {{ userDisplayName }}
       </v-card-title>
       <v-divider />
       <v-card-text>
         <v-alert
-            v-if="!isNotSameEdxUser()"
-            id="logoutAlert"
-            class="mt-4"
-            color="#003366"
-            density="compact"
-            type="info"
-            variant="tonal"
+          v-if="!isNotSameEdxUser()"
+          id="logoutAlert"
+          class="mt-4"
+          color="#003366"
+          density="compact"
+          type="info"
+          variant="tonal"
         >
           <span>For access changes to take effect, you will need to log out and back in.</span>
         </v-alert>
         <v-alert
-            v-if="!minimumRolesSelected"
-            id="logoutAlert"
-            class="mt-4"
-            color="#003366"
-            density="compact"
-            type="info"
-            variant="tonal"
+          v-if="!minimumRolesSelected"
+          id="logoutAlert"
+          class="mt-4"
+          color="#003366"
+          density="compact"
+          type="info"
+          variant="tonal"
         >
-          <span>Please select at least one role for {{ user.firstName }}.</span>
+          <span>Please select at least one role for {{ userDisplayName }}.</span>
         </v-alert>
         <v-list
-            :id="`access-user-roles-${user.edxUserID}`"
-            v-model:selected="selectedRoles"
-            lines="two"
-            return-object
-            select-strategy="classic"
+          :id="`access-user-roles-${user.edxUserID}`"
+          v-model:selected="selectedRoles"
+          lines="two"
+          return-object
+          select-strategy="classic"
         >
           <div
-              v-for="newrole in instituteRoles"
-              :key="newrole.edxRoleCode"
-              :value="newrole.edxRoleCode"
+            v-for="newrole in instituteRoles"
+            :key="newrole.edxRoleCode"
+            :value="newrole.edxRoleCode"
           >
             <v-list-item
-                :value="newrole.edxRoleCode"
+              :value="newrole.edxRoleCode"
             >
               <template #prepend="{ isActive }">
                 <v-list-item-action>
@@ -182,27 +186,29 @@
           :allow-teleport="true"
           @clear-date="clearExpiryDate"
         />
-        <v-row no-gutters class="py-4 justify-end">
+        <v-row
+          no-gutters
+          class="py-4 justify-end"
+        >
           <v-col class="mt-0 d-flex justify-end">
             <PrimaryButton
-                :id="`user-cancel-edit-button-${user.edxUserID}`"
-                width="5em"
-                text="Cancel"
-                class="mr-2"
-                secondary
-                variant="flat"
-                :click-action="clickEditButton"
+              :id="`user-cancel-edit-button-${user.edxUserID}`"
+              width="5em"
+              text="Cancel"
+              class="mr-2"
+              secondary
+              variant="flat"
+              :click-action="clickEditButton"
             />
             <PrimaryButton
-                :id="`user-save-action-button-${user.edxUserID}`"
-                text="Save"
-                :disabled="!minimumRolesSelected"
-                variant="flat"
-                :click-action="clickSaveButton"
+              :id="`user-save-action-button-${user.edxUserID}`"
+              text="Save"
+              :disabled="!minimumRolesSelected"
+              variant="flat"
+              :click-action="clickSaveButton"
             />
           </v-col>
         </v-row>
-
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
@@ -219,7 +225,7 @@ import {formatDate} from '../../utils/format';
 import DatePicker from '../util/DatePicker.vue';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {PERMISSION} from '../../utils/constants/Permission';
-import ConfirmationDialog from "../util/ConfirmationDialog.vue";
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
   name: 'AccessUserCard',
@@ -268,6 +274,9 @@ export default {
     minimumRolesSelected() {
       return this.selectedRoles.length > 0;
     },
+    userDisplayName() {
+      return `${this.user.firstName} ${this.user.lastName}`.trim();
+    }
   },
   methods: {
     isDistrictUser(){
@@ -302,24 +311,24 @@ export default {
       };
       if (this.instituteTypeCode === 'SCHOOL') {
         const userSchool = this.user.edxUserSchools
-            .find(school => school.schoolID === this.instituteCode);
+          .find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = userSchool.schoolID;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
         const userDistrict = this.user.edxUserDistricts
-            .find(district => district.districtID === this.instituteCode);
+          .find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
       ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_REMOVE_USER, payload)
-          .then(() => {
-            this.setSuccessAlert('User has been removed.');
-          }).catch(error => {
-        this.setFailureAlert('An error occurred while removing a user. Please try again later.');
-        console.log(error);
-      }).finally(() => {
-        this.$emit('refresh');
-      });
+        .then(() => {
+          this.setSuccessAlert('User has been removed.');
+        }).catch(error => {
+          this.setFailureAlert('An error occurred while removing a user. Please try again later.');
+          console.log(error);
+        }).finally(() => {
+          this.$emit('refresh');
+        });
     },
     async clickRelinkButton() {
       const confirmation = await this.$refs.confirmRelinkUser.open('Confirm Re-link of User', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Re-link', rejectText: 'Cancel'});
@@ -335,30 +344,30 @@ export default {
       };
       if (this.instituteTypeCode === 'SCHOOL') {
         const userSchool = this.user.edxUserSchools
-            .find(school => school.schoolID === this.instituteCode);
+          .find(school => school.schoolID === this.instituteCode);
         payload.params.schoolID = this.instituteCode;
         payload.params.userSchoolID = userSchool.edxUserSchoolID;
       } else {
         const userDistrict = this.user.edxUserDistricts
-            .find(district => district.districtID === this.instituteCode);
+          .find(district => district.districtID === this.instituteCode);
         payload.params.districtID = this.instituteCode;
         payload.params.edxUserDistrictID = userDistrict.edxUserDistrictID;
       }
       ApiService.apiAxios.post(ApiRoutes.edx.EXCHANGE_RELINK_USER, payload)
-          .then(() => {
-            this.setSuccessAlert('User has been removed, email sent with instructions to re-link.');
-          }).catch(error => {
-        this.setFailureAlert(
+        .then(() => {
+          this.setSuccessAlert('User has been removed, email sent with instructions to re-link.');
+        }).catch(error => {
+          this.setFailureAlert(
             'An error occurred while re-linking a user. Please try again later.'
-        );
-        console.log(error);
-      }).finally(() => {
-        setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
-      });
+          );
+          console.log(error);
+        }).finally(() => {
+          setTimeout(() => { this.$emit('refresh'); }, EDX_SAGA_REQUEST_DELAY_MILLISECONDS);
+        });
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {
-        this.setFailureAlert(`Please select at least one role for ${this.user.firstName}.`);
+        this.setFailureAlert(`Please select at least one role for ${this.userDisplayName}.`);
         return;
       }
       this.editUserSheet = !this.editUserSheet;
