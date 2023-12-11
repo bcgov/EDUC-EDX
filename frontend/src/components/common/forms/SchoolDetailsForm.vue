@@ -1126,7 +1126,7 @@ export default {
       this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
     });
     instituteStore().getAllActiveSchoolNeighborhoodLearningCodes().then(() => {
-      this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
+      this.schoolActiveNeighborhoodLearningTypes = sortBy(this.activeSchoolNeighborhoodLearningCodes, ['label']);
     });
     instituteStore().getGradeCodes().then(() => {
       this.schoolGradeTypes = sortBy(this.gradeCodes, ['displayOrder']);
