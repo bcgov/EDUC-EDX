@@ -97,6 +97,7 @@
             :menu-props="{closeOnContentClick:true}"
             label="Contact Type"
             hide-details="auto"
+            @update:model-value="searchButtonClicked"
           />
         </v-col>
         <v-col
