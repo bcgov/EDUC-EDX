@@ -86,7 +86,7 @@
           md="3"
           class="pb-0 pb-md-7"
         >
-          <v-select
+          <v-autocomplete
             id="status-select-field"
             v-model="searchFilter.districtContactTypeCode"
             :clearable="true"
