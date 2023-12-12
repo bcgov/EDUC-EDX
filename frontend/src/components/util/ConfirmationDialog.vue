@@ -8,7 +8,9 @@
   >
     <v-card>
       <v-card-title class="header pt-1 pb-1">
-        {{ title }}
+        <slot name="title">
+          {{ title }}
+        </slot>
       </v-card-title>
       <v-card-text :class="[options.messagePadding, { 'black--text': !options.dark }]">
         {{ message }}
