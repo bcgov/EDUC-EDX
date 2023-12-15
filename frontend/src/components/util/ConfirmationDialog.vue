@@ -7,38 +7,18 @@
     @keydown.esc="cancel"
   >
     <v-card>
-      <slot
-        name="title"
-        :cancel="cancel"
-      >
-        <v-toolbar
-          :dense="options.dense"
-          class="header"
-          flat
-        >
-          <v-toolbar-title :class="{'text-white': options.dark, 'align-self-end': options.closeIcon, 'font-weight-bold': options.titleBold, 'dialog-subtitle': options.subtitle}">
-            {{ title }}
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn
-            v-if="options.closeIcon"
-            id="closeBtn"
-            icon
-            @click="cancel"
-          >
-            <v-icon color="#38598A">
-              mdi-close
-            </v-icon>
-          </v-btn>
-        </v-toolbar>
-      </slot>
+      <v-card-title class="header pt-1 pb-1">
+        <slot name="title">
+          {{ title }}
+        </slot>
+      </v-card-title>
       <v-card-text :class="[options.messagePadding, { 'black--text': !options.dark }]">
         {{ message }}
         <slot name="message" />
         <v-divider
           v-if="options.divider"
           class="mt-1"
-        />              
+        />
       </v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer />
