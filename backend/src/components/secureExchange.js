@@ -111,7 +111,7 @@ async function deleteDocument(req, res) {
 
     const endpoint = config.get('edx:exchangeURL');
     const url = `${endpoint}/${req.params.id}/documents/${req.params.documentId}`;
-    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing document:: ' + req.params.id);
+    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing document:: ' + req.params.documentId);
     await deleteData(token, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json();
   } catch (e) {
