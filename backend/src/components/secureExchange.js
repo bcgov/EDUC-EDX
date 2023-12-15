@@ -889,7 +889,7 @@ async function relinkUserAccess(req, res) {
     }
     let edxUserDetails = await getData(token, config.get('edx:edxUsersURL') + '/' + req.body.params.userToRelink, req.session?.correlationID);
 
-    const payload = createRelinkPayload(req, req.body.params.schoolID, edxUserDetails, req.body.params);
+    const payload = createRelinkPayload(req.body.params.schoolID, edxUserDetails, req.body.params);
     const postUrl = req.body.params.schoolID ? config.get('edx:schoolUserActivationRelink') : config.get('edx:districtUserActivationRelink');
     await postData(token, payload, postUrl, req.session?.correlationID);
 
@@ -900,7 +900,7 @@ async function relinkUserAccess(req, res) {
   }
 }
 
-function createRelinkPayload(req, schoolID, edxUserDetails, requestParams) {
+function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
   if(schoolID) {
     let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === requestParams.schoolID);
     let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
