@@ -25,7 +25,10 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-2">
+        <v-row
+          no-gutters
+          class="mt-2"
+        >
           <v-col class="d-flex justify-center">
             <v-card
               min-width="55em"
@@ -69,7 +72,10 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row no-gutters v-if="isDistrictUser">
+        <v-row
+          v-if="isDistrictUser"
+          no-gutters
+        >
           <v-col class="d-flex justify-center">
             <v-card
               flat

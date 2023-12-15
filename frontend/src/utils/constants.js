@@ -12,6 +12,7 @@ const sdcRoot = baseRoot + '/sdc';
 let object;
 
 object = {
+  MAIN_LOGIN: '/login',
   LOGIN: authRoot + '/login',
   DASHBOARD: '/',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
