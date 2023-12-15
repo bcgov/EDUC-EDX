@@ -75,7 +75,6 @@ async function uploadFile(req, res) {
     }
 
     req.body.edxUserID = edxUserInfo.edxUserID;
-    req.body.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const data = await postData(token, req.body, url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
@@ -240,13 +239,12 @@ async function createExchange(req, res) {
     }
 
     const documentPayload = message.secureExchangeDocuments.map(document => {
-      return {...document, edxUserID: edxUserInfo.edxUserID, updateUser: 'EDX/' + edxUserInfo.edxUserID, createUser: 'EDX/' + edxUserInfo.edxUserID};
+      return {...document, edxUserID: edxUserInfo.edxUserID};
     });
     const studentPayload = message.secureExchangeStudents.map(student => {
       return {
         studentId: student.studentID,
-        edxUserID: edxUserInfo.edxUserID,
-        createUser: 'EDX/' + edxUserInfo.edxUserID
+        edxUserID: edxUserInfo.edxUserID
       };
     });
 
@@ -262,15 +260,11 @@ async function createExchange(req, res) {
         {
           edxUserID: edxUserInfo.edxUserID,
           commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
-          content: message.content,
-          updateUser: 'EDX/' + edxUserInfo.edxUserID,
-          createUser: 'EDX/' + edxUserInfo.edxUserID
+          content: message.content
         }
       ],
       documentList: documentPayload,
-      studentList: studentPayload,
-      updateUser: 'EDX/' + edxUserInfo.edxUserID,
-      createUser: 'EDX/' + edxUserInfo.edxUserID
+      studentList: studentPayload
     };
 
     const result = await postData(token, payload, config.get('edx:exchangeURL'), req.session?.correlationID);
@@ -528,7 +522,6 @@ async function markAs(req, res) {
     currentExchange.isReadByExchangeContact = isReadByExchangeContact;
     currentExchange.createDate = null;
     currentExchange.updateDate = null;
-    currentExchange.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     const result = await putData(token, currentExchange, config.get('edx:exchangeURL'), req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -551,8 +544,7 @@ async function createSecureExchangeStudent(req, res) {
     const exchangeURL = config.get('edx:exchangeURL');
     const secureExchangeStudent = {
       edxUserID: edxUserInfo.edxUserID,
-      studentId: req.body.studentID,
-      createUser: 'EDX/' + edxUserInfo.edxUserID
+      studentId: req.body.studentID
     };
 
     const secureExchange = await getData(accessToken, `${exchangeURL}/${req.params.secureExchangeID}`, req.session?.correlationID);
@@ -563,6 +555,7 @@ async function createSecureExchangeStudent(req, res) {
       return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
+    console.log('Access Token: ' + JSON.stringify(secureExchangeStudent));
     const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.secureExchangeID}/students`, req.session?.correlationID);
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
@@ -615,15 +608,12 @@ async function updateEdxUserSchoolRoles(req, res) {
       let newRole = {};
       newRole.edxUserSchoolID = selectedUserSchool.edxUserSchoolID;
       newRole.edxRoleCode = role;
-      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
       selectedUserSchool.edxUserSchoolRoles.push(newRole);
     });
 
     selectedUserSchool.updateDate = null;
     selectedUserSchool.createDate = null;
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
-    selectedUserSchool.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -660,14 +650,11 @@ async function updateEdxUserDistrictRoles(req, res) {
       let newRole = {};
       newRole.edxUserDistrictID = selectedUserDistrict.edxUserDistrictID;
       newRole.edxRoleCode = role;
-      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
       selectedUserDistrict.edxUserDistrictRoles.push(newRole);
     });
 
     selectedUserDistrict.updateDate = null;
     selectedUserDistrict.createDate = null;
-    selectedUserDistrict.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     selectedUserDistrict.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
 
     const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
@@ -690,8 +677,6 @@ async function activateEdxUser(req, res) {
       digitalId: req.session.digitalIdentityData.digitalID,
       personalActivationCode: req.body.personalActivationCode.trim(),
       primaryEdxCode: req.body.primaryEdxCode.trim(),
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
     let districtID;
     let schoolID;
@@ -811,8 +796,6 @@ async function districtUserActivationInvite(req, res) {
 
     const payload = {
       ...req.body,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
     const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
@@ -837,8 +820,6 @@ async function schoolUserActivationInvite(req, res) {
 
     const payload = {
       ...req.body,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
 
@@ -868,7 +849,6 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
     }
     let edxUserInstituteType = req.body.params.userSchoolID ? 'school' : 'district';
     let edxUserInstituteID = req.body.params.userSchoolID ?? req.body.params.edxUserDistrictID;
-    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing '+edxUserInstituteType+' access for:: ' + req.body.params.userToRemove);
     await deleteData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.userToRemove}/${edxUserInstituteType}/${edxUserInstituteID}`, req.session.correlationID);
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
@@ -914,9 +894,7 @@ function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
       email: edxUserDetails.email,
       edxUserId: requestParams.userToRelink,
       edxUserSchoolID: requestParams.userSchoolID,
-      edxUserExpiryDate: requestParams.edxUserExpiryDate,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      edxUserExpiryDate: requestParams.edxUserExpiryDate
     };
   } else {
     let userDistrict = edxUserDetails.edxUserDistricts.find(district => district.districtID === requestParams.districtID);
@@ -931,9 +909,7 @@ function createRelinkPayload(schoolID, edxUserDetails, requestParams) {
       email: edxUserDetails.email,
       edxUserId: requestParams.userToRelink,
       edxUserDistrictID: requestParams.edxUserDistrictID,
-      edxUserExpiryDate: requestParams.edxUserExpiryDate,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      edxUserExpiryDate: requestParams.edxUserExpiryDate
     };
   }
 }
@@ -954,8 +930,6 @@ async function createSecureExchangeComment(req, res) {
       commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
       content: message.content,
       commentTimestamp: LocalDateTime.now().toJSON(),
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
 
     const result = await postData(token, payload, config.get('edx:exchangeURL') + `/${req.params.secureExchangeID}` + '/comments', req.session.correlationID);
@@ -1163,9 +1137,7 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
     const instituteType = req.params.instituteType.toUpperCase();
     const payload = {
       schoolID: instituteType === 'SCHOOL' ? req.params.instituteIdentifier : null,
-      districtID: instituteType === 'DISTRICT' ? req.params.instituteIdentifier : null,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      districtID: instituteType === 'DISTRICT' ? req.params.instituteIdentifier : null
     };
 
     if(instituteType === 'SCHOOL'){
