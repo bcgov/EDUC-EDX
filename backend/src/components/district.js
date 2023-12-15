@@ -33,11 +33,13 @@ async function updateDistrict(req, res){
     params.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
+      addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     });
 
     params.contacts = null;
     params.createDate = null;
     params.updateDate = null;
+    params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     const result = await putData(token, params, config.get('institute:rootURL') + '/district/' + req.params.districtID, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -62,7 +64,9 @@ async function createDistrictContact(req, res) {
     alternatePhoneNumber: req.body.alternatePhoneNumber,
     alternatePhoneExtension: req.body.alternatePhoneExtension,
     effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
-    expiryDate: req.body.expiryDate ? req.body.expiryDate : null
+    expiryDate: req.body.expiryDate ? req.body.expiryDate : null,
+    createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+    updateUser: 'EDX/' + req.session.edxUserData.edxUserID
   };
 
   return Promise.all([
@@ -97,7 +101,7 @@ async function updateDistrictContact(req, res) {
     payload.createDate = null;
     payload.effectiveDate = payload.effectiveDate ? req.body.effectiveDate : null;
     payload.expiryDate = payload.expiryDate ? req.body.expiryDate : null;
-
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -123,6 +127,7 @@ async function removeDistrictContact(req, res) {
     contact.createDate = null;
     contact.updateDate = null;
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
+    contact.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);

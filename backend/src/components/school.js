@@ -39,6 +39,7 @@ async function updateSchool(req, res){
     payload.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
+      addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     });
 
     payload.contacts.forEach(function(contact) {
@@ -56,13 +57,17 @@ async function updateSchool(req, res){
       if(_.isString(nlcCode)){
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }else{
         //if neighborhood learning was not changed as part of edit , it will be passed as an array of objects from frontend.
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode.neighborhoodLearningTypeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }
     }
@@ -72,19 +77,24 @@ async function updateSchool(req, res){
       if (_.isString(gradeCode)) {
         gradesObjectArray.push({
           schoolGradeCode: gradeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       } else {
         //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
         gradesObjectArray.push({
           schoolGradeCode: gradeCode.schoolGradeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }
     }
 
     payload.neighborhoodLearning = nlcObjectsArray;
     payload.grades = gradesObjectArray;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, payload, config.get('institute:rootURL') + '/school/' + payload.schoolId, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -115,7 +125,9 @@ async function addSchoolContact(req, res) {
       alternatePhoneNumber: req.body.alternatePhoneNumber,
       alternatePhoneExtension: req.body.alternatePhoneExtension,
       effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
-      expiryDate: req.body.expiryDate ? req.body.expiryDate : null
+      expiryDate: req.body.expiryDate ? req.body.expiryDate : null,
+      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
 
     const data = await postData(token, payload, url, req.session?.correlationID);
@@ -140,6 +152,7 @@ async function updateSchoolContact(req, res) {
     params.createDate = null;
     params.effectiveDate = params.effectiveDate ? req.body.effectiveDate : null;
     params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
+    params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -166,6 +179,7 @@ async function removeSchoolContact(req, res) {
     contact.createDate = null;
     contact.updateDate = null;
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
+    contact.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
