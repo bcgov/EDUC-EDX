@@ -1092,7 +1092,13 @@ export default {
       return type;
     },
     isGradeOfferedUpdateAllowed() {
-      return this.school.schoolCategoryCode !== SCHOOL_CATEGORY_CODES.INDP_FNS && this.school.schoolCategoryCode !== SCHOOL_CATEGORY_CODES.INDEPEND;
+      const restrictedCategories = [
+        SCHOOL_CATEGORY_CODES.INDP_FNS,
+        SCHOOL_CATEGORY_CODES.INDEPEND,
+        SCHOOL_CATEGORY_CODES.EAR_LEARN,
+        SCHOOL_CATEGORY_CODES.POST_SEC
+      ];
+      return !restrictedCategories.includes(this.school.schoolCategoryCode);
     }
   },
   watch: {
@@ -1126,7 +1132,7 @@ export default {
       this.schoolActiveOrganizationTypes = this.activeSchoolOrganizationTypeCodes;
     });
     instituteStore().getAllActiveSchoolNeighborhoodLearningCodes().then(() => {
-      this.schoolActiveNeighborhoodLearningTypes = this.activeSchoolNeighborhoodLearningCodes;
+      this.schoolActiveNeighborhoodLearningTypes = sortBy(this.activeSchoolNeighborhoodLearningCodes, ['label']);
     });
     instituteStore().getGradeCodes().then(() => {
       this.schoolGradeTypes = sortBy(this.gradeCodes, ['displayOrder']);

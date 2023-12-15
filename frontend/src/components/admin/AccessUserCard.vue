@@ -7,7 +7,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <span style="white-space: break-spaces">
-            <strong class="contactName">{{ `${user.firstName} ${user.lastName}` }}</strong>
+            <strong class="contactName">{{ userDisplayName }}</strong>
           </span>
         </v-col>
         <v-row no-gutters>
@@ -121,7 +121,7 @@
         id="editUserInviteVCardTitle"
         class="sheetHeader pt-1 pb-1"
       >
-        Edit {{ user.firstName }} {{ user.lastName }}
+        Edit {{ userDisplayName }}
       </v-card-title>
       <v-divider />
       <v-card-text>
@@ -145,7 +145,7 @@
           type="info"
           variant="tonal"
         >
-          <span>Please select at least one role for {{ user.firstName }}.</span>
+          <span>Please select at least one role for {{ userDisplayName }}.</span>
         </v-alert>
         <v-list
           :id="`access-user-roles-${user.edxUserID}`"
@@ -274,6 +274,9 @@ export default {
     minimumRolesSelected() {
       return this.selectedRoles.length > 0;
     },
+    userDisplayName() {
+      return `${this.user.firstName} ${this.user.lastName}`.trim();
+    }
   },
   methods: {
     isDistrictUser(){
@@ -364,7 +367,7 @@ export default {
     },
     clickSaveButton() {
       if (!this.minimumRolesSelected) {
-        this.setFailureAlert(`Please select at least one role for ${this.user.firstName}.`);
+        this.setFailureAlert(`Please select at least one role for ${this.userDisplayName}.`);
         return;
       }
       this.editUserSheet = !this.editUserSheet;

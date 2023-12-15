@@ -86,7 +86,7 @@
           md="3"
           class="pb-0 pb-md-7"
         >
-          <v-select
+          <v-autocomplete
             id="status-select-field"
             v-model="searchFilter.districtContactTypeCode"
             :clearable="true"
@@ -97,6 +97,7 @@
             :menu-props="{closeOnContentClick:true}"
             label="Contact Type"
             hide-details="auto"
+            @update:model-value="searchButtonClicked"
           />
         </v-col>
         <v-col

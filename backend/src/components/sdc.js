@@ -34,7 +34,8 @@ async function uploadFile(req, res) {
     const payload = {
       fileContents: req.body.fileContents,
       fileName: req.body.fileName,
-      createUser: 'edx/' + req.session.edxUserData.edxUserID
+      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
     const url = `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`;
     const data = await postData(token, payload, url, req.session?.correlationID);
@@ -77,7 +78,7 @@ async function updateSchoolCollection(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = null;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     payload.sdcSchoolCollectionStatusCode = req.body.status;
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
@@ -208,7 +209,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = null;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     if(payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
@@ -233,6 +234,7 @@ async function deleteSDCSchoolCollectionStudent (req, res) {
     checkEDXCollectionPermission(req);
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
+    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing SDC student :: ' + req.params.sdcSchoolCollectionStudentID);
     let deletedSdcSchoolCollectionStudentData = await deleteData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
   }catch (e) {
