@@ -691,9 +691,7 @@ async function activateEdxUser(req, res) {
     const payload = {
       digitalId: req.session.digitalIdentityData.digitalID,
       personalActivationCode: req.body.personalActivationCode.trim(),
-      primaryEdxCode: req.body.primaryEdxCode.trim(),
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      primaryEdxCode: req.body.primaryEdxCode.trim()
     };
     let districtID;
     let schoolID;
