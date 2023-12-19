@@ -30,6 +30,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     specialEducationCodes: [],
     validationIssueTypeCodesMap: new Map(),
     ancestryItems: [{code:'Y', dropdownText:'Yes'}, {code:'N', dropdownText:'No'}],
+    hideStepper: true
   }),
   getters: {
     getCurrentStepInCollectionProcess: state => state.currentStepInCollectionProcess,
@@ -40,6 +41,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
   actions: {
     setStepsInCollectionProcess(stepsInCollectionProcess) {
       this.stepsInCollectionProcess = stepsInCollectionProcess;
+    },
+    setHideStepper(hideStepper) {
+      this.hideStepper = hideStepper;
     },
     setCurrentStepInCollectionProcess(currentStepInCollectionProcess) {
       this.currentStepInCollectionProcess = currentStepInCollectionProcess;
