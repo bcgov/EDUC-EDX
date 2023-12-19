@@ -221,7 +221,7 @@ export default {
         },
         {
           title: PAGE_TITLES.SCHOOL_CONTACTS,
-          link: { name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {

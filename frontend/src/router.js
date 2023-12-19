@@ -19,7 +19,6 @@ import AccessSchoolUsersPage from './components/admin/SchoolUsersAccessPage.vue'
 import InstituteSelection from './components/InstituteSelection.vue';
 import ActivateEdxUserAccount from './components/common/ActivateEdxUserAccount.vue';
 import SchoolListPage from './components/school/SchoolList.vue';
-import SchoolContactsPage from './components/school/SchoolContacts.vue';
 import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
@@ -258,17 +257,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'schoolContacts/:schoolID',
-          name: 'schoolContacts',
-          component: SchoolContactsPage,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.SCHOOL_CONTACTS,
-            requiresAuth: true,
-          }
-        },
-        {
-          path: 'schoolDetails/:schoolID',
+          path: 'school/:schoolID/details',
           name: 'schoolDetails',
           component: SchoolDetailsPage,
           props: true,
