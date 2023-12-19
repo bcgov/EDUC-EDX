@@ -26,7 +26,7 @@
           color="primary"
           label="compare to previous September Collection"
           style="justify-items: right;"
-          @update:modelValue="compare()"
+          @update:model-value="compare()"
         />
       </v-col>
     </v-row>

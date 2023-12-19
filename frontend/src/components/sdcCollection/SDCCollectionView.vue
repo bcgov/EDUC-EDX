@@ -74,7 +74,7 @@
           <router-view
             :school-collection-object="schoolCollectionObject"
             @next="next"
-            @refreshStore="refreshStore"
+            @refresh-store="refreshStore"
           />
         </v-row>
       </v-col>
