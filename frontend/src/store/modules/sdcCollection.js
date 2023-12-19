@@ -30,7 +30,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     specialEducationCodes: [],
     validationIssueTypeCodesMap: new Map(),
     ancestryItems: [{code:'Y', dropdownText:'Yes'}, {code:'N', dropdownText:'No'}],
-    hideStepper: true
+    hideStepper: false
   }),
   getters: {
     getCurrentStepInCollectionProcess: state => state.currentStepInCollectionProcess,
