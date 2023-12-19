@@ -150,6 +150,9 @@ describe('deleteDocument', () => {
       secureExchangeStatusCode: utils.SecureExchangeStatuses.INPROG,
       statusUpdateDate: '2020-03-01T12:13:16'
     },
+    edxUserData: {
+      edxUserID: '67590460-efe3-4e84-9f9a-9acffda79612'
+    },
     correlationID: 'ABCD'
   };
   const deleteDocument = exchange.deleteDocument;

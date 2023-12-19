@@ -56,7 +56,7 @@ describe('Access District Users Page Tests', () => {
 
     context('with a temporary user', () => {
       let tempUserId = '';
-      let tempFirstName = '';
+      let tempDisplayName = '';
 
       before(() => {
         cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
@@ -65,12 +65,12 @@ describe('Access District Users Page Tests', () => {
           districtCodes: ['998']
         }).then((user: EdxUserEntity) => {
             tempUserId = user.edxUserID;
-            tempFirstName = user.firstName;
+            tempDisplayName = `${user.firstName} ${user.lastName}`.trim();
           });
       });
       beforeEach(() => {
         cy.wrap(tempUserId).as('tempUserId');
-        cy.wrap(tempFirstName).as('tempUserFirstName');
+        cy.wrap(tempDisplayName).as('tempUserDisplayName');
       });
       after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
 
@@ -82,9 +82,9 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_DISTRICT_ADMIN"]').click();
           });
-          cy.get('@tempUserFirstName').then(fname => {
+          cy.get('@tempUserDisplayName').then(userDisplayName => {
             cy.get(selectors.accessUsersPage.accessUserFeedback)
-              .should('include.text', `Please select at least one role for ${fname}`);
+              .should('include.text', `Please select at least one role for ${userDisplayName}`);
           });
           cy.get(`#user-save-action-button-${uid}`).should('be.disabled');
         });
@@ -145,7 +145,6 @@ describe('Access District Users Page Tests', () => {
 
     context('temporary user to be deleted', () => {
       let tempUserId = '';
-      let tempFirstName = '';
 
       before(() => {
         cy.task<DistrictUserOptions, EdxUserEntity>('setup-districtUser', {
@@ -154,13 +153,11 @@ describe('Access District Users Page Tests', () => {
           districtCodes: ['998']
         }).then((user: EdxUserEntity) => {
           tempUserId = user.edxUserID;
-          tempFirstName = user.firstName;
         });
 
       });
       beforeEach(() => {
         cy.wrap(tempUserId).as('tempUserId');
-        cy.wrap(tempFirstName).as('tempUserFirstName');
       });
       after(() => {
         cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));

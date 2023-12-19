@@ -25,18 +25,18 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-  
+
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
   </v-container>
 </template>
-    
+
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { ELL } from '../../../utils/sdc/TableConfiguration';
-  
+
 export default {
   name: 'EnglishLangComponent',
   components: {
@@ -50,11 +50,10 @@ export default {
     return {
       reportView: 'detail',
       config: ELL
-
     };
   },
   computed: {
-    
+
   },
   created() {
   },
@@ -66,7 +65,7 @@ export default {
     showSummary() {
       this.reportView = 'summary';
     }
-   
+
   }
 };
 </script>
@@ -86,7 +85,3 @@ export default {
   border: 1px solid #003366;
 }
 </style>
-      
-      
-    
-  

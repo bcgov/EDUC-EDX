@@ -185,7 +185,7 @@ describe('Access School Users Page', () => {
 
     context('with a temporary user', () => {
       let tempUserId = '';
-      let tempFirstName = '';
+      let tempDisplayName = '';
 
       before(() => {
         cy.task('recreate-school', { schoolStatus: 'Open' });
@@ -194,12 +194,12 @@ describe('Access School Users Page', () => {
           schoolCodes: ['99998']
         }).then((user: EdxUserEntity) => {
             tempUserId = user.edxUserID;
-            tempFirstName = user.firstName;
+            tempDisplayName = `${user.firstName} ${user.lastName}`.trim();
           });
       });
       beforeEach(() => {
         cy.wrap(tempUserId).as('tempUserId');
-        cy.wrap(tempFirstName).as('tempUserFirstName');
+        cy.wrap(tempDisplayName).as('tempUserDisplayName');
       });
       after(() => cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid)));
 
@@ -214,9 +214,9 @@ describe('Access School Users Page', () => {
             cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
             cy.get('div[value="EDX_EDIT_SCHOOL"]').click();
           });
-          cy.get('@tempUserFirstName').then(fname => {
+          cy.get('@tempUserDisplayName').then(userDisplayName => {
             cy.get(selectors.accessUsersPage.accessUserFeedback)
-              .should('include.text', `Please select at least one role for ${fname}`);
+              .should('include.text', `Please select at least one role for ${userDisplayName}`);
           });
           cy.get(`#user-save-action-button-${uid}`).should('be.disabled');
         });
@@ -277,7 +277,6 @@ describe('Access School Users Page', () => {
 
     context('temporary user to be deleted', () => {
       let tempUserId = '';
-      let tempFirstName = '';
 
       before(() => {
         cy.task('recreate-school', { schoolStatus: 'Open' });
@@ -287,7 +286,6 @@ describe('Access School Users Page', () => {
               schoolCodes: ['99998']
         }).then((user: EdxUserEntity) => {
           tempUserId = user.edxUserID;
-          tempFirstName = user.firstName;
         });
 
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
@@ -295,13 +293,11 @@ describe('Access School Users Page', () => {
           schoolCodes: ['99998']
         }).then((user: EdxUserEntity) => {
           tempUserId = user.edxUserID;
-          tempFirstName = user.firstName;
         });
       });
 
       beforeEach(() => {
         cy.wrap(tempUserId).as('tempUserId');
-        cy.wrap(tempFirstName).as('tempUserFirstName');
       });
 
       after(() => {

@@ -210,7 +210,10 @@
             cols="12"
             class="pb-0"
           >
-            <v-card class="add-new-user d-flex align-center flex-column h-100" min-height="12em">
+            <v-card
+              class="add-new-user d-flex align-center flex-column h-100"
+              min-height="12em"
+            >
               <v-row
                 class="add-new-user"
                 align="center"
@@ -229,7 +232,10 @@
                   />
                 </v-col>
               </v-row>
-              <v-row class="align-end h-0 mt-n16" v-if="!primaryEdxActivationCode">
+              <v-row
+                v-if="!primaryEdxActivationCode"
+                class="align-end h-0 mt-n16"
+              >
                 <v-col class="mx-3 mb-3">
                   <v-alert
                     dense

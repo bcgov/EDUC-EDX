@@ -57,7 +57,7 @@
               </v-row>
               <v-row no-gutters>
                 <v-col>
-                  <span>{{ exchangeCount }} messages, {{ unreadExchangeCount }} unread</span>
+                  <span>{{ exchangeCount }} {{ exchangeCount == 1 ? 'message' : 'messages' }}, {{ unreadExchangeCount }} unread</span>
                 </v-col>
               </v-row>
             </v-col>
