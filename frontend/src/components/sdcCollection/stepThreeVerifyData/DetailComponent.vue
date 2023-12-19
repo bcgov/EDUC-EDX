@@ -33,7 +33,7 @@
                   @click:close=" chip = false"
                 >
                   {{ config.defaultFilter.description }}
-                </v-chip> 
+                </v-chip>
               </div>
             </v-col>
             <v-col
@@ -58,9 +58,8 @@
                 text="Clear"
                 :click-action="clear"
               />
-
               <PrimaryButton
-                id="search"       
+                id="search"
                 text="Search"
                 class="ml-3"
                 :click-action="search"
@@ -155,6 +154,7 @@ export default {
     config: {
       tabFilter: Object,
       required: true,
+      type: Object,
       default: null
     }
   },
@@ -179,9 +179,9 @@ export default {
   },
   created() {
     sdcCollectionStore().getCodes().then(() => {
-      this.loadStudents();      
+      this.loadStudents();
     });
-    
+
   },
   methods: {
     loadStudents() {
@@ -193,12 +193,7 @@ export default {
           searchParams: omitBy(this.filterSearchParams, isEmpty),
         }
       }).then(response => {
-        this.studentList = response.data.content;
-        this.studentList.forEach(elem => {
-          if(elem) {
-            this.mapStudentData(elem);
-          }
-        });
+        this.studentList = response.data.content.map(this.toTableRow);
         this.totalElements = response.data.totalElements;
       }).catch(error => {
         console.error(error);
@@ -207,8 +202,6 @@ export default {
         this.isLoading = false;
       });
     },
-
-
     enrolledProgramMapping(student, enrolledProgramFilter) {
       if(!student.enrolledProgramCodes) {
         return '';
@@ -222,10 +215,11 @@ export default {
         })
         .join('\n');
     },
-    mapStudentData(student) {
-      student.mappedSpedCode  = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  capitalize(this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description) : null;
+    toTableRow(student) {
+      student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  capitalize(this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description) : null;
       student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd(student);
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
+      student.mappedEllEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
       student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? this.bandCodesMap.get(student.bandCode)?.bandCode + '-' + capitalize(this.bandCodesMap.get(student.bandCode)?.description) : null;
@@ -233,12 +227,15 @@ export default {
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
       student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
       student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
+      student.yearsInEll = student.sdcStudentEll ? student.sdcStudentEll.yearsInEll : '';
       let noOfCourses = student.numberOfCourses;
       if(noOfCourses && noOfCourses.length === 4) {
         student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
       }
+      return student;
     },
     nativeAncestryInd(student) {
       return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
@@ -258,29 +255,24 @@ export default {
     clear() {
       this.searchText = '';
     }
-    
+
   }
 };
 </script>
-       
-       <style scoped>
+
+<style scoped>
 .search-box {
-    background: rgb(235, 237, 239);
-    border-radius: 8px;
-    padding: 10px;
+  background: rgb(235, 237, 239);
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .filter-col {
-    color: #7f7f7f;
-    text-align: center;
+  color: #7f7f7f;
+  text-align: center;
 }
 
 .bold {
   font-weight: bold ;
 }
-
- 
-       </style>
-       
-       
-     
+</style>

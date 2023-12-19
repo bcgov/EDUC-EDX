@@ -17,7 +17,7 @@
           {{ name }}
         </v-tab>
       </v-tabs>
-       
+
       <v-window v-model="tab">
         <v-window-item value="FTE">
           <FTEComponent />
@@ -42,12 +42,11 @@
         </v-window-item>
       </v-window>
     </div>
-      
 
     <v-row justify="end">
       <PrimaryButton
         id="nextButton"
-        class="mr-2 mb-3"           
+        class="mr-2 mb-3"
         icon="mdi-check"
         text="Verify as Correct"
         :click-action="next"
@@ -55,7 +54,7 @@
     </v-row>
   </v-container>
 </template>
-  
+
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
@@ -131,41 +130,37 @@ export default {
   }
 };
 </script>
-    
-    <style scoped>
+
+<style scoped>
+.containerSetup{
+  padding-right: 5em !important;
+  padding-left: 5em !important;
+}
+
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin-bottom: 2em;
+}
+
+.form-hint{
+  color: rgb(56, 89, 138);
+  font-size: 14px;
+}
+
+@media screen and (max-width: 1200px) {
   .containerSetup{
-    padding-right: 5em !important;
-    padding-left: 5em !important;
+    padding-right: 3em !important;
+    padding-left: 3em !important;
   }
+}
+.divider {
+  border-right: 1px solid lightgray;
+  border-radius: 0px;
+}
 
- .border {
-    border: 2px solid grey;
-    border-radius: 5px;
-    padding: 35px;
-    margin-bottom: 2em;
-  } 
-
-   .form-hint{
-    color: rgb(56, 89, 138);
-    font-size: 14px;
-  } 
- 
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 3em !important;
-      padding-left: 3em !important;
-    }
-  }  
-  .divider { 
-    border-right: 1px solid lightgray;
-    border-radius: 0px;
-   } 
-   
-   .divider:last-child  { 
-    border-right: 0
-   }
-
-    </style>
-    
-    
-  
+.divider:last-child  {
+  border-right: 0
+}
+</style>

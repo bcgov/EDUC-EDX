@@ -25,7 +25,7 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-     
+
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
@@ -36,13 +36,13 @@
     </div>
   </v-container>
 </template>
-    
+
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from './SummaryComponent.vue';
 import { FTE } from '../../../utils/sdc/TableConfiguration';
-  
+
 export default {
   name: 'FTEComponent',
   components: {
@@ -61,7 +61,7 @@ export default {
     };
   },
   computed: {
-    
+
   },
   created() {
   },
@@ -73,27 +73,23 @@ export default {
     showSummary() {
       this.reportView = 'summary';
     }
-   
+
   }
 };
 </script>
-      
-      <style scoped>
-      .detail-button {
-        border: 1px solid lightgray;
-      }
-      
-      .summary-button {
-        border: 1px solid lightgray;
-      }
 
-      .active-button {
-        background-color: #003366 !important;
-        color: white !important;
-        border: 1px solid #003366;
-      }
-      </style>
-      
-      
-    
-  
+<style scoped>
+.detail-button {
+  border: 1px solid lightgray;
+}
+
+.summary-button {
+  border: 1px solid lightgray;
+}
+
+.active-button {
+  background-color: #003366 !important;
+  color: white !important;
+  border: 1px solid #003366;
+}
+</style>
