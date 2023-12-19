@@ -42,7 +42,8 @@ export const CAREER_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerProgramCode'}},
     ],
-  }
+    headcountEndpoint: 'career'
+  }  
 );
 
 export const INDSUPPORT_PR = Object.freeze(
