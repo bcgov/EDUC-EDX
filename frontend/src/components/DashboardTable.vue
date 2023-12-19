@@ -585,7 +585,7 @@ export default {
       }
     },
     redirectToSchoolContacts(){
-      router.push({name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+      router.push({name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToSchoolDetails() {
       this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});

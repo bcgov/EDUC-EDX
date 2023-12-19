@@ -209,33 +209,6 @@
                         style="color: black"
                       >{{ item.raw.principalsName }}</span>
                     </v-col>
-                    <v-col
-                      class="d-flex justify-end mr-4"
-                      cols="1"
-                    >
-                      <v-tooltip bottom>
-                        <template #activator="{ props }">
-                          <v-btn
-                            :id="'viewContactsButton' + index"
-                            color="#003366"
-                            outlined
-                            class="schoolContactsButton mt-0 pt-0 filterButton"
-                            style="text-transform: initial"
-                            v-bind="props"
-                            @click.stop.prevent="openSchoolContacts(item.raw.schoolId)"
-                          >
-                            <v-icon
-                              color="white"
-                              style="margin-top: 0.07em"
-                              dark
-                            >
-                              mdi-account-multiple-outline
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                        <span>View Contacts</span>
-                      </v-tooltip>
-                    </v-col>
                   </v-row>
                   <v-row no-gutters>
                     <v-col cols="6">
@@ -493,9 +466,6 @@ export default {
     getStatusColorAuthorityOrSchool,
     openSchool(schoolId){
       this.$router.push({name: 'schoolDetails', params: {schoolID: schoolId}});
-    },
-    openSchoolContacts(schoolId){
-      this.$router.push({name: 'schoolContacts', params: {schoolID: schoolId}});
     },
     resetPageNumber(){
       this.pageNumber = 1;

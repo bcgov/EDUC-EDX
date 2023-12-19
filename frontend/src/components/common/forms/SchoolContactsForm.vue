@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-row v-if="isLoading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
@@ -28,20 +28,6 @@
           >
             <span>Require updates to school contacts? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
           </v-alert>
-        </v-col>
-      </v-row>
-      <v-row class="mt-n3">
-        <v-col
-          cols="12"
-          class="d-flex justify-start"
-        >
-          <v-row no-gutters>
-            <v-col cols="12">
-              <h2 class="subjectHeading">
-                {{ school.mincode }} - {{ school.displayName }}
-              </h2>
-            </v-col>
-          </v-row>
         </v-col>
       </v-row>
       <v-row>
@@ -77,15 +63,6 @@
           sm="6"
           class="d-flex justify-md-end justify-start"
         >
-          <PrimaryButton
-            v-if="showDetailsButton()"
-            id="viewDetailsButton"
-            class="mr-2 mb-3"
-            secondary
-            icon="mdi-domain"
-            text="View Details"
-            :click-action="redirectToSchoolDetails"
-          />
           <PrimaryButton
             v-if="canEditSchoolContacts()"
             id="addSchoolContactBtn"
