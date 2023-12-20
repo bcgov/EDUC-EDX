@@ -138,7 +138,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         search.push(criteria);
       })
     }
-    console.log(JSON.stringify(search));
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -407,7 +407,6 @@ function createLocalIdPenSearchCriteria(value) {
 }
 
 function createMoreFiltersSearchCriteria(searchFilter=[]) {
-  console.log(searchFilter)
   let searchCriteriaList = [];
   let studentTypeFilterList = [];
   let fteFilterList = [];
@@ -437,7 +436,6 @@ function createMoreFiltersSearchCriteria(searchFilter=[]) {
       searchCriteriaList.push({key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
     }
     if(elem.key === 'warnings' && pValue) {
-      console.log('in here')
       searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
     }
     if(elem.key === 'fundingType' && pValue) {
