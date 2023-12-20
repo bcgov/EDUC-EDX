@@ -46,6 +46,7 @@
                 large-icon
                 icon="mdi-filter-multiple-outline"
                 text="More Filters"
+                :click-action="toggleFilters"
                 class="mt-n1"
               />
             </v-col>
@@ -129,6 +130,22 @@
         </v-col>
       </v-row>
     </v-col>
+    <v-navigation-drawer 
+      v-model="showFilters" 
+      location="right" 
+      temporary
+      width="700" 
+      :persistent="true"
+      scrim="transparent"
+      :border="true" 
+      style="top:0; height: 100%;"
+      rounded="true"
+    >
+      <Filters
+        :filters="config.allowedFilters" 
+        @close-filters="updateFilters"
+      />
+    </v-navigation-drawer>
   </v-row>
 </template>
 
@@ -142,12 +159,14 @@ import {capitalize, isEmpty, omitBy} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
+import Filters from '../../common/Filters.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
     PrimaryButton,
-    CustomTable
+    CustomTable,
+    Filters
   },
   mixins: [alertMixin],
   props: {
@@ -171,7 +190,9 @@ export default {
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'LOADED,INFOWARN,FUNDWARN,VERIFIED,FIXABLE',
+        moreFilters: ''
       },
+      showFilters:null,
     };
   },
   computed: {
@@ -184,6 +205,11 @@ export default {
 
   },
   methods: {
+    updateFilters($event) {
+      this.showFilters=!this.showFilters;
+      this.filterSearchParams.moreFilters = $event;
+      this.loadStudents();
+    },
     loadStudents() {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
@@ -201,6 +227,9 @@ export default {
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    toggleFilters() {
+      this.showFilters= !this.showFilters;
     },
     enrolledProgramMapping(student, enrolledProgramFilter) {
       if(!student.enrolledProgramCodes) {

@@ -29,6 +29,7 @@
                 <v-checkbox
                   :input-value="masterCheckbox"
                   :indeterminate="selected.length > 0 && !isAllSelected()"
+                  hide-details="true"
                 />
               </span>
             </div>
@@ -56,6 +57,7 @@
             <v-checkbox
               v-if="column.title === 'select'"
               :model-value="isSelected(props.item.raw) !== undefined"
+              hide-details="true"
               @click="onClick(props)"
             />
             <div v-else>
@@ -193,9 +195,10 @@ export default {
   color: #7f7f7f;
 }
 
-.header-row {
-  border-bottom-style: groove;
-  border-bottom-color: rgb(255 255 255 / 45%);
-  vertical-align: top !important;
-}
+ .header-row {
+    border-bottom-style: groove;
+    border-bottom-color: rgb(255 255 255 / 45%);
+    vertical-align: top !important;
+ }
+   
 </style>

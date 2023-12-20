@@ -10,8 +10,157 @@ export const FTE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
     ],
-    headcountEndpoint: 'enrollment'
-  }
+    headcountEndpoint: 'enrollment',
+    allowedFilters: [
+      { 
+        heading: 'Student Type',
+        multiple: true,
+        key:'studentType',
+        filterOptions: [
+          {
+            title: 'School Aged',
+            value: 'isSchoolAged'
+          },
+          {
+            title: 'Adult',
+            value: 'isAdult'
+          }
+        ]
+      },
+      { 
+        heading: 'FTE',
+        multiple: true,
+        key:'fte',
+        filterOptions: [
+          {
+            title: 'FTE = 0',
+            value: 'fteEq0'
+          },
+          {
+            title: 'FTE < 1',
+            value: 'fteLt1'
+          },
+          {
+            title: 'FTE > 0',
+            value: 'fteGt0'
+          }
+        ]
+      },
+      { 
+        heading: 'Grade',
+        multiple: true,
+        key: 'grade',
+        filterOptions: [
+          {
+            title: 'Kind. Half',
+            value: 'KH'
+          },
+          {
+            title: 'Kind. Full',
+            value: 'KF'
+          },
+          {
+            title: 'Gr. 1',
+            value: '01'
+          },
+          {
+            title: 'Gr. 2',
+            value: '02'
+          },
+          {
+            title: 'Gr. 3',
+            value: '03'
+          },
+          {
+            title: 'Gr. 4',
+            value: '04'
+          },
+          {
+            title: 'Gr. 5',
+            value: '05'
+          },
+          {
+            title: 'Gr. 6',
+            value: '06'
+          },
+          {
+            title: 'Gr. 7',
+            value: '07'
+          },
+          {
+            title: 'Elem. Ungraded',
+            value: 'EU'
+          },
+          {
+            title: 'Gr. 8',
+            value: '08'
+          },
+          {
+            title: 'Gr. 9',
+            value: '09'
+          },
+          {
+            title: 'Gr. 10',
+            value: '10'
+          },
+          {
+            title: 'Gr. 11',
+            value: '11'
+          },
+          {
+            title: 'Gr. 12',
+            value: '12'
+          },
+          {
+            title: 'Sec. Ungraded',
+            value: 'SU'
+          },
+          {
+            title: 'Graduated Adult',
+            value: 'GA'
+          },
+        ]
+      },
+      { 
+        heading: 'Funding Type',
+        multiple: true,
+        key: 'fundingType',
+        filterOptions: [
+          {
+            title: '14 - Out of Province/International',
+            value: '14'
+          },
+          {
+            title: '20 - Living on Reserve',
+            value: '20'
+          },
+          {
+            title: '16 - Newcomer Refugee',
+            cvalue: '16'
+          },
+          {
+            title: 'No Funding Code',
+            value: 'No Funding'
+          }
+        ]
+      },
+      { 
+        heading: 'Warnings',
+        multiple: true,
+        key: 'warnings',
+        filterOptions: [
+          {
+            title: 'Has Funding Warnings',
+            value: 'FUNDING_WARNING'
+          },
+          {
+            title: 'Has Info Warnings',
+            value: 'INFO_WARNING'
+          }
+        ]
+      },
+    ]
+  }  
 );
 
 export const FRENCH_PR = Object.freeze(

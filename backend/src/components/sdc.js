@@ -4,6 +4,7 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
+const cacheService = require('./cache-service');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -131,6 +132,12 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
       });
     }
+    if(req.query.searchParams['moreFilters']) {
+      let criteriaArray =   createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      criteriaArray.forEach(criteria => {
+        search.push(criteria);
+      })
+    }
 
     const params = {
       params: {
@@ -140,7 +147,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-    
+
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
     if(req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
@@ -397,6 +404,98 @@ function createLocalIdPenSearchCriteria(value) {
     condition: CONDITION.OR
   });
   return searchCriteriaList;
+}
+
+function createMoreFiltersSearchCriteria(searchFilter=[]) {
+  let searchCriteriaList = [];
+  let studentTypeFilterList = [];
+  let fteFilterList = [];
+  searchFilter.forEach((elem) => {
+    let pValue = elem.value;
+    if(elem.key === 'studentType' && pValue) {
+      if(pValue.includes('isSchoolAged')) {
+        studentTypeFilterList.push({key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
+      }
+      if(pValue.includes('isAdult')) {
+        studentTypeFilterList.push({key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
+      }
+    }
+    if(elem.key === 'fte' && pValue) {
+      if(pValue.includes('fteEq0')) {
+        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+      }
+      if(pValue.includes('fteLt1')) {
+        fteFilterList.push({key: 'fte', value: 1, operation: FILTER_OPERATION.LESS_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+      }
+      if(pValue.includes('fteGt0')) {
+        fteFilterList.push({key: 'fte', value: 0, operation: FILTER_OPERATION.GREATER_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+      }
+    }
+    if(elem.key === 'grade' && pValue) {
+      validateGradeFilter(pValue);
+      searchCriteriaList.push({key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+    }
+    if(elem.key === 'warnings' && pValue) {
+      searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+    }
+    if(elem.key === 'fundingType' && pValue) {
+        validateFundingTypeFilter(pValue);
+
+        if(pValue.includes('14')) {
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+        }
+        if(pValue.includes('20')) {
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+        }
+        if(pValue.includes('16')) {
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+        }
+        if(pValue.includes('No Funding')) {
+          searchCriteriaList.push({key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+        }
+        
+    }    
+  })
+  const search = [];
+  if(searchCriteriaList > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: searchCriteriaList
+    });
+  }
+  if(studentTypeFilterList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: studentTypeFilterList
+    });
+  }
+  if(fteFilterList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: fteFilterList
+    });
+  }
+  return search;
+}
+
+function validateGradeFilter(filterGrades=[]) {
+  const activeGradeCodes = cacheService.getActiveEnrolledGradeCodes();
+  if(filterGrades.length > 0) {
+    if(filterGrades.every(value => activeGradeCodes.includes(grade => value === grade.enrolledGradeCode))) {
+      log.error('Invalid grade filter.');
+      throw new Error('400');
+    }
+  }
+}
+
+function validateFundingTypeFilter(filterGrades=[]) {
+  const activeFundingCodes = cacheService.getActiveFundingCodes();
+  if(filterGrades.length > 0) {
+    if(filterGrades.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
+      log.error('Invalid funding code filter.');
+      throw new Error('400');
+    }
+  }
 }
 
 

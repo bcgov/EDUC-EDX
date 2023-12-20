@@ -3,7 +3,10 @@
     class="containerSetup"
     fluid
   >
-    <div  v-if="!openEditView" class="border">
+    <div
+      v-if="!openEditView"
+      class="border"
+    >
       <v-row v-if="isLoading()">
         <v-col>
           <Spinner />
@@ -40,7 +43,10 @@
                   >
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span id="errorCount" style="font-size: x-large">{{ summaryCounts.error }}</span>
+                  <span
+                    id="errorCount"
+                    style="font-size: x-large"
+                  >{{ summaryCounts.error }}</span>
                 </div>
                 <div class="divider flex-grow-1">
                   <span class="section-heading">Funding Warnings</span>
@@ -51,7 +57,10 @@
                   >
                     mdi-alert-outline
                   </v-icon>
-                  <span id="fundingWarningCount" style="font-size: x-large">{{ summaryCounts.fundingWarning }}</span>
+                  <span
+                    id="fundingWarningCount"
+                    style="font-size: x-large"
+                  >{{ summaryCounts.fundingWarning }}</span>
                 </div>
                 <div class="flex-grow-1">
                   <span class="section-heading">Info Warnings</span>
@@ -62,7 +71,10 @@
                   >
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span id="infoWarningCount" style="font-size: x-large">{{ summaryCounts.infoWarning }}</span>
+                  <span
+                    id="infoWarningCount"
+                    style="font-size: x-large"
+                  >{{ summaryCounts.infoWarning }}</span>
                 </div>
               </v-col>
             </v-row>
@@ -86,7 +98,10 @@
                 class="d-flex flex-wrap justify-space-evenly"
                 style="text-align: center;"
               >
-                <span id="totalStudentsWithIssuesCount" style="font-size: x-large">{{ numIssueStudentsInCollection }}</span>
+                <span
+                  id="totalStudentsWithIssuesCount"
+                  style="font-size: x-large"
+                >{{ numIssueStudentsInCollection }}</span>
               </v-col>
             </v-row>
           </v-row>
@@ -166,21 +181,24 @@
             </v-col>
           </v-row>
 
-          <v-row justify="end" class="pt-3 pb-3">
-              <PrimaryButton
-                id="fixSelected"
-                text="Review & Fix Selected"
-                :click-action="toggleEditView"
-                :disabled="selectedStudents.length === 0"
-                class="mr-4"
-              />
-              <PrimaryButton
-                id="fixAll"
-                text="Review & Fix All"
-                :loading="allIssueLoader"
-                :click-action="getAllIssuesAndNavigate"
-                :disabled="selectedStudents.length != 0"
-              />
+          <v-row
+            justify="end"
+            class="pt-3 pb-3"
+          >
+            <PrimaryButton
+              id="fixSelected"
+              text="Review & Fix Selected"
+              :click-action="toggleEditView"
+              :disabled="selectedStudents.length === 0"
+              class="mr-4"
+            />
+            <PrimaryButton
+              id="fixAll"
+              text="Review & Fix All"
+              :loading="allIssueLoader"
+              :click-action="getAllIssuesAndNavigate"
+              :disabled="selectedStudents.length != 0"
+            />
           </v-row>
           <v-row>
             <v-data-table-server
@@ -225,7 +243,7 @@
               </template>
               
               <template #item.legalName="{ item }">
-                {{  item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
+                {{ item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
               </template>
               <template #item.usualName="{ item }">
                 {{ item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
@@ -281,8 +299,8 @@
     </div>
     <div v-if="openEditView">
       <EditAndFixStudentData 
-        :selectedStudents="selectedStudents"
-        :totalStudents="numIssueStudentsInCollection"
+        :selected-students="selectedStudents"
+        :total-students="numIssueStudentsInCollection"
         @show-issues="refresh"
         @clear-filter="clearFiltersAndReload"
         @filter-pen="filterStudentsByPen"

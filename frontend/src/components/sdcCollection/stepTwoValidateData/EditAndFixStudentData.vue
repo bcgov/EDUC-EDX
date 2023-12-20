@@ -8,7 +8,10 @@
         no-gutters
         class="mt-2 mb-2 d-flex justify-start"
       >
-        <v-col cols="6" class="mt-1 d-flex justify-start">
+        <v-col
+          cols="6"
+          class="mt-1 d-flex justify-start"
+        >
           <v-icon
             small
             color="#1976d2"
@@ -458,7 +461,7 @@
                   </v-icon>
                   <span class="success-message">There are no errors or warnings on this student record.</span>
                 </v-alert>
-            </v-col>
+              </v-col>
             </v-row>
             <div class="text-center">
               <v-pagination 
