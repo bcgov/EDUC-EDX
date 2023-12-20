@@ -1,3 +1,172 @@
+/**
+ * Filters
+ */
+
+export const WARNING_FILTER = Object.freeze(
+  { 
+      heading: 'Warnings',
+      multiple: true,
+      key: 'warnings',
+      filterOptions: [
+        {
+          title: 'Has Funding Warnings',
+          value: 'FUNDING_WARNING'
+        },
+        {
+          title: 'Has Info Warnings',
+          value: 'INFO_WARNING'
+        }
+      ]
+  }
+);
+
+export const STUDENT_TYPE_FILTER = Object.freeze(
+  { 
+    heading: 'Student Type',
+    multiple: true,
+    key:'studentType',
+    filterOptions: [
+      {
+        title: 'School Aged',
+        value: 'isSchoolAged'
+      },
+      {
+        title: 'Adult',
+        value: 'isAdult'
+      }
+    ]
+  },
+);
+
+export const FTE_FILTER = Object.freeze(
+  { 
+    heading: 'FTE',
+    multiple: true,
+    key:'fte',
+    filterOptions: [
+      {
+        title: 'FTE = 0',
+        value: 'fteEq0'
+      },
+      {
+        title: 'FTE < 1',
+        value: 'fteLt1'
+      },
+      {
+        title: 'FTE > 0',
+        value: 'fteGt0'
+      }
+    ]
+  },
+);
+
+export const FUNDING_TYPE_FILTER = Object.freeze(
+  { 
+    heading: 'Funding Type',
+    multiple: true,
+    key: 'fundingType',
+    filterOptions: [
+      {
+        title: '14 - Out of Province/International',
+        value: '14'
+      },
+      {
+        title: '20 - Living on Reserve',
+        value: '20'
+      },
+      {
+        title: '16 - Newcomer Refugee',
+        cvalue: '16'
+      },
+      {
+        title: 'No Funding Code',
+        value: 'No Funding'
+      }
+    ]
+  },
+);
+
+export const GRADE_FILTER = Object.freeze(
+  { 
+    heading: 'Grade',
+    multiple: true,
+    key: 'grade',
+    filterOptions: [
+      {
+        title: 'Kind. Half',
+        value: 'KH'
+      },
+      {
+        title: 'Kind. Full',
+        value: 'KF'
+      },
+      {
+        title: 'Gr. 1',
+        value: '01'
+      },
+      {
+        title: 'Gr. 2',
+        value: '02'
+      },
+      {
+        title: 'Gr. 3',
+        value: '03'
+      },
+      {
+        title: 'Gr. 4',
+        value: '04'
+      },
+      {
+        title: 'Gr. 5',
+        value: '05'
+      },
+      {
+        title: 'Gr. 6',
+        value: '06'
+      },
+      {
+        title: 'Gr. 7',
+        value: '07'
+      },
+      {
+        title: 'Elem. Ungraded',
+        value: 'EU'
+      },
+      {
+        title: 'Gr. 8',
+        value: '08'
+      },
+      {
+        title: 'Gr. 9',
+        value: '09'
+      },
+      {
+        title: 'Gr. 10',
+        value: '10'
+      },
+      {
+        title: 'Gr. 11',
+        value: '11'
+      },
+      {
+        title: 'Gr. 12',
+        value: '12'
+      },
+      {
+        title: 'Sec. Ungraded',
+        value: 'SU'
+      },
+      {
+        title: 'Graduated Adult',
+        value: 'GA'
+      },
+    ]
+  },
+);
+
+/**
+ * Tables
+ */
 export const FTE = Object.freeze(
   {
     defaultFilter: {label: 'DEFAULT_VALUE' ,description: ''},
@@ -12,153 +181,11 @@ export const FTE = Object.freeze(
     ],
     headcountEndpoint: 'enrollment',
     allowedFilters: [
-      { 
-        heading: 'Student Type',
-        multiple: true,
-        key:'studentType',
-        filterOptions: [
-          {
-            title: 'School Aged',
-            value: 'isSchoolAged'
-          },
-          {
-            title: 'Adult',
-            value: 'isAdult'
-          }
-        ]
-      },
-      { 
-        heading: 'FTE',
-        multiple: true,
-        key:'fte',
-        filterOptions: [
-          {
-            title: 'FTE = 0',
-            value: 'fteEq0'
-          },
-          {
-            title: 'FTE < 1',
-            value: 'fteLt1'
-          },
-          {
-            title: 'FTE > 0',
-            value: 'fteGt0'
-          }
-        ]
-      },
-      { 
-        heading: 'Grade',
-        multiple: true,
-        key: 'grade',
-        filterOptions: [
-          {
-            title: 'Kind. Half',
-            value: 'KH'
-          },
-          {
-            title: 'Kind. Full',
-            value: 'KF'
-          },
-          {
-            title: 'Gr. 1',
-            value: '01'
-          },
-          {
-            title: 'Gr. 2',
-            value: '02'
-          },
-          {
-            title: 'Gr. 3',
-            value: '03'
-          },
-          {
-            title: 'Gr. 4',
-            value: '04'
-          },
-          {
-            title: 'Gr. 5',
-            value: '05'
-          },
-          {
-            title: 'Gr. 6',
-            value: '06'
-          },
-          {
-            title: 'Gr. 7',
-            value: '07'
-          },
-          {
-            title: 'Elem. Ungraded',
-            value: 'EU'
-          },
-          {
-            title: 'Gr. 8',
-            value: '08'
-          },
-          {
-            title: 'Gr. 9',
-            value: '09'
-          },
-          {
-            title: 'Gr. 10',
-            value: '10'
-          },
-          {
-            title: 'Gr. 11',
-            value: '11'
-          },
-          {
-            title: 'Gr. 12',
-            value: '12'
-          },
-          {
-            title: 'Sec. Ungraded',
-            value: 'SU'
-          },
-          {
-            title: 'Graduated Adult',
-            value: 'GA'
-          },
-        ]
-      },
-      { 
-        heading: 'Funding Type',
-        multiple: true,
-        key: 'fundingType',
-        filterOptions: [
-          {
-            title: '14 - Out of Province/International',
-            value: '14'
-          },
-          {
-            title: '20 - Living on Reserve',
-            value: '20'
-          },
-          {
-            title: '16 - Newcomer Refugee',
-            cvalue: '16'
-          },
-          {
-            title: 'No Funding Code',
-            value: 'No Funding'
-          }
-        ]
-      },
-      { 
-        heading: 'Warnings',
-        multiple: true,
-        key: 'warnings',
-        filterOptions: [
-          {
-            title: 'Has Funding Warnings',
-            value: 'FUNDING_WARNING'
-          },
-          {
-            title: 'Has Info Warnings',
-            value: 'INFO_WARNING'
-          }
-        ]
-      },
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
     ]
   }  
 );
@@ -175,7 +202,14 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram'},
     ],
-    headcountEndpoint: 'french'
+    headcountEndpoint: 'french',
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }
 );
 
@@ -191,7 +225,14 @@ export const CAREER_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerProgramCode'}},
     ],
-    headcountEndpoint: 'career'
+    headcountEndpoint: 'career',
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }  
 );
 
@@ -208,6 +249,13 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: {title: 'Band Code', key: 'mappedBandCode'}},
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram'},
     ],
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }
 );
 
@@ -223,6 +271,13 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Special Education Category', key: 'mappedSpedCode'},
     ],
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }
 );
 
@@ -238,6 +293,13 @@ export const ELL = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: {title: 'Years in ELL', key: 'yearsInEll'}},
     ],
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }
 );
 
@@ -252,5 +314,12 @@ export const REFUGEE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}}
     ],
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      WARNING_FILTER
+    ]
   }
 );
