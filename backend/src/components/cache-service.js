@@ -7,6 +7,7 @@ const retry = require('async-retry');
 const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
 const {generateDistrictObject, isDistrictActive,generateAuthorityObject,isAuthorityActive} = require('./districtUtils');
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
+const constants = require('../util/constants');
 
 let schoolMap = new Map();
 let schools = [];
@@ -230,6 +231,12 @@ const cacheService = {
   },
   getCachedData(){
     return cachedData;
+  },
+  getActiveEnrolledGradeCodes() {
+    return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;
+  },
+  getActiveFundingCodes() {
+    return cachedData[constants.CACHE_KEYS.SDC_SCHOOL_FUNDING_CODES].activeRecords;
   }
 };
 

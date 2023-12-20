@@ -100,7 +100,9 @@ const VALUE_TYPE = Object.freeze(
     /**
      * Uuid value type.
      */
-    UUID: 'UUID'
+    UUID: 'UUID',
+
+    BOOLEAN: 'BOOLEAN'
   }
 );
 
