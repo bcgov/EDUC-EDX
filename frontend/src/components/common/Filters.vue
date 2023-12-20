@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     setFilter(val, key) {
-      console.log({key: key, val: val});
       switch(key) {
       case 'studentType':
         this.studentTypeFilter = {key: key, value: val};
