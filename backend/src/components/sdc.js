@@ -457,7 +457,7 @@ function createMoreFiltersSearchCriteria(searchFilter=[]) {
     }    
   })
   const search = [];
-  if(searchCriteriaList > 0) {
+  if(searchCriteriaList.length > 0) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: searchCriteriaList
