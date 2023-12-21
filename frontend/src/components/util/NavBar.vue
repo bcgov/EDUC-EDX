@@ -236,12 +236,12 @@ export default {
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
-          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'details'}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
-          link: { name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {

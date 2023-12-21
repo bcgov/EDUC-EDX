@@ -23,7 +23,6 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
-import DistrictContactsPage from './components/district/DistrictContacts.vue';
 import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
 import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
@@ -237,22 +236,12 @@ const router = createRouter({
           }
         },
         {
-          path: 'districtDetails/:districtID',
+          path: 'districtDetails/:districtID/:activeTab',
           name: 'districtDetails',
           props: true,
           component: DistrictDetails,
           meta: {
             pageTitle: PAGE_TITLES.DISTRICT_DETAILS,
-            requiresAuth: true
-          }
-        },
-        {
-          path: 'districtContacts/:districtID',
-          name: 'districtContacts',
-          component: DistrictContactsPage,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.DISTRICT_CONTACTS,
             requiresAuth: true
           }
         },
