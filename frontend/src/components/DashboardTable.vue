@@ -519,9 +519,6 @@ export default {
     openSDCCollection() {
       router.push({name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
-    redirectToDistrictDetails(){
-      router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
-    },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
@@ -590,8 +587,11 @@ export default {
     redirectToSchoolDetails() {
       this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
+    redirectToDistrictDetails(){
+      router.push({name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'details'}});
+    },
     redirectToDistrictContacts(){
-      router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
+      router.push({name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}});
     },
     isSchoolActive(){
       appStore().getInstitutesData().finally(() => {

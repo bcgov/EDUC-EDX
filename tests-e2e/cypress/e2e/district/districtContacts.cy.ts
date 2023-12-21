@@ -30,7 +30,7 @@ describe('District Contacts Page', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtContacts.newContactButton).click();
       cy.get(selectors.districtContacts.newContactEffectiveDateTextField)
           .find('input[type="text"]')
@@ -44,7 +44,7 @@ describe('District Contacts Page', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtContacts.editDistrictContactButton).click();
       cy.get(selectors.districtContacts.editContactFirstNameInput).clear().type('Edited User');
       cy.get(selectors.districtContacts.editContactLastNameInput).clear().type('Lastname');

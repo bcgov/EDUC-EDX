@@ -1,17 +1,7 @@
 <template>
-  <v-container class="containerSetup">
-    <v-col class="mt-1 d-flex justify-start">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to Dashboard</a>
-    </v-col>
+  <v-container
+    :fluid="true"
+  >
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
@@ -25,52 +15,35 @@
       </v-col>
     </v-row>
     <template v-if="!loading">
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-          class="d-flex justify-start"
-        >
+      <v-row cols="2">
+        <v-col class="d-flex justify-start">
           <v-chip
+            class="mr-3"
             variant="elevated"
-            class="text-black mr-3"
             color="#A9D18E"
           >
             Active
           </v-chip>
           <v-chip
+            class="mr-3"
             variant="elevated"
-            class="text-black mr-3"
             color="#9DC3E6"
           >
             Pending Start Date
           </v-chip>
           <v-chip
-            variant="elevated"
-            class="text-black"
             color="#F4B183"
+            variant="elevated"
           >
             Pending End Date
           </v-chip>
         </v-col>
-        <v-col
-          cols="12"
-          md="6"
-          class="d-flex justify-md-end justify-start"
-        >
+        <v-col class="d-flex justify-end">
           <PrimaryButton
-            id="viewDetailsButton"
-            class="mr-2 mb-3"
-            secondary
-            icon="mdi-domain"
-            text="View Details"
-            :click-action="redirectToDistrictDetails"
-          />
-          <PrimaryButton
-            v-if="canEditDistrictContact"
+            v-if="hasAccess"
             id="newContactButton"
-            class="mb-3"
-            width="12em"
+            icon-left
+            width="11em"
             icon="mdi-plus-thick"
             text="New Contact"
             :click-action="openNewContactSheet"
@@ -78,14 +51,10 @@
         </v-col>
       </v-row>
       <v-row
-        class="d-sm-flex mb-3 align-center searchBox"
+        class="d-sm-flex align-center searchBox elevation-2 mb-3"
         @keydown.enter="searchButtonClicked"
       >
-        <v-col
-          cols="12"
-          md="3"
-          class="pb-0 pb-md-7"
-        >
+        <v-col>
           <v-autocomplete
             id="status-select-field"
             v-model="searchFilter.districtContactTypeCode"
@@ -96,42 +65,29 @@
             item-value="districtContactTypeCode"
             :menu-props="{closeOnContentClick:true}"
             label="Contact Type"
-            hide-details="auto"
             @update:model-value="searchButtonClicked"
           />
         </v-col>
-        <v-col
-          cols="12"
-          md="3"
-          class="pb-0 pb-md-7"
-        >
+        <v-col>
           <v-text-field
             id="first-name-search-text-field"
             v-model="searchFilter.firstName"
             variant="underlined"
             label="Contact First Name"
             :clearable="true"
-            hide-details="auto"
           />
         </v-col>
-        <v-col
-          cols="12"
-          md="3"
-          class="pb-0 pb-md-7"
-        >
+        <v-col>
           <v-text-field
             id="last-name-search-text-field"
             v-model="searchFilter.lastName"
             variant="underlined"
             label="Contact Last Name"
             :clearable="true"
-            hide-details="auto"
           />
         </v-col>
         <v-col
-          cols="12"
-          md="3"
-          class="d-flex justify-end"
+          class="text-right"
         >
           <PrimaryButton
             id="district-clear-button"
@@ -155,7 +111,9 @@
         <v-row>
           <v-col class="pb-1">
             <h2 style="color:#1A5A96">
-              {{ districtContactType.label }}
+              {{
+                districtContactType.label
+              }}
             </h2>
           </v-col>
         </v-row>
@@ -187,15 +145,14 @@
           <v-col
             v-for="contact in filteredDistrictContacts.get(districtContactType.districtContactTypeCode)"
             :key="contact.schoolId"
-            lg="4"
-            sm="6"
-            cols="12"
             class="pt-0"
+            cols="5"
+            lg="4"
           >
             <DistrictContact
               :contact="contact"
               :district-i-d="$route.params.districtID"
-              :can-edit-district-contact="canEditDistrictContact"
+              :can-edit-district-contact="hasAccess"
               :handle-open-editor="() => openEditContactSheet(contact)"
               @remove-district-contact:show-confirmation-prompt="removeContact"
             />
@@ -213,8 +170,9 @@
     </template>
     <v-bottom-sheet
       v-model="newContactSheet"
-      :no-click-animation="true"
       :inset="true"
+      :no-click-animation="true"
+      :scrollable="true"
       :persistent="true"
     >
       <NewDistrictContactPage
@@ -227,8 +185,9 @@
     </v-bottom-sheet>
     <v-bottom-sheet
       v-model="editContactSheet"
-      :no-click-animation="true"
       :inset="true"
+      :no-click-animation="true"
+      :scrollable="true"
       :persistent="true"
     >
       <EditDistrictContactPage
@@ -258,17 +217,16 @@ import { authStore } from '../../store/modules/auth';
 import alertMixin from '../../mixins/alertMixin';
 import { isExpired } from '../../utils/institute/status';
 import {sortBy, omitBy, isEmpty} from 'lodash';
-import {PERMISSION} from '../../utils/constants/Permission';
 import {setEmptyInputParams} from '../../utils/common';
 
 export default {
-  name: 'DistrictContactsPage',
+  name: 'DistrictContacts',
   components: {
-    PrimaryButton,
     NewDistrictContactPage,
     EditDistrictContactPage,
     DistrictContact,
-    ConfirmationDialog
+    PrimaryButton,
+    ConfirmationDialog,
   },
   mixins: [alertMixin],
   props: {
@@ -276,6 +234,10 @@ export default {
       type: String,
       required: false,
       default: null
+    },
+    hasAccess: {
+      type: Boolean,
+      required: true
     },
   },
   data() {
@@ -299,9 +261,6 @@ export default {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
     loading() {
       return this.loadingCount !== 0;
-    },
-    canEditDistrictContact() {
-      return this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_DISTRICT_EDIT).length > 0;
     },
     filteredDistrictContactTypes() {
       if (!this.isFiltered) {
@@ -393,9 +352,6 @@ export default {
     },
     backButtonClick() {
       this.$router.push({name: 'home'});
-    },
-    redirectToDistrictDetails() {
-      this.$router.push({name: 'districtDetails', params: {districtID: this.districtID}});
     },
     removeContact(districtID, districtContactID) {
       const opts = {
