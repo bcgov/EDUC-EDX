@@ -232,7 +232,7 @@ import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
-import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
+import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from '@js-joda/core';
 import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
@@ -311,7 +311,7 @@ export default {
     },
     fileUploadDate() {
       try {
-        return LocalDate.parse(this.sdcSchoolProgress?.uploadDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        return LocalDateTime.parse(this.sdcSchoolProgress?.uploadDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
       } catch (e) {
         return null;
       }
@@ -320,7 +320,7 @@ export default {
       if (!this.fileUploadDate) {
         return 'n/a';
       }
-      return this.fileUploadDate.toLocaleString();
+      return this.fileUploadDate.format(DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm'));
     },
     getLink() {
       let collectionLink = '';
