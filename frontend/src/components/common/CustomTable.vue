@@ -60,6 +60,13 @@
               hide-details="true"
               @click="onClick(props)"
             />
+            <v-icon
+              v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
+              size="25"
+              :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
+            >
+              {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+            </v-icon>
             <div v-else>
               <div v-if="column.key === 'legalName'">
                 <span v-if="props.item.raw['legalLastName']">{{ props.item.raw['legalLastName'] }}</span>,
@@ -185,7 +192,22 @@ export default {
       }
       this.masterCheckbox = this.selected.length > 0 && this.isAllSelected();
     },
-
+    getSdcStudentStatusIconColor(status) {
+      if (status === 'FUNDWARN') {
+        return 'blue';
+      }
+      else if (status === 'INFOWARN') {
+        return 'orange';
+      }
+    },
+    getSdcStudentIssueIcon(status) {
+      if (status === 'FUNDWARN') {
+        return 'mdi-alert-outline';
+      }
+      else if (status === 'INFOWARN') {
+        return 'mdi-alert-circle-outline';
+      }
+    },
   }
 };
 </script>
