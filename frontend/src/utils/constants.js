@@ -12,6 +12,7 @@ const sdcRoot = baseRoot + '/sdc';
 let object;
 
 object = {
+  MAIN_LOGIN: '/login',
   LOGIN: authRoot + '/login',
   DASHBOARD: '/',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
@@ -86,6 +87,7 @@ export const ApiRoutes = Object.freeze({
     STATUSES_URL: edxRoot + '/exchange/statuses',
     MINISTRY_TEAM_URL: edxRoot + '/users/ministry-teams',
     USERS_URL: edxRoot + '/users',
+    DISTRICT_SCHOOL_USERS_URL: edxRoot + '/all-district-school-users',
     EXCHANGE_ACCESS_ROLES_URL: edxRoot + '/users/roles',
     EXCHANGE_REMOVE_USER: edxRoot + '/users/remove',
     EXCHANGE_RELINK_USER: edxRoot + '/users/relink',
@@ -111,6 +113,7 @@ export const PAGE_TITLES = Object.freeze({
   ACTIVATE_USER:'Activate User',
   SCHOOL_EXCHANGE_USERS: 'School User Management',
   DISTRICT_EXCHANGE_USERS: 'District User Management',
+  ALL_DISTRICT_SCHOOL_USERS: 'All School Users',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
   NEW_USER_INVITE:'New User',

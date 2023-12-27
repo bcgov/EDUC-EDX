@@ -29,6 +29,11 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.headcountEndpoint"
+      />
+    </div>
   </v-container>
 </template>
     
@@ -36,10 +41,12 @@
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { CAREER_PR } from '../../../utils/sdc/TableConfiguration';
+import SummaryComponent from './SummaryComponent.vue';
   
 export default {
   name: 'CareerProgramsComponent',
   components: {
+    SummaryComponent,
     DetailComponent
   },
   mixins: [alertMixin],

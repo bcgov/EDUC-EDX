@@ -120,6 +120,8 @@
                   id="markAsButton"
                   :disabled="!isEditable()"
                   class="my-4"
+                  variant="outlined"
+                  color="#003366"
                   :loading="loadingReadStatus"
                   @click="clickMarkAsButton"
                 >
@@ -129,7 +131,7 @@
                   <v-icon v-else>
                     mdi-email-open-outline
                   </v-icon>
-                  <span class="ml-1 markAsSpan">{{ `MARK AS ${secureExchange.isReadByExchangeContact ? 'UNREAD' : 'READ'}` }}</span>
+                  <span class="ml-1 markAsSpan">{{ `Mark as ${secureExchange.isReadByExchangeContact ? 'unread' : 'read'}` }}</span>
                 </v-btn>
               </v-col>
             </v-row>
@@ -288,11 +290,11 @@
                           <v-col>
                             <span>{{ activity.actor }}</span>
                           </v-col>
-                          <v-col class="d-flex justify-end">
-                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
-                          </v-col>
                         </v-row>
                       </v-card-text>
+                      <v-card-subtitle>
+                        <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                      </v-card-subtitle>
                       <v-card-text class="activityContent">
                         {{ activity.content }}
                       </v-card-text>
@@ -303,13 +305,13 @@
                           <v-col>
                             <span>{{ activity.title }}</span>
                           </v-col>
-                          <v-col class="d-flex justify-end">
-                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
-                          </v-col>
                         </v-row>
                       </v-card-text>
+                      <v-card-subtitle>
+                        <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                      </v-card-subtitle>
                       <v-card-text
-                        class="pb-0"
+                        class="pb-2"
                         :class="{'pb-0': activity.documentType.label !== 'Other', 'pb-3': activity.documentType.label === 'Other'}"
                       >
                         <a
@@ -339,12 +341,11 @@
                         </div>
                       </v-card-text>
                       <v-card-actions v-show="isOpenDocIndex !== index">
-                        <v-spacer />
                         <v-btn
-                          density="compact"
-                          elevation="0"
+                          variant="text"
+                          color="red"
+                          text="Remove"
                           :disabled="!isEditable()"
-                          icon="mdi-trash-can-outline"
                           @click="toggleRemoveDoc(index)"
                         />
                       </v-card-actions>
@@ -393,12 +394,12 @@
                           <v-col>
                             <span>{{ activity.title }}</span>
                           </v-col>
-                          <v-col class="d-flex justify-end">
-                            <span class="activityDisplayDate">{{ activity.displayDate }}</span>
-                          </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-card-text class="pb-0">
+                      <v-card-subtitle>
+                        <span class="activityDisplayDate">{{ activity.displayDate }}</span>
+                      </v-card-subtitle>
+                      <v-card-text class="pb-2">
                         <v-row
                           v-if="activity.studentPEN"
                           dense
@@ -502,12 +503,11 @@
                         </v-row>
                       </v-card-text>
                       <v-card-actions v-show="isOpenStudentIndex !== index">
-                        <v-spacer />
                         <v-btn
-                          density="compact"
-                          elevation="0"
                           :disabled="!isEditable()"
-                          icon="mdi-trash-can-outline"
+                          variant="text"
+                          color="red"
+                          text="Remove"
                           @click="toggleRemoveStudent(index)"
                         />
                       </v-card-actions>
@@ -916,11 +916,6 @@ export default {
   font-size: medium;
 }
 
-.activityDisplayDate{
-  font-size: small;
-  color: rgb(149, 149, 149);
-}
-
 .activityContent {
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -950,6 +945,10 @@ export default {
   .subjectHeading {
     font-size: medium;
   }
+}
+
+.activityDisplayDate {
+  font-style: italic;
 }
 
 .divider {

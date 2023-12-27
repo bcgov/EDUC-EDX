@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-row v-if="isLoading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
@@ -30,22 +30,12 @@
           </v-alert>
         </v-col>
       </v-row>
-      <v-row class="mt-n3">
+      <v-row>
         <v-col
           cols="12"
+          md="6"
           class="d-flex justify-start"
         >
-          <v-row no-gutters>
-            <v-col cols="12">
-              <h2 class="subjectHeading">
-                {{ school.mincode }} - {{ school.displayName }}
-              </h2>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row cols="2">
-        <v-col>
           <v-chip
             variant="elevated"
             class="text-black mr-3"
@@ -68,16 +58,11 @@
             Pending End Date
           </v-chip>
         </v-col>
-        <v-col class="d-flex justify-end">
-          <PrimaryButton
-            v-if="showDetailsButton()"
-            id="viewDetailsButton"
-            class="mr-2 mb-3"
-            secondary
-            icon="mdi-domain"
-            text="View School Details"
-            :click-action="redirectToSchoolDetails"
-          />
+        <v-col
+          cols="12"
+          sm="6"
+          class="d-flex justify-md-end justify-start"
+        >
           <PrimaryButton
             v-if="canEditSchoolContacts()"
             id="addSchoolContactBtn"
@@ -91,9 +76,10 @@
       <div
         v-for="schoolContactType in schoolContactTypes"
         :key="schoolContactType.code"
+        class="pb-6"
       >
         <v-row class="bottom-sheets">
-          <v-col>
+          <v-col class="pb-1">
             <h2 style="color:#1A5A96">
               {{ schoolContactType.label }}
             </h2>
@@ -103,7 +89,10 @@
           v-if="!schoolContactType.publiclyAvailable"
           cols="2"
         >
-          <v-col cols="12">
+          <v-col
+            class="pt-0"
+            cols="12"
+          >
             <v-alert
               :id="`publiclyAvailableAlert${schoolContactType.label}`"
               color="#003366"
@@ -124,15 +113,17 @@
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"
             :key="contact.schoolId"
-            cols="5"
             lg="4"
+            sm="6"
+            cols="12"
+            class="pt-0"
           >
             <SchoolContact
               :handle-open-editor="() => openEditContactSheet(contact)"
               :contact="contact"
               :school-i-d="selectedSchoolId"
               :can-edit-school-contact="canEditSchoolContacts()"
-              :can-remove-school-contact="hasSchoolAdminPermission()"
+              :can-remove-school-contact="hasSchoolEditPermission()"
               @remove-school-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
@@ -141,7 +132,7 @@
           v-else
           cols="2"
         >
-          <v-col>
+          <v-col class="pt-0">
             <p>No contacts of this type have been listed.</p>
           </v-col>
         </v-row>
@@ -150,10 +141,9 @@
     <!--    new contact sheet -->
     <v-bottom-sheet
       v-model="newContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <NewSchoolContactPage
         v-if="newContactSheet"
@@ -165,10 +155,9 @@
     </v-bottom-sheet>
     <v-bottom-sheet
       v-model="editContactSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <EditSchoolContactPage
         v-if="editContactSheet"
@@ -236,6 +225,8 @@ export default {
   data() {
     return {
       loadingCount: 0,
+      independentArray: [SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS],
+      offshoreArray: [SCHOOL_CATEGORY_CODES.OFFSHORE],
       schoolContactTypes: [],
       schoolContacts: new Map(),
       school: {},
@@ -254,7 +245,7 @@ export default {
       return this.loadingCount !== 0;
     },
     isOffshoreSchool(){
-      return this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      return this.offshoreArray.includes(this.school.schoolCategoryCode);
     }
   },
   watch: {
@@ -262,9 +253,9 @@ export default {
       if (!this.schoolContactTypeCodes) {
         await this.loadSchoolContactTypeCodes();
       }
-      if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE) {
+      if (this.offshoreArray.includes(value?.schoolCategoryCode)) {
         this.schoolContactTypes = this.offshoreSchoolContacts;
-      } else if (value?.schoolCategoryCode === SCHOOL_CATEGORY_CODES.INDEPEND) {
+      } else if (this.independentArray.includes(value?.schoolCategoryCode)) {
         this.schoolContactTypes = this.independentAuthoritySchoolContacts;
       } else {
         this.schoolContactTypes = this.regularSchoolContactTypes;
@@ -294,7 +285,7 @@ export default {
     getThisSchoolsContacts(){
       this.loadingCount += 1;
       this.selectedSchoolId = this.schoolID ? this.schoolID: this.userInfo.activeInstituteIdentifier;
-      ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/` + this.selectedSchoolId)
+      ApiService.apiAxios.get(`${ApiRoutes.school.SCHOOL_DETAILS_BY_ID}/${this.selectedSchoolId}`)
         .then(response => {
           this.schoolContacts = new Map();
           this.school = response.data;
@@ -332,13 +323,13 @@ export default {
       this.newContactSheet = !this.newContactSheet;
       this.getThisSchoolsContacts();
     },
-    hasSchoolAdminPermission() {
+    hasSchoolEditPermission() {
       let permissions = this.userInfo?.activeInstitutePermissions;
       if (permissions === undefined) return false;
-      return permissions.filter(p => p === PERMISSION.EDX_USER_SCHOOL_ADMIN).length > 0;
+      return permissions.filter(p => p === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
     },
     canEditSchoolContacts() {
-      return this.hasSchoolAdminPermission() && !this.isOffshoreSchool;
+      return this.hasSchoolEditPermission() && !this.isOffshoreSchool;
     },
     openNewContactSheet(){
       this.newContactSheet = !this.newContactSheet;
@@ -383,27 +374,4 @@ export default {
   }
 };
 </script>
-
-  <style scoped>
-
-  .containerSetup{
-    padding-right: 32em !important;
-    padding-left: 32em !important;
-  }
-
-  @media screen and (max-width: 1950px) {
-    .containerSetup{
-      padding-right: 20em !important;
-      padding-left: 20em !important;
-    }
-  }
-
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 4em !important;
-      padding-left: 4em !important;
-    }
-  }
-
-  </style>
 

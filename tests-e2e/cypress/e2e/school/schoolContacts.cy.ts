@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 function navigateToSchoolContactsSchoolUser() {
   cy.visit('/');
@@ -13,7 +13,7 @@ describe('School Contacts Page', () => {
   context('As an EDX school user', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolRoles: ['EDX_EDIT_SCHOOL'], schoolCodes: ['99998'] });
       });
     })
     beforeEach(() => cy.login());
@@ -22,10 +22,12 @@ describe('School Contacts Page', () => {
     it('Check new contact page has current effective date', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.newContactButton).click();
-      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      })
+      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can create a new contact', () => {
@@ -53,7 +55,7 @@ describe('School Contacts Page', () => {
     it('can edit school contact details; saves', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.editContactButton).click();
-      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');;
+      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');
       cy.get(selectors.schoolContacts.editContactEmailInput).clear().type('newvpemail@test.com');
       cy.get(selectors.schoolContacts.editContactPhoneNumberInput).clear().type('7779998888');
       cy.get(selectors.schoolContacts.editContactSaveButton).click();
@@ -73,7 +75,7 @@ describe('School Contacts Page', () => {
   context('As an EDX district admin', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
@@ -87,10 +89,12 @@ describe('School Contacts Page', () => {
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.dashboard.title).contains('School Contacts | EDX Automation Testing');
       cy.get(selectors.schoolContacts.newContactButton).click();
-      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      });
+      cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can create a new school contact - vice principal', () => {
@@ -122,7 +126,7 @@ describe('School Contacts Page', () => {
       cy.visit('/schools');
       cy.get(selectors.schoolList.viewFirstSchoolContactsButton).click();
       cy.get(selectors.schoolContacts.editContactButton).click();
-      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');;
+      cy.get(selectors.schoolContacts.editContactFirstNameInput).clear().type('AT Vice Principal First Name Edit');
       cy.get(selectors.schoolContacts.editContactEmailInput).clear().type('newvpemail@test.com');
       cy.get(selectors.schoolContacts.editContactPhoneNumberInput).clear().type('7779998888');
       cy.get(selectors.schoolContacts.editContactSaveButton).click();

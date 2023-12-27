@@ -1,15 +1,13 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData,
-  checkEDXUserAccessForSchoolAdminFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, checkEDXUserAccessForSchoolEditFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
   handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
-const { checkIfActionOnOffshoreSchool } = require('./schoolUtils');
 const log = require('./logger');
 const config = require('../config');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
 const _ = require('lodash');
-const {LocalDate, LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -33,19 +31,15 @@ async function updateSchool(req, res){
     const token = getAccessToken(req);
     validateAccessToken(token);
     verifyQueryParamValueMatchesBodyValue(req, 'schoolID', 'schoolId');
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
-    checkIfActionOnOffshoreSchool(req.params.schoolId);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
+    checkIfActionOnOffshoreSchool(req.params.schoolID);
 
     const payload = req.body;
 
     payload.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
-    });
-
-    payload.notes.forEach(function(note) {
-      note.updateDate = null;
-      note.createDate = null;
+      addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     });
 
     payload.contacts.forEach(function(contact) {
@@ -63,13 +57,17 @@ async function updateSchool(req, res){
       if(_.isString(nlcCode)){
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }else{
         //if neighborhood learning was not changed as part of edit , it will be passed as an array of objects from frontend.
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode.neighborhoodLearningTypeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }
     }
@@ -79,19 +77,24 @@ async function updateSchool(req, res){
       if (_.isString(gradeCode)) {
         gradesObjectArray.push({
           schoolGradeCode: gradeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       } else {
         //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
         gradesObjectArray.push({
           schoolGradeCode: gradeCode.schoolGradeCode,
-          schoolId: payload.schoolId
+          schoolId: payload.schoolId,
+          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
         });
       }
     }
 
     payload.neighborhoodLearning = nlcObjectsArray;
     payload.grades = gradesObjectArray;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, payload, config.get('institute:rootURL') + '/school/' + payload.schoolId, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -106,12 +109,10 @@ async function addSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
-    checkIfActionOnOffshoreSchool(req.params.schoolId);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
+    checkIfActionOnOffshoreSchool(req.params.schoolID);
 
     const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
-
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
 
     const payload = {
       schoolContactTypeCode: req.body.schoolContactTypeCode,
@@ -123,8 +124,10 @@ async function addSchoolContact(req, res) {
       phoneExtension: req.body.phoneExtension,
       alternatePhoneNumber: req.body.alternatePhoneNumber,
       alternatePhoneExtension: req.body.alternatePhoneExtension,
-      effectiveDate: req.body.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null,
-      expiryDate: req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null
+      effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
+      expiryDate: req.body.expiryDate ? req.body.expiryDate : null,
+      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
 
     const data = await postData(token, payload, url, req.session?.correlationID);
@@ -141,16 +144,15 @@ async function updateSchoolContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.body.schoolID);
-    checkIfActionOnOffshoreSchool(req.body.schoolId);
-
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+    checkEDXUserAccessForSchoolEditFunctions(req, req.body.schoolID);
+    checkIfActionOnOffshoreSchool(req.body.schoolID);
 
     const params = req.body;
     params.updateDate = null;
     params.createDate = null;
-    params.effectiveDate = params.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
-    params.expiryDate = req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
+    params.effectiveDate = params.effectiveDate ? req.body.effectiveDate : null;
+    params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
+    params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -162,12 +164,10 @@ async function updateSchoolContact(req, res) {
 
 async function removeSchoolContact(req, res) {
   try {
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-
     const token = getAccessToken(req);
     validateAccessToken(token, res);
 
-    checkEDXUserAccessForSchoolAdminFunctions(req, req.params.schoolID);
+    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
 
     const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
 
@@ -178,7 +178,8 @@ async function removeSchoolContact(req, res) {
 
     contact.createDate = null;
     contact.updateDate = null;
-    contact.expiryDate = LocalDateTime.now().format(formatter);
+    contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
+    contact.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -300,6 +301,14 @@ function validateAccessToken(token, res) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No access token'
     });
+  }
+}
+function checkIfActionOnOffshoreSchool(schoolID) {
+  const school = cacheService.getSchoolBySchoolID(schoolID);
+
+  if(school.schoolCategoryCode === 'OFFSHORE') {
+    log.error('User cannot edit contacts for an offshore school.');
+    throw new Error('403');
   }
 }
 

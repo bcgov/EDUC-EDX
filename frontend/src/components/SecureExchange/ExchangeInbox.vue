@@ -1,7 +1,7 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
+    :fluid="true"
   >
     <v-row>
       <v-col>
@@ -50,7 +50,7 @@
                     class="mt-4"
                     :disabled="!statusRadioGroupEnabled"
                     direction="horizontal"
-                    inline
+                    :inline="true"
                   >
                     <v-radio
                       label="Active Only"
@@ -100,76 +100,70 @@
                     <v-col
                       cols="12"
                       md="4"
+                      class="pt-0 px-7"
+                    >
+                      <v-select
+                        id="contactNameSelect"
+                        v-model="contactNameFilter"
+                        label="Contact"
+                        variant="underlined"
+                        item-title="teamName"
+                        item-value="ministryOwnershipTeamId"
+                        :items="ministryContactName"
+                        prepend-inner-icon="mdi-card-account-mail-outline"
+                        :clearable="true"
+                      >
+                        <template #selection="{ item, index }">
+                          <span id="contactNameLabel">{{ item.title }}</span>
+                        </template>
+                      </v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="subjectInput"
                         v-model="subjectFilter"
-                        density="compact"
                         class="pt-0 mt-0"
                         variant="underlined"
                         label="Subject"
+                        prepend-inner-icon="mdi-book-open-variant"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        prepend-icon="mdi-book-open-variant"
-                        clearable
                       />
                     </v-col>
                     <v-col
                       cols="12"
                       md="4"
-                      :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}"
+                      class="pt-0 px-7"
                     >
-                      <v-menu
-                        id="messageDate"
-                        ref="messageDateFilter"
-                        v-model="messageDateFilter"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template #activator="{ on, attrs }">
-                          <v-text-field
-                            id="messageDateTextField"
-                            v-model="messageDateMoment"
-                            density="compact"
-                            class="pt-0 mt-0"
-                            variant="underlined"
-                            label="Message Date"
-                            @keyup.enter="filterRequests()"
-                            prepend-icon="mdi-calendar"
-                            clearable
-                            readonly
-                            v-bind="attrs"
-                            @click="openMessageDatePicker"
-                          />
-                        </template>
-                      </v-menu>
-                      <VueDatePicker
-                        ref="messageDatePicker"
+                      <DatePicker
+                        id="messageDateTextField"
                         v-model="messageDate"
-                        :enable-time-picker="false"
-                        format="yyyy-MM-dd"
-                        @update:model-value="saveMessageDate"
+                        label="Message Date"
+                        model-type="yyyy-MM-dd'T'00:00:00"
+                        @keyup.enter="filterRequests()"
                       />
                     </v-col>
                     <v-col
                       cols="12"
                       md="4"
+                      class="pt-0 px-7"
                     >
                       <v-select
                         id="statusSelector"
                         v-model="statusSelectFilter"
                         :items="secureExchangeStatusCodes"
                         label="Status"
-                        density="compact"
-                        style="margin-top: 0.3em"
                         variant="underlined"
                         :menu-props="{
                           closeOnClick: true,
                           closeOnContentClick: true,
                         }"
                       >
-                        <template #prepend>
+                        <template #prepend-inner>
                           <v-icon :color="getStatusColor(statusSelectFilter ? statusSelectFilter[0].label : '')">
                             mdi-circle-medium
                           </v-icon>
@@ -192,63 +186,35 @@
                     <v-col
                       cols="12"
                       md="4"
-                      class="pt-0"
-                    >
-                      <v-select
-                        id="contactNameSelect"
-                        v-model="contactNameFilter"
-                        label="Contact Name"
-                        density="compact"
-                        style="margin-top: 0.1em"
-                        variant="underlined"
-                        item-title="teamName"
-                        item-value="ministryOwnershipTeamId"
-                        :items="ministryContactName"
-                        prepend-icon="mdi-book-open-variant"
-                        clearable
-                      >
-                        <template #selection="{ item, index }">
-                          <span id="contactNameLabel">{{ item.title }}</span>
-                        </template>
-                      </v-select>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                      class="pt-0"
-                      :class="{'pl-12 pr-12': $vuetify.display.mdAndUp}"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="messageIdInput"
                         v-model="messageIDFilter"
                         variant="underlined"
                         class="pt-0 mt-0"
-                        density="compact"
                         label="Message ID"
+                        prepend-inner-icon="mdi-pound"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        prepend-icon="mdi-pound"
-                        clearable
                         @keypress="isNumber($event)"
                       />
                     </v-col>
-                  </v-row>
-                  <v-row>
                     <v-col
                       cols="12"
                       md="4"
-                      class="pt-0"
+                      class="pt-0 px-7"
                     >
                       <v-text-field
                         id="studentIDInput"
                         v-model="studentIDFilter"
                         variant="underlined"
-                        density="compact"
                         label="Student PEN"
-                        prepend-icon="mdi-account"
+                        prepend-inner-icon="mdi-account"
                         maxlength="9"
                         counter="9"
+                        :clearable="true"
                         @keyup.enter="filterRequests()"
-                        clearable
                         @keypress="isNumber($event)"
                       />
                     </v-col>
@@ -296,7 +262,7 @@
               v-model:items-length="totalRequests"
               :items-per-page-options="itemsPerPageOptions"
               :loading="loadingTable"
-              class="elevation-1"
+              class="elevation-1 rounded"
               hide-default-header
               mobile-breakpoint="0"
             >
@@ -311,8 +277,6 @@
                 <v-row
                   class="hoverTable pl-3 pt-1 pb-1 pr-3"
                   no-gutters
-                  :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-                  style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%); border-width:2px"
                   @click="openExchange(item.raw.secureExchangeID)"
                 >
                   <v-col
@@ -352,7 +316,7 @@
                           style="color: black"
                         >{{
                           getMinistryTeamName(item.raw.ministryOwnershipTeamID)
-                        }} - {{ item.raw.createDate }}</span>
+                        }} - {{ formatDate(item.raw.createDate) }}</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -391,6 +355,7 @@
                     </v-row>
                   </v-col>
                 </v-row>
+                <v-divider />
               </template>
             </v-data-table-server>
           </v-col>
@@ -399,10 +364,9 @@
     </v-row>
     <v-bottom-sheet
       v-model="newMessageSheet"
-      transition="no-click-animation"
-      content-class="max-width-bottom-sheet"
-      max-width="30%"
-      persistent
+      :no-click-animation="true"
+      :inset="true"
+      :persistent="true"
     >
       <v-card
         v-if="newMessageSheet"
@@ -435,19 +399,18 @@ import { mapState } from 'pinia';
 import {isEmpty, omitBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import {appStore} from '../../store/modules/app';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import moment from 'moment';
 import {isNumber} from '../../utils/institute/formInput';
 import Spinner from '../common/Spinner.vue';
+import DatePicker from '../util/DatePicker.vue';
+import {formatDate} from '../../utils/format';
 
 export default {
   name: 'ExchangeInbox',
   components: {
+    DatePicker,
     Spinner,
     PrimaryButton,
-    NewMessagePage,
-    VueDatePicker
+    NewMessagePage
   },
   mixins: [alertMixin],
   data() {
@@ -456,10 +419,7 @@ export default {
       statusSelectFilter: null,
       statusRadioGroup: 'statusFilterActive',
       statusRadioGroupEnabled: true,
-      messageDateFilter: false,
-      activeMessageDatePicker: null,
       messageDate: null,
-      messageDateMoment: null,
       subjectFilter: '',
       filterText: 'More Filters',
       contactNameFilter: '',
@@ -483,7 +443,6 @@ export default {
         {value: 50, title: '50'}
       ],
       loadingTable: false,
-      dateMenu: false,
       headerSearchParams: {
         sequenceNumber: '',
         contact: '',
@@ -533,12 +492,10 @@ export default {
     this.getExchanges();
   },
   methods: {
+    formatDate,
     selectItem(item){
       this.statusSelectFilter = [];
       this.statusSelectFilter.push(item.raw);
-    },
-    openMessageDatePicker(){
-      this.$refs.messageDatePicker.openMenu();
     },
     openExchange(secureExchangeID){
       this.$router.push({name: 'viewExchange', params: {secureExchangeID: secureExchangeID}});
@@ -567,8 +524,6 @@ export default {
     clearSearch(runSearch = true){
       this.subjectFilter = null;
       this.messageDate = null;
-      this.messageDateMoment = null;
-      this.messageDateFilter = null;
       this.statusSelectFilter = null;
       this.contactNameFilter = null;
       this.messageIDFilter =null;
@@ -596,9 +551,6 @@ export default {
         this.clearSearch();
       }
 
-    },
-    saveMessageDate() {
-      this.messageDateMoment = moment(this.messageDate).format('YYYY-MM-DD').toString();
     },
     getStatusColor(status) {
       if (status === 'Open') {
@@ -672,7 +624,7 @@ export default {
       };
 
       this.headerSearchParams.subject = this.subjectFilter;
-      this.headerSearchParams.createDate = this.messageDateMoment === null ? null : [this.messageDateMoment];
+      this.headerSearchParams.createDate = this.messageDate === null ? null : [this.messageDate];
       this.headerSearchParams.ministryOwnershipTeamID = this.contactNameFilter;
       this.headerSearchParams.sequenceNumber = this.messageIDFilter;
       this.headerSearchParams.studentPEN = this.studentIDFilter;
@@ -721,42 +673,6 @@ export default {
   color: #123262;
 }
 
-:deep(.dp__input_wrap) {
-  height: 0;
-  width: 0;
-}
-
-:deep(.dp__input){
-  display: none;
-}
-
-:deep(#subjectInput){
-  padding-top: 0.6em;
-}
-
-:deep(#messageDateTextField){
-  padding-top: 0.6em;
-}
-
-:deep(#statusLabel){
-  margin-top: -0.5em;
-}
-
-:deep(#contactNameLabel){
-  margin-top: -0.3em;
-}
-
-:deep(#messageIdInput){
-  padding-top: 0.5em;
-}
-
-:deep(#studentIDInput){
-  padding-top: 0.8em;
-}
-
-:deep(.dp__icon){
-  display: none;
-}
 
 .subjectHeading {
   font-size: large;

@@ -5,7 +5,7 @@
       v-model:items-per-page.sync="pageSize"
       v-model="selected"
       :items-length="totalElements"
-      :items="data" 
+      :items="data"
       :headers="headers"
       class="mt-2"
       mobile-breakpoint="0"
@@ -17,7 +17,7 @@
           color="primary"
         />
       </template>
-      <template #headers>  
+      <template #headers>
         <tr class="header-row">
           <th
             v-for="column in headers"
@@ -26,12 +26,13 @@
           >
             <div v-if="column.title === 'select'">
               <span @click="toggle()">
-                <v-checkbox 
+                <v-checkbox
                   :input-value="masterCheckbox"
                   :indeterminate="selected.length > 0 && !isAllSelected()"
+                  hide-details="true"
                 />
               </span>
-            </div> 
+            </div>
             <div v-else>
               <div class="header-text">
                 {{ column.title }}
@@ -56,6 +57,7 @@
             <v-checkbox
               v-if="column.title === 'select'"
               :model-value="isSelected(props.item.raw) !== undefined"
+              hide-details="true"
               @click="onClick(props)"
             />
             <v-icon
@@ -73,7 +75,7 @@
               </div>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] ==="true" ? 'Yes' :'No' }}</span>
+                <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
               </div>
 
               <div v-else-if="column.key === 'fte'">
@@ -105,13 +107,13 @@
     </v-data-table-server>
   </div>
 </template>
-       
+
 <script>
-     
+
 export default {
   name: 'CustomTable',
   components: {
-        
+
   },
   mixins: [],
   props: {
@@ -135,7 +137,7 @@ export default {
       required: true,
       default: false
     },
-    
+
   },
   emits: ['reload'],
   data() {
@@ -155,14 +157,14 @@ export default {
         this.$emit('reload', {pageSize: val});
       }
     },
-    pageNumber(val) { 
+    pageNumber(val) {
       if(val) {
         this.$emit('reload', {pageNumber: val});
       }
     }
   },
   created() {
-    
+
   },
   methods: {
     onClick(prop) {
@@ -211,9 +213,9 @@ export default {
 </script>
 
 <style scoped>
-  .header-text {
-    color: #7f7f7f;
- }
+.header-text {
+  color: #7f7f7f;
+}
 
  .header-row {
     border-bottom-style: groove;
@@ -222,8 +224,3 @@ export default {
  }
    
 </style>
-         
-         
-       
-     
-  

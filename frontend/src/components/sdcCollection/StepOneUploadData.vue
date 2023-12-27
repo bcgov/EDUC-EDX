@@ -34,14 +34,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="d-flex justify-center">
-          <v-icon style="margin-top: 0.2em">
-            mdi-file
-          </v-icon>
-          <div
-            style="margin-top: 0.3em"
-          >
-            {{ fileName }}
+        <v-col style="text-align: center;">
+          <div style="margin-top: 0.2em">
+            <v-icon>
+              mdi-file
+            </v-icon>
+            <span style="padding-top: 0.1em;">{{ fileName }}</span>
+          </div>
+          <div style="font-size: small; font-style: italic;">
+            Uploaded {{ fileUploadDateFormatted }}
           </div>
         </v-col>
         <v-col>
@@ -228,10 +229,10 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {getFileNameWithMaxNameLength, humanFileSize} from '../../utils/file';
 import { mapState, mapActions } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import Spinner from '../common/Spinner.vue';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
-import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
+import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from '@js-joda/core';
 import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
@@ -276,7 +277,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
     collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
@@ -308,6 +309,19 @@ export default {
       }
       return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
     },
+    fileUploadDate() {
+      try {
+        return LocalDateTime.parse(this.sdcSchoolProgress?.uploadDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+      } catch (e) {
+        return null;
+      }
+    },
+    fileUploadDateFormatted() {
+      if (!this.fileUploadDate) {
+        return 'n/a';
+      }
+      return this.fileUploadDate.format(DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm'));
+    },
     getLink() {
       let collectionLink = '';
       let collectionCodeType = this.currentCollectionTypeCode;
@@ -334,7 +348,7 @@ export default {
     await this.fireFileProgress();
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setSchoolCollection']),
+    ...mapActions(sdcCollectionStore, ['setSchoolCollection']),
     async fireFileProgress(){
       await this.getFileProgress();
       this.getFileRules();

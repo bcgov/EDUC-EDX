@@ -82,6 +82,35 @@
               />
             </v-col>
           </v-row>
+          <v-row no-gutters class="d-flex justify-center">
+            <v-col cols="8">
+              <v-checkbox-btn
+                id="acceptTOU"
+                v-model="acceptTOU"
+                :label="`I accept the `"
+              >
+                <template #label>
+                  <div>
+                    I accept the
+                    <v-tooltip location="bottom">
+                      <template #activator="{ props }">
+                        <a
+                          class="touLink"
+                          target="_blank"
+                          :href="config.TERMS_OF_USE_URL"
+                          v-bind="props"
+                          @click.stop
+                        >
+                          Terms of Use
+                        </a>
+                      </template>
+                      Opens in new window
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-checkbox-btn>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col
               cols="12"
@@ -92,7 +121,7 @@
                 :loading="submissionInProgress"
                 :large-icon="true"
                 text="Submit"
-                :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress"
+                :disabled="!isValidForm || isEdxUserActivationFormDisabled || submissionInProgress || !acceptTOU"
                 :click-action="activateEdxUser"
               />
             </v-col>
@@ -108,6 +137,8 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
+import {mapState} from 'pinia';
+import {appStore} from '../../store/modules/app';
 
 export default {
   name: 'ActivateEdxUserAccount',
@@ -133,7 +164,7 @@ export default {
       activationErrorMessage:null,
       personalActivationCode: null,
       primaryEdxCode: null,
-
+      acceptTOU: null,
       instituteSpecificCodeRules: [v => (!v || this.validateInstituteSpecificCode(v)) || 'Invalid schoolID'],
       isValidForm: false,
       requiredRules: [v => !!v || 'Required'],
@@ -143,6 +174,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(appStore, ['config']),
     createInstituteSpecificCodeHint() {
       if(this.instituteTypeCode === 'SCHOOL') {
         return 'Please enter the mincode of the school you want to register for';
@@ -209,6 +241,14 @@ export default {
 </script>
 
 <style scoped>
+.tou{
+  color: rgba(0, 0, 0) !important;
+}
+
+.touLink{
+  color: #1976d2 !important;
+}
+
 .header-text {
   font-size: x-large;
 }

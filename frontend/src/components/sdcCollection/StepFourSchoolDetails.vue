@@ -54,7 +54,7 @@ import alertMixin from '../../mixins/alertMixin';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolDetailsForm from '../common/forms/SchoolDetailsForm.vue';
 import { mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 
@@ -82,7 +82,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
   },

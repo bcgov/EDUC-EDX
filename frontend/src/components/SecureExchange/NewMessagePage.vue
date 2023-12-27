@@ -46,6 +46,7 @@
                             :menu-props="{
                               closeOnClick: true,
                               closeOnContentClick: true,
+                              maxWidth:0
                             }"
                           >
                             <template #item="{ item, index }">
@@ -64,7 +65,6 @@
                                     <div
                                       class="body-2"
                                       style="color: black;"
-                                      :style="{'max-width': $vuetify.display.smAndDown ? '30em' : '36em'}"
                                     >
                                       {{ item.raw.description }}
                                     </div>
@@ -104,7 +104,7 @@
                   >
                     <div
                       v-for="(document, index) in secureExchangeDocuments"
-                      :key="index"
+                      :key="document.fileName + generateKey()"
                     >
                       <v-col class="d-flex justify-start px-0 pb-2">
                         <v-chip
@@ -252,6 +252,7 @@ import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {humanFileSize} from '../../utils/file';
 import AddStudent from '../AddStudent.vue';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   name: 'NewMessagePage',
@@ -410,6 +411,9 @@ export default {
         totalFileSize += each.fileSize;
       }
       this.fileSizeAlert = totalFileSize > this.fileRequirements.maxSize;
+    },
+    generateKey() {
+      return uuidv4();
     },
     humanFileSize
   }

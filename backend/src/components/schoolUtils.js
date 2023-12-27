@@ -1,7 +1,5 @@
 'use strict';
 const { LocalDate, DateTimeFormatter } = require('@js-joda/core');
-const cacheService = require('./cache-service');
-const log = require('./logger');
 
 function generateSchoolObject(school) {
   return {
@@ -25,17 +23,7 @@ function isSchoolActive(school) {
     && (!closedDate || currentTime.isBefore(LocalDate.parse(closedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
 }
 
-function checkIfUpdateOnOffshoreSchool(schoolID) {
-  const school = cacheService.getSchoolBySchoolID(schoolID);
-
-  if(school.schoolCategoryCode === 'OFFSHORE') {
-    log.error('User cannot edit contacts for an offshore school.');
-    throw new Error('403');
-  }
-}
-
 module.exports = {
-  checkIfActionOnOffshoreSchool: checkIfUpdateOnOffshoreSchool,
   generateSchoolObject: generateSchoolObject,
   isSchoolActive
 };

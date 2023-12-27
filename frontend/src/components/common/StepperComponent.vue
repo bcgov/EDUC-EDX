@@ -1,47 +1,64 @@
 <template>
-  <v-row class="d-flex mt-5">
-    <v-col>
-      <v-row
-        v-for="(step, index) in steps"
-        :key="index"
-        :class="{'step': true, 'step-previous': step.index < currentStepInCollectionProcess.index, 'step-current': step.index === currentStepInCollectionProcess.index, 'step-future': step.isStarted && step.index > currentStepInCollectionProcess.index, 'step-disabled': !step.isStarted && step.index > currentStepInCollectionProcess.index}"
-        @click="onStepClick(step)"
-      >
-        <v-col
-          :id="step.id"
-          class="step-base"
-          cols="9"
+  <v-hover v-slot="{ isHovering, props }">
+    <v-row v-bind="props">
+      <v-col class="pr-0">
+        <v-row
+          v-for="(step, index) in steps"
+          :key="index"
+          :class="{'mt-5': true, 'step': true, 'step-previous': step.index < currentStepInCollectionProcess.index, 'step-current': step.index === currentStepInCollectionProcess.index, 'step-future': step.isStarted && step.index > currentStepInCollectionProcess.index, 'step-disabled': !step.isStarted && step.index > currentStepInCollectionProcess.index}"
+          @click="onStepClick(step)"
         >
-          <div
-            class="pb-7"
+          <v-col
+            v-if="!hideStepper"
+            :id="step.id"
+            class="step-base"
+            cols="9"
           >
-            {{ step.name }}
-          </div>
-        </v-col>
-        <v-col
-          class="wrapper"
-          cols="3"
-        >
-          <div class="circle">
-            <v-icon v-if="step.isComplete">
-              mdi-check
-            </v-icon>
-            <span v-else>{{ index+1 }}</span>
-          </div>
-          <div
-            v-if="index < steps.length -1"
-            class="vertical"
-          />
-        </v-col>      
-      </v-row>
-    </v-col>
-  </v-row>
+            <div
+              class="pb-7"
+            >
+              {{ step.name }}
+            </div>
+          </v-col>
+          <v-col
+            class="wrapper"
+            :cols="hideStepper?12:3"
+          >
+            <div class="circle">
+              <v-icon v-if="step.isComplete">
+                mdi-check
+              </v-icon>
+              <span v-else>{{ index+1 }}</span>
+            </div>
+            <div
+              v-if="index < steps.length -1"
+              class="vertical"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col
+        align-self="center"
+        cols="auto"
+        class="pl-0"
+      >
+        <v-btn
+          v-if="isHovering"
+          class="ml-n3"
+          position="absolute"
+          size="xs"
+          :icon="hideStepper?'mdi-chevron-right':'mdi-chevron-left'"
+          @click="toggleStepper"
+        />
+      </v-col>
+    </v-row>
+  </v-hover>
 </template>
 
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import { mapActions, mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'StepperComponent',
@@ -63,10 +80,11 @@ export default {
   emits: ['on-navigation-complete'],
   data() {
     return {
+      displayCloseIcon: false
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess'])
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'hideStepper'])
   },
   watch: {
     nextEvent(value) {
@@ -79,7 +97,7 @@ export default {
     this.loadDefaultStep();
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentStepInCollectionProcess']),
+    ...mapActions(sdcCollectionStore, ['setCurrentStepInCollectionProcess', 'setHideStepper']),
     onStepClick(step) {
       if (step.index >= this.currentStepInCollectionProcess.index) {
         return;
@@ -110,6 +128,9 @@ export default {
     loadDefaultStep() {
       const stepToLoad = this.currentStepInCollectionProcess;
       this.$router.push({name: stepToLoad.route});
+    },
+    toggleStepper() {
+      this.setHideStepper(!this.hideStepper);
     }
   }
 };

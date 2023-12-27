@@ -19,6 +19,7 @@ function processQueue(error, token = null) {
 
 // Create new non-global axios instance and intercept strategy
 const apiAxios = axios.create();
+const apiAxiosConfig = axios.create();
 const intercept = apiAxios.interceptors.response.use(config => config, error => {
   const originalRequest = error.config;
   if (error.response.status !== 401) {
@@ -106,7 +107,7 @@ export default {
   },
   async getConfig() {
     try {
-      const response = await apiAxios.get(ApiRoutes.CONFIG);
+      const response = await apiAxiosConfig.get(ApiRoutes.CONFIG);
       return response;
     } catch (e) {
       console.log(`Failed to do get from Nodejs getConfig API - ${e}`);

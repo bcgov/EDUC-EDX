@@ -8,7 +8,7 @@
         ref="documentForm"
         v-model="validForm"
       >
-        <v-row style="min-width: 50em">
+        <v-row>
           <v-col>
             <v-select
               id="uploadDocumentTypeCodeSelect"
@@ -172,7 +172,7 @@ export default {
             reader.readAsBinaryString(this.uploadFileValue[0]);
           }else{
             this.active = false;
-            this.setErrorAlert('Please remove spaces and special characters from file name and try uploading again.');
+            this.setErrorAlert('Please remove special characters from file name and try uploading again.');
           }
         } catch (e) {
           this.handleFileReadErr();
@@ -236,8 +236,7 @@ export default {
 <style scoped>
 .document-upload{
   padding: 1.1rem;
-  max-width: 50rem;
-  min-width: 10rem;
+  width: 50rem;
 }
 
 .v-dialog > .v-card > .v-card__text {

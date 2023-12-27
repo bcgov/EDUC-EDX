@@ -47,7 +47,7 @@ async function getUserInfo(req, res) {
 
   if (req.session.digitalIdentityData && isDistrictOrSchoolAlreadyInUserSession(req) && req.session.edxUserData) {
     let resData = {
-      displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`,
+      displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`.trim(),
       accountType: userInfo._json.accountType,
       userSchoolIDs: req.session.userSchoolIDs,
       userDistrictIDs:req.session.userDistrictIDs,

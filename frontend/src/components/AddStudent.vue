@@ -18,7 +18,6 @@
       <v-row>
         <v-col
           class="d-flex justify-center px-5"
-          style="min-width: 50em"
         >
           <v-text-field
             id="studentPenTextField"
@@ -120,7 +119,7 @@ export default {
       showStudentDetailsForMinistryStaff:false,
       penNumber: null,
       validForm: false,
-      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v))],
+      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
       studentExist: false,
       student: {},
       alert: false,
@@ -249,8 +248,7 @@ export default {
 <style scoped>
 .add-student {
   padding: 1.1rem;
-  max-width: 50rem;
-  min-width: 10rem;
+  width: 50rem;
 }
 
 p {

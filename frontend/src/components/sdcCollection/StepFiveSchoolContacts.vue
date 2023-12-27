@@ -50,7 +50,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
 import {isContactCurrent} from '../../utils/institute/status';
 import { mapState } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
   
 export default {
   name: 'StepFiveSchoolContacts',
@@ -75,7 +75,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
         

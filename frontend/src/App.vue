@@ -4,7 +4,7 @@
     <Header />
     <SnackBar />
     <NavBar
-      v-if="pageTitle && authStore().isAuthenticated"
+      v-if="pageTitle && authStore().isAuthenticated && !isInstituteSelectionPage()"
       :title="pageTitle"
     />
     <v-main
@@ -29,6 +29,7 @@ import ModalIdle from './components/ModalIdle.vue';
 import MsieBanner from './components/MsieBanner.vue';
 import SnackBar from './components/util/SnackBar.vue';
 import NavBar from './components/util/NavBar.vue';
+import {PAGE_TITLES} from './utils/constants';
 
 export default {
   name: 'App',
@@ -49,8 +50,9 @@ export default {
   },
   async created() {
     await this.setLoading(true);
+    await this.getConfig();
     this.getJwtToken().then(() =>
-      Promise.all([this.getUserInfo(), this.getConfig()])
+      Promise.all([this.getUserInfo()])
     ).catch(e => {
       if(! e.response || e.response.status !== HttpStatus.UNAUTHORIZED) {
         this.logout();
@@ -65,6 +67,9 @@ export default {
     appStore,
     ...mapActions(authStore, ['setLoading', 'getJwtToken', 'getUserInfo', 'logout']),
     ...mapActions(appStore, ['getConfig']),
+    isInstituteSelectionPage(){
+      return PAGE_TITLES.SELECTION === this.pageTitle;
+    }
   }
 };
 </script>
@@ -82,7 +87,7 @@ a:hover {
   font-size: 0.8rem;
 }
 
-.v-application {
+.v-application, .v-dialog, .v-bottom-sheet {
   font-family: 'BCSans', Verdana, Arial, sans-serif !important;
 }
 .v-card--flat {
@@ -192,5 +197,7 @@ h1 {
   align-self: flex-end;
   transition-duration: 0.2s;
 }
-
+.viewer-open {
+  padding-right: 0 !important;
+}
 </style>

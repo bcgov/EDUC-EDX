@@ -20,6 +20,10 @@ export default {
     continue: '.navigate',
     title: '#navTitle > div'
   },
+  datePicker: {
+    nextArrow: 'div.dp__month_year_row > button:nth-child(3)',
+    day: '.dp__calendar_row:nth-child(2) > .dp__calendar_item:nth-child(1)'
+  },
   districtContacts: {
     deleteCancelButton: '#rejectBtn',
     deleteConfirmButton: '#resolveBtn',
@@ -30,7 +34,6 @@ export default {
     filterContactClearButton: '#district-clear-button',
     listItem: '.v-list-item',
     newContactButton: '#newContactButton',
-    newContactCalendar: '.dp__outer_menu_wrap',
     newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
     newContactEmailInput: '#newContactEmailInput',
     newContactFirstNameInput: '#newContactFirstNameInput',
@@ -51,10 +54,10 @@ export default {
     districtDetailsWebsite: '#districtDetailsWebsite',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
-    editDistrictDetailsButton: '#editButton',
-    editDistrictEmail: '#districtEmail',
-    editDistrictPhone: '#districtPhone',
-    editDistrictFax: '#districtFax',
+    editDistrictDetailsButton: '#districtDetailsEditButton',
+    editDistrictEmail: '#districtDetailsEmail',
+    editDistrictPhone: '#districtDetailsPhoneNumber',
+    editDistrictFax: '#districtDetailsFaxNumber',
     editMailingAddressCountry: '#mailAddressCountry',
     editMailingAddressLine1: '#mailAddressLine1',
     editMailingAddressProvince: '#mailAddressProvince',
@@ -73,7 +76,6 @@ export default {
   },
   frenchComponent: {
     tab: '#frenchTab',
-    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     summaryButton: '#frenchSummaryButton',
     headcountHeaderList: '.french-headcount-header',
     headcountHeaderColumn: '.french-headcount-header-column'
@@ -92,6 +94,10 @@ export default {
     hamburgerMenuButton: '#menuBtn',
     schoolUserManagementOption: '#SchoolUserManagementMenuBtn',
     secureMessagingInboxMenuButton: '#SecureMessagingInboxMenuBtn'
+  },
+  indigenousSupportComponent: {
+    tab: '#indProgTab',
+    summaryButton: '#indProgSummaryButton'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -132,8 +138,7 @@ export default {
     editContactSaveButton: '#editContactPostBtn',
     listItem: '.v-list-item',
     newContactButton: '#addSchoolContactBtn',
-    newContactCalendar: '.dp__outer_menu_wrap',
-    newContactEffectiveDateTextField: '#newContactEffectiveDateTextField',
+    newContactEffectiveDateTextField: '#newContactEffectiveDatePicker',
     newContactEmailInput: '#newContactEmailInput',
     newContactFirstNameInput: '#newContactFirstNameInput',
     newContactLastNameInput: '#newContactLastNameInput',
@@ -220,14 +225,20 @@ export default {
   snackbar: {
     mainSnackBar: '#mainSnackBar'
   },
+  specialEducationComponent: {
+    tab: '#specialEdTab',
+    summaryButton: '#specialEdSummaryButton'
+  },
   studentLevelData: {
+    detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     documentUploadButton: '#uploadButton',
+    documentReUploadButton: '#uploadAgainButton',
     formHint: 'p.form-hint',
     legalLastNameValidationTextInput: '#legalLastNameValidationTextInput',
     nextButton: '#nextButton',
     postalCodeValidationTextInput: '#postalCodeValidationTextInput',
     removeRecord: '#removeRecord',
-    saveAndRefreshButton: '#saveAndRefreshButton',
+    saveRecordButton: '#saveRecord',
     stepFive:'#step-5',
     stepFour:'#step-4',
     stepOne:'#step-1',
@@ -235,6 +246,17 @@ export default {
     stepThree:'#step-3',
     stepTwo:'#step-2',
     studentsFound: '#studentsFound',
+    warningAndErrorSummary: '#warningAndErrorSummary',
+    totalStudentsWithIssues: '#totalStudentsWithIssues',
+    totalStudentsWithIssuesCount: '#totalStudentsWithIssuesCount',
+    infoWarningCount: '#infoWarningCount',
+    errorCount: '#errorCount',
+    fundingWarningCount: '#fundingWarningCount',
+    fixSelected: '#fixSelected',
+    fixAll: '#fixAll',
+    selectStudentCheckbox: 'td.v-data-table__td.v-data-table-column--no-padding.v-data-table-column--align-start > div',
+    selectedStudentsPaginator: '.footer-text',
+    backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
@@ -243,5 +265,6 @@ export default {
     userActivationSubmitButton: '#edxUserActivationSubmitBtn',
     userActivationSnackBar: '.v-snackbar__content',
     userActivationErrorMessaageSnackBar: '#user_activation_error_message',
+    acceptTermsCheckbox: '#acceptTOU'
   }
 }

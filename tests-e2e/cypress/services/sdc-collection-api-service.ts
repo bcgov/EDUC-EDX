@@ -12,6 +12,7 @@ const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
 const COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/collection/search';
+const ACTIVE_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection/active';
 
 export class SdcCollectionApiService {
 
@@ -25,41 +26,20 @@ export class SdcCollectionApiService {
 
     async createSchoolCollection(schoolCollection: SchoolCollection){
         console.log('AT createSchoolCollection started');
-        console.log(schoolCollection);
-        console.log(schoolCollection.school);
 
-        let curDate = LocalDateTime.now();
-        let curCloseDate = curDate.plusDays(2);
+        let curDate = LocalDateTime.now().minusDays(2);
+        let curCloseDate = curDate.plusDays(4);
 
-        const urlGetCollections = `${this.config.env.studentDataCollection.base_url}${COLLECTION_SEARCH_ENDPOINT}/EDXAT`;
-        const collectionsList = await this.restUtils.getData(urlGetCollections);
-
-        for (const collection of collectionsList) {
-            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}/` + collection.collectionID);
-        }
+        const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
+        const activeCollection = await this.restUtils.getData(urlGetActiveCollection);
 
         const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
         try{
             const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
-            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.data.sdcSchoolCollectionID);
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
         }catch(e: any){
             //This is ok
         }
-
-        const collectionPayload = {
-            'createUser': 'EDXAT',
-            'updateUser': null,
-            'createDate': null,
-            'updateDate': null,
-            'collectionTypeCode': 'SEPTEMBER',
-            'openDate': curDate,
-            'closeDate': curCloseDate
-        };
-
-        const url = `${this.config.env.studentDataCollection.base_url}${COLLECTION_ENDPOINT}`;
-        console.log('a1', url);
-        const newCollection = await this.restUtils.postData(url, collectionPayload);
-        console.log('a1a', newCollection);
 
         let sdcSchoolCollectionPayload = {};
 
@@ -71,7 +51,7 @@ export class SdcCollectionApiService {
                     "createDate": null,
                     "updateDate": null,
                     "sdcSchoolCollectionID": null,
-                    "collectionID": newCollection.collectionID,
+                    "collectionID": activeCollection.collectionID,
                     "schoolID": schoolCollection?.school.schoolId,
                     "districtID": schoolCollection?.school.districtId,
                     "uploadDate": "20230822",
@@ -135,7 +115,7 @@ export class SdcCollectionApiService {
                     "createDate": null,
                     "updateDate": null,
                     "sdcSchoolCollectionID": null,
-                    "collectionID": newCollection.collectionID,
+                    "collectionID": activeCollection.collectionID,
                     "schoolID": schoolCollection?.school.schoolId,
                     "districtID": schoolCollection?.school.districtId,
                     "uploadDate": "20230822",
@@ -265,7 +245,7 @@ export class SdcCollectionApiService {
                     "createDate": null,
                     "updateDate": null,
                     "sdcSchoolCollectionID": null,
-                    "collectionID": newCollection.collectionID,
+                    "collectionID": activeCollection.collectionID,
                     "schoolID": schoolCollection?.school.schoolId,
                     "districtID": schoolCollection?.school.districtId,
                     "uploadDate": "20230822",
@@ -287,7 +267,7 @@ export class SdcCollectionApiService {
                             "usualLastName": "USUALLAST",
                             "dob": "20050630",
                             "gender": "M",
-                            "specialEducationCategoryCode": null,
+                            "specialEducationCategoryCode": "A",
                             "schoolFundingCode": "20",
                             "nativeAncestryInd": "N",
                             "homeLanguageSpokenCode": "943",
@@ -297,7 +277,7 @@ export class SdcCollectionApiService {
                             "careerProgramCode": null,
                             "numberOfCourses": "0700",
                             "bandCode": "0684",
-                            "enrolledProgramCodes": "08",
+                            "enrolledProgramCodes": "0829",
                             "sdcSchoolCollectionStudentStatusCode": "LOADED",
                             "isAdult": "false",
                             "isSchoolAged": "true",
@@ -383,7 +363,7 @@ export class SdcCollectionApiService {
                             "usualLastName": "USUALLAST",
                             "dob": "20070702",
                             "gender": "F",
-                            "specialEducationCategoryCode": null,
+                            "specialEducationCategoryCode": "G",
                             "schoolFundingCode": "20",
                             "nativeAncestryInd": "N",
                             "homeLanguageSpokenCode": "943",
@@ -437,7 +417,7 @@ export class SdcCollectionApiService {
                 'createDate': null,
                 'updateDate': null,
                 'sdcSchoolCollectionID': null,
-                'collectionID': newCollection.collectionID,
+                'collectionID': activeCollection.collectionID,
                 'schoolID': schoolCollection?.school?.schoolId,
                 'districtID': schoolCollection?.school?.districtId,
                 'uploadDate': null,
@@ -449,10 +429,8 @@ export class SdcCollectionApiService {
             };
         }
 
-        const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + newCollection.collectionID;
-        console.log('a2', urlSdcSchoolCollection);
+        const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
         const schoolCollectionResponse = await this.restUtils.postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
-        console.log('a2a', schoolCollectionResponse);
 
         console.log('AT createSchoolCollection completed');
         return schoolCollectionResponse?.sdcSchoolCollectionID;

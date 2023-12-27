@@ -28,7 +28,7 @@
               </v-row>
               <a
                 id="login-button"
-                :href="routes.LOGIN"
+                :href="routes.MAIN_LOGIN"
                 class="ma-1"
                 dark
                 color="#003366"

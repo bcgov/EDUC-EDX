@@ -57,6 +57,7 @@
           style="background-color: #003366; color: white"
         >
           <v-list-item
+            v-if="hasActiveInstitute()"
             id="home_button"
             style="min-height: 4vh"
             :href="authRoutes.DASHBOARD"
@@ -103,6 +104,9 @@ export default {
     }
   },
   methods: {
+    hasActiveInstitute(){
+      return !!this.userInfo?.activeInstituteIdentifier;
+    },
     getName(){
       return this.userInfo?.displayName;
     },

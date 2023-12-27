@@ -1,6 +1,7 @@
 import ApiService from '../../common/apiService';
 import { defineStore } from 'pinia';
 import {ApiRoutes} from '../../utils/constants';
+import {SCHOOL_CATEGORY_CODES} from '../../utils/constants/SchoolCategoryCodeTypes';
 
 export const instituteStore = defineStore('institute', {
   namespaced: true,
@@ -41,7 +42,8 @@ export const instituteStore = defineStore('institute', {
     independentAuthoritySchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.offshoreOnly),
     offshoreSchoolContacts: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly),
     regularSchoolContactTypes: state => state.schoolContactTypeCodes?.filter(type => !type.indOnly && !type.offshoreOnly),
-    gradeOptions: state => state.gradeCodes?.filter(grade => !['KINDHALF', 'ELEMUNGR', 'SECUNGR'].includes(grade.schoolGradeCode))
+    gradeOptions: state => state.gradeCodes?.filter(grade => !['KINDHALF', 'ELEMUNGR', 'SECUNGR'].includes(grade.schoolGradeCode)),
+    validFacilityTypeCodes: state => state.activeFacilityTypeCodes?.filter(facility => facility.facilityTypeCode !== SCHOOL_CATEGORY_CODES.POST_SEC)
   },
   actions: {
     async setFacilityTypeCodes(facilityTypeCodes) {

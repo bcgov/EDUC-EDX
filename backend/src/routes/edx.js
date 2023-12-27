@@ -2,7 +2,7 @@
 
 const passport = require('passport');
 const express = require('express');
-const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers, updateEdxUserSchoolRoles, updateEdxUserDistrictRoles,
+const { verifyRequest, deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers,getAllDistrictSchoolEdxUsers, updateEdxUserSchoolRoles, updateEdxUserDistrictRoles,
   createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, generateOrRegeneratePrimaryEdxActivationCode, removeSecureExchangeStudent,
   removeUserSchoolOrDistrictAccess
 } = require('../components/secureExchange');
@@ -67,6 +67,7 @@ router.post('/users/roles/district', passport.authenticate('jwt', {session: fals
 router.get('/users/clearActiveUserSession', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, clearActiveSession) ;
 router.post('/institute-selection', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, instituteSelection);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getEdxUsers);
+router.get('/all-district-school-users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getAllDistrictSchoolEdxUsers);
 router.post('/school-user-activation-invite', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, schoolUserActivationInvite);
 router.post('/district-user-activation-invite', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, districtUserActivationInvite);
 

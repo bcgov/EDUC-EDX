@@ -1,7 +1,7 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
+    :fluid="true"
   >
     <Spinner
       v-if="loadingTable"
@@ -23,14 +23,13 @@
         </v-col>
       </v-row>
       <v-row
-        style="background: rgb(235, 237, 239);border-radius: 8px;"
-        class="px-3 pt-4"
+        class="px-3 py-0 align-center searchBox"
       >
         <v-col
           cols="12"
           md="4"
-          lg="5"
-          class="d-flex justify-start"
+          lg="4"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-autocomplete
             id="name-text-field"
@@ -40,28 +39,61 @@
             item-value="schoolID"
             item-title="schoolCodeName"
             :items="schoolSearchNames"
-            clearable
-          />
+            :clearable="true"
+            @update:model-value="searchButtonClick"
+          >
+            <template #prepend-inner>
+              <v-icon
+                v-if="schoolCodeNameFilter"
+                :color="getStatusColor(schoolSearchNames.find(item=>item.schoolID===schoolCodeNameFilter)?.status)"
+              >
+                mdi-circle-medium
+              </v-icon>
+            </template>
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                prepend-icon="mdi-circle-medium"
+                :base-color="getStatusColor(item.raw.status)"
+                title=""
+              >
+                <v-list-item-title style="color: black !important;">
+                  {{
+                    item.raw.schoolCodeName
+                  }}
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
         </v-col>
         <v-col
           cols="12"
           md="2"
-          class="d-flex justify-start"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-select
             id="status-select-field"
             v-model="schoolStatusFilter"
-            clearable
+            :clearable="true"
             :items="schoolStatus"
             item-title="name"
             item-value="code"
             label="Status"
             variant="underlined"
+            @update:model-value="searchButtonClick"
             :menu-props="{
               closeOnClick: true,
               closeOnContentClick: true,
             }"
           >
+            <template #prepend-inner>
+              <v-icon
+                v-if="schoolStatusFilter"
+                :color="getStatusColor(schoolStatusFilter[0].code)"
+              >
+                mdi-circle-medium
+              </v-icon>
+            </template>
             <template #selection="{ item, index }">
               {{ item.title }}
             </template>
@@ -80,14 +112,15 @@
         <v-col
           cols="12"
           md="3"
-          class="d-flex justify-start"
+          class="d-flex justify-start pb-0 pt-1"
         >
           <v-select
             id="status-select-field"
             v-model="schoolFacilityTypeFilter"
-            clearable
+            :clearable="true"
             variant="underlined"
             :items="schoolActiveFacilityTypes"
+            @update:model-value="searchButtonClick"
             item-title="label"
             item-value="facilityTypeCode"
             label="Facility Type"
@@ -96,8 +129,7 @@
         <v-col
           cols="12"
           md="3"
-          lg="2"
-          class="mt-2 d-flex justify-end"
+          class="d-flex justify-end"
         >
           <PrimaryButton
             id="user-search-button"
@@ -127,7 +159,7 @@
               'items-per-page-options': itemsPerPageOptions
             }"
             :loading="loadingTable"
-            class="elevation-1"
+            class="elevation-1 rounded"
             hide-default-header
             mobile-breakpoint="0"
           >
@@ -177,33 +209,6 @@
                         style="color: black"
                       >{{ item.raw.principalsName }}</span>
                     </v-col>
-                    <v-col
-                      class="d-flex justify-end mr-4"
-                      cols="1"
-                    >
-                      <v-tooltip bottom>
-                        <template #activator="{ props }">
-                          <v-btn
-                            :id="'viewContactsButton' + index"
-                            color="#003366"
-                            outlined
-                            class="schoolContactsButton mt-0 pt-0 filterButton"
-                            style="text-transform: initial"
-                            v-bind="props"
-                            @click.stop.prevent="openSchoolContacts(item.raw.schoolId)"
-                          >
-                            <v-icon
-                              color="white"
-                              style="margin-top: 0.07em"
-                              dark
-                            >
-                              mdi-account-multiple-outline
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                        <span>View Contacts</span>
-                      </v-tooltip>
-                    </v-col>
                   </v-row>
                   <v-row no-gutters>
                     <v-col cols="6">
@@ -240,6 +245,8 @@
                   </v-row>
                 </v-col>
               </v-row>
+
+              <v-divider />
             </template>
           </v-data-table-server>
         </v-col>
@@ -311,7 +318,7 @@ export default {
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['schoolsMap']),
-    ...mapState(instituteStore, ['facilityTypeCodes','activeFacilityTypeCodes','schoolCategoryTypeCodes']),
+    ...mapState(instituteStore, ['facilityTypeCodes','validFacilityTypeCodes','schoolCategoryTypeCodes']),
     getSheetWidth(){
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -337,7 +344,7 @@ export default {
       this.schoolFacilityTypes = this.facilityTypeCodes;
     });
     instituteStore().getAllActiveFacilityTypeCodes().then(() => {
-      this.schoolActiveFacilityTypes = this.activeFacilityTypeCodes;
+      this.schoolActiveFacilityTypes = this.validFacilityTypeCodes;
     });
     instituteStore().getSchoolCategoryTypeCodes().then(() => {
       this.schoolCategoryTypes = this.schoolCategoryTypeCodes;
@@ -370,6 +377,7 @@ export default {
           let schoolItem = {
             schoolCodeName: school.mincode +' - '+school.displayName,
             schoolID: school.schoolId,
+            status: getStatusAuthorityOrSchool(school)
           };
           this.schoolSearchNames.push(schoolItem);
         }
@@ -459,9 +467,6 @@ export default {
     openSchool(schoolId){
       this.$router.push({name: 'schoolDetails', params: {schoolID: schoolId}});
     },
-    openSchoolContacts(schoolId){
-      this.$router.push({name: 'schoolContacts', params: {schoolID: schoolId}});
-    },
     resetPageNumber(){
       this.pageNumber = 1;
     },
@@ -482,6 +487,7 @@ export default {
 
       this.schoolStatusFilter = [];
       this.schoolStatusFilter.push(item.raw);
+      this.searchButtonClick();
     },
     clearButtonClick() {
       this.schoolCodeNameFilter = null;
@@ -508,18 +514,15 @@ export default {
 <style scoped>
 
 .subjectHeading {
-  font-size: large;
   cursor: pointer;
   font-weight: bold;
 }
 
 .ministryLine {
   color: black;
-  font-size: medium;
 }
 
 .statusCodeLabel {
-  font-size: large;
   word-break: break-word;
 }
 
@@ -528,33 +531,30 @@ export default {
   align-items: center;
 }
 
-.hoverTable {
-  border-bottom-style: groove;
-  border-left-style: groove;
-  border-right-style: groove;
-  border-color: rgb(255 255 255 / 45%);
-}
-
-.hoverTable:nth-child(1) {
-  border-top-style: groove;
-}
-
 .hoverTable:hover{
   background-color: #e8e8e8;
   cursor: pointer;
 }
 
-@media screen and (max-width: 801px){
-  .subjectHeading {
-    font-size: medium;
-  }
+:deep(.v-data-table-footer__items-per-page) {
+  display: none;
+}
+
+.searchBox {
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 5px;
+  background-color: rgb(235, 237, 239);
+}
+
+@media screen and (max-width: 1200px){
 
   .statusCodeLabel{
-    font-size: inherit;
+    font-size: .9rem;
   }
 
   .ministryLine{
-    font-size: inherit;
+    font-size: .9rem;
   }
 }
 

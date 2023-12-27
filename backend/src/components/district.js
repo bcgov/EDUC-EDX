@@ -1,9 +1,9 @@
 'use strict';
-const { errorResponse, getAccessToken, getData, checkEDXUserAccess,checkEDXUserDistrictAdminPermission, putData, postData, handleExceptionResponse} = require('./utils');
+const { errorResponse, getAccessToken, getData, checkEDXUserAccess, checkEDXUserHasPermission, putData, postData, handleExceptionResponse} = require('./utils');
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
-const {LocalDate, DateTimeFormatter, LocalDateTime} = require('@js-joda/core');
+const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
@@ -26,27 +26,20 @@ async function updateDistrict(req, res){
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserDistrictAdminPermission(req);
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
     const params = req.body;
 
     params.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
+      addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     });
 
-    params.notes.forEach(function(note) {
-      note.updateDate = null;
-      note.createDate = null;
-    });
-
-    params.contacts.forEach(function(contact) {
-      contact.updateDate = null;
-      contact.createDate = null;
-    });
-
+    params.contacts = null;
     params.createDate = null;
     params.updateDate = null;
+    params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     const result = await putData(token, params, config.get('institute:rootURL') + '/district/' + req.params.districtID, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -60,8 +53,6 @@ async function createDistrictContact(req, res) {
   validateAccessToken(token);
   checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
 
-  const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
-
   const payload = {
     districtContactTypeCode: req.body.districtContactTypeCode,
     firstName: req.body.firstName,
@@ -72,8 +63,10 @@ async function createDistrictContact(req, res) {
     phoneExtension: req.body.phoneExtension,
     alternatePhoneNumber: req.body.alternatePhoneNumber,
     alternatePhoneExtension: req.body.alternatePhoneExtension,
-    effectiveDate: req.body.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null,
-    expiryDate: req.body.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null
+    effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
+    expiryDate: req.body.expiryDate ? req.body.expiryDate : null,
+    createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+    updateUser: 'EDX/' + req.session.edxUserData.edxUserID
   };
 
   return Promise.all([
@@ -100,16 +93,15 @@ async function updateDistrictContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.body.districtId);
-    checkEDXUserDistrictAdminPermission(req);
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
 
     const payload = req.body;
     payload.updateDate = null;
     payload.createDate = null;
-    payload.effectiveDate = payload.effectiveDate ? LocalDate.parse(req.body.effectiveDate).atStartOfDay().format(formatter) : null;
-    payload.expiryDate = payload.expiryDate ? LocalDate.parse(req.body.expiryDate).atStartOfDay().format(formatter) : null;
-
+    payload.effectiveDate = payload.effectiveDate ? req.body.effectiveDate : null;
+    payload.expiryDate = payload.expiryDate ? req.body.expiryDate : null;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -123,8 +115,7 @@ async function removeDistrictContact(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserDistrictAdminPermission(req);
-    const formatter = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss');
+    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
 
     const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
 
@@ -135,7 +126,8 @@ async function removeDistrictContact(req, res) {
 
     contact.createDate = null;
     contact.updateDate = null;
-    contact.expiryDate = LocalDateTime.now().format(formatter);
+    contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
+    contact.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);

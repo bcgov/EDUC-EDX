@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-container class="mb-5">
     <Spinner
       v-if="loading"
       flat
     />
     <div v-else>
-      <div v-if="schoolID">
+      <div>
         <v-row>
           <v-col
             cols="12"
@@ -37,48 +37,52 @@
             <a
               v-else
               class="ml-1 mt-1"
-              @click="backButtonClick"
+              @click="backToHome"
             >Return to Dashboard</a>
           </v-col>
-          <v-col style="text-align: end">
-            <v-chip
-              :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
-              class="mr-1"
+          <v-col class="d-flex justify-end">
+            <v-tooltip
+              v-model="showTooltip"
+              location="right"
+              :open-on-hover="false"
             >
-              <v-icon left>
-                mdi-shield-key-outline
-              </v-icon>
-              Primary Activation Code:
-              <span id="primaryEdxActivationCode">
-                {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
-              </span>
-            </v-chip>
-            <ClipboardButton
-              v-if="primaryEdxActivationCode"
-              id="copyPrimaryEdxActivationCodeButton"
-              :copy-text="primaryEdxActivationCode.activationCode"
-              icon="mdi-content-copy"
-              icon-style="ml-1"
-              class="color: white"
-            />
-            <PrimaryButton
-              id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
-              short
-              secondary
-              icon="mdi-sync"
-              text="Generate"
-              class="mt-n1 ml-2 pl-2 pr-2"
-              :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
-            />
+              <template #activator="{ props }">
+                <v-chip
+                  :class="primaryEdxActivationCode != null ? 'primary_color' : 'secondary_color'"
+                  v-bind="props"
+                  class="mr-1"
+                  append-icon="mdi-content-copy"
+                  @click="copy(primaryEdxActivationCode?.activationCode)"
+                >
+                  <v-icon left>
+                    mdi-shield-key-outline
+                  </v-icon>
+                  <span class="hidden-sm-and-down">
+                    Primary Activation Code:
+                  </span>
+                  <span id="primaryEdxActivationCode">
+                    {{ primaryEdxActivationCode ? primaryEdxActivationCode.activationCode : `Code Not Found` }}
+                  </span>
+                </v-chip>
+                <PrimaryButton
+                  id="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton"
+                  short
+                  secondary
+                  icon="mdi-sync"
+                  text="Generate"
+                  class="mt-n1 ml-2 pl-2 pr-2"
+                  :click-action="toggleGenerateNewPrimaryEdxActivationCodeDialogVisibility"
+                />
+              </template>
+              <span>Copied {{ primaryEdxActivationCode?.activationCode }}.</span>
+            </v-tooltip>
           </v-col>
         </v-row>
         <v-expand-transition>
           <v-row
             v-if="doShowGenerateNewPrimaryEdxActivationCodeDialog"
             id="generateNewPrimaryEdxActivationCodeDialog"
-            :class="['d-sm-flex', 'align-center', 'searchBox']"
-            class="px-2 mb-4"
-            style="margin-right: 14em;margin-left: 14em;"
+            class="px-2 mb-4 d-sm-flex align-center searchBox"
           >
             <v-col>
               <v-row no-gutters>
@@ -111,31 +115,31 @@
             </v-col>
           </v-row>
         </v-expand-transition>
-        <v-row :class="['d-sm-flex', 'align-center', 'searchBox']">
+        <v-row class="d-sm-flex align-center searchBox">
           <v-col
             cols="12"
             md="4"
-            class="mt-6"
+            class="py-0 my-0"
           >
             <v-text-field
               id="name-text-field"
               v-model="searchFilter.name"
               variant="underlined"
               label="Name"
-              clearable
+              :clearable="true"
             />
           </v-col>
           <v-col
             cols="12"
             md="4"
-            class="mt-6"
+            class="py-0 my-0"
           >
             <v-select
               id="roleName-select-field"
               v-model="searchFilter.roleName"
               variant="underlined"
-              clearable
-              :items="schoolRoles"
+              :clearable="true"
+              :items="filteredSchoolRoles"
               item-title="label"
               item-value="edxRoleCode"
               label="Role"
@@ -185,37 +189,42 @@
           <v-col
             v-for="user in filteredUsers"
             :key="user.digitalID"
-            xl="4"
-            cols="6"
+            lg="4"
+            sm="6"
+            cols="12"
             class="pb-0"
           >
             <AccessUserCard
               :user-roles="getCurrentUserSchoolRoles(user)"
               :user="user"
               :institute-code="schoolID"
-              :institute-roles="schoolRoles"
+              :institute-roles="filteredSchoolRoles"
               institute-type-code="SCHOOL"
               institute-type-label="School"
               @refresh="getUsersData"
             />
           </v-col>
           <v-col
-            xl="4"
-            cols="6"
+            lg="4"
+            sm="6"
+            cols="12"
             class="pb-0"
           >
-            <v-card class="add-new-user h-100">
+            <v-card
+              class="add-new-user d-flex align-center flex-column h-100"
+              min-height="12em"
+            >
               <v-row
-                 class="add-new-user"
-                 align="center"
-                 justify="center"
+                class="add-new-user"
+                align="center"
+                justify="center"
               >
-                <v-col class="d-flex justify-center">
+                <v-col class="justify-center">
                   <PrimaryButton
                     id="new-user-button"
                     icon="mdi-plus"
                     :large-icon="true"
-                    :secondary="primaryEdxActivationCode"
+                    :secondary="primaryEdxActivationCode != null"
                     :disabled="!primaryEdxActivationCode"
                     icon-left
                     text="Add New User"
@@ -223,7 +232,10 @@
                   />
                 </v-col>
               </v-row>
-              <v-row v-if="!primaryEdxActivationCode">
+              <v-row
+                v-if="!primaryEdxActivationCode"
+                class="align-end h-0 mt-n16"
+              >
                 <v-col class="mx-3 mb-3">
                   <v-alert
                     dense
@@ -232,7 +244,10 @@
                     type="info"
                     class="pa-2"
                   >
-                    <span id="no-activation-code-banner" style="color: #003366">Before adding users, a Primary Activation Code must be generated.</span>
+                    <span
+                      id="no-activation-code-banner"
+                      style="color: #003366"
+                    >Before adding users, a Primary Activation Code must be generated.</span>
                   </v-alert>
                 </v-col>
               </v-row>
@@ -242,10 +257,9 @@
 
         <v-bottom-sheet
           v-model="newUserInviteSheet"
-          transition="no-click-animation"
-          content-class="max-width-bottom-sheet"
-          max-width="30%"
-          persistent
+          :no-click-animation="true"
+          :inset="true"
+          :persistent="true"
         >
           <v-card
             v-if="newUserInviteSheet"
@@ -261,84 +275,18 @@
             <v-divider />
             <v-card-text>
               <InviteUserPage
-                :user-roles="schoolRoles"
+                :user-roles="filteredSchoolRoles"
                 :institute-code="schoolID"
                 institute-type-code="SCHOOL"
                 institute-type-label="School"
                 :school-name="schoolName"
                 :school-mincode="schoolMincode"
                 @access-user:message-sent="closeNewUserModal"
-                @access-user:update-roles="updateUserRoles"
                 @access-user:cancel-message="closeNewUserModal"
               />
             </v-card-text>
           </v-card>
         </v-bottom-sheet>
-      </div>
-      <div v-else>
-        <v-row>
-          <v-col class="d-flex justify-center">
-            <v-card
-              flat
-              min-width="55em"
-            >
-              <v-icon
-                small
-                color="#1976d2"
-              >
-                mdi-arrow-left
-              </v-icon>
-              <a
-                class="ml-1 mt-1"
-                @click="backButtonClick"
-              >Return to Dashboard</a>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="d-flex justify-center">
-            <v-card
-              min-width="55em"
-              color="#F2F2F2"
-            >
-              <v-card-title>
-                <v-row
-                  class="mt-0"
-                  justify="center"
-                >
-                  <v-col class="d-flex justify-center">
-                    <strong>Search a school below to manage their EDX Access</strong>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-card-text>
-                <v-row justify="center">
-                  <v-col class="mx-2 d-flex justify-center">
-                    <v-autocomplete
-                      id="selectInstituteName"
-                      v-model="instituteCode"
-                      variant="underlined"
-                      :items="schoolSearchNames"
-                      color="#003366"
-                      :label="instituteTypeLabel"
-                      single-line
-                      clearable
-                      item-title="schoolCodeName"
-                      item-value="schoolID"
-                    />
-                    <PrimaryButton
-                      id="manageSchoolButton"
-                      class="ml-4 mt-3"
-                      text="Manage School Access"
-                      :click-action="manageSchoolButtonClicked"
-                      :disabled="!instituteCode"
-                    />
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
       </div>
     </div>
   </v-container>
@@ -356,21 +304,25 @@ import { edxStore } from '../../store/modules/edx';
 import { mapState } from 'pinia';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import AccessUserCard from './AccessUserCard.vue';
-import InviteUserPage from '../SecureExchange/InviteUserPage.vue';
+import InviteUserPage from './InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
-import ClipboardButton from '../util/ClipboardButton.vue';
-import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
 import { ROLES } from '../../utils/constants/Roles.js';
+import { PERMISSION } from '../../utils/constants/Permission';
 
 export default {
-  name: 'AccessSchoolUsersPage',
-  components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner, ClipboardButton},
+  name: 'SchoolUsersAccessDetailsPage',
+  components: {InviteUserPage, PrimaryButton, AccessUserCard, Spinner},
   mixins: [alertMixin],
+  props: {
+    schoolID: {
+      type: String,
+      required: true
+    },
+  },
   data() {
     return {
       newUserInviteSheet: false,
-      schoolID: '',
       users: [],
       loading: true,
       schoolName: '',
@@ -387,17 +339,21 @@ export default {
       primaryEdxActivationCode: null,
       instituteCode: '',
       instituteTypeLabel: 'School',
-      doShowGenerateNewPrimaryEdxActivationCodeDialog: false
+      doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
+      showTooltip: false
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap']),
+    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
     hasAdminUsers() {
       return this.users.filter(user => {
         return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
       })?.length > 0;
+    },
+    filteredSchoolRoles() {
+      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => role.edxRoleCode !== PERMISSION.STUDENT_DATA_COLLECTION) : this.schoolRoles;
     }
   },
   async beforeMount() {
@@ -412,20 +368,15 @@ export default {
     authStore().getUserInfo().then(() => {
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.isDistrictUser = false;
-        this.schoolID = this.userInfo.activeInstituteIdentifier;
-        this.getPrimaryEdxActivationCodeSchool();
-        this.getUsersData();
-        appStore().getInstitutesData().then(() => {
-          this.setupSchoolFields();
-          this.loading = false;
-        });
       }else{
         this.isDistrictUser = true;
-        appStore().getInstitutesData().then(() => {
-          this.setupSchoolFields();
-          this.loading = false;
-        });
       }
+      appStore().getInstitutesData().then(() => {
+        this.setupSchoolFields();
+        this.getPrimaryEdxActivationCodeSchool();
+        this.getUsersData();
+        this.loading = false;
+      });
     });
   },
   methods: {
@@ -438,12 +389,6 @@ export default {
         }
         return 0;
       } );
-    },
-    manageSchoolButtonClicked(){
-      this.schoolID = this.instituteCode;
-      this.setupSchoolFields();
-      this.getPrimaryEdxActivationCodeSchool();
-      this.getUsersData();
     },
     getUsersData() {
       this.loadingUsers = true;
@@ -482,30 +427,17 @@ export default {
       return true;
     },
     backButtonClick() {
-      if(this.isDistrictUser && this.schoolID){
-        this.loading = true;
-        this.schoolID = '';
-        this.instituteCode = '';
-        this.setupSchoolFields();
-        this.loading = false;
-        this.doShowGenerateNewPrimaryEdxActivationCodeDialog = false;
-      }else{
-        this.$router.push({name: 'home'});
-      }
+      this.$router.push({name: 'schoolAccess'});
+    },
+    backToHome() {
+      this.$router.push({name: 'home'});
     },
     searchEnabled() {
       return !isNotEmptyInputParams(this.searchFilter);
     },
-    updateUserRoles(newValue){
-      edxStore().setDistrictRoles(newValue);
-    },
     setupSchoolFields() {
-      if(this.schoolID){
-        this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
-        this.schoolMincode = this.schoolsMap.get(this.schoolID).mincode;
-      }else{
-        this.setupSchoolList();
-      }
+      this.schoolName = this.schoolsMap.get(this.schoolID).schoolName;
+      this.schoolMincode = this.schoolsMap.get(this.schoolID).mincode;
     },
     closeNewUserModal(){
       edxStore().setSchoolRoles(JSON.parse(JSON.stringify(this.schoolRolesCopy)));
@@ -535,18 +467,6 @@ export default {
           console.log(e);
         });
     },
-    setupSchoolList(){
-      this.schoolSearchNames = [];
-      for(const school of this.notClosedSchoolsMap.values()){
-        let schoolItem = {
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolID: school.schoolID,
-          districtID: school.districtID,
-        };
-        this.schoolSearchNames.push(schoolItem);
-      }
-      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
-    },
     getPrimaryEdxActivationCodeSchool() {
       ApiService.apiAxios.get(`${ApiRoutes.edx.PRIMARY_ACTIVATION_CODE_URL}/SCHOOL/${this.schoolID}`)
         .then(response => {
@@ -558,20 +478,30 @@ export default {
           }
         });
     },
+    copy(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showTooltip = true;
+        setTimeout(() => this.showTooltip = false, 2000);
+      });
+    }
   }
 };
 </script>
 
 <style scoped>
-.add-new-user {
-  min-height: 160px;
-}
-
 .sheetHeader{
   background-color: #003366;
   color: white;
   font-size: medium !important;
   font-weight: bolder !important;
+}
+
+.searchBox {
+  margin: 0;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 5px;
+  background-color: rgb(235, 237, 239);
 }
 
 .primary_color {
@@ -584,14 +514,6 @@ export default {
   color: white;
 }
 
-.searchBox {
-  padding-left: 1em;
-  padding-right: 1em;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 5px;
-  background-color: #F2F2F2;
-}
 
 :deep(.mdi-information){
   color: #003366;

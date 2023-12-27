@@ -56,19 +56,27 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col cols="2">
+      <v-col
+        :cols="hideStepper?1:2"
+        class="pr-0"
+      >
         <StepperComponent
           :steps="steps"
           :next-event="registerNextEvent"
           @on-navigation-complete="navigationCompleted()"
         />
       </v-col>
-      <v-col cols="10">
-        <router-view
-          :school-collection-object="schoolCollectionObject"
-          @next="next"
-          @refreshStore="refreshStore"
-        />
+      <v-col
+        class="pl-0"
+        :cols="hideStepper?11:10"
+      >
+        <v-row>
+          <router-view
+            :school-collection-object="schoolCollectionObject"
+            @next="next"
+            @refresh-store="refreshStore"
+          />
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -78,8 +86,8 @@
 import alertMixin from '../../mixins/alertMixin';
 import StepperComponent from '../common/StepperComponent.vue';
 import RouterView from '../RouterView.vue';
-import { mapState, mapActions } from 'pinia';
-import { useSdcCollectionStore } from '../../store/modules/sdcCollection';
+import { mapState } from 'pinia';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 
 export default {
   name: 'SDCCollectionView',
@@ -105,19 +113,18 @@ export default {
     };
   },
   computed: {
-    ...mapState(useSdcCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection'])
+    ...mapState(sdcCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection', 'hideStepper'])
   },
   created() {
     this.isLoading = !this.isLoading;
     this.steps = [...this.stepsInCollectionProcess];
-    useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+    sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
       this.isLoading = !this.isLoading;
     });
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentStepInCollectionProcess']),
     next() {
       this.registerNextEvent = true;
     },
@@ -125,7 +132,7 @@ export default {
       this.registerNextEvent = false;
     },
     refreshStore() {
-      useSdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
+      sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
         this.steps = [...this.stepsInCollectionProcess];

@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
@@ -9,7 +9,7 @@ describe('District Contacts Page', () => {
 
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
       });
     });
 
@@ -30,19 +30,21 @@ describe('District Contacts Page', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtContacts.newContactButton).click();
-      cy.get(selectors.districtContacts.newContactEffectiveDateTextField).should(($input) => {
-        const val = $input.val()
-        expect(val).to.contains(LocalDate.now().toString());
-      });
+      cy.get(selectors.districtContacts.newContactEffectiveDateTextField)
+          .find('input[type="text"]')
+          .invoke('val')
+          .then((value) => {
+            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+          });
     });
 
     it('can edit contact details', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtContactsCard).click();
-      cy.get(selectors.dashboard.title).contains('District Contacts | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtContacts.editDistrictContactButton).click();
       cy.get(selectors.districtContacts.editContactFirstNameInput).clear().type('Edited User');
       cy.get(selectors.districtContacts.editContactLastNameInput).clear().type('Lastname');

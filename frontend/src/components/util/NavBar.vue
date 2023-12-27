@@ -162,7 +162,8 @@ export default {
       items: [],
       hasAnyItems: false,
       bannerEnvironment: null,
-      bannerColor: null
+      bannerColor: null,
+      disableSdcFunctionality: null
     };
   },
   computed: {
@@ -186,11 +187,19 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    disableSdcFunctionality: {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
     }
   },
   async created(){
     this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
     this.bannerColor = this.config.BANNER_COLOR;
+    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
   },
   methods: {
     refreshUserPermissions(){
@@ -212,13 +221,13 @@ export default {
         },
         {
           title: PAGE_TITLES.SCHOOL_CONTACTS,
-          link: { name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.DATA_COLLECTION,
           link: { name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && this.hasRequiredPermission(PERMISSION.STUDENT_DATA_COLLECTION) && !this.disableSdcFunctionality,
         },
         {
           title: PAGE_TITLES.SCHOOLS,
@@ -227,12 +236,12 @@ export default {
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
-          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'details'}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
-          link: { name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}},
           authorized: this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
@@ -242,13 +251,18 @@ export default {
             {
               title: 'School User Management',
               link: { name: 'schoolAccess'},
-              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
+              authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
             },
             {
               title: 'District User Management',
               link: { name: 'districtAccess'},
               authorized: this.hasRequiredPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN)
-            }
+            },
+            {
+              title: 'School User Management',
+              link: { name: 'schoolAccessDetail', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+              authorized: this.hasRequiredSchoolPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
+            },
           ],
         }
       ];
@@ -256,6 +270,11 @@ export default {
     },
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
+    },
+    hasRequiredSchoolPermission(permission){
+      let hasCorrectRole  = this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0;
+      let hasDistrictRole = this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EDX_USER_DISTRICT_ADMIN).length > 0;
+      return (hasCorrectRole && !hasDistrictRole);
     },
     setActive(item) {
       let index = this.items.findIndex(obj => obj.title === item.title);

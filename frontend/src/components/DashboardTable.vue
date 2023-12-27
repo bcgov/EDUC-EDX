@@ -1,40 +1,33 @@
 <template>
-  <v-row class="d-flex justify-center">
-    <v-col
-      md="5"
-      sm="10"
+  <v-container>
+    <v-row
+      justify="start"
+      align="center"
     >
-      <v-row no-gutters>
-        <v-col v-if="hasRequiredPermission('SECURE_EXCHANGE')" cols="6">
-          <v-card
-            id="secureMessageInboxCard"
-            class="mt-0 mb-5"
-            width="22em"
-            outlined
-            rounded
-            @click="redirectToInbox()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div v-if="unreadExchangeCount > 0">
-                  <v-badge
-                    bordered
-                    top
-                    color="rgb(0, 51, 102)"
-                    circle
-                    offset-x="10"
-                    offset-y="18"
-                  >
-                    <v-icon
-                      aria-hidden="false"
-                      color="rgb(0, 51, 102)"
-                      size="100"
-                    >
-                      mdi-email-outline
-                    </v-icon>
-                  </v-badge>
-                </div>
-                <div v-else>
+      <v-col
+        v-if="hasRequiredPermission('SECURE_EXCHANGE')"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="secureMessageInboxCard"
+          class="mx-auto"
+          width="24em"
+          outlined
+          rounded
+          @click="redirectToInbox()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div v-if="unreadExchangeCount > 0">
+                <v-badge
+                  bordered
+                  top
+                  color="rgb(0, 51, 102)"
+                  circle
+                  offset-x="10"
+                  offset-y="18"
+                >
                   <v-icon
                     aria-hidden="false"
                     color="rgb(0, 51, 102)"
@@ -42,297 +35,310 @@
                   >
                     mdi-email-outline
                   </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ title }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ exchangeCount }} messages, {{ unreadExchangeCount }} unread</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="isLoggedInDistrictUser && isDistrictActive"
-          cols="6"
+                </v-badge>
+              </div>
+              <div v-else>
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                >
+                  mdi-email-outline
+                </v-icon>
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ title }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>{{ exchangeCount }} {{ exchangeCount == 1 ? 'message' : 'messages' }}, {{ unreadExchangeCount }} unread</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="isLoggedInDistrictUser && isDistrictActive"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="districtDetailsCard"
+          width="24em"
+          class="mx-auto"
+          outlined
+          rounded
+          @click="redirectToDistrictDetails()"
         >
-          <v-card
-            id="districtDetailsCard"
-            width="22em"
-            class="mt-0 mb-5"
-            outlined
-            rounded
-            @click="redirectToDistrictDetails()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  >
-                    mdi-domain
-                  </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.DISTRICT_DETAILS }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>Last updated:</span>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ districtLastUpdateDate }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="isLoggedInDistrictUser && isDistrictActive"
-          cols="6"
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                >
+                  mdi-domain
+                </v-icon>
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.DISTRICT_DETAILS }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Last updated:</span>
+                  <span>{{ districtLastUpdateDate }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="isLoggedInSchoolUser && isSchoolActive"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="schoolContactsCard"
+          class="mx-auto"
+          width="24em"
+          outlined
+          rounded
+          @click="redirectToSchoolContacts()"
         >
-          <v-card
-            id="districtContactsCard"
-            width="22em"
-            class="mt-0 mb-5"
-            outlined
-            rounded
-            @click="redirectToDistrictContacts()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  >
-                    mdi-account-multiple-outline
-                  </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.DISTRICT_CONTACTS }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>Last updated:</span>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ districtContactsLastUpdateDate }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive"
-          cols="6"
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                >
+                  mdi-account-multiple-outline
+                </v-icon>
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.SCHOOL_CONTACTS }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="schoolContactsLastUpdateDate"
+                no-gutters
+              >
+                <v-col>
+                  <span>Last updated:</span>
+                  <span>{{ schoolContactsLastUpdateDate }}</span>
+                </v-col>
+              </v-row>
+              <v-row
+                v-else
+                no-gutters
+              >
+                <span>No contacts listed</span>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="isLoggedInDistrictUser && isDistrictActive"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="districtContactsCard"
+          width="24em"
+          class="mx-auto"
+          outlined
+          rounded
+          @click="redirectToDistrictContacts()"
         >
-          <v-card
-            id="schoolContactsCard"
-            class="mt-0 mb-5"
-            width="22em"
-            outlined
-            rounded
-            @click="redirectToSchoolContacts()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  >
-                    mdi-account-multiple-outline
-                  </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.SCHOOL_CONTACTS }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>Last updated:</span>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ schoolContactsLastUpdateDate }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="isLoggedInDistrictUser && isDistrictActive"
-          cols="6"
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                >
+                  mdi-account-multiple-outline
+                </v-icon>
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.DISTRICT_CONTACTS }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="districtContactsLastUpdateDate"
+                no-gutters
+              >
+                <v-col>
+                  <span>Last updated:</span>
+                  <span>{{ districtContactsLastUpdateDate }}</span>
+                </v-col>
+              </v-row>
+              <v-row
+                v-else
+                no-gutters
+              >
+                <span>No contacts listed</span>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="isLoggedInDistrictUser && isDistrictActive"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="districtUserSchoolContactsCard"
+          width="24em"
+          class="mx-auto"
+          outlined
+          rounded
+          @click="redirectToSchools()"
         >
-          <v-card
-            id="districtUserSchoolContactsCard"
-            width="22em"
-            class="mt-0 mb-5"
-            outlined
-            rounded
-            @click="redirectToSchools()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  >
-                    mdi-library
-                  </v-icon>
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.SCHOOLS }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>Last updated:</span>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ schoolsLastUpdateDate }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="isLoggedInSchoolUser && isSchoolActive"
-          cols="6"
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                >
+                  mdi-library
+                </v-icon>
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.SCHOOLS }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Last updated:</span>
+                  <span>{{ schoolsLastUpdateDate }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="isLoggedInSchoolUser && isSchoolActive"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="schoolDetailsCard"
+          class="mx-auto"
+          width="24em"
+          outlined
+          rounded
+          @click="redirectToSchoolDetails()"
         >
-          <v-card
-            id="schoolDetailsCard"
-            class="mt-0 mb-5"
-            width="22em"
-            outlined
-            rounded
-            @click="redirectToSchoolDetails()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    icon="mdi-domain"
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  />
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.SCHOOL_DETAILS }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>Last updated:</span>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ schoolLastUpdateDate }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col
-          v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser"
-          cols="6"
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-domain"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.SCHOOL_DETAILS }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Last updated:</span>
+                  <span>{{ schoolLastUpdateDate }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser && !disableSdcFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="studentDataCollectionCard"
+          class="mx-auto"
+          width="24em"
+          outlined
+          rounded
+          @click="openSDCCollection()"
         >
-          <v-card
-            id="studentDataCollectionCard"
-            class="mt-0 mb-5"
-            width="22em"
-            outlined
-            rounded
-            @click="openSDCCollection()"
-          >
-            <v-row class="pl-4">
-              <v-col cols="4">
-                <div>
-                  <v-icon
-                    icon="mdi-note-text-outline"
-                    aria-hidden="false"
-                    color="rgb(0, 51, 102)"
-                    size="100"
-                  />
-                </div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-row no-gutters>
-                  <v-col>
-                    <h4 class="dashboard-title">
-                      {{ PAGE_TITLES.DATA_COLLECTION }}
-                    </h4>
-                  </v-col>
-                </v-row>
-                <v-row no-gutters>
-                  <v-col>
-                    <span>{{ collectionDetail }}</span>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-note-text-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.DATA_COLLECTION }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>{{ collectionDetail }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import omit from 'lodash/omit';
@@ -343,10 +349,10 @@ import { authStore } from '../store/modules/auth';
 import { appStore } from '../store/modules/app';
 import { mapState, mapActions } from 'pinia';
 import alertMixin from '../mixins/alertMixin';
-import {formatDateTime} from '../utils/format';
+import {formatDateTime, getDateFormatter} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
-import { useSdcCollectionStore } from '../store/modules/sdcCollection';
+import { sdcCollectionStore } from '../store/modules/sdcCollection';
+import {LocalDate} from '@js-joda/core';
 
 export default {
   name: 'DashboardTable',
@@ -370,6 +376,7 @@ export default {
   },
   data() {
     return {
+      toFormatter: getDateFormatter('uuuu/MM/dd'),
       exchangeCount: '',
       unreadExchangeCount: '',
       schoolsLastUpdateDate: '',
@@ -387,11 +394,12 @@ export default {
         createDate: [],
         secureExchangeStatusCode: ''
       },
-      PAGE_TITLES: PAGE_TITLES
+      PAGE_TITLES: PAGE_TITLES,
+      disableSdcFunctionality: null
     };
   },
   computed: {
-    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap','config']),
     ...mapState(authStore, ['isAuthenticated','userInfo']),
     dataReady: function () {
       return this.userInfo;
@@ -404,17 +412,17 @@ export default {
     },
   },
   created() {
+    this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
     if(this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
-
-    if(this.isLoggedInSchoolUser) { 
-      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION')) {
+    if(this.isLoggedInSchoolUser) {
+      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION') && !this.disableSdcFunctionality) {
         this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();
       this.getSchoolLastUpdateDate();
-      this.isSchoolActive();  
+      this.isSchoolActive();
     }
     if(this.isLoggedInDistrictUser){
       this.getDistrictsLastUpdateDate();
@@ -424,7 +432,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
     omit(object, key) {
       return omit(object, key);
     },
@@ -511,9 +519,6 @@ export default {
     openSDCCollection() {
       router.push({name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
-    redirectToDistrictDetails(){
-      router.push('/districtDetails/' + this.userInfo.activeInstituteIdentifier);
-    },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
@@ -535,10 +540,10 @@ export default {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
-              if (this.schoolContactsLastUpdateDate === '' || thisContactLastUpdated.isAfter(this.schoolContactsLastUpdateDate)) {
+              if (this.schoolContactsLastUpdateDate === '' || this.getLocalDate(thisContactLastUpdated).isAfter(this.getLocalDate(this.schoolContactsLastUpdateDate))) {
                 this.schoolContactsLastUpdateDate = thisContactLastUpdated;
               }
             }
@@ -551,16 +556,19 @@ export default {
         });
       }
     },
+    getLocalDate(date){
+      return LocalDate.parse(date, this.toFormatter);
+    },
     getDistrictContactsLastUpdate(){
       if(this.userInfo.activeInstituteType === 'DISTRICT') {
         ApiService.apiAxios.get(ApiRoutes.district.BASE_URL + '/' + this.userInfo.activeInstituteIdentifier).then(response => {
 
           for (const contact of response.data.contacts) {
             let rawDate = contact.updateDate === null ? contact.effectiveDate : contact.updateDate;
-            let thisContactLastUpdated = new LocalDate.parse(rawDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+            let thisContactLastUpdated = this.formatDate(rawDate.substring(0,19));
 
             if (thisContactLastUpdated !== null) {
-              if (this.districtContactsLastUpdateDate === '' ||  thisContactLastUpdated.isAfter(this.districtContactsLastUpdateDate)) {
+              if (this.districtContactsLastUpdateDate === '' ||  this.getLocalDate(thisContactLastUpdated).isAfter(this.getLocalDate(this.districtContactsLastUpdateDate))) {
                 this.districtContactsLastUpdateDate = thisContactLastUpdated;
               }
             }
@@ -574,13 +582,16 @@ export default {
       }
     },
     redirectToSchoolContacts(){
-      router.push({name: 'schoolContacts', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+      router.push({name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     redirectToSchoolDetails() {
       this.$router.push({name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
+    redirectToDistrictDetails(){
+      router.push({name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'details'}});
+    },
     redirectToDistrictContacts(){
-      router.push({name: 'districtContacts', params: {districtID: this.userInfo.activeInstituteIdentifier}});
+      router.push({name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}});
     },
     isSchoolActive(){
       appStore().getInstitutesData().finally(() => {
@@ -616,6 +627,9 @@ export default {
 .dashboard-title {
   word-break: break-word;
   font-size: 20px;
+}
+.v-container {
+  max-width: 51.5em !important;
 }
 </style>
 

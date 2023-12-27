@@ -34,7 +34,6 @@
                             variant="underlined"
                             class="pt-0"
                             maxlength="255"
-                            :rules="requiredRules"
                           />
                           <v-text-field
                             id="newUserLastName"
@@ -76,7 +75,6 @@
                                 lines="two"
                                 return-object
                                 select-strategy="classic"
-                                @update:selected="disableRoles"
                               >
                                 <div
                                   v-for="newrole in userRoles"
@@ -84,7 +82,6 @@
                                   :value="newrole.edxRoleCode"
                                 >
                                   <v-list-item
-                                    :disabled="newrole.disabled"
                                     :value="newrole.edxRoleCode"
                                   >
                                     <template #prepend="{ isActive }">
@@ -103,6 +100,17 @@
                               </v-list>
                             </template>
                           </v-select>
+
+                          <DatePicker
+                            id="accessExpiryDate"
+                            v-model="accessExpiryDate"
+                            class="pb-3 mt-0 pt-0"
+                            label="Access Expiry Date"
+                            model-type="yyyy-MM-dd'T'00:00:00"
+                            :min-date="minExpiryDate"
+                            @clear-date="clearExpiryDate"
+                            @update:model-value="validateForm"
+                          />
                         </v-card-text>
                       </v-col>
                     </v-row>
@@ -143,12 +151,15 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
+import DatePicker from '../util/DatePicker.vue';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 export default {
   name: 'InviteUserPage',
   components: {
     PrimaryButton,
     ConfirmationDialog,
+    DatePicker
   },
   mixins: [alertMixin],
   props: {
@@ -202,7 +213,9 @@ export default {
       processing: false,
       edxAdminUserCode: '',
       rolesHint: 'Pick the roles to be assigned to the new user',
-      emailHint: 'Valid Email Required'
+      emailHint: 'Valid Email Required',
+      accessExpiryDate: null,
+      minExpiryDate: LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString()
     };
   },
   computed: {
@@ -222,9 +235,6 @@ export default {
         v => !!v || this.emailHint,
         v => /^[\w!#$%&’*+/=?`{|}~^-]+(?:\.[\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$/.test(v) || this.emailHint,
       ];
-    },
-    edxAdminUserCodeSelected() {
-      return this.edxActivationRoleCodes.includes(this.edxAdminUserCode);
     }
   },
   mounted() {
@@ -240,37 +250,6 @@ export default {
       }
       return this.userRoles.filter(userRole => userRole.edxRoleCode === role.value)[0].label;
     },
-    disableRoles() {
-      if (this.edxAdminUserCode === '') {
-        for (const element of this.userRoles) {
-          if ((this.instituteTypeCode === 'SCHOOL' && element.edxRoleCode === 'EDX_SCHOOL_ADMIN')
-              || (this.instituteTypeCode === 'DISTRICT' && element.edxRoleCode === 'EDX_DISTRICT_ADMIN')) {
-            this.edxAdminUserCode = element.edxRoleCode;
-            break;
-          }
-        }
-      }
-      let newRoles = [];
-      if (this.edxAdminUserCodeSelected) {
-        newRoles = this.userRoles.map(el => {
-          el.disabled = el.edxRoleCode !== this.edxAdminUserCode;
-          if (el.disabled) {
-            el.selected = false;
-          }
-          return el;
-        });
-        this.edxActivationRoleCodes.length = 0;
-        this.edxActivationRoleCodes.push(this.edxAdminUserCode);
-        this.rolesHint = `EDX ${this.instituteTypeLabel} Admin users will be set up with all ${this.instituteTypeLabel.toLowerCase()} roles`;
-      } else {
-        newRoles = this.userRoles.map(el => {
-          el.disabled = false;
-          return el;
-        });
-        this.rolesHint = 'Pick the roles to be assigned to the new user';
-      }
-      this.$emit('access-user:update-roles', newRoles);
-    },
     messageSent() {
       this.requiredRules = [v => !!v?.trim() || 'Required'];
       this.$emit('access-user:message-sent');
@@ -281,7 +260,8 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         email: this.email,
-        edxActivationRoleCodes: this.edxActivationRoleCodes
+        edxActivationRoleCodes: this.edxActivationRoleCodes,
+        edxUserExpiryDate: this.accessExpiryDate
       };
       let url = null;
       if(this.instituteTypeCode === 'SCHOOL') {
@@ -310,6 +290,9 @@ export default {
     async validateForm() {
       const valid = await this.$refs.newUserForm.validate();
       this.isFormValid = valid.valid;
+    },
+    clearExpiryDate(){
+      this.accessExpiryDate = null;
     },
   }
 };

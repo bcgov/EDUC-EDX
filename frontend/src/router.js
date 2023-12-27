@@ -15,23 +15,23 @@ import MessageDisplay from './components/SecureExchange/MessageDisplay.vue';
 import ExchangePage from './components/SecureExchange/ExchangeInbox.vue';
 import NewMessagePage from './components/SecureExchange/NewMessagePage.vue';
 import RouterView from './components/RouterView.vue';
-import AccessSchoolUsersPage from './components/SecureExchange/AccessSchoolUsersPage.vue';
+import AccessSchoolUsersPage from './components/admin/SchoolUsersAccessPage.vue';
 import InstituteSelection from './components/InstituteSelection.vue';
 import ActivateEdxUserAccount from './components/common/ActivateEdxUserAccount.vue';
 import SchoolListPage from './components/school/SchoolList.vue';
-import SchoolContactsPage from './components/school/SchoolContacts.vue';
 import SchoolDetailsPage from './components/school/SchoolDetails.vue';
-import AccessDistrictUsersPage from './components/SecureExchange/AccessDistrictUsersPage.vue';
+import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
+import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
-import DistrictContactsPage from './components/district/DistrictContacts.vue';
 import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
 import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
 import StepOneUploadData from './components/sdcCollection/StepOneUploadData.vue';
-import StepTwoValidateData from './components/sdcCollection/StepTwoValidateData.vue';
+import StepTwoViewDataIssues from './components/sdcCollection/stepTwoValidateData/StepTwoViewDataIssues.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
+import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -148,11 +148,32 @@ const router = createRouter({
       }
     },
     {
+      path: '/schoolAccessDetail/:schoolID',
+      name: 'schoolAccessDetail',
+      props: true,
+      component: AccessSchoolUsersDetailsPage,
+      meta: {
+        pageTitle: PAGE_TITLES.SCHOOL_EXCHANGE_USERS,
+        requiresAuth: true,
+        permission: 'EDX_USER_SCHOOL_ADMIN'
+      }
+    },
+    {
       path: '/districtAccess',
       name: 'districtAccess',
       component: AccessDistrictUsersPage,
       meta: {
         pageTitle: PAGE_TITLES.DISTRICT_EXCHANGE_USERS,
+        requiresAuth: true,
+        permission: 'EDX_USER_DISTRICT_ADMIN'
+      }
+    },
+    {
+      path: '/districtSchools',
+      name: 'districtSchools',
+      component: ViewAllDistrictSchoolUsersPage,
+      meta: {
+        pageTitle: PAGE_TITLES.ALL_DISTRICT_SCHOOL_USERS,
         requiresAuth: true,
         permission: 'EDX_USER_DISTRICT_ADMIN'
       }
@@ -211,44 +232,21 @@ const router = createRouter({
           component: SchoolListPage,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOLS,
-            requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            requiresAuth: true
           }
         },
         {
-          path: 'districtDetails/:districtID',
+          path: 'districtDetails/:districtID/:activeTab',
           name: 'districtDetails',
           props: true,
           component: DistrictDetails,
           meta: {
             pageTitle: PAGE_TITLES.DISTRICT_DETAILS,
-            requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
+            requiresAuth: true
           }
         },
         {
-          path: 'districtContacts/:districtID',
-          name: 'districtContacts',
-          component: DistrictContactsPage,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.DISTRICT_CONTACTS,
-            requiresAuth: true,
-            permission: 'SECURE_EXCHANGE'
-          }
-        },
-        {
-          path: 'schoolContacts/:schoolID',
-          name: 'schoolContacts',
-          component: SchoolContactsPage,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.SCHOOL_CONTACTS,
-            requiresAuth: true,
-          }
-        },
-        {
-          path: 'schoolDetails/:schoolID',
+          path: 'school/:schoolID/details',
           name: 'schoolDetails',
           component: SchoolDetailsPage,
           props: true,
@@ -293,12 +291,13 @@ const router = createRouter({
             {
               path: 'step-2',
               name: 'step-2',
-              component: StepTwoValidateData,
+              component: StepTwoViewDataIssues,
               meta: {
                 pageTitle: PAGE_TITLES.SDC,
                 requiresAuth: true,
                 permission: 'STUDENT_DATA_COLLECTION'
-              }
+              },
+              props: true,
             },
             {
               path: 'step-3',

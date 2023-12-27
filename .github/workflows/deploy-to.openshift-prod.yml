@@ -34,8 +34,8 @@ env:
   NAMESPACE_TOOLS: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-tools
   COMMON_NAMESPACE: ${{ secrets.COMMON_NAMESPACE_NO_ENV }}
   TARGET_ENV: "prod"
-  MIN_REPLICAS: "2"
-  MAX_REPLICAS: "2"
+  MIN_REPLICAS: "3"
+  MAX_REPLICAS: "3"
   MIN_CPU: "50m"
   MAX_CPU: "100m"
   MIN_MEM: "200Mi"
@@ -52,7 +52,7 @@ jobs:
     name: Build and deploy to PROD
     # ubuntu-latest can also be used.
     runs-on: ubuntu-22.04
-    environment: prod
+    environment: production
 
     outputs:
       ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
@@ -123,7 +123,7 @@ jobs:
         
         oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-prod/${{ env.REPO_NAME }}-frontend-static:${{ steps.get-latest-tag.outputs.tag }}
         oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }} ${{ env.NAMESPACE }}-prod/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ steps.get-latest-tag.outputs.tag }}
-        
+
         # Process and apply deployment template
         oc process -f tools/openshift/backend.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ steps.get-latest-tag.outputs.tag }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }}\
         | oc apply -f -

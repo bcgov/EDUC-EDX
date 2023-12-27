@@ -14,6 +14,7 @@
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert
+              width="100%"
               color="#E9EBEF"
               dense
               type="info"
@@ -49,13 +50,12 @@
               class="pt-0"
               variant="underlined"
               :maxlength="255"
-              :rules="[rules.noSpecialCharactersContactName()]"
               label="First Name"
             />
             <v-text-field
               id="newContactLastNameInput"
               v-model="newContact.lastName"
-              :rules="[rules.required(), rules.noSpecialCharactersContactName()]"
+              :rules="[rules.required()]"
               class="pt-0"
               variant="underlined"
               :maxlength="255"
@@ -68,7 +68,6 @@
               type="text"
               variant="underlined"
               maxlength="255"
-              :rules="[rules.noSpecialCharactersContactTitle()]"
             />
             <v-text-field
               id="newContactEmailInput"
@@ -133,73 +132,25 @@
             </v-row>
             <v-row>
               <v-col cols="6">
-                <v-menu
-                  id="newContactEffectiveDatePicker"
-                  ref="newContactEffectiveDateFilter"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-text-field
-                      id="newContactEffectiveDateTextField"
-                      v-model="newContact.effectiveDateMoment"
-                      :rules="[rules.required()]"
-                      class="pt-0 mt-0"
-                      label="Start Date"
-                      variant="underlined"
-                      prepend-inner-icon="mdi-calendar"
-                      clearable
-                      readonly
-                      v-bind="attrs"
-                      @click:clear="clearEffectiveDate"
-                      @click="openEffectiveDatePicker"
-                    />
-                  </template>
-                </v-menu>
-                <VueDatePicker
-                  ref="effectiveDatePicker"
+                <DatePicker
+                  id="newContactEffectiveDateTextField"
                   v-model="newContact.effectiveDate"
+                  label="Start Date"
                   :rules="[rules.required()]"
-                  :enable-time-picker="false"
-                  format="yyyy-MM-dd"
-                  @update:model-value="saveNewContactEffectiveDate"
+                  model-type="yyyy-MM-dd'T'00:00:00"
+                  @update:model-value="validateForm"
+                  @clear-date="clearEffectiveDate"
                 />
               </v-col>
               <v-col cols="6">
-                <v-menu
-                  id="newContactExpiryDatePicker"
-                  ref="newContactExpiryDateFilter"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-text-field
-                      id="newContactExpiryDateTextField"
-                      v-model="newContact.expiryDateMoment"
-                      :rules="[rules.endDateRule(newContact.effectiveDateMoment, newContact.expiryDateMoment)]"
-                      class="pt-0 mt-0"
-                      variant="underlined"
-                      label="End Date"
-                      prepend-inner-icon="mdi-calendar"
-                      clearable
-                      readonly
-                      v-bind="attrs"
-                      @click:clear="clearExpiryDate"
-                      @click="openExpiryDatePicker"
-                    />
-                  </template>
-                </v-menu>
-                <VueDatePicker
-                  ref="expiryDatePicker"
+                <DatePicker
+                  id="newContactExpiryDateTextField"
                   v-model="newContact.expiryDate"
-                  :rules="[rules.required()]"
-                  :enable-time-picker="false"
-                  format="yyyy-MM-dd"
-                  @update:model-value="saveNewContactExpiryDate"
+                  label="End Date"
+                  :rules="[rules.endDateRule(newContact.effectiveDate, newContact.expiryDate)]"
+                  model-type="yyyy-MM-dd'T'00:00:00"
+                  @update:model-value="validateForm"
+                  @clear-date="clearExpiryDate"
                 />
               </v-col>
             </v-row>
@@ -235,16 +186,14 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import * as Rules from '../../utils/institute/formRules';
 import {isNumber} from '../../utils/institute/formInput';
-import {LocalDate} from '@js-joda/core';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import moment from 'moment/moment';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import DatePicker from '../util/DatePicker.vue';
 
 export default {
   name: 'NewDistrictContactPage',
   components: {
-    PrimaryButton,
-    VueDatePicker
+    DatePicker,
+    PrimaryButton
   },
   mixins: [alertMixin],
   props: {
@@ -272,70 +221,33 @@ export default {
         phoneExtension: null,
         alternatePhoneNumber: null,
         alternatePhoneExtension: null,
-        effectiveDate: LocalDate.now().toString(),
-        effectiveDateMoment: moment(LocalDate.now().toString()).format('YYYY-MM-DD').toString(),
+        effectiveDate: LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString(),
         expiryDate: null
       },
-      rules: Rules,
-      effectiveDateFilter: false,
-      newContactEffectiveDatePicker: null,
-      expiryDateFilter: false,
-      newContactExpiryDatePicker: null
+      rules: Rules
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
-  },
-  watch: {
-    //watching effective date to valid form because we need to cross validate expiry and effective date fields
-    'newContact.effectiveDate': {
-      handler() {
-        this.validateForm();
-      }
-    }
   },
   mounted() {
     this.validateForm();
   },
   methods: {
     clearEffectiveDate(){
-      this.newContact.effectiveDateMoment = null;
       this.newContact.effectiveDate = null;
       this.validateForm();
     },
     clearExpiryDate(){
-      this.newContact.expiryDateMoment = null;
       this.newContact.expiryDate = null;
-      this.validateForm();
-    },
-    saveNewContactExpiryDate() {
-      this.newContact.expiryDateMoment = moment(this.newContact.expiryDate).format('YYYY-MM-DD').toString();
-      this.validateForm();
-    },
-    saveNewContactEffectiveDate() {
-      this.newContact.effectiveDateMoment = moment(this.newContact.effectiveDate).format('YYYY-MM-DD').toString();
       this.validateForm();
     },
     closeNewContactPage() {
       this.resetForm();
       this.$emit('new-district-contact:close-new-district-contact-page');
     },
-    openEffectiveDatePicker(){
-      this.$refs.effectiveDatePicker.openMenu();
-    },
-    openExpiryDatePicker(){
-      this.$refs.expiryDatePicker.openMenu();
-    },
     addNewDistrictContact() {
       this.processing = true;
-
-      if(this.newContact.effectiveDateMoment) {
-        this.newContact.effectiveDate = this.newContact.effectiveDateMoment;
-      }
-
-      if(this.newContact.expiryDateMoment) {
-        this.newContact.expiryDate = this.newContact.expiryDateMoment;
-      }
 
       ApiService.apiAxios.post(`${ApiRoutes.district.BASE_URL}/${this.districtID}/contact`, this.newContact)
         .then(() => {
@@ -369,19 +281,6 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
-  }
-
-  :deep(.dp__input_wrap){
-    height: 0;
-    width: 0;
-  }
-
-  :deep(.dp__input){
-    display: none;
-  }
-
-  :deep(.dp__icon){
-    display: none;
   }
 
   :deep(.mdi-information){

@@ -10,76 +10,72 @@
         <v-row>
           <v-col><h3>Which Dashboard would you like to access?</h3></v-col>
         </v-row>
-        <v-row v-if="activeUserSchools.length>0">
-          <v-col class="mb-3">
-            <h2>School Dashboard</h2>
+        <v-row>
+          <v-col>
+            <v-text-field
+                v-model="search"
+                clearable
+                hide-details="auto"
+                label="Search"
+            />
           </v-col>
         </v-row>
-        <v-data-table
-          v-if="activeUserSchools.length>0"
-          id="schools-dashboard-items"
-          :items="activeUserSchools"
-          :loading="isTableLoading"
-          items-per-page="-1"
-          class="elevation-1"
-        >
-          <template #item="{ item, index }">
-            <v-row
-              no-gutters
-              class="pl-2 hoverTable"
-              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectSchool(item.raw.schoolID)"
-            >
-              <v-col class="pa-1">
-                <h3
-                  class="mt-1 mb-1"
-                  style="color: black;"
-                >
-                  {{ item.raw.displayName }}
-                </h3>
-                <h3 style="color: grey;">
-                  {{ item.raw.mincode }}
-                </h3>
-              </v-col>
-            </v-row>
-          </template>
-        </v-data-table>
-        <v-row v-if="activeUserDistricts.length>0">
-          <v-col class="mt-6 mb-3">
+        <v-row v-if="filteredUserDistricts.length>0">
+          <v-col class="mb-3">
             <h2>District Dashboard</h2>
           </v-col>
         </v-row>
-        <v-data-table
-          v-if="activeUserDistricts.length>0"
-          id="schools-district-items"
-          :items="activeUserDistricts"
-          class="elevation-1"
-          items-per-page="-1"
-          :loading="isTableLoading"
+        <v-list
+            v-if="filteredUserDistricts.length>0"
+            id="schools-district-items"
+            style="padding-top: 0;padding-bottom: 0;"
+            elevation="1"
+            :border="true"
+            :rounded="true"
+            :loading="isTableLoading"
         >
-          <template #item="{ item, index }">
-            <v-row
-              no-gutters
-              class="pl-2 hoverTable"
-              :style="(index) === 0 ? 'border-top-style: groove;border-top-color: rgb(255 255 255 / 45%);' : ''"
-              style="border-right-style: groove;border-right-color: rgb(255 255 255 / 45%);border-left-style: groove;border-left-color: rgb(255 255 255 / 45%);border-bottom-style: groove;border-bottom-color: rgb(255 255 255 / 45%);"
-              @click="selectDistrict(item.raw.districtID)"
+          <div
+              v-for="(item, index) in filteredUserDistricts"
+              :key="item.districtNumber"
+          >
+            <v-list-item
+                :title="item.displayName"
+                :subtitle="item.districtNumber"
+                lines="two"
+                @click="selectDistrict(item.districtID)"
             >
-              <v-col class="pa-1">
-                <h3
-                  class="mt-1 mb-1"
-                  style="color: black;"
-                >
-                  {{ item.raw.displayName }}
-                </h3>
-                <h3 style="color: grey;">
-                  {{ item.raw.districtNumber }}
-                </h3>
-              </v-col>
-            </v-row>
-          </template>
-        </v-data-table>
+            </v-list-item>
+            <v-divider v-if="index !== filteredUserDistricts.length-1"></v-divider>
+          </div>
+        </v-list>
+        <v-row v-if="filteredUserSchools.length>0">
+          <v-col class="mt-6 mb-3">
+            <h2>School Dashboard</h2>
+          </v-col>
+        </v-row>
+        <v-list
+            v-if="filteredUserSchools.length>0"
+            id="schools-dashboard-items"
+            style="padding-top: 0;padding-bottom: 0;"
+            elevation="1"
+            :border="true"
+            :rounded="true"
+            :loading="isTableLoading"
+        >
+          <div
+            v-for="(item, index) in filteredUserSchools"
+            :key="item.mincode"
+          >
+            <v-list-item
+                :title="item.displayName"
+                :subtitle="item.mincode"
+                lines="two"
+                @click="selectSchool(item.schoolID)"
+            >
+            </v-list-item>
+            <v-divider v-if="index !== filteredUserSchools.length-1"></v-divider>
+          </div>
+        </v-list>
       </v-col>
       <v-spacer />
     </v-row>
@@ -100,8 +96,11 @@ export default {
   },
   data() {
     return {
+      search: null,
       activeUserSchools: [],
       activeUserDistricts:[],
+      filteredUserSchools: [],
+      filteredUserDistricts:[],
       isTableLoading: true,
       schoolHeaders: [
         {
@@ -137,6 +136,7 @@ export default {
           'mincode': schoolsMap.get(value)?.mincode,
           'schoolID': value,
           'displayName': schoolsMap.get(value)?.schoolName,
+          'searchName': schoolsMap.get(value)?.schoolName + ' ' + schoolsMap.get(value)?.mincode
         };
       });
       this.activeUserSchools.sort((a,b) =>  {
@@ -147,12 +147,14 @@ export default {
         }
         return 0;
       });
+      this.filteredUserSchools =  this.activeUserSchools;
       const districtMap = this.activeDistrictsMap;
       this.activeUserDistricts = this.userInfo?.userDistrictIDs?.map(function (value) {
         return {
           'districtNumber': districtMap.get(value)?.districtNumber,
           'districtID': value,
           'displayName': districtMap.get(value)?.name,
+          'searchName': districtMap.get(value)?.name + ' ' + districtMap.get(value)?.districtNumber
         };
       });
       this.activeUserDistricts.sort((a,b) =>  {
@@ -163,7 +165,19 @@ export default {
         }
         return 0;
       });
+      this.filteredUserDistricts =  this.activeUserDistricts;
     });
+  },
+  watch: {
+    search() {
+      if(this.search){
+        this.filteredUserDistricts = this.activeUserDistricts.filter(district => district.searchName.toUpperCase().includes(this.search.toUpperCase()));
+        this.filteredUserSchools = this.activeUserSchools.filter(school => school.searchName.toUpperCase().includes(this.search.toUpperCase()));
+      }else{
+       this.filteredUserDistricts = this.activeUserDistricts;
+       this.filteredUserSchools = this.activeUserSchools;
+      }
+    }
   },
   methods: {
     selectSchool(schoolID){
@@ -186,26 +200,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.top-banner{
-  background-color: aliceblue;
-  background-size: cover;
-  align-items: center;
-  display: flex;
-}
-
-.hoverTable:hover{
-  background-color: #e8e8e8;
-  cursor: pointer;
-}
-
 .full-height{
   height: 50%;
 }
-
-:deep(.v-data-table-footer) {
-  display: none;
-}
-
-
 </style>
 
