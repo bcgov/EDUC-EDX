@@ -90,6 +90,14 @@ import { mapState } from 'pinia';
 import ApiService from '../common/apiService';
 import {ApiRoutes} from '../utils/constants';
 
+function preventNavButtons(event) {
+  const { initialLanding, current } = event.state;
+  if (current === '/institute-selection' && initialLanding == undefined) {
+    console.warn('Intercepted browser buttons');
+    window.history.pushState({ initialLanding: true }, 'Canceled Button Navigation', '/institute-selection');
+  }
+}
+
 export default {
   name: 'InstituteSelection',
   components: {
@@ -127,6 +135,11 @@ export default {
     ...mapState(authStore, ['userInfo']),
   },
   created() {
+    if (window.history.state.initialLanding === undefined) {
+      window.history.pushState({ initialLanding: true }, '', '/institute-selection');
+    }
+    window.addEventListener('popstate', preventNavButtons);
+
     this.isTableLoading = true;
     appStore().getInstitutesData().finally(() => {
       this.isTableLoading = false;
