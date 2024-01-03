@@ -13,10 +13,10 @@
         <v-row>
           <v-col>
             <v-text-field
-                v-model="search"
-                clearable
-                hide-details="auto"
-                label="Search"
+              v-model="search"
+              clearable
+              hide-details="auto"
+              label="Search"
             />
           </v-col>
         </v-row>
@@ -26,26 +26,25 @@
           </v-col>
         </v-row>
         <v-list
-            v-if="filteredUserDistricts.length>0"
-            id="schools-district-items"
-            style="padding-top: 0;padding-bottom: 0;"
-            elevation="1"
-            :border="true"
-            :rounded="true"
-            :loading="isTableLoading"
+          v-if="filteredUserDistricts.length>0"
+          id="schools-district-items"
+          style="padding-top: 0;padding-bottom: 0;"
+          elevation="1"
+          :border="true"
+          :rounded="true"
+          :loading="isTableLoading"
         >
           <div
-              v-for="(item, index) in filteredUserDistricts"
-              :key="item.districtNumber"
+            v-for="(item, index) in filteredUserDistricts"
+            :key="item.districtNumber"
           >
             <v-list-item
-                :title="item.displayName"
-                :subtitle="item.districtNumber"
-                lines="two"
-                @click="selectDistrict(item.districtID)"
-            >
-            </v-list-item>
-            <v-divider v-if="index !== filteredUserDistricts.length-1"></v-divider>
+              :title="item.displayName"
+              :subtitle="item.districtNumber"
+              lines="two"
+              @click="selectDistrict(item.districtID)"
+            />
+            <v-divider v-if="index !== filteredUserDistricts.length-1" />
           </div>
         </v-list>
         <v-row v-if="filteredUserSchools.length>0">
@@ -54,26 +53,25 @@
           </v-col>
         </v-row>
         <v-list
-            v-if="filteredUserSchools.length>0"
-            id="schools-dashboard-items"
-            style="padding-top: 0;padding-bottom: 0;"
-            elevation="1"
-            :border="true"
-            :rounded="true"
-            :loading="isTableLoading"
+          v-if="filteredUserSchools.length>0"
+          id="schools-dashboard-items"
+          style="padding-top: 0;padding-bottom: 0;"
+          elevation="1"
+          :border="true"
+          :rounded="true"
+          :loading="isTableLoading"
         >
           <div
             v-for="(item, index) in filteredUserSchools"
             :key="item.mincode"
           >
             <v-list-item
-                :title="item.displayName"
-                :subtitle="item.mincode"
-                lines="two"
-                @click="selectSchool(item.schoolID)"
-            >
-            </v-list-item>
-            <v-divider v-if="index !== filteredUserSchools.length-1"></v-divider>
+              :title="item.displayName"
+              :subtitle="item.mincode"
+              lines="two"
+              @click="selectSchool(item.schoolID)"
+            />
+            <v-divider v-if="index !== filteredUserSchools.length-1" />
           </div>
         </v-list>
       </v-col>
@@ -134,6 +132,17 @@ export default {
     ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
     ...mapState(authStore, ['userInfo']),
   },
+  watch: {
+    search() {
+      if(this.search){
+        this.filteredUserDistricts = this.activeUserDistricts.filter(district => district.searchName.toUpperCase().includes(this.search.toUpperCase()));
+        this.filteredUserSchools = this.activeUserSchools.filter(school => school.searchName.toUpperCase().includes(this.search.toUpperCase()));
+      }else{
+        this.filteredUserDistricts = this.activeUserDistricts;
+        this.filteredUserSchools = this.activeUserSchools;
+      }
+    }
+  },
   created() {
     if (window.history.state.initialLanding === undefined) {
       window.history.pushState({ initialLanding: true }, '', '/institute-selection');
@@ -180,17 +189,6 @@ export default {
       });
       this.filteredUserDistricts =  this.activeUserDistricts;
     });
-  },
-  watch: {
-    search() {
-      if(this.search){
-        this.filteredUserDistricts = this.activeUserDistricts.filter(district => district.searchName.toUpperCase().includes(this.search.toUpperCase()));
-        this.filteredUserSchools = this.activeUserSchools.filter(school => school.searchName.toUpperCase().includes(this.search.toUpperCase()));
-      }else{
-       this.filteredUserDistricts = this.activeUserDistricts;
-       this.filteredUserSchools = this.activeUserSchools;
-      }
-    }
   },
   methods: {
     selectSchool(schoolID){
