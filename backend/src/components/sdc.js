@@ -410,48 +410,62 @@ function createMoreFiltersSearchCriteria(searchFilter=[]) {
   let searchCriteriaList = [];
   let studentTypeFilterList = [];
   let fteFilterList = [];
+  let supportBlockList = [];
   searchFilter.forEach((elem) => {
-    let pValue = elem.value;
+    let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
     if(elem.key === 'studentType' && pValue) {
       if(pValue.includes('isSchoolAged')) {
-        studentTypeFilterList.push({key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
+        studentTypeFilterList.push({key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR});
       }
       if(pValue.includes('isAdult')) {
-        studentTypeFilterList.push({key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
+        studentTypeFilterList.push({key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR});
       }
     }
     if(elem.key === 'fte' && pValue) {
       if(pValue.includes('fteEq0')) {
-        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR});
       }
       if(pValue.includes('fteLt1')) {
-        fteFilterList.push({key: 'fte', value: 1, operation: FILTER_OPERATION.LESS_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+        fteFilterList.push({key: 'fte', value: 1, operation: FILTER_OPERATION.LESS_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR});
       }
       if(pValue.includes('fteGt0')) {
-        fteFilterList.push({key: 'fte', value: 0, operation: FILTER_OPERATION.GREATER_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+        fteFilterList.push({key: 'fte', value: 0, operation: FILTER_OPERATION.GREATER_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR});
       }
     }
     if(elem.key === 'grade' && pValue) {
       validateGradeFilter(pValue);
-      searchCriteriaList.push({key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+      searchCriteriaList.push({key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if(elem.key === 'warnings' && pValue) {
-      searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+      searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
+    if(elem.key === 'support' && pValue) {
+      if(pValue === 'hasSupportBlocks') {
+        supportBlockList.push({key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+        supportBlockList.push({key: 'supportBlocks', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      } else if(pValue === 'noSupportBlocks') {
+        supportBlockList.push({key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
+        supportBlockList.push({key: 'supportBlocks', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
+      }
+    }
+    if(elem.key === 'fteZero' && pValue) {
+      validateFteZeroFilter(pValue);
+      searchCriteriaList.push({key: 'fteZeroReasonCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if(elem.key === 'fundingType' && pValue) {
         validateFundingTypeFilter(pValue);
 
         if(pValue.includes('14')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
         }
         if(pValue.includes('20')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
         }
         if(pValue.includes('16')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+          searchCriteriaList.push({key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
         }
         if(pValue.includes('No Funding')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
+          searchCriteriaList.push({key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
         }
         
     }    
@@ -475,7 +489,31 @@ function createMoreFiltersSearchCriteria(searchFilter=[]) {
       searchCriteriaList: fteFilterList
     });
   }
+  if(supportBlockList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: supportBlockList
+    });
+  }
   return search;
+}
+
+function validateFteZeroFilter(filters) {
+  let fteZeroCategories = [
+    'OUTOFPROV',
+    'NOMROLL',
+    'TOOYOUNG',
+    'INDYADULT',
+    'INACTIVE',
+    'DISTDUP',
+    'AUTHDUP'
+  ];
+  if(filters.length > 0) {
+    if(filters.every(value => fteZeroCategories.includes(cat => value === cat))) {
+      log.error('Invalid zero fte reason code.');
+      throw new Error('400');
+    }
+  }
 }
 
 function validateGradeFilter(filterGrades=[]) {

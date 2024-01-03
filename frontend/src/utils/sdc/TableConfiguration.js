@@ -164,6 +164,62 @@ export const GRADE_FILTER = Object.freeze(
   },
 );
 
+export const SUPPORT_BLOCKS_FILTER = Object.freeze(
+  { 
+    heading: 'Support Blocks',
+    multiple: false,
+    key: 'support',
+    filterOptions: [
+      {
+        title: 'Has Support Blocks',
+        value: 'hasSupportBlocks'
+      },
+      {
+        title: 'No Support Blocks',
+        value: 'noSupportBlocks'
+      }
+    ]
+  }
+);
+
+export const FTE_ZERO_FILTER = Object.freeze(
+  { 
+    heading: 'Reasons for FTE = 0 ',
+    multiple: true,
+    key: 'fteZero',
+    filterOptions: [
+      {
+        title: 'Out of Province International ',
+        value: 'OUTOFPROV'
+      },
+      {
+        title: 'Nominal Roll Eligible',
+        value: 'NOMROLL'
+      },
+      {
+        title: 'Student Too Young',
+        value: 'TOOYOUNG'
+      },
+      {
+        title: 'Graduated Adult',
+        value: 'INDYADULT'
+      },
+      {
+        title: 'No new active courses',
+        value: 'INACTIVE'
+      },
+      {
+        title: 'District already received funding',
+        value: 'DISTDUP'
+      },
+      {
+        title: 'Authority already received funding',
+        value: 'AUTHDUP'
+      }
+    ]
+  }
+);
+
 /**
  * Tables
  */
@@ -186,6 +242,8 @@ export const FTE = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      SUPPORT_BLOCKS_FILTER,
+      FTE_ZERO_FILTER,
       WARNING_FILTER
     ]
   }

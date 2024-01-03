@@ -20,7 +20,7 @@
 
       <v-window v-model="tab">
         <v-window-item value="FTE">
-          <FTEComponent />
+          <FTEComponent :school="school" />
         </v-window-item>
         <v-window-item value="French Programs">
           <FrenchProgramsComponent />
@@ -60,6 +60,7 @@ import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import { appStore } from '../../../store/modules/app';
 import { SDC_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
@@ -97,13 +98,18 @@ export default {
       tab: null,
       tabs: SDC_VERIFY_TABS,
       type: 'SDC',
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      school: {}
     };
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(appStore, ['activeSchoolsMap']),
   },
   created() {
+    appStore().getInstitutesData().finally(() => {
+      this.school = this.activeSchoolsMap.get(this.schoolCollectionObject.schoolID);
+    });
   },
   methods: {
     next() {

@@ -194,10 +194,10 @@ export default {
     },
     getSdcStudentStatusIconColor(status) {
       if (status === 'FUNDWARN') {
-        return 'blue';
+        return '#ff9800';
       }
       else if (status === 'INFOWARN') {
-        return 'orange';
+        return '#2196F3';
       }
     },
     getSdcStudentIssueIcon(status) {
