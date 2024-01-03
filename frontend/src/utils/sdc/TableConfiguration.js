@@ -3,7 +3,7 @@
  */
 
 export const WARNING_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Warnings',
     multiple: true,
     key: 'warnings',
@@ -21,7 +21,7 @@ export const WARNING_FILTER = Object.freeze(
 );
 
 export const STUDENT_TYPE_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Student Type',
     multiple: true,
     key:'studentType',
@@ -39,7 +39,7 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
 );
 
 export const FTE_FILTER = Object.freeze(
-  { 
+  {
     heading: 'FTE',
     multiple: true,
     key:'fte',
@@ -61,7 +61,7 @@ export const FTE_FILTER = Object.freeze(
 );
 
 export const FUNDING_TYPE_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Funding Type',
     multiple: true,
     key: 'fundingType',
@@ -87,7 +87,7 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
 );
 
 export const GRADE_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Grade',
     multiple: true,
     key: 'grade',
@@ -188,7 +188,7 @@ export const FTE = Object.freeze(
       FUNDING_TYPE_FILTER,
       WARNING_FILTER
     ]
-  }  
+  }
 );
 
 export const FRENCH_PR = Object.freeze(
@@ -236,7 +236,7 @@ export const CAREER_PR = Object.freeze(
       FUNDING_TYPE_FILTER,
       WARNING_FILTER
     ]
-  }  
+  }
 );
 
 export const INDSUPPORT_PR = Object.freeze(
@@ -299,6 +299,7 @@ export const ELL = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: {title: 'Years in ELL', key: 'yearsInEll'}},
     ],
+    headcountEndpoint: 'ell',
     allowedFilters: [
       STUDENT_TYPE_FILTER,
       FTE_FILTER,
