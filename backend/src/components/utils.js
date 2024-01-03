@@ -6,10 +6,7 @@ const log = require('./logger');
 const HttpStatus = require('http-status-codes');
 const lodash = require('lodash');
 const {ApiError} = require('./error');
-const jsonwebtoken = require('jsonwebtoken');
 const {v4: uuidv4} = require('uuid');
-const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
-const {Locale} = require('@js-joda/locale_en');
 let discovery = null;
 const cache = require('memory-cache');
 let memCache = new cache.Cache();
@@ -139,25 +136,6 @@ async function getDataWithParams(token, url, params, correlationID) {
   }
 }
 
-async function forwardPostReq(req, res, url) {
-  try {
-    const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No session data'
-      });
-    }
-
-    const data = await postData(accessToken, req.body, url, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
-    log.error('forwardPostReq Error', e.stack);
-    return res.status(e.status || HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'Forward Post error'
-    });
-  }
-}
-
 async function postData(token, data, url, correlationID) {
   try {
     const postDataConfig = {
@@ -232,26 +210,6 @@ const SecureExchangeStatuses = Object.freeze({
   INPROG: 'INPROG',
   CLOSED: 'CLOSED'
 });
-
-function generateJWTToken(jwtid, subject, issuer, algorithm, payload) {
-
-  const tokenTTL = config.get('email:tokenTTL'); // this should be in minutes
-  const jwtSecretKey = config.get('email:secretKey');
-  let sign_options_schema = {
-    expiresIn: tokenTTL * 60,
-    algorithm: algorithm,
-    issuer: issuer,
-    jwtid: jwtid,
-    subject: subject
-  };
-
-  return jsonwebtoken.sign(payload, jwtSecretKey, sign_options_schema);
-}
-
-function formatCommentTimestamp(time) {
-  const timestamp = LocalDateTime.parse(time);
-  return timestamp.format(DateTimeFormatter.ofPattern('yyyy-MM-dd h:mma').withLocale(Locale.CANADA));
-}
 
 function errorResponse(res, msg, code) {
   return res.status(code || HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -329,24 +287,6 @@ function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   };
 }
 
-function cacheMiddleware() {
-  return (req, res, next) => {
-    let key = '__express__' + req.originalUrl || req.url;
-    let cacheContent = memCache.get(key);
-    if (cacheContent) {
-      res.send(cacheContent);
-    } else {
-      res.sendResponse = res.send;
-      res.send = (body) => {
-        if (res.statusCode < 300 && res.statusCode >= 200) {
-          memCache.put(key, body);
-        }
-        res.sendResponse(body);
-      };
-      next();
-    }
-  };
-}
 function getBackendToken(req) {
   const thisSession = req.session;
   return thisSession && thisSession['passport'] && thisSession['passport'].user && thisSession['passport'].user.jwt;
@@ -437,6 +377,14 @@ function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
   }
 }
 
+function checkEDXUserCanViewSchoolData(req, instituteIdentifier) {
+  if (req.session.activeInstituteType === 'SCHOOL') {
+    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
+  } else {
+    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
+  }
+}
+
 function checkEDXUserAccessForSchoolEditFunctions(req, instituteIdentifier) {
   checkEDXUserHasPermission(req, 'EDX_SCHOOL_EDIT');
 
@@ -491,23 +439,19 @@ const utils = {
   forwardGetReq,
   getDataWithParams,
   getData,
-  forwardPostReq,
   postData,
   putData,
   SecureExchangeStatuses,
-  generateJWTToken,
-  formatCommentTimestamp,
   errorResponse,
   handleExceptionResponse,
   getCodes,
-  cacheMiddleware,
   getCodeTable,
-  checkEDXUserSchoolAdminPermission,
   checkEDXUserDistrictAdminPermission,
   checkEDXUserAccess,
   checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
   checkEDXUserAccessForSchoolEditFunctions,
+  checkEDXUserCanViewSchoolData,
   checkEDXUserHasPermission,
   verifyQueryParamValueMatchesBodyValue,
   logApiError,
