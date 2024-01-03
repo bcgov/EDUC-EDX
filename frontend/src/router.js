@@ -32,6 +32,7 @@ import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummar
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
 import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
+import ApiService from './common/apiService';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -355,6 +356,16 @@ router.beforeEach((to, _from, next) => {
             }
           }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
+          }else if (to?.params?.districtID && to.params.districtID !== aStore.userInfo.activeInstituteIdentifier) {
+            next('/unauthorized');
+          }else if (to?.params?.schoolID) {
+            ApiService.getSchoolBelongsToDistrict(to.params.schoolID).then((result) => {
+              if(result.data === false && to.params.schoolID !== aStore.userInfo.activeInstituteIdentifier){
+                next('/unauthorized');
+              }else{
+                next();
+              }
+            });
           }else if (to && to.meta) {
             if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
               apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);

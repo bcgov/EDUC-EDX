@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, checkEDXUserAccessForSchoolEditFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, checkEDXUserCanViewSchoolData,checkSchoolBelongsToEDXUserDistrict, checkEDXUserAccess, checkEDXUserAccessForSchoolEditFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
   handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
@@ -15,6 +15,7 @@ async function getSchoolBySchoolID(req, res) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
       return res.status(200).json(allActiveSchools ? allActiveSchools : []);
     }
+    checkEDXUserCanViewSchoolData(req, req.query.schoolID);
     let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
     if (!school) {
       return res.status(200).json();
@@ -199,9 +200,23 @@ async function getAllCachedSchools(_req, res){
   }
 }
 
+function checkSchoolBelongsToDistrict(req, res) {
+  if (!req.params.schoolID) {
+    return res.status(200).json(false);
+  }
+
+  try{
+    checkSchoolBelongsToEDXUserDistrict(req, req.params.schoolID);
+    return res.status(200).json(true);
+  }catch(e){
+    return res.status(200).json(false);
+  }
+}
+
 async function getFullSchoolDetails(req, res){
   const token = getAccessToken(req);
   validateAccessToken(token);
+  checkEDXUserCanViewSchoolData(req, req.params.schoolID);
 
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
@@ -217,6 +232,7 @@ async function getFullSchoolDetails(req, res){
 async function getAllSchoolDetails(req, res){
   const token = getAccessToken(req);
   validateAccessToken(token);
+  checkEDXUserAccess(req, 'DISTRICT', req.query.searchParams.districtID);
 
   return Promise.all([
     getSchoolsPaginated(req, res)
@@ -319,6 +335,7 @@ module.exports = {
   getFullSchoolDetails,
   updateSchool,
   addSchoolContact,
+  checkSchoolBelongsToDistrict,
   updateSchoolContact,
   removeSchoolContact
 };

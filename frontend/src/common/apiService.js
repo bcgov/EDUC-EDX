@@ -61,6 +61,15 @@ export default {
     }
   },
 
+  async getSchoolBelongsToDistrict(schoolID) {
+    try{
+      return await apiAxios.get(ApiRoutes.school.SCHOOL_BELONGS_TO_DISTRICT + '/' + schoolID);
+    } catch(e) {
+      console.log(`Failed to get from Nodejs getSchoolBelongsToDistrict API - ${e}`);
+      throw e;
+    }
+  },
+
   async getDocumentTypeCodes() {
     try{
       return await apiAxios.get(ApiRoutes.edx.DOCUMENT_TYPES_URL);
@@ -107,8 +116,7 @@ export default {
   },
   async getConfig() {
     try {
-      const response = await apiAxiosConfig.get(ApiRoutes.CONFIG);
-      return response;
+      return await apiAxiosConfig.get(ApiRoutes.CONFIG);
     } catch (e) {
       console.log(`Failed to do get from Nodejs getConfig API - ${e}`);
       throw e;
