@@ -347,29 +347,29 @@ router.beforeEach((to, _from, next) => {
       if (!aStore.isAuthenticated) {
         next('/token-expired');
       } else {
-        aStore.getUserInfo().then(() => {
-          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions'))) {
-            if(to.fullPath === '/institute-selection'){
+        aStore.getUserInfo().then(async () => {
+          let schoolBelongsToDistrict = false;
+          if (aStore.userInfo.activeInstituteType === 'DISTRICT' && to?.params?.schoolID) {
+            await ApiService.getSchoolBelongsToDistrict(to.params.schoolID).then((result) => {
+              schoolBelongsToDistrict = result.data;
+            });
+          }
+          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions'))) {
+            if (to.fullPath === '/institute-selection') {
               next();
-            }else{
+            } else {
               next('/institute-selection');
             }
-          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          } else if (to?.meta?.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
-          }else if (to?.params?.districtID && to.params.districtID !== aStore.userInfo.activeInstituteIdentifier) {
+          } else if (to?.params?.districtID && to.params.districtID !== aStore.userInfo.activeInstituteIdentifier) {
             next('/unauthorized');
-          }else if (to?.params?.schoolID) {
-            ApiService.getSchoolBelongsToDistrict(to.params.schoolID).then((result) => {
-              if(result.data === false && to.params.schoolID !== aStore.userInfo.activeInstituteIdentifier){
-                next('/unauthorized');
-              }else{
-                next();
-              }
-            });
-          }else if (to && to.meta) {
-            if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
+          } else if (to?.params?.schoolID && to.params.schoolID !== aStore.userInfo.activeInstituteIdentifier && schoolBelongsToDistrict === false) {
+            next('/unauthorized');
+          } else if (to?.meta) {
+            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
               apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
-            }else{
+            } else {
               apStore.setPageTitle(to.meta.pageTitle);
             }
             next();
@@ -390,7 +390,7 @@ router.beforeEach((to, _from, next) => {
     if (!aStore.userInfo) {
       next();
     }
-    if (to && to.meta) {
+    if (to?.meta) {
       apStore.setPageTitle(to.meta.pageTitle);
     } else {
       apStore.setPageTitle('');
