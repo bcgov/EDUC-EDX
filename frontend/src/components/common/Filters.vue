@@ -159,34 +159,8 @@ export default {
     },
     close() {
       let filters = [];
-      if(this.studentTypeFilter?.value?.length > 0) {
-        filters.push(this.studentTypeFilter);
-      }
-      
-      if(this.fteFilter?.value?.length > 0) {
-        filters.push(this.fteFilter);
-      }
-
-      if(this.warningFilter?.value?.length > 0) {
-        filters.push(this.warningFilter);
-      }
-
-      if(this.fundingFilter?.value?.length > 0) {
-        filters.push(this.fundingFilter);
-      }
-
-      if(this.gradeFilter?.value?.length > 0) {
-        filters.push(this.gradeFilter);
-      }
-
-      if(this.supportBlockFilter?.value?.length > 0) {
-        filters.push(this.supportBlockFilter);
-      }
-
-      if(this.fteZeroFilter?.value?.length > 0) {
-        filters.push(this.fteZeroFilter);
-      }
-
+      const filtersToCheck = [this.studentTypeFilter, this.fteFilter, this.warningFilter, this.fundingFilter, this.gradeFilter, this.supportBlockFilter, this.fteZeroFilter];
+      filters = filtersToCheck.filter(f => f?.value?.length > 0);
       this.$emit('closeFilters', filters);
     },
     isVisible(key, value){
@@ -196,7 +170,6 @@ export default {
         return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
       }
       return true;
-
     }
   }
 };
