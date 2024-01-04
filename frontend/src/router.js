@@ -233,7 +233,8 @@ const router = createRouter({
           component: SchoolListPage,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOLS,
-            requiresAuth: true
+            requiresAuth: true,
+            mustBeDistrict: true
           }
         },
         {
@@ -365,6 +366,8 @@ router.beforeEach((to, _from, next) => {
           } else if (to?.params?.districtID && to.params.districtID !== aStore.userInfo.activeInstituteIdentifier) {
             next('/unauthorized');
           } else if (to?.params?.schoolID && to.params.schoolID !== aStore.userInfo.activeInstituteIdentifier && schoolBelongsToDistrict === false) {
+            next('/unauthorized');
+          } else if (to?.meta?.mustBeDistrict && aStore.userInfo.activeInstituteType !== 'DISTRICT') {
             next('/unauthorized');
           } else if (to?.meta) {
             if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
