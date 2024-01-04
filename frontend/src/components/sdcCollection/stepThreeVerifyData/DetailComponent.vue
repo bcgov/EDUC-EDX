@@ -12,8 +12,8 @@
               cols="4"
             >
               <v-text-field
-                v-model="searchText"
-                label="PEN, Local ID, Name"
+                v-model="penLocalIdNameFilter"
+                label="PEN or Local ID or Name"
                 color="primary"
                 variant="underlined"
               />
@@ -210,7 +210,7 @@ export default {
       studentList: [],
       isLoading: false,
       totalElements: 0,
-      searchText: '',
+      penLocalIdNameFilter: null,
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
@@ -320,10 +320,14 @@ export default {
     },
 
     search() {
+      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
+      this.loadStudents();
     },
 
     clear() {
-      this.searchText = '';
+      this.penLocalIdNameFilter = null;
+      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
+      this.loadStudents();
     }
 
   }

@@ -138,7 +138,16 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         search.push(criteria);
       })
     }
-
+    
+    if(req.query.searchParams['penLocalIdNameFilter']) {
+      let nameCriteria = createMultiFieldNameSearchCriteria(req.query.searchParams['penLocalIdNameFilter']);
+      let penCriteria = createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNameFilter'])
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [...nameCriteria, ...penCriteria]
+      });
+    }
+    
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
