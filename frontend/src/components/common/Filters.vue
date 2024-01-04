@@ -33,14 +33,15 @@
             rounded="0" 
             :multiple="filter?.multiple" 
             class="filter-toggle" 
-            @update:model-value="setFilter(selected[index], filter?.key)"
+            @update:model-value="setFilter(selected[index], filter?.key, index)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
               :key="i"
             >
               <v-btn
-                :value="option.value"
+                v-if="isVisible(filter?.key, option?.value)"
+                :value="option"
                 class="filter-button"
                 rounded="lg"
               >
@@ -67,6 +68,16 @@ export default {
       type: Array,
       required: true,
       default: null
+    },
+    school: {
+      type: Object,
+      required: true,
+      default: null
+    },
+    updatedFilters: {
+      type: Array,
+      required: true,
+      default: null 
     }
   },
   emits: ['closeFilters'],
@@ -77,36 +88,60 @@ export default {
       fundingFilter: null,
       warningFilter: null,
       studentTypeFilter: null,
-      fteFilter: null
-
+      fteFilter: null,
+      supportBlockFilter: null,
+      fteZeroFilter: null
     };
   },
   computed: {
      
   },
   watch: {
-     
+    updatedFilters: {
+      handler(value) {
+        if(value.length > 0) {
+          this.clear();  
+          for(let filter of value) {
+            this.selected[filter.index] = filter.value;
+            if(filter.key === 'support') {
+              this.setFilter(filter.value[0], filter.key, filter.index);
+            } else {
+              this.setFilter(filter.value, filter.key, filter.index);
+            }
+          }
+        } else {
+          this.clear();
+        }
+      },
+      immediate: true
+    }
   },
   created() {
     
   },
   methods: {
-    setFilter(val, key) {
+    setFilter(val, key, index) {
       switch(key) {
       case 'studentType':
-        this.studentTypeFilter = {key: key, value: val};
+        this.studentTypeFilter = {key: key, value: val, index: index};
         break;
       case 'fte':
-        this.fteFilter = {key: key, value: val};
+        this.fteFilter = {key: key, value: val, index: index};
         break;
       case 'grade':
-        this.gradeFilter = {key: key, value: val};
+        this.gradeFilter = {key: key, value: val, index: index};
         break;
       case 'fundingType':
-        this.fundingFilter = {key: key, value: val};
+        this.fundingFilter = {key: key, value: val, index: index};
         break;
       case 'warnings':
-        this.warningFilter = {key: key, value: val};
+        this.warningFilter = {key: key, value: val, index: index};
+        break;
+      case 'support':
+        this.supportBlockFilter = {key: key, value: [val], index: index};
+        break;
+      case 'fteZero':
+        this.fteZeroFilter = {key: key, value: val, index: index};
         break;
       default:
         break;
@@ -117,19 +152,25 @@ export default {
       this.gradeFilter=null;
       this.fundingFilter=null;
       this.warningFilter=null;
-      this.studentTypeFilter= null;
-      this.fteFilter= null;
+      this.studentTypeFilter=null;
+      this.fteFilter=null;
+      this.supportBlockFilter=null;
+      this.fteZeroFilter=null;
     },
     close() {
       let filters = [];
-      filters.push(this.studentTypeFilter);
-      filters.push(this.fteFilter);
-      filters.push(this.warningFilter);
-      filters.push(this.fundingFilter);
-      filters.push(this.gradeFilter);
-
+      const filtersToCheck = [this.studentTypeFilter, this.fteFilter, this.warningFilter, this.fundingFilter, this.gradeFilter, this.supportBlockFilter, this.fteZeroFilter];
+      filters = filtersToCheck.filter(f => f?.value?.length > 0);
       this.$emit('closeFilters', filters);
     },
+    isVisible(key, value){
+      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
+        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
+      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
+        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
+      }
+      return true;
+    }
   }
 };
 </script>
@@ -149,6 +190,7 @@ export default {
   .filter-heading {
     font-weight: bold;
     color: #003366;
+    margin-top: 1em;
   }
 
   .filter-button {
