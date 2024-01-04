@@ -26,7 +26,7 @@ import DistrictDetails from './components/district/DistrictDetails.vue';
 import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
 import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
-import StepOneUploadData from './components/sdcCollection/StepOneUploadData.vue';
+import StepOneUploadData from './components/sdcCollection/stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './components/sdcCollection/stepTwoValidateData/StepTwoViewDataIssues.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
 import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
