@@ -13,7 +13,7 @@
           cols="4"
           style="text-align: end;"
         >
-          <a @click="close()">Close</a>
+          <a @click="apply()">Apply Filters</a>
         </v-col>
       </v-row>
             
@@ -157,7 +157,7 @@ export default {
       this.supportBlockFilter=null;
       this.fteZeroFilter=null;
     },
-    close() {
+    apply() {
       let filters = [];
       const filtersToCheck = [this.studentTypeFilter, this.fteFilter, this.warningFilter, this.fundingFilter, this.gradeFilter, this.supportBlockFilter, this.fteZeroFilter];
       filters = filtersToCheck.filter(f => f?.value?.length > 0);
