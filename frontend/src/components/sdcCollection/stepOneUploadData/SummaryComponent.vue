@@ -19,7 +19,7 @@
         type="info"
         variant="tonal"
       >
-        Eligible FTE counts are available in Step 5.
+        Eligible FTE counts are available in Step 3.
       </v-alert>
     </v-col>
   </v-row>
