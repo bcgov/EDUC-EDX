@@ -311,6 +311,7 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: {title: 'Band Code', key: 'mappedBandCode'}},
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram'},
     ],
+    headcountEndpoint: 'indigenous',
     allowedFilters: [
       STUDENT_TYPE_FILTER,
       FTE_FILTER,

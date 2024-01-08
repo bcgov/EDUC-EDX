@@ -29,18 +29,25 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent :config="config" />
     </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.headcountEndpoint"
+      />
+    </div>
   </v-container>
 </template>
     
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
+import SummaryComponent from './SummaryComponent.vue';
 import { INDSUPPORT_PR } from '../../../utils/sdc/TableConfiguration';
   
 export default {
   name: 'IndSupportProgramsComponent',
   components: {
-    DetailComponent
+    DetailComponent,
+    SummaryComponent
   },
   mixins: [alertMixin],
   props: {

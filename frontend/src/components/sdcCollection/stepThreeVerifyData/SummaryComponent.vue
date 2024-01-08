@@ -48,6 +48,7 @@
             </v-row>
 
             <v-row
+              v-if="header.orderedColumnTitles"
               align="center"
               justify="space-around"
               no-gutters
@@ -79,6 +80,20 @@
                   </span>
                 </v-col>
               </div>
+            </v-row>
+            <v-row class="justify-center" v-else>
+              <span v-if="header?.headCountValue?.comparisonValue" class="compare-text">{{ header?.headCountValue?.comparisonValue }}</span>
+              <span v-if="header?.headCountValue?.comparisonValue">
+                <v-icon
+                  size="x-small"
+                  :color="getStatusColor(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue)"
+                >
+                  {{ getComparisonIcon(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue) }}
+                </v-icon>
+              </span>
+              <span>
+                {{ header?.headCountValue?.currentValue }}
+              </span>
             </v-row>
           </div>
         </v-slide-group-item>
