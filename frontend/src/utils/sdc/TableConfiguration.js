@@ -165,7 +165,7 @@ export const GRADE_FILTER = Object.freeze(
 );
 
 export const SUPPORT_BLOCKS_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Support Blocks',
     multiple: false,
     key: 'support',
@@ -183,7 +183,7 @@ export const SUPPORT_BLOCKS_FILTER = Object.freeze(
 );
 
 export const FTE_ZERO_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Reasons for FTE = 0 ',
     multiple: true,
     key: 'fteZero',
