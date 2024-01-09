@@ -81,11 +81,10 @@ describe('SDC School Collection View', () => {
 
             //check summary headcounts
             cy.get(selectors.frenchComponent.summaryButton).click();
-            cy.get(selectors.frenchComponent.headcountHeaderList).should('have.length', 4);
+            cy.get(selectors.frenchComponent.headcountHeaderList).should('have.length', 3);
             checkFrenchHeader(0, 'Core French', 3, '1', '1', '2');
             checkFrenchHeader(1, 'Early French Immersion', 3, '1', '1', '2');
             checkFrenchHeader(2, 'Late French Immersion', 3, '0', '0', '3');
-            checkFrenchHeader(3, 'Programme Francophone', 3, '0', '0', '3');
         });
 
         it('verifies career programs for reported students', () => {

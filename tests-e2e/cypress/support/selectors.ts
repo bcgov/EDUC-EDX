@@ -3,7 +3,8 @@ export default {
     manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
     selectSchoolDropdown: '#selectInstituteName',
-    accessUserFeedback: '.accessUserFeedback'
+    accessUserFeedback: '.v-alert__content',
+    confirmationDialog: '.v-overlay__content'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
@@ -14,7 +15,7 @@ export default {
     schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
     secureMessageTile: '#secureMessageInboxCard',
-    title: '#navTitle > div'
+    title: '#navTitle'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
@@ -50,14 +51,14 @@ export default {
 
   },
   districtDetails: {
-    addWebsiteLink: '#addWebsiteLink',
+    addWebsiteLink: 'a.editField',
     districtDetailsWebsite: '#districtDetailsWebsite',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
-    editDistrictDetailsButton: '#editButton',
-    editDistrictEmail: '#districtEmail',
-    editDistrictPhone: '#districtPhone',
-    editDistrictFax: '#districtFax',
+    editDistrictDetailsButton: '#districtDetailsEditButton',
+    editDistrictEmail: '#districtDetailsEmail',
+    editDistrictPhone: '#districtDetailsPhoneNumber',
+    editDistrictFax: '#districtDetailsFaxNumber',
     editMailingAddressCountry: '#mailAddressCountry',
     editMailingAddressLine1: '#mailAddressLine1',
     editMailingAddressProvince: '#mailAddressProvince',
@@ -146,11 +147,12 @@ export default {
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
     subjectHeading: 'h2.subjectHeading',
-    resolveButton:'#resolveBtn'
+    resolveButton:'#resolveBtn',
+    activeTab: 'button.v-slide-group-item--active',
   },
   schoolDetails: {
     addAddressButton: '#addAddressButton',
-    addWebsiteLink: '#addWebsiteLink',
+    addWebsiteLink: 'a.editField',
     editableFieldAlert: '.v-alert__content',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
@@ -167,17 +169,15 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
-    schoolDetailsWebsite: '#schoolDetailsWebsite',
-    schoolDisplayNameTitle: "#schoolDisplayNameTitle",
+    schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
+    schoolDisplayNameTitle: "#displayName",
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',
     schoolMincodeTitle: "#schoolMincodeTitle",
-    schoolNameNoSpecialChars: '#schoolNameNoSpecialChars',
-    subjectHeading: 'h2.subjectHeading',
-    viewContactsButton: '#viewContactsButton',
+    schoolNameNoSpecialChars: 'div.safe-name',
+    subjectHeading: 'h2.subjectHeading'
   },
   schoolList: {
-    viewFirstSchoolContactsButton: '#viewContactsButton0',
     schoolRow: '.hoverTable'
   },
   sdcSchoolStudentCollection: {
@@ -264,7 +264,7 @@ export default {
     personalActivationCodeInput: '#personalActivationCodeTextField',
     userActivationSubmitButton: '#edxUserActivationSubmitBtn',
     userActivationSnackBar: '.v-snackbar__content',
-    userActivationErrorMessaageSnackBar: '#user_activation_error_message',
+    userActivationErrorMessageSnackBar: '#user_activation_error_message',
     acceptTermsCheckbox: '#acceptTOU'
   }
 }

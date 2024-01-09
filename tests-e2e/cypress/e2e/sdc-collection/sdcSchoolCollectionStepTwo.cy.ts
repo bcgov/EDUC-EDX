@@ -72,9 +72,14 @@ describe('SDC School Collection View', () => {
           cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('not.exist');
         });
 
-        cy.get(selectors.studentLevelData.backToDataIssues).click();
-        cy.get(selectors.studentLevelData.nextButton).should('be.enabled');
-        
+        cy.intercept(Cypress.env('interceptors').collection_student).as('studentUpdate');
+        cy.wait('@studentUpdate').then(()=>{
+            cy.get(selectors.studentLevelData.backToDataIssues).click();
+        })
+
+        cy.wait('@pagination').then(()=> {
+            cy.get(selectors.studentLevelData.nextButton).should('be.enabled');
+        })
     });
 
     it('can remove record containing validation errors', () => {

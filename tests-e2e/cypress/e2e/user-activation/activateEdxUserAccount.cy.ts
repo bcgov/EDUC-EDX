@@ -2,14 +2,15 @@ import selectors from '../../support/selectors';
 
 function clickingActivationLinkMoreThan2Times() {
     cy.get<string>('@activationUrl').then(url => {
-      cy.visit(url).visit(url).visit(url);
-      cy.get(selectors.userActivationPage.userActivationErrorMessaageSnackBar)
-          .should('be.visible')
-          .should(
-              'include.text',
-              'Your activation link has expired. Please contact your administrator for a new activation code.');
+      cy.visit(url).visit(url).visit(url).visit(url).visit(url).visit(url);
+
+        cy.get(selectors.userActivationPage.userActivationErrorMessageSnackBar)
+            .should('be.visible')
+            .should(
+                'include.text',
+                'Your activation link has expired. Please contact your administrator for a new activation code.');
     });
-};
+}
 
 function clickingSubmitButtonTooManyTimes() {
   cy.get<string>('@activationUrl').then(url => {

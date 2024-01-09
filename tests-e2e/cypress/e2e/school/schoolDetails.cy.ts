@@ -16,10 +16,8 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-      cy.intercept(Cypress.env('interceptors').district_details_by_id).as('districtDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.wait('@districtDetails');
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.addWebsiteLink).click();
@@ -49,10 +47,8 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-      cy.intercept(Cypress.env('interceptors').district_details_by_id).as('districtDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.wait('@districtDetails');
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
@@ -64,10 +60,8 @@ describe('School Details Interface Test', () => {
       cy.visit('/')
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-      cy.intercept(Cypress.env('interceptors').district_details_by_id).as('districtDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.wait('@districtDetails');
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.editButton).click();
@@ -90,10 +84,8 @@ describe('School Details Interface Test', () => {
         cy.visit('/')
         cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
         cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-        cy.intercept(Cypress.env('interceptors').district_details_by_id).as('districtDetails');
         cy.get(selectors.dashboard.schoolDetailsCard).click();
         cy.wait('@schoolDetails');
-        cy.wait('@districtDetails');
         cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
         cy.get("@schoolName").then(() => {
           cy.get(selectors.schoolDetails.editButton).click();
@@ -120,34 +112,14 @@ describe('School Details Interface Test', () => {
         cy.get(selectors.snackbar.mainSnackBar).should('contain.text', 'Success! The school details have been updated. Close');
       });
     });
-
-    context('logging in as secure-exchange-school user', () => {
-      before(() => {
-        cy.task<AppSetupData>('dataLoad').then(() => {
-          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
-            schoolRoles: ['SECURE_EXCHANGE_SCHOOL'],
-            schoolCodes: ['99998'] });
-        });
-      });
-
-      it('checks if no edit and add button show up', () => {
-        cy.visit('/')
-        cy.get(selectors.dashboard.schoolDetailsCard).click();
-        cy.get(selectors.schoolDetails.viewContactsButton).should('exist');
-        cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
-        cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
-        cy.get(selectors.schoolDetails.editButton).should('not.exist');
-
-      });
-
-    });
-
   });
 
   context('As an EDX district admin', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(() => {
-        cy.task('setup-districtUser', { districtRoles: ['EDX_DISTRICT_ADMIN'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', {
+          districtRoles: ['EDX_DISTRICT_ADMIN'],
+          districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
@@ -155,17 +127,38 @@ describe('School Details Interface Test', () => {
 
     it('can view legacy safe name', () => {
       cy.visit('/');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).should("be.visible").contains('Schools | EDX Automation Testing');
       cy.get(selectors.schoolList.schoolRow).should("be.visible").click();
 
+      cy.wait('@schoolDetails');
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
       cy.get("@schoolName").then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
       });
+      cy.wait('@schoolDetails');
     });
+  });
 
+  context('As a secure-exchange-school user', () => {
+    before(() => {
+      cy.task<AppSetupData>('dataLoad').then(() => {
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {
+          schoolRoles: ['SECURE_EXCHANGE_SCHOOL'],
+          schoolCodes: ['99998'] });
+      });
+    });
+    beforeEach(() => cy.login())
+
+    it('checks if no edit and add button show up', () => {
+      cy.visit('/')
+      cy.get(selectors.dashboard.schoolDetailsCard).click();
+      cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
+      cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
+      cy.get(selectors.schoolDetails.editButton).should('not.exist');
+    });
   });
 });
