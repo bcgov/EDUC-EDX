@@ -19,25 +19,25 @@
       </v-tabs>
 
       <v-window v-model="tab">
-        <v-window-item value="FTE">
+        <v-window-item value="FTE" transition="false" reverse-transition="false">
           <FTEComponent :school="school" />
         </v-window-item>
-        <v-window-item value="French Programs">
+        <v-window-item value="French Programs" transition="false" reverse-transition="false">
           <FrenchProgramsComponent />
         </v-window-item>
-        <v-window-item value="Career Programs">
+        <v-window-item value="Career Programs" transition="false" reverse-transition="false">
           <CareerProgramsComponent />
         </v-window-item>
-        <v-window-item value="Indigenous Students & Support Programs">
+        <v-window-item value="Indigenous Students & Support Programs" transition="false" reverse-transition="false">
           <IndSupportProgramsComponent />
         </v-window-item>
-        <v-window-item value="Special Education">
+        <v-window-item value="Special Education" transition="false" reverse-transition="false">
           <SpecialEduComponent />
         </v-window-item>
-        <v-window-item value="English Language Learning">
+        <v-window-item value="English Language Learning" transition="false" reverse-transition="false">
           <EnglishLangComponent />
         </v-window-item>
-        <v-window-item value="Refugee">
+        <v-window-item value="Refugee" transition="false" reverse-transition="false">
           <RefugeeComponent />
         </v-window-item>
       </v-window>
