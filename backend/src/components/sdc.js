@@ -346,7 +346,7 @@ function createSearchCriteria(searchParams = []) {
     if (key === 'tabFilter') {
       let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
-      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR'].includes(searchParams[key].label)) {
+      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR', 'ELL_PR'].includes(searchParams[key].label)) {
         searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if (searchParams[key].label === 'SPECIALED_PR') {

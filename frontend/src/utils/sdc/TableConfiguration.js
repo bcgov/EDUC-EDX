@@ -346,7 +346,7 @@ export const SPECIALED_PR = Object.freeze(
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: { label: 'ELL', description: 'English Language Learner' },
+    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner', enrolledProgramCodeValues: '17' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
