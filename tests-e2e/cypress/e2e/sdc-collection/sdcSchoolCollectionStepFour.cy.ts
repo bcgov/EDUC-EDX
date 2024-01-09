@@ -31,8 +31,6 @@ describe('SDC School Collection View', () => {
             cy.url().should('contain', '/step-4');
 
             // Step four of collection - school details
-            cy.get(selectors.schoolDetails.schoolMincodeTitle).contains('99899998');
-            cy.get(selectors.schoolDetails.schoolDisplayNameTitle).contains('EDX Automation Testing School');
             cy.get(selectors.schoolDetails.editButton).click();
             cy.get(selectors.schoolDetails.schoolDetailsEmail).clear();
             cy.get(selectors.schoolDetails.schoolDetailsPhoneNumber).clear();

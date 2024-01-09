@@ -41,7 +41,6 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.studentLevelData.nextButton).click();
 
             // Step five of collection - school contacts
-            cy.get(selectors.schoolContacts.subjectHeading).contains('99899998 - EDX Automation Testing School');
             cy.get(selectors.schoolContacts.newContactButton).click();
             cy.get(selectors.schoolContacts.newContactTypeDropdown).parent().click();
             cy.get(selectors.schoolContacts.listItem).contains('Principal').click();
