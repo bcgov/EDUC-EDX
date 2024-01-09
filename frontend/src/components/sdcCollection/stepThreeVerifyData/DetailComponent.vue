@@ -18,7 +18,7 @@
                 variant="underlined"
               />
             </v-col>
-            
+
             <v-col
               class="d-flex justify-start filter-col"
               cols="6"
@@ -147,14 +147,14 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-navigation-drawer 
-      v-model="showFilters" 
-      location="right" 
+    <v-navigation-drawer
+      v-model="showFilters"
+      location="right"
       temporary
-      width="700" 
+      width="700"
       :persistent="true"
       scrim="transparent"
-      :border="true" 
+      :border="true"
       style="top:0; height: 100%;"
       rounded="true"
     >

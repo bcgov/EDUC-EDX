@@ -165,7 +165,7 @@ export const GRADE_FILTER = Object.freeze(
 );
 
 export const SUPPORT_BLOCKS_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Support Blocks',
     multiple: false,
     key: 'support',
@@ -183,7 +183,7 @@ export const SUPPORT_BLOCKS_FILTER = Object.freeze(
 );
 
 export const FTE_ZERO_FILTER = Object.freeze(
-  { 
+  {
     heading: 'Reasons for FTE = 0 ',
     multiple: true,
     key: 'fteZero',
@@ -347,11 +347,11 @@ export const SPECIALED_PR = Object.freeze(
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: { label: 'ELL', description: 'English Language Learner' },
+    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner', enrolledProgramCodeValues: '17' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
-      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'programEligible'} },
+      { title: 'FTE', key: 'fte', align:'start', subHeader: {title: 'Program Eligible', key: 'ellProgramEligible'} },
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
