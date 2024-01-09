@@ -434,7 +434,8 @@
                       variant="underlined"
                       required
                       :maxlength="10"
-                      :rules="[rules.phoneNumber(), rules.required()]"
+                      :rules="[rules.phoneNumber()]"
+                      @keypress="isNumber($event)"
                   />
                 </v-col>
               </v-row>
@@ -536,7 +537,7 @@
                       class="ministryLine"
                       variant="underlined"
                       required
-                      :rules="[rules.email(), rules.required()]"
+                      :rules="[rules.email()]"
                       :maxlength="255"
                   />
                 </v-col>
