@@ -98,6 +98,7 @@ import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
+import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
 
 export default {
   name: 'SdcCollectionSummary',
@@ -118,6 +119,7 @@ export default {
       incomingChartData: null,
       schoolCollectionID: null,
       isLoading: false,
+      currentStepIndex: 0
     };
   },
   computed: {
@@ -137,9 +139,9 @@ export default {
     isCollectionOpen() {
       return this.schoolCollectionID !== null;
     },
-    calcuateStep() {
-      if(this.currentStepInCollectionProcess?.index <= 5) {
-        this.noOfStepsCompleted = this.currentStepInCollectionProcess?.index;
+    calculateStep() {
+      if(this.currentStepIndex <= 5) {
+        this.noOfStepsCompleted = this.currentStepIndex;
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
     },
@@ -148,9 +150,10 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-          this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
           this.schoolCollectionID = response.data.sdcSchoolCollectionID;
-          this.calcuateStep();
+          this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(response.data.sdcSchoolCollectionStatusCode);
+
+          this.calculateStep();
         }
       }).catch(error => {
         console.error(error);
@@ -159,7 +162,9 @@ export default {
         this.isLoading = false;
       });
     },
-
+    getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.index;
+    }
   }
 };
 </script>

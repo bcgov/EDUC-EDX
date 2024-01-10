@@ -23,13 +23,8 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
-import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
-import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
-import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
-import StepOneUploadData from './components/sdcCollection/stepOneUploadData/StepOneUploadData.vue';
-import StepTwoViewDataIssues from './components/sdcCollection/stepTwoValidateData/StepTwoViewDataIssues.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
-import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
+import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
 import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
 import ApiService from './common/apiService';
@@ -278,60 +273,6 @@ const router = createRouter({
             requiresAuth: true,
             permission: 'STUDENT_DATA_COLLECTION'
           },
-          children: [
-            {
-              path: 'step-1',
-              name: 'step-1',
-              component: StepOneUploadData,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              },
-              props: true
-            },
-            {
-              path: 'step-2',
-              name: 'step-2',
-              component: StepTwoViewDataIssues,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              },
-              props: true,
-            },
-            {
-              path: 'step-3',
-              name: 'step-3',
-              component: StepThreeVerifyData,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            },
-            {
-              path: 'step-4',
-              name: 'step-4',
-              component: StepFourSchoolDetails,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            },
-            {
-              path: 'step-5',
-              name: 'step-5',
-              component: StepFiveSchoolContacts,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            }
-          ]
         }
       ]
     },

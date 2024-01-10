@@ -27,7 +27,10 @@
     </v-row>
   
     <div v-if="reportView === 'detail'">
-      <DetailComponent :config="config" />
+      <DetailComponent
+        :config="config"
+        :school="school"
+      />
     </div>
   </v-container>
 </template>
@@ -44,6 +47,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    school: {
+      type: Object,
+      required: true,
+      default: null
+    }
   },
   emits: [],
   data() {
