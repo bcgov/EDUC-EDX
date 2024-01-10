@@ -26,7 +26,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
   });
 
-    it('verify errors and warnings on step-2 od sdc process', () => {
+    it('verify errors and warnings on step-2 of sdc process', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
@@ -35,22 +35,62 @@ describe('SDC School Collection View', () => {
       cy.wait('@pagination').then(({response}) => {
         cy.get(selectors.studentLevelData.nextButton).should('be.disabled');
         cy.get(selectors.studentLevelData.warningAndErrorSummary).should('exist');
-        cy.get(selectors.studentLevelData.infoWarningCount).contains('1');
-        cy.get(selectors.studentLevelData.errorCount).contains('1');
+        cy.get(selectors.studentLevelData.infoWarningCount).contains('2');
+        cy.get(selectors.studentLevelData.errorCount).contains('2');
         cy.get(selectors.studentLevelData.fundingWarningCount).contains('0');
 
         cy.get(selectors.studentLevelData.totalStudentsWithIssues).should('exist');
         cy.get(selectors.studentLevelData.totalStudentsWithIssuesCount).should('exist');
-        cy.get(selectors.studentLevelData.totalStudentsWithIssuesCount).contains('1');
+        cy.get(selectors.studentLevelData.totalStudentsWithIssuesCount).contains('2');
         
         cy.get(selectors.studentLevelData.fixSelected).should('be.disabled');
         cy.get(selectors.studentLevelData.fixAll).should('not.be.disabled');
 
-        cy.get(selectors.studentLevelData.selectStudentCheckbox).click().then((event) => {
+        cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
           cy.get(selectors.studentLevelData.fixSelected).should('not.be.disabled');
           cy.get(selectors.studentLevelData.fixAll).should('be.disabled');
         });
       })
+    });
+
+    it('search the list of students with errors and warnings on step-2 of sdc process using NAME filter', () => {
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+      cy.wait('@pagination').then(({response}) => {
+        cy.get(selectors.studentLevelData.stepTwoNameFilter).should('exist');
+        expect(response?.body?.totalElements).eq(2);
+
+        cy.get(selectors.studentLevelData.stepTwoNameFilter).type('TEST');
+        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
+
+        cy.get(selectors.studentLevelData.stepTwoClearSearchFilter).click();
+        });
+    });
+
+    it('search the list of students with errors and warnings on step-2 of sdc process using PEN filter', () => {
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+      cy.wait('@pagination').then(({response}) => {
+        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).should('exist');
+        expect(response?.body?.totalElements).eq(2);
+
+        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).type('101930550');
+        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
+
+        cy.get(selectors.studentLevelData.stepTwoClearSearchFilter).click();
+
+        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).type('10000');
+        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
+        });
     });
 
     it('can fix errors and warnings on the student record', () => {
@@ -60,10 +100,13 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
         cy.wait('@pagination').then(({response}) => {
-          cy.get(selectors.studentLevelData.fixAll).click();
+          cy.get(selectors.studentLevelData.errorCount).contains('2');
+          cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
+            cy.get(selectors.studentLevelData.fixSelected).click();         
+          });
         })
 
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 2 Records');
         cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('exist');
         cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).type('SMITH');    
         cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
@@ -78,7 +121,7 @@ describe('SDC School Collection View', () => {
         })
 
         cy.wait('@pagination').then(()=> {
-            cy.get(selectors.studentLevelData.nextButton).should('be.enabled');
+          cy.get(selectors.studentLevelData.errorCount).contains('1');
         })
     });
 
@@ -90,7 +133,9 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
         cy.wait('@pagination').then(({response}) => {
-          cy.get(selectors.studentLevelData.fixAll).click();
+          cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
+            cy.get(selectors.studentLevelData.fixSelected).click();         
+          });
         })
 
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).should('exist');
