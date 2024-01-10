@@ -335,6 +335,7 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Special Education Category', key: 'mappedSpedCode'},
     ],
+    headcountEndpoint: 'special-ed',
     allowedFilters: [
       STUDENT_TYPE_FILTER,
       FTE_FILTER,

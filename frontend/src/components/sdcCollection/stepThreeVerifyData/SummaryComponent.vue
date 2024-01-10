@@ -40,62 +40,71 @@
           v-for="(header, index) in headcountHeaders"
           :key="index"
         >
-          <div :class="headcountType + '-headcount-header border ma-1'">
-            <v-row>
-              <v-col class="column-header">
-                {{ header.title }}
-              </v-col>
-            </v-row>
-
-            <v-row
-              v-if="header.orderedColumnTitles"
-              align="center"
-              justify="space-around"
-              no-gutters
-            >
-              <div
-                v-for="key in header.orderedColumnTitles"
-                :key="key"
-                class="divider"
-              >
-                <v-col :class="headcountType + '-headcount-header-column column-data'">
-                  <div>{{ key }} </div>
-                  <span
-                    v-if="header.columns[key].comparisonValue !== null"
-                    class="compare-text"
+          <v-col>
+            <v-card height="100%">
+              <v-card-item class="pb-0">
+                <v-card-title class="column-header">
+                  {{ header.title }}
+                </v-card-title>
+              </v-card-item>
+              <v-card-text>
+                <v-row v-if="header.orderedColumnTitles">
+                  <template
+                    v-for="(key, index) in header.orderedColumnTitles"
+                    :key="index"
                   >
-                    {{ header.columns[key].comparisonValue }}
-                  </span>
-                  <span v-if="header.columns[key].comparisonValue !== null">
-                    <v-icon
-                      size="x-small"
-                      :color="getStatusColor(header.columns[key].comparisonValue, header.columns[key].currentValue)"
-                    >
-                      {{ getComparisonIcon(header.columns[key].comparisonValue, header.columns[key].currentValue) }}
-                    </v-icon>
+                    <v-col class="column-data">
+                      <div>{{ key }}</div>
+                      <span
+                        v-if="header.columns[key].comparisonValue !== null"
+                        class="compare-text"
+                      >
+                        {{ header.columns[key].comparisonValue }}
+                      </span>
+                      <span v-if="header.columns[key].comparisonValue !== null">
+                        <v-icon
+                          size="x-small"
+                          :color="getStatusColor(header.columns[key].comparisonValue, header.columns[key].currentValue)"
+                        >
+                          {{ getComparisonIcon(header.columns[key].comparisonValue, header.columns[key].currentValue) }}
+                        </v-icon>
 
-                  </span>
-                  <span>
-                    {{ header.columns[key].currentValue }}
-                  </span>
-                </v-col>
-              </div>
-            </v-row>
-            <v-row class="justify-center" v-else>
-              <span v-if="header?.headCountValue?.comparisonValue" class="compare-text">{{ header?.headCountValue?.comparisonValue }}</span>
-              <span v-if="header?.headCountValue?.comparisonValue">
-                <v-icon
-                  size="x-small"
-                  :color="getStatusColor(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue)"
+                      </span>
+                      <span>
+                        {{ header.columns[key].currentValue }}
+                      </span>
+                    </v-col>
+                    <v-divider
+                      v-if="index !== header.orderedColumnTitles.length - 1"
+                      class="my-4"
+                      :vertical="true"
+                    />
+                  </template>
+                </v-row>
+                <v-row
+                  v-else
                 >
-                  {{ getComparisonIcon(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue) }}
-                </v-icon>
-              </span>
-              <span>
-                {{ header?.headCountValue?.currentValue }}
-              </span>
-            </v-row>
-          </div>
+                  <v-col class="column-data">
+                    <span
+                      v-if="header?.headCountValue?.comparisonValue"
+                      class="compare-text"
+                    >{{ header?.headCountValue?.comparisonValue }}</span>
+                    <span v-if="header?.headCountValue?.comparisonValue">
+                      <v-icon
+                        size="x-small"
+                        :color="getStatusColor(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue)"
+                      >
+                        {{ getComparisonIcon(header?.headCountValue?.comparisonValue, header?.headCountValue?.currentValue) }}
+                      </v-icon>
+                    </span>
+                    <span>
+                      {{ header?.headCountValue?.currentValue }}
+                    </span>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
         </v-slide-group-item>
       </v-slide-group>
     </v-row>
@@ -204,31 +213,17 @@ export default {
        
 <style scoped>
 
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 10px;
-}
-.border-right {
-  border-right: thin solid grey;
-}
-
 .column-header {
   font-weight: bold;
   text-align: center;
+  line-height: 1.5;
+  font-size: 1rem;
 }
 
 .column-data {
   text-align: center;
-}
-
-.divider { 
-   border-right: 1px solid lightgray;
-   border-radius: 0px;
-} 
-   
-.divider:last-child  { 
-   border-right: 0
+  line-height: 1.5;
+  font-size: 1rem;
 }
 
 .compare-text {
