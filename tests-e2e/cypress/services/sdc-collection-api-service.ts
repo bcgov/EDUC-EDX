@@ -102,6 +102,48 @@ export class SdcCollectionApiService {
                                     "validationIssueFieldCode": "POSTAL_CODE"
                                 }
                             ]
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "sdcSchoolCollectionStudentEnrolledPrograms": null,
+                            "localID": "10000",
+                            "studentPen": "101930550",
+                            "legalFirstName": "TESTFIRST",
+                            "legalMiddleNames": "TESTMIDDLE",
+                            "legalLastName": null,
+                            "usualFirstName": "TESTUSUALFIRST",
+                            "usualMiddleNames": "TESTUSUALMIDDLE",
+                            "usualLastName": "TESTUSUALLAST",
+                            "dob": "20100630",
+                            "gender": "M",
+                            "specialEducationCategoryCode": null,
+                            "schoolFundingCode": "20",
+                            "nativeAncestryInd": "N",
+                            "homeLanguageSpokenCode": "943",
+                            "otherCourses": "0",
+                            "supportBlocks": null,
+                            "enrolledGradeCode": "11",
+                            "careerProgramCode": "XH",
+                            "numberOfCourses": "0700",
+                            "bandCode": "0684",
+                            "enrolledProgramCodes": "40",
+                            "isAdult": "false",
+                            "isSchoolAged": "true",
+                            "sdcSchoolCollectionStudentStatusCode": "ERROR",
+                            "sdcSchoolCollectionStudentValidationIssues": [
+                                {
+                                    "createUser": "EDXAT",
+                                    "validationIssueSeverityCode": "ERROR",
+                                    "validationIssueCode": "LEGALLASTNAMEBLANK",
+                                    "validationIssueFieldCode": "LEGAL_LAST_NAME"
+                                },
+                                {
+                                    "createUser": "EDXAT",
+                                    "validationIssueSeverityCode": "INFO_WARNING",
+                                    "validationIssueCode": "MISSINGPOSTALCODE",
+                                    "validationIssueFieldCode": "POSTAL_CODE"
+                                }
+                            ]
                         }
 
 

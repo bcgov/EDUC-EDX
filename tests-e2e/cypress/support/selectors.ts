@@ -256,7 +256,12 @@ export default {
     fixAll: '#fixAll',
     selectStudentCheckbox: 'td.v-data-table__td.v-data-table-column--no-padding.v-data-table-column--align-start > div',
     selectedStudentsPaginator: '.footer-text',
-    backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a'
+    backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a',
+    stepTwoNameFilter: '#legalUsualNameSearch',
+    stepTwoPenLocalIdFilter: '#penSearch',
+    stepTwoSearchButton: '#searchButton',
+    stepTwoTableFirstRow: 'div > div.v-table__wrapper > table > tbody > tr > td:nth-child(4)',
+    stepTwoClearSearchFilter: '#clearSearch'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
