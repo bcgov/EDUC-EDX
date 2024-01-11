@@ -251,7 +251,7 @@ export default {
       required: true
     }
   },
-  emits: ['next', 'refreshStore'],
+  emits: ['next', 'refresh-store'],
   data() {
     return {
       acceptableFileExtensions: ['.std', '.ver'],
@@ -451,12 +451,12 @@ export default {
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);
         this.setSuccessAlert('Your document was uploaded successfully.');
         await this.fireFileProgress();
+        this.$emit('refresh-store');
       } catch (e) {
         console.error(e);
         this.fileUploadErrorMessage = 'The file could not be processed due to the following issue: ' + e.response.data;
       } finally {
         this.isReadingFile = false;
-        this.$emit('refreshStore');
       }
     },
     async getFileProgress() {
