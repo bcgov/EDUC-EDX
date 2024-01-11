@@ -61,26 +61,26 @@
             <v-stepper-header>
               <template
                 v-for="step in SDC_STEPS_SCHOOL()"
-                :key="step.index"
+                :key="step.step"
               >
                 <v-stepper-item
-                  :value="step.index"
+                  :value="step.step"
                   :title="step.title"
-                  :editable="step.index < currentStep"
-                  :complete="step.index < stepInCollection"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
                 <v-divider
-                  v-if="step.index < SDC_STEPS_SCHOOL().length - 1"
-                  :class="{'step-previous-divider': step.index < currentStep}"
-                  :thickness="step.index < currentStep ? 5 : 0"
+                  v-if="step.step < SDC_STEPS_SCHOOL().length"
+                  :class="{'step-previous-divider': step.step < currentStep}"
+                  :thickness="step.step < currentStep ? 5 : 0"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
               </template>
             </v-stepper-header>
             <v-stepper-window>
               <v-stepper-window-item
-                :value="0"
+                :value="1"
                 transition="false"
                 reverse-transition="false"
               >
@@ -88,11 +88,11 @@
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
                   @next="next"
-                  @refreshStore="refreshStore"
+                  @refresh-store="refreshStore"
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
-                :value="1"
+                :value="2"
                 transition="false"
                 reverse-transition="false"
               >
@@ -103,7 +103,7 @@
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
-                :value="2"
+                :value="3"
                 transition="false"
                 reverse-transition="false"
               >
@@ -114,7 +114,7 @@
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
-                :value="3"
+                :value="4"
                 transition="false"
                 reverse-transition="false"
               >
@@ -125,7 +125,7 @@
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
-                :value="4"
+                :value="5"
                 transition="false"
                 reverse-transition="false"
               >
@@ -136,7 +136,7 @@
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
-                :value="5"
+                :value="6"
                 transition="false"
                 reverse-transition="false"
               >
@@ -238,7 +238,7 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.index;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
     }
   }
 };
