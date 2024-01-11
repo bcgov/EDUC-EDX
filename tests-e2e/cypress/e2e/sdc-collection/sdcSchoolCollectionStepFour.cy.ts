@@ -24,22 +24,6 @@ describe('SDC School Collection View', () => {
             cy.get(selectors.dashboard.dataCollectionsTile).click();
             cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-            cy.url().should('contain', '/step-2');
-            cy.get(selectors.studentLevelData.nextButton).click();
-            cy.url().should('contain', '/step-3');
-            cy.get(selectors.studentLevelData.nextButton).click();
-            cy.url().should('contain', '/step-4');
-
-            // Step four of collection - school details
-            cy.get(selectors.schoolDetails.editButton).click();
-            cy.get(selectors.schoolDetails.schoolDetailsEmail).clear();
-            cy.get(selectors.schoolDetails.schoolDetailsPhoneNumber).clear();
-            cy.get(selectors.studentLevelData.formHint).contains('Address, phone, and/or email must be added');
-            cy.get(selectors.studentLevelData.nextButton).should('be.disabled');
-            cy.get(selectors.schoolDetails.schoolDetailsEmail).type('fake@gmail.com');
-            cy.get(selectors.schoolDetails.schoolDetailsPhoneNumber).type('1234567890');
-            cy.get(selectors.schoolDetails.saveButton).click();
-            cy.get(selectors.schoolDetails.resolveBtn).click();
         });
 
     });

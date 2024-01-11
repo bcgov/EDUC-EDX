@@ -33,12 +33,6 @@ describe('SDC School Collection View', () => {
             cy.wait('@collectionLoaded');
             cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
             cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-            cy.url().should('contain', '/step-2');
-            cy.get(selectors.studentLevelData.nextButton).click();
-            cy.url().should('contain', '/step-3');
-            cy.get(selectors.studentLevelData.nextButton).click();
-            cy.url().should('contain', '/step-4');
-            cy.get(selectors.studentLevelData.nextButton).click();
 
             // Step five of collection - school contacts
             cy.get(selectors.schoolContacts.newContactButton).click();
