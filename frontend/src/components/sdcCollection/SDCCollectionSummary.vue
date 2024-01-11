@@ -163,7 +163,7 @@ export default {
       });
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.index;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
     }
   }
 };

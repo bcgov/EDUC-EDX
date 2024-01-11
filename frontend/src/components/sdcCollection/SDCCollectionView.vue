@@ -56,6 +56,7 @@
           non-linear
           :model-value="currentStep"
           @update:model-value="updateCurrentStep"
+          :elevation="0"
         >
           <template #default>
             <v-stepper-header>

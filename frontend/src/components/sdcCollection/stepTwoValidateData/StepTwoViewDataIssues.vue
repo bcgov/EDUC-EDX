@@ -9,7 +9,7 @@
     </v-row>
     <v-row
       v-else
-      class="justify-center"
+      class="justify-center mt-1"
     >
       <v-col cols="5">
         <v-row
