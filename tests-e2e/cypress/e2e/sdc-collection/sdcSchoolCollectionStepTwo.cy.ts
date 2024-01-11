@@ -24,7 +24,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-  });
+    });
 
     it('verify errors and warnings on step-2 of sdc process', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
@@ -145,5 +145,47 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
         cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
     });
+
+    context('PEN appears more than once in the submission', () => {
+      before(() => {
+        cy.task<AppSetupData>('dataLoad').then(res => {
+          cy.task<SchoolCollection>('setup-collections', {
+            school: res.school,
+            loadWithStudentAndValidations: true,
+            seedData: 'stepTwoDuplicatePENData'
+          });
+          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+        });
+      });
+
+      it('can fix errors and warnings on the student record', () => {
+        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+        cy.visit('/');
+        cy.get(selectors.dashboard.dataCollectionsTile).click();
+        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+        cy.wait('@pagination').then(({response}) => {
+          cy.contains('td', '101932770').parent().within($tr => {
+            cy.get(selectors.studentLevelData.selectStudentCheckbox).click(); 
+          })
+          cy.get(selectors.studentLevelData.fixSelected).click();
+        })
+
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 3 Records');
+
+        cy.get(selectors.studentLevelData.duplicatePenFilter).should('exist');
+        cy.get(selectors.studentLevelData.duplicatePenFilter).click();
+        cy.wait('@pagination').then(()=> {
+          cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 2 of 3 Records');
+          cy.get(selectors.studentLevelData.editStudentClearfilter).should('exist');
+        });
+
+        cy.get(selectors.studentLevelData.editStudentClearfilter).click();
+        cy.wait('@pagination').then(()=> {
+          cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 3 of 3 Records');
+        })
+
+    });
+    })
   });
 });

@@ -261,7 +261,10 @@ export default {
     stepTwoPenLocalIdFilter: '#penSearch',
     stepTwoSearchButton: '#searchButton',
     stepTwoTableFirstRow: 'div > div.v-table__wrapper > table > tbody > tr > td:nth-child(4)',
-    stepTwoClearSearchFilter: '#clearSearch'
+    stepTwoTableAllRows: 'div > div.v-table__wrapper > table > tbody > tr',
+    stepTwoClearSearchFilter: '#clearSearch',
+    duplicatePenFilter: '#duplicatePenFilter',
+    editStudentClearfilter: '#clearFilters'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
