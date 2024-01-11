@@ -3,9 +3,13 @@ import { AppSetupData } from '../../../cypress.config';
 import { InstituteOptions } from 'tests-e2e/cypress/services/institute-api-service';
 
 function navigateToAccessSchoolUsers() {
-  cy.intercept('/schoolAccess').as('schoolAccess');
+  cy.intercept(Cypress.env('interceptors').school_access).as('schoolAccess');
+  cy.intercept(Cypress.env('interceptors').schools).as('schools');
+  cy.intercept(Cypress.env('interceptors').districts).as('districts');
   cy.visit('/schoolAccess');
   cy.wait('@schoolAccess');
+  cy.wait('@schools');
+  cy.wait('@districts');
   cy.get(selectors.accessUsersPage.selectSchoolDropdown).click();
   cy.get(selectors.accessUsersPage.schoolSelectorBox).should('exist');
   cy.get(selectors.accessUsersPage.schoolSelectorBox).find('div')
