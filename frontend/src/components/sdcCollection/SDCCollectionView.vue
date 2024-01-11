@@ -55,8 +55,9 @@
           hide-actions
           non-linear
           :model-value="currentStep"
-          @update:model-value="updateCurrentStep"
           :elevation="0"
+          :alt-labels="$vuetify.display.lgAndDown"
+          @update:model-value="updateCurrentStep"
         >
           <template #default>
             <v-stepper-header>
@@ -152,7 +153,6 @@
 </template>
 
 <script>
-import alertMixin from '../../mixins/alertMixin';
 import {mapState} from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
@@ -172,7 +172,6 @@ export default {
     StepTwoViewDataIssues,
     StepOneUploadData
   },
-  mixins: [alertMixin],
   props: {
     schoolCollectionID: {
       type: String,
