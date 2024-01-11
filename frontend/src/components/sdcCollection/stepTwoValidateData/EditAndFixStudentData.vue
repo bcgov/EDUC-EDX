@@ -438,7 +438,7 @@
                             </v-col>
                           </v-row>
                         </v-form>
-                        <a
+                        <a id="duplicatePenFilter"
                           v-if="issue.validationIssueCode==='STUDENTPENDUPLICATE'"
                           @click="filterByPen"
                         >Filter to records with this PEN</a>
@@ -474,7 +474,8 @@
             </div>
             <div class="text-center">
               <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-              <a
+              <a 
+                id="clearFilters"
                 v-if="selectedStudents.length < totalStudents"
                 class="filter-text"
                 @click="clearFilter()"

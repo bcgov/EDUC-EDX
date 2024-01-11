@@ -145,9 +145,29 @@ export class SdcCollectionApiService {
                                 }
                             ]
                         }
-
-
                     ]
+                }
+            } else if(schoolCollection.seedData === 'stepTwoDuplicatePENData') {
+               let collection = {
+                    "createUser": "EDXAT",
+                    "updateUser": null,
+                    "createDate": null,
+                    "updateDate": null,
+                    "sdcSchoolCollectionID": null,
+                    "collectionID": activeCollection.collectionID,
+                    "schoolID": schoolCollection?.school.schoolId,
+                    "districtID": schoolCollection?.school.districtId,
+                    "uploadDate": "20230822",
+                    "uploadFileName": "EDX-AT-FILE.std",
+                    "sdcSchoolCollectionStatusCode": "LOADED",
+                    "collectionTypeCode": "SEPTEMBER",
+                    "collectionOpenDate": curDate,
+                    "collectionCloseDate": curCloseDate
+                }
+                let students = this.studentsWithDuplicatePEN();
+                sdcSchoolCollectionPayload = {
+                    ...collection,
+                    ...students
                 }
             }
             else if (schoolCollection.seedData === 'stepThreeSeedData') {
@@ -476,6 +496,151 @@ export class SdcCollectionApiService {
 
         console.log('AT createSchoolCollection completed');
         return schoolCollectionResponse?.sdcSchoolCollectionID;
+    }
+
+    studentsWithDuplicatePEN() {
+        return {
+            "students": [
+                {
+                    "createUser": "EDXAT",
+                    "sdcSchoolCollectionStudentEnrolledPrograms": null,
+                    "localID": "12345",
+                    "studentPen": "101932770",
+                    "legalFirstName": "LEGALFIRST",
+                    "legalMiddleNames": "LEGALMIDDLE",
+                    "legalLastName": null,
+                    "usualFirstName": "USUALFIRST",
+                    "usualMiddleNames": "USUALMIDDLE",
+                    "usualLastName": "USUALLAST",
+                    "dob": "20100630",
+                    "gender": "M",
+                    "specialEducationCategoryCode": null,
+                    "schoolFundingCode": "20",
+                    "nativeAncestryInd": "N",
+                    "homeLanguageSpokenCode": "943",
+                    "otherCourses": "0",
+                    "supportBlocks": null,
+                    "enrolledGradeCode": "11",
+                    "careerProgramCode": "XH",
+                    "numberOfCourses": "0700",
+                    "bandCode": "0684",
+                    "enrolledProgramCodes": "40",
+                    "isAdult": "false",
+                    "isSchoolAged": "true",
+                    "sdcSchoolCollectionStudentStatusCode": "ERROR",
+                    "sdcSchoolCollectionStudentValidationIssues": [
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "ERROR",
+                            "validationIssueCode": "LEGALLASTNAMEBLANK",
+                            "validationIssueFieldCode": "LEGAL_LAST_NAME"
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "INFO_WARNING",
+                            "validationIssueCode": "MISSINGPOSTALCODE",
+                            "validationIssueFieldCode": "POSTAL_CODE"
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "ERROR",
+                            "validationIssueCode": "STUDENTPENDUPLICATE",
+                            "validationIssueFieldCode": "STUDENT_PEN"
+                        },
+                    ]
+                },
+                {
+                    "createUser": "EDXAT",
+                    "sdcSchoolCollectionStudentEnrolledPrograms": null,
+                    "localID": "10000",
+                    "studentPen": "101932770",
+                    "legalFirstName": "TESTFIRST",
+                    "legalMiddleNames": "TESTMIDDLE",
+                    "legalLastName": null,
+                    "usualFirstName": "TESTUSUALFIRST",
+                    "usualMiddleNames": "TESTUSUALMIDDLE",
+                    "usualLastName": "TESTUSUALLAST",
+                    "dob": "20100630",
+                    "gender": "M",
+                    "specialEducationCategoryCode": null,
+                    "schoolFundingCode": "20",
+                    "nativeAncestryInd": "N",
+                    "homeLanguageSpokenCode": "943",
+                    "otherCourses": "0",
+                    "supportBlocks": null,
+                    "enrolledGradeCode": "11",
+                    "careerProgramCode": "XH",
+                    "numberOfCourses": "0700",
+                    "bandCode": "0684",
+                    "enrolledProgramCodes": "40",
+                    "isAdult": "false",
+                    "isSchoolAged": "true",
+                    "sdcSchoolCollectionStudentStatusCode": "ERROR",
+                    "sdcSchoolCollectionStudentValidationIssues": [
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "ERROR",
+                            "validationIssueCode": "LEGALLASTNAMEBLANK",
+                            "validationIssueFieldCode": "LEGAL_LAST_NAME"
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "INFO_WARNING",
+                            "validationIssueCode": "MISSINGPOSTALCODE",
+                            "validationIssueFieldCode": "POSTAL_CODE"
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "ERROR",
+                            "validationIssueCode": "STUDENTPENDUPLICATE",
+                            "validationIssueFieldCode": "STUDENT_PEN"
+                        },
+                    ]
+                },
+                {
+                    "createUser": "EDXAT",
+                    "sdcSchoolCollectionStudentEnrolledPrograms": null,
+                    "localID": "10000",
+                    "studentPen": "102223476",
+                    "legalFirstName": "TESTFIRST",
+                    "legalMiddleNames": "TESTMIDDLE",
+                    "legalLastName": null,
+                    "usualFirstName": "TESTUSUALFIRST",
+                    "usualMiddleNames": "TESTUSUALMIDDLE",
+                    "usualLastName": "TESTUSUALLAST",
+                    "dob": "20100630",
+                    "gender": "M",
+                    "specialEducationCategoryCode": null,
+                    "schoolFundingCode": "20",
+                    "nativeAncestryInd": "N",
+                    "homeLanguageSpokenCode": "943",
+                    "otherCourses": "0",
+                    "supportBlocks": null,
+                    "enrolledGradeCode": "11",
+                    "careerProgramCode": "XH",
+                    "numberOfCourses": "0700",
+                    "bandCode": "0684",
+                    "enrolledProgramCodes": "40",
+                    "isAdult": "false",
+                    "isSchoolAged": "true",
+                    "sdcSchoolCollectionStudentStatusCode": "ERROR",
+                    "sdcSchoolCollectionStudentValidationIssues": [
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "ERROR",
+                            "validationIssueCode": "LEGALLASTNAMEBLANK",
+                            "validationIssueFieldCode": "LEGAL_LAST_NAME"
+                        },
+                        {
+                            "createUser": "EDXAT",
+                            "validationIssueSeverityCode": "INFO_WARNING",
+                            "validationIssueCode": "MISSINGPOSTALCODE",
+                            "validationIssueFieldCode": "POSTAL_CODE"
+                        },
+                    ]
+                }
+            ]
+        }
     }
 }
 
