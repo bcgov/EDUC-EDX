@@ -1,4 +1,3 @@
-// @ts-ignore
 import {LocalDate, LocalDateTime} from '@js-joda/core';
 import {RestUtils} from "../helpers/rest-utils-ts";
 

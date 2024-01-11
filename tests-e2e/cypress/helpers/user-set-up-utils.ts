@@ -18,8 +18,10 @@ export class UserSetupUtils {
         const edxUser = await this.userApi.refreshEdxUser(digitalId);
         const instituteIDs = await this.userApi.getInstituteIds('SCHOOL', schoolUserOptions.schoolCodes);
         let roles = await this.userApi.getAllEdxUserRoleForInstitute();
-        if (schoolUserOptions.schoolRoles) { // @ts-ignore
-            roles = roles.filter(role => schoolUserOptions.schoolRoles.includes(role.edxRoleCode));}
+        const { schoolRoles } = schoolUserOptions;
+        if (schoolRoles !== undefined) {
+            roles = roles.filter(role => schoolRoles.includes(role.edxRoleCode as SchoolRole));
+        }
         await this.userApi.createEdxInstituteUserWithRoles(instituteIDs, roles, '', '', edxUser.edxUserID);
         return edxUser;
     }
