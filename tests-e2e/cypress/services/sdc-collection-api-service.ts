@@ -16,10 +16,10 @@ const ACTIVE_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection/a
 
 export class SdcCollectionApiService {
 
-  config: any;
-  restUtils: any;
+  config: Cypress.PluginConfigOptions;
+  restUtils: RestUtils;
 
-  constructor(conf: any) {
+  constructor(conf: Cypress.PluginConfigOptions) {
     this.config = conf;
     this.restUtils = new RestUtils(this.config);
   }
@@ -37,7 +37,7 @@ export class SdcCollectionApiService {
     try {
       const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
       await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
-    } catch (e: any) {
+    } catch (_) {
       //This is ok
     }
 
