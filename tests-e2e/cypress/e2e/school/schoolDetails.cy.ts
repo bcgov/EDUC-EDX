@@ -128,6 +128,8 @@ describe('School Details Interface Test', () => {
     it('can view legacy safe name', () => {
       cy.visit('/');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').districts).as('districts');
+      cy.wait('@districts');
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).should("be.visible").contains('Schools | EDX Automation Testing');

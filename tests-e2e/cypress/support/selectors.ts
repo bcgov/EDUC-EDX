@@ -241,7 +241,7 @@ export default {
     saveRecordButton: '#saveRecord',
     stepFive:'#step-5',
     stepFour:'#step-4',
-    stepOne:'#step-1',
+    stepOne:'div.v-stepper-header > button:nth-child(1)',
     stepSix:'#step-6',
     stepThree:'#step-3',
     stepTwo:'#step-2',
