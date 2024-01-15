@@ -43,7 +43,7 @@
           <v-col>
             <v-card height="100%">
               <v-card-item class="pb-0">
-                <v-card-title class="column-header">
+                <v-card-title :class="`${headcountType}-headcount-header column-header`">
                   {{ header.title }}
                 </v-card-title>
               </v-card-item>
