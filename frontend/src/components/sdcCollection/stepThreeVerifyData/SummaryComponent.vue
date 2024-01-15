@@ -41,7 +41,7 @@
           :key="index"
         >
           <v-col>
-            <v-card height="100%">
+            <v-card :class="`${headcountType}-headcount-card`" height="100%">
               <v-card-item class="pb-0">
                 <v-card-title :class="`${headcountType}-headcount-header column-header`">
                   {{ header.title }}
@@ -53,7 +53,7 @@
                     v-for="(key, index) in header.orderedColumnTitles"
                     :key="index"
                   >
-                    <v-col class="column-data">
+                    <v-col :class="`${headcountType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
                       <span
                         v-if="header.columns[key].comparisonValue !== null"
@@ -84,7 +84,7 @@
                 <v-row
                   v-else
                 >
-                  <v-col class="column-data">
+                  <v-col :class="`${headcountType}-headcount-column-data column-data`">
                     <span
                       v-if="header?.headCountValue?.comparisonValue"
                       class="compare-text"
