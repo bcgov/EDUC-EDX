@@ -84,7 +84,7 @@
                 <v-row
                   v-else
                 >
-                  <v-col class="column-data">
+                  <v-col :class="`${headcountType}-headcount-column-data column-data`">
                     <span
                       v-if="header?.headCountValue?.comparisonValue"
                       class="compare-text"
