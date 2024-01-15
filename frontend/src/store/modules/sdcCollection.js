@@ -3,12 +3,15 @@ import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
+import {LocalDateTime} from '@js-joda/core';
+import {getDateFormatter} from '../../utils/format';
 
 export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
   state: () => ({
     currentStepInCollectionProcess: null,
     currentCollectionTypeCode: null,
+    currentCollectionYear: null,
     totalStepsInCollection: SDC_STEPS_SCHOOL.length,
     schoolCollection: null,
     bandCodesMap: new Map(),
@@ -44,6 +47,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionTypeCode(currentCollectionTypeCode) {
       this.currentCollectionTypeCode = currentCollectionTypeCode;
+    },
+    setCurrentCollectionYear(currentCollectionYear) {
+      this.currentCollectionYear = currentCollectionYear;
     },
     setSchoolCollection(schoolCollection) {
       this.schoolCollection = schoolCollection;
@@ -135,6 +141,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
       this.setSchoolCollection(response.data);
       this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+      this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
     },
     async getCodes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.

@@ -55,7 +55,8 @@
             <h2 class="subjectHeading">
               Student Level Data (1701)
             </h2>
-            <p>{{ currentCollectionTypeCode }} 2022 Collection</p>
+            <p>{{ currentCollectionTypeCode }} 
+              {{ currentCollectionYear }} Collection</p>
           </v-col>
         </v-row>
         <v-row justify="space-around">
@@ -99,6 +100,8 @@ import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
 import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
+import {LocalDateTime} from '@js-joda/core';
+import {getDateFormatter} from '../../utils/format';
 
 export default {
   name: 'SdcCollectionSummary',
@@ -119,17 +122,18 @@ export default {
       incomingChartData: null,
       schoolCollectionID: null,
       isLoading: false,
-      currentStepIndex: 0
+      currentStepIndex: 0,
+      toFormatter: getDateFormatter('uuuu/MM/dd'),
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess',])
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess','currentCollectionYear'])
   },
   created() {
     this.getSDCCollectionBySchoolId();
   },
   methods: {
-    ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData']),
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData', 'setCurrentCollectionYear']),
     startCollection() {
       router.push({name: 'sdcCollection', params: {schoolCollectionID: this.schoolCollectionID}});
     },
@@ -152,7 +156,7 @@ export default {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
           this.schoolCollectionID = response.data.sdcSchoolCollectionID;
           this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(response.data.sdcSchoolCollectionStatusCode);
-
+          this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
           this.calculateStep();
         }
       }).catch(error => {
