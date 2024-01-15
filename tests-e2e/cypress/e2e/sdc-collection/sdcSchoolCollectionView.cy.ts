@@ -32,7 +32,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click({force: true});
 
       // checking if the previous button is clickable and the user is taken to the previous step; brings to step 2
-      cy.get(selectors.studentLevelData.stepTwo).should('exist').click();
+      cy.get(selectors.studentLevelData.stepTwo).scrollIntoView().should('be.visible').click();
 
       // Step three should be disabled
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('not.be.enabled');
