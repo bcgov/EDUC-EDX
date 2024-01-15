@@ -8,7 +8,7 @@
       class="mt-1 d-flex justify-start"
     >
       <v-col>
-        <h2>{{ currentCollectionTypeCode }} 2022 Collection</h2>
+        <h2>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h2>
       </v-col>
     </v-row>
     <v-row
@@ -191,7 +191,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection']),
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection','currentCollectionYear']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
