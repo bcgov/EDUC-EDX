@@ -115,16 +115,16 @@ export default {
   newUserInvites: {
     emailInput: '#newUserEmail',
     firstNameInput: '#newUserFirstName',
-    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton",
+    generateNewCode: '#doGeneratePrimaryEdxActivationCodeButton',
     lastNameInput: '#newUserLastName',
     newUserButton: '#new-user-button',
     newUserInviteVCard: '#newUserInviteVCard',
-    primaryActivationCode: "#primaryEdxActivationCode",
+    primaryActivationCode: '#primaryEdxActivationCode',
     rolesSelectorBox: '#instituteNewUserRolesListBox',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     sendInviteButton: '#newUserInvitePostBtn',
-    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
-    noActivationCodeBanner: "#no-activation-code-banner"
+    toggleGenerateNewCode: '#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton',
+    noActivationCodeBanner: '#no-activation-code-banner'
   },
   schoolContacts: {
     cancelContactButton: '#cancelContactBtn',
@@ -170,10 +170,10 @@ export default {
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
-    schoolDisplayNameTitle: "#displayName",
+    schoolDisplayNameTitle: 'displayName',
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',
-    schoolMincodeTitle: "#schoolMincodeTitle",
+    schoolMincodeTitle: '#schoolMincodeTitle',
     schoolNameNoSpecialChars: 'div.safe-name',
     subjectHeading: 'h2.subjectHeading'
   },
@@ -241,7 +241,7 @@ export default {
     saveRecordButton: '#saveRecord',
     stepFive:'#step-5',
     stepFour:'#step-4',
-    stepOne:'div.v-stepper-header > button:nth-child(1)',
+    stepOne:'#step-1',
     stepSix:'#step-6',
     stepThree:'#step-3',
     stepTwo:'#step-2',
@@ -275,4 +275,4 @@ export default {
     userActivationErrorMessageSnackBar: '#user_activation_error_message',
     acceptTermsCheckbox: '#acceptTOU'
   }
-}
+};

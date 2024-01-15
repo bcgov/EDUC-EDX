@@ -1,6 +1,6 @@
-import selectors from "../../support/selectors";
+import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollection } from "tests-e2e/cypress/services/sdc-collection-api-service";
+import { SchoolCollection } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -29,17 +29,17 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click();
 
       //step three of collection - edit/verify data
-      cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click();
+      cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click({force: true});
 
       // checking if the previous button is clickable and the user is taken to the previous step; brings to step 2
-      // cy.get(selectors.studentLevelData.stepTwo).should('exist').click();
-      //
-      // // Step three should be disabled
-      // cy.get(selectors.studentLevelData.stepThree).should('exist').should('not.be.enabled');
-      //
-      // // User moved to next step by clicking next button
-      // cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled');
-      // cy.get(selectors.studentLevelData.nextButton).click();
+      cy.get(selectors.studentLevelData.stepTwo).should('exist').click();
+
+      // Step three should be disabled
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('not.be.enabled');
+
+      // User moved to next step by clicking next button
+      cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled');
+      cy.get(selectors.studentLevelData.nextButton).click();
 
     });
 

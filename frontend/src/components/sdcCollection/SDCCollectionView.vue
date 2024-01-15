@@ -66,6 +66,7 @@
                 :key="step.step"
               >
                 <v-stepper-item
+                  :id="step.id"
                   :value="step.step"
                   :title="step.title"
                   :editable="step.step < currentStep"
