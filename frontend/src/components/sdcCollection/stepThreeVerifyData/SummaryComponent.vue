@@ -53,7 +53,7 @@
                     v-for="(key, index) in header.orderedColumnTitles"
                     :key="index"
                   >
-                    <v-col class="column-data">
+                    <v-col :class="`${headcountType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
                       <span
                         v-if="header.columns[key].comparisonValue !== null"
