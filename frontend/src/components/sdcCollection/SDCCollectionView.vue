@@ -1,21 +1,14 @@
 <template>
   <v-container
     class="containerSetup"
-    fluid
+    :fluid="true"
   >
-    <v-row class="d-flex justify-start">
-      <v-col>
-        <h2 class="subjectHeading">
-          Student Level Data (1701)
-        </h2>
-      </v-col>
-    </v-row>
     <v-row
       no-gutters
       class="mt-1 d-flex justify-start"
     >
       <v-col>
-        <h4>{{ currentCollectionTypeCode }} 2022 Collection</h4>
+        <h2>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h2>
       </v-col>
     </v-row>
     <v-row
@@ -56,46 +49,130 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col
-        :cols="hideStepper?1:2"
-        class="pr-0"
-      >
-        <StepperComponent
-          :steps="steps"
-          :next-event="registerNextEvent"
-          @on-navigation-complete="navigationCompleted()"
-        />
-      </v-col>
-      <v-col
-        class="pl-0"
-        :cols="hideStepper?11:10"
-      >
-        <v-row>
-          <router-view
-            :school-collection-object="schoolCollectionObject"
-            @next="next"
-            @refresh-store="refreshStore"
-          />
-        </v-row>
+      <v-col>
+        <v-stepper
+          ref="stepper"
+          hide-actions
+          non-linear
+          :model-value="currentStep"
+          :elevation="0"
+          :alt-labels="$vuetify.display.lgAndDown"
+          @update:model-value="updateCurrentStep"
+        >
+          <template #default>
+            <v-stepper-header>
+              <template
+                v-for="step in SDC_STEPS_SCHOOL()"
+                :key="step.step"
+              >
+                <v-stepper-item
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-divider
+                  v-if="step.step < SDC_STEPS_SCHOOL().length"
+                  :class="{'step-previous-divider': step.step < currentStep}"
+                  :thickness="step.step < currentStep ? 5 : 0"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+              </template>
+            </v-stepper-header>
+            <v-stepper-window>
+              <v-stepper-window-item
+                :value="1"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepOneUploadData
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                  @refresh-store="refreshStore"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="2"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepTwoViewDataIssues
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="3"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepThreeVerifyData
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="4"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFourSchoolDetails
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="5"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFiveSchoolContacts
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="6"
+                transition="false"
+                reverse-transition="false"
+              >
+                <div>placeholder</div>
+              </v-stepper-window-item>
+            </v-stepper-window>
+          </template>
+        </v-stepper>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import alertMixin from '../../mixins/alertMixin';
-import StepperComponent from '../common/StepperComponent.vue';
-import RouterView from '../RouterView.vue';
-import { mapState } from 'pinia';
+import {mapState} from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
+
+import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
+import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
+import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
+import StepFourSchoolDetails from './StepFourSchoolDetails.vue';
+import StepFiveSchoolContacts from './StepFiveSchoolContacts.vue';
 
 export default {
   name: 'SDCCollectionView',
   components: {
-    StepperComponent,
-    RouterView
+    StepFiveSchoolContacts,
+    StepFourSchoolDetails,
+    StepThreeVerifyData,
+    StepTwoViewDataIssues,
+    StepOneUploadData
   },
-  mixins: [alertMixin],
   props: {
     schoolCollectionID: {
       type: String,
@@ -105,6 +182,7 @@ export default {
   },
   data() {
     return {
+      currentStep: 0,
       steps: [],
       registerNextEvent: false,
       schoolCollectionObject: {},
@@ -113,40 +191,62 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['stepsInCollectionProcess', 'currentCollectionTypeCode', 'schoolCollection', 'hideStepper'])
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection','currentCollectionYear']),
+    stepInCollection() {
+      return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
+    },
+    isStepComplete() {
+      let indexCurrentCollection = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+      return this.currentStep < indexCurrentCollection;
+    }
   },
   created() {
     this.isLoading = !this.isLoading;
-    this.steps = [...this.stepsInCollectionProcess];
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
+      this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
       this.isLoading = !this.isLoading;
     });
   },
   methods: {
-    next() {
-      this.registerNextEvent = true;
+    SDC_STEPS_SCHOOL() {
+      return SDC_STEPS_SCHOOL;
     },
-    navigationCompleted() {
-      this.registerNextEvent = false;
+    next() {
+      this.checkIfWeNeedToUpdateSchoolCollection(this.currentStep);
+      this.$refs.stepper.next();
+    },
+    checkIfWeNeedToUpdateSchoolCollection(index) {
+      if (index < this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode)) {
+        return;
+      }
+      sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
     },
     refreshStore() {
+      this.isLoading = !this.isLoading;
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
-        this.steps = [...this.stepsInCollectionProcess];
+        this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+        this.isLoading = !this.isLoading;
       });
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcCollectionSummary', params: {schoolID: this.schoolID}});
+    },
+    updateCurrentStep(step) {
+      this.currentStep = step;
+    },
+    getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
     }
   }
 };
 </script>
-  
-  <style scoped>
-  .divider {
+
+<style scoped>
+.divider {
   border-color: #FCBA19;
   border-width: 3px;
   opacity: unset;
@@ -162,6 +262,15 @@ export default {
     padding-left: 3em !important;
   }
 }
+
+.v-stepper-window {
+    margin: 0rem !important;
+}
+
+.v-stepper-header {
+  box-shadow: none !important;
+}
+
 </style>
-  
-  
+
+

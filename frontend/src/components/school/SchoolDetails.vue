@@ -24,12 +24,12 @@
     <v-row v-if="loading">
       <v-col class="d-flex justify-center">
         <v-progress-circular
-            class="mt-16"
-            :size="70"
-            :width="7"
-            color="primary"
-            indeterminate
-            :active="loading"
+          class="mt-16"
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+          :active="loading"
         />
       </v-col>
     </v-row>
@@ -38,127 +38,127 @@
       no-gutters
     >
       <v-col>
-      <v-row class="d-flex justify-start">
-        <v-col class="d-flex justify-start">
-          <h2>
-            {{
-              school.mincode
-            }}
-          </h2>
-          <h2 class="pl-1 pr-1">
-            -
-          </h2>
-          <div>
+        <v-row class="d-flex justify-start">
+          <v-col class="d-flex justify-start">
+            <h2>
+              {{
+                school.mincode
+              }}
+            </h2>
+            <h2 class="pl-1 pr-1">
+              -
+            </h2>
             <div>
-              <h2 id="displayName">
-                {{
-                  school.displayName
-                }}
-              </h2>
-            </div>
-            <div
+              <div>
+                <h2 id="displayName">
+                  {{
+                    school.displayName
+                  }}
+                </h2>
+              </div>
+              <div
                 v-if="school.displayNameNoSpecialChars"
                 class="safe-name"
                 style="font-style: italic; color: grey"
-            >
-              {{
-                school.displayNameNoSpecialChars
-              }}
+              >
+                {{
+                  school.displayNameNoSpecialChars
+                }}
+              </div>
             </div>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row
+          </v-col>
+        </v-row>
+        <v-row
           v-if="!['OFFSHORE', 'INDEPEND'].includes(school.schoolCategoryCode)"
           no-gutters
           class="d-flex justify-start"
-      >
-        <v-col class="d-flex">
-          <div
+        >
+          <v-col class="d-flex">
+            <div
               class="ministryOwnershipTeamName"
               style="color: black"
-          >
-            {{
-              district.districtNumber
-            }} -
-            {{
-              district.name
-            }}
-          </div>
-        </v-col>
-      </v-row>
-      <v-row
+            >
+              {{
+                district.districtNumber
+              }} -
+              {{
+                district.name
+              }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row
           v-else
           no-gutters
           class="d-flex justify-start"
-      >
-        <v-col class="d-flex">
-          <div
+        >
+          <v-col class="d-flex">
+            <div
               class="ministryOwnershipTeamName"
               style="color: black"
-          >
-            {{
-              authority.authorityNumber
-            }} -
-            {{
-              authority.name
-            }}
-          </div>
-        </v-col>
-      </v-row>
-      <v-row
+            >
+              {{
+                authority.authorityNumber
+              }} -
+              {{
+                authority.name
+              }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row
           no-gutters
           class="mt-1 d-flex justify-start"
-      >
-        <v-col class="d-flex">
-          <v-icon
+        >
+          <v-col class="d-flex">
+            <v-icon
               :color="getStatusColorAuthorityOrSchool(school.status)"
               dark
-          >
-            mdi-circle-medium
-          </v-icon>
-          <span>{{
+            >
+              mdi-circle-medium
+            </v-icon>
+            <span>{{
               school.status
             }}</span>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-divider class="divider" />
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col>
-          <v-tabs v-model="tab">
-            <v-tab value="details">
-              Details
-            </v-tab>
-            <v-tab value="contacts">
-              Contacts
-            </v-tab>
-          </v-tabs>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col>
-          <v-card-text class="pt-0">
-            <v-window v-model="tab">
-              <v-window-item value="details">
-                <SchoolDetailsForm
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-divider class="divider" />
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <v-tabs style="color: #38598a" v-model="tab">
+              <v-tab value="details">
+                Details
+              </v-tab>
+              <v-tab value="contacts">
+                Contacts
+              </v-tab>
+            </v-tabs>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <v-card-text class="pt-0">
+              <v-window v-model="tab">
+                <v-window-item value="details">
+                  <SchoolDetailsForm
                     :school-i-d="schoolID"
                     :function-name="type"
-                />
-              </v-window-item>
-              <v-window-item value="contacts">
-                <SchoolContactsForm
+                  />
+                </v-window-item>
+                <v-window-item value="contacts">
+                  <SchoolContactsForm
                     :function-name="type"
                     :school-i-d="schoolID"
-                />
-              </v-window-item>
-            </v-window>
-          </v-card-text>
-        </v-col>
-      </v-row>
+                  />
+                </v-window-item>
+              </v-window>
+            </v-card-text>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -169,11 +169,11 @@ import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
 import alertMixin from '../../mixins/alertMixin';
 import SchoolDetailsForm from '../common/forms/SchoolDetailsForm.vue';
-import ApiService from "../../common/apiService";
-import {ApiRoutes} from "../../utils/constants";
-import {sanitizeUrl} from "@braintree/sanitize-url";
-import {getStatusAuthorityOrSchool, getStatusColorAuthorityOrSchool} from "../../utils/institute/status";
-import SchoolContactsForm from "../common/forms/SchoolContactsForm.vue";
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {sanitizeUrl} from '@braintree/sanitize-url';
+import {getStatusAuthorityOrSchool, getStatusColorAuthorityOrSchool} from '../../utils/institute/status';
+import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
 
 export default {
   name: 'SchoolDetailsPage',
@@ -198,7 +198,7 @@ export default {
       authority: '',
       tab: null,
       items: [
-          'Details', 'Contacts'
+        'Details', 'Contacts'
       ]
     };
   },
@@ -236,32 +236,32 @@ export default {
       let searchSchoolID = this.schoolID ? this.schoolID: this.userInfo.activeInstituteIdentifier;
 
       ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + '/' + searchSchoolID)
-          .then(response => {
-            this.school = response.data;
-            this.populateExtraSchoolFields(this.school);
-            this.getDistrictDetails(this.school.districtId);
-            if(this.school.independentAuthorityId){
-              this.getAuthorityDetails(this.school.independentAuthorityId);
-            }
-            this.cleanWebsiteUrl = this.school.website ? sanitizeUrl(this.school.website) : '';
-          }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loading = false;
-      });
+        .then(response => {
+          this.school = response.data;
+          this.populateExtraSchoolFields(this.school);
+          this.getDistrictDetails(this.school.districtId);
+          if(this.school.independentAuthorityId){
+            this.getAuthorityDetails(this.school.independentAuthorityId);
+          }
+          this.cleanWebsiteUrl = this.school.website ? sanitizeUrl(this.school.website) : '';
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loading = false;
+        });
     },
     getDistrictDetails(districtId){
       this.district = '';
       ApiService.apiAxios.get(ApiRoutes.institute.DISTRICT + '/'+ districtId)
-          .then(response => {
-            this.district = response.data;
-          }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loading = false;
-      });
+        .then(response => {
+          this.district = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loading = false;
+        });
     },
     populateExtraSchoolFields(school) {
       school.status = getStatusAuthorityOrSchool(school);
@@ -269,15 +269,15 @@ export default {
     getAuthorityDetails(authorityId) {
       this.authority = '';
       ApiService.apiAxios.get(ApiRoutes.institute.AUTHORITY_DATA_URL + '/' + authorityId)
-          .then(response => {
-            this.authority = response.data;
-          }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loading = false;
-        console.log("authority: ", this.authority)
-      });
+        .then(response => {
+          this.authority = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.loading = false;
+          console.log('authority: ', this.authority);
+        });
     }
   }
 };

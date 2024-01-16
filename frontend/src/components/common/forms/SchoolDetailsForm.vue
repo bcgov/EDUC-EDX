@@ -1081,7 +1081,7 @@ export default {
       return this.userInfo;
     },
     emailBox(){
-      if(this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.INDEPEND){
+      if([SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS].includes(this.school.schoolCategoryCode)){
         return MINISTRY_CONTACTS.INDEPENDENT_SCHOOL_OFFICE;
       } else if(this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE){
         return MINISTRY_CONTACTS.OFFSHORE_ADMIN;

@@ -1,190 +1,185 @@
 <template>
-  <v-container
-    class="containerSetup"
-    fluid
+  <div
+    v-if="!openEditView"
   >
-    <div
-      v-if="!openEditView"
-      class="border"
+    <v-row v-if="isLoading()">
+      <v-col>
+        <Spinner />
+      </v-col>
+    </v-row>
+    <v-row
+      v-else
+      class="justify-center mt-1"
     >
-      <v-row v-if="isLoading()">
-        <v-col>
-          <Spinner />
-        </v-col>
-      </v-row>
-      <v-row
-        v-else
-        class="justify-center"
-      >
-        <v-col cols="5">
-          <v-row
-            class="inner-border box-height"
-            style="padding: 0;"
-          >
-            <v-row>
-              <v-col>
-                <h3 class="heading">
-                  Data Issues
-                </h3>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                id="warningAndErrorSummary"
-                class="d-flex flex-wrap justify-space-evenly"
-                style="text-align: center;"
-              >
-                <div class="divider flex-grow-1">
-                  <span class="section-heading">Errors</span>
-                  <br>
-                  <v-icon
-                    size="38"
-                    color="#d90606"
-                  >
-                    mdi-alert-circle-outline
-                  </v-icon>
-                  <span
-                    id="errorCount"
-                    style="font-size: x-large"
-                  >{{ summaryCounts.error }}</span>
-                </div>
-                <div class="divider flex-grow-1">
-                  <span class="section-heading">Funding Warnings</span>
-                  <br>
-                  <v-icon
-                    size="38"
-                    color="orange"
-                  >
-                    mdi-alert-outline
-                  </v-icon>
-                  <span
-                    id="fundingWarningCount"
-                    style="font-size: x-large"
-                  >{{ summaryCounts.fundingWarning }}</span>
-                </div>
-                <div class="flex-grow-1">
-                  <span class="section-heading">Info Warnings</span>
-                  <br>
-                  <v-icon
-                    size="38"
-                    color="blue"
-                  >
-                    mdi-alert-circle-outline
-                  </v-icon>
-                  <span
-                    id="infoWarningCount"
-                    style="font-size: x-large"
-                  >{{ summaryCounts.infoWarning }}</span>
-                </div>
-              </v-col>
-            </v-row>
-          </v-row>
-        </v-col>
-        <v-col cols="3">
-          <v-row
-            class="inner-border box-height"
-            style="padding: 0;"
-          >
-            <v-row>
-              <v-col>
-                <h3 class="heading">
-                  Student Records with Data Issues
-                </h3>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                id="totalStudentsWithIssues"
-                class="d-flex flex-wrap justify-space-evenly"
-                style="text-align: center;"
-              >
-                <span
-                  id="totalStudentsWithIssuesCount"
-                  style="font-size: x-large"
-                >{{ numIssueStudentsInCollection }}</span>
-              </v-col>
-            </v-row>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          v-if="studentListData?.length > 0"
-          class="pr-0"
+      <v-col cols="5">
+        <v-row
+          class="inner-border box-height"
+          style="padding: 0;"
         >
-          <v-row class="searchBox"> 
-            <v-col class="mx-4 pb-6">
-              <v-row>
-                <v-col class="d-flex justify-center">
-                  <v-select
-                    id="fundingWarningCategorySelect"
-                    v-model="fundingWarningCategoryFilter"
-                    :items="fundingWarningCategories"
-                    item-title="category"
-                    item-value="categoryCode"
-                    label="Funding Warning Category"
-                    variant="underlined"
-                    hide-details="auto"
-                  />
-                </v-col>
-
-                <v-col class="d-flex justify-center">
-                  <v-text-field
-                    id="legalUsualNameSearch"
-                    v-model="legalUsualNameFilter"
-                    label="Legal or Usual Name"
-                    variant="underlined"
-                    hide-details="auto"
-                  />
-                </v-col>
-
-                <v-col
-                      
-                  class="d-flex justify-start"
-                >
-                  <v-text-field
-                    id="penSearch"
-                    v-model="penFilter"
-                    label="PEN or Local ID"
-                    variant="underlined"
-                    hide-details="auto"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="1"
-                  align-self="end"
-                >
-                  <PrimaryButton
-                    id="clearSearch"
-                    :click-action="clearSearchFields"
-                    secondary
-                    width="100%"
-                    text="Clear"
-                    class="mr-2"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="1"
-                  align-self="end"
-                >
-                  <PrimaryButton
-                    id="searchButton"
-                    :click-action="getSDCSchoolCollectionStudentPaginated"
-                    text="Search"
-                    width="100%"
-                    class="mr-2"
-                  />
-                </v-col>
-              </v-row>
+          <v-row>
+            <v-col>
+              <h3 class="heading">
+                Data Issues
+              </h3>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col
+              id="warningAndErrorSummary"
+              class="d-flex flex-wrap justify-space-evenly"
+              style="text-align: center;"
+            >
+              <div class="divider flex-grow-1">
+                <span class="section-heading">Errors</span>
+                <br>
+                <v-icon
+                  size="38"
+                  color="#d90606"
+                >
+                  mdi-alert-circle-outline
+                </v-icon>
+                <span
+                  id="errorCount"
+                  style="font-size: x-large"
+                >{{ summaryCounts.error }}</span>
+              </div>
+              <div class="divider flex-grow-1">
+                <span class="section-heading">Funding Warnings</span>
+                <br>
+                <v-icon
+                  size="38"
+                  color="orange"
+                >
+                  mdi-alert-outline
+                </v-icon>
+                <span
+                  id="fundingWarningCount"
+                  style="font-size: x-large"
+                >{{ summaryCounts.fundingWarning }}</span>
+              </div>
+              <div class="flex-grow-1">
+                <span class="section-heading">Info Warnings</span>
+                <br>
+                <v-icon
+                  size="38"
+                  color="blue"
+                >
+                  mdi-alert-circle-outline
+                </v-icon>
+                <span
+                  id="infoWarningCount"
+                  style="font-size: x-large"
+                >{{ summaryCounts.infoWarning }}</span>
+              </div>
+            </v-col>
+          </v-row>
+        </v-row>
+      </v-col>
+      <v-col cols="3">
+        <v-row
+          class="inner-border box-height"
+          style="padding: 0;"
+        >
+          <v-row>
+            <v-col>
+              <h3 class="heading">
+                Student Records with Data Issues
+              </h3>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              id="totalStudentsWithIssues"
+              class="d-flex flex-wrap justify-space-evenly"
+              style="text-align: center;"
+            >
+              <span
+                id="totalStudentsWithIssuesCount"
+                style="font-size: x-large"
+              >{{ numIssueStudentsInCollection }}</span>
+            </v-col>
+          </v-row>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        v-if="studentListData?.length > 0"
+        class="pr-0"
+      >
+        <v-row class="searchBox">
+          <v-col class="mx-4 pb-6">
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <v-select
+                  id="fundingWarningCategorySelect"
+                  v-model="fundingWarningCategoryFilter"
+                  :items="fundingWarningCategories"
+                  item-title="category"
+                  item-value="categoryCode"
+                  label="Funding Warning Category"
+                  variant="underlined"
+                  hide-details="auto"
+                />
+              </v-col>
 
-          <v-row
-            justify="end"
-            class="pt-3 pb-3"
-          >
+              <v-col class="d-flex justify-center">
+                <v-text-field
+                  id="legalUsualNameSearch"
+                  v-model="legalUsualNameFilter"
+                  label="Legal or Usual Name"
+                  variant="underlined"
+                  hide-details="auto"
+                />
+              </v-col>
+
+              <v-col
+
+                class="d-flex justify-start"
+              >
+                <v-text-field
+                  id="penSearch"
+                  v-model="penFilter"
+                  label="PEN or Local ID"
+                  variant="underlined"
+                  hide-details="auto"
+                />
+              </v-col>
+
+              <v-col
+                cols="1"
+                align-self="end"
+              >
+                <PrimaryButton
+                  id="clearSearch"
+                  :click-action="clearSearchFields"
+                  secondary
+                  width="100%"
+                  text="Clear"
+                  class="mr-2"
+                />
+              </v-col>
+
+              <v-col
+                cols="1"
+                align-self="end"
+              >
+                <PrimaryButton
+                  id="searchButton"
+                  :click-action="getSDCSchoolCollectionStudentPaginated"
+                  text="Search"
+                  width="100%"
+                  class="mr-2"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row
+          class="pt-3 pb-3"
+        >
+          <v-col class="text-right">
             <PrimaryButton
               id="fixSelected"
               text="Review & Fix Selected"
@@ -195,118 +190,118 @@
             <PrimaryButton
               id="fixAll"
               text="Review & Fix All"
+              class="mr-3"
               :loading="allIssueLoader"
               :click-action="getAllIssuesAndNavigate"
               :disabled="selectedStudents.length != 0"
             />
-          </v-row>
-          <v-row>
-            <v-data-table-server
-              v-model:items-per-page="pageSize"
-              v-model:page="pageNumber"
-              v-model="selectedStudents"
-              :headers="headers"
-              :items-length="totalStudents"
-              :items="studentListData"
-              :loading="isLoading()"
-              item-value="sdcSchoolCollectionStudentID"
-              class="mt-2"
-              mobile-breakpoint="0"
-              show-select
-            >
-              <template #column.error="{ column }">
-                <v-icon
-                  class="mt-2 mr-3"
-                  size="25"
-                  color="#d90606"
-                >
-                  mdi-alert-circle-outline
-                </v-icon>
-              </template>
-              <template #column.fundingWarning="{ column }">
-                <v-icon
-                  class="mt-2 mr-3"
-                  size="25"
-                  color="#ff9800"
-                >
-                  mdi-alert-circle-outline
-                </v-icon>
-              </template>
-              <template #column.infoWarning="{ column }">
-                <v-icon
-                  class="mt-2 mr-3"
-                  size="25"
-                  color="#2196F3"
-                >
-                  mdi-alert-outline
-                </v-icon>
-              </template>
-              
-              <template #item.legalName="{ item }">
-                {{ item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
-              </template>
-              <template #item.usualName="{ item }">
-                {{ item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
-              </template>
-              <template #item.error="{ item }">
-                <td class="td-class">
-                  {{ getIssueCount('ERROR', item.raw.sdcSchoolCollectionStudentValidationIssues) }}
-                </td>
-              </template>
-              <template #item.fundingWarning="{ item }">
-                <span>{{ getIssueCount('FUNDING_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
-              </template>
-              <template #item.infoWarning="{ item }">
-                <span>{{ getIssueCount('INFO_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
-              </template>
-            </v-data-table-server>
-          </v-row>
-        </v-col>
-        <v-col v-else>
-          <v-alert
-            dismissible="true"
-            class="clear-message"
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-data-table-server
+            v-model:items-per-page="pageSize"
+            v-model:page="pageNumber"
+            v-model="selectedStudents"
+            :headers="headers"
+            :items-length="totalStudents"
+            :items="studentListData"
+            :loading="isLoading()"
+            item-value="sdcSchoolCollectionStudentID"
+            class="mt-2"
+            mobile-breakpoint="0"
+            show-select
           >
-            <v-icon
-              class="mt-2 mr-3"
-              size="30"
-              color="darkgreen"
-            >
-              mdi-check-circle-outline
-            </v-icon>
-            <span class="success-message">Congratulations! There are no errors or warnings in the 1701 Submission</span>
-          </v-alert>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="nextButtonIsDisabled()"
-        justify="end"
+            <template #column.error="{ column }">
+              <v-icon
+                class="mt-2 mr-3"
+                size="25"
+                color="#d90606"
+              >
+                mdi-alert-circle-outline
+              </v-icon>
+            </template>
+            <template #column.fundingWarning="{ column }">
+              <v-icon
+                class="mt-2 mr-3"
+                size="25"
+                color="#ff9800"
+              >
+                mdi-alert-circle-outline
+              </v-icon>
+            </template>
+            <template #column.infoWarning="{ column }">
+              <v-icon
+                class="mt-2 mr-3"
+                size="25"
+                color="#2196F3"
+              >
+                mdi-alert-outline
+              </v-icon>
+            </template>
+
+            <template #item.legalName="{ item }">
+              {{ item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
+            </template>
+            <template #item.usualName="{ item }">
+              {{ item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
+            </template>
+            <template #item.error="{ item }">
+              <td class="td-class">
+                {{ getIssueCount('ERROR', item.raw.sdcSchoolCollectionStudentValidationIssues) }}
+              </td>
+            </template>
+            <template #item.fundingWarning="{ item }">
+              <span>{{ getIssueCount('FUNDING_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
+            </template>
+            <template #item.infoWarning="{ item }">
+              <span>{{ getIssueCount('INFO_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
+            </template>
+          </v-data-table-server>
+        </v-row>
+      </v-col>
+      <v-col v-else>
+        <v-alert
+          dismissible="true"
+          class="clear-message"
+        >
+          <v-icon
+            class="mt-2 mr-3"
+            size="30"
+            color="darkgreen"
+          >
+            mdi-check-circle-outline
+          </v-icon>
+          <span class="success-message">Congratulations! There are no errors or warnings in the 1701 Submission</span>
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row
+      v-if="nextButtonIsDisabled()"
       >
-        <p class="form-hint">
-          All errors must be fixed
-        </p>
-      </v-row>
-      <v-row justify="end">
-        <PrimaryButton
-          id="nextButton"
-          class="mr-2 mb-3"
-          icon="mdi-check"
-          text="Next"
-          :disabled="nextButtonIsDisabled()"
-          :click-action="next"
-        />
-      </v-row>
-    </div>
-    <div v-if="openEditView">
-      <EditAndFixStudentData 
-        :selected-students="selectedStudents"
-        :total-students="numIssueStudentsInCollection"
-        @show-issues="refresh"
-        @clear-filter="clearFiltersAndReload"
-        @filter-pen="filterStudentsByPen"
+      <v-col class="error-message">
+        <p class="form-hint">All errors must be fixed</p>
+      </v-col>
+    </v-row>
+    <v-row justify="end">
+      <PrimaryButton
+        id="nextButton"
+        class="mr-3 mb-3"
+        icon="mdi-check"
+        text="Next"
+        :disabled="nextButtonIsDisabled()"
+        :click-action="next"
       />
-    </div>
-  </v-container>
+    </v-row>
+  </div>
+  <div v-if="openEditView">
+    <EditAndFixStudentData
+      :selected-students="selectedStudents"
+      :total-students="numIssueStudentsInCollection"
+      @show-issues="refresh"
+      @clear-filter="clearFiltersAndReload"
+      @filter-pen="filterStudentsByPen"
+    />
+  </div>
 </template>
   
 <script>
@@ -332,6 +327,10 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isStepComplete: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['next'],
@@ -415,7 +414,7 @@ export default {
   },
   methods: {
     next() {
-      if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
+      if(this.isStepComplete) {
         this.$emit('next');
       } else {
         this.markStepAsComplete();
@@ -566,11 +565,6 @@ export default {
 </script>
   
   <style scoped>
-   .containerSetup{
-      padding-right: 0em !important;
-      padding-left: 0em !important;
-    }
-  
     .border {
       border: 2px solid grey;
       border-radius: 5px;
@@ -592,15 +586,8 @@ export default {
      border-width: thin;
      border-radius: 5px;
      padding: 2em;
-     margin-bottom: 2em;
+     margin-bottom: 1em;
    }
-  
-    @media screen and (max-width: 1200px) {
-      .containerSetup{
-        padding-right: 3em !important;
-        padding-left: 3em !important;
-      }
-    }
   
    :deep(.v-data-table-footer__items-per-page) {
        display: none;
@@ -630,8 +617,8 @@ export default {
    }
   
    .searchBox {
-     padding-left: 1em;
-     padding-right: 1em;
+     margin-left: 1em;
+     margin-right: 1em;
      border-radius: 5px;
      background-color: rgb(235, 237, 239);
    }
@@ -667,6 +654,10 @@ export default {
 
    .success-message{
     vertical-align: sub;
+   }
+
+   .error-message {
+    text-align: end;
    }
   
   </style>

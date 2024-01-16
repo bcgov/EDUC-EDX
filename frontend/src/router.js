@@ -23,15 +23,11 @@ import SchoolDetailsPage from './components/school/SchoolDetails.vue';
 import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.vue';
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
-import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
-import StepFourSchoolDetails from './components/sdcCollection/StepFourSchoolDetails.vue';
-import StepFiveSchoolContacts from './components/sdcCollection/StepFiveSchoolContacts.vue';
-import StepOneUploadData from './components/sdcCollection/StepOneUploadData.vue';
-import StepTwoViewDataIssues from './components/sdcCollection/stepTwoValidateData/StepTwoViewDataIssues.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
-import StepThreeVerifyData from './components/sdcCollection/stepThreeVerifyData/StepThreeVerifyData.vue';
+import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
 import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
+import ApiService from './common/apiService';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -232,7 +228,8 @@ const router = createRouter({
           component: SchoolListPage,
           meta: {
             pageTitle: PAGE_TITLES.SCHOOLS,
-            requiresAuth: true
+            requiresAuth: true,
+            mustBeDistrict: true
           }
         },
         {
@@ -276,60 +273,6 @@ const router = createRouter({
             requiresAuth: true,
             permission: 'STUDENT_DATA_COLLECTION'
           },
-          children: [
-            {
-              path: 'step-1',
-              name: 'step-1',
-              component: StepOneUploadData,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              },
-              props: true
-            },
-            {
-              path: 'step-2',
-              name: 'step-2',
-              component: StepTwoViewDataIssues,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              },
-              props: true,
-            },
-            {
-              path: 'step-3',
-              name: 'step-3',
-              component: StepThreeVerifyData,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            },
-            {
-              path: 'step-4',
-              name: 'step-4',
-              component: StepFourSchoolDetails,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            },
-            {
-              path: 'step-5',
-              name: 'step-5',
-              component: StepFiveSchoolContacts,
-              meta: {
-                pageTitle: PAGE_TITLES.SDC,
-                requiresAuth: true,
-                permission: 'STUDENT_DATA_COLLECTION'
-              }
-            }
-          ]
         }
       ]
     },
@@ -346,19 +289,31 @@ router.beforeEach((to, _from, next) => {
       if (!aStore.isAuthenticated) {
         next('/token-expired');
       } else {
-        aStore.getUserInfo().then(() => {
-          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions'))) {
-            if(to.fullPath === '/institute-selection'){
+        aStore.getUserInfo().then(async () => {
+          let schoolBelongsToDistrict = false;
+          if (aStore.userInfo.activeInstituteType === 'DISTRICT' && to?.params?.schoolID) {
+            await ApiService.getSchoolBelongsToDistrict(to.params.schoolID).then((result) => {
+              schoolBelongsToDistrict = result.data;
+            });
+          }
+          if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions'))) {
+            if (to.fullPath === '/institute-selection') {
               next();
-            }else{
+            } else {
               next('/institute-selection');
             }
-          }else if (to.meta.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo,'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
+          } else if (to?.meta?.permission && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions') || aStore.userInfo.activeInstitutePermissions.filter(perm => perm === to.meta.permission).length < 1)) {
             next('/unauthorized');
-          }else if (to && to.meta) {
-            if(aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)){
+          } else if (to?.params?.districtID && to.params.districtID !== aStore.userInfo.activeInstituteIdentifier) {
+            next('/unauthorized');
+          } else if (to?.params?.schoolID && to.params.schoolID !== aStore.userInfo.activeInstituteIdentifier && schoolBelongsToDistrict === false) {
+            next('/unauthorized');
+          } else if (to?.meta?.mustBeDistrict && aStore.userInfo.activeInstituteType !== 'DISTRICT') {
+            next('/unauthorized');
+          } else if (to?.meta) {
+            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
               apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
-            }else{
+            } else {
               apStore.setPageTitle(to.meta.pageTitle);
             }
             next();
@@ -379,7 +334,7 @@ router.beforeEach((to, _from, next) => {
     if (!aStore.userInfo) {
       next();
     }
-    if (to && to.meta) {
+    if (to?.meta) {
       apStore.setPageTitle(to.meta.pageTitle);
     } else {
       apStore.setPageTitle('');

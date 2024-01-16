@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia';
-import {SDC_STEPS} from '../../utils/institute/SdcSteps';
+import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
+import {LocalDateTime} from '@js-joda/core';
+import {getDateFormatter} from '../../utils/format';
 
 export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
   state: () => ({
     currentStepInCollectionProcess: null,
-    stepsInCollectionProcess: SDC_STEPS,
     currentCollectionTypeCode: null,
-    totalStepsInCollection: SDC_STEPS.length,
+    currentCollectionYear: null,
+    totalStepsInCollection: SDC_STEPS_SCHOOL.length,
     schoolCollection: null,
     bandCodesMap: new Map(),
     bandCodes: [],
@@ -33,15 +35,10 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     hideStepper: false
   }),
   getters: {
-    getCurrentStepInCollectionProcess: state => state.currentStepInCollectionProcess,
-    getStepsInCollectionProcess: state => state.stepsInCollectionProcess,
     getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
     getTotalStepsInCollection: state => state.totalStepsInCollection,
   },
   actions: {
-    setStepsInCollectionProcess(stepsInCollectionProcess) {
-      this.stepsInCollectionProcess = stepsInCollectionProcess;
-    },
     setHideStepper(hideStepper) {
       this.hideStepper = hideStepper;
     },
@@ -50,6 +47,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionTypeCode(currentCollectionTypeCode) {
       this.currentCollectionTypeCode = currentCollectionTypeCode;
+    },
+    setCurrentCollectionYear(currentCollectionYear) {
+      this.currentCollectionYear = currentCollectionYear;
     },
     setSchoolCollection(schoolCollection) {
       this.schoolCollection = schoolCollection;
@@ -138,50 +138,10 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     async getSchoolCollection(schoolCollectionId) {
-      if(this.schoolCollection == null) {
-        const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
-        this.setSchoolCollection(response.data);
-        this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-        this.setCollectionMetaData(response.data.sdcSchoolCollectionStatusCode);
-      }
-    },
-    setCollectionMetaData(sdcSchoolCollectionStatusCode) {
-      switch(sdcSchoolCollectionStatusCode) {
-      case 'NEW':
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
-        break;
-      case 'LOADED':
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-2'));
-        break;
-      case 'REVIEWED':
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-3'));
-        break;
-      case 'SCH_D_VRFD':
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-4'));
-        break;
-      case 'SCH_C_VRFD':
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-5'));
-        break;
-      default: 
-        this.setCurrentStepInCollectionProcess(this.stepsInCollectionProcess.find(step => step.label === 'STEP-1'));
-        break;
-      }
-      this.setStepsProgressState();
-    },
-    setStepsProgressState() {
-      this.stepsInCollectionProcess.forEach(step => {
-        if (step.index === this.currentStepInCollectionProcess.index) {
-          step.isStarted = true;
-          step.isComplete = false;
-        } 
-        if(step.index < this.currentStepInCollectionProcess.index) {
-          step.isComplete = true;
-        } 
-        if(step.index > this.currentStepInCollectionProcess.index) {
-          step.isStarted = false;
-          step.isComplete = false;
-        }
-      });
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
+      this.setSchoolCollection(response.data);
+      this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+      this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
     },
     async getCodes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.

@@ -27,7 +27,15 @@
     </v-row>
   
     <div v-if="reportView === 'detail'">
-      <DetailComponent :config="config" />
+      <DetailComponent
+        :config="config"
+        :school="school"
+      />
+    </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.headcountEndpoint"
+      />
     </div>
   </v-container>
 </template>
@@ -36,14 +44,21 @@
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { SPECIALED_PR } from '../../../utils/sdc/TableConfiguration';
-  
+import SummaryComponent from './SummaryComponent.vue';
+
 export default {
   name: 'SpecialEduComponent',
   components: {
+    SummaryComponent,
     DetailComponent
   },
   mixins: [alertMixin],
   props: {
+    school: {
+      type: Object,
+      required: true,
+      default: null
+    }
   },
   emits: [],
   data() {

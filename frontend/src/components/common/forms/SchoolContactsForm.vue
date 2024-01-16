@@ -109,6 +109,7 @@
         <v-row
           v-if="schoolContacts.has(schoolContactType.schoolContactTypeCode)"
           cols="2"
+          class="px-1"
         >
           <v-col
             v-for="contact in schoolContacts.get(schoolContactType.schoolContactTypeCode)"

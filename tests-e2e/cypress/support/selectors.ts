@@ -3,7 +3,8 @@ export default {
     manageSchoolButton: '#manageSchoolButton',
     schoolSelectorBox: 'div[role="listbox"]',
     selectSchoolDropdown: '#selectInstituteName',
-    accessUserFeedback: '.accessUserFeedback'
+    accessUserFeedback: '.v-alert__content',
+    confirmationDialog: '.v-overlay__content'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
@@ -14,7 +15,7 @@ export default {
     schoolContactsCard: '#schoolContactsCard',
     schoolDetailsCard: '#schoolDetailsCard',
     secureMessageTile: '#secureMessageInboxCard',
-    title: '#navTitle > div'
+    title: '#navTitle'
   },
   dataCollectionsLanding: {
     continue: '.navigate',
@@ -50,7 +51,7 @@ export default {
 
   },
   districtDetails: {
-    addWebsiteLink: '#addWebsiteLink',
+    addWebsiteLink: 'a.editField',
     districtDetailsWebsite: '#districtDetailsWebsite',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
@@ -77,15 +78,16 @@ export default {
   frenchComponent: {
     tab: '#frenchTab',
     summaryButton: '#frenchSummaryButton',
-    headcountHeaderList: '.french-headcount-header',
-    headcountHeaderColumn: '.french-headcount-header-column'
+    headcountCard: '.french-headcount-card',
+    headcountHeader: '.french-headcount-header',
+    headcountColumnData: '.french-headcount-column-data'
   },
   fteComponent: {
     tab: '#enrollmentTab',
     summaryButton: '#fteSummaryButton',
-    headcountHeaderList: '.enrollment-headcount-header',
-    headcountHeaderColumn: '.enrollment-headcount-header-column'
-
+    headcountCard: '.enrollment-headcount-card',
+    headcountHeader: '.enrollment-headcount-header',
+    headcountColumnData: '.enrollment-headcount-column-data'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
@@ -97,7 +99,10 @@ export default {
   },
   indigenousSupportComponent: {
     tab: '#indProgTab',
-    summaryButton: '#indProgSummaryButton'
+    summaryButton: '#indProgSummaryButton',
+    headcountCard: '.indigenous-headcount-card',
+    headcountHeader: '.indigenous-headcount-header',
+    headcountColumnData: '.indigenous-headcount-column-data'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -114,16 +119,16 @@ export default {
   newUserInvites: {
     emailInput: '#newUserEmail',
     firstNameInput: '#newUserFirstName',
-    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton",
+    generateNewCode: '#doGeneratePrimaryEdxActivationCodeButton',
     lastNameInput: '#newUserLastName',
     newUserButton: '#new-user-button',
     newUserInviteVCard: '#newUserInviteVCard',
-    primaryActivationCode: "#primaryEdxActivationCode",
+    primaryActivationCode: '#primaryEdxActivationCode',
     rolesSelectorBox: '#instituteNewUserRolesListBox',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     sendInviteButton: '#newUserInvitePostBtn',
-    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
-    noActivationCodeBanner: "#no-activation-code-banner"
+    toggleGenerateNewCode: '#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton',
+    noActivationCodeBanner: '#no-activation-code-banner'
   },
   schoolContacts: {
     cancelContactButton: '#cancelContactBtn',
@@ -146,11 +151,12 @@ export default {
     newContactPostBtn: '#newContactPostBtn',
     newContactTypeDropdown: '#newContactDropdown',
     subjectHeading: 'h2.subjectHeading',
-    resolveButton:'#resolveBtn'
+    resolveButton:'#resolveBtn',
+    activeTab: 'button.v-slide-group-item--active',
   },
   schoolDetails: {
     addAddressButton: '#addAddressButton',
-    addWebsiteLink: '#addWebsiteLink',
+    addWebsiteLink: 'a.editField',
     editableFieldAlert: '.v-alert__content',
     editAddressMailCity: '#mailAddressCity',
     editAddressPostalCode: '#mailAddressPostal',
@@ -167,17 +173,15 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
-    schoolDetailsWebsite: '#schoolDetailsWebsite',
-    schoolDisplayNameTitle: "#schoolDisplayNameTitle",
+    schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
+    schoolDisplayNameTitle: '#displayName',
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',
-    schoolMincodeTitle: "#schoolMincodeTitle",
-    schoolNameNoSpecialChars: '#schoolNameNoSpecialChars',
-    subjectHeading: 'h2.subjectHeading',
-    viewContactsButton: '#viewContactsButton',
+    schoolMincodeTitle: '#schoolMincodeTitle',
+    schoolNameNoSpecialChars: 'div.safe-name',
+    subjectHeading: 'h2.subjectHeading'
   },
   schoolList: {
-    viewFirstSchoolContactsButton: '#viewContactsButton0',
     schoolRow: '.hoverTable'
   },
   sdcSchoolStudentCollection: {
@@ -256,7 +260,15 @@ export default {
     fixAll: '#fixAll',
     selectStudentCheckbox: 'td.v-data-table__td.v-data-table-column--no-padding.v-data-table-column--align-start > div',
     selectedStudentsPaginator: '.footer-text',
-    backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a'
+    backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a',
+    stepTwoNameFilter: '#legalUsualNameSearch',
+    stepTwoPenLocalIdFilter: '#penSearch',
+    stepTwoSearchButton: '#searchButton',
+    stepTwoTableFirstRow: 'div > div.v-table__wrapper > table > tbody > tr > td:nth-child(4)',
+    stepTwoTableAllRows: 'div > div.v-table__wrapper > table > tbody > tr',
+    stepTwoClearSearchFilter: '#clearSearch',
+    duplicatePenFilter: '#duplicatePenFilter',
+    editStudentClearfilter: '#clearFilters'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
@@ -264,7 +276,7 @@ export default {
     personalActivationCodeInput: '#personalActivationCodeTextField',
     userActivationSubmitButton: '#edxUserActivationSubmitBtn',
     userActivationSnackBar: '.v-snackbar__content',
-    userActivationErrorMessaageSnackBar: '#user_activation_error_message',
+    userActivationErrorMessageSnackBar: '#user_activation_error_message',
     acceptTermsCheckbox: '#acceptTOU'
   }
-}
+};

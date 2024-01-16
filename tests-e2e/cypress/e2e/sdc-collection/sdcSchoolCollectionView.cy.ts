@@ -1,6 +1,6 @@
-import selectors from "../../support/selectors";
+import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollection } from "tests-e2e/cypress/services/sdc-collection-api-service";
+import { SchoolCollection } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -29,7 +29,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click();
 
       //step three of collection - edit/verify data
-      cy.get(selectors.studentLevelData.nextButton).should('exist').should('be.enabled').click();
+      cy.get(selectors.studentLevelData.nextButton).scrollIntoView().should('be.visible').click();
 
       // checking if the previous button is clickable and the user is taken to the previous step; brings to step 2
       cy.get(selectors.studentLevelData.stepTwo).should('exist').click();
@@ -44,8 +44,8 @@ describe('SDC School Collection View', () => {
     });
 
     it('can re-upload a collection file', () => {
-      cy.intercept(Cypress.env('interceptors').collection).as('collection');
-      cy.intercept(Cypress.env('interceptors').collection).as('collectionFile');
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collectionBySchoolID');
+      cy.intercept(Cypress.env('interceptors').collection).as('collectionRefresh');
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
@@ -53,11 +53,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.studentLevelData.stepOne).should('exist').click();
-      cy.wait('@collection');
-      cy.wait('@collectionFile');
+      cy.wait('@collectionBySchoolID');
+      cy.wait('@collectionRefresh');
       cy.get('#selectFileInput').selectFile('./cypress/uploads/sample-2-student-fnchars.std', { force: true });
-      cy.wait('@collection');
-      cy.wait('@collectionFile');
+      cy.wait('@collectionBySchoolID');
+      cy.wait('@collectionRefresh');
       cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Your document was uploaded successfully.');
     });
   });

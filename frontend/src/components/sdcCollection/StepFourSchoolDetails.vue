@@ -1,52 +1,49 @@
 <template>
-  <v-container 
-    class="containerSetup"
-    fluid
-  >
-    <div class="border">
-      <v-row
-        v-if="displayBanner"
-        class="mb-0"
-      >
-        <v-col>
-          <v-alert
-            density="compact"
-            color="#003366"
-            type="info"
-            variant="tonal"
-          >
-            Please review and verify that the details on the record for the school are accurate.
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <SchoolDetailsForm
-        :function-name="type"
-        @is-form-valid="checkFormValidity"
-        @edit-toggled="toggleBanner"
-      />
-    </div>
-      
-
-    <v-row justify="end">
-      <PrimaryButton
-        id="nextButton"
-        class="mr-2 mb-3"           
-        icon="mdi-check"
-        text="Verify 1601 as Correct and Continue"
-        :disabled="isDisabled"
-        :click-action="next"
-      />
-    </v-row>
+  <div class="border">
     <v-row
-      v-if="isDisabled"
-      justify="end"
+      v-if="displayBanner"
+      class="mb-0"
     >
+      <v-col>
+        <v-alert
+          density="compact"
+          color="#003366"
+          type="info"
+          variant="tonal"
+        >
+          Please review and verify that the details on the record for the school are accurate.
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <SchoolDetailsForm
+      :function-name="type"
+      @is-form-valid="checkFormValidity"
+      @edit-toggled="toggleBanner"
+    />
+  </div>
+
+  <v-row
+    v-if="isDisabled"
+  >
+    <v-col class="error-message">
       <p class="form-hint">
         Address, phone, and/or email must be added
       </p>
-    </v-row>
-  </v-container>
+    </v-col>
+  </v-row>
+
+  <v-row justify="end">
+    <PrimaryButton
+      id="nextButton"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Verify 1601 as Correct and Continue"
+      :disabled="isDisabled"
+      :click-action="next"
+    />
+  </v-row>
+
 </template>
   
 <script>
@@ -70,6 +67,10 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isStepComplete: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['next', 'previous'],
@@ -88,7 +89,7 @@ export default {
   },
   methods: {
     next() {
-      if(this.currentStepInCollectionProcess.isComplete) {
+      if(this.isStepComplete) {
         this.$emit('next');
       } else {
         this.markStepAsComplete();
@@ -118,11 +119,7 @@ export default {
 };
 </script>
     
-    <style scoped>
-  .containerSetup{
-    padding-right: 5em !important;
-    padding-left: 5em !important;
-  }
+<style scoped>
 
   .border {
     border: 2px solid grey;
@@ -135,14 +132,12 @@ export default {
     color: rgb(56, 89, 138);
     font-size: 14px;
   }
-  
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 3em !important;
-      padding-left: 3em !important;
-    }
-  } 
-    </style>
+
+  .error-message {
+    text-align: end;
+   }
+
+</style>
     
     
   

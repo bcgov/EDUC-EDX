@@ -40,6 +40,7 @@ export const ApiRoutes = Object.freeze({
     SCHOOLS_LAST_UPDATED_DATE: schoolRoot + '/lastUpdated',
     ALL_SCHOOLS_BY_CRIT: schoolRoot + '/allSchools',
     SCHOOL_DETAILS_BY_ID: schoolRoot + '/schoolDetailsById',
+    SCHOOL_BELONGS_TO_DISTRICT: schoolRoot + '/schoolBelongsToLoggedInDistrict',
     UPDATE_SCHOOL_CONTACT_URL: schoolRoot + '/update-contact'
   },
   sdc: {

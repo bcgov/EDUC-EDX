@@ -1,47 +1,44 @@
 <template>
-  <v-container 
-    class="containerSetup"
-    fluid
-  >
-    <div class="border">
-      <v-row>
-        <v-col>
-          <v-alert
-            density="compact"
-            color="#003366"
-            type="info"
-            variant="tonal"
-          >
-            Please review and verify that the details on the record for the school are accurate.
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <SchoolContactsForm
-        :function-name="type"
-        @school-contacts="checkIfPrincipalContactExists"
-      />
-    </div>
-
-    <v-row justify="end">
-      <PrimaryButton
-        id="nextButton"
-        class="mr-2 mb-3"           
-        icon="mdi-check"
-        text="Verify 1601 as Correct and Continue"
-        :disabled="isDisabled"
-        :click-action="next"
-      />
+  <div class="border">
+    <v-row>
+      <v-col>
+        <v-alert
+          density="compact"
+          color="#003366"
+          type="info"
+          variant="tonal"
+        >
+          Please review and verify that the details on the record for the school are accurate.
+        </v-alert>
+      </v-col>
     </v-row>
-    <v-row
-      v-if="isDisabled"
-      justify="end"
-    >
+
+    <SchoolContactsForm
+      :function-name="type"
+      @school-contacts="checkIfPrincipalContactExists"
+    />
+  </div>
+
+  <v-row
+    v-if="isDisabled"
+  >
+    <v-col class="error-message">
       <p class="form-hint">
         A principal with an active start date and contact information must be added
       </p>
-    </v-row>
-  </v-container>
+    </v-col>
+  </v-row>
+  
+  <v-row justify="end">
+    <PrimaryButton
+      id="nextButton"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Verify 1601 as Correct and Continue"
+      :disabled="isDisabled"
+      :click-action="next"
+    />
+  </v-row>
 </template>
   
 <script>
@@ -64,6 +61,10 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isStepComplete: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['next'],
@@ -82,7 +83,7 @@ export default {
   },
   methods: {
     next() {
-      if(this.currentStepInCollectionProcess.isComplete) {
+      if(this.isStepComplete) {
         this.$emit('next');
       }
     },
@@ -98,11 +99,7 @@ export default {
 };
 </script>
     
-    <style scoped>
- .containerSetup{
-    padding-right: 5em !important;
-    padding-left: 5em !important;
-  }
+<style scoped>
 
   .border {
     border: 2px solid grey;
@@ -110,19 +107,16 @@ export default {
     padding: 35px;
     margin-bottom: 2em;
   }
-  
-  @media screen and (max-width: 1200px) {
-    .containerSetup{
-      padding-right: 3em !important;
-      padding-left: 3em !important;
-    }
-  }
 
   .form-hint{
     color: rgb(56, 89, 138);
     font-size: 14px;
   }
-    </style>
+
+  .error-message {
+    text-align: end;
+   }
+</style>
     
     
   

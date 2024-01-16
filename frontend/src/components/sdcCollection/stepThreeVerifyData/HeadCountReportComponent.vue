@@ -8,7 +8,7 @@
         <th
           v-for="columnHeader in headcountTableData?.headers"
           :id="'tableHeader'+columnHeader"
-          :key="columnHeader"
+          :key="columnHeader + generateKey()"
         >
           {{ columnHeader==="title"?'':columnHeader }}
         </th>
@@ -17,12 +17,12 @@
     <tbody>
       <tr
         v-for="row in headcountTableData?.rows"
-        :key="row.title"
+        :key="row.title + generateKey()"
         :class="row.title===row.section?'section-header':''"
       >
         <td
           v-for="columnHeader in headcountTableData?.headers"
-          :key="columnHeader"
+          :key="row.title + columnHeader + generateKey()"
           :class="getClassForCell(columnHeader, row)"
         >
           <span :class="row[columnHeader]==='0'?'zero-cell':''">
@@ -36,6 +36,7 @@
 
 <script>
 import alertMixin from '../../../mixins/alertMixin';
+import {v4 as uuidv4} from 'uuid';
  
 export default {
   name: 'HeadCountReportComponent',
@@ -63,6 +64,9 @@ export default {
       } else {
         return 'table-cell';
       }
+    },
+    generateKey() {
+      return uuidv4();
     }
   }
 };

@@ -12,40 +12,57 @@
               cols="4"
             >
               <v-text-field
-                v-model="searchText"
-                label="PEN, Local ID, Name"
+                v-model="penLocalIdNameFilter"
+                label="PEN or Local ID or Name"
                 color="primary"
                 variant="underlined"
               />
             </v-col>
+
             <v-col
-              class="filter-col"
-              cols="4"
+              class="d-flex justify-start filter-col"
+              cols="6"
             >
-              <p v-if="config.defaultFilter.description === ''">
+              <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length == 0">
                 No filters applied
               </p>
-              <div v-else>
+              <div v-else-if="config.defaultFilter.description != ''">
                 <v-chip
-                  v-if="chip"
                   color="#003366"
-                  closable
-                  @click:close=" chip = false"
                 >
                   {{ config.defaultFilter.description }}
                 </v-chip>
               </div>
+
+              <div v-else-if="filterSearchParams.moreFilters.length > 0">
+                <v-chip-group>
+                  <span
+                    v-for="(filter, index) in filterSearchParams.moreFilters"
+                    :key="index"
+                  >
+                    <v-chip
+                      v-for="(val, i) in filter.value"
+                      :key="i"
+                      append-icon="mdi-close-circle"
+                      class="chip-margin"
+                      @click="removeFilter(filter.key, val.title);"
+                    >
+                      {{ val.title }}
+                    </v-chip>
+                  </span>
+                </v-chip-group>
+              </div>
             </v-col>
             <v-col
               class="d-flex justify-end"
-              cols="4"
+              cols="2"
             >
               <PrimaryButton
                 id="filters"
                 secondary
                 large-icon
                 icon="mdi-filter-multiple-outline"
-                text="More Filters"
+                text="Filters"
                 :click-action="toggleFilters"
                 class="mt-n1"
               />
@@ -130,19 +147,21 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-navigation-drawer 
-      v-model="showFilters" 
-      location="right" 
+    <v-navigation-drawer
+      v-model="showFilters"
+      location="right"
       temporary
-      width="700" 
+      width="700"
       :persistent="true"
       scrim="transparent"
-      :border="true" 
+      :border="true"
       style="top:0; height: 100%;"
       rounded="true"
     >
       <Filters
-        :filters="config.allowedFilters" 
+        :filters="config.allowedFilters"
+        :school="school"
+        :updated-filters="updatedFilters"
         @close-filters="updateFilters"
       />
     </v-navigation-drawer>
@@ -175,6 +194,11 @@ export default {
       required: true,
       type: Object,
       default: null
+    },
+    school: {
+      type: Object,
+      required: true,
+      default: null
     }
   },
   emits: [],
@@ -186,13 +210,14 @@ export default {
       studentList: [],
       isLoading: false,
       totalElements: 0,
-      searchText: '',
+      penLocalIdNameFilter: null,
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
-        sdcSchoolCollectionStudentStatusCode: 'LOADED,INFOWARN,FUNDWARN,VERIFIED,FIXABLE',
-        moreFilters: ''
+        sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
+        moreFilters: []
       },
       showFilters:null,
+      updatedFilters:[]
     };
   },
   computed: {
@@ -208,6 +233,22 @@ export default {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
       this.filterSearchParams.moreFilters = $event;
+      this.loadStudents();
+    },
+    removeFilter(toRemoveKey, toRemoveValue) {
+      let filteredKey = this.filterSearchParams.moreFilters.find(value => value.key === toRemoveKey);
+      if(filteredKey?.value?.length == 1) {
+        const idx =this.filterSearchParams.moreFilters.findIndex(value => value.key === toRemoveKey);
+        this.filterSearchParams.moreFilters.splice(idx, 1);
+      } else {
+        this.filterSearchParams.moreFilters.map(filter => {
+          if(filter.key === toRemoveKey) {
+            filter.value.splice(filter.value.findIndex(value => value.title === toRemoveValue), 1);
+          }
+        });
+      }
+      this.updatedFilters.splice();
+      this.updatedFilters = [...this.filterSearchParams.moreFilters];
       this.loadStudents();
     },
     loadStudents() {
@@ -279,10 +320,14 @@ export default {
     },
 
     search() {
+      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
+      this.loadStudents();
     },
 
     clear() {
-      this.searchText = '';
+      this.penLocalIdNameFilter = null;
+      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
+      this.loadStudents();
     }
 
   }
@@ -298,10 +343,15 @@ export default {
 
 .filter-col {
   color: #7f7f7f;
-  text-align: center;
 }
 
 .bold {
   font-weight: bold ;
+}
+
+.chip-margin {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  color: #003366;
 }
 </style>

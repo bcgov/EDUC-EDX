@@ -13,34 +13,35 @@
           cols="4"
           style="text-align: end;"
         >
-          <a @click="close()">Close</a>
+          <a @click="apply()">Apply Filters</a>
         </v-col>
       </v-row>
             
       <div
-        v-for="(filter, index) in filters"
+        v-for="(filterGroups, index) in filters"
         :key="index"
       >
         <v-row>
           <v-col class="filter-heading">
-            {{ filter?.heading }}
+            {{ filterGroups?.heading }}
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-for="(filter, idx) in filterGroups?.filterGroups" :key="filter.key">
           <v-btn-toggle
-            v-model="selected[index]"
-            color="#003366" 
+            v-model="selected[index][idx]"
+            color="#003366"
             rounded="0" 
-            :multiple="filter?.multiple" 
-            class="filter-toggle" 
-            @update:model-value="setFilter(selected[index], filter?.key)"
+            :multiple="filter?.multiple"
+            class="filter-toggle"
+            @update:model-value="setFilter(selected[index][idx], filter?.key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
               :key="i"
             >
               <v-btn
-                :value="option.value"
+                v-if="isVisible(filter?.key, option?.value)"
+                :value="option"
                 class="filter-button"
                 rounded="lg"
               >
@@ -67,69 +68,78 @@ export default {
       type: Array,
       required: true,
       default: null
+    },
+    school: {
+      type: Object,
+      required: true,
+      default: null
+    },
+    updatedFilters: {
+      type: Array,
+      required: true,
+      default: null 
     }
   },
   emits: ['closeFilters'],
   data() {
     return {
       selected:[],
-      gradeFilter: null,
-      fundingFilter: null,
-      warningFilter: null,
-      studentTypeFilter: null,
-      fteFilter: null
-
+      selectedFilters: {}
     };
   },
   computed: {
      
   },
   watch: {
-     
+    updatedFilters: {
+      handler(value) {
+        if(value.length > 0) {
+          this.clear();  
+          for(let filter of value) {
+            this.selected[filter.index] = filter.value;
+            if(filter.key === 'support') {
+              this.setFilter(filter.value[0], filter.key, filter.index);
+            } else {
+              this.setFilter(filter.value, filter.key, filter.index);
+            }
+          }
+        } else {
+          this.clear();
+        }
+      },
+      immediate: true
+    }
   },
   created() {
-    
+    this.selected = this.filters.map(filterGroup =>
+      filterGroup.filterGroups?.map(()=>[])
+    );
   },
   methods: {
     setFilter(val, key) {
-      switch(key) {
-      case 'studentType':
-        this.studentTypeFilter = {key: key, value: val};
-        break;
-      case 'fte':
-        this.fteFilter = {key: key, value: val};
-        break;
-      case 'grade':
-        this.gradeFilter = {key: key, value: val};
-        break;
-      case 'fundingType':
-        this.fundingFilter = {key: key, value: val};
-        break;
-      case 'warnings':
-        this.warningFilter = {key: key, value: val};
-        break;
-      default:
-        break;
+      if(key === 'support') {
+        this.selectedFilters[key] = [val];
+      } else {
+        this.selectedFilters[key] = val;
       }
     },
     clear() {
-      this.selected=[];
-      this.gradeFilter=null;
-      this.fundingFilter=null;
-      this.warningFilter=null;
-      this.studentTypeFilter= null;
-      this.fteFilter= null;
+      this.selected = this.filters.map(filterGroup =>
+        filterGroup.filterGroups?.map(()=>[])
+      );
     },
-    close() {
-      let filters = [];
-      filters.push(this.studentTypeFilter);
-      filters.push(this.fteFilter);
-      filters.push(this.warningFilter);
-      filters.push(this.fundingFilter);
-      filters.push(this.gradeFilter);
-
-      this.$emit('closeFilters', filters);
+    apply() {
+      const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
+      this.$emit('closeFilters', filtersToCheck);
     },
+    isVisible(key, value){
+      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
+        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
+      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
+        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
+      }
+      return true;
+    }
   }
 };
 </script>
@@ -142,13 +152,10 @@ export default {
     font-weight: bolder !important;
   }
 
-  .filter-card {
-    height: 100%;
-  }
-
   .filter-heading {
     font-weight: bold;
     color: #003366;
+    margin-top: 1em;
   }
 
   .filter-button {

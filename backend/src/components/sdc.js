@@ -1,9 +1,9 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission,checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission, checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
-const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
+const { FILTER_OPERATION, VALUE_TYPE, CONDITION } = require('../util/constants');
 const cacheService = require('./cache-service');
 
 async function getCollectionBySchoolId(req, res) {
@@ -11,12 +11,12 @@ async function getCollectionBySchoolId(req, res) {
     const token = getAccessToken(req);
     validateAccessToken(token, res);
     checkEDXCollectionPermission(req);
-    checkEDXUserAccess(req,'SCHOOL', req.params.schoolID);
+    checkEDXUserAccess(req, 'SCHOOL', req.params.schoolID);
 
     const data = await getData(token, `${config.get('sdc:schoolCollectionURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
-  }catch (e) {
-    if(e?.status === 404){
+  } catch (e) {
+    if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
     } else {
       log.error('Error getting collection for this school', e.stack);
@@ -43,7 +43,7 @@ async function uploadFile(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     console.log(JSON.stringify(e));
-    if(e.status === 400){
+    if (e.status === 400) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
     log.error('uploadFile Error', e.stack);
@@ -114,29 +114,38 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
 
     const search = [{
       condition: null,
-      searchCriteriaList: [{key: 'sdcSchoolCollection.sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID}]
+      searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
     }, {
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
     }];
 
-    if(req.query.searchParams['multiFieldName']) {
+    if (req.query.searchParams['multiFieldName']) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: createMultiFieldNameSearchCriteria(req.query.searchParams['multiFieldName'])
       });
     }
-    if(req.query.searchParams['penLocalIdNumber']) {
+    if (req.query.searchParams['penLocalIdNumber']) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
       });
     }
-    if(req.query.searchParams['moreFilters']) {
-      let criteriaArray =   createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+    if (req.query.searchParams['moreFilters']) {
+      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
-      })
+      });
+    }
+
+    if (req.query.searchParams['penLocalIdNameFilter']) {
+      let nameCriteria = createMultiFieldNameSearchCriteria(req.query.searchParams['penLocalIdNameFilter']);
+      let penCriteria = createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNameFilter']);
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [...nameCriteria, ...penCriteria]
+      });
     }
 
     const params = {
@@ -149,14 +158,14 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     };
 
     let data = await getDataWithParams(token, config.get('sdc:schoolCollectionStudentURL') + '/paginated', params, req.session?.correlationID);
-    if(req?.query?.returnKey) {
+    if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
       return res.status(HttpStatus.OK).json(result);
     }
 
     return res.status(HttpStatus.OK).json(data);
-  }catch (e) {
-    if(e?.status === 404){
+  } catch (e) {
+    if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
     } else {
       log.error('Error getting sdc school collection student paginated list', e.stack);
@@ -165,7 +174,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
   }
 }
 
-async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
+async function getSDCSchoolCollectionStudentSummaryCounts(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
@@ -175,8 +184,8 @@ async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
     let errorWarningCount = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/stats/error-warning-count/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(errorWarningCount);
-  }catch (e) {
-    if(e?.status === 404){
+  } catch (e) {
+    if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
     } else {
       log.error('Error getting sdc school collection student count summaries', e.stack);
@@ -185,28 +194,28 @@ async function getSDCSchoolCollectionStudentSummaryCounts (req, res) {
   }
 }
 
-async function getSDCSchoolCollectionStudentDetail (req, res) {
+async function getSDCSchoolCollectionStudentDetail(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
-    let sdcSchoolCollectionStudentData = await getData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    let sdcSchoolCollectionStudentData = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
 
     await validateEdxUserAccess(token, req, res, sdcSchoolCollectionStudentData.sdcSchoolCollectionID);
 
-    if(sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
+    if (sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
-    
+
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
-  }catch (e) {
+  } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
 
-async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
-  try{
+async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
+  try {
     const token = getAccessToken(req);
     validateAccessToken(token);
     checkEDXCollectionPermission(req);
@@ -218,7 +227,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
     payload.updateDate = null;
     payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
-    if(payload?.enrolledProgramCodes) {
+    if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
     }
 
@@ -234,7 +243,7 @@ async function updateAndValidateSdcSchoolCollectionStudent (req, res) {
 
 }
 
-async function deleteSDCSchoolCollectionStudent (req, res) {
+async function deleteSDCSchoolCollectionStudent(req, res) {
   try {
     const token = getAccessToken(req);
     validateAccessToken(token);
@@ -242,9 +251,9 @@ async function deleteSDCSchoolCollectionStudent (req, res) {
     await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
 
     log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing SDC student :: ' + req.params.sdcSchoolCollectionStudentID);
-    let deletedSdcSchoolCollectionStudentData = await deleteData(token,`${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    let deletedSdcSchoolCollectionStudentData = await deleteData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
-  }catch (e) {
+  } catch (e) {
     log.error('Error deleting SDC School Collection Student.', e.stack);
     return handleExceptionResponse(e, res);
   }
@@ -259,29 +268,29 @@ async function getStudentHeadcounts(req, res) {
 
     const params = {
       params: {
-        type: req.query.type, 
+        type: req.query.type,
         compare: req.query.compare
       }
     };
-    
-    let headCounts = await getDataWithParams(token,`${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params ,req.session?.correlationID);
+
+    let headCounts = await getDataWithParams(token, `${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(headCounts);
-  }catch (e) {
+  } catch (e) {
     log.error('Error getting Student headcount.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
 
-async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID){
+async function validateEdxUserAccess(token, req, res, sdcSchoolCollectionID) {
   const urlGetCollection = `${config.get('sdc:rootURL')}/sdcSchoolCollection/${sdcSchoolCollectionID}`;
   const sdcSchoolCollection = await getData(token, urlGetCollection, null);
-  if(!sdcSchoolCollection){
+  if (!sdcSchoolCollection) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No SDC school collection found of ID'
     });
   }
 
-  checkEDXUserAccess(req,'SCHOOL',sdcSchoolCollection.schoolID);
+  checkEDXUserAccess(req, 'SCHOOL', sdcSchoolCollection.schoolID);
 }
 
 function validateAccessToken(token, res) {
@@ -331,31 +340,31 @@ function createSearchCriteria(searchParams = []) {
     }
   ];
 
-  Object.keys(searchParams).forEach(function (key) {
+  Object.keys(searchParams).forEach(function(key) {
     let pValue = searchParams[key];
 
-    if (key === 'tabFilter' ) {
+    if (key === 'tabFilter') {
       let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
-      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR'].includes(searchParams[key].label)) {
+      if (['FRENCH_PR', 'CAREER_PR', 'INDSUPPORT_PR', 'ELL_PR'].includes(searchParams[key].label)) {
         searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: searchParams[key].enrolledProgramCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
-      if(searchParams[key].label === 'SPECIALED_PR') {
+      if (searchParams[key].label === 'SPECIALED_PR') {
         searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: searchParams[key].spedCodeValues, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
     if (key === 'studentPen') {
-      searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
     if (key === 'sdcSchoolCollectionStudentStatusCode') {
-      searchCriteriaList.push({key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.IN, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
     if (key === 'fundingWarningCategory') {
-      let fundingCat = fundingWarningCategories.filter(function(fund){
+      let fundingCat = fundingWarningCategories.filter(function(fund) {
         return fund.categoryCode === pValue;
       });
-      if(fundingCat){
-        searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueCode', operation: FILTER_OPERATION.IN, value: fundingCat[0].validationErrors.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      if (fundingCat) {
+        searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', operation: FILTER_OPERATION.IN, value: fundingCat[0].validationErrors.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
   });
@@ -406,92 +415,130 @@ function createLocalIdPenSearchCriteria(value) {
   return searchCriteriaList;
 }
 
-function createMoreFiltersSearchCriteria(searchFilter=[]) {
+function createMoreFiltersSearchCriteria(searchFilter = []) {
   let searchCriteriaList = [];
   let studentTypeFilterList = [];
   let fteFilterList = [];
+  let supportBlockList = [];
   searchFilter.forEach((elem) => {
-    let pValue = elem.value;
-    if(elem.key === 'studentType' && pValue) {
-      if(pValue.includes('isSchoolAged')) {
-        studentTypeFilterList.push({key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
+    let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
+    if (elem.key === 'studentType' && pValue) {
+      if (pValue.includes('isSchoolAged')) {
+        studentTypeFilterList.push({ key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
       }
-      if(pValue.includes('isAdult')) {
-        studentTypeFilterList.push({key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR})
-      }
-    }
-    if(elem.key === 'fte' && pValue) {
-      if(pValue.includes('fteEq0')) {
-        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
-      }
-      if(pValue.includes('fteLt1')) {
-        fteFilterList.push({key: 'fte', value: 1, operation: FILTER_OPERATION.LESS_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
-      }
-      if(pValue.includes('fteGt0')) {
-        fteFilterList.push({key: 'fte', value: 0, operation: FILTER_OPERATION.GREATER_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR})
+      if (pValue.includes('isAdult')) {
+        studentTypeFilterList.push({ key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
       }
     }
-    if(elem.key === 'grade' && pValue) {
+    if (elem.key === 'fte' && pValue) {
+      if (pValue.includes('fteEq0')) {
+        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+      }
+      if (pValue.includes('fteLt1')) {
+        fteFilterList.push({ key: 'fte', value: 1, operation: FILTER_OPERATION.LESS_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+      }
+      if (pValue.includes('fteGt0')) {
+        fteFilterList.push({ key: 'fte', value: 0, operation: FILTER_OPERATION.GREATER_THAN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+      }
+    }
+    if (elem.key === 'grade' && pValue) {
       validateGradeFilter(pValue);
-      searchCriteriaList.push({key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+      searchCriteriaList.push({ key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
-    if(elem.key === 'warnings' && pValue) {
-      searchCriteriaList.push({key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND})
+    if (elem.key === 'warnings' && pValue) {
+      searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
-    if(elem.key === 'fundingType' && pValue) {
-        validateFundingTypeFilter(pValue);
+    if (elem.key === 'support' && pValue) {
+      if (pValue === 'hasSupportBlocks') {
+        supportBlockList.push({ key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+        supportBlockList.push({ key: 'supportBlocks', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if (pValue === 'noSupportBlocks') {
+        supportBlockList.push({ key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        supportBlockList.push({ key: 'supportBlocks', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+    }
+    if (elem.key === 'fteZero' && pValue) {
+      validateFteZeroFilter(pValue);
+      searchCriteriaList.push({ key: 'fteZeroReasonCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
+    if (elem.key === 'fundingType' && pValue) {
+      validateFundingTypeFilter(pValue);
 
-        if(pValue.includes('14')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
-        }
-        if(pValue.includes('20')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
-        }
-        if(pValue.includes('16')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
-        }
-        if(pValue.includes('No Funding')) {
-          searchCriteriaList.push({key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR})
-        }
-        
-    }    
-  })
+      if (pValue.includes('14')) {
+        searchCriteriaList.push({ key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+      if (pValue.includes('20')) {
+        searchCriteriaList.push({ key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+      if (pValue.includes('16')) {
+        searchCriteriaList.push({ key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+      if (pValue.includes('No Funding')) {
+        searchCriteriaList.push({ key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+
+    }
+  });
   const search = [];
-  if(searchCriteriaList.length > 0) {
+  if (searchCriteriaList.length > 0) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: searchCriteriaList
     });
   }
-  if(studentTypeFilterList.length > 0) {
+  if (studentTypeFilterList.length > 0) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: studentTypeFilterList
     });
   }
-  if(fteFilterList.length > 0) {
+  if (fteFilterList.length > 0) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: fteFilterList
     });
   }
+  if (supportBlockList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: supportBlockList
+    });
+  }
   return search;
 }
 
-function validateGradeFilter(filterGrades=[]) {
+function validateFteZeroFilter(filters) {
+  let fteZeroCategories = [
+    'OUTOFPROV',
+    'NOMROLL',
+    'TOOYOUNG',
+    'INDYADULT',
+    'INACTIVE',
+    'DISTDUP',
+    'AUTHDUP'
+  ];
+  if (filters.length > 0) {
+    if (filters.every(value => fteZeroCategories.includes(cat => value === cat))) {
+      log.error('Invalid zero fte reason code.');
+      throw new Error('400');
+    }
+  }
+}
+
+function validateGradeFilter(filterGrades = []) {
   const activeGradeCodes = cacheService.getActiveEnrolledGradeCodes();
-  if(filterGrades.length > 0) {
-    if(filterGrades.every(value => activeGradeCodes.includes(grade => value === grade.enrolledGradeCode))) {
+  if (filterGrades.length > 0) {
+    if (filterGrades.every(value => activeGradeCodes.includes(grade => value === grade.enrolledGradeCode))) {
       log.error('Invalid grade filter.');
       throw new Error('400');
     }
   }
 }
 
-function validateFundingTypeFilter(filterGrades=[]) {
+function validateFundingTypeFilter(filterGrades = []) {
   const activeFundingCodes = cacheService.getActiveFundingCodes();
-  if(filterGrades.length > 0) {
-    if(filterGrades.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
+  if (filterGrades.length > 0) {
+    if (filterGrades.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
       log.error('Invalid funding code filter.');
       throw new Error('400');
     }

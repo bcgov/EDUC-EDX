@@ -68,11 +68,9 @@
               {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
             </v-icon>
             <div v-else>
-              <div v-if="column.key === 'legalName'">
-                <span v-if="props.item.raw['legalLastName']">{{ props.item.raw['legalLastName'] }}</span>,
-                <span v-if="props.item.raw['legalFirstName']">{{ props.item.raw['legalFirstName'] }}</span>
-                <span v-if="props.item.raw['legalMiddleNames']">({{ props.item.raw['legalMiddleNames'] }})</span>
-              </div>
+              <span v-if="column.key === 'legalName'">
+                {{ displayName(props.item.raw['legalFirstName'], props.item.raw['legalMiddleNames'], props.item.raw['legalLastName']) }}
+              </span>
 
               <div v-else-if="column.key === 'isAdult'">
                 <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
@@ -87,11 +85,9 @@
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
-                  <div v-if="props.item.raw['usualLastName'] || props.item.raw['usualFirstName'] || props.item.raw['usualMiddleNames']">
-                    <span v-if="props.item.raw['usualLastName']">{{ props.item.raw['usualLastName'] }}</span>,
-                    <span v-if="props.item.raw['usualFirstName']">{{ props.item.raw['usualFirstName'] }}</span>
-                    <span v-if="props.item.raw['usualMiddleNames']">({{ props.item.raw['usualMiddleNames'] }})</span>
-                  </div>
+                  <span v-if="props.item.raw['usualLastName'] || props.item.raw['usualFirstName'] || props.item.raw['usualMiddleNames']">
+                    {{ displayName(props.item.raw['usualFirstName'], props.item.raw['usualMiddleNames'], props.item.raw['usualLastName']) }}
+                  </span>
                   <span v-else>-</span>
                 </div>
                 <div v-else-if="column.subHeader.key === 'isGraduated'">
@@ -194,10 +190,10 @@ export default {
     },
     getSdcStudentStatusIconColor(status) {
       if (status === 'FUNDWARN') {
-        return 'blue';
+        return '#ff9800';
       }
       else if (status === 'INFOWARN') {
-        return 'orange';
+        return '#2196F3';
       }
     },
     getSdcStudentIssueIcon(status) {
@@ -208,6 +204,26 @@ export default {
         return 'mdi-alert-circle-outline';
       }
     },
+    displayName(first, middle, last) {
+      let name = '';
+      if (last) {
+        name += last;
+      }
+
+      if (first && last) {
+        name +=  `, ${first}` ;
+      } else if (first) {
+        name += first;
+      }
+
+      if ((first && middle) || (last && middle)) {
+        name += ` (${middle})`;
+      } else if (middle) {
+        name += `(${middle})`;
+      }
+
+      return name;
+    }
   }
 };
 </script>
@@ -222,5 +238,4 @@ export default {
     border-bottom-color: rgb(255 255 255 / 45%);
     vertical-align: top !important;
  }
-   
 </style>

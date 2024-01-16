@@ -1,61 +1,43 @@
-
 /**
- * stepStatus values: 'in-progress', 'not-started', 'complete'
+ * @type {({sdcSchoolCollectionStatusCode: string, step: number, title: string}|{sdcSchoolCollectionStatusCode: string, step: number, title: string}|{sdcSchoolCollectionStatusCode: string, step: number, title: string}|{sdcSchoolCollectionStatusCode: string, step: number, title: string}|{sdcSchoolCollectionStatusCode: string, step: number, title: string})[]}
+ * step refers to the stepper window step which starts at 1
+ * example: step-1 of the collection process is at step 1
  */
-export const SDC_STEPS = Object.freeze(
-  [
-    {
-      label: 'STEP-1',
-      name: 'Upload Data',
-      id: 'step-1',
-      route: 'step-1',
-      next: 'step-2',
-      index: 0,
-      isStarted: false,
-      isComplete: false
-    }, {
-      label: 'STEP-2',
-      name: 'Review & Fix Data Issues',
-      id: 'step-2',
-      route: 'step-2',
-      next: 'step-3',
-      index: 1,
-      isStarted: false,
-      isComplete: false
-    }, {
-      label: 'STEP-3',
-      name: 'Edit/Verify Data',
-      id: 'step-3',
-      route: 'step-3',
-      next: 'step-4',
-      index: 2,
-      isStarted: false,
-      isComplete: false
-    }, {
-      label: 'STEP-4',
-      name: 'Verify School Details (1601)',
-      id: 'step-4',
-      route: 'step-4',
-      next: 'step-5',
-      index: 3,
-      isStarted: false,
-      isComplete: false
-    }, {
-      label: 'STEP-5',
-      name: 'Verify School Contacts(1601)',
-      id: 'step-5',
-      index: 4,
-      route: 'step-5',
-      isStarted: false,
-      isComplete: false
-    }, {
-      label: 'STEP-6',
-      name: 'Submit Data',
-      id: 'step-6',
-      index: 5,
-      route: 'step-5',
-      isStarted: false,
-      isComplete: false
-    }
-  ]
-);
+export const SDC_STEPS_SCHOOL = Object.freeze([
+  {
+    id: 'step-1',
+    title: 'Upload Data',
+    step: 1,
+    sdcSchoolCollectionStatusCode: 'NEW'
+  },
+  {
+    id: 'step-2',
+    title: 'Review & Fix Data Issues',
+    step: 2,
+    sdcSchoolCollectionStatusCode: 'LOADED'
+  },
+  {
+    id: 'step-3',
+    title: 'Edit/Verify Data Issues',
+    step: 3,
+    sdcSchoolCollectionStatusCode: 'REVIEWED'
+  },
+  {
+    id: 'step-4',
+    title: 'Verify School Details (1601)',
+    step: 4,
+    sdcSchoolCollectionStatusCode: 'SCH_D_VRFD'
+  },
+  {
+    id: 'step-5',
+    title: 'Verify School Contacts (1601)',
+    step: 5,
+    sdcSchoolCollectionStatusCode: 'SCH_C_VRFD'
+  },
+  {
+    id: 'step-6',
+    title: 'Submit Data',
+    step: 6,
+    sdcSchoolCollectionStatusCode: 'TO_BE_CONFIRMED' //confirm this step when implemented
+  },
+]);

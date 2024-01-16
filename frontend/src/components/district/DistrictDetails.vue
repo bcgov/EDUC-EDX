@@ -77,8 +77,8 @@
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <v-tabs v-model="activeTab">
-              <v-tab value="details">
+            <v-tabs style="color: #38598a" v-model="activeTab">
+              <v-tab  value="details">
                 Details
               </v-tab>
               <v-tab value="contacts">

@@ -9,7 +9,8 @@ function generateSchoolObject(school) {
     schoolName: school.displayName,
     effectiveDate: school.openedDate,
     expiryDate: school.closedDate,
-    schoolCategoryCode: school.schoolCategoryCode
+    schoolCategoryCode: school.schoolCategoryCode,
+    facilityTypeCode: school.facilityTypeCode
   };
 }
 
