@@ -18,22 +18,22 @@
       </v-row>
             
       <div
-        v-for="(filter, index) in filters"
+        v-for="(filterGroups, index) in filters"
         :key="index"
       >
         <v-row>
           <v-col class="filter-heading">
-            {{ filter?.heading }}
+            {{ filterGroups?.heading }}
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-for="(filter, idx) in filterGroups?.filterGroups" :key="filter.key">
           <v-btn-toggle
-            v-model="selected[index]"
-            color="#003366" 
+            v-model="selected[index][idx]"
+            color="#003366"
             rounded="0" 
-            :multiple="filter?.multiple" 
-            class="filter-toggle" 
-            @update:model-value="setFilter(selected[index], filter?.key, index)"
+            :multiple="filter?.multiple"
+            class="filter-toggle"
+            @update:model-value="setFilter(selected[index][idx], filter?.key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
@@ -84,13 +84,7 @@ export default {
   data() {
     return {
       selected:[],
-      gradeFilter: null,
-      fundingFilter: null,
-      warningFilter: null,
-      studentTypeFilter: null,
-      fteFilter: null,
-      supportBlockFilter: null,
-      fteZeroFilter: null
+      selectedFilters: {}
     };
   },
   computed: {
@@ -117,51 +111,26 @@ export default {
     }
   },
   created() {
-    
+    this.selected = this.filters.map(filterGroup =>
+      filterGroup.filterGroups?.map(()=>[])
+    );
   },
   methods: {
-    setFilter(val, key, index) {
-      switch(key) {
-      case 'studentType':
-        this.studentTypeFilter = {key: key, value: val, index: index};
-        break;
-      case 'fte':
-        this.fteFilter = {key: key, value: val, index: index};
-        break;
-      case 'grade':
-        this.gradeFilter = {key: key, value: val, index: index};
-        break;
-      case 'fundingType':
-        this.fundingFilter = {key: key, value: val, index: index};
-        break;
-      case 'warnings':
-        this.warningFilter = {key: key, value: val, index: index};
-        break;
-      case 'support':
-        this.supportBlockFilter = {key: key, value: [val], index: index};
-        break;
-      case 'fteZero':
-        this.fteZeroFilter = {key: key, value: val, index: index};
-        break;
-      default:
-        break;
+    setFilter(val, key) {
+      if(key === 'support') {
+        this.selectedFilters[key] = [val];
+      } else {
+        this.selectedFilters[key] = val;
       }
     },
     clear() {
-      this.selected=[];
-      this.gradeFilter=null;
-      this.fundingFilter=null;
-      this.warningFilter=null;
-      this.studentTypeFilter=null;
-      this.fteFilter=null;
-      this.supportBlockFilter=null;
-      this.fteZeroFilter=null;
+      this.selected = this.filters.map(filterGroup =>
+        filterGroup.filterGroups?.map(()=>[])
+      );
     },
     apply() {
-      let filters = [];
-      const filtersToCheck = [this.studentTypeFilter, this.fteFilter, this.warningFilter, this.fundingFilter, this.gradeFilter, this.supportBlockFilter, this.fteZeroFilter];
-      filters = filtersToCheck.filter(f => f?.value?.length > 0);
-      this.$emit('closeFilters', filters);
+      const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
+      this.$emit('closeFilters', filtersToCheck);
     },
     isVisible(key, value){
       if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
