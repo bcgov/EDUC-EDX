@@ -277,11 +277,10 @@
     </v-row>
     <v-row
       v-if="nextButtonIsDisabled()"
-      justify="end"
-    >
-      <p class="form-hint">
-        All errors must be fixed
-      </p>
+      >
+      <v-col class="error-message">
+        <p class="form-hint">All errors must be fixed</p>
+      </v-col>
     </v-row>
     <v-row justify="end">
       <PrimaryButton
@@ -655,6 +654,10 @@ export default {
 
    .success-message{
     vertical-align: sub;
+   }
+
+   .error-message {
+    text-align: end;
    }
   
   </style>

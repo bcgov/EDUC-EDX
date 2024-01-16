@@ -263,6 +263,14 @@ export default {
   }
 }
 
+.v-stepper-window {
+    margin: 0rem !important;
+}
+
+.v-stepper-header {
+  box-shadow: none !important;
+}
+
 </style>
 
 
