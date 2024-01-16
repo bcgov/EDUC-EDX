@@ -19,6 +19,16 @@
     />
   </div>
 
+  <v-row
+    v-if="isDisabled"
+  >
+    <v-col class="error-message">
+      <p class="form-hint">
+        A principal with an active start date and contact information must be added
+      </p>
+    </v-col>
+  </v-row>
+  
   <v-row justify="end">
     <PrimaryButton
       id="nextButton"
@@ -28,14 +38,6 @@
       :disabled="isDisabled"
       :click-action="next"
     />
-  </v-row>
-  <v-row
-    v-if="isDisabled"
-    justify="end"
-  >
-    <p class="form-hint">
-      A principal with an active start date and contact information must be added
-    </p>
   </v-row>
 </template>
   
@@ -110,6 +112,10 @@ export default {
     color: rgb(56, 89, 138);
     font-size: 14px;
   }
+
+  .error-message {
+    text-align: end;
+   }
 </style>
     
     
