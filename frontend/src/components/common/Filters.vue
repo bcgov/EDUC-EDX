@@ -152,10 +152,6 @@ export default {
     font-weight: bolder !important;
   }
 
-  .filter-card {
-    height: 100%;
-  }
-
   .filter-heading {
     font-weight: bold;
     color: #003366;
