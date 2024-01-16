@@ -5,16 +5,20 @@
 export const WARNING_FILTER = Object.freeze(
   {
     heading: 'Warnings',
-    multiple: true,
-    key: 'warnings',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'Has Funding Warnings',
-        value: 'FUNDING_WARNING'
-      },
-      {
-        title: 'Has Info Warnings',
-        value: 'INFO_WARNING'
+        multiple: true,
+        key: 'warnings',
+        filterOptions: [
+          {
+            title: 'Has Funding Warnings',
+            value: 'FUNDING_WARNING'
+          },
+          {
+            title: 'Has Info Warnings',
+            value: 'INFO_WARNING'
+          }
+        ]
       }
     ]
   }
@@ -23,16 +27,20 @@ export const WARNING_FILTER = Object.freeze(
 export const STUDENT_TYPE_FILTER = Object.freeze(
   {
     heading: 'Student Type',
-    multiple: true,
-    key:'studentType',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'School Aged',
-        value: 'isSchoolAged'
-      },
-      {
-        title: 'Adult',
-        value: 'isAdult'
+        multiple: true,
+        key: 'studentType',
+        filterOptions: [
+          {
+            title: 'School Aged',
+            value: 'isSchoolAged'
+          },
+          {
+            title: 'Adult',
+            value: 'isAdult'
+          }
+        ]
       }
     ]
   },
@@ -41,20 +49,24 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
 export const FTE_FILTER = Object.freeze(
   {
     heading: 'FTE',
-    multiple: true,
-    key:'fte',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'FTE = 0',
-        value: 'fteEq0'
-      },
-      {
-        title: 'FTE < 1',
-        value: 'fteLt1'
-      },
-      {
-        title: 'FTE > 0',
-        value: 'fteGt0'
+        multiple: true,
+        key: 'fte',
+        filterOptions: [
+          {
+            title: 'FTE = 0',
+            value: 'fteEq0'
+          },
+          {
+            title: 'FTE < 1',
+            value: 'fteLt1'
+          },
+          {
+            title: 'FTE > 0',
+            value: 'fteGt0'
+          }
+        ]
       }
     ]
   },
@@ -63,24 +75,28 @@ export const FTE_FILTER = Object.freeze(
 export const FUNDING_TYPE_FILTER = Object.freeze(
   {
     heading: 'Funding Type',
-    multiple: true,
-    key: 'fundingType',
-    filterOptions: [
+    filterGroups: [
       {
-        title: '14 - Out of Province/International',
-        value: '14'
-      },
-      {
-        title: '20 - Living on Reserve',
-        value: '20'
-      },
-      {
-        title: '16 - Newcomer Refugee',
-        cvalue: '16'
-      },
-      {
-        title: 'No Funding Code',
-        value: 'No Funding'
+        multiple: true,
+        key: 'fundingType',
+        filterOptions: [
+          {
+            title: '14 - Out of Province/International',
+            value: '14'
+          },
+          {
+            title: '20 - Living on Reserve',
+            value: '20'
+          },
+          {
+            title: '16 - Newcomer Refugee',
+            cvalue: '16'
+          },
+          {
+            title: 'No Funding Code',
+            value: 'No Funding'
+          }
+        ]
       }
     ]
   },
@@ -89,77 +105,81 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
 export const GRADE_FILTER = Object.freeze(
   {
     heading: 'Grade',
-    multiple: true,
-    key: 'grade',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'Kind. Half',
-        value: 'KH'
-      },
-      {
-        title: 'Kind. Full',
-        value: 'KF'
-      },
-      {
-        title: 'Gr. 1',
-        value: '01'
-      },
-      {
-        title: 'Gr. 2',
-        value: '02'
-      },
-      {
-        title: 'Gr. 3',
-        value: '03'
-      },
-      {
-        title: 'Gr. 4',
-        value: '04'
-      },
-      {
-        title: 'Gr. 5',
-        value: '05'
-      },
-      {
-        title: 'Gr. 6',
-        value: '06'
-      },
-      {
-        title: 'Gr. 7',
-        value: '07'
-      },
-      {
-        title: 'Elem. Ungraded',
-        value: 'EU'
-      },
-      {
-        title: 'Gr. 8',
-        value: '08'
-      },
-      {
-        title: 'Gr. 9',
-        value: '09'
-      },
-      {
-        title: 'Gr. 10',
-        value: '10'
-      },
-      {
-        title: 'Gr. 11',
-        value: '11'
-      },
-      {
-        title: 'Gr. 12',
-        value: '12'
-      },
-      {
-        title: 'Sec. Ungraded',
-        value: 'SU'
-      },
-      {
-        title: 'Graduated Adult',
-        value: 'GA'
-      },
+        multiple: true,
+        key: 'grade',
+        filterOptions: [
+          {
+            title: 'Kind. Half',
+            value: 'KH'
+          },
+          {
+            title: 'Kind. Full',
+            value: 'KF'
+          },
+          {
+            title: 'Gr. 1',
+            value: '01'
+          },
+          {
+            title: 'Gr. 2',
+            value: '02'
+          },
+          {
+            title: 'Gr. 3',
+            value: '03'
+          },
+          {
+            title: 'Gr. 4',
+            value: '04'
+          },
+          {
+            title: 'Gr. 5',
+            value: '05'
+          },
+          {
+            title: 'Gr. 6',
+            value: '06'
+          },
+          {
+            title: 'Gr. 7',
+            value: '07'
+          },
+          {
+            title: 'Elem. Ungraded',
+            value: 'EU'
+          },
+          {
+            title: 'Gr. 8',
+            value: '08'
+          },
+          {
+            title: 'Gr. 9',
+            value: '09'
+          },
+          {
+            title: 'Gr. 10',
+            value: '10'
+          },
+          {
+            title: 'Gr. 11',
+            value: '11'
+          },
+          {
+            title: 'Gr. 12',
+            value: '12'
+          },
+          {
+            title: 'Sec. Ungraded',
+            value: 'SU'
+          },
+          {
+            title: 'Graduated Adult',
+            value: 'GA'
+          },
+        ]
+      }
     ]
   },
 );
@@ -167,16 +187,20 @@ export const GRADE_FILTER = Object.freeze(
 export const SUPPORT_BLOCKS_FILTER = Object.freeze(
   {
     heading: 'Support Blocks',
-    multiple: false,
-    key: 'support',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'Has Support Blocks',
-        value: 'hasSupportBlocks'
-      },
-      {
-        title: 'No Support Blocks',
-        value: 'noSupportBlocks'
+        multiple: false,
+        key: 'support',
+        filterOptions: [
+          {
+            title: 'Has Support Blocks',
+            value: 'hasSupportBlocks'
+          },
+          {
+            title: 'No Support Blocks',
+            value: 'noSupportBlocks'
+          }
+        ]
       }
     ]
   }
@@ -185,39 +209,133 @@ export const SUPPORT_BLOCKS_FILTER = Object.freeze(
 export const FTE_ZERO_FILTER = Object.freeze(
   {
     heading: 'Reasons for FTE = 0 ',
-    multiple: true,
-    key: 'fteZero',
-    filterOptions: [
+    filterGroups: [
       {
-        title: 'Out of Province International ',
-        value: 'OUTOFPROV'
-      },
-      {
-        title: 'Nominal Roll Eligible',
-        value: 'NOMROLL'
-      },
-      {
-        title: 'Student Too Young',
-        value: 'TOOYOUNG'
-      },
-      {
-        title: 'Graduated Adult',
-        value: 'INDYADULT'
-      },
-      {
-        title: 'No new active courses',
-        value: 'INACTIVE'
-      },
-      {
-        title: 'District already received funding',
-        value: 'DISTDUP'
-      },
-      {
-        title: 'Authority already received funding',
-        value: 'AUTHDUP'
+        multiple: true,
+        key: 'fteZero',
+        filterOptions: [
+          {
+            title: 'Out of Province International ',
+            value: 'OUTOFPROV'
+          },
+          {
+            title: 'Nominal Roll Eligible',
+            value: 'NOMROLL'
+          },
+          {
+            title: 'Student Too Young',
+            value: 'TOOYOUNG'
+          },
+          {
+            title: 'Graduated Adult',
+            value: 'INDYADULT'
+          },
+          {
+            title: 'No new active courses',
+            value: 'INACTIVE'
+          },
+          {
+            title: 'District already received funding',
+            value: 'DISTDUP'
+          },
+          {
+            title: 'Authority already received funding',
+            value: 'AUTHDUP'
+          }
+        ]
       }
     ]
   }
+);
+
+export const FRENCH_PROGRAMS_FILTER = Object.freeze(
+  {
+    heading: 'French Programs',
+    filterGroups: [
+      {
+        multiple: false,
+        key:'frenchProgram11',
+        filterOptions: [
+          {
+            title: '11 - Early French Immersion',
+            value: 'fteEq0'
+          },
+          {
+            title: 'No Early French Immersion',
+            value: 'fteLt1'
+          }
+        ],
+        selectedValues: []
+      },
+      {
+        multiple: false,
+        key:'frenchProgram14',
+        filterOptions: [
+          {
+            title: '14 - Late French Immersion',
+            value: 'fteGt0'
+          },
+          {
+            title: 'No Late French Immersion',
+            value: 'fteGt0'
+          }
+        ],
+        selectedValues: []
+      },
+      {
+        multiple: false,
+        key:'frenchProgram08',
+        filterOptions: [
+          {
+            title: '08 - Core French',
+            value: 'fteGt0'
+          },
+          {
+            title: 'No Core French',
+            value: 'fteGt0'
+          }
+        ],
+        selectedValues: []
+      },
+      {
+        multiple: false,
+        key:'frenchProgramAll',
+        filterOptions: [
+          {
+            title: 'Has French Program',
+            value: 'fteGt0'
+          },
+          {
+            title: 'No French Programs',
+            value: 'fteGt0'
+          }
+        ],
+        selectedValues: []
+      }
+    ]
+  }
+);
+
+export const FRENCH_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'French Program Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'frenchFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'fteEq0'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'fteLt1'
+          }
+        ]
+      }
+    ]
+  },
 );
 
 /**
@@ -268,6 +386,8 @@ export const FRENCH_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      FRENCH_PROGRAMS_FILTER,
+      FRENCH_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
