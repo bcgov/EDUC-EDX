@@ -14,4 +14,5 @@ EXPOSE 443 8080
 
 RUN chgrp -R 0 ./.npm && \
     chmod -R g=u ./.npm
+
 CMD ["npm", "start"]
