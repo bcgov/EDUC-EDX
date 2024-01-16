@@ -174,7 +174,7 @@ export default {
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
-    schoolDisplayNameTitle: 'displayName',
+    schoolDisplayNameTitle: '#displayName',
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',
     schoolMincodeTitle: '#schoolMincodeTitle',
