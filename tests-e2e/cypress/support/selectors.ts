@@ -78,15 +78,16 @@ export default {
   frenchComponent: {
     tab: '#frenchTab',
     summaryButton: '#frenchSummaryButton',
-    headcountHeaderList: '.french-headcount-header',
-    headcountHeaderColumn: '.french-headcount-header-column'
+    headcountCard: '.french-headcount-card',
+    headcountHeader: '.french-headcount-header',
+    headcountColumnData: '.french-headcount-column-data'
   },
   fteComponent: {
     tab: '#enrollmentTab',
     summaryButton: '#fteSummaryButton',
-    headcountHeaderList: '.enrollment-headcount-header',
-    headcountHeaderColumn: '.enrollment-headcount-header-column'
-
+    headcountCard: '.enrollment-headcount-card',
+    headcountHeader: '.enrollment-headcount-header',
+    headcountColumnData: '.enrollment-headcount-column-data'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
@@ -98,7 +99,10 @@ export default {
   },
   indigenousSupportComponent: {
     tab: '#indProgTab',
-    summaryButton: '#indProgSummaryButton'
+    summaryButton: '#indProgSummaryButton',
+    headcountCard: '.indigenous-headcount-card',
+    headcountHeader: '.indigenous-headcount-header',
+    headcountColumnData: '.indigenous-headcount-column-data'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
