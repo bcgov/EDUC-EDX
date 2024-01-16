@@ -3,11 +3,15 @@ import { AppSetupData } from '../../../cypress.config';
 import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 function navigateToSchoolContactsSchoolUser() {
-  cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+  cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails1');
+  cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails2');
+
   cy.visit('/');
   cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
   cy.get(selectors.dashboard.schoolContactsCard).click();
-  cy.wait('@schoolDetails');
+  cy.wait('@schoolDetails1');
+  cy.wait('@schoolDetails2');
+
   cy.get(selectors.schoolContacts.activeTab).contains('Contacts');
 }
 
@@ -85,7 +89,9 @@ describe('School Contacts Page', () => {
 
     it('Check new school contact page has current effective date', () => {
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept('/').as('home');
       cy.visit('/');
+      cy.wait('@home');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');

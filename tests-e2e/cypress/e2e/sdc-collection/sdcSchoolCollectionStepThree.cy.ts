@@ -124,9 +124,10 @@ describe('SDC School Collection View', () => {
     });
 
     it('verifies indigenous programs for reported students', () => {
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="Indigenous Students & Support Programs"]').click();
 
