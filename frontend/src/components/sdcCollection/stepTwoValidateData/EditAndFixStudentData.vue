@@ -590,8 +590,6 @@ export default {
 
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
         .then(response => {
-          console.log('here');
-          console.log(response);
           this.filterSdcSchoolCollectionStudentAndPopulateProperties(response.data);
         }).catch(error => {
           console.error(error);
