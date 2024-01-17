@@ -4,7 +4,7 @@ import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 function navigateToSchoolContactsSchoolUser() {
   cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails1');
-  cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails2');
+  cy.intercept(Cypress.env('interceptors').schools).as('schoolDetails2');
 
   cy.visit('/');
   cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
