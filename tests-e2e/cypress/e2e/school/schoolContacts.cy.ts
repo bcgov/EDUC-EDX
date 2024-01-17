@@ -4,13 +4,13 @@ import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 function navigateToSchoolContactsSchoolUser() {
   cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails1');
-  cy.intercept(Cypress.env('interceptors').schools).as('schoolDetails2');
+  cy.intercept(Cypress.env('interceptors').schools).as('schools');
 
   cy.visit('/');
   cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
   cy.get(selectors.dashboard.schoolContactsCard).click();
   cy.wait('@schoolDetails1');
-  cy.wait('@schoolDetails2');
+  cy.wait('@schools');
 
   cy.get(selectors.schoolContacts.activeTab).contains('Contacts');
 }
