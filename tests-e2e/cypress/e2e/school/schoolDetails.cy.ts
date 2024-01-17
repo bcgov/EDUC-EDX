@@ -44,7 +44,9 @@ describe('School Details Interface Test', () => {
     });
 
     it('can view legacy safe name', () => {
+      cy.intercept('/').as('home');
       cy.visit('/')
+      cy.wait('@home');
       cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
