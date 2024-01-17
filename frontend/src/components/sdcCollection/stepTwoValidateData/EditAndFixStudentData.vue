@@ -501,7 +501,7 @@ import {cloneDeep, sortBy} from 'lodash';
 import {formatDob} from '../../../utils/format';
 import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
-import {setSuccessAlert, setFailureAlert} from '../../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import DatePicker from '../../util/DatePicker.vue';
@@ -590,10 +590,9 @@ export default {
 
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudentID}`)
         .then(response => {
-          let filteredResponse = {...response.data, filteredEnrolledProgramCodes: this.filterEnrolledProgramCodes(response.data.enrolledProgramCodes)};
-          this.sdcSchoolCollectionStudentDetail = filteredResponse;
-          this.sdcSchoolCollectionStudentDetailCopy = cloneDeep(filteredResponse);
-          this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = filteredResponse.filteredEnrolledProgramCodes;
+          console.log('here');
+          console.log(response);
+          this.filterSdcSchoolCollectionStudentAndPopulateProperties(response.data);
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail counts. Please try again later.');
@@ -605,14 +604,19 @@ export default {
     save(){
       this.loadingCount += 1;
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
-        .then(() => {
-          setSuccessAlert('Success! The student details have been updated.');
+        .then((res) => {
+          if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
+            setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');
+            this.filterSdcSchoolCollectionStudentAndPopulateProperties(res.data);
+          } else {
+            setSuccessAlert('Success! The student details have been updated.');
+            this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
+          }
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
         }).finally(() => {
           this.loadingCount -= 1;
-          this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
         });
     },
     async deleteStudent(){
@@ -648,6 +652,12 @@ export default {
           }
         });
       }
+    },
+    filterSdcSchoolCollectionStudentAndPopulateProperties(sdcSchoolCollectionStudent) {
+      let filteredSdcSchoolCollectionStudent = {...sdcSchoolCollectionStudent, filteredEnrolledProgramCodes: this.filterEnrolledProgramCodes(sdcSchoolCollectionStudent.enrolledProgramCodes)};
+      this.sdcSchoolCollectionStudentDetail = filteredSdcSchoolCollectionStudent;
+      this.sdcSchoolCollectionStudentDetailCopy = cloneDeep(filteredSdcSchoolCollectionStudent);
+      this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = filteredSdcSchoolCollectionStudent.filteredEnrolledProgramCodes;
     },
     filterByPen() {
       this.page=1;
