@@ -178,6 +178,10 @@ export const GRADE_FILTER = Object.freeze(
             title: 'Graduated Adult',
             value: 'GA'
           },
+          {
+            title: 'Home School',
+            value: 'HS'
+          },
         ]
       }
     ]
@@ -338,6 +342,104 @@ export const FRENCH_FUNDING_FILTER = Object.freeze(
   },
 );
 
+export const CAREER_CODE_FILTER = Object.freeze(
+  {
+    heading: 'Career Code',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'careerCode',
+        filterOptions: [
+          {
+            title: 'XA - Business & Applied Business',
+            value: 'XA'
+          },
+          {
+            title: 'XB - Fine Arts, Design, & Media',
+            value: 'XB'
+          },
+          {
+            title: 'XC - Fitness & Recreation',
+            value: 'XC'
+          },
+          {
+            title: 'XD - Health & Human Services',
+            value: 'XD'
+          },
+          {
+            title: 'XE - Liberal Arts & Humanities',
+            value: 'XE'
+          },
+          {
+            title: 'XF - Science & Applied Science ',
+            value: 'XF'
+          },
+          {
+            title: 'XG - Tourism, Hospitality, & Foods',
+            value: 'XG'
+          },
+          {
+            title: 'XH - Trades & Technology',
+            value: 'XH'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const CAREER_PROGRAM_FILTER = Object.freeze(
+  {
+    heading: 'Career Programs',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'careerPrograms',
+        filterOptions: [
+          {
+            title: '40 - Career Preparation',
+            value: '40'
+          },
+          {
+            title: '41 - Co-Operative Education',
+            value: '41'
+          },
+          {
+            title: '42 - Apprenticeship',
+            value: '42'
+          },
+          {
+            title: '43 - Career Technical or Youth Train in Trades', 
+            value: '43'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const CAREER_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Career Program Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'careerProgramsFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'isCareerFundingEligible'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'isNotCareerFundingEligible'
+          }
+        ]
+      }
+    ]
+  },
+);
+
 /**
  * Tables
  */
@@ -412,6 +514,9 @@ export const CAREER_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      CAREER_PROGRAM_FILTER,
+      CAREER_CODE_FILTER,
+      CAREER_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
