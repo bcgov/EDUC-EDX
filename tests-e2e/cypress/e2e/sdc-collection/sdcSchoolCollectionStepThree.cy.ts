@@ -25,7 +25,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       // Step three of collection - edit/verify data
-      cy.get(selectors.studentLevelData.nextButton).click();
+      cy.get(selectors.studentLevelData.stepTwoNextButton).should('be.enabled').click();
     });
 
     it('verifies FTE for Reported Students', () => {
