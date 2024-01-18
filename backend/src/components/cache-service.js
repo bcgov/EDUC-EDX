@@ -237,6 +237,12 @@ const cacheService = {
   },
   getActiveFundingCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_SCHOOL_FUNDING_CODES].activeRecords;
+  },
+  getActiveCareerCodes() {
+    return cachedData[constants.CACHE_KEYS.SDC_CAREER_PROGRAM_CODES].activeRecords;
+  },
+  getActiveEnrolledPrograms() {
+    return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_PROGRAM_CODES].activeRecords;
   }
 };
 
