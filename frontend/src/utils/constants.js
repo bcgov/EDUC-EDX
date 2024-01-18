@@ -124,7 +124,7 @@ export const PAGE_TITLES = Object.freeze({
   DISTRICT_DETAILS:'District Details',
   DISTRICT_CONTACTS: 'District Contacts',
   SDC:'Student Level Data (1701)',
-  DATA_COLLECTION: 'Data Collections'
+  DATA_COLLECTION: 'Student Level Data Collection (1701)'
 });
 
 
