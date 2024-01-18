@@ -8,7 +8,7 @@
       class="mt-1 d-flex justify-start"
     >
       <v-col>
-        <h2>{{ currentCollectionTypeCode }} 2022 Collection</h2>
+        <h2>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h2>
       </v-col>
     </v-row>
     <v-row
@@ -66,6 +66,7 @@
                 :key="step.step"
               >
                 <v-stepper-item
+                  :id="step.id"
                   :value="step.step"
                   :title="step.title"
                   :editable="step.step < currentStep"
@@ -190,7 +191,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection']),
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection','currentCollectionYear']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
@@ -260,6 +261,14 @@ export default {
     padding-right: 3em !important;
     padding-left: 3em !important;
   }
+}
+
+.v-stepper-window {
+    margin: 0rem !important;
+}
+
+.v-stepper-header {
+  box-shadow: none !important;
 }
 
 </style>

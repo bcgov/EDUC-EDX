@@ -234,7 +234,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
-    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);
@@ -420,6 +420,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let studentTypeFilterList = [];
   let fteFilterList = [];
   let supportBlockList = [];
+  let careerProgramFundingList = [];
+  let careerCodeList = [];
+  let careerProgramsList = [];
   searchFilter.forEach((elem) => {
     let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
     if (elem.key === 'studentType' && pValue) {
@@ -445,16 +448,31 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       validateGradeFilter(pValue);
       searchCriteriaList.push({ key: 'enrolledGradeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
+    if (elem.key === 'careerCode' && pValue) {
+      validateCareerCodeFilter(pValue);
+      careerCodeList.push({ key: 'careerProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
+    if (elem.key === 'careerPrograms' && pValue) {
+      validateCareerProgramFilter(pValue);
+      careerProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
     if (elem.key === 'warnings' && pValue) {
       searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
     if (elem.key === 'support' && pValue) {
-      if (pValue === 'hasSupportBlocks') {
+      if (pValue.toString() === 'hasSupportBlocks') {
         supportBlockList.push({ key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
         supportBlockList.push({ key: 'supportBlocks', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      } else if (pValue === 'noSupportBlocks') {
+      } else if (pValue.toString() === 'noSupportBlocks') {
         supportBlockList.push({ key: 'supportBlocks', value: '0', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
         supportBlockList.push({ key: 'supportBlocks', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+    }
+    if(elem.key === 'careerProgramsFunding' && pValue) {
+      if (pValue.toString() === 'isCareerFundingEligible') {
+        careerProgramFundingList.push({ key: 'careerProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if (pValue.toString() === 'isNotCareerFundingEligible') {
+        careerProgramFundingList.push({ key: 'careerProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
     if (elem.key === 'fteZero' && pValue) {
@@ -502,6 +520,24 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: supportBlockList
+    });
+  }
+  if (careerProgramFundingList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: careerProgramFundingList
+    });
+  }
+  if (careerCodeList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: careerCodeList
+    });
+  }
+  if (careerProgramsList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: careerProgramsList
     });
   }
   getFrenchProgramsSearchCriteria(searchFilter, search);
@@ -600,11 +636,31 @@ function validateGradeFilter(filterGrades = []) {
   }
 }
 
-function validateFundingTypeFilter(filterGrades = []) {
+function validateFundingTypeFilter(filterFunding = []) {
   const activeFundingCodes = cacheService.getActiveFundingCodes();
-  if (filterGrades.length > 0) {
-    if (filterGrades.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
+  if (filterFunding.length > 0) {
+    if (filterFunding.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
       log.error('Invalid funding code filter.');
+      throw new Error('400');
+    }
+  }
+}
+
+function validateCareerCodeFilter(filterCareerCodes = []) {
+  const activeFundingCodes = cacheService.getActiveCareerCodes();
+  if (filterCareerCodes.length > 0) {
+    if (filterCareerCodes.every(value => activeFundingCodes.includes(code => value === code.careerProgramCode))) {
+      log.error('Invalid career code filter.');
+      throw new Error('400');
+    }
+  }
+}
+
+function validateCareerProgramFilter(filterGrades = []) {
+  const activeFundingCodes = cacheService.getActiveEnrolledPrograms();
+  if (filterGrades.length > 0) {
+    if (filterGrades.every(value => activeFundingCodes.includes(code => value === code.enrolledProgramCode))) {
+      log.error('Invalid career program filter.');
       throw new Error('400');
     }
   }

@@ -73,8 +73,10 @@ describe('SDC School Collection View', () => {
 
     it('search the list of students with errors and warnings on step-2 of sdc process using PEN filter', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.wait('@pagination').then(({response}) => {

@@ -4,7 +4,7 @@
       <v-row
         id="search-box"
         class="search-box mt-2"
-      >
+      > 
         <v-col cols="12">
           <v-row>
             <v-col
@@ -26,16 +26,14 @@
               <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length == 0">
                 No filters applied
               </p>
-              <div v-else-if="config.defaultFilter.description != ''">
-                <v-chip
-                  color="#003366"
-                >
-                  {{ config.defaultFilter.description }}
-                </v-chip>
-              </div>
 
-              <div v-else-if="filterSearchParams.moreFilters.length > 0">
+              <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description != ''">
                 <v-chip-group>
+                  <v-chip v-if="config.defaultFilter.description"
+                    class="chip-margin"
+                  >
+                    {{ config.defaultFilter.description }}
+                  </v-chip>
                   <span
                     v-for="(filter, index) in filterSearchParams.moreFilters"
                     :key="index"
@@ -51,7 +49,7 @@
                     </v-chip>
                   </span>
                 </v-chip-group>
-              </div>
+              </span>
             </v-col>
             <v-col
               class="d-flex justify-end"

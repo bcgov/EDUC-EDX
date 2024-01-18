@@ -78,15 +78,16 @@ export default {
   frenchComponent: {
     tab: '#frenchTab',
     summaryButton: '#frenchSummaryButton',
-    headcountHeaderList: '.french-headcount-header',
-    headcountHeaderColumn: '.french-headcount-header-column'
+    headcountCard: '.french-headcount-card',
+    headcountHeader: '.french-headcount-header',
+    headcountColumnData: '.french-headcount-column-data'
   },
   fteComponent: {
     tab: '#enrollmentTab',
     summaryButton: '#fteSummaryButton',
-    headcountHeaderList: '.enrollment-headcount-header',
-    headcountHeaderColumn: '.enrollment-headcount-header-column'
-
+    headcountCard: '.enrollment-headcount-card',
+    headcountHeader: '.enrollment-headcount-header',
+    headcountColumnData: '.enrollment-headcount-column-data'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
@@ -98,7 +99,10 @@ export default {
   },
   indigenousSupportComponent: {
     tab: '#indProgTab',
-    summaryButton: '#indProgSummaryButton'
+    summaryButton: '#indProgSummaryButton',
+    headcountCard: '.indigenous-headcount-card',
+    headcountHeader: '.indigenous-headcount-header',
+    headcountColumnData: '.indigenous-headcount-column-data'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -115,16 +119,16 @@ export default {
   newUserInvites: {
     emailInput: '#newUserEmail',
     firstNameInput: '#newUserFirstName',
-    generateNewCode: "#doGeneratePrimaryEdxActivationCodeButton",
+    generateNewCode: '#doGeneratePrimaryEdxActivationCodeButton',
     lastNameInput: '#newUserLastName',
     newUserButton: '#new-user-button',
     newUserInviteVCard: '#newUserInviteVCard',
-    primaryActivationCode: "#primaryEdxActivationCode",
+    primaryActivationCode: '#primaryEdxActivationCode',
     rolesSelectorBox: '#instituteNewUserRolesListBox',
     rolesSelectorDropdown: '#instituteNewUserRolesSelect',
     sendInviteButton: '#newUserInvitePostBtn',
-    toggleGenerateNewCode: "#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton",
-    noActivationCodeBanner: "#no-activation-code-banner"
+    toggleGenerateNewCode: '#toggleGenerateNewPrimaryEdxActivationCodeDialogVisibilityButton',
+    noActivationCodeBanner: '#no-activation-code-banner'
   },
   schoolContacts: {
     cancelContactButton: '#cancelContactBtn',
@@ -170,10 +174,10 @@ export default {
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
     schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
-    schoolDisplayNameTitle: "#displayName",
+    schoolDisplayNameTitle: '#displayName',
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',
-    schoolMincodeTitle: "#schoolMincodeTitle",
+    schoolMincodeTitle: '#schoolMincodeTitle',
     schoolNameNoSpecialChars: 'div.safe-name',
     subjectHeading: 'h2.subjectHeading'
   },
@@ -241,7 +245,7 @@ export default {
     saveRecordButton: '#saveRecord',
     stepFive:'#step-5',
     stepFour:'#step-4',
-    stepOne:'div.v-stepper-header > button:nth-child(1)',
+    stepOne:'#step-1',
     stepSix:'#step-6',
     stepThree:'#step-3',
     stepTwo:'#step-2',
@@ -275,4 +279,4 @@ export default {
     userActivationErrorMessageSnackBar: '#user_activation_error_message',
     acceptTermsCheckbox: '#acceptTOU'
   }
-}
+};

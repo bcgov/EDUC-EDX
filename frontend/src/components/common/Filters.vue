@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     setFilter(val, key) {
-      if(key === 'support' || key.startsWith('frenchProgram')) {
+      if(key === 'support' || key === 'careerProgramsFunding') {
         this.selectedFilters[key] = [val];
       } else {
         this.selectedFilters[key] = val;
@@ -157,10 +157,6 @@ export default {
     color: white;
     font-size: medium !important;
     font-weight: bolder !important;
-  }
-
-  .filter-card {
-    height: 100%;
   }
 
   .filter-heading {
