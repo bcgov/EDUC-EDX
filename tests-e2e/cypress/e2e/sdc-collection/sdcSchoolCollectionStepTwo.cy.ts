@@ -1,6 +1,6 @@
-import selectors from "../../support/selectors";
+import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollection } from "tests-e2e/cypress/services/sdc-collection-api-service";
+import { SchoolCollection } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -32,8 +32,8 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-      cy.wait('@pagination').then(({response}) => {
-        cy.get(selectors.studentLevelData.nextButton).should('be.disabled');
+      cy.wait('@pagination').then(() => {
+        cy.get(selectors.studentLevelData.stepTwoNextButton).should('be.disabled');
         cy.get(selectors.studentLevelData.warningAndErrorSummary).should('exist');
         cy.get(selectors.studentLevelData.infoWarningCount).contains('2');
         cy.get(selectors.studentLevelData.errorCount).contains('2');
@@ -46,11 +46,11 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.fixSelected).should('be.disabled');
         cy.get(selectors.studentLevelData.fixAll).should('not.be.disabled');
 
-        cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
+        cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then(() => {
           cy.get(selectors.studentLevelData.fixSelected).should('not.be.disabled');
           cy.get(selectors.studentLevelData.fixAll).should('be.disabled');
         });
-      })
+      });
     });
 
     it('search the list of students with errors and warnings on step-2 of sdc process using NAME filter', () => {
@@ -68,7 +68,7 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
 
         cy.get(selectors.studentLevelData.stepTwoClearSearchFilter).click();
-        });
+      });
     });
 
     it('search the list of students with errors and warnings on step-2 of sdc process using PEN filter', () => {
@@ -92,60 +92,60 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).type('10000');
         cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
         cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
-        });
+      });
     });
 
     it('can fix errors and warnings on the student record', () => {
-        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
-        cy.visit('/');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-        cy.wait('@pagination').then(({response}) => {
-          cy.get(selectors.studentLevelData.errorCount).contains('2');
-          cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
-            cy.get(selectors.studentLevelData.fixSelected).click();         
-          });
-        })
-
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 2 Records');
-        cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('exist');
-        cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).type('SMITH');    
-        cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
-
-        cy.get(selectors.studentLevelData.saveRecordButton).click().then((event) => {
-          cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('not.exist');
+      cy.wait('@pagination').then(() => {
+        cy.get(selectors.studentLevelData.errorCount).contains('2');
+        cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then(() => {
+          cy.get(selectors.studentLevelData.fixSelected).click();
         });
+      });
 
-        cy.intercept(Cypress.env('interceptors').collection_student).as('studentUpdate');
-        cy.wait('@studentUpdate').then(()=>{
-            cy.get(selectors.studentLevelData.backToDataIssues).click();
-        })
+      cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 2 Records');
+      cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('exist');
+      cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).type('SMITH');
+      cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
 
-        cy.wait('@pagination').then(()=> {
-          cy.get(selectors.studentLevelData.errorCount).contains('1');
-        })
+      cy.get(selectors.studentLevelData.saveRecordButton).click().then(() => {
+        cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('not.exist');
+      });
+
+      cy.intercept(Cypress.env('interceptors').collection_student).as('studentUpdate');
+      cy.wait('@studentUpdate').then(()=>{
+        cy.get(selectors.studentLevelData.backToDataIssues).click();
+      });
+
+      cy.wait('@pagination').then(()=> {
+        cy.get(selectors.studentLevelData.errorCount).contains('1');
+      });
     });
 
     it('can remove record containing validation errors', () => {
-        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
 
-        cy.visit('/');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-        cy.wait('@pagination').then(({response}) => {
-          cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then((event) => {
-            cy.get(selectors.studentLevelData.fixSelected).click();         
-          });
-        })
+      cy.wait('@pagination').then(() => {
+        cy.get(selectors.studentLevelData.selectStudentCheckbox).first().click().then(() => {
+          cy.get(selectors.studentLevelData.fixSelected).click();
+        });
+      });
 
-        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).should('exist');
-        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
-        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordRejectButton).click();
-        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
-        cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
-        cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
+      cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).should('exist');
+      cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
+      cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordRejectButton).click();
+      cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
+      cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
+      cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
     });
 
     context('PEN appears more than once in the submission', () => {
@@ -166,12 +166,12 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.dashboard.dataCollectionsTile).click();
         cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-        cy.wait('@pagination').then(({response}) => {
-          cy.contains('td', '101932770').parent().within($tr => {
+        cy.wait('@pagination').then(() => {
+          cy.contains('td', '101932770').parent().within(() => {
             cy.get(selectors.studentLevelData.selectStudentCheckbox).click(); 
-          })
+          });
           cy.get(selectors.studentLevelData.fixSelected).click();
-        })
+        });
 
         cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 3 Records');
 
@@ -185,9 +185,9 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.editStudentClearfilter).click();
         cy.wait('@pagination').then(()=> {
           cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 3 of 3 Records');
-        })
+        });
 
+      });
     });
-    })
   });
 });

@@ -70,7 +70,7 @@
 
   <v-row justify="end">
     <PrimaryButton
-      id="nextButton"
+      id="step-3-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Verify as Correct"

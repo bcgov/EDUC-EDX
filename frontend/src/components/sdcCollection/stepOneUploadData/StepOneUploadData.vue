@@ -186,7 +186,7 @@
   </div>
   <v-row justify="end">
     <PrimaryButton
-      id="nextButton"
+      id="step-1-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Next"
