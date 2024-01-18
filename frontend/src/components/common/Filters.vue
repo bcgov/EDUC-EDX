@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     setFilter(val, key) {
-      if(key === 'support' || key === 'careerProgramsFunding') {
+      if(key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding') {
         this.selectedFilters[key] = [val];
       } else {
         this.selectedFilters[key] = val;

@@ -235,6 +235,9 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    if (data?.enrolledProgramCodes) {
+      data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);
@@ -423,6 +426,8 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let careerProgramFundingList = [];
   let careerCodeList = [];
   let careerProgramsList = [];
+  let frenchProgramsList = [];
+  let frenchProgramFundingList = [];
   searchFilter.forEach((elem) => {
     let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
     if (elem.key === 'studentType' && pValue) {
@@ -456,6 +461,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       validateCareerProgramFilter(pValue);
       careerProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
+    if (elem.key === 'frenchProgram' && pValue) {
+      validateCareerProgramFilter(pValue);
+      frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
     if (elem.key === 'warnings' && pValue) {
       searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
@@ -473,6 +482,13 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         careerProgramFundingList.push({ key: 'careerProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       } else if (pValue.toString() === 'isNotCareerFundingEligible') {
         careerProgramFundingList.push({ key: 'careerProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+    }
+    if(elem.key === 'frenchFunding' && pValue) {
+      if (pValue.toString() === 'true') {
+        frenchProgramFundingList.push({ key: 'frenchProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if (pValue.toString() === 'false') {
+        frenchProgramFundingList.push({ key: 'frenchProgramNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
     if (elem.key === 'fteZero' && pValue) {
@@ -540,72 +556,19 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       searchCriteriaList: careerProgramsList
     });
   }
-  getFrenchProgramsSearchCriteria(searchFilter, search);
-  return search;
-}
-
-function getFrenchProgramsSearchCriteria(searchFilter, search) {
-
-  let frenchProgramsIn = new Set();
-  let frenchProgramsNotIn = new Set();
-  let allFrenchSelected = false;
-  searchFilter.forEach((elem) => {
-    let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
-    if (elem.key === 'frenchProgram11' && pValue?.length === 1) {
-      if (pValue[0] === 'true') {
-        frenchProgramsIn.add('11');
-      } else {
-        frenchProgramsNotIn.add('11');
-      }
-    }
-    if (elem.key === 'frenchProgram14' && pValue?.length === 1) {
-      if (pValue[0] === 'true') {
-        frenchProgramsIn.add('14');
-      } else {
-        frenchProgramsNotIn.add('14');
-      }
-    }
-    if (elem.key === 'frenchProgram08' && pValue?.length === 1) {
-      if (pValue[0] === 'true') {
-        frenchProgramsIn.add('08');
-      } else {
-        frenchProgramsNotIn.add('08');
-      }
-    }
-    if (elem.key === 'frenchProgramAll' && pValue?.length === 1) {
-      if (pValue[0] === 'true') {
-        frenchProgramsIn.add('05');
-        frenchProgramsIn.add('08');
-        frenchProgramsIn.add('11');
-        frenchProgramsIn.add('14');
-        allFrenchSelected = true;
-      } else {
-        frenchProgramsNotIn.add('05');
-        frenchProgramsNotIn.add('08');
-        frenchProgramsNotIn.add('11');
-        frenchProgramsNotIn.add('14');
-      }
-    }
-  });
-  if(allFrenchSelected) {
-    frenchProgramsIn = new Set([...frenchProgramsIn].filter(value => !frenchProgramsNotIn.has(value)));
-  } else {
-    frenchProgramsNotIn = new Set([...frenchProgramsNotIn].filter(value => !frenchProgramsIn.has(value)));
-  }
-  let frenchProgramsList = [];
-  if(frenchProgramsIn.size > 0) {
-    frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: Array.from(frenchProgramsIn).join(', '), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-  }
-  if(frenchProgramsNotIn.size > 0) {
-    frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: Array.from(frenchProgramsNotIn).join(', '), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-
-  }
-  if(frenchProgramsList.length > 0) {
+  if (frenchProgramsList.length > 0) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: frenchProgramsList
     });
   }
+  if (frenchProgramFundingList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: frenchProgramFundingList
+    });
+  }
+  return search;
 }
 
 function validateFteZeroFilter(filters) {

@@ -257,64 +257,22 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
     heading: 'French Programs',
     filterGroups: [
       {
-        multiple: false,
-        key:'frenchProgram11',
+        multiple: true,
+        key:'frenchProgram',
         filterOptions: [
           {
             title: '11 - Early French Immersion',
-            value: 'true'
+            value: '11'
           },
-          {
-            title: 'No Early French Immersion',
-            value: 'false'
-          }
-        ],
-        selectedValues: []
-      },
-      {
-        multiple: false,
-        key:'frenchProgram14',
-        filterOptions: [
           {
             title: '14 - Late French Immersion',
-            value: 'true'
+            value: '14'
           },
-          {
-            title: 'No Late French Immersion',
-            value: 'false'
-          }
-        ],
-        selectedValues: []
-      },
-      {
-        multiple: false,
-        key:'frenchProgram08',
-        filterOptions: [
           {
             title: '08 - Core French',
-            value: 'true'
-          },
-          {
-            title: 'No Core French',
-            value: 'false'
+            value: '08'
           }
-        ],
-        selectedValues: []
-      },
-      {
-        multiple: false,
-        key:'frenchProgramAll',
-        filterOptions: [
-          {
-            title: 'Has French Program',
-            value: 'true'
-          },
-          {
-            title: 'No French Programs',
-            value: 'false'
-          }
-        ],
-        selectedValues: []
+        ]
       }
     ]
   }
@@ -325,16 +283,16 @@ export const FRENCH_FUNDING_FILTER = Object.freeze(
     heading: 'French Program Funding Eligibility',
     filterGroups: [
       {
-        multiple: true,
+        multiple: false,
         key: 'frenchFunding',
         filterOptions: [
           {
             title: 'Funding Eligible',
-            value: 'fteEq0'
+            value: 'true'
           },
           {
             title: 'Not Funding Eligible',
-            value: 'fteLt1'
+            value: 'false'
           }
         ]
       }
