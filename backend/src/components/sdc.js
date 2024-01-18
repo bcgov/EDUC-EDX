@@ -504,7 +504,72 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       searchCriteriaList: supportBlockList
     });
   }
+  getFrenchProgramsSearchCriteria(searchFilter, search);
   return search;
+}
+
+function getFrenchProgramsSearchCriteria(searchFilter, search) {
+
+  let frenchProgramsIn = new Set();
+  let frenchProgramsNotIn = new Set();
+  let allFrenchSelected = false;
+  searchFilter.forEach((elem) => {
+    let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
+    if (elem.key === 'frenchProgram11' && pValue?.length === 1) {
+      if (pValue[0] === 'true') {
+        frenchProgramsIn.add('11');
+      } else {
+        frenchProgramsNotIn.add('11');
+      }
+    }
+    if (elem.key === 'frenchProgram14' && pValue?.length === 1) {
+      if (pValue[0] === 'true') {
+        frenchProgramsIn.add('14');
+      } else {
+        frenchProgramsNotIn.add('14');
+      }
+    }
+    if (elem.key === 'frenchProgram08' && pValue?.length === 1) {
+      if (pValue[0] === 'true') {
+        frenchProgramsIn.add('08');
+      } else {
+        frenchProgramsNotIn.add('08');
+      }
+    }
+    if (elem.key === 'frenchProgramAll' && pValue?.length === 1) {
+      if (pValue[0] === 'true') {
+        frenchProgramsIn.add('05');
+        frenchProgramsIn.add('08');
+        frenchProgramsIn.add('11');
+        frenchProgramsIn.add('14');
+        allFrenchSelected = true;
+      } else {
+        frenchProgramsNotIn.add('05');
+        frenchProgramsNotIn.add('08');
+        frenchProgramsNotIn.add('11');
+        frenchProgramsNotIn.add('14');
+      }
+    }
+  });
+  if(allFrenchSelected) {
+    frenchProgramsIn = new Set([...frenchProgramsIn].filter(value => !frenchProgramsNotIn.has(value)));
+  } else {
+    frenchProgramsNotIn = new Set([...frenchProgramsNotIn].filter(value => !frenchProgramsIn.has(value)));
+  }
+  let frenchProgramsList = [];
+  if(frenchProgramsIn.size > 0) {
+    frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: Array.from(frenchProgramsIn).join(', '), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+  if(frenchProgramsNotIn.size > 0) {
+    frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: Array.from(frenchProgramsNotIn).join(', '), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+
+  }
+  if(frenchProgramsList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: frenchProgramsList
+    });
+  }
 }
 
 function validateFteZeroFilter(filters) {

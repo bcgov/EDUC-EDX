@@ -258,11 +258,11 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
         filterOptions: [
           {
             title: '11 - Early French Immersion',
-            value: 'fteEq0'
+            value: 'true'
           },
           {
             title: 'No Early French Immersion',
-            value: 'fteLt1'
+            value: 'false'
           }
         ],
         selectedValues: []
@@ -273,11 +273,11 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
         filterOptions: [
           {
             title: '14 - Late French Immersion',
-            value: 'fteGt0'
+            value: 'true'
           },
           {
             title: 'No Late French Immersion',
-            value: 'fteGt0'
+            value: 'false'
           }
         ],
         selectedValues: []
@@ -288,11 +288,11 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
         filterOptions: [
           {
             title: '08 - Core French',
-            value: 'fteGt0'
+            value: 'true'
           },
           {
             title: 'No Core French',
-            value: 'fteGt0'
+            value: 'false'
           }
         ],
         selectedValues: []
@@ -303,11 +303,11 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
         filterOptions: [
           {
             title: 'Has French Program',
-            value: 'fteGt0'
+            value: 'true'
           },
           {
             title: 'No French Programs',
-            value: 'fteGt0'
+            value: 'false'
           }
         ],
         selectedValues: []
