@@ -104,7 +104,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="studentListData?.length > 0"
+        v-if="numIssueStudentsInCollection > 0"
         class="pr-0"
       >
         <v-row class="searchBox">
@@ -179,7 +179,9 @@
         <v-row
           class="pt-3 pb-3"
         >
-          <v-col class="text-right">
+          <v-col class="text-right"
+            v-if="studentListData?.length > 0"
+          >
             <PrimaryButton
               id="fixSelected"
               text="Review & Fix Selected"
@@ -195,6 +197,23 @@
               :click-action="getAllIssuesAndNavigate"
               :disabled="selectedStudents.length != 0"
             />
+          </v-col>
+          <v-col class="mr-3"
+            v-else
+          >
+            <v-alert
+              dismissible="false"
+              class="clear-message-error"
+            >
+              <v-icon
+                class="mt-2 mr-3"
+                size="30"
+                color="orange"
+              >
+                mdi-alert-outline
+              </v-icon>
+              <span class="error-message">There are no results for the selected category.</span>
+            </v-alert>
           </v-col>
         </v-row>
         <v-row>
@@ -575,6 +594,13 @@ export default {
     .clear-message {
       border: 1px solid darkgreen;
       color: darkgreen;
+      background-color: transparent;
+      padding: 10px;
+    }
+
+    .clear-message-error {
+      border: 1px solid orange;
+      color: orange;
       background-color: transparent;
       padding: 10px;
     }
