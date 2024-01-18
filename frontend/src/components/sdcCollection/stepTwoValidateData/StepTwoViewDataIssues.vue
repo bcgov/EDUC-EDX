@@ -592,17 +592,17 @@ export default {
     }
   
     .clear-message {
-      border: 1px solid darkgreen;
+      border: 0.05em solid darkgreen;
       color: darkgreen;
       background-color: transparent;
-      padding: 10px;
+      padding: 0.6em;
     }
 
     .clear-message-error {
-      border: 1px solid orange;
+      border: 0.05em solid orange;
       color: orange;
       background-color: transparent;
-      padding: 10px;
+      padding: 0.6em;
     }
   
    .inner-border {
