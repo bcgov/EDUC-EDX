@@ -12,7 +12,7 @@
         <v-card
           id="secureMessageInboxCard"
           class="mx-auto"
-          width="24em"
+          width="25em"
           outlined
           rounded
           @click="redirectToInbox()"
@@ -71,7 +71,7 @@
       >
         <v-card
           id="districtDetailsCard"
-          width="24em"
+          width="25em"
           class="mx-auto"
           outlined
           rounded
@@ -115,7 +115,7 @@
         <v-card
           id="schoolContactsCard"
           class="mx-auto"
-          width="24em"
+          width="25em"
           outlined
           rounded
           @click="redirectToSchoolContacts()"
@@ -166,7 +166,7 @@
       >
         <v-card
           id="districtContactsCard"
-          width="24em"
+          width="25em"
           class="mx-auto"
           outlined
           rounded
@@ -218,7 +218,7 @@
       >
         <v-card
           id="districtUserSchoolContactsCard"
-          width="24em"
+          width="25em"
           class="mx-auto"
           outlined
           rounded
@@ -262,7 +262,7 @@
         <v-card
           id="schoolDetailsCard"
           class="mx-auto"
-          width="24em"
+          width="25em"
           outlined
           rounded
           @click="redirectToSchoolDetails()"
@@ -304,7 +304,7 @@
         <v-card
           id="studentDataCollectionCard"
           class="mx-auto"
-          width="24em"
+          width="25em"
           outlined
           rounded
           @click="openSDCCollection()"
