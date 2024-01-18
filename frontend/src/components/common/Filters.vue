@@ -16,7 +16,6 @@
           <a @click="apply()">Apply Filters</a>
         </v-col>
       </v-row>
-            
       <div
         v-for="(filterGroups, index) in filters"
         :key="index"
@@ -92,17 +91,24 @@ export default {
   },
   watch: {
     updatedFilters: {
-      handler(value) {
-        if(value.length > 0) {
-          this.clear();  
-          for(let filter of value) {
-            this.selected[filter.index] = filter.value;
-            if(filter.key === 'support') {
-              this.setFilter(filter.value[0], filter.key, filter.index);
-            } else {
-              this.setFilter(filter.value, filter.key, filter.index);
-            }
-          }
+      handler(currentFilters) {
+        if(currentFilters.length > 0) {
+          this.selected.forEach(innerArrays => {
+            innerArrays.forEach((innerArray, index) => {
+              if (innerArray.length > 0) {
+                innerArrays[index] = innerArray.filter(item => {
+                  return currentFilters.some(obj1 => {
+                    const valuesToKeep = obj1.value.map(val => val.value);
+                    return valuesToKeep.includes(item.value);
+                  });
+                });
+              }
+            });
+          });
+          Object.keys(this.selectedFilters).forEach(key => {
+            const valuesToKeep = currentFilters.find(item => item.key === key)?.value.map(val => val.value) || [];
+            this.selectedFilters[key] = this.selectedFilters[key].filter(item => valuesToKeep.includes(item.value));
+          });
         } else {
           this.clear();
         }
@@ -117,7 +123,7 @@ export default {
   },
   methods: {
     setFilter(val, key) {
-      if(key === 'support' || key === 'careerProgramsFunding') {
+      if(key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding') {
         this.selectedFilters[key] = [val];
       } else {
         this.selectedFilters[key] = val;
@@ -127,6 +133,7 @@ export default {
       this.selected = this.filters.map(filterGroup =>
         filterGroup.filterGroups?.map(()=>[])
       );
+      this.selectedFilters = {};
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
