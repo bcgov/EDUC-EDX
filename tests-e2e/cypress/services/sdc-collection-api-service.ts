@@ -312,7 +312,7 @@ export class SdcCollectionApiService {
           'districtID': schoolCollection?.school.districtId,
           'uploadDate': '20230822',
           'uploadFileName': 'EDX-AT-FILE.std',
-          'sdcSchoolCollectionStatusCode': 'LOADED',
+          'sdcSchoolCollectionStatusCode': 'REVIEWED',
           'collectionTypeCode': 'SEPTEMBER',
           'collectionOpenDate': curDate,
           'collectionCloseDate': curCloseDate,

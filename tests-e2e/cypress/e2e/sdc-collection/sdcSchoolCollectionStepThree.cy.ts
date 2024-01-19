@@ -20,12 +20,10 @@ describe('SDC School Collection View', () => {
     it('can load dashboard & click data collection card & process collection', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collection');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      // Step three of collection - edit/verify data
-      cy.get(selectors.studentLevelData.stepTwoNextButton).should('be.enabled').click();
     });
 
     it('verifies FTE for Reported Students', () => {
@@ -121,6 +119,14 @@ describe('SDC School Collection View', () => {
           cy.log('Correct career enrolled program value expected');
         }
       });
+
+      //check summary headcounts
+      cy.get(selectors.careerProgramComponent.summaryButton).click();
+      cy.get(selectors.careerProgramComponent.headcountCard).should('have.length', 4);
+      checkCareerHeader(0, 'Career Preparation', 3, '0', '0', '3');
+      checkCareerHeader(1, 'Co-Operative Education', 3, '1', '1', '2');
+      checkCareerHeader(2, 'Apprenticeship', 3, '0', '0', '3');
+      checkCareerHeader(3, 'Career Technical or Youth in Trades', 3, '1', '1', '2');
     });
 
     it('verifies indigenous programs for reported students', () => {
@@ -195,3 +201,14 @@ describe('SDC School Collection View', () => {
     });
   });
 });
+
+function checkCareerHeader(headerIndex: number, headerTitle: string, length: number, eligible: string, reported: string, notReported: string) {
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountHeader).should('contain.text', headerTitle);
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).should('have.length', length);
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(0).children('span').should('contain.text', eligible);
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(1).children('span').should('contain.text', reported);
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Not Reported');
+  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(2).children('span').should('contain.text', notReported);
+}
