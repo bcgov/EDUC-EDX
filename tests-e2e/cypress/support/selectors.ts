@@ -6,6 +6,13 @@ export default {
     accessUserFeedback: '.v-alert__content',
     confirmationDialog: '.v-overlay__content'
   },
+  careerProgramComponent: {
+    tab: '#careerTab',
+    summaryButton: '#careerSummaryButton',
+    headcountCard: '.career-headcount-card',
+    headcountHeader: '.career-headcount-header',
+    headcountColumnData: '.career-headcount-column-data'
+  },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
