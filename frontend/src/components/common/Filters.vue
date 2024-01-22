@@ -144,7 +144,7 @@ export default {
   methods: {
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
-        key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' ? this.selectedFilters[key] = [val] : this.selectedFilters[key] = val;
+        this.selectedFilters[key] = setFilterValue(key, val);
       } else {
         delete this.selectedFilters[key];
       }
@@ -174,6 +174,9 @@ export default {
         return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
       }
       return true;
+    },
+    setFilterValue(key, val) {
+      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' ? [val] : val;
     }
   }
 };
