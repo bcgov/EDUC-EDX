@@ -4,7 +4,7 @@
       <v-row
         id="search-box"
         class="search-box mt-2"
-      > 
+      >
         <v-col cols="12">
           <v-row>
             <v-col
