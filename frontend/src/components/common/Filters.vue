@@ -144,7 +144,7 @@ export default {
   methods: {
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
-        this.selectedFilters[key] = setFilterValue(key, val);
+        this.selectedFilters[key] = this.setFilterValue(key, val);
       } else {
         delete this.selectedFilters[key];
       }
