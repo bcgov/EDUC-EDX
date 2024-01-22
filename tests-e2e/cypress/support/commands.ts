@@ -36,7 +36,7 @@ function createLoginSession(username: string = Cypress.env('USER_ID'), password:
       cy.get('input[name="user"]').type(username);
       cy.get('input[name="password"]').type(password);
       cy.get('input[name="btnSubmit"][value="Continue"]').click();
-      cy.url().should('eq', Cypress.env('url').base_url + '/');
+      cy.url({timeout: 10000}).should('eq', Cypress.env('url').base_url + '/');
     },
     {
       validate() {

@@ -27,7 +27,7 @@ describe('SDC School Collection View', () => {
       cy.wait('@schoolDetailsLoaded');
       cy.wait('@schoolDetailsLoaded');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Data Collections');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
       cy.intercept('/api/sdc/getCollectionBySchoolId/*').as('collectionLoaded');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.wait('@collectionLoaded');
