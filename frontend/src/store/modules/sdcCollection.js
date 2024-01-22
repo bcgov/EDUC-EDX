@@ -138,42 +138,18 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     async getCodes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
-        if(this.bandCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveBandCodes();
-          this.setBandCodes(response.data);
-        }
-        if(this.careerProgramCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveCareerProgramCodes();
-          this.setCareerProgramCodes(response.data);
-        }
-        if(this.enrolledGradeCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveEnrolledGradeCodes();
-          this.setEnrolledGradeCodes(response.data);
-        }
-        if(this.enrolledProgramCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveEnrolledProgramCodes();
-          this.setEnrolledProgramCodes(response.data);
-        }
-        if(this.genderCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveGenderCodes();
-          this.setGenderCodes(response.data);
-        }
-        if(this.homeLanguageSpokenCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveHomeLanguageSpokenCodes();
-          this.setHomeLanguageSpokenCodes(response.data);
-        }
-        if(this.schoolFundingCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveSchoolFundingCodes();
-          this.setSchoolFundingCodes(response.data);
-        }
-        if(this.specialEducationCodesMap.size === 0) {
-          const response = await ApiService.getAllActiveSpecialEdCodes();
-          this.setSpecialEducationCodes(response.data);
-        }
-        if(this.validationIssueTypeCodesMap.size === 0) {
-          const response = await ApiService.getAllValidationIssueTypeCodes();
-          this.setValidationIssueTypeCodes(response.data);
-        }
+        const promises = [
+            ... this.bandCodesMap.size === 0 ? [ApiService.getAllActiveBandCodes().then((res) => this.setBandCodes(res.data))] : [],
+            ... this.careerProgramCodesMap.size === 0 ? [ApiService.getAllActiveCareerProgramCodes().then((res) => this.setCareerProgramCodes(res.data))] : [],
+            ... this.enrolledGradeCodesMap.size === 0 ? [ApiService.getAllActiveEnrolledGradeCodes().then((res) => this.setEnrolledGradeCodes(res.data))] : [],
+            ... this.enrolledProgramCodesMap.size === 0 ? [ApiService.getAllActiveEnrolledProgramCodes().then((res) => this.setEnrolledProgramCodes(res.data))] : [],
+            ... this.genderCodesMap.size === 0 ? [ApiService.getAllActiveGenderCodes().then((res) => this.setGenderCodes(res.data))] : [],
+            ... this.homeLanguageSpokenCodesMap.size === 0 ? [ApiService.getAllActiveHomeLanguageSpokenCodes().then((res) => this.setHomeLanguageSpokenCodes(res.data))] : [],
+            ... this.schoolFundingCodesMap.size === 0 ? [ApiService.getAllActiveSchoolFundingCodes().then((res) => this.setSchoolFundingCodes(res.data))] : [],
+            ... this.specialEducationCodesMap.size === 0 ? [ApiService.getAllActiveSpecialEdCodes().then((res) => this.setSpecialEducationCodes(res.data))] : [],
+            ... this.validationIssueTypeCodesMap.size === 0 ? [ApiService.getAllValidationIssueTypeCodes().then((res) => this.setValidationIssueTypeCodes(res.data))] : []
+        ]
+        return Promise.all(promises);
       }
     }
   }
