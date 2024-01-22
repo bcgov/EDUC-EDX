@@ -251,7 +251,7 @@
                 size="25"
                 color="#ff9800"
               >
-                mdi-alert-circle-outline
+                mdi-alert-outline
               </v-icon>
             </template>
             <template #column.infoWarning="{ column }">
@@ -260,7 +260,7 @@
                 size="25"
                 color="#2196F3"
               >
-                mdi-alert-outline
+                mdi-alert-circle-outline
               </v-icon>
             </template>
 
@@ -562,11 +562,11 @@ export default {
     },
     getLegalName(first, middle, last){
       if(first && middle){
-        return last + ', ' + first + '(' + middle + ')';
+        return last + ', ' + first + ' (' + middle + ')';
       }else if(first){
         return last + ', ' + first;
       }else if(middle){
-        return last + '(' + middle + ')';
+        return last + ' (' + middle + ')';
       }else if(last){
         return last;
       }
@@ -574,11 +574,11 @@ export default {
     },
     getNameWithoutSurname(first, middle) {
       if(first && middle){
-        return first + '(' + middle + ')';
+        return first + ' (' + middle + ')';
       }else if(first){
         return first;
       }else if(middle){
-        return '(' + middle + ')';
+        return ' (' + middle + ')';
       }
       return '';
     },
