@@ -55,8 +55,10 @@
             <h2 class="subjectHeading">
               Student Level Data (1701)
             </h2>
-            <p>{{ currentCollectionTypeCode }} 
-              {{ currentCollectionYear }} Collection</p>
+            <p>
+              {{ currentCollectionTypeCode }} 
+              {{ currentCollectionYear }} Collection
+            </p>
           </v-col>
         </v-row>
         <v-row justify="space-around">

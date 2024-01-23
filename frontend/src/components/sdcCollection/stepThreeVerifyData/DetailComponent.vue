@@ -29,7 +29,8 @@
 
               <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description != ''">
                 <v-chip-group>
-                  <v-chip v-if="config.defaultFilter.description"
+                  <v-chip
+                    v-if="config.defaultFilter.description"
                     class="chip-margin"
                   >
                     {{ config.defaultFilter.description }}
@@ -234,7 +235,7 @@ export default {
       this.filterSearchParams.moreFilters = $event;
       this.loadStudents();
     },
-    clearFilters($event) {
+    clearFilters() {
       this.filterSearchParams.moreFilters = [];
       this.loadStudents();
     },
