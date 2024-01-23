@@ -240,6 +240,13 @@ export default {
     tab: '#specialEdTab',
     summaryButton: '#specialEdSummaryButton'
   },
+  ellComponent: {
+    tab: '#engLangTab',
+    summaryButton: '#engLangSummaryButton',
+    headcountCard: '.ell-headcount-card',
+    headcountHeader: '.ell-headcount-header',
+    headcountColumnData: '.ell-headcount-column-data'
+  },
   studentLevelData: {
     detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
     documentUploadButton: '#uploadButton',

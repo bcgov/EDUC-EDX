@@ -4,3 +4,9 @@ declare interface BaseApiEntity {
   createDate: string;
   updateDate: string;
 }
+
+declare interface SearchParams {
+  params: {
+    searchCriteriaList: string;
+  }
+}

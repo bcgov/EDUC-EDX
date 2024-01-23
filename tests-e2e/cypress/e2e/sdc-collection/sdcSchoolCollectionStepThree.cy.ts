@@ -182,6 +182,30 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '3');
     });
 
+    it.only('verifies english language learning programs for reported students', () => {
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get('button[value="English Language Learning"]').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+      cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === '17-English Language Learning-'; // Years in Ell is why there is a hyphen at the end
+          });
+        });
+      });
+
+      //check summary headcounts
+      cy.get(selectors.ellComponent.summaryButton).click();
+      cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
+    });
+
+
     it('verifies special education category for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');

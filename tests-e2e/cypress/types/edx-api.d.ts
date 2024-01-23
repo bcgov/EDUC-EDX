@@ -49,7 +49,7 @@ interface EdxActivationCodeEntity extends BaseApiEntity {
   districtID: string;
   activationCode: string;
   isPrimary: boolean;
-  expiryDate: any;
+  expiryDate: string;
   firstName: string;
   lastName: string;
   email: string;
