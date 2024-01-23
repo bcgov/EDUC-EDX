@@ -1,6 +1,6 @@
-import generator from "generate-password-ts";
-import {InstituteApiService} from "./institute-api-service";
-import {RestUtils} from "../helpers/rest-utils-ts";
+import generator from 'generate-password-ts';
+import {InstituteApiService} from './institute-api-service';
+import {RestUtils} from '../helpers/rest-utils-ts';
 import {faker} from '@faker-js/faker';
 
 type EdxActivationRolePayload = {
@@ -89,18 +89,18 @@ export class EdxApiService {
   }
 
   async deleteAllSecureExchangeBySubject(subject: string) {
-    console.log(`delete messages with subject:: ${subject}`)
-    let params = {
+    console.log(`delete messages with subject:: ${subject}`);
+    const params = {
       params: {
         searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation":' +
             ' "like_ignore_case", "valueType": "STRING"}]'
       }
     };
-    let response = await this.findAllPaginated(params);
+    const response = await this.findAllPaginated(params);
 
     console.log(`${response.content.length} messages found`);
 
-    for (let message of response.content) {
+    for (const message of response.content) {
       await this.deleteSecureExchange(message.secureExchangeID);
     }
 
@@ -131,9 +131,9 @@ export class EdxApiService {
 
     this.restUtils.getData(districtActivationCodeUrl)
       .then(async response => {
-      let activationCodeId = response.edxActivationCodeId;
-      const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
-      await this.restUtils.deleteData(url);
+        const activationCodeId = response.edxActivationCodeId;
+        const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
+        await this.restUtils.deleteData(url);
       })
       .catch(e => {
         if(e.status !== 404 ){
@@ -213,13 +213,13 @@ export class EdxApiService {
     const oneDayFrom = (date: Date) => {
       date.setDate(date.getDate() + 1);
       return date;
-    }
+    };
     const now = new Date();
 
     //get only first 19 to avoid adding millisecond at the end.
     edxActivationCode.expiryDate = oneDayFrom(now).toISOString().substring(0, 19);
     if (roles.length > 0) {
-      let roleArr: Array<EdxActivationRolePayload> = new Array<EdxActivationRolePayload>();
+      const roleArr: Array<EdxActivationRolePayload> = new Array<EdxActivationRolePayload>();
       for (const role of roles) {
         const activationRole: EdxActivationRolePayload = {edxRoleCode: role.edxRoleCode};
         roleArr.push(activationRole);
