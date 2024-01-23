@@ -43,7 +43,6 @@
       :click-action="next"
     />
   </v-row>
-
 </template>
   
 <script>

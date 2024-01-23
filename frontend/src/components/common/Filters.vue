@@ -25,7 +25,10 @@
             {{ filterGroups?.heading }}
           </v-col>
         </v-row>
-        <v-row v-for="(filter, idx) in filterGroups?.filterGroups" :key="filter.key">
+        <v-row
+          v-for="(filter, idx) in filterGroups?.filterGroups"
+          :key="filter.key"
+        >
           <v-btn-toggle
             v-model="selected[index][idx]"
             color="#003366"
@@ -49,21 +52,20 @@
             </div>
           </v-btn-toggle>
           <v-col v-if="filter?.key === 'bandCode'">
-              <v-autocomplete
-                id="bandCode"
-                v-model="bandCodeValue"
-                label="Band of Residence"
-                density="compact"
-                variant="underlined"
-                :items="sdcCollection.bandCodes"
-                item-value="bandCode"
-                item-title="dropdownText"
-                class="mt-n7 mb-n8"
-                clearable
-                @update:model-value="setBandCodeFilter('bandResidence', $event, )"
-              />
-              
-        </v-col>
+            <v-autocomplete
+              id="bandCode"
+              v-model="bandCodeValue"
+              label="Band of Residence"
+              density="compact"
+              variant="underlined"
+              :items="sdcCollection.bandCodes"
+              item-value="bandCode"
+              item-title="dropdownText"
+              class="mt-n7 mb-n8"
+              clearable
+              @update:model-value="setBandCodeFilter('bandResidence', $event, )"
+            />
+          </v-col>
         </v-row>
       </div>
     </v-card-text>
@@ -97,7 +99,7 @@ export default {
       default: null 
     }
   },
-  emits: ['closeFilters'],
+  emits: ['closeFilters', 'clearFilters'],
   data() {
     return {
       selected:[],
@@ -162,6 +164,7 @@ export default {
       );
       this.selectedFilters = {};
       this.bandCodeValue = null;
+      this.$emit('clearFilters');
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));

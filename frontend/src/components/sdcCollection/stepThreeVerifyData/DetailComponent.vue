@@ -29,7 +29,8 @@
 
               <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description != ''">
                 <v-chip-group>
-                  <v-chip v-if="config.defaultFilter.description"
+                  <v-chip
+                    v-if="config.defaultFilter.description"
                     class="chip-margin"
                   >
                     {{ config.defaultFilter.description }}
@@ -161,6 +162,7 @@
         :school="school"
         :updated-filters="updatedFilters"
         @close-filters="updateFilters"
+        @clear-filters="clearFilters"
       />
     </v-navigation-drawer>
   </v-row>
@@ -231,6 +233,10 @@ export default {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
       this.filterSearchParams.moreFilters = $event;
+      this.loadStudents();
+    },
+    clearFilters() {
+      this.filterSearchParams.moreFilters = [];
       this.loadStudents();
     },
     removeFilter(toRemoveKey, toRemoveValue) {
