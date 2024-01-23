@@ -53,12 +53,12 @@
                 id="bandCode"
                 v-model="bandCodeValue"
                 label="Band of Residence"
-                dense
+                density="compact"
                 variant="underlined"
                 :items="sdcCollection.bandCodes"
                 item-value="bandCode"
                 item-title="dropdownText"
-                class="mt-n8 mb-n8"
+                class="mt-n7 mb-n8"
                 clearable
                 @update:model-value="setBandCodeFilter('bandResidence', $event, )"
               />

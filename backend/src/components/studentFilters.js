@@ -59,6 +59,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         indigenousProgramList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if (elem.key === 'warnings' && pValue) {
+        validateWarningFilter(pValue);
         searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if (elem.key === 'support' && pValue) {
@@ -264,6 +265,19 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     if (filterGrades.length > 0) {
       if (filterGrades.every(value => activeFundingCodes.includes(code => value === code.enrolledProgramCode))) {
         log.error('Invalid enrolled program filter.');
+        throw new Error('400');
+      }
+    }
+  }
+
+  function validateWarningFilter(filters = []) {
+    let allowedWarningValues = [
+      'FUNDING_WARNING',
+      'INFO_WARNING'
+      ];
+    if (filters.length > 0) {
+      if (filters.every(value => allowedWarningValues.includes(cat => value === cat))) {
+        log.error('Invalid warning filter.');
         throw new Error('400');
       }
     }
