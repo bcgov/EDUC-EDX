@@ -347,25 +347,7 @@ function createSearchCriteria(searchParams = []) {
     let pValue = searchParams[key];
 
     if (key === 'tabFilter') {
-      let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
-
-      if (searchParams[key].label === 'FRENCH_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '05,08,11,14', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      }
-      if (searchParams[key].label === 'CAREER_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '40,41,42,43', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      }
-      if (searchParams[key].label === 'ELL_PR') {
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '17', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      }
-      if(searchParams[key].label === 'INDSUPPORT_PR') {
-        searchCriteriaList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        searchCriteriaList.push({ key: 'nativeAncestryInd', value: 'Y', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-      }
-      if (searchParams[key].label === 'SPECIALED_PR') {
-        searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: 'A,B,C,D,E,F,G,H,K,P,Q,R', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      }
+      searchCriteriaList = createTabFilter(searchParams, key)
     }
     if (key === 'studentPen') {
       searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
@@ -384,6 +366,33 @@ function createSearchCriteria(searchParams = []) {
   });
   return searchCriteriaList;
 }
+
+function createTabFilter(searchParams, key) {
+  let searchCriteriaList = [];
+  let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
+
+  if (searchParams[key].label === 'FRENCH_PR') {
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '05,08,11,14', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+  if (searchParams[key].label === 'CAREER_PR') {
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '40,41,42,43', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+  if (searchParams[key].label === 'ELL_PR') {
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '17', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+  if(searchParams[key].label === 'INDSUPPORT_PR') {
+    searchCriteriaList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    searchCriteriaList.push({ key: 'nativeAncestryInd', value: 'Y', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  }
+  if (searchParams[key].label === 'SPECIALED_PR') {
+    searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: 'A,B,C,D,E,F,G,H,K,P,Q,R', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+
+  return searchCriteriaList;
+
+}
+
 function createMultiFieldNameSearchCriteria(nameString) {
   const nameParts = nameString.split(/\s+/);
   const fieldNames = [
