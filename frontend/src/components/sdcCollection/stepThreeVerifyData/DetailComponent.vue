@@ -13,6 +13,7 @@
             >
               <v-text-field
                 v-model="penLocalIdNameFilter"
+                id="searchInput"
                 label="PEN or Local ID or Name"
                 color="primary"
                 variant="underlined"
