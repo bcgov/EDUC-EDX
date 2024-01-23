@@ -179,7 +179,7 @@ export default {
       return true;
     },
     setFilterValue(key, val) {
-      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' ? [val] : val;
+      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' ? [val] : val;
     }
   }
 };
