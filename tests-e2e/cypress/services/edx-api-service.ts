@@ -72,15 +72,10 @@ export class EdxApiService {
     return this.restUtils.getData<EdxRoleEntity[]>(url);
   }
 
-  async findAllPaginated(params: any){
+  async findAllPaginated(params: SearchParams) {
     const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
     const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
     return this.restUtils.getData(EXCHANGE_ENDPOINT_PAGINATED, params);
-  }
-
-  async createSecureExchange(secureExchange: any) {
-    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
-    return this.restUtils.postData(EXCHANGE_ENDPOINT, secureExchange, '');
   }
 
   async deleteSecureExchange(secureExchangeID: string) {
@@ -200,7 +195,7 @@ export class EdxApiService {
     return responseBody[0];
   }
 
-  createEdxActivationCodePayload(isPrimary: boolean, roles: any, activationCode: string, instituteTypeCode: string, instituteID: string) {
+  createEdxActivationCodePayload(isPrimary: boolean, roles: DistrictRole | SchoolRole, activationCode: string, instituteTypeCode: string, instituteID: string) {
     const edxActivationCode: EdxActivationCodePayload = {
       activationCode,
       email: 'edx-noreply@gov.bc.ca',
