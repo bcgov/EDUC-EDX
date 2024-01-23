@@ -490,6 +490,82 @@ export const BAND_FILTER = Object.freeze(
   },
 );
 
+export const SPED_FILTER = Object.freeze(
+  {
+    heading: 'Special Education',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'sped',
+        filterOptions: [
+          {
+            title: 'A - Physically Dependent',
+            value: 'A'
+          },
+          {
+            title: 'B - Deafblind',
+            value: 'B'
+          },
+          {
+            title: 'C - Moderate to Profound Intellectual Disability',
+            value: 'C'
+          },
+          {
+            title: 'F - Deaf or Hard of Hearing',
+            value: 'F'
+          },
+          {
+            title: 'G - Autism Spectrum Disorder',
+            value: 'G'
+          },
+          {
+            title: 'H - Intensive Behaviour Intervention/Serious Mental Illness',
+            value: 'H'
+          },
+          {
+            title: 'K - Mild Intellectual Disability',
+            value: 'K'
+          },
+          {
+            title: 'P - Gifted',
+            value: 'P'
+          },
+          {
+            title: 'Q - Learning Disability',
+            value: 'Q'
+          },
+          {
+            title: 'R - Moderate Behaviour Support/Mental Illness',
+            value: 'R'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const SPED_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Special Education Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'spedFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
 /**
  * Tables
  */
@@ -620,6 +696,8 @@ export const SPECIALED_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      SPED_FILTER,
+      SPED_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }

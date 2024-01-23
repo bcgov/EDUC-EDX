@@ -17,6 +17,8 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let ancestryList = [];
     let indigenousProgramsFundingList = [];
     let bandCodeList = [];
+    let spedCodeList = [];
+    let spedFundingList = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -43,14 +45,20 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       if(elem.key === 'careerProgramsFunding' && pValue) {
         careerProgramFundingList = createCareerProgramFundingfilter(pValue);
       }
-      if (elem.key === 'ancestry' && pValue) {
+      if(elem.key === 'ancestry' && pValue) {
         ancestryList = createAncestryFilter(pValue);
       }
-      if (elem.key === 'indigenousProgramsFunding' && pValue) {
+      if(elem.key === 'indigenousProgramsFunding' && pValue) {
         indigenousProgramsFundingList = createIndigenousFundingFilter(pValue);
       }
       if(elem.key === 'frenchFunding' && pValue) {
         frenchProgramFundingList = createFrenchFundingFilter(pValue);
+      }
+      if(elem.key === 'sped' && pValue) {
+        spedCodeList = createSpedFilter(pValue);
+      }
+      if(elem.key === 'spedFunding' && pValue) {
+        spedFundingList = createSpedFundingFilter(pValue)
       }
       if (elem.key === 'warnings' && pValue) {
         validateWarningFilter(pValue);
@@ -170,6 +178,18 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList: bandCodeList
       });
     }
+    if(spedCodeList.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: spedCodeList
+      });
+    }
+    if(spedFundingList.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: spedFundingList
+      });
+    }
     return search;
   }
 
@@ -244,6 +264,16 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
   }
 
+  function validateSpedCodes(filters = []) {
+    const activeSpedCodes = cacheService.getActiveSpedCodes();
+    if (filters.length > 0) {
+      if (filters.every(value => activeSpedCodes.includes(code => value === code.specialEducationCategoryCode))) {
+        log.error('Invalid special education filter.');
+        throw new Error('400');
+      }
+    }
+  }
+
   function createFrenchFundingFilter(pValue) {
     let frenchProgramFundingList = [];
 
@@ -267,6 +297,25 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
 
       return indigenousProgramsFundingList;
   }
+
+  function createSpedFundingFilter(pValue) {
+    let spedFundingList = [];
+
+    if (pValue.toString() === 'true') {
+      spedFundingList.push({ key: 'specialEducationNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    } else if (pValue.toString() === 'false') {
+      spedFundingList.push({ key: 'specialEducationNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
+
+    return spedFundingList;
+  }
+
+    function createSpedFilter(pValue) {
+      let spedCodeList = [];
+      validateSpedCodes(pValue);
+      spedCodeList.push({ key: 'specialEducationCategoryCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      return spedCodeList;
+    }
 
   function createAncestryFilter(pValue) {
     let ancestryList = [];
