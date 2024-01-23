@@ -48,6 +48,22 @@
               </v-btn>
             </div>
           </v-btn-toggle>
+          <v-col v-if="filter?.key === 'bandCode'">
+              <v-autocomplete
+                id="bandCode"
+                v-model="bandCodeValue"
+                label="Band of Residence"
+                density="compact"
+                variant="underlined"
+                :items="sdcCollection.bandCodes"
+                item-value="bandCode"
+                item-title="dropdownText"
+                class="mt-n7 mb-n8"
+                clearable
+                @update:model-value="setBandCodeFilter('bandResidence', $event, )"
+              />
+              
+        </v-col>
         </v-row>
       </div>
     </v-card-text>
@@ -56,6 +72,8 @@
   
 <script>
 import alertMixin from '../../mixins/alertMixin';
+import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import {isEmpty} from 'lodash';
   
 export default {
   name: 'Filters',
@@ -83,7 +101,9 @@ export default {
   data() {
     return {
       selected:[],
-      selectedFilters: {}
+      selectedFilters: {},
+      bandCodeValue: null,
+      sdcCollection: sdcCollectionStore(),
     };
   },
   computed: {
@@ -123,10 +143,17 @@ export default {
   },
   methods: {
     setFilter(val, key) {
-      if(key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding') {
-        this.selectedFilters[key] = [val];
+      if(val && !isEmpty(val)) {
+        this.selectedFilters[key] = this.setFilterValue(key, val);
       } else {
-        this.selectedFilters[key] = val;
+        delete this.selectedFilters[key];
+      }
+    },
+    setBandCodeFilter(key, $event){
+      if($event) {
+        this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+      } else {
+        delete this.selectedFilters[key];
       }
     },
     clear() {
@@ -134,6 +161,7 @@ export default {
         filterGroup.filterGroups?.map(()=>[])
       );
       this.selectedFilters = {};
+      this.bandCodeValue = null;
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
@@ -146,6 +174,9 @@ export default {
         return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
       }
       return true;
+    },
+    setFilterValue(key, val) {
+      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' ? [val] : val;
     }
   }
 };

@@ -398,6 +398,98 @@ export const CAREER_FUNDING_FILTER = Object.freeze(
   },
 );
 
+export const INDIGENOUS_PROGRAM_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Support Programs',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'indigenousPrograms',
+        filterOptions: [
+          {
+            title: '29 - Language & Culture',
+            value: '29'
+          },
+          {
+            title: '33 - Support Services',
+            value: '33'
+          },
+          {
+            title: '36 - Other Approved Programs',
+            value: '36'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const ANCESTRY_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Ancestry',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'ancestry',
+        filterOptions: [
+          {
+            title: 'Has Indigenous Ancestry',
+            value: 'true'
+          },
+          {
+            title: 'No Indigenous Ancestry',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const INDIGENOUS_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Support Program Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'indigenousProgramsFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const BAND_FILTER = Object.freeze(
+  {
+    heading: 'Band of Residence',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'bandCode',
+        filterOptions: [
+          {
+            title: 'Has Band Code',
+            value: 'true'
+          },
+          {
+            title: 'No Band Code',
+            value: 'false'
+          },
+        ]
+      }
+    ]
+  },
+);
+
 /**
  * Tables
  */
@@ -429,7 +521,7 @@ export const FTE = Object.freeze(
 
 export const FRENCH_PR = Object.freeze(
   {
-    defaultFilter: {label: 'FRENCH_PR', description:'Has French Program', enrolledProgramCodeValues: '05,08,11,14'},
+    defaultFilter: {label: 'FRENCH_PR', description:'Has French Program' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -455,7 +547,7 @@ export const FRENCH_PR = Object.freeze(
 
 export const CAREER_PR = Object.freeze(
   {
-    defaultFilter: {label: 'CAREER_PR' ,description: 'Has Career Program', enrolledProgramCodeValues: '40,41,42,43'},
+    defaultFilter: {label: 'CAREER_PR' ,description: 'Has Career Program' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -482,7 +574,7 @@ export const CAREER_PR = Object.freeze(
 
 export const INDSUPPORT_PR = Object.freeze(
   {
-    defaultFilter: {label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program', enrolledProgramCodeValues: '29,33,36'},
+    defaultFilter: {label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program'},
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -500,6 +592,10 @@ export const INDSUPPORT_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      INDIGENOUS_PROGRAM_FILTER,
+      BAND_FILTER,
+      ANCESTRY_FILTER,
+      INDIGENOUS_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
@@ -507,7 +603,7 @@ export const INDSUPPORT_PR = Object.freeze(
 
 export const SPECIALED_PR = Object.freeze(
   {
-    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category', spedCodeValues: 'A,B,C,D,E,F,G,H,K,P,Q,R'},
+    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category'},
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -531,7 +627,7 @@ export const SPECIALED_PR = Object.freeze(
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner', enrolledProgramCodeValues: '17' },
+    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
