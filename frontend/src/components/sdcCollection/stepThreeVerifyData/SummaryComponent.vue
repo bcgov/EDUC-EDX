@@ -32,6 +32,7 @@
     </v-row>
 
     <v-row class="mt-n6">
+      <v-spacer />
       <v-slide-group
         class="py-4"
         show-arrows
@@ -41,14 +42,20 @@
           :key="index"
         >
           <v-col>
-            <v-card :class="`${headcountType}-headcount-card`" height="100%">
+            <v-card
+              :class="`${headcountType}-headcount-card`"
+              height="100%"
+            >
               <v-card-item class="pb-0">
                 <v-card-title :class="`${headcountType}-headcount-header column-header`">
                   {{ header.title }}
                 </v-card-title>
               </v-card-item>
               <v-card-text>
-                <v-row v-if="header.orderedColumnTitles">
+                <v-row
+                  v-if="header.orderedColumnTitles"
+                  class="row-data"
+                >
                   <template
                     v-for="(key, index) in header.orderedColumnTitles"
                     :key="index"
@@ -107,6 +114,7 @@
           </v-col>
         </v-slide-group-item>
       </v-slide-group>
+      <v-spacer />
     </v-row>
   </div>
   <v-row align-content="space-between">
@@ -224,10 +232,15 @@ export default {
   text-align: center;
   line-height: 1.5;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .compare-text {
   color: gray;
+}
+
+.row-data {
+  flex-wrap: nowrap;
 }
  
 </style>
