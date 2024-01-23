@@ -185,8 +185,9 @@
         <v-row
           class="pt-3 pb-3"
         >
-          <v-col class="text-right"
+          <v-col
             v-if="studentListData?.length > 0"
+            class="text-right"
           >
             <PrimaryButton
               id="fixSelected"
@@ -204,8 +205,9 @@
               :disabled="selectedStudents.length != 0"
             />
           </v-col>
-          <v-col class="mr-3"
+          <v-col
             v-else
+            class="mr-3"
           >
             <v-alert
               dismissible="false"
@@ -302,9 +304,11 @@
     </v-row>
     <v-row
       v-if="nextButtonIsDisabled()"
-      >
+    >
       <v-col class="error-message">
-        <p class="form-hint">All errors must be fixed</p>
+        <p class="form-hint">
+          All errors must be fixed
+        </p>
       </v-col>
     </v-row>
     <v-row justify="end">
@@ -328,9 +332,9 @@
     />
   </div>
 </template>
-  
+
 <script>
-  
+
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy} from 'lodash';
@@ -339,7 +343,7 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import {setFailureAlert} from '../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import EditAndFixStudentData from './EditAndFixStudentData.vue';
-  
+
 export default {
   name: 'StepTwoViewDataIssues',
   components: {
@@ -468,7 +472,7 @@ export default {
       this.penFilter = pen;
       this.fundingWarningCategoryFilter = '';
       this.legalUsualNameFilter = '';
-      await this.getAllIssuesAndNavigate();
+      this.getAllIssuesAndNavigate();
     },
     markStepAsComplete(){
       let updateCollection = {
@@ -489,7 +493,7 @@ export default {
     },
     getSummaryCounts(){
       this.loadingCount += 1;
-  
+
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/stats/error-warning-count/${this.$route.params.schoolCollectionID}`, {
       }).then(response => {
         this.summaryCounts = response.data;
@@ -530,7 +534,7 @@ export default {
       this.headerSearchParams.penLocalIdNumber = this.penFilter;
       this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
       this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
-  
+
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
           pageNumber: 0,
@@ -588,7 +592,7 @@ export default {
   }
 };
 </script>
-  
+
   <style scoped>
     .border {
       border: 2px solid grey;
@@ -596,7 +600,7 @@ export default {
       padding: 35px;
       margin-bottom: 2em;
     }
-  
+
     .clear-message {
       border: 0.05em solid darkgreen;
       color: darkgreen;
@@ -619,7 +623,7 @@ export default {
       align-items: center;
       flex-wrap: nowrap;
     }
-  
+
    .inner-border {
      display: inline-block;
      min-width: 100%;
@@ -629,41 +633,41 @@ export default {
      padding: 2em;
      margin-bottom: 1em;
    }
-  
+
    :deep(.v-data-table-footer__items-per-page) {
        display: none;
    }
-    
+
    .headerVal{
       color: #7f7f7f;
    }
-  
+
    .isSelected{
      background-color: #E1F5FE;
    }
-  
+
    .tableItemVal{
        font-size: small;
    }
-  
+
    .scroll{
      overflow-y: auto;
      overflow-x: hidden;
      max-height: 100vh;
    }
-  
+
    .form-hint{
      color: rgb(56, 89, 138);
      font-size: 14px;
    }
-  
+
    .searchBox {
      margin-left: 1em;
      margin-right: 1em;
      border-radius: 5px;
      background-color: rgb(235, 237, 239);
    }
-  
+
    #warningAndErrorSummary div {
      margin-bottom: 1em;
    }
@@ -700,6 +704,6 @@ export default {
    .error-message {
     text-align: end;
    }
-  
+
   </style>
-  
+

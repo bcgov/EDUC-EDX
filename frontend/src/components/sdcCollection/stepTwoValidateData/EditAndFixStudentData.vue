@@ -438,8 +438,9 @@
                             </v-col>
                           </v-row>
                         </v-form>
-                        <a id="duplicatePenFilter"
-                          v-if="issue.validationIssueCode==='STUDENTPENDUPLICATE'"
+                        <a
+                          v-if="issue.validationIssueCode === 'STUDENTPENDUPLICATE'"
+                          id="duplicatePenFilter"
                           @click="filterByPen"
                         >Filter to records with this PEN</a>
                       </v-timeline-item>
@@ -474,9 +475,9 @@
             </div>
             <div class="text-center">
               <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-              <a 
-                id="clearFilters"
+              <a
                 v-if="selectedStudents.length < totalStudents"
+                id="clearFilters"
                 class="filter-text"
                 @click="clearFilter()"
               >- Clear Filters & Show all Records</a>
