@@ -15,6 +15,7 @@ local.*
 .env
 endpoint-proxy.sh
 cypress.env.json
+
 # Editor directories and files
 .idea
 .vscode
@@ -24,3 +25,7 @@ cypress.env.json
 *.sln
 *.dcignore
 *.iml
+Session.vim
+.envrc
+.direnv/
+shell.nix
