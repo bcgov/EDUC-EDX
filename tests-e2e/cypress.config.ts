@@ -1,19 +1,19 @@
-import {InstituteSetupUtils} from "./cypress/helpers/institute-set-up-utils";
-import {CollectionSetupUtils} from "./cypress/helpers/collection-set-up-utils";
-import {EdxApiService} from "./cypress/services/edx-api-service";
-import {UserSetupUtils} from "./cypress/helpers/user-set-up-utils";
-import {defineConfig} from "cypress";
-import { InstituteOptions, SchoolOptions } from "./cypress/services/institute-api-service";
-import { UserActivationUtils } from "./cypress/helpers/user-activation-utils";
-import { SchoolCollection } from "./cypress/services/sdc-collection-api-service";
+import {InstituteSetupUtils} from './cypress/helpers/institute-set-up-utils';
+import {CollectionSetupUtils} from './cypress/helpers/collection-set-up-utils';
+import {EdxApiService} from './cypress/services/edx-api-service';
+import {UserSetupUtils} from './cypress/helpers/user-set-up-utils';
+import {defineConfig} from 'cypress';
+import { InstituteOptions, SchoolOptions } from './cypress/services/institute-api-service';
+import { UserActivationUtils } from './cypress/helpers/user-activation-utils';
+import { SchoolCollection } from './cypress/services/sdc-collection-api-service';
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (
   config: Cypress.PluginConfigOptions,
   options?: InstituteOptions
 ): Promise<AppSetupData> => {
-  return new Promise(async (resolve, reject) => {
-    let response = await new InstituteSetupUtils(config).setupInstituteEntities(options || {
+  return new Promise((resolve, reject) => {
+    new InstituteSetupUtils(config).setupInstituteEntities(options || {
       districtOptions: {
         includeDistrictAddress: true,
         withPrimaryActivationCode: true
@@ -26,15 +26,15 @@ const loadAppSetupData = (
         withPrimaryActivationCode: true,
         isIndependentSchool: false
       }
+    }).then(response => {
+      if (response){
+        resolve(response);
+      } else {
+        reject();
+      }
     });
-
-    if (response){
-      resolve(response);
-    } else {
-      reject();
-    }
-  })
-}
+  });
+};
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -83,7 +83,7 @@ export default defineConfig({
           await new EdxApiService(config).deleteActivationCode(activationCodeId);
           return null;
         }
-      })
+      });
     },
   }
-})
+});
