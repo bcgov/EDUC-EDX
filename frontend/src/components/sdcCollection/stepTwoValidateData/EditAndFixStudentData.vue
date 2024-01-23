@@ -46,6 +46,7 @@
             text="Validate & Save"
             class="mr-1"
             :click-action="save"
+            :disabled="!studentDetailsFormValid"
           />
         </v-col>
       </v-row>
@@ -598,6 +599,9 @@ export default {
         }).finally(() => {
           this.removeIndex = null;
           this.loadingCount -= 1;
+          if (!this.isLoading()) {
+            this.$nextTick().then(this.validateForm);
+          }
         });
     },
     save(){
@@ -737,6 +741,9 @@ export default {
       default:
         return '';
       }
+    },
+    validateForm() {
+      this.$refs.studentDetailsForm.validate();
     },
     formatDob
   }
