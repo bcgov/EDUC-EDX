@@ -97,7 +97,7 @@ export default {
       default: null 
     }
   },
-  emits: ['closeFilters'],
+  emits: ['closeFilters', 'clearFilters'],
   data() {
     return {
       selected:[],
@@ -162,6 +162,7 @@ export default {
       );
       this.selectedFilters = {};
       this.bandCodeValue = null;
+      this.$emit('clearFilters');
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));

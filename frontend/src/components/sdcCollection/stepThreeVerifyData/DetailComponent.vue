@@ -161,6 +161,7 @@
         :school="school"
         :updated-filters="updatedFilters"
         @close-filters="updateFilters"
+        @clear-filters="clearFilters"
       />
     </v-navigation-drawer>
   </v-row>
@@ -231,6 +232,10 @@ export default {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
       this.filterSearchParams.moreFilters = $event;
+      this.loadStudents();
+    },
+    clearFilters($event) {
+      this.filterSearchParams.moreFilters = [];
       this.loadStudents();
     },
     removeFilter(toRemoveKey, toRemoveValue) {
