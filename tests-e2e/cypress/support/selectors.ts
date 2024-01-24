@@ -159,7 +159,7 @@ export default {
     newContactTypeDropdown: '#newContactDropdown',
     subjectHeading: 'h2.subjectHeading',
     resolveButton:'#resolveBtn',
-    activeTab: 'button.v-slide-group-item--active',
+    activeTab: '#schoolContactsTab',
   },
   schoolDetails: {
     addAddressButton: '#addAddressButton',

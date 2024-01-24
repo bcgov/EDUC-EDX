@@ -133,7 +133,7 @@
               <v-tab value="details">
                 Details
               </v-tab>
-              <v-tab value="contacts">
+              <v-tab id="schoolContactsTab" value="contacts">
                 Contacts
               </v-tab>
             </v-tabs>
