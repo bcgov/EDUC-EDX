@@ -99,7 +99,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core french' || value === '11-Early french immersion';
+            return value === '08-Core French' || value === '11-Early French Immersion';
           });
         });
       });
@@ -166,7 +166,7 @@ describe('SDC School Collection View', () => {
       cy.get('button[value="Indigenous Students & Support Programs"]').click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
-      cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
       cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
@@ -246,7 +246,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically dependent' || value === 'G-Autism spectrum disorder';
+            return value === 'A-Physically dependent' || value === 'G-Autism Spectrum Disorder';
           });
         });
       });
