@@ -246,7 +246,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically dependent' || value === 'G-Autism Spectrum Disorder';
+            return value === 'A-Physically Dependent' || value === 'G-Autism Spectrum Disorder';
           });
         });
       });
