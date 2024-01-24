@@ -245,7 +245,8 @@ export default {
     headcountColumnData: '.special-ed-headcount-column-data'
   },
   filtersComponent: {
-    card: '.v-card-text',
+    card: '.filter-card',
+    text: '.v-card-text',
     applyFilters: '#apply-filters',
     clearAllFilters: '#clear-all-filters',
     specialEducationFilterTab: '#SpecialEducation-filter-tab'
