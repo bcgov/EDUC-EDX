@@ -238,7 +238,10 @@ export default {
   },
   specialEducationComponent: {
     tab: '#specialEdTab',
-    summaryButton: '#specialEdSummaryButton'
+    summaryButton: '#specialEdSummaryButton',
+    headcountCard: '.special-ed-headcount-card',
+    headcountHeader: '.special-ed-headcount-header',
+    headcountColumnData: '.special-ed-headcount-column-data'
   },
   ellComponent: {
     tab: '#engLangTab',
