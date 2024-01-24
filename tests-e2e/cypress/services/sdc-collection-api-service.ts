@@ -367,7 +367,7 @@ export class SdcCollectionApiService {
             },
             {
               'createUser': 'EDXAT',
-              'localID': '12345',
+              'localID': '67890',
               'studentPen': '102866365',
               'legalFirstName': 'LEGALFIRST',
               'legalMiddleNames': null,

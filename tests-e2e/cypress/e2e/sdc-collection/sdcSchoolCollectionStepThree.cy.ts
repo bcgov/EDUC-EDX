@@ -26,6 +26,34 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
     });
 
+    it('can search for a student by name, PEN, or local ID', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
+
+      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('LEGALLAST');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
+
+      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('67890');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+    })
+
     it('verifies FTE for Reported Students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
