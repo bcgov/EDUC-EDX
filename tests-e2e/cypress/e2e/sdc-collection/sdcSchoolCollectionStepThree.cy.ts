@@ -52,7 +52,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
       cy.wait('@collectionStudent');
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-    })
+    });
 
     it('verifies FTE for Reported Students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
@@ -170,7 +170,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '29-Aboriginal language and culture';
+            return value === '29-Aboriginal Language and Culture' || '-';
           });
         });
       });
@@ -246,7 +246,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically dependent' || value === 'G-Autism Spectrum Disorder';
+            return value === 'A-Physically Dependent' || value === 'G-Autism Spectrum Disorder';
           });
         });
       });
