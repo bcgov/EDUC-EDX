@@ -170,7 +170,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '29-Aboriginal language and culture';
+            return value === '29-Indigenous Language And Culture';
           });
         });
       });
