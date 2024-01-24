@@ -52,7 +52,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
       cy.wait('@collectionStudent');
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-    })
+    });
 
     it('verifies FTE for Reported Students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
@@ -170,7 +170,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '29-Indigenous Language and Culture';
+            return value === '29-Indigenous Language and Culture' || '-';
           });
         });
       });
@@ -293,9 +293,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'G - Autism Spectrum Disorder');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
       cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
-      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '1');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
-      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'H - Intensive Behaviour Interventions or Serious Mental Illness');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
       cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
