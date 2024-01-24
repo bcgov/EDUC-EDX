@@ -210,7 +210,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '3');
     });
 
-    it.only('verifies english language learning programs for reported students', () => {
+    it('verifies english language learning programs for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
