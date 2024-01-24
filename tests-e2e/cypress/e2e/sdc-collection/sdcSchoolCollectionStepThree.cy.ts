@@ -251,6 +251,13 @@ describe('SDC School Collection View', () => {
         });
       });
 
+      //check special ed filters
+      cy.get(selectors.specialEducationComponent.filterButton).click();
+      cy.get(selectors.filtersComponent.card).should('have.length', 8);
+      cy.get(selectors.filtersComponent.card).eq(5).find(selectors.filtersComponent.specialEducationFilterTab).should('have.length', 2);
+      cy.get(selectors.filtersComponent.card).eq(5).find(selectors.filtersComponent.specialEducationFilterTab).eq(0).children('div').should('contain.text', 'Special Education');
+      cy.get(selectors.filtersComponent.applyFilters).click();
+
       //check summary headcounts
       cy.get(selectors.specialEducationComponent.summaryButton).click();
       cy.get(selectors.specialEducationComponent.headcountCard).should('have.length', 12);
