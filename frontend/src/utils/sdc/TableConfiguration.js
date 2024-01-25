@@ -90,7 +90,7 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
           },
           {
             title: '16 - Newcomer Refugee',
-            cvalue: '16'
+            value: '16'
           },
           {
             title: 'No Funding Code',

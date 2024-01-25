@@ -21,6 +21,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let spedFundingList = [];
     let ellList = [];
     let ellFunding = [];
+    let fundingTypeList = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -81,20 +82,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList.push({ key: 'fteZeroReasonCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if (elem.key === 'fundingType' && pValue) {
-        validateFundingTypeFilter(pValue);
-  
-        if (pValue.includes('14')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('20')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('16')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('No Funding')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
+        fundingTypeList = createFundingTypeFilter(pValue);
       }
       if (elem.key === 'bandResidence' && pValue) {
         bandCodeList.push({ key: 'bandCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
@@ -112,6 +100,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: searchCriteriaList
+      });
+    }
+    if (fundingTypeList.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: fundingTypeList
       });
     }
     if (studentTypeFilterList.length > 0) {
@@ -292,6 +286,25 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         throw new Error('400');
       }
     }
+  }
+
+  function createFundingTypeFilter(pValue) {
+    let fundingTypeList = []
+    validateFundingTypeFilter(pValue);
+  
+        if (pValue.includes('14')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('20')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('16')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('No Funding')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+    return fundingTypeList;
   }
 
   function createEllYearsFilter(pValue) {
