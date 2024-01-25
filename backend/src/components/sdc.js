@@ -262,6 +262,22 @@ async function deleteSDCSchoolCollectionStudent(req, res) {
   }
 }
 
+async function createYearsInEll(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    log.info(`EDX User :: ${req.session.edxUserData.edxUserID} is creating years in ELL for students :: ${req.body}`);
+    const response = await postData(token, req.body, `${config.get('sdc:schoolCollectionStudentURL')}/years-in-ell`);
+    return res.status(HttpStatus.OK).json(response);
+  } catch (e) {
+    log.error('Error creating years in Ell', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getStudentHeadcounts(req, res) {
   try {
     const token = getAccessToken(req);
@@ -449,5 +465,6 @@ module.exports = {
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
   deleteSDCSchoolCollectionStudent,
-  getStudentHeadcounts
+  getStudentHeadcounts,
+  createYearsInEll
 };
