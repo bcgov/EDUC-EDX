@@ -21,7 +21,7 @@ export class RestUtils {
     return response.data.access_token;
   }
 
-  public async getData<ReturnType = unknown>(url: string, params: AxiosRequestConfig): Promise<ReturnType> {
+  public async getData<ReturnType = unknown>(url: string, params?: AxiosRequestConfig): Promise<ReturnType> {
     try {
       params = this.setToken(await this.getToken(), params);
       const response = await axios.get(url, params);
