@@ -31,11 +31,11 @@ export class SdcCollectionApiService {
     const curCloseDate = curDate.plusDays(4);
 
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
-    const activeCollection = await this.restUtils.getData(urlGetActiveCollection);
+    const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
     try {
-      const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
+      const activeSdcCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection);
       await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
     } catch (_) {
       //This is ok
@@ -492,7 +492,7 @@ export class SdcCollectionApiService {
     }
 
     const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-    const schoolCollectionResponse = await this.restUtils.postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
+    const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
     console.log('AT createSchoolCollection completed');
     return schoolCollectionResponse?.sdcSchoolCollectionID;
