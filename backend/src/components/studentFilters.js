@@ -19,8 +19,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let bandCodeList = [];
     let spedCodeList = [];
     let spedFundingList = [];
-    let ellList = [];
-    let ellFunding = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -61,12 +59,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       }
       if(elem.key === 'spedFunding' && pValue) {
         spedFundingList = createSpedFundingFilter(pValue)
-      }
-      if(elem.key === 'ellYears' && pValue) {
-        ellList = createEllYearsFilter(pValue);
-      }
-      if(elem.key === 'ellFunding' && pValue) {
-        ellFunding = createEllFundingFilter(pValue);
       }
       if (elem.key === 'warnings' && pValue) {
         validateWarningFilter(pValue);
@@ -198,18 +190,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList: spedFundingList
       });
     }
-    if(ellFunding.length > 0) {
-      search.push({
-        condition: CONDITION.AND,
-        searchCriteriaList: ellFunding
-      });
-    }
-    if(ellList.length > 0) {
-      search.push({
-        condition: CONDITION.AND,
-        searchCriteriaList: ellList
-      });
-    }
     return search;
   }
 
@@ -294,18 +274,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
   }
 
-  function createEllYearsFilter(pValue) {
-    let ellList = []
-    if(pValue.includes('ell1Between5')) {
-        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 1, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
-        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 5, operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
-    }
-    if(pValue.includes('ellGtEq6')) {
-        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 6, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
-    }
-    return ellList;
-  }
-
   function createFrenchFundingFilter(pValue) {
     let frenchProgramFundingList = [];
 
@@ -348,18 +316,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       spedCodeList.push({ key: 'specialEducationCategoryCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       return spedCodeList;
     }
-
-    function createEllFundingFilter(pValue) {
-      let ellFundingList = [];
-    
-      if (pValue.toString() === 'true') {
-        ellFundingList.push({ key: 'ellNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      } else if (pValue.toString() === 'false') {
-        ellFundingList.push({ key: 'ellNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-      }
-    
-      return ellFundingList;
-      }
 
   function createAncestryFilter(pValue) {
     let ancestryList = [];
