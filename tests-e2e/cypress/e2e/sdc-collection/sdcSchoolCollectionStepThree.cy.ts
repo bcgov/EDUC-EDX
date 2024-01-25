@@ -253,13 +253,8 @@ describe('SDC School Collection View', () => {
 
       //check special ed filters
       cy.get(selectors.specialEducationComponent.tab).contains('Filters').click();
-      cy.get(selectors.filtersComponent.card).should('have.length', 2);
-      // cy.get(selectors.filtersComponent.card).children().should('have.length', 10)
-      // cy.get(selectors.filtersComponent.card).children().eq(6).find(selectors.filtersComponent.specialEducationFilterTab).should('have.length', 2);
-      // cy.get(selectors.filtersComponent.card).children().eq(6).find(selectors.filtersComponent.specialEducationFilterTab).eq(0).children('div').should('contain.text', 'Special Education');
-      // cy.get(selectors.filtersComponent.card).children().eq(6).find(selectors.filtersComponent.specialEducationFilterTab).eq(1).children('div').should('have.length', 10);
-      cy.get(selectors.filtersComponent.card).contains('A - Physically Dependent').click();
-      cy.get(selectors.filtersComponent.card).children().eq(3).children().eq(0).children().eq(1).children().first().click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('A - Physically Dependent').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -272,8 +267,8 @@ describe('SDC School Collection View', () => {
       });
 
       cy.get(selectors.specialEducationComponent.tab).contains('Filters').click();
-      cy.get(selectors.filtersComponent.card).contains('Clear All Filters').click();
-      cy.get(selectors.filtersComponent.card).contains('Apply Filters ').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
       //check summary headcounts
       cy.get(selectors.specialEducationComponent.summaryButton).click();

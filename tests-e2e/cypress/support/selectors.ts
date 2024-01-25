@@ -243,8 +243,8 @@ export default {
     headcountHeader: '.special-ed-headcount-header',
     headcountColumnData: '.special-ed-headcount-column-data'
   },
-  filtersComponent: {
-    card: '.filter-card'
+  activeFiltersDrawer: {
+    drawer: '.v-navigation-drawer--active',
   },
   ellComponent: {
     tab: '#engLangTab',
