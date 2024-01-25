@@ -259,7 +259,7 @@ describe('SDC School Collection View', () => {
       // cy.get(selectors.filtersComponent.card).children().eq(6).find(selectors.filtersComponent.specialEducationFilterTab).eq(0).children('div').should('contain.text', 'Special Education');
       // cy.get(selectors.filtersComponent.card).children().eq(6).find(selectors.filtersComponent.specialEducationFilterTab).eq(1).children('div').should('have.length', 10);
       cy.get(selectors.filtersComponent.card).contains('A - Physically Dependent').click();
-      cy.get(selectors.filtersComponent.card).children().eq(3).children().eq(0).children().eq(1).children().first().click({ force: true });
+      cy.get(selectors.filtersComponent.card).children().eq(3).children().eq(0).children().eq(1).children().first().click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
