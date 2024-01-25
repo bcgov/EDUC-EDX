@@ -243,6 +243,13 @@ export default {
     headcountHeader: '.special-ed-headcount-header',
     headcountColumnData: '.special-ed-headcount-column-data'
   },
+  filtersComponent: {
+    card: '.filter-card',
+    cardContent: '#filters-card-content',
+    applyFilters: '#apply-filters',
+    clearAllFilters: '#clear-all-filters',
+    specialEducationFilterTab: '#SpecialEducation-filter-tab'
+  },
   ellComponent: {
     tab: '#engLangTab',
     summaryButton: '#engLangSummaryButton',

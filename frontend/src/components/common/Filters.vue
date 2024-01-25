@@ -4,21 +4,32 @@
       Filters
     </v-card-title>
     <v-divider />
-    <v-card-text>
+    <v-card-text id="filters-card-content">
       <v-row justify="space-between">
         <v-col cols="4">
-          <a @click="clear()">Clear All Filters</a>
+          <a 
+            @click="clear()"
+            id="clear-all-filters"
+          >
+            Clear All Filters
+          </a>
         </v-col>
         <v-col
           cols="4"
           style="text-align: end;"
         >
-          <a @click="apply()">Apply Filters</a>
+          <a 
+            @click="apply()"
+            id="apply-filters"
+          >
+            Apply Filters
+          </a>
         </v-col>
       </v-row>
       <div
         v-for="(filterGroups, index) in filters"
         :key="index"
+        :id="filterGroups?.heading.replace(/\s+/g, '') + '-filter-tab'"
       >
         <v-row>
           <v-col class="filter-heading">
