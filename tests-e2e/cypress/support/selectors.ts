@@ -245,7 +245,7 @@ export default {
   },
   filtersComponent: {
     card: '.filter-card',
-    cardContent: '#filters-card-content',
+    cardContent: '.v-card-text',
     applyFilters: '#apply-filters',
     clearAllFilters: '#clear-all-filters',
     specialEducationFilterTab: '#SpecialEducation-filter-tab'

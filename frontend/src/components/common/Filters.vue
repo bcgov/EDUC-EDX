@@ -4,7 +4,7 @@
       Filters
     </v-card-title>
     <v-divider />
-    <v-card-text id="filters-card-content">
+    <v-card-text>
       <v-row justify="space-between">
         <v-col cols="4">
           <a 
