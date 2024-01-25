@@ -566,6 +566,50 @@ export const SPED_FUNDING_FILTER = Object.freeze(
   },
 );
 
+export const ELL_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'English Language Learning Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'ellFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const ELL_YEARS_FILTER = Object.freeze(
+  {
+    heading: 'Years in ELL',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'ellYears',
+        filterOptions: [
+          {
+            title: '1-5 years in ELL',
+            value: 'ell1Between5'
+          },
+          {
+            title: '6+ years in ELL',
+            value: 'ellGtEq6'
+          }
+        ]
+      }
+    ]
+  },
+);
+
 /**
  * Tables
  */
@@ -722,6 +766,8 @@ export const ELL = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      ELL_YEARS_FILTER,
+      ELL_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
