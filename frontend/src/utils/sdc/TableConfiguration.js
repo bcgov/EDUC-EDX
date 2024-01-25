@@ -511,6 +511,14 @@ export const SPED_FILTER = Object.freeze(
             value: 'C'
           },
           {
+            title: 'D - Physical Disability or Chronic Health Impairment',
+            value: 'D'
+          },
+          {
+            title: 'E - Visual Impairment',
+            value: 'E'
+          },
+          {
             title: 'F - Deaf or Hard of Hearing',
             value: 'F'
           },
