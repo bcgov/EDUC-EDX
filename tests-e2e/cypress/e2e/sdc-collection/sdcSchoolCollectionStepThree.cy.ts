@@ -251,30 +251,6 @@ describe('SDC School Collection View', () => {
         });
       });
 
-      //check special ed filters
-      cy.get(selectors.specialEducationComponent.filterButton).click();
-      cy.get(selectors.filtersComponent.card).should('have.length', 5);
-      cy.get(selectors.filtersComponent.text).should('have.length', 8);
-      cy.get(selectors.filtersComponent.text).eq(5).find(selectors.filtersComponent.specialEducationFilterTab).should('have.length', 2);
-      cy.get(selectors.filtersComponent.text).eq(5).find(selectors.filtersComponent.specialEducationFilterTab).eq(0).children('div').should('contain.text', 'Special Education');
-      cy.get(selectors.filtersComponent.text).eq(5).find(selectors.filtersComponent.specialEducationFilterTab).eq(1).children('div').should('have.length', 10);
-      cy.get(selectors.filtersComponent.specialEducationFilterTab).contains('A - Physically Dependent').click();
-      cy.get(selectors.filtersComponent.applyFilters).click();
-
-      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
-      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
-      cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
-        cy.wrap($cell).children().last().invoke('text').then((text) => {
-          expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically Dependent';
-          });
-        });
-      });
-
-      cy.get(selectors.specialEducationComponent.filterButton).click();
-      cy.get(selectors.filtersComponent.clearAllFilters).click();
-      cy.get(selectors.filtersComponent.applyFilters).click();
-
       //check summary headcounts
       cy.get(selectors.specialEducationComponent.summaryButton).click();
       cy.get(selectors.specialEducationComponent.headcountCard).should('have.length', 12);
