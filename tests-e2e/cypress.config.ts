@@ -62,8 +62,7 @@ export default defineConfig({
           return null;
         },
         'setup-collections': async (schoolCollection: SchoolCollection) => {
-          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolCollection);
-          return null;
+          return await new CollectionSetupUtils(config).setUpSchoolCollection(schoolCollection);
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
           return new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);
