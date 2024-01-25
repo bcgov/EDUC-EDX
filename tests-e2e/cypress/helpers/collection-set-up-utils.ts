@@ -11,6 +11,6 @@ export class CollectionSetupUtils {
   }
 
   async setUpSchoolCollection(schoolCollection: SchoolCollection) {
-    await this.sdcCollectionApi.createSchoolCollection(schoolCollection);
+    return await this.sdcCollectionApi.createSchoolCollection(schoolCollection);
   }
 }
