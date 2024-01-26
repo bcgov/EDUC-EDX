@@ -77,7 +77,9 @@ function createNewMessageWithDocumentAndStudent() {
 }
 
 function removeExistingDocumentAndStudent() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
   cy.get(selectors.secureExchangeDetail.timelineContent).contains('BC.jpg')
       .parentsUntil(selectors.secureExchangeDetail.timelineContent)

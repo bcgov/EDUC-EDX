@@ -9,6 +9,7 @@
         density="compact"
         type="error"
         variant="tonal"
+        data-cy="headcount-error-banner"
       >
         <strong>{{ studentsInError }} students</strong> reported with errors - these students are <strong>not included in the summary counts</strong>. Eligible FTE count will be generated once all errors have been fixed in the next step.
       </v-alert>
@@ -18,6 +19,7 @@
         density="compact"
         type="info"
         variant="tonal"
+        data-cy="headcount-info-banner"
       >
         Eligible FTE counts are available in Step 3.
       </v-alert>

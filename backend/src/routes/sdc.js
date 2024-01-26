@@ -1,8 +1,10 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getCollectionBySchoolId, uploadFile, getSdcFileProgress, updateSchoolCollection, getSchoolCollectionById, getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts, getSDCSchoolCollectionStudentDetail,
-  updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, getStudentHeadcounts} = require('../components/sdc');
+const { getCollectionBySchoolId, uploadFile, getSdcFileProgress, updateSchoolCollection, getSchoolCollectionById,
+  getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts,
+  getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent,
+  getStudentHeadcounts} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');

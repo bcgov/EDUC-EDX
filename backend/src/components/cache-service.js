@@ -243,6 +243,9 @@ const cacheService = {
   },
   getActiveEnrolledPrograms() {
     return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_PROGRAM_CODES].activeRecords;
+  },
+  getActiveSpedCodes() {
+    return cachedData[constants.CACHE_KEYS.SDC_SPECIAL_ED_CODES].activeRecords;
   }
 };
 

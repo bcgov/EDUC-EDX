@@ -1,7 +1,8 @@
-import generator from "generate-password-ts";
-import {InstituteApiService} from "./institute-api-service";
-import {RestUtils} from "../helpers/rest-utils-ts";
+import generator from 'generate-password-ts';
+import {InstituteApiService} from './institute-api-service';
+import {RestUtils} from '../helpers/rest-utils-ts';
 import {faker} from '@faker-js/faker';
+import request from 'axios';
 
 type EdxActivationRolePayload = {
   edxRoleCode?: string;
@@ -43,8 +44,8 @@ export class EdxApiService {
       const endpoint = '/api/v1/edx/users/activation-code/primary/'+instituteTypeCode.toString().toUpperCase()+'/' + instituteID;
       const url = `${this.config.env.edx.base_url}${endpoint}`;
       return await this.restUtils.getData<ActivationCodeEntity>(url);
-    } catch (e: any) {
-      if(e?.response?.status === 404){
+    } catch (error) {
+      if (request.isAxiosError(error) && error.response?.status === 404) {
         const generateEndpoint = '/api/v1/edx/users/activation-code/primary/'
           + instituteTypeCode.toString().toUpperCase() +'/' + instituteID;
         const edxActivationCode = this.createEdxActivationCodePayload(true, '', '', instituteTypeCode, instituteID);
@@ -71,15 +72,10 @@ export class EdxApiService {
     return this.restUtils.getData<EdxRoleEntity[]>(url);
   }
 
-  async findAllPaginated(params: any){
+  async findAllPaginated(params: SearchParams) {
     const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
     const EXCHANGE_ENDPOINT_PAGINATED = `${EXCHANGE_ENDPOINT}/paginated`;
     return this.restUtils.getData(EXCHANGE_ENDPOINT_PAGINATED, params);
-  }
-
-  async createSecureExchange(secureExchange: any) {
-    const EXCHANGE_ENDPOINT = `${this.config.env.edx.base_url}/api/v1/edx/exchange`;
-    return this.restUtils.postData(EXCHANGE_ENDPOINT, secureExchange, '');
   }
 
   async deleteSecureExchange(secureExchangeID: string) {
@@ -89,18 +85,18 @@ export class EdxApiService {
   }
 
   async deleteAllSecureExchangeBySubject(subject: string) {
-    console.log(`delete messages with subject:: ${subject}`)
-    let params = {
+    console.log(`delete messages with subject:: ${subject}`);
+    const params = {
       params: {
         searchCriteriaList: '[{"key": "subject", "value": "' + subject + '", "operation":' +
             ' "like_ignore_case", "valueType": "STRING"}]'
       }
     };
-    let response = await this.findAllPaginated(params);
+    const response = await this.findAllPaginated(params);
 
     console.log(`${response.content.length} messages found`);
 
-    for (let message of response.content) {
+    for (const message of response.content) {
       await this.deleteSecureExchange(message.secureExchangeID);
     }
 
@@ -131,9 +127,9 @@ export class EdxApiService {
 
     this.restUtils.getData(districtActivationCodeUrl)
       .then(async response => {
-      let activationCodeId = response.edxActivationCodeId;
-      const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
-      await this.restUtils.deleteData(url);
+        const activationCodeId = response.edxActivationCodeId;
+        const url = `${this.config.env.edx.base_url}${endpoint}/${activationCodeId}`;
+        await this.restUtils.deleteData(url);
       })
       .catch(e => {
         if(e.status !== 404 ){
@@ -199,7 +195,7 @@ export class EdxApiService {
     return responseBody[0];
   }
 
-  createEdxActivationCodePayload(isPrimary: boolean, roles: any, activationCode: string, instituteTypeCode: string, instituteID: string) {
+  createEdxActivationCodePayload(isPrimary: boolean, roles: DistrictRole | SchoolRole, activationCode: string, instituteTypeCode: string, instituteID: string) {
     const edxActivationCode: EdxActivationCodePayload = {
       activationCode,
       email: 'edx-noreply@gov.bc.ca',
@@ -213,13 +209,13 @@ export class EdxApiService {
     const oneDayFrom = (date: Date) => {
       date.setDate(date.getDate() + 1);
       return date;
-    }
+    };
     const now = new Date();
 
     //get only first 19 to avoid adding millisecond at the end.
     edxActivationCode.expiryDate = oneDayFrom(now).toISOString().substring(0, 19);
     if (roles.length > 0) {
-      let roleArr: Array<EdxActivationRolePayload> = new Array<EdxActivationRolePayload>();
+      const roleArr: Array<EdxActivationRolePayload> = new Array<EdxActivationRolePayload>();
       for (const role of roles) {
         const activationRole: EdxActivationRolePayload = {edxRoleCode: role.edxRoleCode};
         roleArr.push(activationRole);
@@ -243,11 +239,11 @@ export class EdxApiService {
   async verifySchoolActivationCodes(schoolID: string) {
     const endpoint = 'api/v1/edx/users';
     const schoolActivationCodeUrl = `${this.config.env.edx.base_url}/${endpoint}/activation-code/primary/SCHOOL/${schoolID}`;
-    try{
+    try {
       await this.restUtils.getData(schoolActivationCodeUrl, null);
       console.log('School activation code found');
-    }catch (e: any){
-      if(e.response.status === 404 ){
+    } catch (e) {
+      if (request.isAxiosError(e) && e.response?.status === 404 ) {
         //generate school activation code if it doesn't exist
         const schoolActivationCodePayload = {
           createUser: 'EDXAT',
@@ -269,8 +265,8 @@ export class EdxApiService {
     try{
       await this.restUtils.getData(districtActivationCodeUrl, null);
       console.log('district Activation code found');
-    }catch (e: any){
-      if(e.response.status === 404 ){
+    } catch (e) {
+      if(request.isAxiosError(e) && e.response?.status === 404 ){
         //generate school activation code if it doesn't exist
         const districtActivationCodePayload = {
           createUser: 'EDXAT',

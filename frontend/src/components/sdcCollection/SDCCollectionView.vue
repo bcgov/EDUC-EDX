@@ -252,8 +252,8 @@ export default {
   opacity: unset;
 }
 .containerSetup{
-  padding-right: 10em !important;
-  padding-left: 10em !important;
+  padding-right: 5em !important;
+  padding-left: 5em !important;
 }
 
 @media screen and (max-width: 1200px) {

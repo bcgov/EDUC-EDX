@@ -159,7 +159,7 @@ export default {
     newContactTypeDropdown: '#newContactDropdown',
     subjectHeading: 'h2.subjectHeading',
     resolveButton:'#resolveBtn',
-    activeTab: 'button.v-slide-group-item--active',
+    activeTab: '#schoolContactsTab',
   },
   schoolDetails: {
     addAddressButton: '#addAddressButton',
@@ -238,7 +238,17 @@ export default {
   },
   specialEducationComponent: {
     tab: '#specialEdTab',
-    summaryButton: '#specialEdSummaryButton'
+    summaryButton: '#specialEdSummaryButton',
+    headcountCard: '.special-ed-headcount-card',
+    headcountHeader: '.special-ed-headcount-header',
+    headcountColumnData: '.special-ed-headcount-column-data'
+  },
+  ellComponent: {
+    tab: '#engLangTab',
+    summaryButton: '#engLangSummaryButton',
+    headcountCard: '.ell-headcount-card',
+    headcountHeader: '.ell-headcount-header',
+    headcountColumnData: '.ell-headcount-column-data'
   },
   studentLevelData: {
     detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
@@ -272,6 +282,11 @@ export default {
     selectStudentCheckbox: 'td.v-data-table__td.v-data-table-column--no-padding.v-data-table-column--align-start > div',
     selectedStudentsPaginator: '.footer-text',
     backToDataIssues: 'div.v-col.v-col-6.mt-1.d-flex.justify-start > a',
+    stepThreeSearchField: '#searchInput',
+    stepThreeSearchBtn: '#search',
+    stepThreeClearBtn: '#clear',
+    stepThreeFirstRow: '.v-data-table__tbody > tr:first-child',
+    stepThreeStudentsFound: '#studentsFound',
     stepTwoNameFilter: '#legalUsualNameSearch',
     stepTwoPenLocalIdFilter: '#penSearch',
     stepTwoSearchButton: '#searchButton',

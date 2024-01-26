@@ -31,11 +31,11 @@ export class SdcCollectionApiService {
     const curCloseDate = curDate.plusDays(4);
 
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
-    const activeCollection = await this.restUtils.getData(urlGetActiveCollection);
+    const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
     try {
-      const activeSdcCollection = await this.restUtils.getData(urlGetActiveSdcSchoolCollection);
+      const activeSdcCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection);
       await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
     } catch (_) {
       //This is ok
@@ -339,7 +339,7 @@ export class SdcCollectionApiService {
               'careerProgramCode': null,
               'numberOfCourses': '0700',
               'bandCode': '0684',
-              'enrolledProgramCodes': '0829',
+              'enrolledProgramCodes': '082917',
               'sdcSchoolCollectionStudentStatusCode': 'LOADED',
               'isAdult': 'false',
               'isSchoolAged': 'true',
@@ -367,7 +367,7 @@ export class SdcCollectionApiService {
             },
             {
               'createUser': 'EDXAT',
-              'localID': '12345',
+              'localID': '67890',
               'studentPen': '102866365',
               'legalFirstName': 'LEGALFIRST',
               'legalMiddleNames': null,
@@ -387,7 +387,7 @@ export class SdcCollectionApiService {
               'numberOfCourses': '0700',
               'bandCode': '0684',
               'postalCode': 'V8R2Y9',
-              'enrolledProgramCodes': '43',
+              'enrolledProgramCodes': '4317',
               'careerProgramCode': 'XH',
               'sdcSchoolCollectionStudentStatusCode': 'LOADED',
               'isAdult': 'false',
@@ -471,6 +471,142 @@ export class SdcCollectionApiService {
           ]
         };
       }
+      else if (schoolCollection.seedData === 'dataUploadSummaryErrors') {
+        sdcSchoolCollectionPayload = {
+          'createUser': 'EDXAT',
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'sdcSchoolCollectionID': null,
+          'collectionID': activeCollection.collectionID,
+          'schoolID': schoolCollection?.school.schoolId,
+          'districtID': schoolCollection?.school.districtId,
+          'uploadDate': '20230822',
+          'uploadFileName': 'EDX-AT-FILE.std',
+          'sdcSchoolCollectionStatusCode': 'NEW',
+          'collectionTypeCode': 'SEPTEMBER',
+          'collectionOpenDate': curDate,
+          'collectionCloseDate': curCloseDate,
+          'students': [
+            {
+              'createUser': 'EDXAT',
+              'localID': '12345',
+              'studentPen': '101932770',
+              'legalFirstName': 'LEGALFIRST',
+              'legalMiddleNames': null,
+              'legalLastName': 'LEGALLAST',
+              'usualFirstName': 'USUALFIRST',
+              'usualMiddleNames': 'USUALMIDDLE',
+              'usualLastName': 'USUALLAST',
+              'dob': '20050630',
+              'gender': 'M',
+              'specialEducationCategoryCode': 'A',
+              'schoolFundingCode': '20',
+              'nativeAncestryInd': 'N',
+              'homeLanguageSpokenCode': '943',
+              'otherCourses': '0',
+              'supportBlocks': null,
+              'enrolledGradeCode': '09',
+              'careerProgramCode': null,
+              'numberOfCourses': '0700',
+              'bandCode': '0684',
+              'enrolledProgramCodes': '082917',
+              'sdcSchoolCollectionStudentStatusCode': 'ERROR',
+              'isAdult': 'false',
+              'isSchoolAged': 'true',
+              'fte': 1,
+              'postalCode': 'V8R2Y9',
+              'fteZeroReasonCode': null,
+              'frenchProgramNonEligReasonCode': null,
+              'ellNonEligReasonCode': 'NTENRELL',
+              'indigenousSupportProgramNonEligReasonCode': 'NTENRINDIG',
+              'careerProgramNonEligReasonCode': 'NTENRCAREE',
+              'specialEducationNonEligReasonCode': 'NOSPECIAL',
+              'isGraduated': 'false',
+              'assignedStudentId': null,
+              'assignedPen': null,
+              'sdcSchoolCollectionStudentValidationIssues': [],
+              'sdcSchoolCollectionStudentEnrolledPrograms': [
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '08'
+                }
+              ]
+            }
+          ]
+        };
+      }
+      else if (schoolCollection.seedData === 'dataUploadSummaryNoErrors') {
+        sdcSchoolCollectionPayload = {
+          'createUser': 'EDXAT',
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'sdcSchoolCollectionID': null,
+          'collectionID': activeCollection.collectionID,
+          'schoolID': schoolCollection?.school.schoolId,
+          'districtID': schoolCollection?.school.districtId,
+          'uploadDate': '20230822',
+          'uploadFileName': 'EDX-AT-FILE.std',
+          'sdcSchoolCollectionStatusCode': 'NEW',
+          'collectionTypeCode': 'SEPTEMBER',
+          'collectionOpenDate': curDate,
+          'collectionCloseDate': curCloseDate,
+          'students': [
+            {
+              'createUser': 'EDXAT',
+              'localID': '12345',
+              'studentPen': '101932770',
+              'legalFirstName': 'LEGALFIRST',
+              'legalMiddleNames': null,
+              'legalLastName': 'LEGALLAST',
+              'usualFirstName': 'USUALFIRST',
+              'usualMiddleNames': 'USUALMIDDLE',
+              'usualLastName': 'USUALLAST',
+              'dob': '20050630',
+              'gender': 'M',
+              'specialEducationCategoryCode': 'A',
+              'schoolFundingCode': '20',
+              'nativeAncestryInd': 'N',
+              'homeLanguageSpokenCode': '943',
+              'otherCourses': '0',
+              'supportBlocks': null,
+              'enrolledGradeCode': '09',
+              'careerProgramCode': null,
+              'numberOfCourses': '0700',
+              'bandCode': '0684',
+              'enrolledProgramCodes': '082917',
+              'sdcSchoolCollectionStudentStatusCode': 'VERIFIED',
+              'isAdult': 'false',
+              'isSchoolAged': 'true',
+              'fte': 1,
+              'postalCode': 'V8R2Y9',
+              'fteZeroReasonCode': null,
+              'frenchProgramNonEligReasonCode': null,
+              'ellNonEligReasonCode': 'NTENRELL',
+              'indigenousSupportProgramNonEligReasonCode': 'NTENRINDIG',
+              'careerProgramNonEligReasonCode': 'NTENRCAREE',
+              'specialEducationNonEligReasonCode': 'NOSPECIAL',
+              'isGraduated': 'false',
+              'assignedStudentId': null,
+              'assignedPen': null,
+              'sdcSchoolCollectionStudentValidationIssues': [],
+              'sdcSchoolCollectionStudentEnrolledPrograms': [
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '08'
+                }
+              ]
+            }
+          ]
+        };
+      }
 
     } else {
       sdcSchoolCollectionPayload = {
@@ -492,7 +628,7 @@ export class SdcCollectionApiService {
     }
 
     const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-    const schoolCollectionResponse = await this.restUtils.postData(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
+    const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
     console.log('AT createSchoolCollection completed');
     return schoolCollectionResponse?.sdcSchoolCollectionID;

@@ -26,10 +26,39 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
     });
 
-    it('verifies FTE for Reported Students', () => {
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+    it('can search for a student by name, PEN, or local ID', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
+
+      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('LEGALLAST');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
+
+      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('67890');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+    });
+
+    it('verifies FTE for Reported Students', () => {
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
 
@@ -71,7 +100,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core french' || value === '11-Early french immersion';
+            return value === '08-Core French' || value === '11-Early French Immersion';
           });
         });
       });
@@ -138,11 +167,11 @@ describe('SDC School Collection View', () => {
       cy.get('button[value="Indigenous Students & Support Programs"]').click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
-      cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
       cy.get(selectors.indigenousSupportComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '29-Aboriginal language and culture';
+            return value === '29-Aboriginal Language and Culture' || '-';
           });
         });
       });
@@ -182,6 +211,30 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '3');
     });
 
+    it('verifies english language learning programs for reported students', () => {
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get('button[value="English Language Learning"]').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+      cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === '17-English Language Learning-'; // Years in Ell is why there is a hyphen at the end
+          });
+        });
+      });
+
+      //check summary headcounts
+      cy.get(selectors.ellComponent.summaryButton).click();
+      cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
+    });
+
+
     it('verifies special education category for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
@@ -194,10 +247,86 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically dependent' || value === 'G-Autism spectrum disorder';
+            return value === 'A-Physically Dependent' || value === 'G-Autism Spectrum Disorder';
           });
         });
       });
+
+      //check summary headcounts
+      cy.get(selectors.specialEducationComponent.summaryButton).click();
+      cy.get(selectors.specialEducationComponent.headcountCard).should('have.length', 12);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'A - Physically Dependent');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '1');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(0).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'B - Deafblind');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(1).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'C - Moderate to Profound Intellectual Disability');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(2).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'D - Physical Disability or Chronic Health Impairment');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(3).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'E - Visual Impairment');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(4).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'F - Deaf or Hard of Hearing');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(5).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'G - Autism Spectrum Disorder');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '1');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(6).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'H - Intensive Behaviour Interventions or Serious Mental Illness');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(7).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'K - Mild Intellectual Disability');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(8).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'P - Gifted');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(9).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'Q - Learning Disability');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(10).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountHeader).should('contain.text', 'R - Moderate Behaviour Support/Mental Illness');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).should('have.length', 2);
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
+      cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
     });
   });
 });

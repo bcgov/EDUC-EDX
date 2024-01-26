@@ -90,7 +90,7 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
           },
           {
             title: '16 - Newcomer Refugee',
-            cvalue: '16'
+            value: '16'
           },
           {
             title: 'No Funding Code',
@@ -398,6 +398,226 @@ export const CAREER_FUNDING_FILTER = Object.freeze(
   },
 );
 
+export const INDIGENOUS_PROGRAM_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Support Programs',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'indigenousPrograms',
+        filterOptions: [
+          {
+            title: '29 - Language & Culture',
+            value: '29'
+          },
+          {
+            title: '33 - Support Services',
+            value: '33'
+          },
+          {
+            title: '36 - Other Approved Programs',
+            value: '36'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const ANCESTRY_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Ancestry',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'ancestry',
+        filterOptions: [
+          {
+            title: 'Has Indigenous Ancestry',
+            value: 'true'
+          },
+          {
+            title: 'No Indigenous Ancestry',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const INDIGENOUS_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Indigenous Support Program Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'indigenousProgramsFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const BAND_FILTER = Object.freeze(
+  {
+    heading: 'Band of Residence',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'bandCode',
+        filterOptions: [
+          {
+            title: 'Has Band Code',
+            value: 'true'
+          },
+          {
+            title: 'No Band Code',
+            value: 'false'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const SPED_FILTER = Object.freeze(
+  {
+    heading: 'Special Education',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'sped',
+        filterOptions: [
+          {
+            title: 'A - Physically Dependent',
+            value: 'A'
+          },
+          {
+            title: 'B - Deafblind',
+            value: 'B'
+          },
+          {
+            title: 'C - Moderate to Profound Intellectual Disability',
+            value: 'C'
+          },
+          {
+            title: 'D - Physical Disability or Chronic Health Impairment',
+            value: 'D'
+          },
+          {
+            title: 'E - Visual Impairment',
+            value: 'E'
+          },
+          {
+            title: 'F - Deaf or Hard of Hearing',
+            value: 'F'
+          },
+          {
+            title: 'G - Autism Spectrum Disorder',
+            value: 'G'
+          },
+          {
+            title: 'H - Intensive Behaviour Intervention/Serious Mental Illness',
+            value: 'H'
+          },
+          {
+            title: 'K - Mild Intellectual Disability',
+            value: 'K'
+          },
+          {
+            title: 'P - Gifted',
+            value: 'P'
+          },
+          {
+            title: 'Q - Learning Disability',
+            value: 'Q'
+          },
+          {
+            title: 'R - Moderate Behaviour Support/Mental Illness',
+            value: 'R'
+          },
+        ]
+      }
+    ]
+  },
+);
+
+export const SPED_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Special Education Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'spedFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const ELL_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'English Language Learning Funding Eligibility',
+    filterGroups: [
+      {
+        multiple: false,
+        key: 'ellFunding',
+        filterOptions: [
+          {
+            title: 'Funding Eligible',
+            value: 'true'
+          },
+          {
+            title: 'Not Funding Eligible',
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  },
+);
+
+export const ELL_YEARS_FILTER = Object.freeze(
+  {
+    heading: 'Years in ELL',
+    filterGroups: [
+      {
+        multiple: true,
+        key: 'ellYears',
+        filterOptions: [
+          {
+            title: '1-5 years in ELL',
+            value: 'ell1Between5'
+          },
+          {
+            title: '6+ years in ELL',
+            value: 'ellGtEq6'
+          }
+        ]
+      }
+    ]
+  },
+);
+
 /**
  * Tables
  */
@@ -429,7 +649,7 @@ export const FTE = Object.freeze(
 
 export const FRENCH_PR = Object.freeze(
   {
-    defaultFilter: {label: 'FRENCH_PR', description:'Has French Program', enrolledProgramCodeValues: '05,08,11,14'},
+    defaultFilter: {label: 'FRENCH_PR', description:'Has French Program' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -455,7 +675,7 @@ export const FRENCH_PR = Object.freeze(
 
 export const CAREER_PR = Object.freeze(
   {
-    defaultFilter: {label: 'CAREER_PR' ,description: 'Has Career Program', enrolledProgramCodeValues: '40,41,42,43'},
+    defaultFilter: {label: 'CAREER_PR' ,description: 'Has Career Program' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -482,7 +702,7 @@ export const CAREER_PR = Object.freeze(
 
 export const INDSUPPORT_PR = Object.freeze(
   {
-    defaultFilter: {label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program', enrolledProgramCodeValues: '29,33,36'},
+    defaultFilter: {label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program'},
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -500,6 +720,10 @@ export const INDSUPPORT_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      INDIGENOUS_PROGRAM_FILTER,
+      BAND_FILTER,
+      ANCESTRY_FILTER,
+      INDIGENOUS_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
@@ -507,7 +731,7 @@ export const INDSUPPORT_PR = Object.freeze(
 
 export const SPECIALED_PR = Object.freeze(
   {
-    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category', spedCodeValues: 'A,B,C,D,E,F,G,H,K,P,Q,R'},
+    defaultFilter: {label: 'SPECIALED_PR', description: 'Has Special Education Category'},
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -524,6 +748,8 @@ export const SPECIALED_PR = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      SPED_FILTER,
+      SPED_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
@@ -531,7 +757,7 @@ export const SPECIALED_PR = Object.freeze(
 
 export const ELL = Object.freeze(
   {
-    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner', enrolledProgramCodeValues: '17' },
+    defaultFilter: { label: 'ELL_PR', description: 'English Language Learner' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode'},
@@ -548,6 +774,8 @@ export const ELL = Object.freeze(
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
+      ELL_YEARS_FILTER,
+      ELL_FUNDING_FILTER,
       WARNING_FILTER
     ]
   }
