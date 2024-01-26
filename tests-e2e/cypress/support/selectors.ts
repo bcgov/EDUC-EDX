@@ -8,6 +8,7 @@ export default {
   },
   careerProgramComponent: {
     tab: '#careerTab',
+    filterButton: '#filters',
     summaryButton: '#careerSummaryButton',
     headcountCard: '.career-headcount-card',
     headcountHeader: '.career-headcount-header',
@@ -84,6 +85,7 @@ export default {
   },
   frenchComponent: {
     tab: '#frenchTab',
+    filterButton: '#filters',
     summaryButton: '#frenchSummaryButton',
     headcountCard: '.french-headcount-card',
     headcountHeader: '.french-headcount-header',
@@ -91,6 +93,7 @@ export default {
   },
   fteComponent: {
     tab: '#enrollmentTab',
+    filterButton: '#filters',
     summaryButton: '#fteSummaryButton',
     headcountCard: '.enrollment-headcount-card',
     headcountHeader: '.enrollment-headcount-header',
@@ -106,10 +109,18 @@ export default {
   },
   indigenousSupportComponent: {
     tab: '#indProgTab',
+    filterButton: '#filters',
     summaryButton: '#indProgSummaryButton',
     headcountCard: '.indigenous-headcount-card',
     headcountHeader: '.indigenous-headcount-header',
     headcountColumnData: '.indigenous-headcount-column-data'
+  },
+  filters: {
+    studentType: '#studentType',
+    warnings: '#warnings',
+    fte: '#fte',
+    fundingtype: '#fundingtype',
+    grade: '#grade'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -241,10 +252,12 @@ export default {
     summaryButton: '#specialEdSummaryButton',
     headcountCard: '.special-ed-headcount-card',
     headcountHeader: '.special-ed-headcount-header',
-    headcountColumnData: '.special-ed-headcount-column-data'
+    headcountColumnData: '.special-ed-headcount-column-data',
+    filterButton: '#filters',
   },
   ellComponent: {
     tab: '#engLangTab',
+    filterButton: '#filters',
     summaryButton: '#engLangSummaryButton',
     headcountCard: '.ell-headcount-card',
     headcountHeader: '.ell-headcount-header',
