@@ -505,7 +505,7 @@ export class SdcCollectionApiService {
     const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
     console.log('AT createSchoolCollection completed');
-    return schoolCollectionResponse?.sdcSchoolCollectionID;
+    return schoolCollectionResponse;
   }
 
   studentsWithDuplicatePEN() {

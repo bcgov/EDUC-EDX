@@ -1,6 +1,7 @@
-import { AppSetupData } from "tests-e2e/cypress.config";
-import { EdxUserActivationFixture } from "../services/edx-api-service";
-import { InstituteOptions, SchoolOptions } from "../services/institute-api-service";
+import { AppSetupData } from 'tests-e2e/cypress.config';
+import { EdxUserActivationFixture } from '../services/edx-api-service';
+import { InstituteOptions, SchoolOptions } from '../services/institute-api-service';
+import {SchoolCollection} from '../services/sdc-collection-api-service';
 
 declare global {
     namespace Cypress {
@@ -32,11 +33,11 @@ declare global {
                 options?: Partial<Loggable & Timeoutable>
             ): Chainable<S>;
 
-            task(
+            task<T = SchoolCollection, S = SdcSchoolCollection>(
                 event: 'setup-collections',
-                schoolId: string,
+                schoolCollection: T,
                 options?: Partial<Loggable & Timeoutable>
-            ): Chainable<void>;
+            ): Chainable<S>;
 
             task(
                 event: 'setup-secure-exchange',
