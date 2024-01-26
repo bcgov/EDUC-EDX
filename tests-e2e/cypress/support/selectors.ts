@@ -116,11 +116,17 @@ export default {
     headcountColumnData: '.indigenous-headcount-column-data'
   },
   filters: {
+    clearFilter: '#clear-filter',
+    applyFilter: '#apply-filter',
     studentType: '#studentType',
     warnings: '#warnings',
     fte: '#fte',
     fundingtype: '#fundingtype',
-    grade: '#grade'
+    grade: '#grade',
+    isSchoolAged: '#isSchoolAged',
+    isAdult: '#isAdult',
+    fteEq0: '#fteEq0',
+    fteGt0: '#fteGt0',
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
