@@ -21,7 +21,7 @@
         :key="index"
       >
         <v-row>
-          <v-col class="filter-heading">
+          <v-col :id="filterGroups.id" class="filter-heading">
             {{ filterGroups?.heading }}
           </v-col>
         </v-row>
@@ -46,6 +46,7 @@
                 :value="option"
                 class="filter-button"
                 rounded="lg"
+                :id="option?.title"
               >
                 {{ option?.title }}
               </v-btn>

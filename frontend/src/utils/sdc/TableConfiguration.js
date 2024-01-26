@@ -5,6 +5,7 @@
 export const WARNING_FILTER = Object.freeze(
   {
     heading: 'Warnings',
+    id: 'warnings',
     filterGroups: [
       {
         multiple: true,
@@ -27,6 +28,7 @@ export const WARNING_FILTER = Object.freeze(
 export const STUDENT_TYPE_FILTER = Object.freeze(
   {
     heading: 'Student Type',
+    id: 'studentType',
     filterGroups: [
       {
         multiple: true,
@@ -49,6 +51,7 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
 export const FTE_FILTER = Object.freeze(
   {
     heading: 'FTE',
+    id: 'fte',
     filterGroups: [
       {
         multiple: true,
@@ -75,6 +78,7 @@ export const FTE_FILTER = Object.freeze(
 export const FUNDING_TYPE_FILTER = Object.freeze(
   {
     heading: 'Funding Type',
+    id: 'fundingtype',
     filterGroups: [
       {
         multiple: true,
@@ -105,6 +109,7 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
 export const GRADE_FILTER = Object.freeze(
   {
     heading: 'Grade',
+    id: 'grade',
     filterGroups: [
       {
         multiple: true,
@@ -191,6 +196,7 @@ export const GRADE_FILTER = Object.freeze(
 export const SUPPORT_BLOCKS_FILTER = Object.freeze(
   {
     heading: 'Support Blocks',
+    id: 'supportblocks',
     filterGroups: [
       {
         multiple: false,
@@ -213,6 +219,7 @@ export const SUPPORT_BLOCKS_FILTER = Object.freeze(
 export const FTE_ZERO_FILTER = Object.freeze(
   {
     heading: 'Reasons for FTE = 0 ',
+    id: 'zeroFteReasons',
     filterGroups: [
       {
         multiple: true,
@@ -255,6 +262,7 @@ export const FTE_ZERO_FILTER = Object.freeze(
 export const FRENCH_PROGRAMS_FILTER = Object.freeze(
   {
     heading: 'French Programs',
+    id: 'frenchPrograms',
     filterGroups: [
       {
         multiple: true,
@@ -281,6 +289,7 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
 export const FRENCH_FUNDING_FILTER = Object.freeze(
   {
     heading: 'French Program Funding Eligibility',
+    id: 'frenchFunding',
     filterGroups: [
       {
         multiple: false,
@@ -303,6 +312,7 @@ export const FRENCH_FUNDING_FILTER = Object.freeze(
 export const CAREER_CODE_FILTER = Object.freeze(
   {
     heading: 'Career Code',
+    id: 'careerCode',
     filterGroups: [
       {
         multiple: true,
@@ -349,6 +359,7 @@ export const CAREER_CODE_FILTER = Object.freeze(
 export const CAREER_PROGRAM_FILTER = Object.freeze(
   {
     heading: 'Career Programs',
+    id: 'careerPrograms',
     filterGroups: [
       {
         multiple: true,
@@ -379,6 +390,7 @@ export const CAREER_PROGRAM_FILTER = Object.freeze(
 export const CAREER_FUNDING_FILTER = Object.freeze(
   {
     heading: 'Career Program Funding Eligibility',
+    id: 'careerFunding',
     filterGroups: [
       {
         multiple: false,
@@ -401,6 +413,7 @@ export const CAREER_FUNDING_FILTER = Object.freeze(
 export const INDIGENOUS_PROGRAM_FILTER = Object.freeze(
   {
     heading: 'Indigenous Support Programs',
+    id: 'indigenousPrograms',
     filterGroups: [
       {
         multiple: true,
@@ -427,6 +440,7 @@ export const INDIGENOUS_PROGRAM_FILTER = Object.freeze(
 export const ANCESTRY_FILTER = Object.freeze(
   {
     heading: 'Indigenous Ancestry',
+    id: 'ancestry',
     filterGroups: [
       {
         multiple: false,
@@ -449,6 +463,7 @@ export const ANCESTRY_FILTER = Object.freeze(
 export const INDIGENOUS_FUNDING_FILTER = Object.freeze(
   {
     heading: 'Indigenous Support Program Funding Eligibility',
+    id: 'indigenousFunding',
     filterGroups: [
       {
         multiple: false,
@@ -471,6 +486,7 @@ export const INDIGENOUS_FUNDING_FILTER = Object.freeze(
 export const BAND_FILTER = Object.freeze(
   {
     heading: 'Band of Residence',
+    id: 'band',
     filterGroups: [
       {
         multiple: true,
@@ -493,6 +509,7 @@ export const BAND_FILTER = Object.freeze(
 export const SPED_FILTER = Object.freeze(
   {
     heading: 'Special Education',
+    id: 'sped',
     filterGroups: [
       {
         multiple: true,
@@ -555,6 +572,7 @@ export const SPED_FILTER = Object.freeze(
 export const SPED_FUNDING_FILTER = Object.freeze(
   {
     heading: 'Special Education Funding Eligibility',
+    id: 'spedFunding',
     filterGroups: [
       {
         multiple: false,
@@ -577,6 +595,7 @@ export const SPED_FUNDING_FILTER = Object.freeze(
 export const ELL_FUNDING_FILTER = Object.freeze(
   {
     heading: 'English Language Learning Funding Eligibility',
+    id: 'ellFunding',
     filterGroups: [
       {
         multiple: false,
@@ -599,6 +618,7 @@ export const ELL_FUNDING_FILTER = Object.freeze(
 export const ELL_YEARS_FILTER = Object.freeze(
   {
     heading: 'Years in ELL',
+    id: 'ellYears',
     filterGroups: [
       {
         multiple: true,
