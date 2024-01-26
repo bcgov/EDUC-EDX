@@ -2,11 +2,16 @@ import {LocalDateTime} from '@js-joda/core';
 import {RestUtils} from '../helpers/rest-utils-ts';
 import {createSdcSchoolCollection} from '../helpers/seed-data-utils';
 
-export interface SchoolCollection {
+export interface SchoolCollectionOptions {
   school: SchoolEntity,
   loadWithStudentAndValidations: boolean
   seedData?: string
 }
+
+export type SdcStudentEllOption = {
+  studentID: string,
+  yearsInEll: number
+};
 
 // const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
 // const COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/collection/search';
@@ -14,6 +19,7 @@ export interface SchoolCollection {
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
 const ACTIVE_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection/active';
+const SCHOOL_COLLECTION_STUDENT_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollectionStudent';
 
 export class SdcCollectionApiService {
 
@@ -25,7 +31,7 @@ export class SdcCollectionApiService {
     this.restUtils = new RestUtils(this.config);
   }
 
-  async createSchoolCollection(schoolCollection: SchoolCollection) {
+  async createSchoolCollection(schoolCollection: SchoolCollectionOptions) {
     console.log('AT createSchoolCollection started');
 
     const curDate = LocalDateTime.now().minusDays(2);
@@ -353,7 +359,7 @@ export class SdcCollectionApiService {
               'careerProgramNonEligReasonCode': 'NTENRCAREE',
               'specialEducationNonEligReasonCode': 'NOSPECIAL',
               'isGraduated': 'false',
-              'assignedStudentId': null,
+              'assignedStudentId': 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf',
               'assignedPen': null,
               'sdcSchoolCollectionStudentValidationIssues': [],
               'sdcSchoolCollectionStudentEnrolledPrograms': [
@@ -401,7 +407,7 @@ export class SdcCollectionApiService {
               'careerProgramNonEligReasonCode': 'NTENRCAREE',
               'specialEducationNonEligReasonCode': 'NOSPECIAL',
               'isGraduated': 'false',
-              'assignedStudentId': null,
+              'assignedStudentId': 'b1b3e478-2528-404d-b141-aa96543fc30a',
               'assignedPen': null,
               'sdcSchoolCollectionStudentValidationIssues': [],
               'sdcSchoolCollectionStudentEnrolledPrograms': [
@@ -449,7 +455,7 @@ export class SdcCollectionApiService {
               'careerProgramNonEligReasonCode': 'NTENRCAREE',
               'specialEducationNonEligReasonCode': 'NOSPECIAL',
               'isGraduated': 'false',
-              'assignedStudentId': null,
+              'assignedStudentId': '52c5b19c-30e5-478e-b8bd-ed18e992a8fe',
               'assignedPen': null,
               'sdcSchoolCollectionStudentValidationIssues': [],
               'sdcSchoolCollectionStudentEnrolledPrograms': [
@@ -506,6 +512,14 @@ export class SdcCollectionApiService {
 
     console.log('AT createSchoolCollection completed');
     return schoolCollectionResponse;
+  }
+
+  async createSdcStudentElls(payload: SdcStudentEll[]) {
+    const studentEllEndpoint = `${this.config.env.studentDataCollection.base_url}${SCHOOL_COLLECTION_STUDENT_ENDPOINT}`
+      + '/years-in-ell';
+    const ells = await this.restUtils.postData<SdcStudentEll[]>(studentEllEndpoint, payload);
+    console.log('AT createSdcStudentElls completed');
+    return ells;
   }
 
   studentsWithDuplicatePEN() {

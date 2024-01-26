@@ -1,21 +1,35 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {SchoolCollection} from '../../services/sdc-collection-api-service';
+import { SchoolCollectionOptions, SdcStudentEllOption } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
+    let sdcStudentElls: SdcStudentEll[];
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollection, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'careerProgramsSeedData'
+        }).then(collection => {
+          const studentWithEllYears = collection.students
+            .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
+            .map(s => ({
+              studentID: s.assignedStudentId,
+              yearsInEll: 3
+            }) as SdcStudentEll);
+
+          cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears)
+            .then(ells => sdcStudentElls = ells);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
     after(() => cy.logout());
-    beforeEach(() => cy.login());
+    beforeEach(() => {
+      cy.wrap(sdcStudentElls).as('sdcStudentElls');
+      cy.login();
+    });
 
     it('can load dashboard & click data collection card & process collection', () => {
       cy.visit('/');
@@ -221,19 +235,23 @@ describe('SDC School Collection View', () => {
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
-      cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
-        cy.wrap($cell).children().last().invoke('text').then((text) => {
-          expect(text).to.satisfy((value: string) => {
-            return value === '17-English Language Learning-'; // Years in Ell is why there is a hyphen at the end
-          });
+
+      // Find the table row with the student pen that should have 3 years of ell
+      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('101932770').parentsUntil('tbody')
+        .children().last().invoke('text').then(text => {
+          expect(text).equal('17-English Language Learning3');
         });
-      });
+
+      // Find the table row with the student pen that should have no record of years in ell yet
+      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('102866365').parentsUntil('tbody')
+        .children().last().invoke('text').then(text => {
+          expect(text).equal('17-English Language Learning-');
+        });
 
       //check summary headcounts
       cy.get(selectors.ellComponent.summaryButton).click();
       cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
     });
-
 
     it('verifies special education category for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
