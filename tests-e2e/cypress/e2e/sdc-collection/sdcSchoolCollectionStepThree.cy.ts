@@ -55,9 +55,10 @@ describe('SDC School Collection View', () => {
     });
 
     it('verifies FTE for Reported Students', () => {
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
 
