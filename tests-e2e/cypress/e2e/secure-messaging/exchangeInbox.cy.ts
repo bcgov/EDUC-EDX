@@ -112,7 +112,9 @@ function searchForSingleMessage() {
 
 function testNewMessageForm() {
   beforeEach(() => {
+    cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMsgs');
     cy.visit('/inbox');
+    cy.wait('@exchangeMsgs');
     cy.get(selectors.secureExchangeInbox.newMessageButton).click();
   });
   it('Checking if fields are invalid', () => {
