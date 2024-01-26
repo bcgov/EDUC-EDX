@@ -7,7 +7,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollection, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryNoErrors'
@@ -31,7 +31,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollection, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryErrors'

@@ -1,11 +1,12 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
+import {SchoolCollection} from '../../services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollection, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepTwoSeedData'
@@ -150,7 +151,7 @@ describe('SDC School Collection View', () => {
     context('PEN appears more than once in the submission', () => {
       before(() => {
         cy.task<AppSetupData>('dataLoad').then(res => {
-          cy.task<SdcSchoolCollection>('setup-collections', {
+          cy.task<SchoolCollection, SdcSchoolCollection>('setup-collections', {
             school: res.school,
             loadWithStudentAndValidations: true,
             seedData: 'stepTwoDuplicatePENData'
