@@ -23,11 +23,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.fteComponent.filterButton).click();
+      cy.get(selectors.fteComponent.filterButton).click({force: true});
       checkCommonFiltersExist()
-      
-   
+      })
     });
 
     it('verifies common filters for special education tab', () => {
@@ -37,10 +37,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="Special Education"]').click();
       
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.specialEducationComponent.filterButton).click();
+      cy.get(selectors.specialEducationComponent.filterButton).click({force: true});
       checkCommonFiltersExist();
-      
+      })
     });
 
     it('verifies common filters for career tab', () => {
@@ -50,10 +51,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="Career Programs"]').click();
       
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.careerProgramComponent.filterButton).click();
+      cy.get(selectors.careerProgramComponent.filterButton).click({force: true});
       checkCommonFiltersExist();
-      
+      })
     });
 
     it('verifies common filters for french tab', () => {
@@ -63,10 +65,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="French Programs"]').click();
       
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.frenchComponent.filterButton).click();
+      cy.get(selectors.frenchComponent.filterButton).click({force: true});
       checkCommonFiltersExist();
-      
+      })
     });
 
     it('verifies common filters for indigenous tab', () => {
@@ -76,10 +79,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="Indigenous Students & Support Programs"]').click();
       
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.indigenousSupportComponent.filterButton).click();
+      cy.get(selectors.indigenousSupportComponent.filterButton).click({force: true});
       checkCommonFiltersExist();
-      
+      })
     });
 
     it('verifies common filters for ELL tab', () => {
@@ -89,9 +93,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get('button[value="English Language Learning"]').click();
       
+      cy.wait('@pagination').then(()=> {
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.ellComponent.filterButton).click();
+      cy.get(selectors.ellComponent.filterButton).click({force: true});
       checkCommonFiltersExist();
+      })
       
     });
 
