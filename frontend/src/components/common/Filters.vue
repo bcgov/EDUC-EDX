@@ -46,7 +46,7 @@
                 :value="option"
                 class="filter-button"
                 rounded="lg"
-                :id="option?.title"
+                :id="option?.id"
               >
                 {{ option?.title }}
               </v-btn>
