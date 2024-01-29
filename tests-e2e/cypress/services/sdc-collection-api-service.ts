@@ -509,7 +509,7 @@ export class SdcCollectionApiService {
               'gender': 'M',
               'specialEducationCategoryCode': 'A',
               'schoolFundingCode': '20',
-              'nativeAncestryInd': 'N',
+              'nativeAncestryInd': 'Y',
               'homeLanguageSpokenCode': '943',
               'otherCourses': '0',
               'supportBlocks': null,

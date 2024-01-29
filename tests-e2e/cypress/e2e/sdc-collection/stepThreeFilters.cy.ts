@@ -148,6 +148,28 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
         cy.get(selectors.indigenousSupportComponent.tab).contains('Filters').click();
         checkCommonFiltersExist();
+
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasIndiAncestry).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+        cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+
+        cy.get(selectors.indigenousSupportComponent.tab).contains('Filters').click();
+
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasBandCode).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('0500 - KWANLIN DUN');
+        cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('0500 - KWANLIN DUN').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+        
+        cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
+
+        cy.get(selectors.indigenousSupportComponent.tab).contains('Filters').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasBandCode).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+
+        cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
       });
     });
 
