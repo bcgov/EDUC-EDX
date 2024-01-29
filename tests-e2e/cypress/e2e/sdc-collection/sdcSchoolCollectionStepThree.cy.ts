@@ -4,7 +4,6 @@ import { SchoolCollectionOptions, SdcStudentEllOption } from 'tests-e2e/cypress/
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
-    let sdcStudentElls: SdcStudentEll[];
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
@@ -19,17 +18,13 @@ describe('SDC School Collection View', () => {
               yearsInEll: 3
             }) as SdcStudentEll);
 
-          cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears)
-            .then(ells => sdcStudentElls = ells);
+          cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
     after(() => cy.logout());
-    beforeEach(() => {
-      cy.wrap(sdcStudentElls).as('sdcStudentElls');
-      cy.login();
-    });
+    beforeEach(() => cy.login());
 
     it('can load dashboard & click data collection card & process collection', () => {
       cy.visit('/');
