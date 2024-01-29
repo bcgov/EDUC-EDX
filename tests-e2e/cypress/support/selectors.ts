@@ -261,6 +261,9 @@ export default {
     headcountColumnData: '.special-ed-headcount-column-data',
     filterButton: '#filters',
   },
+  activeFiltersDrawer: {
+    drawer: '.v-navigation-drawer--active',
+  },
   ellComponent: {
     tab: '#engLangTab',
     filterButton: '#filters',
