@@ -39,6 +39,20 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.filters.applyFilter).click();
 
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
+
+        cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasSupportBlocks).click();
+        cy.get(selectors.filters.applyFilter).click();
+
+        cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
+
+        cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.noSupportBlocks).click();
+        cy.get(selectors.filters.applyFilter).click();
+
+        cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
       });
     });
 
@@ -120,6 +134,23 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
         cy.get(selectors.careerProgramComponent.tab).contains('Filters').click();
         checkCommonFiltersExist();
+
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade9).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+        cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+
+        cy.get(selectors.careerProgramComponent.tab).contains('Filters').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.codeXH).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+        cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+
+        cy.get(selectors.careerProgramComponent.tab).contains('Filters').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
+        cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
       });
     });
 
