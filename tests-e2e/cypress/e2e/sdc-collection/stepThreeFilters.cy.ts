@@ -166,7 +166,7 @@ describe('SDC School Collection View', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="Special Education"]').click();
+      cy.get('button[value="English Language Learning"]').click();
 
       cy.get(selectors.ellComponent.tab).contains('Filters').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('1-5 years in ELL').click();
@@ -176,8 +176,8 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
-          expect(text).to.satisfy((value: number) => {
-            return value <= 5;
+          expect(text).to.satisfy((value: string) => {
+            return value === '17-English Language Learning3';
           });
         });
       });
@@ -187,12 +187,18 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.activeFiltersDrawer.drawer).contains('6+ years in ELL').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
-      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
-      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
+
+      cy.get(selectors.ellComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Funding Eligible').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
-          expect(text).to.satisfy((value: number) => {
-            return value >= 6;
+          expect(text).to.satisfy((value: string) => {
+            return value === '17-English Language Learning3' || value === '17-English Language Learning';
           });
         });
       });
