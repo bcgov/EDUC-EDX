@@ -269,7 +269,7 @@ describe('SDC School Collection View', () => {
           });
         });
       });
-      
+
       //check summary headcounts
       cy.get(selectors.specialEducationComponent.summaryButton).click();
       cy.get(selectors.specialEducationComponent.headcountCard).should('have.length', 12);
