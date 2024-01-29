@@ -118,7 +118,7 @@ export default {
   filters: {
     clearFilter: '#clear-filter',
     applyFilter: '#apply-filter',
-    studentType: '#studentType',
+    studentType: '#studentType', 
     warnings: '#warnings',
     fte: '#fte',
     fundingtype: '#fundingtype',
@@ -127,6 +127,16 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
+    grade8: '#grade8',
+    grade9: '#grade9',
+    hasIndiAncestry: '#hasIndiAncestry',
+    hasBandCode: '#hasBandCode',
+    bandCodeSelector: '#bandCode',
+    bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask',
+    hasSupportBlocks: '#hasSupportBlocks',
+    noSupportBlocks: '#noSupportBlocks',
+    career41: '#career41',
+    codeXH: '#codeXH'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -208,6 +218,12 @@ export default {
   schoolList: {
     schoolRow: '.hoverTable'
   },
+  sdcDocumentUploadStep: {
+    careerTab: '[data-cy="careerTab"]',
+    careerTabButton: '[data-cy="Career Programs"]',
+    errorBanner: '[data-cy="headcount-error-banner"]',
+    infoBanner: '[data-cy="headcount-info-banner"]'
+  },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {
       removeRecord: '#removeRecord',
@@ -215,7 +231,6 @@ export default {
       removeRecordConfirmButton: '#resolveBtn',
     }
   },
-
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',

@@ -36,6 +36,7 @@
         :key="name"
         class="tab-divider"
         :value="name"
+        :data-cy="name"
       >
         {{ name }}
       </v-tab>
@@ -44,31 +45,37 @@
     <v-window v-model="selectedTab">
       <v-window-item value="FTE">
         <HeadCountReportComponent
+          data-cy="fteTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="French Programs">
         <HeadCountReportComponent
+          data-cy="frenchTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Career Programs">
         <HeadCountReportComponent
+          data-cy="careerTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Indigenous Students & Support Programs">
         <HeadCountReportComponent
+          data-cy="indigenousTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Special Education">
         <HeadCountReportComponent
+          data-cy="spedTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="English Language Learning">
         <HeadCountReportComponent
+          data-cy="ellTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
