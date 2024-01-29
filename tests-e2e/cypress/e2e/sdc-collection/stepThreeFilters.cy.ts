@@ -84,6 +84,21 @@ describe('SDC School Collection View', () => {
 
       cy.get(selectors.specialEducationComponent.tab).contains('Filters').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('G - Autism Spectrum Disorder').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === 'G-Autism Spectrum Disorder';
+          });
+        });
+      });
+
+      cy.get(selectors.specialEducationComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
