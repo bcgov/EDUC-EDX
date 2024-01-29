@@ -118,7 +118,7 @@ export default {
   filters: {
     clearFilter: '#clear-filter',
     applyFilter: '#apply-filter',
-    studentType: '#studentType',
+    studentType: '#studentType', 
     warnings: '#warnings',
     fte: '#fte',
     fundingtype: '#fundingtype',
@@ -127,6 +127,7 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
+    grade8: '#grade8'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -215,7 +216,6 @@ export default {
       removeRecordConfirmButton: '#resolveBtn',
     }
   },
-
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',
