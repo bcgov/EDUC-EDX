@@ -1,7 +1,7 @@
 import {faker} from '@faker-js/faker';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
-const createSdcSchoolCollectionStudent = (): SdcSchoolCollectionStudent => <SdcSchoolCollectionStudent>({
+const createSdcSchoolCollectionStudent = (grades: string[] | undefined): SdcSchoolCollectionStudent => <SdcSchoolCollectionStudent>({
   localID: faker.string.alphanumeric(9),
   studentPen: faker.string.numeric({length: 9, allowLeadingZeros: true}),
   legalFirstName: faker.person.firstName(),
@@ -14,13 +14,14 @@ const createSdcSchoolCollectionStudent = (): SdcSchoolCollectionStudent => <SdcS
   gender: faker.person.sex()[0],
   nativeAncestryInd: 'N',
   homeLanguageSpokenCode: '943',
-  enrolledGradeCode: generateSchoolGrade(),
+  enrolledGradeCode: generateSchoolGrade(grades),
   numberOfCourses: faker.string.numeric({length: 4, allowLeadingZeros: true}),
   postalCode: generatePostalCode(),
-  sdcSchoolCollectionStudentStatusCode: 'VERIFIED'
+  sdcSchoolCollectionStudentStatusCode: 'VERIFIED',
+  fte: 0
 });
 
-export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, districtId: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
+export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, districtId: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined, students: SdcSchoolCollectionStudent[] | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
   createUser: 'EDXAT',
   uploadDate: LocalDate.now().format(DateTimeFormatter.ofPattern('yyyyMMdd')),
   uploadFileName: 'EDX-AT-FILE.std',
@@ -31,19 +32,18 @@ export const createSdcSchoolCollection = (collectionId: string | undefined, scho
   districtID: districtId,
   collectionOpenDate: collectionOpenDate,
   collectionCloseDate: collectionCloseDate,
-  students: createSdcSchoolCollectionStudents(5)
+  students: students ? students : createSdcSchoolCollectionStudents(5, undefined)
 });
 
-export const createSdcSchoolCollectionStudents = (numberOfUsers: number): SdcSchoolCollectionStudent[] => {
+export const createSdcSchoolCollectionStudents = (numberOfUsers: number, grades: string[] | undefined): SdcSchoolCollectionStudent[] => {
   const studentArray: SdcSchoolCollectionStudent[] = [];
   for (let i = 0; i < numberOfUsers; i++) {
-    studentArray.push(createSdcSchoolCollectionStudent());
+    studentArray.push(createSdcSchoolCollectionStudent(grades));
   }
   return studentArray;
 };
 
-const generateSchoolGrade = (): string => {
-  const grades = ['KH', 'KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU', 'GA', 'HS'];
+const generateSchoolGrade = (grades:string[] = ['KH', 'KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU', 'GA', 'HS']): string => {
   return faker.helpers.arrayElement(grades);
 };
 

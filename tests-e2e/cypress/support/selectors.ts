@@ -191,6 +191,12 @@ export default {
   schoolList: {
     schoolRow: '.hoverTable'
   },
+  sdcDocumentUploadStep: {
+    careerTab: '[data-cy="careerTab"]',
+    careerTabButton: '[data-cy="Career Programs"]',
+    errorBanner: '[data-cy="headcount-error-banner"]',
+    infoBanner: '[data-cy="headcount-info-banner"]'
+  },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {
       removeRecord: '#removeRecord',

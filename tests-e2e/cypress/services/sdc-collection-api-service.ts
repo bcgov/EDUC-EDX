@@ -1,6 +1,6 @@
 import {LocalDateTime} from '@js-joda/core';
 import {RestUtils} from '../helpers/rest-utils-ts';
-import {createSdcSchoolCollection} from '../helpers/seed-data-utils';
+import {createSdcSchoolCollection, createSdcSchoolCollectionStudents} from '../helpers/seed-data-utils';
 
 export interface SchoolCollection {
   school: SchoolEntity,
@@ -473,13 +473,28 @@ export class SdcCollectionApiService {
         };
       }
       else if (schoolCollection.seedData === 'dataUploadSummaryErrors') {
-        const seedSchoolCollection: SdcSchoolCollection = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate));
+        const seedSchoolCollection: SdcSchoolCollection = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), undefined);
 
         seedSchoolCollection.students[0].sdcSchoolCollectionStudentStatusCode = 'ERROR';
         sdcSchoolCollectionPayload = seedSchoolCollection;
       }
-      else if (schoolCollection.seedData === 'dataUploadSummaryNoErrors') {
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate));
+      else if (schoolCollection.seedData === 'dataUploadSummaryCareer') {
+        const students = createSdcSchoolCollectionStudents(9, ['08', '09', '10', '11', '12']);
+        students[0].enrolledProgramCodes = students[1].enrolledProgramCodes = '40';
+        students[2].enrolledProgramCodes = students[3].enrolledProgramCodes = '41';
+        students[4].enrolledProgramCodes = students[5].enrolledProgramCodes = '42';
+        students[6].enrolledProgramCodes = students[7].enrolledProgramCodes = students[8].enrolledProgramCodes = '43';
+        students[0].careerProgramCode = 'XA';
+        students[1].careerProgramCode = 'XB';
+        students[2].careerProgramCode = 'XC';
+        students[3].careerProgramCode = 'XD';
+        students[4].careerProgramCode = 'XE';
+        students[5].careerProgramCode = 'XF';
+        students[6].careerProgramCode = 'XG';
+        students[7].careerProgramCode = 'XH';
+        students[8].careerProgramCode = 'XH';
+        students[8].careerProgramNonEligReasonCode = 'NOTELIGIBL';
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
       }
 
     } else {
