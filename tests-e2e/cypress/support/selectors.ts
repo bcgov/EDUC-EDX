@@ -127,7 +127,11 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
-    grade8: '#grade8'
+    grade8: '#grade8',
+    hasIndiAncestry: '#hasIndiAncestry',
+    hasBandCode: '#hasBandCode',
+    bandCodeSelector: '#bandCode',
+    bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
