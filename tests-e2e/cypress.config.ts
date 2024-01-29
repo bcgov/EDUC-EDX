@@ -5,7 +5,7 @@ import {UserSetupUtils} from './cypress/helpers/user-set-up-utils';
 import {defineConfig} from 'cypress';
 import { InstituteOptions, SchoolOptions } from './cypress/services/institute-api-service';
 import { UserActivationUtils } from './cypress/helpers/user-activation-utils';
-import { SchoolCollection } from './cypress/services/sdc-collection-api-service';
+import { SchoolCollectionOptions } from './cypress/services/sdc-collection-api-service';
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (
@@ -61,9 +61,11 @@ export default defineConfig({
           await new EdxApiService(config).deleteAllSecureExchangeBySubject(subject);
           return null;
         },
-        'setup-collections': async (schoolCollection: SchoolCollection) => {
-          await new CollectionSetupUtils(config).setUpSchoolCollection(schoolCollection);
-          return null;
+        'setup-collections': async (schoolCollection: SchoolCollectionOptions) => {
+          return new CollectionSetupUtils(config).setUpSchoolCollection(schoolCollection);
+        },
+        'setup-student-ells': async (ells: SdcStudentEll[]) => {
+          return new CollectionSetupUtils(config).setUpStudentElls(ells);
         },
         'setup-schoolUser': async (schoolUserOptions: SchoolUserOptions) => {
           return new UserSetupUtils(config).setupSchoolUser(schoolUserOptions);

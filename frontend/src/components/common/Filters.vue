@@ -7,13 +7,13 @@
     <v-card-text>
       <v-row justify="space-between">
         <v-col cols="4">
-          <a @click="clear()">Clear All Filters</a>
+          <a id = "clear-filter" @click="clear()">Clear All Filters</a>
         </v-col>
         <v-col
           cols="4"
           style="text-align: end;"
         >
-          <a @click="apply()">Apply Filters</a>
+          <a id="apply-filter" @click="apply()">Apply Filters</a>
         </v-col>
       </v-row>
       <div
@@ -21,7 +21,7 @@
         :key="index"
       >
         <v-row>
-          <v-col class="filter-heading">
+          <v-col :id="filterGroups.id" class="filter-heading">
             {{ filterGroups?.heading }}
           </v-col>
         </v-row>
@@ -46,6 +46,7 @@
                 :value="option"
                 class="filter-button"
                 rounded="lg"
+                :id="option?.id"
               >
                 {{ option?.title }}
               </v-btn>
@@ -179,7 +180,7 @@ export default {
       return true;
     },
     setFilterValue(key, val) {
-      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' ? [val] : val;
+      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;
     }
   }
 };

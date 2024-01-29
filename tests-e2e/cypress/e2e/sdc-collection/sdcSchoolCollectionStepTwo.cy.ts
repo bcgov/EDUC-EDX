@@ -1,12 +1,12 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollection } from 'tests-e2e/cypress/services/sdc-collection-api-service';
+import { SchoolCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepTwoSeedData'
@@ -42,7 +42,7 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.studentLevelData.totalStudentsWithIssues).should('exist');
         cy.get(selectors.studentLevelData.totalStudentsWithIssuesCount).should('exist');
         cy.get(selectors.studentLevelData.totalStudentsWithIssuesCount).contains('2');
-        
+
         cy.get(selectors.studentLevelData.fixSelected).should('be.disabled');
         cy.get(selectors.studentLevelData.fixAll).should('not.be.disabled');
 
@@ -129,9 +129,10 @@ describe('SDC School Collection View', () => {
 
     it('can remove record containing validation errors', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
-
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.wait('@pagination').then(() => {
@@ -151,7 +152,7 @@ describe('SDC School Collection View', () => {
     context('PEN appears more than once in the submission', () => {
       before(() => {
         cy.task<AppSetupData>('dataLoad').then(res => {
-          cy.task<SchoolCollection>('setup-collections', {
+          cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
             school: res.school,
             loadWithStudentAndValidations: true,
             seedData: 'stepTwoDuplicatePENData'

@@ -1,12 +1,12 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollection } from 'tests-e2e/cypress/services/sdc-collection-api-service';
+import { SchoolCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedData'

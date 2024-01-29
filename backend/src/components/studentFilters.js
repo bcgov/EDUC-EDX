@@ -19,6 +19,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let bandCodeList = [];
     let spedCodeList = [];
     let spedFundingList = [];
+    let ellList = [];
+    let ellFunding = [];
+    let fundingTypeList = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -60,6 +63,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       if(elem.key === 'spedFunding' && pValue) {
         spedFundingList = createSpedFundingFilter(pValue)
       }
+      if(elem.key === 'ellYears' && pValue) {
+        ellList = createEllYearsFilter(pValue);
+      }
+      if(elem.key === 'ellFunding' && pValue) {
+        ellFunding = createEllFundingFilter(pValue);
+      }
       if (elem.key === 'warnings' && pValue) {
         validateWarningFilter(pValue);
         searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
@@ -73,20 +82,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList.push({ key: 'fteZeroReasonCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if (elem.key === 'fundingType' && pValue) {
-        validateFundingTypeFilter(pValue);
-  
-        if (pValue.includes('14')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('20')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('16')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
-        if (pValue.includes('No Funding')) {
-          searchCriteriaList.push({ key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        }
+        fundingTypeList = createFundingTypeFilter(pValue);
       }
       if (elem.key === 'bandResidence' && pValue) {
         bandCodeList.push({ key: 'bandCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
@@ -104,6 +100,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: searchCriteriaList
+      });
+    }
+    if (fundingTypeList.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: fundingTypeList
       });
     }
     if (studentTypeFilterList.length > 0) {
@@ -190,6 +192,18 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList: spedFundingList
       });
     }
+    if(ellFunding.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: ellFunding
+      });
+    }
+    if(ellList.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: ellList
+      });
+    }
     return search;
   }
 
@@ -274,6 +288,37 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
   }
 
+  function createFundingTypeFilter(pValue) {
+    let fundingTypeList = []
+    validateFundingTypeFilter(pValue);
+  
+        if (pValue.includes('14')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '14', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('20')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '20', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('16')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: '16', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+        if (pValue.includes('No Funding')) {
+          fundingTypeList.push({ key: 'schoolFundingCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        }
+    return fundingTypeList;
+  }
+
+  function createEllYearsFilter(pValue) {
+    let ellList = []
+    if(pValue.includes('ell1Between5')) {
+        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 1, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 5, operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+    }
+    if(pValue.includes('ellGtEq6')) {
+        ellList.push({ key: 'sdcStudentEllEntity.yearsInEll', value: 6, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+    }
+    return ellList;
+  }
+
   function createFrenchFundingFilter(pValue) {
     let frenchProgramFundingList = [];
 
@@ -316,6 +361,18 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       spedCodeList.push({ key: 'specialEducationCategoryCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       return spedCodeList;
     }
+
+    function createEllFundingFilter(pValue) {
+      let ellFundingList = [];
+    
+      if (pValue.toString() === 'true') {
+        ellFundingList.push({ key: 'ellNonEligReasonCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if (pValue.toString() === 'false') {
+        ellFundingList.push({ key: 'ellNonEligReasonCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+    
+      return ellFundingList;
+      }
 
   function createAncestryFilter(pValue) {
     let ancestryList = [];
