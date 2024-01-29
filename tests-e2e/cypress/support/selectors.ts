@@ -128,10 +128,15 @@ export default {
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
     grade8: '#grade8',
+    grade9: '#grade9',
     hasIndiAncestry: '#hasIndiAncestry',
     hasBandCode: '#hasBandCode',
     bandCodeSelector: '#bandCode',
-    bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask'
+    bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask',
+    hasSupportBlocks: '#hasSupportBlocks',
+    noSupportBlocks: '#noSupportBlocks',
+    career41: '#career41',
+    codeXH: '#codeXH'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
