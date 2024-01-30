@@ -6,6 +6,9 @@ export default {
     accessUserFeedback: '.v-alert__content',
     confirmationDialog: '.v-overlay__content'
   },
+  activeFiltersDrawer: {
+    drawer: '.v-navigation-drawer--active',
+  },
   careerProgramComponent: {
     tab: '#careerTab',
     filterButton: '#filters',
@@ -82,6 +85,14 @@ export default {
   },
   dropdown: { //common component
     listItem: '.v-list-item'
+  },
+  ellComponent: {
+    tab: '#engLangTab',
+    filterButton: '#filters',
+    summaryButton: '#engLangSummaryButton',
+    headcountCard: '.ell-headcount-card',
+    headcountHeader: '.ell-headcount-header',
+    headcountColumnData: '.ell-headcount-column-data'
   },
   frenchComponent: {
     tab: '#frenchTab',
@@ -276,16 +287,12 @@ export default {
     headcountColumnData: '.special-ed-headcount-column-data',
     filterButton: '#filters',
   },
-  activeFiltersDrawer: {
-    drawer: '.v-navigation-drawer--active',
-  },
-  ellComponent: {
-    tab: '#engLangTab',
-    filterButton: '#filters',
-    summaryButton: '#engLangSummaryButton',
-    headcountCard: '.ell-headcount-card',
-    headcountHeader: '.ell-headcount-header',
-    headcountColumnData: '.ell-headcount-column-data'
+  stepThreeTabSlider: {
+    careerProgramsButton: 'button[value="Career Programs"]',
+    englishLanguageLearningButton: 'button[value="English Language Learning"]',
+    frenchProgramsButton: 'button[value="French Programs"]',
+    indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
+    specialEducationButton: 'button[value="Special Education"]'
   },
   studentLevelData: {
     detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
