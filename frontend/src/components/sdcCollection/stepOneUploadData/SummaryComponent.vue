@@ -93,7 +93,7 @@ import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComp
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
-import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR} from '../../../utils/sdc/TableConfiguration';
+import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 
 export default defineComponent({
@@ -122,6 +122,8 @@ export default defineComponent({
         return CAREER_PR;
       } else if(this.selectedTab==='Special Education') {
         return SPECIALED_PR;
+      } else if(this.selectedTab==='Indigenous Students & Support Programs') {
+        return INDSUPPORT_PR;
       }
       return FTE;
     }
