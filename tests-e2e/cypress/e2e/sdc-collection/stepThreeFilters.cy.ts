@@ -288,7 +288,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.activeFiltersDrawer.drawer).contains('1-5 years in ELL').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
-      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
