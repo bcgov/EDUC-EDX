@@ -100,7 +100,18 @@ export default {
     summaryButton: '#frenchSummaryButton',
     headcountCard: '.french-headcount-card',
     headcountHeader: '.french-headcount-header',
-    headcountColumnData: '.french-headcount-column-data'
+    headcountColumnData: '.french-headcount-column-data',
+    table: '.v-table',
+    tableWrapper: '.v-table__wrapper',
+    thead: 'thead',
+    tbody: 'tbody',
+    coreFrenchTotal: ':nth-child(1) > :nth-child(19) > span',
+    coreFrenchSchoolAged: ':nth-child(2) > :nth-child(19) > span',
+    earlyFrenchTotal: ':nth-child(4) > :nth-child(19) > span',
+    earlyFrenchSchoolAged: ':nth-child(5) > :nth-child(19) > span',
+    allFrenchTotal: ':nth-child(10) > :nth-child(19) > span',
+    allFrenchSchoolAged: ':nth-child(11) > :nth-child(19) > span',
+    allFrenchAdult: ':nth-child(12) > :nth-child(19) > .zero-cell'
   },
   fteComponent: {
     tab: '#enrollmentTab',
