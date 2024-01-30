@@ -168,6 +168,65 @@ describe('SDC School Collection View', () => {
       });
     });
 
+    it('verifies special filters for french tab', () => {
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.stepThreeTabSlider.frenchProgramsButton).click();
+
+      cy.get(selectors.frenchComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('11 - Early French Immersion').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === '11-Early French Immersion';
+          });
+        });
+      });
+
+      cy.get(selectors.frenchComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('14 - Late French Immersion').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
+
+      cy.get(selectors.frenchComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('08 - Core French').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === '08-Core French';
+          });
+        });
+      });
+
+      cy.get(selectors.frenchComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Funding Eligible').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+
+      cy.get(selectors.frenchComponent.tab).contains('Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear All Filters').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
+
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
+    });
+
     it('verifies filters for indigenous tab', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
