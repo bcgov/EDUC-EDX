@@ -97,7 +97,8 @@ export default {
     summaryButton: '#fteSummaryButton',
     headcountCard: '.enrollment-headcount-card',
     headcountHeader: '.enrollment-headcount-header',
-    headcountColumnData: '.enrollment-headcount-column-data'
+    headcountColumnData: '.enrollment-headcount-column-data',
+    warningIndicator: 'table > tbody > tr:nth-child(3) > td:nth-child(2) > i'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
