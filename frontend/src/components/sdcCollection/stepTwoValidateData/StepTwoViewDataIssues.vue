@@ -286,7 +286,7 @@
           </v-data-table-server>
         </v-row>
       </v-col>
-      <v-col v-else>
+      <v-col v-else-if="!isLoading()">
         <v-alert
           dismissible="true"
           class="clear-message"
