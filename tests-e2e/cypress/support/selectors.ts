@@ -233,7 +233,11 @@ export default {
     careerTab: '[data-cy="careerTab"]',
     careerTabButton: '[data-cy="Career Programs"]',
     errorBanner: '[data-cy="headcount-error-banner"]',
-    infoBanner: '[data-cy="headcount-info-banner"]'
+    indigenousTab: '[data-cy="indigenousTab"]',
+    indigenousTabButton: '[data-cy="Indigenous Students & Support Programs"]',
+    infoBanner: '[data-cy="headcount-info-banner"]',
+    spedTab: '[data-cy="spedTab"]',
+    spedTabButton: '[data-cy="Special Education"]',
   },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {

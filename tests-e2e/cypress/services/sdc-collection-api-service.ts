@@ -673,7 +673,41 @@ export class SdcCollectionApiService {
         students[8].careerProgramNonEligReasonCode = 'NOTELIGIBL';
         sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
       }
-
+      else if (schoolCollection.seedData === 'dataUploadSummarySpecialEd') {
+        const students = createSdcSchoolCollectionStudents(13, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
+        students[0].specialEducationCategoryCode = 'A';
+        students[1].specialEducationCategoryCode = 'B';
+        students[2].specialEducationCategoryCode = 'C';
+        students[3].specialEducationCategoryCode = 'D';
+        students[4].specialEducationCategoryCode = 'E';
+        students[5].specialEducationCategoryCode = 'F';
+        students[6].specialEducationCategoryCode = 'G';
+        students[7].specialEducationCategoryCode = 'H';
+        students[8].specialEducationCategoryCode = 'K';
+        students[9].specialEducationCategoryCode = 'P';
+        students[10].specialEducationCategoryCode = 'Q';
+        students[11].specialEducationCategoryCode = 'R';
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
+      }
+      else if (schoolCollection.seedData === 'dataUploadSummaryIndigenous') {
+        const students = createSdcSchoolCollectionStudents(7, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
+        students[0].enrolledProgramCodes = '29';
+        students[0].nativeAncestryInd = 'Y';
+        students[1].enrolledProgramCodes = '29';
+        students[1].nativeAncestryInd = 'N';
+        students[2].enrolledProgramCodes = '33';
+        students[2].nativeAncestryInd = 'Y';
+        students[3].enrolledProgramCodes = '33';
+        students[3].nativeAncestryInd = 'N';
+        students[4].enrolledProgramCodes = '36';
+        students[4].nativeAncestryInd = 'Y';
+        students[5].enrolledProgramCodes = '36';
+        students[5].nativeAncestryInd = 'N';
+        students[6].enrolledProgramCodes = '36';
+        students[6].nativeAncestryInd = 'N';
+        students[6].indigenousSupportProgramNonEligReasonCode = 'ERRORCODE';
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
+      }
     } else {
       sdcSchoolCollectionPayload = {
         'createUser': 'EDXAT',
