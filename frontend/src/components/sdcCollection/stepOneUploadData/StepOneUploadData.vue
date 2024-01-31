@@ -190,7 +190,7 @@
     </p>
     <PrimaryButton
       id="step-1-next-button-school"
-      class="mr-3 mb-3"
+      class="mr-3 ml-3 mb-3"
       icon="mdi-check"
       text="Next"
       :disabled="isDisabled"
