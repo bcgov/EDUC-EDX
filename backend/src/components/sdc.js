@@ -262,6 +262,22 @@ async function deleteSDCSchoolCollectionStudent(req, res) {
   }
 }
 
+async function removeSDCSchoolCollectionStudents(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing SDC students :: ' + JSON.stringify(req.body));
+    let deletedSdcSchoolCollectionStudentData = await postData(token, req.body, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
+    return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
+  } catch (e) {
+    log.error('Error deleting SDC School Collection Students.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getStudentHeadcounts(req, res) {
   try {
     const token = getAccessToken(req);
@@ -347,7 +363,7 @@ function createSearchCriteria(searchParams = []) {
     let pValue = searchParams[key];
 
     if (key === 'tabFilter') {
-      searchCriteriaList = createTabFilter(searchParams, key)
+      searchCriteriaList = createTabFilter(searchParams, key);
     }
     if (key === 'studentPen') {
       searchCriteriaList.push({ key: key, operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, value: pValue, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
@@ -442,6 +458,7 @@ module.exports = {
   getCollectionBySchoolId,
   uploadFile,
   getSdcFileProgress,
+  removeSDCSchoolCollectionStudents,
   updateSchoolCollection,
   getSchoolCollectionById,
   getSDCSchoolCollectionStudentPaginated,

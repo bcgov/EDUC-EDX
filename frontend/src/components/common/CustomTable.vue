@@ -3,17 +3,18 @@
     <v-data-table-server
       v-model:page.sync="pageNumber"
       v-model:items-per-page.sync="pageSize"
-      v-model="selected"
+      :model-value="selected"
       :items-length="totalElements"
       :items="data"
       :headers="headers"
       class="mt-2"
       mobile-breakpoint="0"
+      @update:model-value="selected = $event"
     >
       <template #top>
         <v-progress-linear
           v-show="isLoading"
-          indeterminate
+          :indeterminate="true"
           color="primary"
         />
       </template>
@@ -133,12 +134,14 @@ export default {
       required: true,
       default: false
     },
-
+    selected: {
+      type: Array,
+      required: true
+    },
   },
   emits: ['reload'],
   data() {
     return {
-      selected: [],
       pageNumber: 1,
       pageSize: 50,
       masterCheckbox: false,
