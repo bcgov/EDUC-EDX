@@ -21,10 +21,10 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     beforeEach(() => {
       cy.login();
     });
-    it('there is an info banner and no error banner for students in error', () => {
+    it('there is an info note and no error banner for students in error', () => {
       const id = Cypress.env('schoolCollectionIdCareer');
       navigateToUploadScreen(id);
-      cy.get(selectors.sdcDocumentUploadStep.infoBanner).should('exist');
+      cy.get(selectors.sdcDocumentUploadStep.infoNote).should('exist').should('contain.text', 'Note: Eligible FTE counts are available in Step 3');
       cy.get(selectors.sdcDocumentUploadStep.errorBanner).should('not.exist');
     });
     it('there are the correct headcounts for the career tab', () => {
