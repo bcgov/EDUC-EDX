@@ -64,9 +64,8 @@
     <v-row v-if="showFileReportDateWarning">
       <v-col class="mb-3 d-flex justify-center">
         <v-alert
-          color="#003366"
           density="compact"
-          type="info"
+          type="warning"
           variant="tonal"
         >
           <p>
