@@ -19,7 +19,7 @@
                 variant="underlined"
               />
             </v-col>
-
+{{ this.filterSearchParams.moreFilters }}
             <v-col
               class="d-flex justify-start filter-col"
               cols="6"
@@ -163,7 +163,6 @@
       <Filters
         :filters="config.allowedFilters"
         :school="school"
-        :updated-filters="updatedFilters"
         @close-filters="updateFilters"
         @clear-filters="clearFilters"
       />
@@ -270,19 +269,23 @@ export default {
         });
     },
     removeFilter(toRemoveKey, toRemoveValue) {
-      let filteredKey = this.filterSearchParams.moreFilters.find(value => value.key === toRemoveKey);
+      let test = [];
+      test = this.filterSearchParams.moreFilters;
+      let filteredKey = test.find(value => value.key === toRemoveKey);
       if(filteredKey?.value?.length === 1) {
-        const idx =this.filterSearchParams.moreFilters.findIndex(value => value.key === toRemoveKey);
-        this.filterSearchParams.moreFilters.splice(idx, 1);
+        const idx =test.findIndex(value => value.key === toRemoveKey);
+        test.splice(idx, 1);
       } else {
-        this.filterSearchParams.moreFilters.map(filter => {
+        test.map(filter => {
           if(filter.key === toRemoveKey) {
             filter.value.splice(filter.value.findIndex(value => value.title === toRemoveValue), 1);
           }
         });
       }
-      this.updatedFilters.splice();
-      this.updatedFilters = [...this.filterSearchParams.moreFilters];
+      //  this.updatedFilters = null;
+      // this.updatedFilters.splice();
+      // this.updatedFilters = [...this.filterSearchParams.moreFilters];
+      // this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
       this.loadStudents();
     },
     loadStudents() {
@@ -317,7 +320,7 @@ export default {
           const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
           return enrolledProgram ? `${programCode}-${enrolledProgram.description}` : programCode;
         })
-        .join('\n');
+        .join(',');
     },
     toTableRow(student) {
       student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description : null;
