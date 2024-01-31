@@ -5,12 +5,14 @@ import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 function navigateToSchoolContactsSchoolUser() {
   cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
   cy.intercept(Cypress.env('interceptors').schools).as('schools');
+  cy.intercept(Cypress.env('interceptors').contact_types).as('contactTypes');
 
   cy.visit('/');
   cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
   cy.get(selectors.dashboard.schoolContactsCard).click();
   cy.wait('@schoolDetails');
   cy.wait('@schools');
+  cy.wait('@contactTypes');
 
   cy.get(selectors.schoolContacts.activeTab).contains('Contacts');
 }
