@@ -22,6 +22,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let ellList = [];
     let ellFunding = [];
     let fundingTypeList = [];
+    let courseRange = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -93,6 +94,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         } else if (pValue.toString() === 'false') {
           bandCodeList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
         }   
+      }
+      if (elem.key === 'numCourses' && pValue) {
+        courseRange = pValue
       }
     });
     const search = [];
@@ -203,6 +207,13 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         condition: CONDITION.AND,
         searchCriteriaList: ellList
       });
+    }
+    if(courseRange.length === 2) {
+        search.push({
+            condition: CONDITION.AND,
+            operation: FILTER_OPERATION.BETWEEN,
+            searchCriteriaList: courseRange
+        })
     }
     return search;
   }
@@ -410,6 +421,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         }
 
       return supportBlockList;
+  }
+
+  function createCourseFilter(pValue) {
+
   }
 
   function createIndigenousProgramFilter(pValue) {

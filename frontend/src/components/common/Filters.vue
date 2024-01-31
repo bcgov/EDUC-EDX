@@ -67,6 +67,46 @@
               @update:model-value="setBandCodeFilter('bandResidence', $event, )"
             />
           </v-col>
+          <v-col v-if="filter?.key === 'courses'">
+                <v-range-slider
+                    v-model="courseRange"
+                    :max="15"
+                    :min="0"
+                    :step="1"
+                    color = "#003366"
+                    id="courses-slider"
+                    hide-details
+                    strict
+                    thumb-size=15
+                    class="align-center"
+                    @update:model-value="setCourseRangeFilter('numCourses', $event, )"
+                >
+                  <template v-slot:prepend>
+                    <v-text-field
+                        v-model="courseRange[0]"
+                        hide-details
+                        single-line
+                        type="number"
+                        hide-spin-buttons
+                        variant="outlined"
+                        density="compact"
+                        class="slider-text"
+                    ></v-text-field>
+                  </template>
+                  <template v-slot:append>
+                    <v-text-field
+                        v-model="courseRange[1]"
+                        hide-details
+                        single-line
+                        type="number"
+                        hide-spin-buttons
+                        variant="outlined"
+                        density="compact"
+                        class="slider-text"
+                    ></v-text-field>
+                  </template>
+                </v-range-slider>
+          </v-col>
         </v-row>
       </div>
     </v-card-text>
@@ -107,6 +147,7 @@ export default {
       selectedFilters: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
+      courseRange: [0, 15]
     };
   },
   computed: {
@@ -157,6 +198,13 @@ export default {
         this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
       } else {
         delete this.selectedFilters[key];
+      }
+    },
+    setCourseRangeFilter(key, $event){
+      if($event) {
+        this.selectedFilters[key] = [{title: this.courseRange[0] + ' to ' + this.courseRange[1] + ' courses'}];
+      } else {
+        delete this.selectedFilters[key]
       }
     },
     clear() {
@@ -211,6 +259,16 @@ export default {
     flex-wrap: wrap !important;
     overflow: visible !important;
     height: auto !important;
+  }
+
+  #courses-slider {
+    margin: 0px 8px 8px 8px;
+  }
+
+  .slider-text {
+    width: 5em;
+    font-size: 0.875rem;
+    border-color: #003366;
   }
   </style>
     

@@ -247,6 +247,20 @@ export const SUPPORT_BLOCKS_FILTER = Object.freeze(
   }
 );
 
+export const COURSES_FILTER = Object.freeze(
+    {
+      heading: 'Number of Courses',
+      id: 'numCourses',
+      filterGroups: [
+        {
+          multiple: true,
+          key: 'courses'
+        }
+
+      ]
+    }
+)
+
 export const FTE_ZERO_FILTER = Object.freeze(
   {
     heading: 'Reasons for FTE = 0 ',
@@ -737,6 +751,7 @@ export const FTE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Support Blocks', key: 'supportBlocks'}},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'enrollment',
     allowedFilters: [
@@ -746,7 +761,8 @@ export const FTE = Object.freeze(
       FUNDING_TYPE_FILTER,
       SUPPORT_BLOCKS_FILTER,
       FTE_ZERO_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -763,6 +779,7 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram'},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'french',
     allowedFilters: [
@@ -772,7 +789,8 @@ export const FRENCH_PR = Object.freeze(
       FUNDING_TYPE_FILTER,
       FRENCH_PROGRAMS_FILTER,
       FRENCH_FUNDING_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -789,6 +807,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Career Program', key: 'careerProgram', subHeader: {title: 'Career Code', key: 'careerProgramCode'}},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'career',
     allowedFilters: [
@@ -799,7 +818,8 @@ export const CAREER_PR = Object.freeze(
       CAREER_PROGRAM_FILTER,
       CAREER_CODE_FILTER,
       CAREER_FUNDING_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -817,6 +837,7 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: {title: 'Band Code', key: 'mappedBandCode'}},
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram'},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'indigenous',
     allowedFilters: [
@@ -828,7 +849,8 @@ export const INDSUPPORT_PR = Object.freeze(
       BAND_FILTER,
       ANCESTRY_FILTER,
       INDIGENOUS_FUNDING_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -845,6 +867,7 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Special Education Category', key: 'mappedSpedCode'},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'special-ed',
     allowedFilters: [
@@ -854,7 +877,8 @@ export const SPECIALED_PR = Object.freeze(
       FUNDING_TYPE_FILTER,
       SPED_FILTER,
       SPED_FUNDING_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -871,6 +895,7 @@ export const ELL = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: {title: 'Years in ELL', key: 'yearsInEll'}},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     headcountEndpoint: 'ell',
     allowedFilters: [
@@ -880,7 +905,8 @@ export const ELL = Object.freeze(
       FUNDING_TYPE_FILTER,
       ELL_YEARS_FILTER,
       ELL_FUNDING_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
@@ -895,14 +921,16 @@ export const REFUGEE = Object.freeze(
       { title: 'PEN', key: 'studentPen', subHeader: {title: 'Local ID', key: 'localID'}},
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: {title: 'Usual Surname, Given (Middle)', key: 'usualName'}},
       { title: 'Adult', key: 'isAdult', subHeader: {title: 'Grad', key: 'isGraduated'}},
-      { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}}
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: {title: 'Funding Code', key: 'mappedSchoolFunding'}},
+      { title: 'Courses for Grad', key: 'mappedNoOfCourses', subHeader: {title: 'Number of Courses', key: 'courses'}}
     ],
     allowedFilters: [
       STUDENT_TYPE_FILTER,
       FTE_FILTER,
       GRADE_FILTER,
       FUNDING_TYPE_FILTER,
-      WARNING_FILTER
+      WARNING_FILTER,
+      COURSES_FILTER
     ]
   }
 );
