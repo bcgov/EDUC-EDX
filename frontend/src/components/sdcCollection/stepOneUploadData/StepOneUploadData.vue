@@ -25,11 +25,6 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-divider class="divider" />
-      </v-col>
-    </v-row>
-    <v-row>
       <v-col style="text-align: center;">
         <div style="margin-top: 0.2em">
           <v-icon>
@@ -78,6 +73,11 @@
             The date in the uploaded file is <strong>{{ fileReportDateFormatted }}</strong>. Please ensure that you have uploaded the correct data for this collection before continuing.
           </p>
         </v-alert>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-divider class="divider" />
       </v-col>
     </v-row>
     <SummaryComponent />
@@ -184,7 +184,10 @@
       </v-col>
     </v-row>
   </div>
-  <v-row justify="end">
+  <v-row justify="space-between">
+    <p class="text-medium-emphasis font-italic ml-3 mb-3">
+      Note: Eligible FTE counts are available in Step 3
+    </p>
     <PrimaryButton
       id="step-1-next-button-school"
       class="mr-3 mb-3"
