@@ -123,6 +123,39 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       });
     });
   });
+  context('Uploaded a file that has no errors or warnings and ell students', () => {
+    before(() => {
+      cy.logout();
+      cy.task<AppSetupData>('dataLoad').then(res => {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+          school: res.school,
+          loadWithStudentAndValidations: true,
+          seedData: 'dataUploadSummaryEll'
+        }).then(response => {
+          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollectionID);
+        });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+      });
+    });
+    beforeEach(() => {
+      cy.login();
+    });
+    it('there are the correct headcounts for the ell tab', () => {
+      const id = Cypress.env('schoolCollectionIdEll');
+      navigateToUploadScreen(id);
+      cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');
+      cy.get(selectors.sdcDocumentUploadStep.ellTabButton).click();
+      cy.wait('@headcounts');
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).each(($cell, index) => {
+        if(index !== 2) {
+          cy.wrap($cell).find('td').last().should('contain', '2');
+        } else {
+          cy.wrap($cell).find('td').last().should('contain', '4');
+        }
+      });
+    });
+  });
   context('Uploaded a file that has errors', () => {
     before(() => {
       cy.logout();

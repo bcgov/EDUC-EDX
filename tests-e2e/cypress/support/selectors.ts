@@ -247,6 +247,8 @@ export default {
     errorBanner: '[data-cy="headcount-error-banner"]',
     indigenousTab: '[data-cy="indigenousTab"]',
     indigenousTabButton: '[data-cy="Indigenous Students & Support Programs"]',
+    ellTab: '[data-cy="ellTab"]',
+    ellTabButton: '[data-cy="English Language Learning"]',
     infoNote: 'p.text-medium-emphasis.font-italic',
     spedTab: '[data-cy="spedTab"]',
     spedTabButton: '[data-cy="Special Education"]',
