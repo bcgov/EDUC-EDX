@@ -32,7 +32,7 @@
       </v-tab>
     </v-tabs>
 
-    <v-window v-model="selectedTab">
+    <v-window v-model="selectedTab" class="pt-3">
       <v-window-item value="FTE">
         <EnrollmentHeadcountsComponent
           v-if="selectedTab==='FTE'"
