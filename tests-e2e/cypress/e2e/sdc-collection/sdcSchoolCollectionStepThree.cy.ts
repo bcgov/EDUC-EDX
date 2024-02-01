@@ -35,6 +35,16 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
     });
 
+    it('displays indicator for students with warnings', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.fteComponent.warningIndicator).should('exist');
+    });
+
     it('can search for a student by name, PEN, or local ID', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
