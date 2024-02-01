@@ -84,7 +84,7 @@ import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComp
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
-import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR} from '../../../utils/sdc/TableConfiguration';
+import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 
@@ -117,6 +117,8 @@ export default defineComponent({
         return SPECIALED_PR;
       } else if(this.selectedTab==='Indigenous Students & Support Programs') {
         return INDSUPPORT_PR;
+      } else if(this.selectedTab==='English Language Learning') {
+        return ELL;
       }
       return FTE;
     }
