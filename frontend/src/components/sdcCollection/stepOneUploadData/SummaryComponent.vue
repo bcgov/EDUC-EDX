@@ -34,7 +34,8 @@
 
     <v-window v-model="selectedTab">
       <v-window-item value="FTE">
-        <HeadCountReportComponent
+        <EnrollmentHeadcountsComponent
+          v-if="selectedTab==='FTE'"
           data-cy="fteTab"
           :headcount-table-data="headcountTableData"
         />
@@ -85,10 +86,12 @@ import {ApiRoutes} from '../../../utils/constants';
 import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
 import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
+import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 
 export default defineComponent({
   name: 'SummaryComponent',
   components: {
+    EnrollmentHeadcountsComponent,
     HeadCountReportComponent},
   data() {
     return {

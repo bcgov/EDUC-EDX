@@ -241,6 +241,7 @@ export default {
     schoolRow: '.hoverTable'
   },
   sdcDocumentUploadStep: {
+    fteTab: '[data-cy="fteTab"]',
     careerTab: '[data-cy="careerTab"]',
     careerTabButton: '[data-cy="Career Programs"]',
     errorBanner: '[data-cy="headcount-error-banner"]',
