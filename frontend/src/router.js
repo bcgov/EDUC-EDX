@@ -260,7 +260,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'STUDENT_DATA_COLLECTION'
+            permission: 'SCHOOL_SDC'
           },
         },
         {
@@ -271,7 +271,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'STUDENT_DATA_COLLECTION'
+            permission: 'SCHOOL_SDC'
           },
         }
       ]

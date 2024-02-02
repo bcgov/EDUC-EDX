@@ -19,8 +19,8 @@ interface ActivationCodeEntity extends BaseApiEntity {
   edxActivationRoles: EdxActivationRoleEntity[];
 }
 
-type DistrictRole = 'SECURE_EXCHANGE_DISTRICT' | 'EDX_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION' | 'EDX_EDIT_DISTRICT';
-type SchoolRole = 'SECURE_EXCHANGE_SCHOOL' | 'EDX_SCHOOL_ADMIN' | 'STUDENT_DATA_COLLECTION' | 'EDX_EDIT_SCHOOL';
+type DistrictRole = 'SECURE_EXCHANGE_DISTRICT' | 'EDX_DISTRICT_ADMIN' | 'SCHOOL_SDC' | 'EDX_EDIT_DISTRICT';
+type SchoolRole = 'SECURE_EXCHANGE_SCHOOL' | 'EDX_SCHOOL_ADMIN' | 'SCHOOL_SDC' | 'EDX_EDIT_SCHOOL';
 type InstituteTypeCode = 'SCHOOL' | 'DISTRICT';
 
 interface EdxUserDistrictRoleEntity extends EdxActivationRoleEntity {
@@ -29,7 +29,7 @@ interface EdxUserDistrictRoleEntity extends EdxActivationRoleEntity {
 
 interface EdxRolePermission extends BaseApiEntity {
   edxRolePermissionId: string;
-  edxPermissionCode: 'EDX_USER_SCHOOL_ADMIN' | 'EDX_USER_DISTRICT_ADMIN' | 'STUDENT_DATA_COLLECTION';
+  edxPermissionCode: 'EDX_USER_SCHOOL_ADMIN' | 'EDX_USER_DISTRICT_ADMIN' | 'SCHOOL_SDC';
 }
 
 interface EdxRoleEntity extends BaseApiEntity {
