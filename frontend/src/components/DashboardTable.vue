@@ -297,7 +297,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="hasRequiredPermission('STUDENT_DATA_COLLECTION') && isLoggedInSchoolUser && !disableSdcFunctionality"
+        v-if="hasRequiredPermission('SCHOOL_SDC') && isLoggedInSchoolUser && !disableSdcFunctionality"
         cols="12"
         md="6"
       >
@@ -417,7 +417,7 @@ export default {
       this.getExchangesCount();
     }
     if(this.isLoggedInSchoolUser) {
-      if(this.hasRequiredPermission('STUDENT_DATA_COLLECTION') && !this.disableSdcFunctionality) {
+      if(this.hasRequiredPermission('SCHOOL_SDC') && !this.disableSdcFunctionality) {
         this.getSDCCollectionBySchoolId();
       }
       this.getSchoolContactsLastUpdate();

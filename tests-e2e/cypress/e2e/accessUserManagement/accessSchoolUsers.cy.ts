@@ -216,7 +216,7 @@ describe('Access School Users Page', () => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_SCHOOL_ADMIN"]').click();
-            cy.get('div[value="STUDENT_DATA_COLLECTION"]').click();
+            cy.get('div[value="SCHOOL_SDC"]').click();
             cy.get('div[value="SECURE_EXCHANGE_SCHOOL"]').click();
             cy.get('div[value="EDX_EDIT_SCHOOL"]').click();
           });
@@ -250,7 +250,7 @@ describe('Access School Users Page', () => {
           cy.get(`#user-edit-button-${uid}`).click();
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_SCHOOL_ADMIN"] input').should('be.checked');
-            cy.get('div[value="STUDENT_DATA_COLLECTION"] input').should('be.checked');
+            cy.get('div[value="SCHOOL_SDC"] input').should('be.checked');
             cy.get('div[value="SECURE_EXCHANGE_SCHOOL"] input').should('be.checked');
             });
           });
