@@ -3,17 +3,18 @@
     <v-data-table-server
       v-model:page.sync="pageNumber"
       v-model:items-per-page.sync="pageSize"
-      v-model="selected"
+      :model-value="selected"
       :items-length="totalElements"
       :items="data"
       :headers="headers"
       class="mt-2"
       mobile-breakpoint="0"
+      @update:model-value="selected = $event"
     >
       <template #top>
         <v-progress-linear
           v-show="isLoading"
-          indeterminate
+          :indeterminate="true"
           color="primary"
         />
       </template>
@@ -79,7 +80,11 @@
               <div v-else-if="column.key === 'fte'">
                 <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
               </div>
-
+              <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram'">
+               <span v-for="(progs, idx) in props.item.raw[column.key].split(',')" :key="idx">
+                <div>{{ progs }}</div>
+               </span>
+              </div>
               <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
               <span v-else>-</span>
 
@@ -133,12 +138,14 @@ export default {
       required: true,
       default: false
     },
-
+    selected: {
+      type: Array,
+      required: true
+    },
   },
   emits: ['reload'],
   data() {
     return {
-      selected: [],
       pageNumber: 1,
       pageSize: 50,
       masterCheckbox: false,

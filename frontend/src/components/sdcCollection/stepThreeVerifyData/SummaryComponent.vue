@@ -210,6 +210,8 @@ export default {
         return 'Eligible French Program Headcount';
       case 'enrollment':
         return 'Grade Enrolment & Eligible FTE';
+      case 'ell':
+        return 'English Language Learning Headcount'
       }
     },
     compare() {

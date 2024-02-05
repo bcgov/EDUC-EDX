@@ -6,6 +6,9 @@ export default {
     accessUserFeedback: '.v-alert__content',
     confirmationDialog: '.v-overlay__content'
   },
+  activeFiltersDrawer: {
+    drawer: '.v-navigation-drawer--active',
+  },
   careerProgramComponent: {
     tab: '#careerTab',
     filterButton: '#filters',
@@ -83,13 +86,32 @@ export default {
   dropdown: { //common component
     listItem: '.v-list-item'
   },
+  ellComponent: {
+    tab: '#engLangTab',
+    filterButton: '#filters',
+    summaryButton: '#engLangSummaryButton',
+    headcountCard: '.ell-headcount-card',
+    headcountHeader: '.ell-headcount-header',
+    headcountColumnData: '.ell-headcount-column-data'
+  },
   frenchComponent: {
     tab: '#frenchTab',
     filterButton: '#filters',
     summaryButton: '#frenchSummaryButton',
     headcountCard: '.french-headcount-card',
     headcountHeader: '.french-headcount-header',
-    headcountColumnData: '.french-headcount-column-data'
+    headcountColumnData: '.french-headcount-column-data',
+    table: '.v-table',
+    tableWrapper: '.v-table__wrapper',
+    thead: 'thead',
+    tbody: 'tbody',
+    coreFrenchTotal: ':nth-child(1) > :nth-child(19) > span',
+    coreFrenchSchoolAged: ':nth-child(2) > :nth-child(19) > span',
+    earlyFrenchTotal: ':nth-child(4) > :nth-child(19) > span',
+    earlyFrenchSchoolAged: ':nth-child(5) > :nth-child(19) > span',
+    allFrenchTotal: ':nth-child(10) > :nth-child(19) > span',
+    allFrenchSchoolAged: ':nth-child(11) > :nth-child(19) > span',
+    allFrenchAdult: ':nth-child(12) > :nth-child(19) > .zero-cell'
   },
   fteComponent: {
     tab: '#enrollmentTab',
@@ -118,7 +140,7 @@ export default {
   filters: {
     clearFilter: '#clear-filter',
     applyFilter: '#apply-filter',
-    studentType: '#studentType',
+    studentType: '#studentType', 
     warnings: '#warnings',
     fte: '#fte',
     fundingtype: '#fundingtype',
@@ -127,6 +149,16 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
+    grade8: '#grade8',
+    grade9: '#grade9',
+    hasIndiAncestry: '#hasIndiAncestry',
+    hasBandCode: '#hasBandCode',
+    bandCodeSelector: '#bandCode',
+    bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask',
+    hasSupportBlocks: '#hasSupportBlocks',
+    noSupportBlocks: '#noSupportBlocks',
+    career41: '#career41',
+    codeXH: '#codeXH'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -208,6 +240,19 @@ export default {
   schoolList: {
     schoolRow: '.hoverTable'
   },
+  sdcDocumentUploadStep: {
+    fteTab: '[data-cy="fteTab"]',
+    careerTab: '[data-cy="careerTab"]',
+    careerTabButton: '[data-cy="Career Programs"]',
+    errorBanner: '[data-cy="headcount-error-banner"]',
+    indigenousTab: '[data-cy="indigenousTab"]',
+    indigenousTabButton: '[data-cy="Indigenous Students & Support Programs"]',
+    ellTab: '[data-cy="ellTab"]',
+    ellTabButton: '[data-cy="English Language Learning"]',
+    infoNote: 'p.text-medium-emphasis.font-italic',
+    spedTab: '[data-cy="spedTab"]',
+    spedTabButton: '[data-cy="Special Education"]',
+  },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {
       removeRecord: '#removeRecord',
@@ -215,7 +260,6 @@ export default {
       removeRecordConfirmButton: '#resolveBtn',
     }
   },
-
   secureExchangeDetail: {
     addAttachmentConvButton: '#addAttachmentConvButton',
     addStudentConvButton: '#addStudentConvButton',
@@ -261,16 +305,12 @@ export default {
     headcountColumnData: '.special-ed-headcount-column-data',
     filterButton: '#filters',
   },
-  activeFiltersDrawer: {
-    drawer: '.v-navigation-drawer--active',
-  },
-  ellComponent: {
-    tab: '#engLangTab',
-    filterButton: '#filters',
-    summaryButton: '#engLangSummaryButton',
-    headcountCard: '.ell-headcount-card',
-    headcountHeader: '.ell-headcount-header',
-    headcountColumnData: '.ell-headcount-column-data'
+  stepThreeTabSlider: {
+    careerProgramsButton: 'button[value="Career Programs"]',
+    englishLanguageLearningButton: 'button[value="English Language Learning"]',
+    frenchProgramsButton: 'button[value="French Programs"]',
+    indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
+    specialEducationButton: 'button[value="Special Education"]'
   },
   studentLevelData: {
     detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',

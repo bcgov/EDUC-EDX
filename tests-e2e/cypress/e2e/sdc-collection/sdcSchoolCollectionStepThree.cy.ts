@@ -97,13 +97,12 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
     });
 
-
     it('verifies french programs for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="French Programs"]').click();
+      cy.get(selectors.stepThreeTabSlider.frenchProgramsButton).click();
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
@@ -114,7 +113,7 @@ describe('SDC School Collection View', () => {
         });
       });
 
-      //check summary headcounts
+      // check summary headcount headers
       cy.get(selectors.frenchComponent.summaryButton).click();
       cy.get(selectors.frenchComponent.headcountCard).should('have.length', 3);
       cy.get(selectors.frenchComponent.headcountCard).eq(0).find(selectors.frenchComponent.headcountHeader).should('contain.text', 'Core French');
@@ -141,6 +140,23 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.headcountCard).eq(2).find(selectors.frenchComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
       cy.get(selectors.frenchComponent.headcountCard).eq(2).find(selectors.frenchComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Not Reported');
       cy.get(selectors.frenchComponent.headcountCard).eq(2).find(selectors.frenchComponent.headcountColumnData).eq(2).children('span').should('contain.text', '3');
+
+      // check summary headcounts
+      cy.get(selectors.frenchComponent.table).should('exist').contains(1);
+      cy.get(selectors.frenchComponent.table).eq(0).find(selectors.frenchComponent.tableWrapper);
+      cy.get(selectors.frenchComponent.tableWrapper).eq(0).find(selectors.frenchComponent.thead);
+      cy.get(selectors.frenchComponent.tableWrapper).eq(1).find(selectors.frenchComponent.tbody);
+      cy.get(selectors.frenchComponent.tableWrapper).contains('Core French');
+      cy.get(selectors.frenchComponent.tableWrapper).contains('Early French Immersion');
+      cy.get(selectors.frenchComponent.tableWrapper).contains('Late French Immersion');
+      cy.get(selectors.frenchComponent.tableWrapper).contains('All French Programs');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.coreFrenchTotal).should('contain.text', '1');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.coreFrenchSchoolAged).should('contain.text', '1');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.earlyFrenchTotal).should('contain.text', '1');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.earlyFrenchSchoolAged).should('contain.text', '1');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchTotal).should('contain.text', '2');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchSchoolAged).should('contain.text', '2');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchAdult).should('contain.text', '0');
     });
 
     it('verifies career programs for reported students', () => {
@@ -148,7 +164,7 @@ describe('SDC School Collection View', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="Career Programs"]').click();
+      cy.get(selectors.stepThreeTabSlider.careerProgramsButton).click();
 
       cy.get('.td-data').each(cell => {
         const cellText = cell.text();
@@ -173,7 +189,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="Indigenous Students & Support Programs"]').click();
+      cy.get(selectors.stepThreeTabSlider.indigenousStudentsButton).click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
@@ -226,7 +242,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.wait('@collection');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="English Language Learning"]').click();
+      cy.get(selectors.stepThreeTabSlider.englishLanguageLearningButton).click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
@@ -253,7 +269,7 @@ describe('SDC School Collection View', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get('button[value="Special Education"]').click();
+      cy.get(selectors.stepThreeTabSlider.specialEducationButton).click();
 
       cy.get(selectors.studentLevelData.detailsLoadingBar).should('exist');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);

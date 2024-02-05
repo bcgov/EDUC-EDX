@@ -13,16 +13,6 @@
       >
         <strong>{{ studentsInError }} students</strong> reported with errors - these students are <strong>not included in the summary counts</strong>. Eligible FTE count will be generated once all errors have been fixed in the next step.
       </v-alert>
-      <v-alert
-        v-else
-        color="#003366"
-        density="compact"
-        type="info"
-        variant="tonal"
-        data-cy="headcount-info-banner"
-      >
-        Eligible FTE counts are available in Step 3.
-      </v-alert>
     </v-col>
   </v-row>
   <v-row>
@@ -36,39 +26,47 @@
         :key="name"
         class="tab-divider"
         :value="name"
+        :data-cy="name"
       >
         {{ name }}
       </v-tab>
     </v-tabs>
 
-    <v-window v-model="selectedTab">
+    <v-window v-model="selectedTab" class="pt-3">
       <v-window-item value="FTE">
-        <HeadCountReportComponent
+        <EnrollmentHeadcountsComponent
+          v-if="selectedTab==='FTE'"
+          data-cy="fteTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="French Programs">
         <HeadCountReportComponent
+          data-cy="frenchTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Career Programs">
         <HeadCountReportComponent
+          data-cy="careerTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Indigenous Students & Support Programs">
         <HeadCountReportComponent
+          data-cy="indigenousTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Special Education">
         <HeadCountReportComponent
+          data-cy="spedTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="English Language Learning">
         <HeadCountReportComponent
+          data-cy="ellTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
@@ -86,12 +84,14 @@ import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComp
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
-import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR} from '../../../utils/sdc/TableConfiguration';
+import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
+import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 
 export default defineComponent({
   name: 'SummaryComponent',
   components: {
+    EnrollmentHeadcountsComponent,
     HeadCountReportComponent},
   data() {
     return {
@@ -115,6 +115,10 @@ export default defineComponent({
         return CAREER_PR;
       } else if(this.selectedTab==='Special Education') {
         return SPECIALED_PR;
+      } else if(this.selectedTab==='Indigenous Students & Support Programs') {
+        return INDSUPPORT_PR;
+      } else if(this.selectedTab==='English Language Learning') {
+        return ELL;
       }
       return FTE;
     }

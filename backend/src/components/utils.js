@@ -313,7 +313,7 @@ function checkEDXUserDistrictAdminPermission(req) {
 }
 
 function checkEDXCollectionPermission(req) {
-  let permission = req.session.activeInstitutePermissions.includes('STUDENT_DATA_COLLECTION');
+  let permission = req.session.activeInstitutePermissions.includes('SCHOOL_SDC');
   if (!permission) {
     throw new Error('403');
   }

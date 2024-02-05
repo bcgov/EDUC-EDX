@@ -12,8 +12,8 @@
               cols="4"
             >
               <v-text-field
-                v-model="penLocalIdNameFilter"
                 id="searchInput"
+                v-model="penLocalIdNameFilter"
                 label="PEN or Local ID or Name"
                 color="primary"
                 variant="underlined"
@@ -24,11 +24,11 @@
               class="d-flex justify-start filter-col"
               cols="6"
             >
-              <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length == 0">
+              <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length === 0">
                 No filters applied
               </p>
 
-              <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description != ''">
+              <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description !== ''">
                 <v-chip-group>
                   <v-chip
                     v-if="config.defaultFilter.description"
@@ -114,23 +114,24 @@
             large-icon
             icon="mdi-plus"
           />
-
-          <PrimaryButton
+          <v-btn
             id="remove"
-            secondary
+            color="#003366"
+            class="mr-1 mb-1"
             text="Remove"
-            class="mr-1 mb-1"
-            large-icon
-            icon="mdi-delete"
+            prepend-icon="mdi-delete"
+            variant="outlined"
+            :disabled="selectedStudents.length === 0"
+            @click="removeStudents"
           />
-
-          <PrimaryButton
-            id="edit"
-            secondary
-            text="Bulk Edit"
+          <v-btn
+            id="bulkEdit"
+            color="#003366"
             class="mr-1 mb-1"
-            large-icon
-            icon="mdi-pencil-outline"
+            text="Bulk Edit"
+            prepend-icon="mdi-pencil-outline"
+            variant="outlined"
+            :disabled="selectedStudents.length < 2"
           />
         </v-col>
       </v-row>
@@ -140,6 +141,7 @@
           <CustomTable
             :headers="config.tableHeaders"
             :data="studentList"
+            :selected="selectedStudents"
             :total-elements="totalElements"
             :is-loading="isLoading"
             @reload="reload"
@@ -150,7 +152,7 @@
     <v-navigation-drawer
       v-model="showFilters"
       location="right"
-      temporary
+      :temporary="true"
       width="700"
       :persistent="true"
       scrim="transparent"
@@ -167,6 +169,11 @@
       />
     </v-navigation-drawer>
   </v-row>
+  <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
+    <template #message>
+      <p>Are you sure that you would like to remove the selected student(s) from the 1701 submission?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 
 <script>
@@ -175,15 +182,18 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
 import Filters from '../../common/Filters.vue';
+import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
+import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
+    ConfirmationDialog,
     PrimaryButton,
     CustomTable,
     Filters
@@ -211,14 +221,15 @@ export default {
       studentList: [],
       isLoading: false,
       totalElements: 0,
+      selectedStudents: [],
       penLocalIdNameFilter: null,
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
         moreFilters: []
       },
-      showFilters:null,
-      updatedFilters:[]
+      showFilters: null,
+      updatedFilters: {}
     };
   },
   computed: {
@@ -233,16 +244,35 @@ export default {
   methods: {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
-      this.filterSearchParams.moreFilters = $event;
+      const clonedFilter = cloneDeep($event);
+      this.filterSearchParams.moreFilters = clonedFilter;
       this.loadStudents();
     },
     clearFilters() {
       this.filterSearchParams.moreFilters = [];
       this.loadStudents();
     },
+    async removeStudents(){
+      const confirmation = await this.$refs.confirmRemovalOfStudentRecord.open('Confirm Removal of Student Record(s)', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
+      this.loadingCount += 1;
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/students/remove`, this.selectedStudents.map(stud => stud.sdcSchoolCollectionStudentID))
+        .then(() => {
+          this.selectedStudents = [];
+          this.loadStudents();
+          setSuccessAlert('Success! The students have been removed.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to remove students. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
+    },
     removeFilter(toRemoveKey, toRemoveValue) {
       let filteredKey = this.filterSearchParams.moreFilters.find(value => value.key === toRemoveKey);
-      if(filteredKey?.value?.length == 1) {
+      if(filteredKey?.value?.length === 1) {
         const idx =this.filterSearchParams.moreFilters.findIndex(value => value.key === toRemoveKey);
         this.filterSearchParams.moreFilters.splice(idx, 1);
       } else {
@@ -252,8 +282,7 @@ export default {
           }
         });
       }
-      this.updatedFilters.splice();
-      this.updatedFilters = [...this.filterSearchParams.moreFilters];
+      this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
       this.loadStudents();
     },
     loadStudents() {
@@ -288,7 +317,7 @@ export default {
           const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
           return enrolledProgram ? `${programCode}-${enrolledProgram.description}` : programCode;
         })
-        .join('\n');
+        .join(',');
     },
     toTableRow(student) {
       student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description : null;
