@@ -95,6 +95,22 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('span').should('contain.text', '2');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').should('contain.text', '11');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
+
+      //check summary table
+      cy.get(selectors.fteComponent.table).should('exist').contains(1);
+      cy.get(selectors.fteComponent.table).eq(0).find(selectors.fteComponent.tableWrapper);
+      cy.get(selectors.fteComponent.tableWrapper).contains('School Aged');
+      cy.get(selectors.fteComponent.tableWrapper).contains('Adult');
+      cy.get(selectors.fteComponent.tableWrapper).contains('All Students');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '3');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '3');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '2.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '0');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '0');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '0');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '3');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '3');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '2.8750');
     });
 
     it('verifies french programs for reported students', () => {
