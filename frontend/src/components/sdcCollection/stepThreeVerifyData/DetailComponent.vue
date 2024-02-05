@@ -182,14 +182,13 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
 import Filters from '../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
-import {cloneDeep} from 'lodash';
 
 export default {
   name: 'DetailComponent',
