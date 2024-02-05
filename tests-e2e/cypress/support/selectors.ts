@@ -119,7 +119,18 @@ export default {
     summaryButton: '#fteSummaryButton',
     headcountCard: '.enrollment-headcount-card',
     headcountHeader: '.enrollment-headcount-header',
-    headcountColumnData: '.enrollment-headcount-column-data'
+    headcountColumnData: '.enrollment-headcount-column-data',
+    table: '.v-table',
+    tableWrapper: '.v-table__wrapper',
+    schoolAgedHeadcount: ':nth-child(2) > :nth-child(19) > span',
+    schoolAgedEligibleFTE : ':nth-child(3) > :nth-child(19) > span',
+    schoolAgedTotal: ':nth-child(4) > :nth-child(19) > span',
+    adultHeadcount: ':nth-child(6) > :nth-child(19) > .zero-cell',
+    adultEligibleFTE: ':nth-child(7) > :nth-child(19) > .zero-cell',
+    adultTotal: ':nth-child(8) > :nth-child(19) > .zero-cell',
+    allHeadcount: ':nth-child(10) > :nth-child(19) > span',
+    allEligibleFTE: ':nth-child(11) > :nth-child(19) > span',
+    allTotal: ':nth-child(12) > :nth-child(19) > span'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
