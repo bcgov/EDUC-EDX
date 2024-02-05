@@ -22,7 +22,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let ellList = [];
     let ellFunding = [];
     let fundingTypeList = [];
-    let courseRange = [];
+    let courseRangeList = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -95,8 +95,8 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
           bandCodeList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
         }   
       }
-      if (elem.key === 'numCourses' && pValue) {
-        courseRange = pValue
+      if (elem.key === 'numberOfCourses' && pValue) {
+          courseRangeList = createCourseRangeFilter(pValue);
       }
     });
     const search = [];
@@ -208,11 +208,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList: ellList
       });
     }
-    if(courseRange.length === 2) {
+    if(courseRangeList.length > 0) {
         search.push({
             condition: CONDITION.AND,
-            operation: FILTER_OPERATION.BETWEEN,
-            searchCriteriaList: courseRange
+            searchCriteriaList: courseRangeList
         })
     }
     return search;
@@ -423,10 +422,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       return supportBlockList;
   }
 
-  function createCourseFilter(pValue) {
-
-  }
-
   function createIndigenousProgramFilter(pValue) {
     let indigenousProgramList = [];
 
@@ -477,6 +472,17 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         }
 
       return fteFilterList;
+  }
+
+  function createCourseRangeFilter(pValue) {
+    let courseRangeList = []
+    if(pValue[0] !== 0){
+        courseRangeList.push({key:'sdcStudentEllEntity.numberOfCoursesDec', value: parseInt(pValue[0]), operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
+    }
+    if(pValue[1] !== 15){
+        courseRangeList.push({key:'sdcStudentEllEntity.numberOfCoursesDec', value: parseInt(pValue[1]), operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND})
+    }
+    return courseRangeList;
   }
 
   function createStudentTypeFilter(pValue) {

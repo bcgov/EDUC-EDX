@@ -79,7 +79,7 @@
                     strict
                     thumb-size=15
                     class="align-center"
-                    @update:model-value="setCourseRangeFilter('numCourses', $event, )"
+                    @end="setCourseRangeFilter('numberOfCoursesDec', $event, )"
                 >
                   <template v-slot:prepend>
                     <v-text-field
@@ -202,7 +202,10 @@ export default {
     },
     setCourseRangeFilter(key, $event){
       if($event) {
-        this.selectedFilters[key] = [{title: this.courseRange[0] + ' to ' + this.courseRange[1] + ' courses'}];
+        console.log("EVENT>>>>>", $event);
+        // this.selectedFilters[key] = [{title: this.courseRange[0] + ' to ' + this.courseRange[1] + ' courses', value: $event}];
+        this.selectedFilters[key] = [{title: key, value: $event}];
+
       } else {
         delete this.selectedFilters[key]
       }
