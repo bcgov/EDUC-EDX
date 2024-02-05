@@ -1133,9 +1133,9 @@ async function findPrimaryEdxActivationCode(req, res) {
     validateAccessToken(token);
     let instituteType = req.params.instituteType.toUpperCase();
 
-    if(instituteType === 'SCHOOL'){
+    if (instituteType === 'SCHOOL') {
       checkEDXUserAccessForSchoolAdminFunctions(req, req.params.instituteIdentifier);
-    }else{
+    } else {
       checkEDXUserDistrictAdminPermission(req);
       checkEDXUserAccess(req, instituteType, req.params.instituteIdentifier);
     }
@@ -1143,6 +1143,9 @@ async function findPrimaryEdxActivationCode(req, res) {
     const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
+    if (e.message === '404' || e.status === '404' || e.status === 404) {
+      return handleExceptionResponse(e, res);
+    }
     log.error(e, 'findPrimaryEdxActivationCode', 'Error getting findPrimaryEdxActivationCode.');
     return handleExceptionResponse(e, res);
   }
