@@ -16,11 +16,6 @@
           <a id="apply-filter" @click="apply()">Apply Filters</a>
         </v-col>
       </v-row>
-      <!-- {{ updatedFilters }} -->
-      <hr>
-      {{ avisha }}
-      <hr>
-      {{ selectedFilters }}
       <div
         v-for="(filter, index) in filters"
         :key="index"
@@ -32,12 +27,12 @@
         </v-row>
         <v-row>
           <v-btn-toggle
-            v-model="avisha[index]"
+            v-model="selected[index]"
             color="#003366"
             rounded="0" 
             :multiple="filter?.multiple"
             class="filter-toggle"
-            @update:model-value="setFilter(avisha[index], filter?.key)"
+            @update:model-value="setFilter(selected[index], filter?.key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
@@ -96,11 +91,16 @@ export default {
       required: true,
       default: null
     },
+    updatedFilters: {
+      type: Object,
+      required: true,
+      default: null 
+    }
   },
   emits: ['closeFilters', 'clearFilters'],
   data() {
     return {
-      avisha:[],
+      selected:[],
       selectedFilters: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
@@ -109,36 +109,30 @@ export default {
   computed: {
      
   },
-  // watch: {
-  //   updatedFilters: {
-  //     handler(toRemoveFilters) {
-  //       // if(toRemoveFilters!== null) {
-  //         console.log(toRemoveFilters);
-  //        // delete this.selectedFilters[toRemoveFilters.key];
-  //         console.log(this.selected)
-  //         // let filteredKey = this.selected.find(value => {
-  //         //   if(value) {
-  //         //     console.log(value)
-  //         //     if(Array.isArray(value)) {
-  //         //       return value.find(obj => obj.title === toRemoveFilters.value);
-  //         //     } else {
-  //         //       return value.title === toRemoveFilters.value; 
-  //         //     }
-              
-  //         //   }
-  //         // });
-  //         // console.log(filteredKey);
-  //       // } else {
-  //       //   this.clear();
-  //       // }
-  //     },
-  //     immediate: true
-  //   }
-  // },
-  created() {
-    // this.selected = this.filters.map(filterGroup =>
-    //   filterGroup.filterGroups?.map(()=>[])
-    // );
+  watch: {
+    updatedFilters: {
+      handler(toRemoveFilters) {
+        if(Object.keys(toRemoveFilters).length !== 0) {
+          delete this.selectedFilters[toRemoveFilters.removeKey];
+          let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
+          if(toRemoveFilters.removeKey === 'bandResidence') {
+            this.bandCodeValue = null;
+          } else if(filteredKey === undefined) {
+            const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
+            this.selected.splice(idx, 1);
+          } else {
+            this.selected.map(filter => {
+              if(filter.every(val => filteredKey.includes(val))) {
+                filter.splice(filter.findIndex(value => value.title === toRemoveFilters.removeValue), 1);
+              }
+            });
+          }
+        } else {
+          this.clear();
+        }      
+      },
+      immediate: true
+    }
   },
   methods: {
     setFilter(val, key) {
@@ -156,7 +150,7 @@ export default {
       }
     },
     clear() {
-      this.avisha = [];
+      this.selected = [];
       this.selectedFilters = {};
       this.bandCodeValue = null;
       this.$emit('clearFilters');

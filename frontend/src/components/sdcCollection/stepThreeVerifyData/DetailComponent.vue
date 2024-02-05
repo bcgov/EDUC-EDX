@@ -19,7 +19,7 @@
                 variant="underlined"
               />
             </v-col>
-{{ this.filterSearchParams.moreFilters }}
+
             <v-col
               class="d-flex justify-start filter-col"
               cols="6"
@@ -163,6 +163,7 @@
       <Filters
         :filters="config.allowedFilters"
         :school="school"
+        :updated-filters="updatedFilters"
         @close-filters="updateFilters"
         @clear-filters="clearFilters"
       />
@@ -188,6 +189,7 @@ import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
 import Filters from '../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {cloneDeep} from 'lodash';
 
 export default {
   name: 'DetailComponent',
@@ -227,8 +229,8 @@ export default {
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
         moreFilters: []
       },
-      showFilters:null,
-      updatedFilters:[]
+      showFilters: null,
+      updatedFilters: {}
     };
   },
   computed: {
@@ -243,7 +245,8 @@ export default {
   methods: {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
-      this.filterSearchParams.moreFilters = $event;
+      const clonedFilter = cloneDeep($event);
+      this.filterSearchParams.moreFilters = clonedFilter;
       this.loadStudents();
     },
     clearFilters() {
@@ -269,23 +272,18 @@ export default {
         });
     },
     removeFilter(toRemoveKey, toRemoveValue) {
-      let test = [];
-      test = this.filterSearchParams.moreFilters;
-      let filteredKey = test.find(value => value.key === toRemoveKey);
+      let filteredKey = this.filterSearchParams.moreFilters.find(value => value.key === toRemoveKey);
       if(filteredKey?.value?.length === 1) {
-        const idx =test.findIndex(value => value.key === toRemoveKey);
-        test.splice(idx, 1);
+        const idx =this.filterSearchParams.moreFilters.findIndex(value => value.key === toRemoveKey);
+        this.filterSearchParams.moreFilters.splice(idx, 1);
       } else {
-        test.map(filter => {
+        this.filterSearchParams.moreFilters.map(filter => {
           if(filter.key === toRemoveKey) {
             filter.value.splice(filter.value.findIndex(value => value.title === toRemoveValue), 1);
           }
         });
       }
-      //  this.updatedFilters = null;
-      // this.updatedFilters.splice();
-      // this.updatedFilters = [...this.filterSearchParams.moreFilters];
-      // this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
+      this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
       this.loadStudents();
     },
     loadStudents() {
