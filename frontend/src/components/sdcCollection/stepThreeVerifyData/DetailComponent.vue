@@ -182,7 +182,7 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
@@ -228,8 +228,8 @@ export default {
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
         moreFilters: []
       },
-      showFilters:null,
-      updatedFilters:[]
+      showFilters: null,
+      updatedFilters: {}
     };
   },
   computed: {
@@ -244,7 +244,8 @@ export default {
   methods: {
     updateFilters($event) {
       this.showFilters=!this.showFilters;
-      this.filterSearchParams.moreFilters = $event;
+      const clonedFilter = cloneDeep($event);
+      this.filterSearchParams.moreFilters = clonedFilter;
       this.loadStudents();
     },
     clearFilters() {
@@ -281,8 +282,7 @@ export default {
           }
         });
       }
-      this.updatedFilters.splice();
-      this.updatedFilters = [...this.filterSearchParams.moreFilters];
+      this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
       this.loadStudents();
     },
     loadStudents() {
@@ -317,7 +317,7 @@ export default {
           const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
           return enrolledProgram ? `${programCode}-${enrolledProgram.description}` : programCode;
         })
-        .join('\n');
+        .join(',');
     },
     toTableRow(student) {
       student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description : null;

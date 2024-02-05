@@ -80,7 +80,11 @@
               <div v-else-if="column.key === 'fte'">
                 <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
               </div>
-
+              <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram'">
+               <span v-for="(progs, idx) in props.item.raw[column.key].split(',')" :key="idx">
+                <div>{{ progs }}</div>
+               </span>
+              </div>
               <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
               <span v-else>-</span>
 

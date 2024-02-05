@@ -17,25 +17,22 @@
         </v-col>
       </v-row>
       <div
-        v-for="(filterGroups, index) in filters"
+        v-for="(filter, index) in filters"
         :key="index"
       >
         <v-row>
-          <v-col :id="filterGroups.id" class="filter-heading">
-            {{ filterGroups?.heading }}
+          <v-col :id="filter.id" class="filter-heading">
+            {{ filter?.heading }}
           </v-col>
         </v-row>
-        <v-row
-          v-for="(filter, idx) in filterGroups?.filterGroups"
-          :key="filter.key"
-        >
+        <v-row>
           <v-btn-toggle
-            v-model="selected[index][idx]"
+            v-model="selected[index]"
             color="#003366"
             rounded="0" 
             :multiple="filter?.multiple"
             class="filter-toggle"
-            @update:model-value="setFilter(selected[index][idx], filter?.key)"
+            @update:model-value="setFilter(selected[index], filter?.key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
@@ -64,7 +61,7 @@
               item-title="dropdownText"
               class="mt-n7 mb-n8"
               clearable
-              @update:model-value="setBandCodeFilter('bandResidence', $event, )"
+              @update:model-value="setBandCodeFilter('bandResidence', $event)"
             />
           </v-col>
         </v-row>
@@ -95,7 +92,7 @@ export default {
       default: null
     },
     updatedFilters: {
-      type: Array,
+      type: Object,
       required: true,
       default: null 
     }
@@ -114,35 +111,28 @@ export default {
   },
   watch: {
     updatedFilters: {
-      handler(currentFilters) {
-        if(currentFilters.length > 0) {
-          this.selected.forEach(innerArrays => {
-            innerArrays.forEach((innerArray, index) => {
-              if (innerArray.length > 0) {
-                innerArrays[index] = innerArray.filter(item => {
-                  return currentFilters.some(obj1 => {
-                    const valuesToKeep = obj1.value.map(val => val.value);
-                    return valuesToKeep.includes(item.value);
-                  });
-                });
+      handler(toRemoveFilters) {
+        if(Object.keys(toRemoveFilters).length !== 0) {
+          delete this.selectedFilters[toRemoveFilters.removeKey];
+          let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
+          if(toRemoveFilters.removeKey === 'bandResidence') {
+            this.bandCodeValue = null;
+          } else if(filteredKey === undefined) {
+            const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
+            this.selected.splice(idx, 1);
+          } else {
+            this.selected.map(filter => {
+              if(filter.every(val => filteredKey.includes(val))) {
+                filter.splice(filter.findIndex(value => value.title === toRemoveFilters.removeValue), 1);
               }
             });
-          });
-          Object.keys(this.selectedFilters).forEach(key => {
-            const valuesToKeep = currentFilters.find(item => item.key === key)?.value.map(val => val.value) || [];
-            this.selectedFilters[key] = this.selectedFilters[key].filter(item => valuesToKeep.includes(item.value));
-          });
+          }
         } else {
           this.clear();
-        }
+        }      
       },
       immediate: true
     }
-  },
-  created() {
-    this.selected = this.filters.map(filterGroup =>
-      filterGroup.filterGroups?.map(()=>[])
-    );
   },
   methods: {
     setFilter(val, key) {
@@ -160,9 +150,7 @@ export default {
       }
     },
     clear() {
-      this.selected = this.filters.map(filterGroup =>
-        filterGroup.filterGroups?.map(()=>[])
-      );
+      this.selected = [];
       this.selectedFilters = {};
       this.bandCodeValue = null;
       this.$emit('clearFilters');
