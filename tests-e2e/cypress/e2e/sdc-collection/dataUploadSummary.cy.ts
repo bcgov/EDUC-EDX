@@ -27,6 +27,14 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.get(selectors.sdcDocumentUploadStep.infoNote).should('exist').should('contain.text', 'Note: Eligible FTE counts are available in Step 3');
       cy.get(selectors.sdcDocumentUploadStep.errorBanner).should('not.exist');
     });
+    it('there are the correct headcounts for the FTE tab', () => {
+      const id = Cypress.env('schoolCollectionIdCareer');
+      cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');
+      navigateToUploadScreen(id);
+      cy.wait('@headcounts');
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row`).should('have.length', 1);
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row td`).last().should('have.text', '9');
+    });
     it('there are the correct headcounts for the career tab', () => {
       const id = Cypress.env('schoolCollectionIdCareer');
       navigateToUploadScreen(id);
@@ -115,6 +123,39 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       });
     });
   });
+  context('Uploaded a file that has no errors or warnings and ell students', () => {
+    before(() => {
+      cy.logout();
+      cy.task<AppSetupData>('dataLoad').then(res => {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+          school: res.school,
+          loadWithStudentAndValidations: true,
+          seedData: 'dataUploadSummaryEll'
+        }).then(response => {
+          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollectionID);
+        });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
+      });
+    });
+    beforeEach(() => {
+      cy.login();
+    });
+    it('there are the correct headcounts for the ell tab', () => {
+      const id = Cypress.env('schoolCollectionIdEll');
+      navigateToUploadScreen(id);
+      cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');
+      cy.get(selectors.sdcDocumentUploadStep.ellTabButton).click();
+      cy.wait('@headcounts');
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).each(($cell, index) => {
+        if(index !== 2) {
+          cy.wrap($cell).find('td').last().should('contain', '2');
+        } else {
+          cy.wrap($cell).find('td').last().should('contain', '4');
+        }
+      });
+    });
+  });
   context('Uploaded a file that has errors', () => {
     before(() => {
       cy.logout();
@@ -135,7 +176,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     it('there is an error banner for students in error', () => {
       const id = Cypress.env('schoolCollectionIdErrors');
       navigateToUploadScreen(id);
-      cy.get(selectors.sdcDocumentUploadStep.infoBanner).should('not.exist');
+      cy.get(selectors.sdcDocumentUploadStep.infoNote).should('exist');
       cy.get(selectors.sdcDocumentUploadStep.errorBanner).should('exist');
     });
   });
