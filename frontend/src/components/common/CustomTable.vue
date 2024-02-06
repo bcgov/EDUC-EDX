@@ -140,14 +140,15 @@ export default {
     },
     selected: {
       type: Array,
-      required: true
+      required: true,
+      default: null
     },
   },
   emits: ['reload'],
   data() {
     return {
       pageNumber: 1,
-      pageSize: 50,
+      pageSize: 15,
       masterCheckbox: false,
       loading: true
     };
@@ -155,11 +156,6 @@ export default {
   computed: {
   },
   watch: {
-    pageSize(val) {
-      if(val) {
-        this.$emit('reload', {pageSize: val});
-      }
-    },
     pageNumber(val) {
       if(val) {
         this.$emit('reload', {pageNumber: val});
@@ -245,4 +241,8 @@ export default {
     border-bottom-color: rgb(255 255 255 / 45%);
     vertical-align: top !important;
  }
+
+ :deep(.v-data-table-footer__items-per-page) {
+       display: none;
+   }
 </style>
