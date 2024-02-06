@@ -373,6 +373,32 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
     });
+
+    it('can remove students from list of reported students', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+      cy.get(selectors.studentLevelData.tableResultsSelect).click();
+      cy.get(selectors.studentLevelData.remove).click();
+      cy.get(selectors.studentLevelData.removeConfirm).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
+      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 2');
+      cy.get(selectors.studentLevelData.tableResultsSelect).click({ multiple: true });
+      cy.get(selectors.studentLevelData.remove).click();
+      cy.get(selectors.studentLevelData.removeConfirm).click();
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
+    });
   });
 });
 

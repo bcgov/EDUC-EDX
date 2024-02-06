@@ -367,7 +367,10 @@ export default {
     stepTwoTableAllRows: 'div > div.v-table__wrapper > table > tbody > tr',
     stepTwoClearSearchFilter: '#clearSearch',
     duplicatePenFilter: '#duplicatePenFilter',
-    editStudentClearfilter: '#clearFilters'
+    editStudentClearfilter: '#clearFilters',
+    tableResultsSelect: '.v-data-table__tbody > tr > :nth-child(1)',
+    remove: '#remove',
+    removeConfirm: '#resolveBtn'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
