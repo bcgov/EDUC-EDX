@@ -201,7 +201,6 @@ export default {
       }
     },
     setCourseRangeFilter(key, $event){
-      console.log("VALUE CHANGED", $event)
       if($event) {
         let courseFilterTitle;
         if($event[0] === this.courseRangeDefault[0]){
