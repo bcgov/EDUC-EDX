@@ -217,7 +217,7 @@ export default {
     return {
       chip: true,
       pageNumber: 1,
-      pageSize: 50,
+      pageSize: 15,
       studentList: [],
       isLoading: false,
       totalElements: 0,
@@ -292,6 +292,9 @@ export default {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty),
+          sort: {
+            sdcSchoolCollectionStudentID: 'ASC'
+          },
         }
       }).then(response => {
         this.studentList = response.data.content.map(this.toTableRow);

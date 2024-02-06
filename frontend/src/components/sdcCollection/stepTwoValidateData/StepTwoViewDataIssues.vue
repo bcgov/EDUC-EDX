@@ -438,7 +438,6 @@ export default {
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
-      this.numIssueStudentsInCollection = this.totalStudents;
     });
   },
   methods: {
@@ -522,6 +521,7 @@ export default {
       }).then(response => {
         this.studentListData = response.data.content;
         this.totalStudents = response.data.totalElements;
+        this.numIssueStudentsInCollection = response.data.totalElements;
       }).catch(error => {
         console.error(error);
         setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
