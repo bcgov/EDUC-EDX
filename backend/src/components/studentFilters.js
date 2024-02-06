@@ -22,6 +22,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let ellList = [];
     let ellFunding = [];
     let fundingTypeList = [];
+    let courseRangeList = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -93,6 +94,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         } else if (pValue.toString() === 'false') {
           bandCodeList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
         }   
+      }
+      if (elem.key === 'numberOfCoursesDec' && pValue) {
+          courseRangeList = createCourseRangeFilter(pValue);
       }
     });
     const search = [];
@@ -203,6 +207,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         condition: CONDITION.AND,
         searchCriteriaList: ellList
       });
+    }
+    if(courseRangeList.length > 0) {
+        search.push({
+            condition: CONDITION.AND,
+            searchCriteriaList: courseRangeList
+        })
     }
     return search;
   }
@@ -462,6 +472,17 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         }
 
       return fteFilterList;
+  }
+
+  function createCourseRangeFilter(pValue) {
+    let courseRangeList = []
+    if(pValue[0] !== 0){
+        courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0]['[0]'], operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
+    }
+    if(pValue[1] !== 15){
+        courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0]['[1]'], operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND})
+    }
+    return courseRangeList;
   }
 
   function createStudentTypeFilter(pValue) {

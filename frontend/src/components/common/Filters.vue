@@ -64,6 +64,53 @@
               @update:model-value="setBandCodeFilter('bandResidence', $event)"
             />
           </v-col>
+          <v-col v-if="filter?.key === 'courses'">
+                <v-range-slider
+                    v-model="courseRange"
+                    :min="courseRangeDefault[0]"
+                    :max="courseRangeDefault[1]"
+                    :step="1"
+                    color = "#003366"
+                    id="courses-slider"
+                    hide-details
+                    strict
+                    thumb-size=15
+                    class="align-center"
+                    @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
+                >
+                  <template v-slot:prepend>
+                    <v-text-field
+                        v-model="courseRange[0]"
+                        hide-details
+                        single-line
+                        type="number"
+                        :step="1"
+                        :min="courseRangeDefault[0]"
+                        :max="courseRange[1]"
+                        variant="outlined"
+                        density="compact"
+                        class="slider-text"
+                        onkeydown="return false"
+                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
+                    ></v-text-field>
+                  </template>
+                  <template v-slot:append>
+                    <v-text-field
+                        v-model="courseRange[1]"
+                        hide-details
+                        single-line
+                        type="number"
+                        :min="courseRange[0]"
+                        :max="courseRangeDefault[1]"
+                        variant="outlined"
+                        density="compact"
+                        class="slider-text"
+                        onkeydown="return false"
+                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
+                    ></v-text-field>
+                  </template>
+                </v-range-slider>
+          </v-col>
         </v-row>
       </div>
     </v-card-text>
@@ -104,6 +151,8 @@ export default {
       selectedFilters: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
+      courseRangeDefault: [0, 15],
+      courseRange: [0, 15]
     };
   },
   computed: {
@@ -120,6 +169,8 @@ export default {
           } else if(filteredKey === undefined) {
             const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
             this.selected.splice(idx, 1);
+          } else if(filteredKey === 'numberOfCoursesDec') {
+            this.courseRange = [...this.courseRangeDefault];
           } else {
             this.selected.map(filter => {
               if(filter.every(val => filteredKey.includes(val))) {
@@ -149,10 +200,26 @@ export default {
         delete this.selectedFilters[key];
       }
     },
+    setCourseRangeFilter(key, $event){
+      if($event) {
+        let courseFilterTitle;
+        if($event[0] === this.courseRangeDefault[0]){
+          courseFilterTitle = + $event[1] + ' courses or less';
+        } else if ($event[1] === this.courseRangeDefault[1]) {
+          courseFilterTitle = $event[0] + ' courses or more';
+        } else {
+          courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
+        }
+        this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
+      } else {
+        delete this.selectedFilters[key]
+      }
+    },
     clear() {
       this.selected = [];
       this.selectedFilters = {};
       this.bandCodeValue = null;
+      this.courseRange = [...this.courseRangeDefault];
       this.$emit('clearFilters');
     },
     apply() {
@@ -199,6 +266,16 @@ export default {
     flex-wrap: wrap !important;
     overflow: visible !important;
     height: auto !important;
+  }
+
+  #courses-slider {
+    margin: 0px 8px 8px 8px;
+  }
+
+  .slider-text {
+    width: 5em;
+    font-size: 0.875rem;
+    border-color: #003366;
   }
   </style>
     
