@@ -67,8 +67,8 @@
           <v-col v-if="filter?.key === 'courses'">
                 <v-range-slider
                     v-model="courseRange"
-                    :max="15"
-                    :min="0"
+                    :min="courseRangeDefault[0]"
+                    :max="courseRangeDefault[1]"
                     :step="1"
                     color = "#003366"
                     id="courses-slider"
@@ -76,7 +76,7 @@
                     strict
                     thumb-size=15
                     class="align-center"
-                    @end="setCourseRangeFilter('numberOfCoursesDec', $event, )"
+                    @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
                 >
                   <template v-slot:prepend>
                     <v-text-field
@@ -84,10 +84,14 @@
                         hide-details
                         single-line
                         type="number"
-                        hide-spin-buttons
+                        :step="1"
+                        :min="courseRangeDefault[0]"
+                        :max="courseRange[1]"
                         variant="outlined"
                         density="compact"
                         class="slider-text"
+                        onkeydown="return false"
+                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                     ></v-text-field>
                   </template>
                   <template v-slot:append>
@@ -96,10 +100,13 @@
                         hide-details
                         single-line
                         type="number"
-                        hide-spin-buttons
+                        :min="courseRange[0]"
+                        :max="courseRangeDefault[1]"
                         variant="outlined"
                         density="compact"
                         class="slider-text"
+                        onkeydown="return false"
+                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                     ></v-text-field>
                   </template>
                 </v-range-slider>
@@ -144,6 +151,7 @@ export default {
       selectedFilters: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
+      courseRangeDefault: [0, 15],
       courseRange: [0, 15]
     };
   },
@@ -161,6 +169,8 @@ export default {
           } else if(filteredKey === undefined) {
             const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
             this.selected.splice(idx, 1);
+          } else if(filteredKey === 'numberOfCoursesDec') {
+            this.courseRange = [...this.courseRangeDefault];
           } else {
             this.selected.map(filter => {
               if(filter.every(val => filteredKey.includes(val))) {
@@ -191,11 +201,17 @@ export default {
       }
     },
     setCourseRangeFilter(key, $event){
+      console.log("VALUE CHANGED", $event)
       if($event) {
-        console.log("EVENT>>>>>", $event);
-        // this.selectedFilters[key] = [{title: this.courseRange[0] + ' to ' + this.courseRange[1] + ' courses', value: $event}];
-        this.selectedFilters[key] = [{title: key, value: $event}];
-
+        let courseFilterTitle;
+        if($event[0] === this.courseRangeDefault[0]){
+          courseFilterTitle = + $event[1] + ' courses or less';
+        } else if ($event[1] === this.courseRangeDefault[1]) {
+          courseFilterTitle = $event[0] + ' courses or more';
+        } else {
+          courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
+        }
+        this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
       } else {
         delete this.selectedFilters[key]
       }
@@ -204,6 +220,7 @@ export default {
       this.selected = [];
       this.selectedFilters = {};
       this.bandCodeValue = null;
+      this.courseRange = [...this.courseRangeDefault];
       this.$emit('clearFilters');
     },
     apply() {
