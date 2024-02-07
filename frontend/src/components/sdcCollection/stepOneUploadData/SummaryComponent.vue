@@ -32,47 +32,57 @@
       </v-tab>
     </v-tabs>
 
-    <v-window v-model="selectedTab" class="pt-3">
-      <v-window-item value="FTE">
+    <v-window
+      v-model="selectedTab"
+      class="pt-3"
+    >
+      <v-window-item value="Overall">
         <EnrollmentHeadcountsComponent
-          v-if="selectedTab==='FTE'"
+          v-if="selectedTab==='Overall' && headcountTableDataArray?.length===1"
           data-cy="fteTab"
-          :headcount-table-data="headcountTableData"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
       <v-window-item value="French Programs">
         <HeadCountReportComponent
+          v-if="selectedTab==='French Programs'"
           data-cy="frenchTab"
-          :headcount-table-data="headcountTableData"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
       <v-window-item value="Career Programs">
         <HeadCountReportComponent
+          v-if="selectedTab==='Career Programs'"
           data-cy="careerTab"
-          :headcount-table-data="headcountTableData"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
       <v-window-item value="Indigenous Students & Support Programs">
         <HeadCountReportComponent
+          v-for="headcountTableData in headcountTableDataArray"
+          :key="headcountTableData.title"
           data-cy="indigenousTab"
           :headcount-table-data="headcountTableData"
         />
       </v-window-item>
       <v-window-item value="Special Education">
         <HeadCountReportComponent
+          v-if="selectedTab==='Special Education'"
           data-cy="spedTab"
-          :headcount-table-data="headcountTableData"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
       <v-window-item value="English Language Learning">
         <HeadCountReportComponent
+          v-if="selectedTab==='English Language Learning'"
           data-cy="ellTab"
-          :headcount-table-data="headcountTableData"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
       <v-window-item value="Refugee">
         <HeadCountReportComponent
-          :headcount-table-data="headcountTableData"
+          v-if="selectedTab==='Refugee'"
+          :headcount-table-data="headcountTableDataArray[0]"
         />
       </v-window-item>
     </v-window>
@@ -83,7 +93,6 @@ import {defineComponent} from 'vue';
 import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComponent.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
 import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
@@ -97,30 +106,38 @@ export default defineComponent({
     return {
       isLoading: false,
       headcountHeaders: [],
-      headcountTableData: {},
+      headcountTableDataArray: [],
       compareSwitch: false,
-      tabs: SDC_VERIFY_TABS,
+      tabs: [
+        'Overall',
+        'French Programs',
+        'Career Programs',
+        'Indigenous Students & Support Programs',
+        'Special Education',
+        'English Language Learning',
+        'Refugee'
+      ],
       selectedTab: null,
       studentsInError: null,
       headerSearchParams: {}
     };
   },
   computed: {
-    config() {
-      if(this.selectedTab==='FTE') {
-        return FTE;
+    headcountType() {
+      if(this.selectedTab==='Overall') {
+        return FTE.headcountEndpoint;
       } else if(this.selectedTab==='French Programs') {
-        return FRENCH_PR;
+        return FRENCH_PR.headcountEndpoint;
       } else if(this.selectedTab==='Career Programs') {
-        return CAREER_PR;
+        return CAREER_PR.headcountEndpoint;
       } else if(this.selectedTab==='Special Education') {
-        return SPECIALED_PR;
+        return SPECIALED_PR.headcountEndpoint;
       } else if(this.selectedTab==='Indigenous Students & Support Programs') {
-        return INDSUPPORT_PR;
+        return INDSUPPORT_PR.uploadedHeadcountEndpoint;
       } else if(this.selectedTab==='English Language Learning') {
-        return ELL;
+        return ELL.headcountEndpoint;
       }
-      return FTE;
+      return null;
     }
   },
   watch: {
@@ -135,15 +152,15 @@ export default defineComponent({
     getStudentHeadCounts() {
       this.isLoading= true;
       this.headcountHeaders = null;
-      this.headcountTableData = {};
+      this.headcountTableDataArray = [];
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
         params: {
-          type: this.config?.headcountEndpoint,
+          type: this.headcountType,
           compare: this.compareSwitch
         }
       }).then(response => {
         this.headcountHeaders = response.data.headcountHeaders;
-        this.headcountTableData = response.data.headcountResultsTable;
+        this.headcountTableDataArray = response.data.headcountResultsTable;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');

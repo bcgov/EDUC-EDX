@@ -734,32 +734,33 @@ export const CAREER_PR = Object.freeze(
 );
 
 export const INDSUPPORT_PR = Object.freeze(
-    {
-        defaultFilter: { label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program' },
-        tableHeaders: [
-            { title: 'select', key: 'select' },
-            { key: 'sdcSchoolCollectionStudentStatusCode' },
-            { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'indProgramEligible' } },
-            { title: 'PEN', key: 'studentPen', subHeader: { title: 'Local ID', key: 'localID' } },
-            { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
-            { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
-            { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
-            { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-            { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
-        ],
-        headcountEndpoint: 'indigenous',
-        allowedFilters: [
-            STUDENT_TYPE_FILTER,
-            FTE_FILTER,
-            GRADE_FILTER,
-            FUNDING_TYPE_FILTER,
-            INDIGENOUS_PROGRAM_FILTER,
-            BAND_FILTER,
-            ANCESTRY_FILTER,
-            INDIGENOUS_FUNDING_FILTER,
-            WARNING_FILTER
-        ]
-    }
+  {
+    defaultFilter: { label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program' },
+    tableHeaders: [
+      { title: 'select', key: 'select' },
+      { key: 'sdcSchoolCollectionStudentStatusCode' },
+      { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'indProgramEligible' } },
+      { title: 'PEN', key: 'studentPen', subHeader: { title: 'Local ID', key: 'localID' } },
+      { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+      { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
+    ],
+    headcountEndpoint: 'indigenous-summary',
+    uploadedHeadcountEndpoint: 'indigenous-uploaded',
+    allowedFilters: [
+      STUDENT_TYPE_FILTER,
+      FTE_FILTER,
+      GRADE_FILTER,
+      FUNDING_TYPE_FILTER,
+      INDIGENOUS_PROGRAM_FILTER,
+      BAND_FILTER,
+      ANCESTRY_FILTER,
+      INDIGENOUS_FUNDING_FILTER,
+      WARNING_FILTER
+    ]
+  }
 );
 
 export const SPECIALED_PR = Object.freeze(

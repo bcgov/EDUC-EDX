@@ -117,21 +117,28 @@
       <v-spacer />
     </v-row>
   </div>
-  <v-row align-content="space-between">
-    <v-col class="font-weight-bold">
-      {{ getTitle() }}
-    </v-col>
-    <v-col class="text-right">
-      <a>
-        <v-icon>mdi-tray-arrow-down</v-icon>
-        Download Report
-      </a>
-    </v-col>
-  </v-row>
-  <HeadCountReportComponent
-    v-if="headcountTableData"
-    :headcount-table-data="headcountTableData"
-  />
+  <div
+    v-for="(headcountTableData, index) in headcountTableDataArray"
+    :key="headcountTableData.title"
+  >
+    <v-row
+      :class="{'pt-8': index!==0}"
+      align-content="space-between"
+    >
+      <v-col class="font-weight-bold">
+        {{ headcountTableData.title }}
+      </v-col>
+      <v-col class="text-right">
+        <a>
+          <v-icon>mdi-tray-arrow-down</v-icon>
+          Download Report
+        </a>
+      </v-col>
+    </v-row>
+    <HeadCountReportComponent
+      :headcount-table-data="headcountTableData"
+    />
+  </div>
 </template>
 
 <script>
@@ -157,7 +164,7 @@ export default {
     return {
       isLoading: false,
       headcountHeaders: [],
-      headcountTableData: null,
+      headcountTableDataArray: [],
       compareSwitch: false
     };
   },
@@ -176,7 +183,7 @@ export default {
         }
       }).then(response => {
         this.headcountHeaders = response.data.headcountHeaders;
-        this.headcountTableData = response.data.headcountResultsTable;
+        this.headcountTableDataArray = response.data.headcountResultsTable;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
@@ -200,18 +207,6 @@ export default {
         return 'green';
       } else {
         return '#1976d2';
-      }
-    },
-    getTitle() {
-      switch (this.headcountType) {
-      case 'career':
-        return 'Eligible Career Program Headcount';
-      case 'french':
-        return 'Eligible French Program Headcount';
-      case 'enrollment':
-        return 'Grade Enrolment & Eligible FTE';
-      case 'ell':
-        return 'English Language Learning Headcount'
       }
     },
     compare() {
