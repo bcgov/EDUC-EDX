@@ -171,18 +171,17 @@
     </v-navigation-drawer>
   </v-row>
   <v-bottom-sheet
-      v-model="editStudentSheet"
-      :inset="true"
-      :no-click-animation="true"
-      :scrollable="true"
-      :persistent="true"
-    >
-      <ViewStudentDetailsComponent
-        :selected-student-ids="studentForEdit"
-        @close="editStudentSheet = !editStudentSheet; loadStudents()"
-      >
-      </ViewStudentDetailsComponent>
-    </v-bottom-sheet>
+    v-model="editStudentSheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <ViewStudentDetailsComponent
+      :selected-student-ids="studentForEdit"
+      @close="editStudentSheet = !editStudentSheet; loadStudents()"
+    />
+  </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
     <template #message>
       <p>Are you sure that you would like to remove the selected student(s) from the 1701 submission?</p>
