@@ -54,7 +54,6 @@
                         item-value="genderCode"
                         item-title="dropdownText"
                         label="Gender"
-                        dense
                         variant="underlined"
                         :rules="[rules.required()]"
                         class="mt-n3"
@@ -135,7 +134,6 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.enrolledGradeCode"
                         label="Grade"
                         variant="underlined"
-                        dense
                         :items="sdcCollection.enrolledGradeCodes"
                         item-value="enrolledGradeCode"
                         item-title="dropdownText"
@@ -148,7 +146,6 @@
                         id="schoolFundingCode"
                         v-model="sdcSchoolCollectionStudentDetailCopy.schoolFundingCode"
                         label="Funding Code"
-                        dense
                         variant="underlined"
                         :items="sdcCollection.schoolFundingCodes"
                         item-value="schoolFundingCode"
@@ -195,7 +192,6 @@
                         id="specialEducationCategoryCode"
                         v-model="sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode"
                         label="Special Ed. Category"
-                        dense
                         variant="underlined"
                         :items="sdcCollection.specialEducationCodes"
                         item-value="specialEducationCategoryCode"
@@ -210,7 +206,6 @@
                         id="nativeAncestryInd"
                         v-model="sdcSchoolCollectionStudentDetailCopy.nativeAncestryInd"
                         label="Indigenous Ancestry"
-                        dense
                         variant="underlined"
                         :items="sdcCollection.ancestryItems"
                         item-value="code"
@@ -224,7 +219,6 @@
                         id="bandCode"
                         v-model="sdcSchoolCollectionStudentDetailCopy.bandCode"
                         label="Band of Residence"
-                        dense
                         variant="underlined"
                         :items="sdcCollection.bandCodes"
                         item-value="bandCode"
@@ -239,7 +233,6 @@
                         id="homeLanguageSpokenCode"
                         v-model="sdcSchoolCollectionStudentDetailCopy.homeLanguageSpokenCode"
                         label="Home Language"
-                        dense
                         variant="underlined"
                         :items="sdcCollection.homeLanguageSpokenCodes"
                         item-value="homeLanguageSpokenCode"
@@ -268,7 +261,6 @@
                         :items="sdcCollection.careerProgramCodes"
                         item-value="careerProgramCode"
                         item-title="dropdownText"
-                        dense
                         class="mt-n3"
                       />
                     </v-col>
@@ -282,7 +274,6 @@
                         item-value="enrolledProgramCode"
                         item-title="dropdownText"
                         multiple
-                        dense
                         class="mt-n3"
                         :rules="enrolledProgramRules"
                         @update:model-value="syncWithEnrolledProgramCodeOnUserInput"

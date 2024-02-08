@@ -33,7 +33,8 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     validationIssueTypeCodesMap: new Map(),
     ancestryItems: [{code:'Y', dropdownText:'Yes'}, {code:'N', dropdownText:'No'}],
     hideStepper: false,
-    programEligibilityCodesMap: new Map()
+    programEligibilityCodesMap: new Map(),
+    zeroFteReasonCodesMap: new Map()
   }),
   getters: {
     getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
@@ -143,6 +144,11 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         this.programEligibilityCodesMap.set(issue.programEligibilityIssueTypeCode, issue);
       });
     },
+    setZeroFteReasonCodesMap(zeroFteReasonCodesMap) {
+      zeroFteReasonCodesMap.forEach(issue => {
+        this.zeroFteReasonCodesMap.set(issue.fteZeroReasonCode, issue);
+      });
+    },
     async getSchoolCollection(schoolCollectionId) {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
       this.setSchoolCollection(response.data);
@@ -161,7 +167,8 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
           ... this.schoolFundingCodesMap.size === 0 ? [ApiService.getAllActiveSchoolFundingCodes().then((res) => this.setSchoolFundingCodes(res.data))] : [],
           ... this.specialEducationCodesMap.size === 0 ? [ApiService.getAllActiveSpecialEdCodes().then((res) => this.setSpecialEducationCodes(res.data))] : [],
           ... this.validationIssueTypeCodesMap.size === 0 ? [ApiService.getAllValidationIssueTypeCodes().then((res) => this.setValidationIssueTypeCodes(res.data))] : [],
-          ... this.programEligibilityCodesMap.size === 0 ? [ApiService.getAllProgramEligibilityTypeCodes().then((res) => this.setProgramEligibilityCodesMap(res.data))]: []
+          ... this.programEligibilityCodesMap.size === 0 ? [ApiService.getAllProgramEligibilityTypeCodes().then((res) => this.setProgramEligibilityCodesMap(res.data))]: [],
+          ... this.zeroFteReasonCodesMap.size === 0 ? [ApiService.getAllZeroFteReasonCodes().then((res) => this.setZeroFteReasonCodesMap(res.data))] : []
         ];
         return Promise.all(promises);
       }

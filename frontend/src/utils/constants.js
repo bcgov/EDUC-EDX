@@ -56,7 +56,8 @@ export const ApiRoutes = Object.freeze({
     SDC_SCHOOL_FUNDING_CODES: sdcRoot + '/school-funding-codes',
     SDC_SPECIAL_ED_CODES: sdcRoot + '/specialEducation-codes',
     SDC_VALIDATION_ISSUE_TYPE_CODES: sdcRoot + '/validation-issue-type-codes',
-    SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: sdcRoot + '/program-eligibility-issue-codes'
+    SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: sdcRoot + '/program-eligibility-issue-codes',
+    SDC_ZERO_FTE_REASON_CODES: sdcRoot + '/zero-fte-reason-codes',
   },
   district: {
     BASE_URL: districtRoot,

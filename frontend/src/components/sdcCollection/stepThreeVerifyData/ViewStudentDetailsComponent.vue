@@ -65,7 +65,7 @@
       <v-divider class="mt-2 mb-2" />
       <v-row v-if="studentForEdit?.fte === 0">
         <v-col>
-          <span><b>Reason for FTE of 0:</b></span>
+          <span><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
         </v-col>
       </v-row>
       <v-row v-if="showFundingEligibilitySection()">
@@ -168,6 +168,9 @@ export default {
     },
     getProgramEligibiltyTypeCodesDescription(key){
       return sdcCollectionStore().programEligibilityCodesMap.get(key)?.message;
+    },
+    getZeroFteReasonCodes(key){
+      return sdcCollectionStore().zeroFteReasonCodesMap.get(key)?.message;
     },
   }
 };
