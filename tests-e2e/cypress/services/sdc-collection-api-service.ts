@@ -674,7 +674,7 @@ export class SdcCollectionApiService {
         sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
       }
       else if (schoolCollection.seedData === 'dataUploadSummarySpecialEd') {
-        const students = createSdcSchoolCollectionStudents(13, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
+        const students = createSdcSchoolCollectionStudents(14, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
         students[0].specialEducationCategoryCode = 'A';
         students[1].specialEducationCategoryCode = 'B';
         students[2].specialEducationCategoryCode = 'C';
@@ -687,6 +687,8 @@ export class SdcCollectionApiService {
         students[9].specialEducationCategoryCode = 'P';
         students[10].specialEducationCategoryCode = 'Q';
         students[11].specialEducationCategoryCode = 'R';
+        students[12].specialEducationCategoryCode = 'R';
+        students[12].specialEducationNonEligReasonCode = 'NOTELIGIBL';
         sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
       }
       else if (schoolCollection.seedData === 'dataUploadSummaryIndigenous') {
