@@ -22,11 +22,11 @@
         data-cy="indigenous-report-row"
       >
         <td
-          v-for="(columnHeader, index) in headcountTableData?.headers"
+          v-for="(columnHeader, idx) in headcountTableData?.headers"
           :key="row.title + columnHeader + generateKey()"
-          :class="{'section-header-title': index===0,'table-cell': index!==0, 'zero-cell': row[columnHeader]==='0'}"
+          :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]==='0'}"
         >
-          <span >
+          <span>
             {{ row[columnHeader] }}
           </span>
         </td>
