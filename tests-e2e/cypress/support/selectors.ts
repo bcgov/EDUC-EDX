@@ -15,7 +15,8 @@ export default {
     summaryButton: '#careerSummaryButton',
     headcountCard: '.career-headcount-card',
     headcountHeader: '.career-headcount-header',
-    headcountColumnData: '.career-headcount-column-data'
+    headcountColumnData: '.career-headcount-column-data',
+    headcountTableSubHeading: '.section-header'
   },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
