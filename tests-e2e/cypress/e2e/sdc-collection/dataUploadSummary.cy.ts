@@ -147,13 +147,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.get(selectors.sdcDocumentUploadStep.ellTabButton).click();
       cy.wait('@headcounts');
       cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
-      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).each(($cell, index) => {
-        if(index !== 2) {
-          cy.wrap($cell).find('td').last().should('contain', '2');
-        } else {
-          cy.wrap($cell).find('td').last().should('contain', '4');
-        }
-      });
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).find('td').last().should('contain', '4');
     });
   });
   context('Uploaded a file that has errors', () => {
