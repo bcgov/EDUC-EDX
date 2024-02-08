@@ -57,8 +57,8 @@
                   class="row-data"
                 >
                   <template
-                    v-for="(key, index) in header.orderedColumnTitles"
-                    :key="index"
+                    v-for="(key, idx) in header.orderedColumnTitles"
+                    :key="idx"
                   >
                     <v-col :class="`${headcountType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
@@ -82,7 +82,7 @@
                       </span>
                     </v-col>
                     <v-divider
-                      v-if="index !== header.orderedColumnTitles.length - 1"
+                      v-if="idx !== header.orderedColumnTitles.length - 1"
                       class="my-4"
                       :vertical="true"
                     />
