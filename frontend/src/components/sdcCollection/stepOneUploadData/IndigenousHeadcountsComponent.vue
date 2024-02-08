@@ -15,22 +15,31 @@
       </tr>
     </thead>
     <tbody>
-      <tr
+      <template
         v-for="(row, index) in headcountTableData?.rows"
-        :key="row.title + generateKey()"
-        :class="{'colored-row': index%2===0, 'totals-row': index === headcountTableData?.rows?.length-1}"
-        data-cy="indigenous-report-row"
+        :key="'row-' + index + '-data'"
       >
-        <td
-          v-for="(columnHeader, idx) in headcountTableData?.headers"
-          :key="row.title + columnHeader + generateKey()"
-          :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]==='0'}"
+        <tr
+          class="section-header"
+          data-cy="indigenous-report-row"
         >
-          <span>
-            {{ row[columnHeader] }}
-          </span>
-        </td>
-      </tr>
+          <td
+            v-for="(columnHeader, idx) in headcountTableData?.headers"
+            :key="row.title + columnHeader + generateKey()"
+            :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]==='0'}"
+          >
+            <span>
+              {{ row[columnHeader] }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="empty-row-cells"
+            :colspan="headcountTableData?.headers?.length"
+          />
+        </tr>
+      </template>
     </tbody>
   </v-table>
 </template>
@@ -63,21 +72,23 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.colored-row {
+.empty-row-cells {
+  height: 1.5rem !important;
+}
+.section-header {
   background-color: #FAFBFC;
 }
 .section-header-title {
   color: #38598a;
+  font-weight: bold;
 }
 .table-cell {
   text-align: center;
+  font-weight: bold;
 }
 th {
   color: #38598a !important;
   text-align: center !important;
-}
-.totals-row {
-  font-weight: bold;
 }
 .zero-cell {
   color: gray;
