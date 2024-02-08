@@ -35,7 +35,14 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.headcountEndpoint"
-      />
+      >
+        <template #reports="{ data }">
+          <IndigenousHeadcountsComponent
+            v-if="data"
+            :headcount-table-data="data"
+          />
+        </template>
+      </SummaryComponent>
     </div>
   </v-container>
 </template>
@@ -45,10 +52,12 @@ import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from './SummaryComponent.vue';
 import { INDSUPPORT_PR } from '../../../utils/sdc/TableConfiguration';
+import IndigenousHeadcountsComponent from '../stepOneUploadData/IndigenousHeadcountsComponent.vue';
   
 export default {
   name: 'IndSupportProgramsComponent',
   components: {
+    IndigenousHeadcountsComponent,
     DetailComponent,
     SummaryComponent
   },
