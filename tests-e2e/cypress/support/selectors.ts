@@ -106,13 +106,13 @@ export default {
     tableWrapper: '.v-table__wrapper',
     thead: 'thead',
     tbody: 'tbody',
-    coreFrenchTotal: ':nth-child(1) > :nth-child(19) > span',
-    coreFrenchSchoolAged: ':nth-child(2) > :nth-child(19) > span',
-    earlyFrenchTotal: ':nth-child(4) > :nth-child(19) > span',
-    earlyFrenchSchoolAged: ':nth-child(5) > :nth-child(19) > span',
-    allFrenchTotal: ':nth-child(10) > :nth-child(19) > span',
-    allFrenchSchoolAged: ':nth-child(11) > :nth-child(19) > span',
-    allFrenchAdult: ':nth-child(12) > :nth-child(19) > .zero-cell'
+    coreFrenchTotal: ':nth-child(1) > :last-child > span',
+    coreFrenchSchoolAged: ':nth-child(2) > :last-child > span',
+    earlyFrenchTotal: ':nth-child(4) > :last-child > span',
+    earlyFrenchSchoolAged: ':nth-child(5) > :last-child > span',
+    allFrenchTotal: ':nth-child(10) > :last-child > span',
+    allFrenchSchoolAged: ':nth-child(11) > :last-child > span',
+    allFrenchAdult: ':nth-child(12) > :last-child > .zero-cell'
   },
   fteComponent: {
     tab: '#enrollmentTab',
