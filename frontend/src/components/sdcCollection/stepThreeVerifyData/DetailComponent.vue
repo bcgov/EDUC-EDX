@@ -145,6 +145,7 @@
             :total-elements="totalElements"
             :is-loading="isLoading"
             @reload="reload"
+            @editSelectedRow="editStudent"
           />
         </v-col>
       </v-row>
@@ -169,6 +170,19 @@
       />
     </v-navigation-drawer>
   </v-row>
+  <v-bottom-sheet
+      v-model="editStudentSheet"
+      :inset="true"
+      :no-click-animation="true"
+      :scrollable="true"
+      :persistent="true"
+    >
+      <ViewStudentDetailsComponent
+        :selected-student-ids="studentForEdit"
+        @close="editStudentSheet = !editStudentSheet; loadStudents()"
+      >
+      </ViewStudentDetailsComponent>
+    </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
     <template #message>
       <p>Are you sure that you would like to remove the selected student(s) from the 1701 submission?</p>
@@ -189,6 +203,7 @@ import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
 import Filters from '../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import ViewStudentDetailsComponent from './ViewStudentDetailsComponent.vue';
 
 export default {
   name: 'DetailComponent',
@@ -196,7 +211,8 @@ export default {
     ConfirmationDialog,
     PrimaryButton,
     CustomTable,
-    Filters
+    Filters,
+    ViewStudentDetailsComponent
   },
   mixins: [alertMixin],
   props: {
@@ -229,7 +245,9 @@ export default {
         moreFilters: []
       },
       showFilters: null,
-      updatedFilters: {}
+      updatedFilters: {},
+      studentForEdit: [],
+      editStudentSheet: false
     };
   },
   computed: {
@@ -242,6 +260,12 @@ export default {
 
   },
   methods: {
+    editStudent($event) {
+      const selectedStudent = cloneDeep($event);
+      this.studentForEdit.splice(0);
+      this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
+      this.editStudentSheet = true;
+    },
     updateFilters($event) {
       this.showFilters=!this.showFilters;
       const clonedFilter = cloneDeep($event);

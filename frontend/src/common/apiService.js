@@ -159,6 +159,7 @@ export default {
   getAllSchoolFundingCodes:getCodes(`${ApiRoutes.sdc.SDC_SCHOOL_FUNDING_CODES}`),
   getAllSpecialEdCodes:getCodes(`${ApiRoutes.sdc.SDC_SPECIAL_ED_CODES}`),
   getAllValidationIssueTypeCodes:getCodes(`${ApiRoutes.sdc.SDC_VALIDATION_ISSUE_TYPE_CODES}`),
+  getAllProgramEligibilityTypeCodes:getCodes(`${ApiRoutes.sdc.SDC_PROGRAM_ELIGIBILITY_TYPE_CODES}`),
   getAllActiveBandCodes:getCodes(`${ApiRoutes.sdc.SDC_BAND_CODES}?active=true`),
   getAllActiveCareerProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_CAREER_PROGRAM_CODES}?active=true`),
   getAllActiveEnrolledProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_ENROLLED_PROGRAM_CODES}?active=true`),
