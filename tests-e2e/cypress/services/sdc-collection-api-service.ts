@@ -712,14 +712,14 @@ export class SdcCollectionApiService {
         const students = createSdcSchoolCollectionStudents(7, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
         students[0].enrolledProgramCodes = '17';
         students[0].enrolledGradeCode = '11';
-        students[0].isSchoolAged = 'true'
+        students[0].isSchoolAged = 'true';
         students[1].enrolledProgramCodes = '17';
         students[1].enrolledGradeCode = '12';
-        students[1].isSchoolAged = 'true'
+        students[1].isSchoolAged = 'true';
         students[2].enrolledProgramCodes = '17';
-        students[2].isAdult = 'true'
+        students[2].isAdult = 'true';
         students[3].enrolledProgramCodes = '17';
-        students[3].isAdult = 'true'
+        students[3].isAdult = 'true';
         sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
       }
     } else {

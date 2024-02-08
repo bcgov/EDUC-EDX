@@ -53,7 +53,7 @@
         />
       </v-window-item>
       <v-window-item value="Indigenous Students & Support Programs">
-        <HeadCountReportComponent
+        <IndigenousHeadcountsComponent
           data-cy="indigenousTab"
           :headcount-table-data="headcountTableData"
         />
@@ -87,10 +87,12 @@ import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
 import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
+import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
 
 export default defineComponent({
   name: 'SummaryComponent',
   components: {
+    IndigenousHeadcountsComponent,
     EnrollmentHeadcountsComponent,
     HeadCountReportComponent},
   data() {

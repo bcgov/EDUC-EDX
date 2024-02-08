@@ -74,8 +74,8 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');
       cy.get(selectors.sdcDocumentUploadStep.indigenousTabButton).click();
       cy.wait('@headcounts');
-      cy.get(`${selectors.sdcDocumentUploadStep.indigenousTab} .section-header`).last().find('td').last().should('be.visible');
-      cy.get(`${selectors.sdcDocumentUploadStep.indigenousTab} .section-header`).each(($cell, index) => {
+      cy.get(`${selectors.sdcDocumentUploadStep.indigenousReportRows}`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.indigenousReportRows}`).each(($cell, index) => {
         if(index !== 3) {
           cy.wrap($cell).find('td').last().should('contain', '2');
         } else {

@@ -128,10 +128,15 @@
       </a>
     </v-col>
   </v-row>
-  <HeadCountReportComponent
-    v-if="headcountTableData"
-    :headcount-table-data="headcountTableData"
-  />
+  <slot
+    name="reports"
+    :data="headcountTableData"
+  >
+    <HeadCountReportComponent
+      v-if="headcountTableData"
+      :headcount-table-data="headcountTableData"
+    />
+  </slot>
 </template>
 
 <script>
@@ -211,7 +216,7 @@ export default {
       case 'enrollment':
         return 'Grade Enrolment & Eligible FTE';
       case 'ell':
-        return 'English Language Learning Headcount'
+        return 'English Language Learning Headcount';
       }
     },
     compare() {
