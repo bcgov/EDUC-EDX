@@ -32,10 +32,13 @@
       </v-tab>
     </v-tabs>
 
-    <v-window v-model="selectedTab" class="pt-3">
-      <v-window-item value="FTE">
+    <v-window
+      v-model="selectedTab"
+      class="pt-3"
+    >
+      <v-window-item value="Overall">
         <EnrollmentHeadcountsComponent
-          v-if="selectedTab==='FTE'"
+          v-if="selectedTab==='Overall'"
           data-cy="fteTab"
           :headcount-table-data="headcountTableData"
         />
@@ -83,7 +86,6 @@ import {defineComponent} from 'vue';
 import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComponent.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {SDC_VERIFY_TABS} from '../../../utils/sdc/SdcVerifyTabs';
 import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
@@ -101,7 +103,15 @@ export default defineComponent({
       headcountHeaders: [],
       headcountTableData: {},
       compareSwitch: false,
-      tabs: SDC_VERIFY_TABS,
+      tabs: [
+        'Overall',
+        'French Programs',
+        'Career Programs',
+        'Indigenous Students & Support Programs',
+        'Special Education',
+        'English Language Learning',
+        'Refugee'
+      ],
       selectedTab: null,
       studentsInError: null,
       headerSearchParams: {}
@@ -109,7 +119,7 @@ export default defineComponent({
   },
   computed: {
     config() {
-      if(this.selectedTab==='FTE') {
+      if(this.selectedTab==='Overall') {
         return FTE;
       } else if(this.selectedTab==='French Programs') {
         return FRENCH_PR;
@@ -122,7 +132,7 @@ export default defineComponent({
       } else if(this.selectedTab==='English Language Learning') {
         return ELL;
       }
-      return FTE;
+      return null;
     }
   },
   watch: {
