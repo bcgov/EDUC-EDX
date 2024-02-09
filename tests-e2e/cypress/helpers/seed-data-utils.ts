@@ -10,12 +10,12 @@ const createSdcSchoolCollectionStudent = (grades: string[] | undefined): SdcScho
   usualFirstName: faker.person.firstName(),
   usualMiddleNames: faker.person.middleName(),
   usualLastName: faker.person.lastName(),
-  dob: faker.date.birthdate({min: 5, max: 18, mode: 'age'}).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, ''),
-  gender: faker.person.sex()[0],
+  dob: generateBirthdate(),
+  gender: faker.person.sex()[0].toUpperCase(),
   nativeAncestryInd: 'N',
   homeLanguageSpokenCode: '943',
   enrolledGradeCode: generateSchoolGrade(grades),
-  numberOfCourses: faker.string.numeric({length: 4, allowLeadingZeros: true}),
+  numberOfCourses: faker.number.int({ min: 0, max: 1500 }).toString().padStart(4, '0'),
   postalCode: generatePostalCode(),
   sdcSchoolCollectionStudentStatusCode: 'VERIFIED',
   fte: 0
@@ -56,4 +56,12 @@ function generatePostalCode() {
   const sixthLetter = faker.number.int({ min: 0, max: 9 });
 
   return `${firstLetter}${secondDigit}${thirdLetter}${fourthSpace}${fifthDigit}${sixthLetter}`;
+}
+
+function generateBirthdate() {
+  const birthDate = faker.date.birthdate({min: 5, max: 18, mode: 'age'});
+  const year = birthDate.getFullYear();
+  const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+  const day = String(birthDate.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
 }
