@@ -7,13 +7,19 @@
     <v-card-text>
       <v-row justify="space-between">
         <v-col cols="4">
-          <a id = "clear-filter" @click="clear()">Clear All Filters</a>
+          <a
+            id="clear-filter"
+            @click="clear()"
+          >Clear All Filters</a>
         </v-col>
         <v-col
           cols="4"
           style="text-align: end;"
         >
-          <a id="apply-filter" @click="apply()">Apply Filters</a>
+          <a
+            id="apply-filter"
+            @click="apply()"
+          >Apply Filters</a>
         </v-col>
       </v-row>
       <div
@@ -21,7 +27,10 @@
         :key="index"
       >
         <v-row>
-          <v-col :id="filter.id" class="filter-heading">
+          <v-col
+            :id="filter.id"
+            class="filter-heading"
+          >
             {{ filter?.heading }}
           </v-col>
         </v-row>
@@ -40,10 +49,10 @@
             >
               <v-btn
                 v-if="isVisible(filter?.key, option?.value)"
+                :id="option?.id"
                 :value="option"
                 class="filter-button"
                 rounded="lg"
-                :id="option?.id"
               >
                 {{ option?.title }}
               </v-btn>
@@ -65,51 +74,51 @@
             />
           </v-col>
           <v-col v-if="filter?.key === 'courses'">
-                <v-range-slider
-                    v-model="courseRange"
-                    :min="courseRangeDefault[0]"
-                    :max="courseRangeDefault[1]"
-                    :step="1"
-                    color = "#003366"
-                    id="courses-slider"
-                    hide-details
-                    strict
-                    thumb-size=15
-                    class="align-center"
-                    @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
-                >
-                  <template v-slot:prepend>
-                    <v-text-field
-                        v-model="courseRange[0]"
-                        hide-details
-                        single-line
-                        type="number"
-                        :step="1"
-                        :min="courseRangeDefault[0]"
-                        :max="courseRange[1]"
-                        variant="outlined"
-                        density="compact"
-                        class="slider-text"
-                        onkeydown="return false"
-                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
-                    ></v-text-field>
-                  </template>
-                  <template v-slot:append>
-                    <v-text-field
-                        v-model="courseRange[1]"
-                        hide-details
-                        single-line
-                        type="number"
-                        :min="courseRange[0]"
-                        :max="courseRangeDefault[1]"
-                        variant="outlined"
-                        density="compact"
-                        class="slider-text"
-                        onkeydown="return false"
-                        @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
-                    ></v-text-field>
-                  </template>
-                </v-range-slider>
+            <v-range-slider
+              id="courses-slider"
+              v-model="courseRange"
+              :min="courseRangeDefault[0]"
+              :max="courseRangeDefault[1]"
+              :step="1"
+              color="#003366"
+              hide-details
+              strict
+              thumb-size="15"
+              class="align-center"
+              @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
+            >
+              <template #prepend>
+                <v-text-field
+                  v-model="courseRange[0]"
+                  hide-details
+                  single-line
+                  type="number"
+                  :step="1"
+                  :min="courseRangeDefault[0]"
+                  :max="courseRange[1]"
+                  variant="outlined"
+                  density="compact"
+                  class="slider-text"
+                  onkeydown="return false"
+                  @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
+                />
+              </template>
+              <template #append>
+                <v-text-field
+                  v-model="courseRange[1]"
+                  hide-details
+                  single-line
+                  type="number"
+                  :min="courseRange[0]"
+                  :max="courseRangeDefault[1]"
+                  variant="outlined"
+                  density="compact"
+                  class="slider-text"
+                  onkeydown="return false"
+                  @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
+                />
+              </template>
+            </v-range-slider>
           </v-col>
         </v-row>
       </div>
@@ -212,7 +221,7 @@ export default {
         }
         this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
       } else {
-        delete this.selectedFilters[key]
+        delete this.selectedFilters[key];
       }
     },
     clear() {

@@ -67,14 +67,14 @@
       </v-window-item>
     </v-window>
     <v-alert
-        color="#003366"
-        density="compact"
-        type="info"
-        variant="tonal"
-        data-cy="estimated-info-banner"
-      >
-        All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff.
-      </v-alert>
+      color="#003366"
+      density="compact"
+      type="info"
+      variant="tonal"
+      data-cy="estimated-info-banner"
+    >
+      All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff.
+    </v-alert>
   </div>
 
   <v-row justify="end">

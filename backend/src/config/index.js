@@ -118,7 +118,9 @@ nconf.defaults({
     homeLanguageSpokenCodesURL: process.env.SDC_API_ENDPOINT + '/home-language-codes',
     schoolFundingCodesURL: process.env.SDC_API_ENDPOINT + '/funding-codes',
     specialEdCodesURL: process.env.SDC_API_ENDPOINT + '/specialEducation-codes',
-    validationIssueTypeCodesURL: process.env.SDC_API_ENDPOINT + '/validation-issue-type-codes'
+    validationIssueTypeCodesURL: process.env.SDC_API_ENDPOINT + '/validation-issue-type-codes',
+    programEligibilityTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-eligibility-issue-codes',
+    zeroFteReasonCodesURL: process.env.SDC_API_ENDPOINT + '/zero-fte-reason-codes'
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,

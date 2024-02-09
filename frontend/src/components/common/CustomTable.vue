@@ -49,7 +49,10 @@
         </tr>
       </template>
       <template #item="props">
-        <tr>
+        <tr
+          class="hoverTable"
+          @click="rowclicked(props.item.raw)"
+        >
           <td
             v-for="column in headers"
             :key="column.key"
@@ -59,7 +62,7 @@
               v-if="column.title === 'select'"
               :model-value="isSelected(props.item.raw) !== undefined"
               hide-details="true"
-              @click="onClick(props)"
+              @click.prevent.stop="onClick(props)"
             />
             <v-icon
               v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
@@ -81,9 +84,12 @@
                 <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
               </div>
               <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram'">
-               <span v-for="(progs, idx) in props.item.raw[column.key].split(',')" :key="idx">
-                <div>{{ progs }}</div>
-               </span>
+                <span
+                  v-for="(progs, idx) in props.item.raw[column.key].split(',')"
+                  :key="idx"
+                >
+                  <div>{{ progs }}</div>
+                </span>
               </div>
               <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
               <span v-else>-</span>
@@ -144,7 +150,7 @@ export default {
       default: null
     },
   },
-  emits: ['reload'],
+  emits: ['reload', 'editSelectedRow'],
   data() {
     return {
       pageNumber: 1,
@@ -166,6 +172,9 @@ export default {
 
   },
   methods: {
+    rowclicked(props) {
+      this.$emit('editSelectedRow', props);
+    },
     onClick(prop) {
       let selectedValue = prop.item.raw;
       if(this.isSelected(selectedValue)) {
@@ -244,5 +253,10 @@ export default {
 
  :deep(.v-data-table-footer__items-per-page) {
        display: none;
-   }
+ }
+
+ tr:hover td {
+  background-color: #e8e8e8 !important;
+  cursor: pointer;
+}
 </style>
