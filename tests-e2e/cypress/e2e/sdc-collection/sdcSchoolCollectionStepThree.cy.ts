@@ -9,7 +9,7 @@ describe('SDC School Collection View', () => {
         cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
-          seedData: 'careerProgramsSeedData'
+          seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
           const studentWithEllYears = collection.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
@@ -17,7 +17,6 @@ describe('SDC School Collection View', () => {
               studentID: s.assignedStudentId,
               yearsInEll: 3
             }) as SdcStudentEll);
-
           cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
@@ -199,29 +198,29 @@ describe('SDC School Collection View', () => {
       checkCareerHeader(3, 'Career Technical or Youth in Trades', 3, '1', '1', '2');
 
       //check table contents
-      let numOfSubsectionRows = 9;
-      let numOfCareerTableColumns = 7;
-      let emptyHeadcounts = Array.from(Array(numOfSubsectionRows), _ => Array(numOfCareerTableColumns).fill(0));
+      const numOfSubsectionRows = 9;
+      const numOfCareerTableColumns = 7;
+      const emptyHeadcounts = Array.from(Array(numOfSubsectionRows), () => Array(numOfCareerTableColumns).fill(0));
       checkCareerTableSection(0,'Career Preparation', emptyHeadcounts);
 
-      let coopEdHeadcounts = [...emptyHeadcounts]
-      let coopEdHeadcountsInner = [0, 1, 0, 0, 0, 0, 1];
+      const coopEdHeadcounts = [...emptyHeadcounts];
+      const coopEdHeadcountsInner = [0, 1, 0, 0, 0, 0, 1];
       coopEdHeadcounts.splice(0, 1, coopEdHeadcountsInner);
       coopEdHeadcounts.splice(1, 1, coopEdHeadcountsInner);
       checkCareerTableSection(1, 'Co-Operative Education', coopEdHeadcounts);
 
-      let techOrYouthHeadcounts = [...emptyHeadcounts]
-      let techOrYouthHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
+      const techOrYouthHeadcounts = [...emptyHeadcounts];
+      const techOrYouthHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
       techOrYouthHeadcounts.splice(0, 1, techOrYouthHeadcountsInner);
       techOrYouthHeadcounts.splice(8, 1, techOrYouthHeadcountsInner);
       checkCareerTableSection(2, 'Career Technical or Youth in Trades', techOrYouthHeadcounts);
 
       checkCareerTableSection(3, 'Apprenticeship', emptyHeadcounts);
 
-      let allHeadcounts = [...emptyHeadcounts];
-      let totalHeadcountsInner = [0, 2, 0, 2, 0, 0, 4];
-      let xaHeadcountsInner = [0, 2, 0, 0, 0, 0, 2];
-      let xhHeadcountsInner = [0, 0, 0, 2, 0, 0, 2];
+      const allHeadcounts = [...emptyHeadcounts];
+      const totalHeadcountsInner = [0, 1, 0, 1, 0, 0, 2];
+      const xaHeadcountsInner = [0, 1, 0, 0, 0, 0, 1];
+      const xhHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
       allHeadcounts.splice(0, 1, totalHeadcountsInner);
       allHeadcounts.splice(1, 1, xaHeadcountsInner);
       allHeadcounts.splice(8, 1, xhHeadcountsInner);
@@ -252,7 +251,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountHeader).should('contain.text', 'Indigenous Language and Culture');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).should('have.length', 3);
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
-      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '1');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(0).find(selectors.indigenousSupportComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Not Reported');
@@ -262,9 +261,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
-      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(1).children('span').should('contain.text', '1');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Not Reported');
-      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(2).children('span').should('contain.text', '3');
+      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(1).find(selectors.indigenousSupportComponent.headcountColumnData).eq(2).children('span').should('contain.text', '2');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(2).find(selectors.indigenousSupportComponent.headcountHeader).should('contain.text', 'Other Approved Indigenous Prog');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(2).find(selectors.indigenousSupportComponent.headcountColumnData).should('have.length', 3);
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(2).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
@@ -275,10 +274,24 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(2).find(selectors.indigenousSupportComponent.headcountColumnData).eq(2).children('span').should('contain.text', '3');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(3).find(selectors.indigenousSupportComponent.headcountHeader).should('contain.text', 'Indigenous Ancestry Headcount');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(3).find(selectors.indigenousSupportComponent.headcountColumnData).should('have.length', 1);
-      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(3).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(3).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '2');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountHeader).should('contain.text', 'Ordinarily Living on Reserve Hea');
       cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).should('have.length', 1);
-      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '3');
+      cy.get(selectors.indigenousSupportComponent.headcountCard).eq(4).find(selectors.indigenousSupportComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+
+      //check headcounts report
+      cy.get(`${selectors.sdcDocumentUploadStep.indigenousReportRows}`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.indigenousReportRows}`).each(($cell, index) => {
+        if(index === 0) {
+          cy.wrap($cell).find('td').last().should('contain', '1');
+        } else if(index === 1) {
+          cy.wrap($cell).find('td').last().should('contain', '0');
+        } else if(index === 2) {
+          cy.wrap($cell).find('td').last().should('contain', '0');
+        } else if(index === 3) {
+          cy.wrap($cell).find('td').last().should('contain', '1');
+        }
+      });
     });
 
     it('verifies english language learning programs for reported students', () => {
@@ -443,16 +456,17 @@ function checkCareerHeader(headerIndex: number, headerTitle: string, length: num
 }
 
 function checkCareerTableSection(subheadingIndex: number, subheaderTitle: string, expectedValues: number[][] ){
-  let subheadings = ['XA - Business & Applied Business', 'XB - Fine Arts, Design, & Media', 'XC - Fitness & Recreation',
+  const subheadings = ['XA - Business & Applied Business', 'XB - Fine Arts, Design, & Media', 'XC - Fitness & Recreation',
     'XD - Health & Human Services', 'XE - Liberal Arts & Humanities', 'XF - Science & Applied Science', 'XG - Tourism, ' +
     'Hospitality & Foods', 'XH - Trades & Technology'];
 
   cy.get(selectors.careerProgramComponent.headcountTableSubHeading).eq(subheadingIndex).should('contain.text', subheaderTitle + expectedValues[0].join(''))
-      .next().should('contain.text', subheadings[0] + expectedValues[1].join(''))
-      .next().should('contain.text', subheadings[1] + expectedValues[2].join(''))
-      .next().should('contain.text', subheadings[2] + expectedValues[3].join(''))
-      .next().should("contain.text", subheadings[3] + expectedValues[4].join(''))
-      .next().should('contain.text', subheadings[4] + expectedValues[5].join(''))
-      .next().should('contain.text', subheadings[5] + expectedValues[6].join(''))
-      .next().should('contain.text', subheadings[6] + expectedValues[7].join(''));
+    .next().should('contain.text', subheadings[0] + expectedValues[1].join(''))
+    .next().should('contain.text', subheadings[1] + expectedValues[2].join(''))
+    .next().should('contain.text', subheadings[2] + expectedValues[3].join(''))
+    .next().should('contain.text', subheadings[3] + expectedValues[4].join(''))
+    .next().should('contain.text', subheadings[4] + expectedValues[5].join(''))
+    .next().should('contain.text', subheadings[5] + expectedValues[6].join(''))
+    .next().should('contain.text', subheadings[6] + expectedValues[7].join(''))
+    .next().should('contain.text', subheadings[7] + expectedValues[8].join(''));
 }
