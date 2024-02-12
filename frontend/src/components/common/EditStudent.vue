@@ -425,6 +425,11 @@
         >- Clear Filters & Show all Records</a>
       </div>
     </v-col>
+    <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
+      <template #message>
+        <p>Are you sure that you would like to remove this student from the 1701 submission?</p>
+      </template>
+    </ConfirmationDialog>
   </v-row>
 </template>
 <script>
@@ -440,12 +445,14 @@ import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
 import {isValidPEN} from '../../utils/validation';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
   name: 'EditStudent',
   components: {
     Spinner,
-    DatePicker
+    DatePicker,
+    ConfirmationDialog,
   },
   props: {
     selectedStudents: {
@@ -462,6 +469,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    removeEvent: {
+     type: Boolean,
+     required: false,
+     default: false
     }
   },
   emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object'],
@@ -500,6 +512,13 @@ export default {
           this.save();
         }
       }
+    },
+    removeEvent: {
+     handler(value) {
+        if(value) {
+            this.deleteStudent();
+        }
+     }
     },
     studentDetailsFormValid: {
       handler() {
@@ -572,6 +591,7 @@ export default {
     async deleteStudent(){
       const confirmation = await this.$refs.confirmRemovalOfStudentRecord.open('Confirm Removal of Student Record', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
       if (!confirmation) {
+        this.$emit('reset-parent');
         return;
       }
       this.loadingCount += 1;
@@ -591,6 +611,7 @@ export default {
           }
           else {
             this.$emit('show-issues');
+            this.$emit('reset-parent');
           }
         });
     },
