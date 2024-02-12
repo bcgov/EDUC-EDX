@@ -62,20 +62,17 @@
         @filter-pen="filterByPen"
       />
     </div>
-
   </v-container>
 </template>
 <script>
 
 
-import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import EditStudent from '../../common/EditStudent.vue';
 
 export default {
   name: 'EditAndFixStudentData',
   components: {
-    Spinner,
     PrimaryButton,
     EditStudent
   },

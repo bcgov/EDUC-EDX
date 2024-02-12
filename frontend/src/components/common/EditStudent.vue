@@ -471,9 +471,9 @@ export default {
       default: false
     },
     removeEvent: {
-     type: Boolean,
-     required: false,
-     default: false
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object'],
@@ -514,11 +514,11 @@ export default {
       }
     },
     removeEvent: {
-     handler(value) {
+      handler(value) {
         if(value) {
-            this.deleteStudent();
+          this.deleteStudent();
         }
-     }
+      }
     },
     studentDetailsFormValid: {
       handler() {
