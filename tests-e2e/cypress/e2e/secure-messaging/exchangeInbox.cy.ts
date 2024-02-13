@@ -1,7 +1,9 @@
 import selectors from "../../support/selectors";
 
 function addDocumentToMessage() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
   cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
   cy.get(selectors.secureExchangeDetail.addAttachmentConvButton).click();
@@ -14,7 +16,9 @@ function addDocumentToMessage() {
 }
 
 function addStudentToMessage() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
   cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
   cy.get(selectors.secureExchangeDetail.addStudentConvButton).click();
@@ -25,7 +29,9 @@ function addStudentToMessage() {
 }
 
 function checkExistingMessageWithAttachments() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
   cy.get(selectors.secureExchangeDetail.timelineContent).contains('BC.jpg').should('exist');
   cy.get(selectors.secureExchangeDetail.timelineContent).contains(Cypress.env('student').penList[0]).should('exist');
@@ -44,6 +50,7 @@ function createSecondNewMessage(){
 }
 
 function createNewMessageWithDocumentAndStudent() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMsgs');
   cy.visit('/');
   cy.get(selectors.dashboard.secureMessageTile).click();
   cy.get(selectors.secureExchangeInbox.newMessageButton).click();
@@ -73,10 +80,11 @@ function createNewMessageWithDocumentAndStudent() {
   // submit message
   cy.get(selectors.secureExchangeNewMessage.newMessagePostBtn).click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The message has been sent. Close');
+  cy.wait('@exchangeMsgs');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').should('have.length', 1);
 }
 
-function removeExistingDocumentAndStudent() {
+function removeExistingDocument() {
   cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
   cy.wait('@exchangeMessages');
@@ -86,16 +94,25 @@ function removeExistingDocumentAndStudent() {
       .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
   cy.get(selectors.secureExchangeDetail.timelineConfirmYesButton).contains('Yes').click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The document has been removed. Close');
+}
+
+function removeExistingStudent() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
+  cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
+  cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
 
   cy.get(selectors.secureExchangeDetail.timelineContent).contains(Cypress.env('student')
       .penList[0]).parentsUntil(selectors.secureExchangeDetail.timelineContent)
       .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
   cy.get(selectors.secureExchangeDetail.timelineConfirmYesButton).contains('Yes').click();
-  cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The document has been removed. Close');
+  cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The student has been removed. Close');
 }
 
 function searchForMultipleMessages() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.filtersButton).click();
   cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
   cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
@@ -103,7 +120,9 @@ function searchForMultipleMessages() {
 }
 
 function searchForSingleMessage() {
+  cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
   cy.visit('/inbox');
+  cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.filtersButton).click();
   cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
   cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
@@ -158,7 +177,8 @@ describe('Exchange Inbox Page', () => {
     it('can create a new secure exchange message with a document and a student',createNewMessageWithDocumentAndStudent);
     it('has an existing message with attachments', checkExistingMessageWithAttachments);
     it('can search for the message', searchForSingleMessage);
-    it('can remove the existing document and student from the message', removeExistingDocumentAndStudent);
+    it('can remove the existing document from the message', removeExistingDocument);
+    it('can remove the existing student from the message', removeExistingStudent);
     it('can add a document to the message', addDocumentToMessage);
     it('can add a student to the message', addStudentToMessage);
     it('creates second message', createSecondNewMessage);
@@ -183,7 +203,8 @@ describe('Exchange Inbox Page', () => {
     it('can create a new secure exchange message with a document and a student',createNewMessageWithDocumentAndStudent);
     it('has an existing message with attachments', checkExistingMessageWithAttachments);
     it('can search for the message', searchForSingleMessage);
-    it('can remove the existing document and student from the message', removeExistingDocumentAndStudent);
+    it('can remove the existing document from the message', removeExistingDocument);
+    it('can remove the existing student from the message', removeExistingStudent);
     it('can add a document to the message', addDocumentToMessage);
     it('can add a student to the message', addStudentToMessage);
     it('creates second message', createSecondNewMessage);
