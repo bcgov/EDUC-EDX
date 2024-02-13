@@ -3,13 +3,12 @@
     <v-data-table-server
       v-model:page.sync="pageNumber"
       v-model:items-per-page.sync="pageSize"
-      :model-value="selected"
+      v-model="selected"
       :items-length="totalElements"
       :items="data"
       :headers="headers"
       class="mt-2"
       mobile-breakpoint="0"
-      @update:model-value="selected = $event"
     >
       <template #top>
         <v-progress-linear
@@ -26,13 +25,12 @@
             :key="column.key"
           >
             <div v-if="column.title === 'select'">
-              <span @click="toggle()">
                 <v-checkbox
-                  :input-value="masterCheckbox"
+                  v-model="masterCheckbox"
                   :indeterminate="selected.length > 0 && !isAllSelected()"
                   hide-details="true"
+                  @change="toggle()"
                 />
-              </span>
             </div>
             <div v-else>
               <div class="header-text">
@@ -144,15 +142,16 @@ export default {
       required: true,
       default: false
     },
-    selected: {
-      type: Array,
+    reset: {
+      type: Boolean,
       required: true,
-      default: null
-    },
+      default: false
+    }
   },
-  emits: ['reload', 'editSelectedRow'],
+  emits: ['reload', 'editSelectedRow', 'selections'],
   data() {
     return {
+      selected: [],
       pageNumber: 1,
       pageSize: 15,
       masterCheckbox: false,
@@ -162,10 +161,30 @@ export default {
   computed: {
   },
   watch: {
-    pageNumber(val) {
-      if(val) {
-        this.$emit('reload', {pageNumber: val});
-      }
+    pageNumber: {
+      handler(val) {
+        if(val) {
+          this.$emit('reload', {pageNumber: val});
+        }
+      },
+      immediate: true
+    },
+    selected: {
+      handler(val) {
+        if(val) {
+          this.$emit('selections', this.selected);
+        }
+      },
+      deep: true
+    },
+    reset: {
+      handler(val) {
+        if(val) {
+          this.masterCheckbox = false;
+          this.selected.splice(0);
+        }
+      },
+      immediate: true
     }
   },
   created() {
@@ -194,7 +213,7 @@ export default {
     },
     toggle() {
       if(this.selected.length !== 0 || this.isAllSelected()) {
-        this.selected = [];
+        this.selected.splice(0);
       } else {
         this.selected = [...this.data];
       }
