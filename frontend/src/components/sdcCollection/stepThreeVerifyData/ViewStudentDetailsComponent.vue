@@ -65,7 +65,7 @@
       <v-divider class="mt-2 mb-2" />
       <v-row v-if="studentForEdit?.fte === 0">
         <v-col>
-          <span><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
+          <span id="fteReason"><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
         </v-col>
       </v-row>
       <v-row v-if="showFundingEligibilitySection()">
@@ -96,12 +96,12 @@
       </v-row>
       <v-row>
         <v-col>
-          <span><b>Graduated:</b>{{ studentForEdit?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
+          <span id="graduatedFlag"><b>Graduated:</b>{{ studentForEdit?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <span><b>Adult:</b>{{ studentForEdit?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
+          <span id="adultFlag"><b>Adult:</b>{{ studentForEdit?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
         </v-col>
       </v-row>
     </v-card-text>
