@@ -372,7 +372,13 @@ export default {
     editStudentClearfilter: '#clearFilters',
     tableResultsSelect: '.v-data-table__tbody > tr > :nth-child(1)',
     remove: '#remove',
-    removeConfirm: '#resolveBtn'
+    removeConfirm: '#resolveBtn',
+    editStudentRow: 'tbody > tr > td:nth-child(5) > div > div > div',
+    fteBanner: '#eligible-fte-banner',
+    nativeAncestryIndValidationDropdown: '#nativeAncestryIndValidationDropdown',
+    saveEditStudentRecord: '#save',
+    graduatedFlag:'#graduatedFlag',
+    adultFlag: '#adultFlag'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
