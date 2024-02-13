@@ -141,6 +141,11 @@ export default {
       type: Boolean,
       required: true,
       default: false
+    },
+    reset: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
   emits: ['reload', 'editSelectedRow', 'selections'],
@@ -171,6 +176,15 @@ export default {
         }
       },
       deep: true
+    },
+    reset: {
+      handler(val) {
+        if(val) {
+          this.masterCheckbox = false;
+          this.selected.splice(0);
+        }
+      },
+      immediate: true
     }
   },
   created() {

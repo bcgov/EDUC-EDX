@@ -143,6 +143,7 @@
             :data="studentList"
             :total-elements="totalElements"
             :is-loading="isLoading"
+            :reset="resetFlag"
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
@@ -246,7 +247,8 @@ export default {
       showFilters: null,
       updatedFilters: {},
       studentForEdit: [],
-      editStudentSheet: false
+      editStudentSheet: false,
+      resetFlag: false
     };
   },
   computed: {
@@ -276,6 +278,7 @@ export default {
       this.loadStudents();
     },
     async removeStudents(){
+      this.resetFlag = false;
       const confirmation = await this.$refs.confirmRemovalOfStudentRecord.open('Confirm Removal of Student Record(s)', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
       if (!confirmation) {
         return;
@@ -291,6 +294,7 @@ export default {
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to remove students. Please try again later.');
         }).finally(() => {
           this.loadingCount -= 1;
+          this.resetFlag = true;
         });
     },
     removeFilter(toRemoveKey, toRemoveValue) {
