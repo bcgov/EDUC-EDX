@@ -141,11 +141,11 @@
           <CustomTable
             :headers="config.tableHeaders"
             :data="studentList"
-            :selected="selectedStudents"
             :total-elements="totalElements"
             :is-loading="isLoading"
             @reload="reload"
             @editSelectedRow="editStudent"
+            @selections="selectedStudents = $event"
           />
         </v-col>
       </v-row>
