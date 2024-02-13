@@ -416,6 +416,33 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
     });
 
+    it('can edit student', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent').then(() => {
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.studentLevelData.editStudentRow).click();
+
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+        cy.get(selectors.studentLevelData.fteBanner).should('exist');
+        cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0.875');
+        cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
+        cy.get(selectors.studentLevelData.adultFlag).should('exist');
+
+        cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).should('exist');
+        cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).parent().click();
+        cy.get(selectors.dropdown.listItem).contains('Yes').click();
+
+        cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
+      });
+    });
+
     it('can remove students from list of reported students', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
