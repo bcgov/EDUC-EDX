@@ -266,11 +266,21 @@
               </v-icon>
             </template>
 
+            <template #item.studentPen="{ item }">
+              {{ item?.raw?.studentPen === null ? "-" : item?.raw?.studentPen }}
+            </template>
+            <template #item.localID="{ item }">
+              {{ item?.raw?.localID === null ? "-" : item?.raw?.localID }}
+            </template>
             <template #item.legalName="{ item }">
-              {{ item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) }}
+              {{ (item?.raw?.legalLastName === null && item?.raw?.legalMiddleNames === null && item?.raw?.legalFirstName === null) ? "-" :  
+                item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) 
+              }}
             </template>
             <template #item.usualName="{ item }">
-              {{ item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName) }}
+              {{ (item?.raw?.usualLastName === null && item?.raw?.usualMiddleNames === null && item?.raw?.usualFirstName === null) ? "-" :  
+                item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName)
+              }}
             </template>
             <template #item.error="{ item }">
               <td class="td-class">
