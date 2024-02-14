@@ -177,12 +177,12 @@ export default {
             this.bandCodeValue = null;
           } else if(filteredKey === undefined) {
             const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
-            this.selected.splice(idx, 1);
+            this.selected.splice(idx, 1, null);
           } else if(filteredKey === 'numberOfCoursesDec') {
             this.courseRange = [...this.courseRangeDefault];
           } else {
             this.selected.map(filter => {
-              if(filter.every(val => filteredKey.includes(val))) {
+              if(Array.isArray(filter) && filter.every(val => filteredKey.includes(val))) {
                 filter.splice(filter.findIndex(value => value.title === toRemoveFilters.removeValue), 1);
               }
             });
