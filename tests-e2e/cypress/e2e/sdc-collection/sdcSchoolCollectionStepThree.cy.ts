@@ -414,6 +414,22 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
       cy.get(selectors.specialEducationComponent.headcountCard).eq(11).find(selectors.specialEducationComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
+
+      //check headcounts summary report
+      cy.get(`${selectors.sdcDocumentUploadStep.spedTab} .section-header`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.spedTab} .section-header`).each(($cell, index) => {
+        if(index === 0) {
+          cy.wrap($cell).find('td').last().should('contain', '1');
+        } else if(index === 1) {
+          cy.wrap($cell).find('td').last().should('contain', '1');
+        } else if(index === 2) {
+          cy.wrap($cell).find('td').last().should('contain', '0');
+        } else if(index === 3) {
+          cy.wrap($cell).find('td').last().should('contain', '0');
+        } else if(index === 4) {
+          cy.wrap($cell).find('td').last().should('contain', '2');
+        }
+      });
     });
 
     it('can edit student', () => {
