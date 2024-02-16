@@ -1,6 +1,7 @@
 <template>
   <v-container
     id="specialEdTab"
+    data-cy="spedTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
