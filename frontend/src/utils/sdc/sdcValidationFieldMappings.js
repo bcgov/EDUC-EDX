@@ -26,7 +26,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   GRADE_CODE: {label: 'Grade Code', key: 'enrolledGradeCode', type: 'select', options: {rules: [formRules.required()], items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
   SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCodes', itemValue: 'specialEducationCategoryCode'}},
   SCHOOL_FUNDING_CODE: {label: 'Funding Code', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},
-  NATIVE_ANCESTRY_IND: {label: 'Native Ancestry', key: 'nativeAncestryInd', type: 'select', options: {rules: [formRules.required()], items: 'ancestryItems', itemValue:'code'}},
+  NATIVE_ANCESTRY_IND: {label: 'Indigenous Ancestry', key: 'nativeAncestryInd', type: 'select', options: {rules: [formRules.required()], items: 'ancestryItems', itemValue:'code'}},
   HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: 'homeLanguageSpokenCode', type: 'select', options: {items: 'homeLanguageSpokenCodes', itemValue: 'homeLanguageSpokenCode'}},
   OTHER_COURSES: {label: 'Other Courses', key: 'otherCourses', type: 'input', options: {maxlength: '1'}},
   SUPPORT_BLOCKS: {label: 'Support Blocks', key: 'supportBlocks', type: 'input', options: {maxlength: '1'}},

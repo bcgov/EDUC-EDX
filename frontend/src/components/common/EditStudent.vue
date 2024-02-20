@@ -522,7 +522,7 @@ export default {
     },
     studentDetailsFormValid: {
       handler() {
-        this.$emit('form-validity', this.validateForm());
+        this.$emit('form-validity', this.studentDetailsFormValid);
       }
     }
   },
