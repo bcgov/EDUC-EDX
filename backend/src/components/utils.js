@@ -345,21 +345,6 @@ function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
 }
 
 /**
- * Verify that a query param and request body param are both present and match
- * each-other in value.
- *
- * @param {Express.Request} req
- * @param {String} paramKey
- * @param {String} bodyKey
- * @throws Bad Request
- */
-function verifyQueryParamValueMatchesBodyValue(req, paramKey, bodyKey) {
-  if (!req?.params?.[paramKey]
-    || !req?.body?.[bodyKey]
-    || req.params[paramKey] !== req.body[bodyKey]) throw new Error('400');
-}
-
-/**
  * Helper function that combines all the permissions and security checks for
  * school admin operations. ex. editing school details.
  * @param {Object} req
@@ -369,24 +354,6 @@ function verifyQueryParamValueMatchesBodyValue(req, paramKey, bodyKey) {
  */
 function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
   checkEDXUserSchoolAdminPermission(req);
-
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
-}
-
-function checkEDXUserCanViewSchoolData(req, instituteIdentifier) {
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
-}
-
-function checkEDXUserAccessForSchoolEditFunctions(req, instituteIdentifier) {
-  checkEDXUserHasPermission(req, 'EDX_SCHOOL_EDIT');
 
   if (req.session.activeInstituteType === 'SCHOOL') {
     checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
@@ -448,12 +415,8 @@ const utils = {
   getCodeTable,
   checkEDXUserDistrictAdminPermission,
   checkEDXUserAccess,
-  checkSchoolBelongsToEDXUserDistrict,
   checkEDXUserAccessForSchoolAdminFunctions,
-  checkEDXUserAccessForSchoolEditFunctions,
-  checkEDXUserCanViewSchoolData,
   checkEDXUserHasPermission,
-  verifyQueryParamValueMatchesBodyValue,
   logApiError,
   checkEDXCollectionPermission,
   isPdf,

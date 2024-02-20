@@ -2,6 +2,7 @@
 const { logApiError, errorResponse} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const cacheService = require('./cache-service');
+const log = require('./logger');
 
 function getDistricts(req, res) {
   try {
@@ -70,6 +71,23 @@ async function getCachedAuthorities(req, res) {
   }
 }
 
+function doesSchoolBelongToDistrict(schoolID, districtID) {
+  let school = cacheService.getSchoolBySchoolID(schoolID);
+  if (!school) {
+    log.warn('A school wasn\'t found with the specified schoolID when doesSchoolBelongToDistrict was called.');
+    return false;
+  }
+  return school.districtID === districtID;
+}
+
+function isSchoolAnOffshoreSchool(schoolID) {
+  let school = cacheService.getSchoolBySchoolID(schoolID);
+  if (!school) {
+    log.warn('A school wasn\'t found with the specified schoolID when isSchoolAnOffshoreSchool was called.');
+    return false;
+  }
+  return school.schoolCategoryCode === 'OFFSHORE';
+}
 
 module.exports = {
   getDistricts,
@@ -77,5 +95,7 @@ module.exports = {
   getSchools,
   getCachedInstituteData,
   getCachedAuthorities,
-  getAuthorityByID
+  getAuthorityByID,
+  doesSchoolBelongToDistrict,
+  isSchoolAnOffshoreSchool
 };
