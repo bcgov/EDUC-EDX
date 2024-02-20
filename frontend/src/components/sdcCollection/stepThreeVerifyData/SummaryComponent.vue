@@ -216,7 +216,11 @@ export default {
       case 'enrollment':
         return 'Grade Enrolment & Eligible FTE';
       case 'ell':
-        return 'English Language Learning Headcount';
+        return 'Eligible English Language Learning Headcount';
+      case 'special-ed':
+        return 'Eligible Special Education Headcount';
+      case 'indigenous':
+        return 'Eligible Indigenous Support Program Headcount';
       }
     },
     compare() {

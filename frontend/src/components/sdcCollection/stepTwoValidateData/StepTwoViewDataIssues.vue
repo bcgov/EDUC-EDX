@@ -42,7 +42,7 @@
                   <span
                     id="errorCount"
                     style="font-size: x-large"
-                  >{{ summaryCounts.error }}</span>
+                  >{{ errorCount }}</span>
                 </div>
               </div>
               <div class="divider flex-grow-1">
@@ -58,7 +58,7 @@
                   <span
                     id="fundingWarningCount"
                     style="font-size: x-large"
-                  >{{ summaryCounts.fundingWarning }}</span>
+                  >{{ fundingWarningCount }}</span>
                 </div>
               </div>
               <div class="flex-grow-1">
@@ -74,7 +74,7 @@
                   <span
                     id="infoWarningCount"
                     style="font-size: x-large"
-                  >{{ summaryCounts.infoWarning }}</span>
+                  >{{ infoWarningCount }}</span>
                 </div>
               </div>
             </v-col>
@@ -399,7 +399,9 @@ export default {
       fundingWarningCategoryFilter: null,
       loadingCount: 0,
       allIssueLoader:false,
-      summaryCounts: {error: 0, infoWarning: 0, fundingWarning:0},
+      errorCount: 0,
+      fundingWarningCount: 0,
+      infoWarningCount: 0,
       headerSearchParams: {
         penNumber: '',
         sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN'
@@ -498,20 +500,30 @@ export default {
         });
     },
     nextButtonIsDisabled(){
-      return this.summaryCounts.error > 0 || this.isLoading();
+      return this.errorCount > 0 || this.isLoading();
     },
     getSummaryCounts(){
       this.loadingCount += 1;
 
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/stats/error-warning-count/${this.$route.params.schoolCollectionID}`, {
       }).then(response => {
-        this.summaryCounts = response.data;
+        this.setCounts(response?.data);
       }).catch(error => {
         console.error(error);
         setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get summary counts. Please try again later.');
       }).finally(() => {
         this.loadingCount -= 1;
       });
+    },
+    setCounts(summaryCounts) {
+      let error = summaryCounts.find(val => val.severityCode === 'ERROR');
+      let fundingWarn = summaryCounts.find(val => val.severityCode === 'FUNDING_WARNING');
+      let infoWarn = summaryCounts.find(val => val.severityCode === 'INFO_WARNING');
+
+      this.errorCount = error === undefined ? 0 : error.total;
+      this.fundingWarningCount = fundingWarn === undefined ? 0 : fundingWarn.total;
+      this.infoWarningCount = infoWarn === undefined ? 0 : infoWarn.total;
+
     },
     async getSDCSchoolCollectionStudentPaginated(){
       this.loadingCount += 1;
@@ -596,8 +608,14 @@ export default {
       }
       return '';
     },
-    getIssueCount(validationIssueSeverityCode, validationIssues) {
-      return validationIssues?.filter(issues => issues.validationIssueSeverityCode === validationIssueSeverityCode)?.length;
+    getIssueCount(validationIssueSeverityCode, validationIssues = []){
+      let validationIssueMap = new Map();
+      for (let issue of validationIssues) {
+        if (!validationIssueMap.has(issue.validationIssueCode)) {
+          validationIssueMap.set(issue.validationIssueCode, issue);
+        } 
+      }
+      return Array.from(validationIssueMap.values()).filter(issues => issues.validationIssueSeverityCode === validationIssueSeverityCode)?.length;
     }
   }
 };

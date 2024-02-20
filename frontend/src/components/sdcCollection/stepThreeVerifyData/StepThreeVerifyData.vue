@@ -21,49 +21,70 @@
         transition="false"
         reverse-transition="false"
       >
-        <FTEComponent :school="school" />
+        <FTEComponent
+          v-if="tab==='FTE'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="French Programs"
         transition="false"
         reverse-transition="false"
       >
-        <FrenchProgramsComponent :school="school" />
+        <FrenchProgramsComponent
+          v-if="tab==='French Programs'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="Career Programs"
         transition="false"
         reverse-transition="false"
       >
-        <CareerProgramsComponent :school="school" />
+        <CareerProgramsComponent
+          v-if="tab==='Career Programs'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="Indigenous Students & Support Programs"
         transition="false"
         reverse-transition="false"
       >
-        <IndSupportProgramsComponent :school="school" />
+        <IndSupportProgramsComponent
+          v-if="tab==='Indigenous Students & Support Programs'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="Special Education"
         transition="false"
         reverse-transition="false"
       >
-        <SpecialEduComponent :school="school" />
+        <SpecialEduComponent
+          v-if="tab==='Special Education'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="English Language Learning"
         transition="false"
         reverse-transition="false"
       >
-        <EnglishLangComponent :school="school" />
+        <EnglishLangComponent
+          v-if="tab==='English Language Learning'"
+          :school="school"
+        />
       </v-window-item>
       <v-window-item
         value="Refugee"
         transition="false"
         reverse-transition="false"
       >
-        <RefugeeComponent :school="school" />
+        <RefugeeComponent
+          v-if="tab==='Refugee'"
+          :school="school"
+        />
       </v-window-item>
     </v-window>
     <v-alert

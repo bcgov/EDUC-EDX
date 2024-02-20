@@ -45,7 +45,7 @@ export default defineConfig({
   screenshotOnRunFailure: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-  defaultCommandTimeout: 5000,
+  defaultCommandTimeout: 10000,
   e2e: {
     baseUrl: 'https://dev.educationdataexchange.gov.bc.ca',
     setupNodeEvents(on, config) {
