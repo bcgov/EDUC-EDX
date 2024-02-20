@@ -46,19 +46,6 @@
             @click="save"
           />
         </v-col>
-        <!-- <v-col
-          cols="1"
-          class="d-flex justify-end"
-        >
-          <v-btn
-            id="save"
-            class="ml-4"
-            color="#003366"
-            text="Save"
-            :disabled="!studentDetailsFormValid"
-            @click="save"
-          />
-        </v-col> -->
       </v-row>
 
       <EditStudent
