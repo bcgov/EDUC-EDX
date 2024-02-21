@@ -89,7 +89,7 @@
           <v-row>
             <v-col>
               <h3 class="heading">
-                Student Records with Data Issues
+                Records with Data Issues
               </h3>
             </v-col>
           </v-row>
@@ -99,10 +99,14 @@
               class="d-flex flex-wrap justify-space-evenly"
               style="text-align: center;"
             >
-              <span
-                id="totalStudentsWithIssuesCount"
-                style="font-size: x-large"
-              >{{ numIssueStudentsInCollection }}</span>
+              <div class="divider flex-grow-1">
+                <span class="section-heading">Total Students</span>
+                <br>
+                <span
+                  id="totalStudentsWithIssuesCount"
+                  style="font-size: x-large"
+                >{{ numIssueStudentsInCollection }}</span>
+              </div>
             </v-col>
           </v-row>
         </v-row>
