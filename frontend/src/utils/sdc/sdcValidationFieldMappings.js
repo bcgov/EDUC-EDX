@@ -1,5 +1,5 @@
 import * as formRules from '../../utils/institute/formRules';
-import {isValidPEN} from '../../utils/validation';
+import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 
 // contains the mappings for validation field errors used in StepTwoValidateData.vue
 // type: refers to the type of user input example input => <v-text-input>, select => <v-select>
@@ -14,7 +14,7 @@ import {isValidPEN} from '../../utils/validation';
 
 export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   LOCALID: {label: 'Local ID', key: 'localID', type: 'input', options: {maxlength: '12'}},
-  STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {maxlength: '9', rules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Must be a valid PEN')]}},
+  STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {maxlength: '9', rules: [v => isValidPEN(v) || 'Must be a valid PEN']}},
   LEGAL_FIRST_NAME: {label: 'Legal Given', key: 'legalFirstName', type: 'input', options: {maxlength: '255'}},
   LEGAL_MIDDLE_NAMES: {label: 'Legal Middle', key: 'legalMiddleNames', type: 'input', options: {maxlength: '255'}},
   LEGAL_LAST_NAME: {label: 'Legal Surname', key: 'legalLastName', type: 'input', options: {maxlength: '255', rules: [formRules.required()]}},
@@ -31,7 +31,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   OTHER_COURSES: {label: 'Other Courses', key: 'otherCourses', type: 'input', options: {maxlength: '1'}},
   SUPPORT_BLOCKS: {label: 'Support Blocks', key: 'supportBlocks', type: 'input', options: {maxlength: '1'}},
   ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
-  ENROLLED_PROGRAM_CODE: {label: 'Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {rules:[v => v.length <= 8 || 'Select a maximum of 8 Enrolled Programs'], items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}},
+  ENROLLED_PROGRAM_CODE: {label: 'Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {rules:[v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs'], items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}},
   CAREER_PROGRAM_CODE: {label: 'Career Code', key: 'careerProgramCode', type: 'select', options: {items: 'careerProgramCodes', itemValue: 'careerProgramCode'}},
   NUMBER_OF_COURSES: {label: 'Number of Courses', key: 'numberOfCourses', type: 'input', options: {maxlength: '4'}},
   BAND_CODE: {label: 'Band Codes', key: 'bandCode', type: 'select', options: {items: 'bandCodes', itemValue: 'bandCode'}},

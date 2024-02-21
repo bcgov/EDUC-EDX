@@ -444,7 +444,7 @@ import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/a
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {isValidPEN} from '../../utils/validation';
+import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
@@ -480,7 +480,7 @@ export default {
   data() {
     return {
       page: 1,
-      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
+      penRules: [v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
       sdcFieldMappings: SDC_VALIDATION_FIELD_MAPPINGS,
       sdcCollection: sdcCollectionStore(),
       selectedSdcStudentID: null,
@@ -491,7 +491,7 @@ export default {
       rules: Rules,
       studentDetailsFormValid:false,
       removeIndex: null,
-      enrolledProgramRules: [v => v?.length <= 8 || 'Select a maximum of 8 Enrolled Programs']
+      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs']
     };
   },
   computed: {
