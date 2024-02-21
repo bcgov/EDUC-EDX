@@ -48,7 +48,6 @@
               :key="i"
             >
               <v-btn
-                v-if="isVisible(filter?.key, option?.value)"
                 :id="option?.id"
                 :value="option"
                 class="filter-button"
@@ -234,14 +233,6 @@ export default {
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
       this.$emit('closeFilters', filtersToCheck);
-    },
-    isVisible(key, value){
-      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
-        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
-      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
-        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
-      }
-      return true;
     },
     setFilterValue(key, val) {
       return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;

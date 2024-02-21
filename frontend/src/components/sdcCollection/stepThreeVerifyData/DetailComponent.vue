@@ -24,18 +24,9 @@
               class="d-flex justify-start filter-col"
               cols="6"
             >
-              <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length === 0">
-                No filters applied
-              </p>
-
-              <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description !== ''">
+ 
+              <span v-if="filterSearchParams.moreFilters.length > 0">
                 <v-chip-group>
-                  <v-chip
-                    v-if="config.defaultFilter.description"
-                    class="chip-margin"
-                  >
-                    {{ config.defaultFilter.description }}
-                  </v-chip>
                   <span
                     v-for="(filter, index) in filterSearchParams.moreFilters"
                     :key="index"
