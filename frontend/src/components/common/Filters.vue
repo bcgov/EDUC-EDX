@@ -99,7 +99,7 @@
                   variant="outlined"
                   density="compact"
                   class="slider-text"
-                  onkeydown="return false"
+                  :readonly="true"
                   @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                 />
               </template>
@@ -114,7 +114,7 @@
                   variant="outlined"
                   density="compact"
                   class="slider-text"
-                  onkeydown="return false"
+                  :readonly="true"
                   @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                 />
               </template>
@@ -175,11 +175,11 @@ export default {
           let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
           if(toRemoveFilters.removeKey === 'bandResidence') {
             this.bandCodeValue = null;
-          } else if(filteredKey === undefined) {
-            const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
-            this.selected.splice(idx, 1, null);
-          } else if(filteredKey === 'numberOfCoursesDec') {
+          } else if (toRemoveFilters.removeKey === 'numberOfCoursesDec') {
             this.courseRange = [...this.courseRangeDefault];
+          } else if(filteredKey === undefined) {
+            const idx = this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
+            this.selected.splice(idx, 1, null);
           } else {
             this.selected.map(filter => {
               if(Array.isArray(filter) && filter.every(val => filteredKey.includes(val))) {
