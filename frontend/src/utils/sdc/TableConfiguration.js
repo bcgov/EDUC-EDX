@@ -39,6 +39,11 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
         title: 'Adult',
         id: 'isAdult',
         value: 'isAdult'
+      },
+      {
+        title: 'Under School Aged',
+        id: 'isUnderSchoolAged',
+        value: 'isUnderSchoolAged'
       }
     ]
   },

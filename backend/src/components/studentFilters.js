@@ -493,6 +493,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     if (pValue.includes('isAdult')) {
       studentTypeFilterList.push({ key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
     }
+    if (pValue.includes('isUnderSchoolAged')) {
+      studentTypeFilterList.push({ key: 'isSchoolAged', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+      studentTypeFilterList.push({ key: 'isAdult', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.AND });
+    }
     return studentTypeFilterList;
   }
 
