@@ -83,6 +83,24 @@ function findSchoolID_body(req, res, next) {
 }
 
 //Find District IDs
+function findDistrictID_params(req, res, next) {
+  res.locals.requestedInstituteType = 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.params.districtID;
+  return next();
+}
+
+function findDistrictID_body(req, res, next) {
+  res.locals.requestedInstituteType = 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.body.districtID;
+  return next();
+}
+
+function findDistrictId_body(req, res, next) {
+  res.locals.requestedInstituteType = 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.body.districtId;
+  return next();
+}
+
 function findDistrictID_querySearchParams(req, res, next) {
   res.locals.requestedInstituteType = 'DISTRICT';
   res.locals.requestedInstituteIdentifier = req.query.searchParams.districtID;
@@ -105,6 +123,9 @@ const permUtils = {
   findSchoolID_query,
   findSchoolID_params,
   findSchoolID_body,
+  findDistrictID_params,
+  findDistrictID_body,
+  findDistrictId_body,
   findDistrictID_querySearchParams
 };
 

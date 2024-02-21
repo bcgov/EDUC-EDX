@@ -416,7 +416,6 @@ const utils = {
   checkEDXUserDistrictAdminPermission,
   checkEDXUserAccess,
   checkEDXUserAccessForSchoolAdminFunctions,
-  checkEDXUserHasPermission,
   logApiError,
   checkEDXCollectionPermission,
   isPdf,
