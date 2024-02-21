@@ -320,6 +320,9 @@ describe('SDC School Collection View', () => {
       //check summary headcounts
       cy.get(selectors.ellComponent.summaryButton).click();
       cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
+
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
+      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).find('td').last().should('contain', '2');
     });
 
     it('verifies special education category for reported students', () => {
