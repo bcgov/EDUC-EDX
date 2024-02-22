@@ -347,8 +347,8 @@ export default {
       student.mappedEllEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
-      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? this.bandCodesMap.get(student.bandCode)?.bandCode + '-' + this.bandCodesMap.get(student.bandCode)?.description : null;
-      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode + '-' +  this.careerProgramCodesMap.get(student.careerProgramCode)?.description : null;
+      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? `${this.bandCodesMap.get(student.bandCode)?.description} (${this.bandCodesMap.get(student.bandCode)?.bandCode})` : null;
+      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${this.careerProgramCodesMap.get(student.careerProgramCode)?.description} (${this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
       student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
       student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
