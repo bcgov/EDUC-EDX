@@ -122,10 +122,13 @@
       {{ getTitle() }}
     </v-col>
     <v-col class="text-right">
-      <a>
+      <router-link
+          :to="{ path: downloadReportURL() }"
+          target="_blank"
+      >
         <v-icon>mdi-tray-arrow-down</v-icon>
         Download Report
-      </a>
+      </router-link>
     </v-col>
   </v-row>
   <slot
@@ -188,6 +191,9 @@ export default {
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    downloadReportURL() {
+      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.headcountType}/download`;
     },
     getComparisonIcon(comparisonValue, currentValue) {
       if(comparisonValue > currentValue) {
