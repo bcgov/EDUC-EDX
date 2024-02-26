@@ -7,6 +7,9 @@
       <tr>
         <th scope="col" />
         <th scope="col">
+          Under School-Aged Students
+        </th>
+        <th scope="col">
           School-Aged Students
         </th>
         <th scope="col">
@@ -25,6 +28,11 @@
       >
         <td class="section-header-title">
           {{ row }}
+        </td>
+        <td :class="{'table-cell': true, 'zero-cell': findCellValue('Under School Aged', row)==='0'}">
+          <span>
+            {{ findCellValue('Under School Aged', row) }}
+          </span>
         </td>
         <td :class="{'table-cell': true, 'zero-cell': findCellValue('School Aged', row)==='0'}">
           <span>
