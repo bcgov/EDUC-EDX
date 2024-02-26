@@ -123,7 +123,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core French' || value === '11-Early French Immersion';
+            return value === 'Core French (08)' || value === 'Early French Immersion (11)';
           });
         });
       });
@@ -310,13 +310,13 @@ describe('SDC School Collection View', () => {
       // Find the table row with the student pen that should have 3 years of ell
       cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('101932770').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
-          expect(text).equal('17-English Language Learning3');
+          expect(text).equal('English Language Learning (17)3');
         });
 
       // Find the table row with the student pen that should have no record of years in ell yet
       cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('102866365').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
-          expect(text).equal('17-English Language Learning-');
+          expect(text).equal('English Language Learning (17)-');
         });
 
       //check summary headcounts
@@ -339,7 +339,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically Dependent' || value === 'G-Autism Spectrum Disorder';
+            return value === 'Physically Dependent (A)' || value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
