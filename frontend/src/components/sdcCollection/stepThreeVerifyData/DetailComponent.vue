@@ -24,7 +24,6 @@
               class="d-flex justify-start filter-col"
               cols="6"
             >
- 
               <span v-if="filterSearchParams.moreFilters.length > 0">
                 <v-chip-group>
                   <span
