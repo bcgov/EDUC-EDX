@@ -95,7 +95,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically Dependent';
+            return value === 'Physically Dependent (A)';
           });
         });
       });
@@ -111,7 +111,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'G-Autism Spectrum Disorder';
+            return value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
@@ -187,7 +187,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '11-Early French Immersion';
+            return value === 'Early French Immersion (11)';
           });
         });
       });
@@ -212,7 +212,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core French';
+            return value === 'Core French (08)';
           });
         });
       });
@@ -302,7 +302,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '17-English Language Learning3';
+            return value === 'English Language Learning (17)3';
           });
         });
       });
@@ -327,7 +327,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '17-English Language Learning3' || value === '17-English Language Learning-';
+            return value === 'English Language Learning (17)3' || value === 'English Language Learning (17)-';
           });
         });
       });
