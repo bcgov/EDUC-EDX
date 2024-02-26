@@ -62,10 +62,7 @@
               hide-details="true"
               @click.prevent.stop="onClick(props)"
             />
-            <v-tooltip
-              v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
-              bottom
-            >
+            <v-tooltip v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'">
               <template #activator="{ on, attrs }">
                 <v-icon
                   v-bind="attrs"
