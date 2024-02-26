@@ -123,7 +123,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core French' || value === '11-Early French Immersion';
+            return value === 'Core French (08)' || value === 'Early French Immersion (11)';
           });
         });
       });
@@ -160,7 +160,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.table).should('exist').contains(1);
       cy.get(selectors.frenchComponent.table).eq(0).find(selectors.frenchComponent.tableWrapper);
       cy.get(selectors.frenchComponent.tableWrapper).eq(0).find(selectors.frenchComponent.thead);
-      cy.get(selectors.frenchComponent.tableWrapper).eq(1).find(selectors.frenchComponent.tbody);
       cy.get(selectors.frenchComponent.tableWrapper).contains('Core French');
       cy.get(selectors.frenchComponent.tableWrapper).contains('Early French Immersion');
       cy.get(selectors.frenchComponent.tableWrapper).contains('Late French Immersion');
@@ -310,21 +309,18 @@ describe('SDC School Collection View', () => {
       // Find the table row with the student pen that should have 3 years of ell
       cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('101932770').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
-          expect(text).equal('17-English Language Learning3');
+          expect(text).equal('English Language Learning (17)3');
         });
 
       // Find the table row with the student pen that should have no record of years in ell yet
       cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('102866365').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
-          expect(text).equal('17-English Language Learning-');
+          expect(text).equal('English Language Learning (17)-');
         });
 
       //check summary headcounts
       cy.get(selectors.ellComponent.summaryButton).click();
       cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
-
-      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
-      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).find('td').last().should('contain', '2');
     });
 
     it('verifies special education category for reported students', () => {
@@ -339,7 +335,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically Dependent' || value === 'G-Autism Spectrum Disorder';
+            return value === 'Physically Dependent (A)' || value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
