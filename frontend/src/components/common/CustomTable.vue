@@ -62,19 +62,20 @@
               hide-details="true"
               @click.prevent.stop="onClick(props)"
             />
-            <v-tooltip v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'">
-              <template #activator="{ on, attrs }">
+            <v-tooltip
+              v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
+              location="bottom"
+            >
+              <template #activator="{ on }">
                 <v-icon
-                  v-bind="attrs"
+                  v-bind="on"
                   size="25"
                   :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
-                  v-on="on"
-                  @click.prevent.stop="onClick(props)"
                 >
                   {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
                 </v-icon>
               </template>
-              <span>{{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}</span>
+              {{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
             </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'legalName'">
