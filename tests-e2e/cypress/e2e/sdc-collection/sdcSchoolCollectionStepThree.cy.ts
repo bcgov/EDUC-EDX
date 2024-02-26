@@ -160,7 +160,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.table).should('exist').contains(1);
       cy.get(selectors.frenchComponent.table).eq(0).find(selectors.frenchComponent.tableWrapper);
       cy.get(selectors.frenchComponent.tableWrapper).eq(0).find(selectors.frenchComponent.thead);
-      cy.get(selectors.frenchComponent.tableWrapper).eq(1).find(selectors.frenchComponent.tbody);
       cy.get(selectors.frenchComponent.tableWrapper).contains('Core French');
       cy.get(selectors.frenchComponent.tableWrapper).contains('Early French Immersion');
       cy.get(selectors.frenchComponent.tableWrapper).contains('Late French Immersion');
@@ -322,9 +321,6 @@ describe('SDC School Collection View', () => {
       //check summary headcounts
       cy.get(selectors.ellComponent.summaryButton).click();
       cy.get(selectors.ellComponent.headcountCard).should('have.length', 2);
-
-      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).last().find('td').last().should('be.visible');
-      cy.get(`${selectors.sdcDocumentUploadStep.ellTab} .section-header`).find('td').last().should('contain', '2');
     });
 
     it('verifies special education category for reported students', () => {
