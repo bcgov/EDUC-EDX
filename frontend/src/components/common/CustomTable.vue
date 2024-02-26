@@ -64,18 +64,16 @@
             />
             <v-tooltip
               v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
-              location="bottom"
+              :text="getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
             >
-              <template #activator="{ on }">
+              <template #activator="{ props }">
                 <v-icon
-                  v-bind="on"
+                  v-bind="props"
                   size="25"
-                  :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
                 >
-                  {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+                  mdi-information-outline
                 </v-icon>
               </template>
-              {{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
             </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'legalName'">
@@ -249,7 +247,6 @@ export default {
       } else if (status === 'INFOWARN') {
         return 'Info Warning';
       }
-      return '';
     },
     displayName(first, middle, last) {
       let name = '';
