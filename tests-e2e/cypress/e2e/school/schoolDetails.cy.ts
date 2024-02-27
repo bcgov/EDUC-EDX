@@ -8,18 +8,18 @@ describe('School Details Interface Test', () => {
       cy.task<AppSetupData>('dataLoad').then(() => {
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolRoles: ['EDX_EDIT_SCHOOL'], schoolCodes: ['99998'] });
       });
-    })
+    });
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
     it('can load the details page and validate the website url field', () => {
-      cy.visit('/')
-      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
-      cy.get("@schoolName").then(() => {
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
+      cy.get('@schoolName').then(() => {
         cy.get(selectors.schoolDetails.addWebsiteLink).click();
         const websiteField = () => cy.get(selectors.schoolDetails.schoolDetailsWebsite);
         const websiteWrapper = vInputParentOf(websiteField);
@@ -45,27 +45,27 @@ describe('School Details Interface Test', () => {
 
     it('can view legacy safe name', () => {
       cy.intercept('/').as('home');
-      cy.visit('/')
+      cy.visit('/');
       cy.wait('@home');
-      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
-      cy.get("@schoolName").then(() => {
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
+      cy.get('@schoolName').then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
-      })
+      });
     });
 
     it('can edit grades offered if the school is not an independent or an independent first nations school', () => {
-      cy.visit('/')
-      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing School');
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.wait('@schoolDetails');
-      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
-      cy.get("@schoolName").then(() => {
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
+      cy.get('@schoolName').then(() => {
         cy.get(selectors.schoolDetails.editButton).click();
 
         cy.get(selectors.schoolDetails.schoolGradesDropdown).should('exist').then(() => {
@@ -74,9 +74,9 @@ describe('School Details Interface Test', () => {
           cy.get(selectors.schoolDetails.saveButton).click();
           cy.get(selectors.schoolDetails.resolveButton).click();
 
-          cy.get(selectors.schoolDetails.schoolGradesValue).should("be.visible").should("contain", "1");
+          cy.get(selectors.schoolDetails.schoolGradesValue).should('be.visible').should('contain', '1');
         });
-      })
+      });
     });
 
     context('with an independent school', () => {
@@ -85,15 +85,15 @@ describe('School Details Interface Test', () => {
       after(() => cy.logout());
       it('cannot edit grades offered if the school is an independent school', () => {
         cy.visit('/');
-        cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing School');
+        cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing School');
         cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
         cy.get(selectors.dashboard.schoolDetailsCard).click();
         cy.wait('@schoolDetails');
-        cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
-        cy.get("@schoolName").then(() => {
+        cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
+        cy.get('@schoolName').then(() => {
           cy.get(selectors.schoolDetails.editButton).click();
           cy.get(selectors.schoolDetails.schoolGradesDropdown).should('not.exist');
-        })
+        });
       });
 
       it('can edit school fields', () => {
@@ -133,14 +133,14 @@ describe('School Details Interface Test', () => {
       cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
       cy.intercept(Cypress.env('interceptors').districts).as('districts');
       cy.wait('@districts');
-      cy.get(selectors.dashboard.title).should("be.visible").contains('Dashboard | EDX Automation Testing District');
+      cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title).should("be.visible").contains('Schools | EDX Automation Testing');
-      cy.get(selectors.schoolList.schoolRow).should("be.visible").click();
+      cy.get(selectors.dashboard.title).should('be.visible').contains('Schools | EDX Automation Testing');
+      cy.get(selectors.schoolList.schoolRow).should('be.visible').click();
 
       cy.wait('@schoolDetails');
-      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should("be.visible").invoke("text").as("schoolName");
-      cy.get("@schoolName").then(() => {
+      cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
+      cy.get('@schoolName').then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).contains('Legacy Safe Name');
       });
@@ -156,10 +156,10 @@ describe('School Details Interface Test', () => {
           schoolCodes: ['99998'] });
       });
     });
-    beforeEach(() => cy.login())
+    beforeEach(() => cy.login());
 
     it('checks if no edit and add button show up', () => {
-      cy.visit('/')
+      cy.visit('/');
       cy.get(selectors.dashboard.schoolDetailsCard).click();
       cy.get(selectors.schoolDetails.editableFieldAlert).should('not.exist');
       cy.get(selectors.schoolDetails.addAddressButton).should('not.exist');
