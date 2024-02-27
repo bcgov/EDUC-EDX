@@ -31,14 +31,14 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
     key: 'studentType',
     filterOptions: [
       {
-        title: 'School Aged',
-        id: 'isSchoolAged',
-        value: 'isSchoolAged'
-      },
-      {
         title: 'Adult',
         id: 'isAdult',
         value: 'isAdult'
+      },
+      {
+        title: 'School Aged',
+        id: 'isSchoolAged',
+        value: 'isSchoolAged'
       },
       {
         title: 'Under School Aged',
