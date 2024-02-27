@@ -256,8 +256,8 @@ describe('SDC School Collection View', () => {
 
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasBandCode).click();
-        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('0500 - KWANLIN DUN');
-        cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('0500 - KWANLIN DUN').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('KWANLIN DUN (0500)');
+        cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('KWANLIN DUN (0500)').click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
         
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
