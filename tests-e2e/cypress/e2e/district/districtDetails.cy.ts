@@ -10,7 +10,7 @@ describe('District Details Interface Test', () => {
 
     it('can load district details and checks field validation', () => {
       cy.visit('/');
-      cy.get(selectors.dashboard.title).contains('Dashboard | Rocky Mountain');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
 
@@ -59,9 +59,9 @@ describe('District Details Interface Test', () => {
 
     it('checks if the changes in edit are correct', () => {
       cy.visit('/districtDetails');
-      cy.get(selectors.dashboard.title).contains('Dashboard | Rocky Mountain');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
-      cy.get(selectors.dashboard.title).contains('District Details | Rocky Mountain');
+      cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
       cy.get(selectors.districtDetails.editDistrictPhone).should('have.value', '2505555555');
       cy.get(selectors.districtDetails.editDistrictFax).should('have.value', '1112223333');
