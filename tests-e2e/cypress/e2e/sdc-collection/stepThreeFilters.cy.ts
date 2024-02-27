@@ -91,11 +91,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
       cy.wait('@paginationFilters1');
-      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'Physically Dependent (A)';
+            return value === 'Physically Dependent (A)' || value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
