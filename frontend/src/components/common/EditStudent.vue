@@ -39,6 +39,7 @@
                   <v-row>
                     <v-col>
                       <DatePicker
+                        id="dobPicker"
                         v-model="sdcSchoolCollectionStudentDetailCopy.dob"
                         label="Birthdate"
                         :rules="[rules.required()]"
@@ -370,6 +371,7 @@
                             />
                             <div v-else-if="sdcFieldMappings[field]?.type === 'datePicker'">
                               <DatePicker
+                                :id="`${sdcFieldMappings[field].key}DatePicker`"
                                 v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
                                 :label="sdcFieldMappings[field]?.label"
                                 :rules="sdcFieldMappings[field].options.rules"

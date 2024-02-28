@@ -41,7 +41,7 @@
           @form-validity="isValid"
           @reset-parent="reset()"
           @student-object="setStudentContext"
-          @close-success="cancel"
+          @close-success="openinEditMode"
         />
       </v-card-text>
     </v-card>
@@ -60,7 +60,7 @@
     mixins: [alertMixin],
     props: {
     },
-    emits: ['close'],
+    emits: ['close', 'open-edit'],
     data() {
       return {
         selectedStudent: [],
@@ -84,14 +84,17 @@
       save() {
         this.saveStudent =true;
       },
-      cancel($event) {
-        this.$emit('close', $event);
+      cancel() {
+        this.$emit('close');
       },
       isValid($event) {
         this.studentDetailsFormValid = $event;
       },
       reset() {
         this.saveStudent =false;
+      },
+      openinEditMode($event) {
+        this.$emit('open-edit', $event);
       }
     }
   };
