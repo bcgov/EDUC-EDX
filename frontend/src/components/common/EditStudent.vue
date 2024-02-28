@@ -725,6 +725,24 @@ export default {
         return '';
       }
     },
+    getAssignedPen(assignedPen, studentPen){
+      if (!assignedPen) {
+        return 'waiting on fixes';
+      } else if (assignedPen === studentPen) {
+        return assignedPen;
+      } else {
+        return 'under review';
+      }
+    },
+    getAssignedPenTooltip(assignedPen, studentPen){
+      if (!assignedPen) {
+        return 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
+      } else if (assignedPen === studentPen) {
+        return 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
+      } else {
+        return 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
+      }
+    },
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
     },
