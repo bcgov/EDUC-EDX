@@ -80,14 +80,16 @@ describe('SDC School Collection View', () => {
       //check summary headcounts
       cy.get(selectors.fteComponent.summaryButton).click();
       cy.get(selectors.fteComponent.headcountCard).should('have.length', 2);
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).should('have.length', 3);
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).should('have.length', 4);
       cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountHeader).should('contain.text', 'Student Headcount');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'School Aged');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(0).children('span').should('contain.text', '3');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Adult');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(1).children('span').should('contain.text', '0');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'All Students');
-      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(2).children('span').should('contain.text', '3');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Under School Aged');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(0).children('span').should('contain.text', '0');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'School Aged');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(1).children('span').should('contain.text', '3');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Adult');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(2).children('span').should('contain.text', '0');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(3).children('div').should('contain.text', 'All Students');
+      cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(3).children('span').should('contain.text', '3');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountHeader).should('contain.text', 'Grade Headcount');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).should('have.length', 2);
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').should('contain.text', '09');
@@ -101,6 +103,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).contains('School Aged');
       cy.get(selectors.fteComponent.tableWrapper).contains('Adult');
       cy.get(selectors.fteComponent.tableWrapper).contains('All Students');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedHeadcount).should('contain.text', '0');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedEligibleFTE).should('contain.text', '0');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedTotal).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '2.8750');
