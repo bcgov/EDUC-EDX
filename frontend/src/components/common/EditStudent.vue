@@ -34,7 +34,7 @@
                               size="25"
                               :color="getIssueIconColor('INFO_WARNING')"
                             >
-                              mdi-comment-question-outline
+                              mdi-help-circle-outline
                             </v-icon>
                           </template>
                           {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
