@@ -96,13 +96,14 @@
           cols="8"
           class="d-flex justify-end"
         >
-          <PrimaryButton
+          <v-btn
             id="add"
-            secondary
+            color="#003366"
             text="Add Student"
             class="mr-1 mb-1"
-            large-icon
-            icon="mdi-plus"
+            prepend-icon="mdi-plus"
+            variant="outlined"
+            @click="addStudent"
           />
           <v-btn
             id="remove"
@@ -173,6 +174,17 @@
       @close="editStudentSheet = !editStudentSheet; loadStudents()"
     />
   </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="addStudentSheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <AddStudentDetails
+      @close="closeAddStudentWindow"
+    />
+  </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
     <template #message>
       <p>Are you sure that you would like to remove the selected student(s) from the 1701 submission?</p>
@@ -194,6 +206,7 @@ import Filters from '../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import ViewStudentDetailsComponent from './ViewStudentDetailsComponent.vue';
+import AddStudentDetails from './AddStudentDetails.vue';
 
 export default {
   name: 'DetailComponent',
@@ -202,7 +215,8 @@ export default {
     PrimaryButton,
     CustomTable,
     Filters,
-    ViewStudentDetailsComponent
+    ViewStudentDetailsComponent,
+    AddStudentDetails
   },
   mixins: [alertMixin],
   props: {
@@ -238,6 +252,7 @@ export default {
       updatedFilters: {},
       studentForEdit: [],
       editStudentSheet: false,
+      addStudentSheet: false,
       resetFlag: false
     };
   },
@@ -256,6 +271,13 @@ export default {
       this.studentForEdit.splice(0);
       this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
       this.editStudentSheet = true;
+    },
+    closeAddStudentWindow($event) {
+      this.addStudentSheet = !this.addStudentSheet; 
+      this.editStudent($event);
+    },
+    addStudent() {
+      this.addStudentSheet = true;
     },
     updateFilters($event) {
       this.showFilters=!this.showFilters;

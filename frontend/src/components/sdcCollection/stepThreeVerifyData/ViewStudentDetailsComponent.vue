@@ -41,7 +41,7 @@
             id="save"
             color="#003366"
             text="Save"
-            class="ml-3"
+            class="ml-1"
             :disabled="!studentDetailsFormValid"
             @click="save"
           />

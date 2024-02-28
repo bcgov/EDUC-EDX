@@ -5,8 +5,8 @@
       <div
         v-else
       >
-        <v-row>
-          <v-col cols="6">
+        <v-row> 
+          <v-col cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6">
             <v-form
               ref="studentDetailsForm"
               v-model="studentDetailsFormValid"
@@ -284,7 +284,8 @@
               </v-row>
             </v-form>
           </v-col>
-          <v-divider
+
+            <v-divider v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues !== undefined"
             :thickness="1"
             inset
             color="#b3b0b0"
@@ -389,6 +390,9 @@
               </v-col>
             </v-row>
           </v-col>
+
+          
+          
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
               dismissible="true"
@@ -406,7 +410,8 @@
           </v-col>
         </v-row>
       </div>
-      <div class="text-center">
+      <div v-if="functionType !== 'add'">
+        <div class="text-center">
         <v-pagination 
           v-model="page"
           :length="selectedStudents.length"
@@ -414,16 +419,18 @@
           rounded="circle"
           @update:model-value="navigate"
         />
+        </div>
+        <div class="text-center">
+          <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
+          <a
+            v-if="selectedStudents.length < totalStudents"
+            id="clearFilters"
+            class="filter-text"
+            @click="clearFilter()"
+          >- Clear Filters & Show all Records</a>
+        </div>
       </div>
-      <div class="text-center">
-        <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-        <a
-          v-if="selectedStudents.length < totalStudents"
-          id="clearFilters"
-          class="filter-text"
-          @click="clearFilter()"
-        >- Clear Filters & Show all Records</a>
-      </div>
+      
     </v-col>
     <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
       <template #message>
@@ -474,9 +481,14 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    functionType: {
+      type: String,
+      required: false,
+      default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object'],
+  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object', 'close-success'],
   data() {
     return {
       page: 1,
@@ -524,6 +536,16 @@ export default {
       handler() {
         this.$emit('form-validity', this.studentDetailsFormValid);
       }
+    },
+    functionType: {
+      handler(value) {
+        if(value === 'add') {
+          this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentStatusCode= 'LOADED';
+          this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionID= this.$route.params.schoolCollectionID;
+          this.$nextTick().then(this.validateForm);
+        }
+      },
+      immediate: true
     }
   },
   mounted() {
@@ -571,14 +593,19 @@ export default {
     },
     save(){
       this.loadingCount += 1;
-      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
             setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');
             this.filterSdcSchoolCollectionStudentAndPopulateProperties(res.data);
           } else {
             setSuccessAlert('Success! The student details have been updated.');
-            this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
+            if(this.functionType === 'add') {
+              this.$emit('close-success', res.data);
+            }
+            else {
+              this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
+            }
           }
         }).catch(error => {
           console.error(error);
