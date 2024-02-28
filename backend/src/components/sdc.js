@@ -242,7 +242,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
-    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}`, req.session?.correlationID);
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
     }

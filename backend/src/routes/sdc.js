@@ -34,7 +34,7 @@ router.put('/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: fal
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentPaginated);
 router.get('/sdcSchoolCollectionStudent/stats/error-warning-count/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentSummaryCounts);
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentDetail);
-router.put('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateAndValidateSdcSchoolCollectionStudent);
+router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateAndValidateSdcSchoolCollectionStudent);
 router.delete('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, deleteSDCSchoolCollectionStudent);
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeSDCSchoolCollectionStudents);
 
