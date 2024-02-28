@@ -24,6 +24,21 @@
                         :rules="penRules"
                         class="mt-n3"
                       />
+                      <span class="font-italic">
+                        Assigned PEN: {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                        <v-tooltip>
+                          <template #activator="{ props: tooltipProps }">
+                            <v-icon
+                              v-bind="tooltipProps"
+                              size="25"
+                              :color="getIssueIconColor('INFO_WARNING')"
+                            >
+                              mdi-comment-question-outline
+                            </v-icon>
+                          </template>
+                          {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                        </v-tooltip>
+                      </span>
                     </v-col>
                     <v-col>
                       <v-text-field
