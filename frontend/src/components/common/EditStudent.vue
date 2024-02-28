@@ -390,9 +390,6 @@
               </v-col>
             </v-row>
           </v-col>
-
-          
-          
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
               dismissible="true"
