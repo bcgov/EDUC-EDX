@@ -182,7 +182,8 @@
     :persistent="true"
   >
     <AddStudentDetails
-      @close="closeAddStudentWindow"
+      @close="addStudentSheet = !addStudentSheet; loadStudents()"
+      @open-edit="closeAddStudentWindow"
     />
   </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">

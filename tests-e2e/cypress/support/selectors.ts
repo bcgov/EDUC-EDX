@@ -311,7 +311,8 @@ export default {
     studentPenTextField: '#studentPenTextField'
   },
   snackbar: {
-    mainSnackBar: '#mainSnackBar'
+    mainSnackBar: '#mainSnackBar',
+    mainSnackBarCloseButton: '#mainSnackBar > div > div.v-snackbar__actions > button > span.v-btn__content'
   },
   specialEducationComponent: {
     tab: '#specialEdTab',
@@ -381,7 +382,13 @@ export default {
     nativeAncestryIndValidationDropdown: '#nativeAncestryIndValidationDropdown',
     saveEditStudentRecord: '#save',
     graduatedFlag:'#graduatedFlag',
-    adultFlag: '#adultFlag'
+    adultFlag: '#adultFlag',
+    addStudent: '#add',
+    legalLastName: '#legalLastName',
+    dobPicker: '#dobPicker',
+    gender: '#gender',
+    enrolledGradeCode: '#enrolledGradeCode',
+    nativeAncestryInd: '#nativeAncestryInd'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
