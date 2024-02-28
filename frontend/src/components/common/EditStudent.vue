@@ -18,11 +18,12 @@
                       <v-text-field
                         id="studentPen"
                         v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
-                        label="PEN"
+                        label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
                         :rules="penRules"
                         class="mt-n3"
+                        style="margin-bottom: -.2rem"
                       />
                       <span class="font-italic">
                         Assigned PEN: {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
