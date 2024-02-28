@@ -405,7 +405,10 @@ async function downloadSdcReport(req, res) {
     let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
     res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
     res.setHeader('Content-type', 'application/pdf');
-    return res.status(HttpStatus.OK).send(Buffer.from(resData, 'base64'));
+    log.info('About to buffer');
+    let returnedPDF = Buffer.from(resData, 'base64');
+    log.info('Responding');
+    return res.status(HttpStatus.OK).send(returnedPDF);
   } catch (e) {
     log.error('downloadSdcReport Error', e.stack);
     return handleExceptionResponse(e, res);

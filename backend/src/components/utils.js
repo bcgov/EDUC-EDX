@@ -13,7 +13,7 @@ let memCache = new cache.Cache();
 const fsStringify = require('fast-safe-stringify');
 
 axios.interceptors.request.use((axiosRequestConfig) => {
-  axiosRequestConfig.headers['X-Client-Name'] = 'PEN-EDX';
+  axiosRequestConfig.headers['X-Client-Name'] = 'EDX-APP';
   return axiosRequestConfig;
 });
 // Returns OIDC Discovery values
