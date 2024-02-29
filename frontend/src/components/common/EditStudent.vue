@@ -26,7 +26,10 @@
                         style="margin-bottom: -.2rem"
                       />
                       <span class="font-italic">
-                        Assigned PEN: {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                        Assigned PEN:
+                        <span id="assignedPen">
+                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                        </span>
                         <v-tooltip>
                           <template #activator="{ props: tooltipProps }">
                             <v-icon
@@ -37,7 +40,9 @@
                               mdi-help-circle-outline
                             </v-icon>
                           </template>
-                          {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                          <span id="assignedPenTooltip">
+                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                          </span>
                         </v-tooltip>
                       </span>
                     </v-col>
