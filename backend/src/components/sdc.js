@@ -431,7 +431,7 @@ function createTabFilter(searchParams) {
   if(searchParams.label === 'INDSUPPORT_PR') {
     searchCriteriaList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     searchCriteriaList.push({ key: 'nativeAncestryInd', value: 'Y', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN_LEFT_JOIN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
   }
   if (searchParams.label === 'SPECIALED_PR') {
     searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: 'A,B,C,D,E,F,G,H,K,P,Q,R', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
