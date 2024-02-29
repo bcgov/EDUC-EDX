@@ -388,7 +388,11 @@ export default {
     dobPicker: '#dobPicker',
     gender: '#gender',
     enrolledGradeCode: '#enrolledGradeCode',
-    nativeAncestryInd: '#nativeAncestryInd'
+    nativeAncestryInd: '#nativeAncestryInd',
+    studentPen: '#studentPen',
+    assignedPen: '#assignedPen',
+    assignedPenTooltip: '#assignedPenTooltip',
+    cancelButton: '#cancel'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',

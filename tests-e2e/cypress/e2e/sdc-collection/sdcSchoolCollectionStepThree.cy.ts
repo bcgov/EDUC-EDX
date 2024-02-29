@@ -63,6 +63,63 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
     });
 
+    it('can view assigned pen of student', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+
+      // test submitted and assigned do not match
+      cy.wait('@collectionStudent');
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent').then(() => {
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.studentLevelData.editStudentRow).click();
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+        cy.get(selectors.studentLevelData.studentPen).should('exist').clear().type('111111111');
+        cy.get(selectors.studentLevelData.assignedPen).should('exist');
+        cy.get(selectors.studentLevelData.assignedPen).contains('under review');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).contains('The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.');
+        cy.get(selectors.studentLevelData.cancelButton).click();
+      });
+
+      // test submitted and assigned match
+      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('103169744');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent').then(() => {
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.studentLevelData.editStudentRow).click();
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+        cy.get(selectors.studentLevelData.studentPen).should('exist');
+        cy.get(selectors.studentLevelData.studentPen).invoke('val').should('eq', '103169744');
+        cy.get(selectors.studentLevelData.assignedPen).should('exist');
+        cy.get(selectors.studentLevelData.assignedPen).contains('103169744');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).contains('Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.');
+        cy.get(selectors.studentLevelData.cancelButton).click();
+      });
+
+      // test no assigned
+      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.get(selectors.studentLevelData.stepThreeSearchField).type('101932770');
+      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.wait('@collectionStudent').then(() => {
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.studentLevelData.editStudentRow).click();
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+        cy.get(selectors.studentLevelData.studentPen).should('exist');
+        cy.get(selectors.studentLevelData.studentPen).invoke('val').should('eq', '101932770');
+        cy.get(selectors.studentLevelData.assignedPen).should('exist');
+        cy.get(selectors.studentLevelData.assignedPen).contains('waiting on fixes');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
+        cy.get(selectors.studentLevelData.assignedPenTooltip).contains('The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.');
+        cy.get(selectors.studentLevelData.cancelButton).click();
+      });
+    });
+
     it('can edit student', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
