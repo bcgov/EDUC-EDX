@@ -4,7 +4,6 @@ const axios = require('axios');
 const config = require('../config/index');
 const log = require('./logger');
 const HttpStatus = require('http-status-codes');
-const lodash = require('lodash');
 const {ApiError} = require('./error');
 const {v4: uuidv4} = require('uuid');
 let discovery = null;

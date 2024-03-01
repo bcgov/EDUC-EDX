@@ -27,7 +27,7 @@
         </v-col>
         <v-col
           cols="2"
-          class="d-flex justify-end"
+          class="d-flex justify-end mt-1"
         >
           <v-btn
             id="cancel"
@@ -41,7 +41,7 @@
             id="save"
             color="#003366"
             text="Save"
-            class="ml-1"
+            class="ml-2"
             :disabled="!studentDetailsFormValid"
             @click="save"
           />
