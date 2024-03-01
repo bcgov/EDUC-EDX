@@ -378,6 +378,7 @@ export default {
     remove: '#remove',
     removeConfirm: '#resolveBtn',
     editStudentRow: 'tbody > tr > td:nth-child(5) > div > div > div',
+    editStudentRowByPen: 'tbody > tr > td:nth-child(4) > div > span',
     fteBanner: '#eligible-fte-banner',
     nativeAncestryIndValidationDropdown: '#nativeAncestryIndValidationDropdown',
     saveEditStudentRecord: '#save',
