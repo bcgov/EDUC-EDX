@@ -402,9 +402,7 @@ async function downloadSdcReport(req, res) {
       });
     }
 
-    log.info('About to call for report');
     let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
-    log.info('Report returned');
     res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
     res.setHeader('Content-type', 'application/pdf');
     let returnedPDF = Buffer.from(resData.documentData, 'base64');
