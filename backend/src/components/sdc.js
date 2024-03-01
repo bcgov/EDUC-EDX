@@ -409,7 +409,7 @@ async function downloadSdcReport(req, res) {
     log.info('Report returned');
     res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
     res.setHeader('Content-type', 'application/pdf');
-    let returnedPDF = Buffer.from(resData, 'base64');
+    let returnedPDF = Buffer.from(resData.documentData, 'base64');
     return res.status(HttpStatus.OK).send(returnedPDF);
   } catch (e) {
     log.error('downloadSdcReport Error', e.stack);
