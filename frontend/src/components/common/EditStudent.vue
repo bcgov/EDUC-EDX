@@ -307,7 +307,8 @@
             </v-form>
           </v-col>
 
-            <v-divider v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues !== undefined"
+          <v-divider
+            v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues !== undefined"
             :thickness="1"
             inset
             color="#b3b0b0"
@@ -320,6 +321,8 @@
                 <v-timeline
                   v-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
                   side="end"
+                  density="compact"
+                  style="margin-left: 1em"
                   align="start"
                   truncate-line="start"
                 >
@@ -416,29 +419,23 @@
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
               dismissible="true"
-              class="clear-message"
+              class="clear-message success-message"
+              icon="mdi-check-circle-outline"
+              text="There are no errors or warnings on this student record."
             >
-              <v-icon
-                class="mt-2 mr-3"
-                size="30"
-                color="darkgreen"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-              <span class="success-message">There are no errors or warnings on this student record.</span>
             </v-alert>
           </v-col>
         </v-row>
       </div>
       <div v-if="functionType !== 'add'">
         <div class="text-center">
-        <v-pagination 
-          v-model="page"
-          :length="selectedStudents.length"
-          :total-visible="2"
-          rounded="circle"
-          @update:model-value="navigate"
-        />
+          <v-pagination 
+            v-model="page"
+            :length="selectedStudents.length"
+            :total-visible="2"
+            rounded="circle"
+            @update:model-value="navigate"
+          />
         </div>
         <div class="text-center">
           <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
@@ -450,7 +447,6 @@
           >- Clear Filters & Show all Records</a>
         </div>
       </div>
-      
     </v-col>
     <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
       <template #message>
