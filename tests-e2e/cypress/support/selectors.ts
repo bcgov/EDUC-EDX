@@ -378,6 +378,7 @@ export default {
     remove: '#remove',
     removeConfirm: '#resolveBtn',
     editStudentRow: 'tbody > tr > td:nth-child(5) > div > div > div',
+    editStudentRowByPen: 'tbody > tr > td:nth-child(4) > div > span',
     fteBanner: '#eligible-fte-banner',
     nativeAncestryIndValidationDropdown: '#nativeAncestryIndValidationDropdown',
     saveEditStudentRecord: '#save',
@@ -388,7 +389,11 @@ export default {
     dobPicker: '#dobPicker',
     gender: '#gender',
     enrolledGradeCode: '#enrolledGradeCode',
-    nativeAncestryInd: '#nativeAncestryInd'
+    nativeAncestryInd: '#nativeAncestryInd',
+    studentPen: '#studentPen',
+    assignedPen: '#assignedPen',
+    assignedPenTooltip: '#assignedPenTooltip',
+    cancelButton: '#cancel'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
