@@ -8,18 +8,20 @@
       <v-row justify="space-between">
         <v-col cols="4">
           <a
-            id="clear-filter"
-            @click="clear()"
-          >Clear All Filters</a>
+            id="close"
+            @click="close()"
+          >Cancel</a>
         </v-col>
-        <v-col
-          cols="4"
-          style="text-align: end;"
-        >
-          <a
-            id="apply-filter"
-            @click="apply()"
-          >Apply Filters</a>
+        <v-col cols="4" style="text-align: end;">
+          <PrimaryButton
+                id="clear-filter"
+                secondary
+                large-icon
+                icon="mdi-filter-off-outline"
+                text="Clear"
+                :click-action="clear"
+                class="mt-n1"
+              />
         </v-col>
       </v-row>
       <div
@@ -52,6 +54,7 @@
                 :value="option"
                 class="filter-button"
                 rounded="lg"
+                variant="outlined"
               >
                 {{ option?.title }}
               </v-btn>
@@ -128,11 +131,13 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import {isEmpty} from 'lodash';
   
 export default {
   name: 'Filters',
   components: {
+    PrimaryButton,
   },
   mixins: [alertMixin],
   props: {
@@ -152,7 +157,7 @@ export default {
       default: null 
     }
   },
-  emits: ['closeFilters', 'clearFilters'],
+  emits: ['clearFilters', 'apply-filters', 'close'],
   data() {
     return {
       selected:[],
@@ -194,18 +199,25 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.$emit('close');
+    },
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
         this.selectedFilters[key] = this.setFilterValue(key, val);
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     setBandCodeFilter(key, $event){
       if($event) {
         this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     setCourseRangeFilter(key, $event){
@@ -219,8 +231,10 @@ export default {
           courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
         }
         this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     clear() {
@@ -232,7 +246,7 @@ export default {
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
-      this.$emit('closeFilters', filtersToCheck);
+      this.$emit('apply-filters', filtersToCheck);
     },
     setFilterValue(key, val) {
       return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;
