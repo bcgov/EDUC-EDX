@@ -403,13 +403,11 @@ async function downloadSdcReport(req, res) {
     }
 
     log.info('About to call for report');
-    //let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
-    const endpoint = config.get('edx:exchangeURL');
-    let resData = await getData(token, `${endpoint}/0a610ca3-8bdf-1403-818b-f3232952069c/documents/0a61d67f-8de7-1d93-818d-f5fe411205bb`, 'ABC');
+    let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
     log.info('Report returned');
     res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
     res.setHeader('Content-type', 'application/pdf');
-    let returnedPDF = Buffer.from(resData.documentData, 'base64');
+    let returnedPDF = Buffer.from(resData, 'base64');
     return res.status(HttpStatus.OK).send(returnedPDF);
   } catch (e) {
     log.error('downloadSdcReport Error', e.stack);
