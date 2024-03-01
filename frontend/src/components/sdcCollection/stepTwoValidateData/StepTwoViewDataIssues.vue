@@ -634,9 +634,8 @@ export default {
     }
 
     .clear-message {
-      border: 0.05em solid darkgreen;
       color: darkgreen;
-      background-color: transparent;
+      background-color: rgb(227, 240, 217);
       padding: 0.6em;
     }
 

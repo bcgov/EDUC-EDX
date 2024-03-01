@@ -797,10 +797,9 @@ export default {
     }
   
     .clear-message {
-      border: 1px solid darkgreen;
       color: darkgreen;
-      background-color: transparent;
-      padding: 10px;
+      background-color: rgb(227, 240, 217);
+      padding: 0.4em;
     }
   
    .inner-border {
