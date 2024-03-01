@@ -157,8 +157,9 @@
         :filters="config.allowedFilters"
         :school="school"
         :updated-filters="updatedFilters"
-        @close-filters="updateFilters"
+        @apply-filters="applyFilters"
         @clear-filters="clearFilters"
+        @close="showFilters= !showFilters"
       />
     </v-navigation-drawer>
   </v-row>
@@ -280,8 +281,7 @@ export default {
     addStudent() {
       this.addStudentSheet = true;
     },
-    updateFilters($event) {
-      this.showFilters=!this.showFilters;
+    applyFilters($event) {
       const clonedFilter = cloneDeep($event);
       this.filterSearchParams.moreFilters = clonedFilter;
       this.loadStudents();
