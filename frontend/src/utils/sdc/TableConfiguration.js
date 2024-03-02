@@ -31,14 +31,19 @@ export const STUDENT_TYPE_FILTER = Object.freeze(
     key: 'studentType',
     filterOptions: [
       {
+        title: 'Adult',
+        id: 'isAdult',
+        value: 'isAdult'
+      },
+      {
         title: 'School Aged',
         id: 'isSchoolAged',
         value: 'isSchoolAged'
       },
       {
-        title: 'Adult',
-        id: 'isAdult',
-        value: 'isAdult'
+        title: 'Under School Aged',
+        id: 'isUnderSchoolAged',
+        value: 'isUnderSchoolAged'
       }
     ]
   },
@@ -826,6 +831,7 @@ export const REFUGEE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
     ],
+    headcountEndpoint: 'refugee',
     allowedFilters: [
       STUDENT_TYPE_FILTER,
       FTE_FILTER,

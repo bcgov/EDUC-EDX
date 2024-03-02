@@ -8,18 +8,20 @@
       <v-row justify="space-between">
         <v-col cols="4">
           <a
-            id="clear-filter"
-            @click="clear()"
-          >Clear All Filters</a>
+            id="close"
+            @click="close()"
+          >Cancel</a>
         </v-col>
-        <v-col
-          cols="4"
-          style="text-align: end;"
-        >
-          <a
-            id="apply-filter"
-            @click="apply()"
-          >Apply Filters</a>
+        <v-col cols="4" style="text-align: end;">
+          <PrimaryButton
+                id="clear-filter"
+                secondary
+                large-icon
+                icon="mdi-filter-off-outline"
+                text="Clear"
+                :click-action="clear"
+                class="mt-n1"
+              />
         </v-col>
       </v-row>
       <div
@@ -48,11 +50,11 @@
               :key="i"
             >
               <v-btn
-                v-if="isVisible(filter?.key, option?.value)"
                 :id="option?.id"
                 :value="option"
                 class="filter-button"
                 rounded="lg"
+                variant="outlined"
               >
                 {{ option?.title }}
               </v-btn>
@@ -99,7 +101,7 @@
                   variant="outlined"
                   density="compact"
                   class="slider-text"
-                  onkeydown="return false"
+                  :readonly="true"
                   @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                 />
               </template>
@@ -114,7 +116,7 @@
                   variant="outlined"
                   density="compact"
                   class="slider-text"
-                  onkeydown="return false"
+                  :readonly="true"
                   @update:model-value="setCourseRangeFilter('numberOfCoursesDec', courseRange)"
                 />
               </template>
@@ -129,11 +131,13 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import PrimaryButton from '../util/PrimaryButton.vue';
 import {isEmpty} from 'lodash';
   
 export default {
   name: 'Filters',
   components: {
+    PrimaryButton,
   },
   mixins: [alertMixin],
   props: {
@@ -153,7 +157,7 @@ export default {
       default: null 
     }
   },
-  emits: ['closeFilters', 'clearFilters'],
+  emits: ['clearFilters', 'apply-filters', 'close'],
   data() {
     return {
       selected:[],
@@ -175,11 +179,11 @@ export default {
           let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
           if(toRemoveFilters.removeKey === 'bandResidence') {
             this.bandCodeValue = null;
-          } else if(filteredKey === undefined) {
-            const idx =this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
-            this.selected.splice(idx, 1, null);
-          } else if(filteredKey === 'numberOfCoursesDec') {
+          } else if (toRemoveFilters.removeKey === 'numberOfCoursesDec') {
             this.courseRange = [...this.courseRangeDefault];
+          } else if(filteredKey === undefined) {
+            const idx = this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
+            this.selected.splice(idx, 1, null);
           } else {
             this.selected.map(filter => {
               if(Array.isArray(filter) && filter.every(val => filteredKey.includes(val))) {
@@ -195,18 +199,25 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.$emit('close');
+    },
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
         this.selectedFilters[key] = this.setFilterValue(key, val);
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     setBandCodeFilter(key, $event){
       if($event) {
         this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     setCourseRangeFilter(key, $event){
@@ -220,8 +231,10 @@ export default {
           courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
         }
         this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
+        this.apply();
       } else {
         delete this.selectedFilters[key];
+        this.apply();
       }
     },
     clear() {
@@ -233,15 +246,7 @@ export default {
     },
     apply() {
       const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
-      this.$emit('closeFilters', filtersToCheck);
-    },
-    isVisible(key, value){
-      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
-        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
-      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
-        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
-      }
-      return true;
+      this.$emit('apply-filters', filtersToCheck);
     },
     setFilterValue(key, val) {
       return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;

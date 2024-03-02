@@ -88,7 +88,10 @@ async function uploadFile(req, res) {
 async function getDocument(token, secureExchangeID, documentID, correlationID) {
   try {
     const endpoint = config.get('edx:exchangeURL');
-    return await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}`, correlationID);
+    log.info('About to call for document');
+    let resDoc = await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}`, correlationID);
+    log.info('Document returned');
+    return resDoc;
   } catch (e) {
     throw new ServiceError('getDocument error', e);
   }

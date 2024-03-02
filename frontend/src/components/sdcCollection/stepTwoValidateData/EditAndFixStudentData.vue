@@ -46,7 +46,7 @@
             text="Validate & Save"
             class="mr-1"
             :click-action="save"
-            :disabled="studentDetailsFormValid"
+            :disabled="!studentDetailsFormValid"
           />
         </v-col>
       </v-row>

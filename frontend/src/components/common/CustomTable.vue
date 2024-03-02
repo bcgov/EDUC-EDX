@@ -25,12 +25,12 @@
             :key="column.key"
           >
             <div v-if="column.title === 'select'">
-                <v-checkbox
-                  v-model="masterCheckbox"
-                  :indeterminate="selected.length > 0 && !isAllSelected()"
-                  hide-details="true"
-                  @change="toggle()"
-                />
+              <v-checkbox
+                v-model="masterCheckbox"
+                :indeterminate="selected.length > 0 && !isAllSelected()"
+                hide-details="true"
+                @change="toggle()"
+              />
             </div>
             <div v-else>
               <div class="header-text">
@@ -62,13 +62,21 @@
               hide-details="true"
               @click.prevent.stop="onClick(props)"
             />
-            <v-icon
+            <v-tooltip
               v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
-              size="25"
-              :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
+              :style="{ display: getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) ? '' : 'none' }"
             >
-              {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
-            </v-icon>
+              <template #activator="{ props: tooltipProps }">
+                <v-icon
+                  v-bind="tooltipProps"
+                  size="25"
+                  :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
+                >
+                  {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+                </v-icon>
+              </template>
+              {{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+            </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'legalName'">
                 {{ displayName(props.item.raw['legalFirstName'], props.item.raw['legalMiddleNames'], props.item.raw['legalLastName']) }}
@@ -233,6 +241,13 @@ export default {
       }
       else if (status === 'INFOWARN') {
         return 'mdi-alert-circle-outline';
+      }
+    },
+    getSdcStudentStatusHoverText(status) {
+      if (status === 'FUNDWARN') {
+        return 'Funding Warning';
+      } else if (status === 'INFOWARN') {
+        return 'Info Warning';
       }
     },
     displayName(first, middle, last) {

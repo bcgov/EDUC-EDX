@@ -60,6 +60,7 @@ const FILTER_OPERATION = Object.freeze(
      * Ends with filter operation.
      */
     ENDS_WITH: 'ends_with',
+    IN_LEFT_JOIN: 'in_left_join'
   }
 );
 const CONDITION = Object.freeze(
@@ -166,9 +167,21 @@ const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
 const INSTITUTE_CACHE_REFRESH_TOPIC = 'INSTITUTE_CACHE_REFRESH_TOPIC';
 const MOVE_SCHOOL_TOPIC = 'MOVE_SCHOOL_TOPIC';
 
+const reportTypeValues = [
+  ['ell', 'ELL_HEADCOUNT'],
+  ['refugee', 'REFUGEE_HEADCOUNT'],
+  ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
+  ['indigenous', 'INDIGENOUS_HEADCOUNT'],
+  ['career', 'CAREER_HEADCOUNT'],
+  ['french', 'FRENCH_HEADCOUNT'],
+  ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT']
+];
+const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
+
 module.exports = {
   FILTER_OPERATION,
   CONDITION,
+  REPORT_TYPE_CODE_MAP,
   VALUE_TYPE,
   PEN_REQ_BATCH_STATUS_CODES,
   EVENT_TYPE,

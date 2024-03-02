@@ -4,7 +4,7 @@ const router = express.Router();
 const { getCollectionBySchoolId, uploadFile, getSdcFileProgress, updateSchoolCollection, getSchoolCollectionById,
   getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, removeSDCSchoolCollectionStudents,
-  getStudentHeadcounts} = require('../components/sdc');
+  getStudentHeadcounts, downloadSdcReport} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
@@ -34,11 +34,13 @@ router.put('/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: fal
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentPaginated);
 router.get('/sdcSchoolCollectionStudent/stats/error-warning-count/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentSummaryCounts);
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getSDCSchoolCollectionStudentDetail);
-router.put('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateAndValidateSdcSchoolCollectionStudent);
+router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, updateAndValidateSdcSchoolCollectionStudent);
 router.delete('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, deleteSDCSchoolCollectionStudent);
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, removeSDCSchoolCollectionStudents);
 
 router.get('/sdcSchoolCollectionStudent/getStudentHeadcounts/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, getStudentHeadcounts);
+// special case this does not use frontend axios, so need to refresh here to handle expired jwt.
+router.get('/:sdcSchoolCollectionID/report/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, [downloadSdcReport]);
 
 module.exports = router;
 

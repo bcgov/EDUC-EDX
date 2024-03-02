@@ -123,15 +123,18 @@ export default {
     headcountColumnData: '.enrollment-headcount-column-data',
     table: '.v-table',
     tableWrapper: '.v-table__wrapper',
-    schoolAgedHeadcount: ':nth-child(2) > :nth-child(19) > span',
-    schoolAgedEligibleFTE : ':nth-child(3) > :nth-child(19) > span',
-    schoolAgedTotal: ':nth-child(4) > :nth-child(19) > span',
-    adultHeadcount: ':nth-child(6) > :nth-child(19) > .zero-cell',
-    adultEligibleFTE: ':nth-child(7) > :nth-child(19) > .zero-cell',
-    adultTotal: ':nth-child(8) > :nth-child(19) > .zero-cell',
-    allHeadcount: ':nth-child(10) > :nth-child(19) > span',
-    allEligibleFTE: ':nth-child(11) > :nth-child(19) > span',
-    allTotal: ':nth-child(12) > :nth-child(19) > span'
+    underSchoolAgedHeadcount: ':nth-child(2) > :nth-child(19) > .zero-cell',
+    underSchoolAgedEligibleFTE : ':nth-child(3) > :nth-child(19) > .zero-cell',
+    underSchoolAgedTotal: ':nth-child(4) > :nth-child(19) > .zero-cell',
+    schoolAgedHeadcount: ':nth-child(6) > :nth-child(19) > span',
+    schoolAgedEligibleFTE : ':nth-child(7) > :nth-child(19) > span',
+    schoolAgedTotal: ':nth-child(8) > :nth-child(19) > span',
+    adultHeadcount: ':nth-child(10) > :nth-child(19) > .zero-cell',
+    adultEligibleFTE: ':nth-child(11) > :nth-child(19) > .zero-cell',
+    adultTotal: ':nth-child(12) > :nth-child(19) > .zero-cell',
+    allHeadcount: ':nth-child(14) > :nth-child(19) > span',
+    allEligibleFTE: ':nth-child(15) > :nth-child(19) > span',
+    allTotal: ':nth-child(16) > :nth-child(19) > span'
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
@@ -308,7 +311,8 @@ export default {
     studentPenTextField: '#studentPenTextField'
   },
   snackbar: {
-    mainSnackBar: '#mainSnackBar'
+    mainSnackBar: '#mainSnackBar',
+    mainSnackBarCloseButton: '#mainSnackBar > div > div.v-snackbar__actions > button > span.v-btn__content'
   },
   specialEducationComponent: {
     tab: '#specialEdTab',
@@ -374,11 +378,22 @@ export default {
     remove: '#remove',
     removeConfirm: '#resolveBtn',
     editStudentRow: 'tbody > tr > td:nth-child(5) > div > div > div',
+    editStudentRowByPen: 'tbody > tr > td:nth-child(4) > div > span',
     fteBanner: '#eligible-fte-banner',
     nativeAncestryIndValidationDropdown: '#nativeAncestryIndValidationDropdown',
     saveEditStudentRecord: '#save',
     graduatedFlag:'#graduatedFlag',
-    adultFlag: '#adultFlag'
+    adultFlag: '#adultFlag',
+    addStudent: '#add',
+    legalLastName: '#legalLastName',
+    dobPicker: '#dobPicker',
+    gender: '#gender',
+    enrolledGradeCode: '#enrolledGradeCode',
+    nativeAncestryInd: '#nativeAncestryInd',
+    studentPen: '#studentPen',
+    assignedPen: '#assignedPen',
+    assignedPenTooltip: '#assignedPenTooltip',
+    cancelButton: '#cancel'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',

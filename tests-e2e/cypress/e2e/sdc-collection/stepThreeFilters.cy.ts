@@ -91,11 +91,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Apply Filters').click();
 
       cy.wait('@paginationFilters1');
-      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'A-Physically Dependent';
+            return value === 'Physically Dependent (A)' || value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
@@ -111,7 +111,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'G-Autism Spectrum Disorder';
+            return value === 'Autism Spectrum Disorder (G)';
           });
         });
       });
@@ -187,7 +187,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '11-Early French Immersion';
+            return value === 'Early French Immersion (11)';
           });
         });
       });
@@ -212,7 +212,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '08-Core French';
+            return value === 'Core French (08)';
           });
         });
       });
@@ -256,8 +256,8 @@ describe('SDC School Collection View', () => {
 
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasBandCode).click();
-        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('0500 - KWANLIN DUN');
-        cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('0500 - KWANLIN DUN').click();
+        cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('KWANLIN DUN (0500)');
+        cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('KWANLIN DUN (0500)').click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.applyFilter).click();
         
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
@@ -302,7 +302,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '17-English Language Learning3';
+            return value === 'English Language Learning (17)3';
           });
         });
       });
@@ -327,7 +327,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === '17-English Language Learning3' || value === '17-English Language Learning-';
+            return value === 'English Language Learning (17)3' || value === 'English Language Learning (17)-';
           });
         });
       });

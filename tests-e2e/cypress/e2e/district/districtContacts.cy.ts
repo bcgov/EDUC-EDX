@@ -23,7 +23,6 @@ describe('District Contacts Page', () => {
       cy.get(selectors.districtContacts.newContactEmailInput).clear().type('test@test.com');
       cy.get(selectors.districtContacts.newContactPhoneNumberInput).clear().type('1234567890');
       cy.get(selectors.districtContacts.newContactPostBtn).click({force:true});
-      cy.get('form').submit();
     });
 
     it('should make new contacts with a current effective date', () => {

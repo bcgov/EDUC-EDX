@@ -24,18 +24,8 @@
               class="d-flex justify-start filter-col"
               cols="6"
             >
-              <p v-if="config.defaultFilter.description === '' && filterSearchParams.moreFilters.length === 0">
-                No filters applied
-              </p>
-
-              <span v-if="filterSearchParams.moreFilters.length > 0 || config.defaultFilter.description !== ''">
+              <span v-if="filterSearchParams.moreFilters.length > 0">
                 <v-chip-group>
-                  <v-chip
-                    v-if="config.defaultFilter.description"
-                    class="chip-margin"
-                  >
-                    {{ config.defaultFilter.description }}
-                  </v-chip>
                   <span
                     v-for="(filter, index) in filterSearchParams.moreFilters"
                     :key="index"
@@ -106,13 +96,14 @@
           cols="8"
           class="d-flex justify-end"
         >
-          <PrimaryButton
+          <v-btn
             id="add"
-            secondary
+            color="#003366"
             text="Add Student"
             class="mr-1 mb-1"
-            large-icon
-            icon="mdi-plus"
+            prepend-icon="mdi-plus"
+            variant="outlined"
+            @click="addStudent"
           />
           <v-btn
             id="remove"
@@ -166,8 +157,9 @@
         :filters="config.allowedFilters"
         :school="school"
         :updated-filters="updatedFilters"
-        @close-filters="updateFilters"
+        @apply-filters="applyFilters"
         @clear-filters="clearFilters"
+        @close="showFilters= !showFilters"
       />
     </v-navigation-drawer>
   </v-row>
@@ -181,6 +173,18 @@
     <ViewStudentDetailsComponent
       :selected-student-ids="studentForEdit"
       @close="editStudentSheet = !editStudentSheet; loadStudents()"
+    />
+  </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="addStudentSheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <AddStudentDetails
+      @close="addStudentSheet = !addStudentSheet; loadStudents()"
+      @open-edit="closeAddStudentWindow"
     />
   </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
@@ -204,6 +208,7 @@ import Filters from '../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import ViewStudentDetailsComponent from './ViewStudentDetailsComponent.vue';
+import AddStudentDetails from './AddStudentDetails.vue';
 
 export default {
   name: 'DetailComponent',
@@ -212,7 +217,8 @@ export default {
     PrimaryButton,
     CustomTable,
     Filters,
-    ViewStudentDetailsComponent
+    ViewStudentDetailsComponent,
+    AddStudentDetails
   },
   mixins: [alertMixin],
   props: {
@@ -248,6 +254,7 @@ export default {
       updatedFilters: {},
       studentForEdit: [],
       editStudentSheet: false,
+      addStudentSheet: false,
       resetFlag: false
     };
   },
@@ -267,8 +274,14 @@ export default {
       this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
       this.editStudentSheet = true;
     },
-    updateFilters($event) {
-      this.showFilters=!this.showFilters;
+    closeAddStudentWindow($event) {
+      this.addStudentSheet = !this.addStudentSheet; 
+      this.editStudent($event);
+    },
+    addStudent() {
+      this.addStudentSheet = true;
+    },
+    applyFilters($event) {
       const clonedFilter = cloneDeep($event);
       this.filterSearchParams.moreFilters = clonedFilter;
       this.loadStudents();
@@ -345,20 +358,20 @@ export default {
         .filter(programCode => enrolledProgramFilter.includes(programCode))
         .map(programCode => {
           const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
-          return enrolledProgram ? `${programCode}-${enrolledProgram.description}` : programCode;
+          return enrolledProgram ? `${enrolledProgram.description} (${programCode})` : programCode;
         })
         .join(',');
     },
     toTableRow(student) {
-      student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode + '-' +  this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description : null;
+      student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? `${this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description} (${this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode})` : null;
       student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd(student);
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
       student.mappedEllEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
-      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? this.bandCodesMap.get(student.bandCode)?.bandCode + '-' + this.bandCodesMap.get(student.bandCode)?.description : null;
-      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode + '-' +  this.careerProgramCodesMap.get(student.careerProgramCode)?.description : null;
-      student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode + '-' +  this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description : null;
+      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? `${this.bandCodesMap.get(student.bandCode)?.description} (${this.bandCodesMap.get(student.bandCode)?.bandCode})` : null;
+      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${this.careerProgramCodesMap.get(student.careerProgramCode)?.description} (${this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
+      student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
       student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
       student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';

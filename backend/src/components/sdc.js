@@ -1,10 +1,11 @@
 'use strict';
-const { getAccessToken, checkEDXCollectionPermission, checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData } = require('./utils');
+const { getAccessToken, checkEDXCollectionPermission, checkEDXUserAccess, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION } = require('../util/constants');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
+const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -241,7 +242,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
-    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}`, req.session?.correlationID);
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
     }
@@ -387,8 +388,32 @@ function createSearchCriteria(searchParams = []) {
   return searchCriteriaList;
 }
 
+async function downloadSdcReport(req, res) {
+  try {
+    const token = getAccessToken(req);
+    validateAccessToken(token);
+    checkEDXCollectionPermission(req);
+    await validateEdxUserAccess(token, req, res, req.params.sdcSchoolCollectionID);
+
+    let reportType = REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Invalid report type provided'
+      });
+    }
+
+    let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
+    res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
+    res.setHeader('Content-type', 'application/pdf');
+    let returnedPDF = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(returnedPDF);
+  } catch (e) {
+    log.error('downloadSdcReport Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function createTabFilter(searchParams) {
-  console.log(searchParams)
   let searchCriteriaList = [];
   let tableKey = 'sdcStudentEnrolledProgramEntities.enrolledProgramCode';
 
@@ -404,7 +429,7 @@ function createTabFilter(searchParams) {
   if(searchParams.label === 'INDSUPPORT_PR') {
     searchCriteriaList.push({ key: 'bandCode', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     searchCriteriaList.push({ key: 'nativeAncestryInd', value: 'Y', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    searchCriteriaList.push({ key: tableKey, operation: FILTER_OPERATION.IN_LEFT_JOIN, value: '29,33,36', valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
   }
   if (searchParams.label === 'SPECIALED_PR') {
     searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: 'A,B,C,D,E,F,G,H,K,P,Q,R', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
@@ -466,6 +491,7 @@ module.exports = {
   removeSDCSchoolCollectionStudents,
   updateSchoolCollection,
   getSchoolCollectionById,
+  downloadSdcReport,
   getSDCSchoolCollectionStudentPaginated,
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,

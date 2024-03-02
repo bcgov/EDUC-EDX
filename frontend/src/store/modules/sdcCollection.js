@@ -58,7 +58,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setBandCodes(bandCodes) {
       this.bandCodes = bandCodes.map(item => {
-        return {...item, dropdownText: `${item.bandCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.bandCode})`};
       });
       this.bandCodesMap = new Map();
       this.bandCodes.unshift({'bandCode': '', 'dropdownText': 'No Band Code'});
@@ -68,7 +68,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCareerProgramCodes(careerProgramCodes) {
       this.careerProgramCodes = careerProgramCodes.map(item => {
-        return {...item, dropdownText: `${item.careerProgramCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.careerProgramCode})`};
       });
       this.careerProgramCodesMap = new Map();
       this.careerProgramCodes.unshift({'careerProgramCode': '', 'dropdownText': 'No Career Code'});
@@ -78,7 +78,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setEnrolledProgramCodes(enrolledProgramCodes) {
       this.enrolledProgramCodes = enrolledProgramCodes.map(item => {
-        return {...item, dropdownText: `${item.enrolledProgramCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.enrolledProgramCode})`};
       });
       this.enrolledProgramCodesMap = new Map();
       enrolledProgramCodes.forEach(enrolledProgramCode => {
@@ -86,8 +86,11 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     setEnrolledGradeCodes(enrolledGradeCodes) {
+      const validGradeCodes = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
       this.enrolledGradeCodes = enrolledGradeCodes.map(item => {
-        return {...item, dropdownText: `${item.enrolledGradeCode} - ${item.description}`};
+        const isGrade1To12 = validGradeCodes.includes(item.enrolledGradeCode);
+        const dropdownText = isGrade1To12 ? item.description : `${item.description} (${item.enrolledGradeCode})`;
+        return {...item, dropdownText};
       });
       this.enrolledGradeCodesMap = new Map();
       enrolledGradeCodes.forEach(enrolledGradeCode => {
@@ -96,7 +99,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setGenderCodes(genderCodes) {
       this.genderCodes = genderCodes.map(item => {
-        return {...item, dropdownText: `${item.genderCode} - ${item.label}`};
+        return {...item, dropdownText: `${item.label} (${item.genderCode})`};
       });
       this.genderCodesMap = new Map();
       genderCodes.forEach(genderCode => {
@@ -105,7 +108,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setHomeLanguageSpokenCodes(homeLanguageSpokenCodes) {
       this.homeLanguageSpokenCodes = homeLanguageSpokenCodes.map(item => {
-        return {...item, dropdownText: `${item.homeLanguageSpokenCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.homeLanguageSpokenCode})`};
       });
       this.homeLanguageSpokenCodesMap = new Map();
       this.homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': '', 'dropdownText': 'No Home Language Code'});
@@ -115,7 +118,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setSchoolFundingCodes(schoolFundingCodes) {
       this.schoolFundingCodes = schoolFundingCodes.map(item => {
-        return {...item, dropdownText: `${item.schoolFundingCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.schoolFundingCode})`};
       });
       this.schoolFundingCodesMap = new Map();
       this.schoolFundingCodes.unshift({'schoolFundingCode': '', 'dropdownText': 'No Funding Code'});
@@ -125,7 +128,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setSpecialEducationCodes(specialEducationCodes) {
       this.specialEducationCodes = specialEducationCodes.map(item => {
-        return {...item, dropdownText: `${item.specialEducationCategoryCode} - ${item.description}`};
+        return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
       });
       this.specialEducationCodesMap = new Map();
       this.specialEducationCodes.unshift({'specialEducationCategoryCode': '', 'dropdownText': 'No Special Ed Category Code'});

@@ -26,28 +26,23 @@
           </v-alert>
         </v-col>
         <v-col
-          cols="1"
-          class="d-flex justify-end"
+          cols="2"
+          class="d-flex justify-end mt-1"
         >
           <v-btn
             id="cancel"
-            class="mr-2"
             color="#003366"
             text="Cancel"
             variant="outlined"
             @click="cancel"
           />
-        </v-col>
-        <v-col
-          cols="1"
-          class="d-flex justify-end"
-        >
+
           <v-btn
             id="save"
-            class="ml-4"
             color="#003366"
             text="Save"
-            :disabled="studentDetailsFormValid"
+            class="ml-2"
+            :disabled="!studentDetailsFormValid"
             @click="save"
           />
         </v-col>

@@ -4,7 +4,6 @@ const axios = require('axios');
 const config = require('../config/index');
 const log = require('./logger');
 const HttpStatus = require('http-status-codes');
-const lodash = require('lodash');
 const {ApiError} = require('./error');
 const {v4: uuidv4} = require('uuid');
 let discovery = null;
@@ -13,7 +12,7 @@ let memCache = new cache.Cache();
 const fsStringify = require('fast-safe-stringify');
 
 axios.interceptors.request.use((axiosRequestConfig) => {
-  axiosRequestConfig.headers['X-Client-Name'] = 'PEN-EDX';
+  axiosRequestConfig.headers['X-Client-Name'] = 'EDX-APP';
   return axiosRequestConfig;
 });
 // Returns OIDC Discovery values
@@ -27,11 +26,6 @@ async function getOidcDiscovery() {
     }
   }
   return discovery;
-}
-
-function minify(obj, keys = ['documentData']) {
-  return lodash.transform(obj, (result, value, key) =>
-    result[key] = keys.includes(key) && lodash.isString(value) ? value.substring(0, 1) + ' ...' : value);
 }
 
 function getSessionUser(req) {
@@ -58,7 +52,6 @@ async function deleteData(token, url, correlationID) {
     const response = await axios.delete(url, delConfig);
     log.info(`delete Data Status for url ${url} :: is :: `, response.status);
     log.info(`delete Data StatusText for url ${url}  :: is :: `, response.statusText);
-    log.verbose(`delete Data Response for url ${url}  :: is :: `, minify(response.data));
 
     return response.data;
   } catch (e) {
@@ -105,7 +98,6 @@ async function getData(token, url, correlationID) {
     const response = await axios.get(url, getDataConfig);
     log.info(`get Data Status for url ${url} :: is :: `, response.status);
     log.info(`get Data StatusText for url ${url}  :: is :: `, response.statusText);
-    log.verbose(`get Data Response for url ${url}  :: is :: `, minify(response.data));
 
     return response.data;
   } catch (e) {
@@ -126,7 +118,6 @@ async function getDataWithParams(token, url, params, correlationID) {
     const response = await axios.get(url, params);
     log.info(`get Data Status for url ${url} :: is :: `, response.status);
     log.info(`get Data StatusText for url ${url}  :: is :: `, response.statusText);
-    log.verbose(`get Data Response for url ${url}  :: is :: `, minify(response.data));
 
     return response.data;
   } catch (e) {
@@ -148,7 +139,6 @@ async function postData(token, data, url, correlationID) {
     };
 
     log.info('post Data Url', url);
-    log.verbose('post Data Req', minify(data));
     if(!data.createUser){
       data.createUser = 'EDX';
     }
@@ -160,7 +150,6 @@ async function postData(token, data, url, correlationID) {
 
     log.info(`post Data Status for url ${url} :: is :: `, response.status);
     log.info(`post Data StatusText for url ${url}  :: is :: `, response.statusText);
-    log.verbose(`post Data Response for url ${url}  :: is :: `, typeof response.data === 'string' ? response.data : minify(response.data));
 
     return response.data;
   } catch (e) {
@@ -195,7 +184,6 @@ async function putData(token, data, url, correlationID) {
 
     log.info(`put Data Status for url ${url} :: is :: `, response.status);
     log.info(`put Data StatusText for url ${url}  :: is :: `, response.statusText);
-    log.verbose(`put Data Response for url ${url}  :: is :: `, minify(response.data));
 
     return response.data;
   } catch (e) {

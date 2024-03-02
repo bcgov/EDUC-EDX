@@ -5,8 +5,8 @@
       <div
         v-else
       >
-        <v-row>
-          <v-col cols="6">
+        <v-row> 
+          <v-col cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6">
             <v-form
               ref="studentDetailsForm"
               v-model="studentDetailsFormValid"
@@ -18,12 +18,33 @@
                       <v-text-field
                         id="studentPen"
                         v-model="sdcSchoolCollectionStudentDetailCopy.studentPen"
-                        label="PEN"
+                        label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
                         :rules="penRules"
                         class="mt-n3"
+                        style="margin-bottom: -.2rem"
                       />
+                      <span class="font-italic">
+                        Assigned PEN:
+                        <span id="assignedPen">
+                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                        </span>
+                        <v-tooltip>
+                          <template #activator="{ props: tooltipProps }">
+                            <v-icon
+                              v-bind="tooltipProps"
+                              size="25"
+                              :color="getIssueIconColor('INFO_WARNING')"
+                            >
+                              mdi-help-circle-outline
+                            </v-icon>
+                          </template>
+                          <span id="assignedPenTooltip">
+                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                          </span>
+                        </v-tooltip>
+                      </span>
                     </v-col>
                     <v-col>
                       <v-text-field
@@ -39,6 +60,7 @@
                   <v-row>
                     <v-col>
                       <DatePicker
+                        id="dobPicker"
                         v-model="sdcSchoolCollectionStudentDetailCopy.dob"
                         label="Birthdate"
                         :rules="[rules.required()]"
@@ -284,7 +306,9 @@
               </v-row>
             </v-form>
           </v-col>
+
           <v-divider
+            v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues !== undefined"
             :thickness="1"
             inset
             color="#b3b0b0"
@@ -297,6 +321,8 @@
                 <v-timeline
                   v-if="sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentValidationIssues"
                   side="end"
+                  density="compact"
+                  style="margin-left: 1em"
                   align="start"
                   truncate-line="start"
                 >
@@ -369,6 +395,7 @@
                             />
                             <div v-else-if="sdcFieldMappings[field]?.type === 'datePicker'">
                               <DatePicker
+                                :id="`${sdcFieldMappings[field].key}DatePicker`"
                                 v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
                                 :label="sdcFieldMappings[field]?.label"
                                 :rules="sdcFieldMappings[field].options.rules"
@@ -392,37 +419,33 @@
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
               dismissible="true"
-              class="clear-message"
+              class="clear-message success-message"
+              icon="mdi-check-circle-outline"
+              text="There are no errors or warnings on this student record."
             >
-              <v-icon
-                class="mt-2 mr-3"
-                size="30"
-                color="darkgreen"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-              <span class="success-message">There are no errors or warnings on this student record.</span>
             </v-alert>
           </v-col>
         </v-row>
       </div>
-      <div class="text-center">
-        <v-pagination 
-          v-model="page"
-          :length="selectedStudents.length"
-          :total-visible="2"
-          rounded="circle"
-          @update:model-value="navigate"
-        />
-      </div>
-      <div class="text-center">
-        <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-        <a
-          v-if="selectedStudents.length < totalStudents"
-          id="clearFilters"
-          class="filter-text"
-          @click="clearFilter()"
-        >- Clear Filters & Show all Records</a>
+      <div v-if="functionType !== 'add'">
+        <div class="text-center">
+          <v-pagination 
+            v-model="page"
+            :length="selectedStudents.length"
+            :total-visible="2"
+            rounded="circle"
+            @update:model-value="navigate"
+          />
+        </div>
+        <div class="text-center">
+          <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
+          <a
+            v-if="selectedStudents.length < totalStudents"
+            id="clearFilters"
+            class="filter-text"
+            @click="clearFilter()"
+          >- Clear Filters & Show all Records</a>
+        </div>
       </div>
     </v-col>
     <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
@@ -444,7 +467,7 @@ import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/a
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {isValidPEN} from '../../utils/validation';
+import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
@@ -474,13 +497,18 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    functionType: {
+      type: String,
+      required: false,
+      default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object'],
+  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object', 'close-success'],
   data() {
     return {
       page: 1,
-      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
+      penRules: [v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
       sdcFieldMappings: SDC_VALIDATION_FIELD_MAPPINGS,
       sdcCollection: sdcCollectionStore(),
       selectedSdcStudentID: null,
@@ -491,7 +519,7 @@ export default {
       rules: Rules,
       studentDetailsFormValid:false,
       removeIndex: null,
-      enrolledProgramRules: [v => v?.length <= 8 || 'Select a maximum of 8 Enrolled Programs']
+      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs']
     };
   },
   computed: {
@@ -522,8 +550,18 @@ export default {
     },
     studentDetailsFormValid: {
       handler() {
-        this.$emit('form-validity', this.validateForm());
+        this.$emit('form-validity', this.studentDetailsFormValid);
       }
+    },
+    functionType: {
+      handler(value) {
+        if(value === 'add') {
+          this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionStudentStatusCode= 'LOADED';
+          this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionID= this.$route.params.schoolCollectionID;
+          this.$nextTick().then(this.validateForm);
+        }
+      },
+      immediate: true
     }
   },
   mounted() {
@@ -571,14 +609,19 @@ export default {
     },
     save(){
       this.loadingCount += 1;
-      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
             setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');
             this.filterSdcSchoolCollectionStudentAndPopulateProperties(res.data);
           } else {
             setSuccessAlert('Success! The student details have been updated.');
-            this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
+            if(this.functionType === 'add') {
+              this.$emit('close-success', res.data);
+            }
+            else {
+              this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
+            }
           }
         }).catch(error => {
           console.error(error);
@@ -710,6 +753,24 @@ export default {
         return '';
       }
     },
+    getAssignedPen(assignedPen, studentPen){
+      if (!assignedPen) {
+        return 'waiting on fixes';
+      } else if (assignedPen === studentPen) {
+        return assignedPen;
+      } else {
+        return 'under review';
+      }
+    },
+    getAssignedPenTooltip(assignedPen, studentPen){
+      if (!assignedPen) {
+        return 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
+      } else if (assignedPen === studentPen) {
+        return 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
+      } else {
+        return 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
+      }
+    },
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
     },
@@ -732,10 +793,9 @@ export default {
     }
   
     .clear-message {
-      border: 1px solid darkgreen;
       color: darkgreen;
-      background-color: transparent;
-      padding: 10px;
+      background-color: rgb(227, 240, 217);
+      padding: 0.4em;
     }
   
    .inner-border {
