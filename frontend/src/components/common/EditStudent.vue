@@ -460,7 +460,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
-import {cloneDeep, sortBy} from 'lodash';
+import {cloneDeep} from 'lodash';
 import {formatDob} from '../../utils/format';
 import Spinner from '../common/Spinner.vue';
 import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/alertComposable';
@@ -713,11 +713,24 @@ export default {
         if (!validationIssueMap.has(issue.validationIssueCode)) {
           validationIssueMap.set(issue.validationIssueCode, {...issue, validationIssueFieldCode: [issue.validationIssueFieldCode]});
         } else {
-          validationIssueMap.get(issue.validationIssueCode).validationIssueFieldCode.push(issue.validationIssueFieldCode);
+          let existingIssue = validationIssueMap.get(issue.validationIssueCode);
+          existingIssue.validationIssueFieldCode.push(issue.validationIssueFieldCode);
+          // Sort validationIssueFieldCode alphabetically
+          existingIssue.validationIssueFieldCode.sort();
         }
       }
-  
-      return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
+
+      const issuesArray = Array.from(validationIssueMap.values());
+      issuesArray.sort((a, b) => {
+        // Compare by severity code
+        if (a.validationIssueSeverityCode !== b.validationIssueSeverityCode) {
+          return a.validationIssueSeverityCode - b.validationIssueSeverityCode;
+        }
+        // If severity is the same, compare by validationIssueCode alphabetically
+        return a.validationIssueCode.localeCompare(b.validationIssueCode);
+      });
+
+      return issuesArray;
     },
     getStudentStatus(student){
       let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
