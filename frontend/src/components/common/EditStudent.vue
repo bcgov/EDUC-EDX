@@ -34,10 +34,10 @@
                             <v-icon
                               v-bind="tooltipProps"
                               size="25"
-                              :color="getIssueIconColor('INFO_WARNING')"
-                              style="padding-left: .5rem"
+                              color="#003366"
+                              style="padding-left: .5rem;"
                             >
-                              mdi-help-circle-outline
+                              mdi-help-circle
                             </v-icon>
                           </template>
                           <span id="assignedPenTooltip">
