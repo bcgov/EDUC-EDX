@@ -1,5 +1,5 @@
 import * as formRules from '../../utils/institute/formRules';
-import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
+import {checkEnrolledProgramLength} from '../../utils/validation';
 
 // contains the mappings for validation field errors used in StepTwoValidateData.vue
 // type: refers to the type of user input example input => <v-text-input>, select => <v-select>
