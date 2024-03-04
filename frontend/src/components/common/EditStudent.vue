@@ -460,7 +460,7 @@
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
-import {cloneDeep, sortBy} from 'lodash';
+import {cloneDeep} from 'lodash';
 import {formatDob} from '../../utils/format';
 import Spinner from '../common/Spinner.vue';
 import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/alertComposable';
@@ -717,11 +717,18 @@ export default {
         }
       }
 
-      validationIssueMap.forEach((value) => {
-        value.alphaSortValue = value.validationIssueFieldCode.sort()[0];
+      const issuesArray = Array.from(validationIssueMap.values());
+      issuesArray.sort((a, b) => {
+        // Compare by severity code
+        if (a.validationIssueSeverityCode !== b.validationIssueSeverityCode) {
+          return a.validationIssueSeverityCode - b.validationIssueSeverityCode;
+        }
+        // If severity is the same, compare by validationIssueCode alphabetically
+        return a.validationIssueCode.localeCompare(b.validationIssueCode);
       });
 
-      return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode', 'alphaSortValue']);
+      return issuesArray;
+
     },
     getStudentStatus(student){
       let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
