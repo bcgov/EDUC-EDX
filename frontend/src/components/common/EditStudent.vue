@@ -717,6 +717,7 @@ export default {
         }
       }
 
+      // sort by severity and alphabetically
       return Array.from(validationIssueMap.values()).sort((a, b) => {
         if (a.validationIssueSeverityCode < b.validationIssueSeverityCode) return -1;
         if (a.validationIssueSeverityCode > b.validationIssueSeverityCode) return 1;
