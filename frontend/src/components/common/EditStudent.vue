@@ -713,7 +713,10 @@ export default {
         if (!validationIssueMap.has(issue.validationIssueCode)) {
           validationIssueMap.set(issue.validationIssueCode, {...issue, validationIssueFieldCode: [issue.validationIssueFieldCode]});
         } else {
-          validationIssueMap.get(issue.validationIssueCode).validationIssueFieldCode.push(issue.validationIssueFieldCode);
+          let existingIssue = validationIssueMap.get(issue.validationIssueCode);
+          existingIssue.validationIssueFieldCode.push(issue.validationIssueFieldCode);
+          // Sort validationIssueFieldCode alphabetically
+          existingIssue.validationIssueFieldCode.sort();
         }
       }
 
