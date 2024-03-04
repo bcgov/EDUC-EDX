@@ -716,8 +716,14 @@ export default {
           validationIssueMap.get(issue.validationIssueCode).validationIssueFieldCode.push(issue.validationIssueFieldCode);
         }
       }
-  
-      return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode']);
+
+      return Array.from(validationIssueMap.values()).sort((a, b) => {
+        if (a.validationIssueSeverityCode < b.validationIssueSeverityCode) return -1;
+        if (a.validationIssueSeverityCode > b.validationIssueSeverityCode) return 1;
+        let aFieldCode = a.validationIssueFieldCode.sort()[0];
+        let bFieldCode = b.validationIssueFieldCode.sort()[0];
+        return aFieldCode.localeCompare(bFieldCode);
+      });
     },
     getStudentStatus(student){
       let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
