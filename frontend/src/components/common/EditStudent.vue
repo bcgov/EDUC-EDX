@@ -717,14 +717,11 @@ export default {
         }
       }
 
-      // sort by severity and alphabetically
-      return Array.from(validationIssueMap.values()).sort((a, b) => {
-        if (a.validationIssueSeverityCode < b.validationIssueSeverityCode) return -1;
-        if (a.validationIssueSeverityCode > b.validationIssueSeverityCode) return 1;
-        let aFieldCode = a.validationIssueFieldCode.sort()[0];
-        let bFieldCode = b.validationIssueFieldCode.sort()[0];
-        return aFieldCode.localeCompare(bFieldCode);
+      validationIssueMap.forEach((value) => {
+        value.alphaSortValue = value.validationIssueFieldCode.sort()[0];
       });
+
+      return sortBy(Array.from(validationIssueMap.values()), ['validationIssueSeverityCode', 'alphaSortValue']);
     },
     getStudentStatus(student){
       let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
