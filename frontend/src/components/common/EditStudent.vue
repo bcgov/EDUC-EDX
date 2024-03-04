@@ -427,6 +427,8 @@
           </v-col>
         </v-row>
       </div>
+      <slot name="eligibility">
+      </slot>
       <div v-if="functionType !== 'add'">
         <div class="text-center">
           <v-pagination 
