@@ -14,7 +14,7 @@ import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 
 export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   LOCALID: {label: 'Local ID', key: 'localID', type: 'input', options: {maxlength: '12'}},
-  STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {maxlength: '9', rules: [v => isValidPEN(v) || 'Must be a valid PEN']}},
+  STUDENT_PEN: {label: 'PEN', key: 'studentPen', type: 'input', options: {maxlength: '9'}},
   LEGAL_FIRST_NAME: {label: 'Legal Given', key: 'legalFirstName', type: 'input', options: {maxlength: '255'}},
   LEGAL_MIDDLE_NAMES: {label: 'Legal Middle', key: 'legalMiddleNames', type: 'input', options: {maxlength: '255'}},
   LEGAL_LAST_NAME: {label: 'Legal Surname', key: 'legalLastName', type: 'input', options: {maxlength: '255', rules: [formRules.required()]}},

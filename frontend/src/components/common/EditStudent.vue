@@ -21,14 +21,13 @@
                         label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
-                        :rules="penRules"
                         class="mt-n3"
-                        style="margin-bottom: -.2rem"
+                        style="margin-bottom: -1rem"
                       />
                       <span class="font-italic">
                         Assigned PEN:
                         <span id="assignedPen">
-                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult) }}
                         </span>
                         <v-tooltip>
                           <template #activator="{ props: tooltipProps }">
@@ -36,12 +35,13 @@
                               v-bind="tooltipProps"
                               size="25"
                               :color="getIssueIconColor('INFO_WARNING')"
+                              style="padding-left: .5rem"
                             >
                               mdi-help-circle-outline
                             </v-icon>
                           </template>
                           <span id="assignedPenTooltip">
-                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult) }}
                           </span>
                         </v-tooltip>
                       </span>
@@ -469,7 +469,7 @@ import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/a
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
+import {checkEnrolledProgramLength} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
@@ -510,7 +510,6 @@ export default {
   data() {
     return {
       page: 1,
-      penRules: [v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
       sdcFieldMappings: SDC_VALIDATION_FIELD_MAPPINGS,
       sdcCollection: sdcCollectionStore(),
       selectedSdcStudentID: null,
@@ -768,8 +767,8 @@ export default {
         return '';
       }
     },
-    getAssignedPen(assignedPen, studentPen){
-      if (!assignedPen) {
+    getAssignedPen(assignedPen, studentPen, penMatchResult){
+      if (!assignedPen && !penMatchResult) {
         return 'waiting on fixes';
       } else if (assignedPen === studentPen) {
         return assignedPen;
@@ -777,8 +776,8 @@ export default {
         return 'under review';
       }
     },
-    getAssignedPenTooltip(assignedPen, studentPen){
-      if (!assignedPen) {
+    getAssignedPenTooltip(assignedPen, studentPen, penMatchResult){
+      if (!assignedPen && !penMatchResult) {
         return 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
       } else if (assignedPen === studentPen) {
         return 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
