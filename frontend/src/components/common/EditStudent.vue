@@ -728,7 +728,6 @@ export default {
       });
 
       return issuesArray;
-
     },
     getStudentStatus(student){
       let studentValidationIssueStatus = student.sdcSchoolCollectionStudentStatusCode;
