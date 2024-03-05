@@ -21,6 +21,7 @@
                         label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
+                        :rules="penRules"
                         class="mt-n3"
                         style="margin-bottom: -1rem"
                       />
@@ -469,7 +470,7 @@ import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/a
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {checkEnrolledProgramLength} from '../../utils/validation';
+import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
@@ -510,6 +511,7 @@ export default {
   data() {
     return {
       page: 1,
+      penRules: [v => (!v || isValidPEN(v) || 'Must be a valid PEN')],
       sdcFieldMappings: SDC_VALIDATION_FIELD_MAPPINGS,
       sdcCollection: sdcCollectionStore(),
       selectedSdcStudentID: null,
