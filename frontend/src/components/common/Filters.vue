@@ -66,7 +66,6 @@
               :key="i"
             >
               <v-btn
-                v-if="isVisible(i, option)"
                 :id="option?.id"
                 :value="option"
                 class="filter-button"
@@ -244,14 +243,6 @@ export default {
     },
     apply() {
       this.$emit('apply-filters', this.selected);
-    },
-    isVisible(key, value){
-      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
-        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
-      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
-        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
-      }
-      return true;
     }
   }
 };
