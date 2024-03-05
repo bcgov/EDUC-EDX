@@ -770,19 +770,12 @@ export default {
       }
     },
     getAssignedPenDetails(assignedPen, studentPen, penMatchResult) {
-      let penMatchQuality;
       let result = {
         assignedPen: null,
         tooltip: ''
       };
 
-      if (['AA', 'B1', 'C1', 'D1'].includes(penMatchResult)) {
-        penMatchQuality = 'match';
-      } else if (['BM', 'CM', 'DM', 'B0', 'C0', 'D0', 'G0', 'F1'].includes(penMatchResult)) {
-        penMatchQuality = 'under review';
-      }
-
-      if (assignedPen && penMatchQuality === 'match') {
+      if (assignedPen && penMatchResult === 'MATCH') {
         result.assignedPen = assignedPen;
         if (studentPen && studentPen !== assignedPen) {
           result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
@@ -791,7 +784,7 @@ export default {
         } else {
           result.tooltip = 'Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.';
         }
-      } else if (penMatchQuality === 'under review') {
+      } else if (penMatchResult === 'MULTI' || penMatchResult === 'NEW') {
         result.assignedPen = 'Under Review';
         result.tooltip = 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
       } else {
