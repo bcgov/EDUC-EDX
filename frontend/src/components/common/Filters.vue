@@ -12,29 +12,32 @@
             @click="close()"
           >Cancel</a>
         </v-col>
-        <v-col cols="4" style="text-align: end;">
+        <v-col
+          cols="4"
+          style="text-align: end;"
+        >
           <PrimaryButton
-                id="clear-filter"
-                secondary
-                large-icon
-                icon="mdi-filter-off-outline"
-                text="Clear"
-                :click-action="clear"
-                class="mt-n1"
-              />
+            id="clear-filter"
+            secondary
+            large-icon
+            icon="mdi-filter-off-outline"
+            text="Clear"
+            :click-action="clear"
+            class="mt-n1"
+          />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="6">
           <v-text-field 
-                id="searchInput"
-                v-model="penLocalIdNameFilter"
-                label="PEN or Local ID or Name"
-                color="primary"
-                variant="underlined"
-                @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
-                class="mt-n4 mb-n4"
-              />
+            id="searchInput"
+            v-model="penLocalIdNameFilter"
+            label="PEN or Local ID or Name"
+            color="primary"
+            variant="underlined"
+            class="mt-n4 mb-n4"
+            @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+          />
         </v-col>
       </v-row>
       <div

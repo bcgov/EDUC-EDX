@@ -2,19 +2,22 @@
   <v-row>
     <v-col cols="12">
       <v-row justify="space-between">
-        <v-col cols="4" class="found-align">
+        <v-col
+          cols="4"
+          class="found-align"
+        >
           <span
             id="studentsFound"
             class="bold"
           >Students Found:  {{ totalElements }} 
-          <v-icon
-            small
-            class="ml-1"
-            color="#003366"
-          >
-            mdi-tray-arrow-down
-          </v-icon>
-        </span>
+            <v-icon
+              small
+              class="ml-1"
+              color="#003366"
+            >
+              mdi-tray-arrow-down
+            </v-icon>
+          </span>
         </v-col>
         <v-col
           cols="8"
@@ -49,18 +52,23 @@
             :disabled="selectedStudents.length < 2"
           />
           <v-btn
-                id="filters"
-                color="#003366"
-                text="Filter"
-                @click="toggleFilters"
-                class="mr-1 mb-1"
-                prepend-icon="mdi-filter-multiple-outline"
-                variant="outlined"
-              >
-              <template v-slot:append>
-                <v-badge color="error" :content="filterCount" floating offset-y="-10"/>
-              </template>
-              </v-btn>
+            id="filters"
+            color="#003366"
+            text="Filter"
+            class="mr-1 mb-1"
+            prepend-icon="mdi-filter-multiple-outline"
+            variant="outlined"
+            @click="toggleFilters"
+          >
+            <template #append>
+              <v-badge
+                color="error"
+                :content="filterCount"
+                floating
+                offset-y="-10"
+              />
+            </template>
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -132,7 +140,6 @@
 
 <script>
 import alertMixin from '../../../mixins/alertMixin';
-import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
@@ -150,7 +157,6 @@ export default {
   name: 'DetailComponent',
   components: {
     ConfirmationDialog,
-    PrimaryButton,
     CustomTable,
     Filters,
     ViewStudentDetailsComponent,
