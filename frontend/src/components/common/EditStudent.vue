@@ -422,13 +422,11 @@
               class="clear-message success-message"
               icon="mdi-check-circle-outline"
               text="There are no errors or warnings on this student record."
-            >
-            </v-alert>
+            />
           </v-col>
         </v-row>
       </div>
-      <slot name="eligibility">
-      </slot>
+      <slot name="eligibility" />
       <div v-if="functionType !== 'add'">
         <div class="text-center">
           <v-pagination 

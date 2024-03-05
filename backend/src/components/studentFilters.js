@@ -23,6 +23,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     let ellFunding = [];
     let fundingTypeList = [];
     let courseRangeList = [];
+    let penLocalIdNameFilter = [];
     searchFilter.forEach((elem) => {
       let pValue = elem.value ? elem.value.map(filter => filter.value) : null;
       if (elem.key === 'studentType' && pValue) {
@@ -98,6 +99,11 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       if (elem.key === 'numberOfCoursesDec' && pValue) {
           courseRangeList = createCourseRangeFilter(pValue);
       }
+      if (elem.key === 'penLocalIdName' && pValue) {
+        let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
+        let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
+        penLocalIdNameFilter = [...nameCriteria, ...penCriteria];
+    }
     });
     const search = [];
     if (searchCriteriaList.length > 0) {
@@ -213,6 +219,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
             condition: CONDITION.AND,
             searchCriteriaList: courseRangeList
         })
+    }
+    if (penLocalIdNameFilter.length > 0) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: penLocalIdNameFilter
+      });
     }
     return search;
   }
@@ -498,6 +510,51 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       studentTypeFilterList.push({ key: 'isAdult', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.AND });
     }
     return studentTypeFilterList;
+  }
+
+  function createMultiFieldNameSearchCriteria(nameString) {
+    const nameParts = nameString.split(/\s+/);
+    const fieldNames = [
+      'legalFirstName',
+      'legalMiddleNames',
+      'legalLastName',
+      'usualFirstName',
+      'usualMiddleNames',
+      'usualLastName'
+    ];
+  
+    const searchCriteriaList = [];
+    for (const part of nameParts) {
+      for (const fieldName of fieldNames) {
+        searchCriteriaList.push({
+          key: fieldName,
+          operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+          value: `%${part}%`,
+          valueType: VALUE_TYPE.STRING,
+          condition: CONDITION.OR
+        });
+      }
+    }
+    return searchCriteriaList;
+  }
+  
+  function createLocalIdPenSearchCriteria(value) {
+    let searchCriteriaList = [];
+    searchCriteriaList.push({
+      key: 'studentPen',
+      operation: FILTER_OPERATION.EQUAL,
+      value: value,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    searchCriteriaList.push({
+      key: 'localID',
+      operation: FILTER_OPERATION.EQUAL,
+      value: value,
+      valueType: VALUE_TYPE.STRING,
+      condition: CONDITION.OR
+    });
+    return searchCriteriaList;
   }
 
 module.exports = {

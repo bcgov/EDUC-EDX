@@ -7,7 +7,6 @@
       :items-length="totalElements"
       :items="data"
       :headers="headers"
-      class="mt-2"
       mobile-breakpoint="0"
     >
       <template #top>

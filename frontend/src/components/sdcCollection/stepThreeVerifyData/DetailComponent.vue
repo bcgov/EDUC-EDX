@@ -1,96 +1,23 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-row
-        id="search-box"
-        class="search-box mt-2"
-      >
-        <v-col cols="12">
-          <v-row>
-            <v-col
-              class="d-flex justify-start"
-              cols="4"
-            >
-              <v-text-field
-                id="searchInput"
-                v-model="penLocalIdNameFilter"
-                label="PEN or Local ID or Name"
-                color="primary"
-                variant="underlined"
-              />
-            </v-col>
-
-            <v-col
-              class="d-flex justify-start filter-col"
-              cols="6"
-            >
-              <span v-if="filterSearchParams.moreFilters.length > 0">
-                <v-chip-group>
-                  <span
-                    v-for="(filter, index) in filterSearchParams.moreFilters"
-                    :key="index"
-                  >
-                    <v-chip
-                      v-for="(val, i) in filter.value"
-                      :key="i"
-                      append-icon="mdi-close-circle"
-                      class="chip-margin"
-                      @click="removeFilter(filter.key, val.title);"
-                    >
-                      {{ val.title }}
-                    </v-chip>
-                  </span>
-                </v-chip-group>
-              </span>
-            </v-col>
-            <v-col
-              class="d-flex justify-end"
-              cols="2"
-            >
-              <PrimaryButton
-                id="filters"
-                secondary
-                large-icon
-                icon="mdi-filter-multiple-outline"
-                text="Filters"
-                :click-action="toggleFilters"
-                class="mt-n1"
-              />
-            </v-col>
-          </v-row>
-          <v-row class="mt-n2">
-            <v-col>
-              <PrimaryButton
-                id="clear"
-                secondary
-                text="Clear"
-                :click-action="clear"
-              />
-              <PrimaryButton
-                id="search"
-                text="Search"
-                class="ml-3"
-                :click-action="search"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-row />
-      </v-row>
-
       <v-row justify="space-between">
-        <v-col cols="4">
+        <v-col
+          cols="4"
+          class="found-align"
+        >
           <span
             id="studentsFound"
             class="bold"
-          >Students Found:  {{ totalElements }} </span>
-          <v-icon
-            small
-            class="ml-1"
-            color="#003366"
-          >
-            mdi-tray-arrow-down
-          </v-icon>
+          >Students Found:  {{ totalElements }} 
+            <v-icon
+              small
+              class="ml-1"
+              color="#003366"
+            >
+              mdi-tray-arrow-down
+            </v-icon>
+          </span>
         </v-col>
         <v-col
           cols="8"
@@ -124,6 +51,24 @@
             variant="outlined"
             :disabled="selectedStudents.length < 2"
           />
+          <v-btn
+            id="filters"
+            color="#003366"
+            text="Filter"
+            class="mr-1 mb-1"
+            prepend-icon="mdi-filter-multiple-outline"
+            variant="outlined"
+            @click="toggleFilters"
+          >
+            <template #append>
+              <v-badge
+                color="error"
+                :content="filterCount"
+                floating
+                offset-y="-10"
+              />
+            </template>
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -156,7 +101,6 @@
       <Filters
         :filters="config.allowedFilters"
         :school="school"
-        :updated-filters="updatedFilters"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
         @close="showFilters= !showFilters"
@@ -196,7 +140,6 @@
 
 <script>
 import alertMixin from '../../../mixins/alertMixin';
-import PrimaryButton from '../../util/PrimaryButton.vue';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
@@ -214,7 +157,6 @@ export default {
   name: 'DetailComponent',
   components: {
     ConfirmationDialog,
-    PrimaryButton,
     CustomTable,
     Filters,
     ViewStudentDetailsComponent,
@@ -244,18 +186,17 @@ export default {
       isLoading: false,
       totalElements: 0,
       selectedStudents: [],
-      penLocalIdNameFilter: null,
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
         moreFilters: []
       },
       showFilters: null,
-      updatedFilters: {},
       studentForEdit: [],
       editStudentSheet: false,
       addStudentSheet: false,
-      resetFlag: false
+      resetFlag: false,
+      filterCount: 0
     };
   },
   computed: {
@@ -284,10 +225,13 @@ export default {
     applyFilters($event) {
       const clonedFilter = cloneDeep($event);
       this.filterSearchParams.moreFilters = clonedFilter;
+      let allFilterValues = clonedFilter.map(filter => filter.value).flat();
+      this.filterCount = allFilterValues.length;
       this.loadStudents();
     },
     clearFilters() {
       this.filterSearchParams.moreFilters = [];
+      this.filterCount = 0;
       this.loadStudents();
     },
     async removeStudents(){
@@ -309,21 +253,6 @@ export default {
           this.loadingCount -= 1;
           this.resetFlag = true;
         });
-    },
-    removeFilter(toRemoveKey, toRemoveValue) {
-      let filteredKey = this.filterSearchParams.moreFilters.find(value => value.key === toRemoveKey);
-      if(filteredKey?.value?.length === 1) {
-        const idx =this.filterSearchParams.moreFilters.findIndex(value => value.key === toRemoveKey);
-        this.filterSearchParams.moreFilters.splice(idx, 1);
-      } else {
-        this.filterSearchParams.moreFilters.map(filter => {
-          if(filter.key === toRemoveKey) {
-            filter.value.splice(filter.value.findIndex(value => value.title === toRemoveValue), 1);
-          }
-        });
-      }
-      this.updatedFilters = {removeKey: toRemoveKey, removeValue: toRemoveValue};
-      this.loadStudents();
     },
     loadStudents() {
       this.isLoading= true;
@@ -395,18 +324,6 @@ export default {
       }
       this.loadStudents();
     },
-
-    search() {
-      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
-      this.loadStudents();
-    },
-
-    clear() {
-      this.penLocalIdNameFilter = null;
-      this.filterSearchParams.penLocalIdNameFilter = this.penLocalIdNameFilter;
-      this.loadStudents();
-    }
-
   }
 };
 </script>
@@ -424,6 +341,10 @@ export default {
 
 .bold {
   font-weight: bold ;
+}
+
+.found-align {
+  align-self: flex-end;
 }
 
 .chip-margin {
