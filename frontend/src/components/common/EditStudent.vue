@@ -769,11 +769,11 @@ export default {
     },
     getAssignedPen(assignedPen, studentPen, penMatchResult){
       if (!assignedPen && !penMatchResult) {
-        return 'Waiting on Fixes';
+        return 'Waiting on fixes';
       } else if (assignedPen === studentPen) {
         return assignedPen;
       } else {
-        return 'Under Review';
+        return 'Under review';
       }
     },
     getAssignedPenTooltip(assignedPen, studentPen, penMatchResult){
