@@ -23,7 +23,7 @@
                         :maxlength="9"
                         :rules="penRules"
                         class="mt-n3"
-                        style="margin-bottom: -1rem"
+                        style="margin-bottom: -.2rem"
                       />
                       <span class="font-italic">
                         Assigned PEN:
