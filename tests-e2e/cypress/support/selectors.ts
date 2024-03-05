@@ -154,7 +154,7 @@ export default {
   },
   filters: {
     clearFilter: '#clear-filter',
-    applyFilter: '#apply-filter',
+    applyFilter: 'div.v-navigation-drawer__scrim.bg-transparent',
     studentType: '#studentType', 
     warnings: '#warnings',
     fte: '#fte',
