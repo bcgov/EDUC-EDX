@@ -24,6 +24,19 @@
               />
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="6">
+          <v-text-field 
+                id="searchInput"
+                v-model="penLocalIdNameFilter"
+                label="PEN or Local ID or Name"
+                color="primary"
+                variant="underlined"
+                @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+                class="mt-n4 mb-n4"
+              />
+        </v-col>
+      </v-row>
       <div
         v-for="(filter, index) in filters"
         :key="index"
@@ -87,7 +100,7 @@
               strict
               thumb-size="15"
               class="align-center"
-              @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
+              @end="setCourseRangeFilter('numberOfCoursesDec', $event)"
             >
               <template #prepend>
                 <v-text-field
@@ -150,11 +163,6 @@ export default {
       type: Object,
       required: true,
       default: null
-    },
-    updatedFilters: {
-      type: Object,
-      required: true,
-      default: null 
     }
   },
   emits: ['clearFilters', 'apply-filters', 'close'],
@@ -165,42 +173,26 @@ export default {
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
-      courseRange: [0, 15]
+      courseRange: [0, 15],
+      penLocalIdNameFilter: null
     };
   },
   computed: {
-     
   },
   watch: {
-    updatedFilters: {
-      handler(toRemoveFilters) {
-        if(Object.keys(toRemoveFilters).length !== 0) {
-          delete this.selectedFilters[toRemoveFilters.removeKey];
-          let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
-          if(toRemoveFilters.removeKey === 'bandResidence') {
-            this.bandCodeValue = null;
-          } else if (toRemoveFilters.removeKey === 'numberOfCoursesDec') {
-            this.courseRange = [...this.courseRangeDefault];
-          } else if(filteredKey === undefined) {
-            const idx = this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
-            this.selected.splice(idx, 1, null);
-          } else {
-            this.selected.map(filter => {
-              if(Array.isArray(filter) && filter.every(val => filteredKey.includes(val))) {
-                filter.splice(filter.findIndex(value => value.title === toRemoveFilters.removeValue), 1);
-              }
-            });
-          }
-        } else {
-          this.clear();
-        }      
-      },
-      immediate: true
-    }
   },
   methods: {
     close() {
       this.$emit('close');
+    },
+    setPenLocalIdNameFilter(key, $event) {
+      if($event) {
+        this.selectedFilters[key] = [{title: 'PenOrLocalIdOrName', value: $event}];
+        this.apply();
+      } else {
+        delete this.selectedFilters[key];
+        this.apply();
+      }
     },
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
@@ -242,6 +234,7 @@ export default {
       this.selectedFilters = {};
       this.bandCodeValue = null;
       this.courseRange = [...this.courseRangeDefault];
+      this.penLocalIdNameFilter = null;
       this.$emit('clearFilters');
     },
     apply() {
