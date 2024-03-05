@@ -29,7 +29,7 @@
                         <span id="assignedPen">
                           {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult) }}
                         </span>
-                        <v-tooltip>
+                        <v-tooltip content-class="customTooltip">
                           <template #activator="{ props: tooltipProps }">
                             <v-icon
                               v-bind="tooltipProps"
@@ -844,7 +844,11 @@ export default {
   
     .success-message{
       vertical-align: sub;
-     }
-  
+    }
+  </style>
+  <style scoped>
+    :global(.customTooltip) {
+      max-width: 30rem !important;
+    }
   </style>
   
