@@ -269,7 +269,7 @@ export default {
       if (assignedPen) {
         return assignedPen;
       } else {
-        return 'under review';
+        return 'Under Review';
       }
     },
     displayName(first, middle, last) {

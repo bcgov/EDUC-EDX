@@ -792,7 +792,7 @@ export default {
           result.tooltip = 'Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.';
         }
       } else if (penMatchQuality === 'under review') {
-        result.assignedPen = 'Under review';
+        result.assignedPen = 'Under Review';
         result.tooltip = 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
       } else {
         result.assignedPen = 'Waiting on fixes';
