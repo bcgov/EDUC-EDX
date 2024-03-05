@@ -178,6 +178,13 @@ const reportTypeValues = [
 ];
 const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
 
+const ENROLLED_PROGRAM_TYPE_CODE_MAP = Object.freeze({
+  FRENCH_ENROLLED_PROGRAM_CODES: ['11', '08', '14', '05'],
+  CAREER_ENROLLED_PROGRAM_CODES: ['40', '41', '42', '43'],
+  INDIGENOUS_ENROLLED_PROGRAM_CODES: ['29', '33', '36'],
+  ENGLISH_ENROLLED_PROGRAM_CODES: ['17'],
+});
+
 module.exports = {
   FILTER_OPERATION,
   CONDITION,
@@ -189,7 +196,8 @@ module.exports = {
   EVENT_WS_TOPIC,
   INSTITUTE_CACHE_REFRESH_TOPIC,
   CACHE_KEYS,
-  MOVE_SCHOOL_TOPIC
+  MOVE_SCHOOL_TOPIC,
+  ENROLLED_PROGRAM_TYPE_CODE_MAP
 };
 /**
  * Test comment

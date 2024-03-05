@@ -29,7 +29,7 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <v-text-field 
+          <v-text-field
             id="searchInput"
             v-model="penLocalIdNameFilter"
             label="PEN or Local ID or Name"
@@ -41,8 +41,8 @@
         </v-col>
       </v-row>
       <div
-        v-for="(filter, index) in filters"
-        :key="index"
+        v-for="(filter, key) in filters"
+        :key="key"
       >
         <v-row>
           <v-col
@@ -54,18 +54,19 @@
         </v-row>
         <v-row>
           <v-btn-toggle
-            v-model="selected[index]"
+            v-model="selected[key]"
             color="#003366"
-            rounded="0" 
+            rounded="0"
             :multiple="filter?.multiple"
             class="filter-toggle"
-            @update:model-value="setFilter(selected[index], filter?.key)"
+            @update:model-value="setFilter(selected[key], key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
               :key="i"
             >
               <v-btn
+                v-if="isVisible(i, option)"
                 :id="option?.id"
                 :value="option"
                 class="filter-button"
@@ -76,7 +77,7 @@
               </v-btn>
             </div>
           </v-btn-toggle>
-          <v-col v-if="filter?.key === 'bandCode'">
+          <v-col v-if="key === 'bandCode'">
             <v-autocomplete
               id="bandCode"
               v-model="bandCodeValue"
@@ -91,7 +92,7 @@
               @update:model-value="setBandCodeFilter('bandResidence', $event)"
             />
           </v-col>
-          <v-col v-if="filter?.key === 'courses'">
+          <v-col v-if="key === 'courses'">
             <v-range-slider
               id="courses-slider"
               v-model="courseRange"
@@ -158,7 +159,7 @@ export default {
   mixins: [alertMixin],
   props: {
     filters: {
-      type: Array,
+      type: Object,
       required: true,
       default: null
     },
@@ -171,8 +172,7 @@ export default {
   emits: ['clearFilters', 'apply-filters', 'close'],
   data() {
     return {
-      selected:[],
-      selectedFilters: {},
+      selected: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
@@ -180,9 +180,12 @@ export default {
       penLocalIdNameFilter: null
     };
   },
-  computed: {
-  },
   watch: {
+  },
+  created() {
+    Object.keys(this.filters).forEach(key => {
+      this.selected[key] = {};
+    });
   },
   methods: {
     close() {
@@ -199,19 +202,19 @@ export default {
     },
     setFilter(val, key) {
       if(val && !isEmpty(val)) {
-        this.selectedFilters[key] = this.setFilterValue(key, val);
+        this.selected[key] = (Array.isArray(val) ? val : [val]);
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
         this.apply();
       }
     },
     setBandCodeFilter(key, $event){
       if($event) {
-        this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+        this.selected[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
         this.apply();
       }
     },
@@ -225,27 +228,30 @@ export default {
         } else {
           courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
         }
-        this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
+        this.selected[key] = [{title: courseFilterTitle, value: $event}];
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
         this.apply();
       }
     },
     clear() {
-      this.selected = [];
-      this.selectedFilters = {};
+      this.selected = {};
       this.bandCodeValue = null;
       this.courseRange = [...this.courseRangeDefault];
       this.penLocalIdNameFilter = null;
       this.$emit('clearFilters');
     },
     apply() {
-      const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
-      this.$emit('apply-filters', filtersToCheck);
+      this.$emit('apply-filters', this.selected);
     },
-    setFilterValue(key, val) {
-      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;
+    isVisible(key, value){
+      if(key === 'fteZero' && (value === 'INDYADULT' || value === 'AUTHDUP')) {
+        return (this.school?.schoolCategory === 'INDEPEND' || this.school?.schoolCategory === 'INDP_FNS');
+      } else if(key === 'fteZero' && (value === 'INACTIVE' || value === 'DISTDUP')) {
+        return (this.school?.facilityTypeCode === 'CONT_ED' || this.school?.facilityTypeCode === 'DIST_LEARN' || this.school?.facilityTypeCode === 'DISTONLINE');
+      }
+      return true;
     }
   }
 };

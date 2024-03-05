@@ -9,7 +9,7 @@
           <span
             id="studentsFound"
             class="bold"
-          >Students Found:  {{ totalElements }} 
+          >Students Found:  {{ totalElements }}
             <v-icon
               small
               class="ml-1"
@@ -143,7 +143,7 @@ import alertMixin from '../../../mixins/alertMixin';
 import CustomTable from '../../common/CustomTable.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy, cloneDeep} from 'lodash';
+import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
@@ -189,7 +189,7 @@ export default {
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
         sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
-        moreFilters: []
+        moreFilters: {}
       },
       showFilters: null,
       studentForEdit: [],
@@ -225,12 +225,11 @@ export default {
     applyFilters($event) {
       const clonedFilter = cloneDeep($event);
       this.filterSearchParams.moreFilters = clonedFilter;
-      let allFilterValues = clonedFilter.map(filter => filter.value).flat();
-      this.filterCount = allFilterValues.length;
+      this.filterCount = Object.keys(omitBy(clonedFilter, isEmpty))?.length;
       this.loadStudents();
     },
     clearFilters() {
-      this.filterSearchParams.moreFilters = [];
+      this.filterSearchParams.moreFilters = {};
       this.filterCount = 0;
       this.loadStudents();
     },
@@ -296,6 +295,7 @@ export default {
       student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd(student);
       student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
       student.mappedEllEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES);
+      student.mappedLanguageEnrolledProgram = this.enrolledProgramMapping(student, [...enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES, ...enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES]);
       student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
       student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
       student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? `${this.bandCodesMap.get(student.bandCode)?.description} (${this.bandCodesMap.get(student.bandCode)?.bandCode})` : null;
