@@ -12,21 +12,37 @@
             @click="close()"
           >Cancel</a>
         </v-col>
-        <v-col cols="4" style="text-align: end;">
+        <v-col
+          cols="4"
+          style="text-align: end;"
+        >
           <PrimaryButton
-                id="clear-filter"
-                secondary
-                large-icon
-                icon="mdi-filter-off-outline"
-                text="Clear"
-                :click-action="clear"
-                class="mt-n1"
-              />
+            id="clear-filter"
+            secondary
+            large-icon
+            icon="mdi-filter-off-outline"
+            text="Clear"
+            :click-action="clear"
+            class="mt-n1"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6">
+          <v-text-field
+            id="searchInput"
+            v-model="penLocalIdNameFilter"
+            label="PEN or Local ID or Name"
+            color="primary"
+            variant="underlined"
+            class="mt-n4 mb-n4"
+            @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+          />
         </v-col>
       </v-row>
       <div
-        v-for="(filter, index) in filters"
-        :key="index"
+        v-for="(filter, key) in filters"
+        :key="key"
       >
         <v-row>
           <v-col
@@ -38,12 +54,12 @@
         </v-row>
         <v-row>
           <v-btn-toggle
-            v-model="selected[index]"
+            v-model="selected[key]"
             color="#003366"
-            rounded="0" 
+            rounded="0"
             :multiple="filter?.multiple"
             class="filter-toggle"
-            @update:model-value="setFilter(selected[index], filter?.key)"
+            @update:model-value="setFilter(selected[key], key)"
           >
             <div
               v-for="(option, i) in filter?.filterOptions"
@@ -60,7 +76,7 @@
               </v-btn>
             </div>
           </v-btn-toggle>
-          <v-col v-if="filter?.key === 'bandCode'">
+          <v-col v-if="key === 'bandCode'">
             <v-autocomplete
               id="bandCode"
               v-model="bandCodeValue"
@@ -75,7 +91,7 @@
               @update:model-value="setBandCodeFilter('bandResidence', $event)"
             />
           </v-col>
-          <v-col v-if="filter?.key === 'courses'">
+          <v-col v-if="key === 'courses'">
             <v-range-slider
               id="courses-slider"
               v-model="courseRange"
@@ -87,7 +103,7 @@
               strict
               thumb-size="15"
               class="align-center"
-              @update:model-value="setCourseRangeFilter('numberOfCoursesDec', $event)"
+              @end="setCourseRangeFilter('numberOfCoursesDec', $event)"
             >
               <template #prepend>
                 <v-text-field
@@ -142,7 +158,7 @@ export default {
   mixins: [alertMixin],
   props: {
     filters: {
-      type: Array,
+      type: Object,
       required: true,
       default: null
     },
@@ -150,73 +166,54 @@ export default {
       type: Object,
       required: true,
       default: null
-    },
-    updatedFilters: {
-      type: Object,
-      required: true,
-      default: null 
     }
   },
   emits: ['clearFilters', 'apply-filters', 'close'],
   data() {
     return {
-      selected:[],
-      selectedFilters: {},
+      selected: {},
       bandCodeValue: null,
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
-      courseRange: [0, 15]
+      courseRange: [0, 15],
+      penLocalIdNameFilter: null
     };
   },
-  computed: {
-     
-  },
   watch: {
-    updatedFilters: {
-      handler(toRemoveFilters) {
-        if(Object.keys(toRemoveFilters).length !== 0) {
-          delete this.selectedFilters[toRemoveFilters.removeKey];
-          let filteredKey = this.selected.find(value => value && Array.isArray(value) && value.find(obj => obj.title === toRemoveFilters.removeValue));
-          if(toRemoveFilters.removeKey === 'bandResidence') {
-            this.bandCodeValue = null;
-          } else if (toRemoveFilters.removeKey === 'numberOfCoursesDec') {
-            this.courseRange = [...this.courseRangeDefault];
-          } else if(filteredKey === undefined) {
-            const idx = this.selected.findIndex(value => value && !Array.isArray(value) && (value.title === toRemoveFilters.removeValue));
-            this.selected.splice(idx, 1, null);
-          } else {
-            this.selected.map(filter => {
-              if(Array.isArray(filter) && filter.every(val => filteredKey.includes(val))) {
-                filter.splice(filter.findIndex(value => value.title === toRemoveFilters.removeValue), 1);
-              }
-            });
-          }
-        } else {
-          this.clear();
-        }      
-      },
-      immediate: true
-    }
+  },
+  created() {
+    Object.keys(this.filters).forEach(key => {
+      this.selected[key] = {};
+    });
   },
   methods: {
     close() {
       this.$emit('close');
     },
-    setFilter(val, key) {
-      if(val && !isEmpty(val)) {
-        this.selectedFilters[key] = this.setFilterValue(key, val);
+    setPenLocalIdNameFilter(key, $event) {
+      if($event) {
+        this.selectedFilters[key] = [{title: 'PenOrLocalIdOrName', value: $event}];
         this.apply();
       } else {
         delete this.selectedFilters[key];
         this.apply();
       }
     },
-    setBandCodeFilter(key, $event){
-      if($event) {
-        this.selectedFilters[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+    setFilter(val, key) {
+      if(val && !isEmpty(val)) {
+        this.selected[key] = (Array.isArray(val) ? val : [val]);
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
+        this.apply();
+      }
+    },
+    setBandCodeFilter(key, $event){
+      if($event) {
+        this.selected[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
+        this.apply();
+      } else {
+        delete this.selected[key];
         this.apply();
       }
     },
@@ -230,26 +227,22 @@ export default {
         } else {
           courseFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
         }
-        this.selectedFilters[key] = [{title: courseFilterTitle, value: $event}];
+        this.selected[key] = [{title: courseFilterTitle, value: $event}];
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
         this.apply();
       }
     },
     clear() {
-      this.selected = [];
-      this.selectedFilters = {};
+      this.selected = {};
       this.bandCodeValue = null;
       this.courseRange = [...this.courseRangeDefault];
+      this.penLocalIdNameFilter = null;
       this.$emit('clearFilters');
     },
     apply() {
-      const filtersToCheck = Object.entries(this.selectedFilters).map(([key, value]) => ({ key, value }));
-      this.$emit('apply-filters', filtersToCheck);
-    },
-    setFilterValue(key, val) {
-      return key === 'support' || key === 'careerProgramsFunding' || key === 'frenchFunding' || key === 'indigenousProgramsFunding' || key === 'ancestry' || key === 'spedFunding' || key === 'ellFunding' ? [val] : val;
+      this.$emit('apply-filters', this.selected);
     }
   }
 };

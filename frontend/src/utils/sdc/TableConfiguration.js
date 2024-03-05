@@ -670,18 +670,86 @@ export const FTE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
+      { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
+      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
     ],
     headcountEndpoint: 'enrollment',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      SUPPORT_BLOCKS_FILTER,
-      FTE_ZERO_FILTER,
-      WARNING_FILTER,
-      COURSE_FILTER
-    ]
+    allowedFilters: {
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      warnings: WARNING_FILTER,
+      courses: COURSE_FILTER,
+      support: SUPPORT_BLOCKS_FILTER,
+      fteZero: FTE_ZERO_FILTER,
+      frenchProgram: {
+        ...FRENCH_PROGRAMS_FILTER,
+        filterOptions: [
+          ...FRENCH_PROGRAMS_FILTER.filterOptions,
+          {
+            title: '05 - Programme Francophone',
+            id: 'french05',
+            value: '05'
+          },
+          {
+            title: 'No French Programs',
+            id: 'noFrenchProgram',
+            value: 'noFrenchPrograms'
+          }
+        ]
+      },
+      ellYears: ELL_YEARS_FILTER,
+      careerPrograms: {
+        ...CAREER_PROGRAM_FILTER,
+        filterOptions: [
+          ...CAREER_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Career Programs',
+            id: 'noCareerProgram',
+            value: 'noCareerPrograms'
+          }
+        ]
+      },
+      careerCode: {
+        ...CAREER_CODE_FILTER,
+        filterOptions: [
+          ...CAREER_CODE_FILTER.filterOptions,
+          {
+            title: 'No Career Code',
+            id: 'noCareerCode',
+            value: 'noCareerCodes'
+          }
+        ]
+      },
+      indigenousPrograms: {
+        ...INDIGENOUS_PROGRAM_FILTER,
+        filterOptions: [
+          ...INDIGENOUS_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Indigenous Support Programs',
+            id: 'noIndigenousPrograms',
+            value: 'noIndigenousPrograms'
+          }
+        ]
+      },
+      bandCode: BAND_FILTER,
+      ancestry: ANCESTRY_FILTER,
+      sped: {
+        ...SPED_FILTER,
+        filterOptions: [
+          ...SPED_FILTER.filterOptions,
+          {
+            title: 'No Special Education Category',
+            id: 'noSpedCategory',
+            value: 'noSpedCode'
+          }
+        ]
+      }
+
+    }
   }
 );
 
@@ -699,15 +767,15 @@ export const FRENCH_PR = Object.freeze(
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram' },
     ],
     headcountEndpoint: 'french',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      FRENCH_PROGRAMS_FILTER,
-      FRENCH_FUNDING_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
+      FTE_FILTER: FTE_FILTER,
+      GRADE_FILTER: GRADE_FILTER,
+      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
+      FRENCH_PROGRAMS_FILTER: FRENCH_PROGRAMS_FILTER,
+      FRENCH_FUNDING_FILTER: FRENCH_FUNDING_FILTER,
+      WARNING_FILTER: WARNING_FILTER
+    }
   }
 );
 
@@ -725,16 +793,16 @@ export const CAREER_PR = Object.freeze(
       { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
     ],
     headcountEndpoint: 'career',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      CAREER_PROGRAM_FILTER,
-      CAREER_CODE_FILTER,
-      CAREER_FUNDING_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
+      FTE_FILTER: FTE_FILTER,
+      GRADE_FILTER: GRADE_FILTER,
+      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
+      CAREER_PROGRAM_FILTER: CAREER_PROGRAM_FILTER,
+      CAREER_CODE_FILTER: CAREER_CODE_FILTER,
+      CAREER_FUNDING_FILTER: CAREER_FUNDING_FILTER,
+      WARNING_FILTER: WARNING_FILTER
+    }
   }
 );
 
@@ -753,17 +821,17 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
     ],
     headcountEndpoint: 'indigenous',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      INDIGENOUS_PROGRAM_FILTER,
-      BAND_FILTER,
-      ANCESTRY_FILTER,
-      INDIGENOUS_FUNDING_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
+      FTE_FILTER: FTE_FILTER,
+      GRADE_FILTER: GRADE_FILTER,
+      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
+      INDIGENOUS_PROGRAM_FILTER: INDIGENOUS_PROGRAM_FILTER,
+      BAND_FILTER: BAND_FILTER,
+      ANCESTRY_FILTER: ANCESTRY_FILTER,
+      INDIGENOUS_FUNDING_FILTER: INDIGENOUS_FUNDING_FILTER,
+      WARNING_FILTER: WARNING_FILTER
+    }
   }
 );
 
@@ -781,15 +849,15 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Special Education Category', key: 'mappedSpedCode' },
     ],
     headcountEndpoint: 'special-ed',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      SPED_FILTER,
-      SPED_FUNDING_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
+      FTE_FILTER: FTE_FILTER,
+      GRADE_FILTER: GRADE_FILTER,
+      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
+      SPED_FILTER: SPED_FILTER,
+      SPED_FUNDING_FILTER: SPED_FUNDING_FILTER,
+      WARNING_FILTER: WARNING_FILTER
+    }
   }
 );
 
@@ -807,15 +875,15 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
     ],
     headcountEndpoint: 'ell',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      ELL_YEARS_FILTER,
-      ELL_FUNDING_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
+      FTE_FILTER: FTE_FILTER,
+      GRADE_FILTER: GRADE_FILTER,
+      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
+      ELL_YEARS_FILTER: ELL_YEARS_FILTER,
+      ELL_FUNDING_FILTER: ELL_FUNDING_FILTER,
+      WARNING_FILTER: WARNING_FILTER
+    }
   }
 );
 

@@ -55,50 +55,51 @@
         @form-validity="isValid"
         @reset-parent="reset()"
         @student-object="setStudentContext"
-      />
+      >
+        <template #eligibility>
+          <v-row v-if="studentForEdit?.fte === 0">
+            <v-col>
+              <span id="fteReason"><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
+            </v-col>
+          </v-row>
+          <v-row v-if="showFundingEligibilitySection()">
+            <v-col>
+              <span><b>Program Funding Ineligiblity:</b></span>
+              <ul>
+                <li v-if="studentForEdit?.careerProgramNonEligReasonCode !== null && studentForEdit?.careerProgramNonEligReasonCode !== 'NTENRCAREE'">
+                  {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.careerProgramNonEligReasonCode) }}
+                </li>
 
-      <v-divider class="mt-2 mb-2" />
-      <v-row v-if="studentForEdit?.fte === 0">
-        <v-col>
-          <span id="fteReason"><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
-        </v-col>
-      </v-row>
-      <v-row v-if="showFundingEligibilitySection()">
-        <v-col>
-          <span><b>Program Funding Ineligiblity:</b></span>
-          <ul>
-            <li v-if="studentForEdit?.careerProgramNonEligReasonCode !== null && studentForEdit?.careerProgramNonEligReasonCode !== 'NTENRCAREE'">
-              {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.careerProgramNonEligReasonCode) }}
-            </li>
+                <li v-if="studentForEdit?.frenchProgramNonEligReasonCode !== null && studentForEdit?.frenchProgramNonEligReasonCode !== 'NTENRFRENC'">
+                  {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.frenchProgramNonEligReasonCode) }}
+                </li>
 
-            <li v-if="studentForEdit?.frenchProgramNonEligReasonCode !== null && studentForEdit?.frenchProgramNonEligReasonCode !== 'NTENRFRENC'">
-              {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.frenchProgramNonEligReasonCode) }}
-            </li>
+                <li v-if="studentForEdit?.indigenousSupportProgramNonEligReasonCode !== null && studentForEdit?.indigenousSupportProgramNonEligReasonCode !== 'NTENRINDIG'">
+                  {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.indigenousSupportProgramNonEligReasonCode) }}
+                </li>
 
-            <li v-if="studentForEdit?.indigenousSupportProgramNonEligReasonCode !== null && studentForEdit?.indigenousSupportProgramNonEligReasonCode !== 'NTENRINDIG'">
-              {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.indigenousSupportProgramNonEligReasonCode) }}
-            </li>
+                <li v-if="studentForEdit?.specialEducationNonEligReasonCode !== null && studentForEdit?.specialEducationNonEligReasonCode !== 'NTENRSPED'">
+                  {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.specialEducationNonEligReasonCode) }}
+                </li>
 
-            <li v-if="studentForEdit?.specialEducationNonEligReasonCode !== null && studentForEdit?.specialEducationNonEligReasonCode !== 'NTENRSPED'">
-              {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.specialEducationNonEligReasonCode) }}
-            </li>
-
-            <li v-if="studentForEdit?.ellNonEligReasonCode !== null && studentForEdit?.ellNonEligReasonCode !== 'NTENRELL'">
-              {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.ellNonEligReasonCode) }}
-            </li>
-          </ul>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <span id="graduatedFlag"><b>Graduated:</b>{{ studentForEdit?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <span id="adultFlag"><b>Adult:</b>{{ studentForEdit?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
-        </v-col>
-      </v-row>
+                <li v-if="studentForEdit?.ellNonEligReasonCode !== null && studentForEdit?.ellNonEligReasonCode !== 'NTENRELL'">
+                  {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.ellNonEligReasonCode) }}
+                </li>
+              </ul>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span id="graduatedFlag"><b>Graduated:</b>{{ studentForEdit?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span id="adultFlag"><b>Adult:</b>{{ studentForEdit?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
+            </v-col>
+          </v-row>
+        </template>
+      </EditStudent>
     </v-card-text>
   </v-card>
 </template>

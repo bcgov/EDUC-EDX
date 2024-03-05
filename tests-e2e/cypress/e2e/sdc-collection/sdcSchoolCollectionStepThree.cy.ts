@@ -35,34 +35,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
     });
 
-    it('can search for a student by name, PEN, or local ID', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
-
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
-
-      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('LEGALLAST');
-      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 3');
-
-      cy.get(selectors.studentLevelData.stepThreeSearchField).clear();
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('67890');
-      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-    });
-
     it('can view assigned pen of student', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
@@ -110,8 +82,10 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
 
       cy.wait('@collectionStudent');
+      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
+      cy.get(selectors.filters.applyFilter).click();
+
       cy.wait('@collectionStudent').then(() => {
         cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
         cy.get(selectors.studentLevelData.editStudentRow).click();
@@ -137,16 +111,22 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
 
       cy.wait('@collectionStudent');
+      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-      cy.get(selectors.studentLevelData.stepThreeSearchBtn).click();
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-      cy.get(selectors.studentLevelData.tableResultsSelect).click();
-      cy.get(selectors.studentLevelData.remove).click();
-      cy.get(selectors.studentLevelData.removeConfirm).click();
+      cy.get(selectors.filters.applyFilter).click();
+
+      cy.wait('@collectionStudent').then(() => {
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.studentLevelData.tableResultsSelect).click();
+        cy.get(selectors.studentLevelData.remove).click();
+        cy.get(selectors.studentLevelData.removeConfirm).click();
+      })
       cy.wait('@collectionStudent');
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
-      cy.get(selectors.studentLevelData.stepThreeClearBtn).click();
+      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+      cy.get(selectors.filters.applyFilter).click();
+
       cy.wait('@collectionStudent');
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 2');
       cy.get(selectors.studentLevelData.tableResultsSelect).click({ multiple: true });
@@ -174,7 +154,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('GRADE 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('GRADE 6').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
@@ -203,7 +183,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('GRADE 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('GRADE 6').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();

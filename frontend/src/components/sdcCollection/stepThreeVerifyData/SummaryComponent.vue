@@ -123,8 +123,8 @@
     </v-col>
     <v-col class="text-right">
       <router-link
-          :to="{ path: downloadReportURL() }"
-          target="_blank"
+        :to="{ path: downloadReportURL() }"
+        target="_blank"
       >
         <v-icon>mdi-tray-arrow-down</v-icon>
         Download Report

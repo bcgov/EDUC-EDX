@@ -223,12 +223,14 @@ export default {
       }
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
     },
-    refreshStore() {
+    refreshStore(backStep = false) {
       this.isLoading = !this.isLoading;
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
-        this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+        if (!backStep) {
+          this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+        }
         this.isLoading = !this.isLoading;
       });
     },
@@ -236,6 +238,9 @@ export default {
       this.$router.push({name: 'sdcCollectionSummary', params: {schoolID: this.schoolID}});
     },
     updateCurrentStep(step) {
+      if (step < this.currentStep) {
+        this.refreshStore(true);
+      }
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
