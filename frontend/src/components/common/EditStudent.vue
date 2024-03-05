@@ -28,7 +28,7 @@
                       <span class="font-italic">
                         Assigned PEN:
                         <span id="assignedPen">
-                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult) }}
+                          {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).assignedPen }}
                         </span>
                         <v-tooltip content-class="customTooltip">
                           <template #activator="{ props: tooltipProps }">
@@ -42,7 +42,7 @@
                             </v-icon>
                           </template>
                           <span id="assignedPenTooltip">
-                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult) }}
+                            {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).tooltip }}
                           </span>
                         </v-tooltip>
                       </span>
@@ -769,23 +769,37 @@ export default {
         return '';
       }
     },
-    getAssignedPen(assignedPen, studentPen, penMatchResult){
-      if (!assignedPen && !penMatchResult) {
-        return 'Waiting on fixes';
-      } else if (assignedPen === studentPen) {
-        return assignedPen;
-      } else {
-        return 'Under review';
+    getAssignedPenDetails(assignedPen, studentPen, penMatchResult) {
+      let penMatchQuality;
+      let result = {
+        assignedPen: null,
+        tooltip: ''
+      };
+
+      if (['AA', 'B1', 'C1', 'D1'].includes(penMatchResult)) {
+        penMatchQuality = 'match';
+      } else if (['BM', 'CM', 'DM', 'B0', 'C0', 'D0', 'G0', 'F1'].includes(penMatchResult)) {
+        penMatchQuality = 'under review';
       }
-    },
-    getAssignedPenTooltip(assignedPen, studentPen, penMatchResult){
-      if (!assignedPen && !penMatchResult) {
-        return 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
-      } else if (assignedPen === studentPen) {
-        return 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
+
+      if (assignedPen && penMatchQuality === 'match') {
+        result.assignedPen = assignedPen;
+        if (studentPen && studentPen !== assignedPen) {
+          result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
+        } else if (!studentPen) {
+          result.tooltip = 'No submitted PEN was provided. The submitted details has been matched to an existing student file and assigned a PEN. The Assigned PEN will be used to prevent duplication.';
+        } else {
+          result.tooltip = 'Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.';
+        }
+      } else if (penMatchQuality === 'under review') {
+        result.assignedPen = 'Under review';
+        result.tooltip = 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
       } else {
-        return 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
+        result.assignedPen = 'Waiting on fixes';
+        result.tooltip = 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
       }
+
+      return result;
     },
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
