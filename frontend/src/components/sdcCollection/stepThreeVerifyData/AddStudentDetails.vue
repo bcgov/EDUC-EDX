@@ -6,7 +6,7 @@
       id="viewStudentCardTitle"
       class="sheetHeader pt-1 pb-1"
     >
-      Student Details
+      Add Student
     </v-card-title>
     <v-divider />
     <v-card-text>
