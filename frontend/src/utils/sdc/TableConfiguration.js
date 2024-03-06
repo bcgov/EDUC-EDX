@@ -773,7 +773,7 @@ export const FRENCH_PR = Object.freeze(
       grade: GRADE_FILTER,
       fundingType: FUNDING_TYPE_FILTER,
       frenchProgram: FRENCH_PROGRAMS_FILTER,
-      FRENCH_FUNDING_FILTER: FRENCH_FUNDING_FILTER,
+      frenchFunding: FRENCH_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
   }
