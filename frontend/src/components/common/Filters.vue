@@ -192,10 +192,10 @@ export default {
     },
     setPenLocalIdNameFilter(key, $event) {
       if($event) {
-        this.selectedFilters[key] = [{title: 'PenOrLocalIdOrName', value: $event}];
+        this.selected[key] = [{title: 'PenOrLocalIdOrName', value: $event}];
         this.apply();
       } else {
-        delete this.selectedFilters[key];
+        delete this.selected[key];
         this.apply();
       }
     },
