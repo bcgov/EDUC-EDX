@@ -775,7 +775,8 @@ export default {
         tooltip: ''
       };
 
-      if (assignedPen && penMatchResult === 'MATCH') {
+      switch (penMatchResult) {
+      case 'MATCH':
         result.assignedPen = assignedPen;
         if (studentPen && studentPen !== assignedPen) {
           result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
@@ -784,12 +785,16 @@ export default {
         } else {
           result.tooltip = 'Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.';
         }
-      } else if (penMatchResult === 'MULTI' || penMatchResult === 'NEW') {
+        break;
+      case 'MULTI':
+      case 'NEW':
         result.assignedPen = 'Under Review';
         result.tooltip = 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
-      } else {
+        break;
+      default:
         result.assignedPen = 'Waiting on fixes';
         result.tooltip = 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
+        break;
       }
 
       return result;
