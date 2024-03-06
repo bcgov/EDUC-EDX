@@ -28,20 +28,21 @@
                       <span class="font-italic">
                         Assigned PEN:
                         <span id="assignedPen">
-                          {{ getAssignedPen(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                          {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).assignedPen }}
                         </span>
-                        <v-tooltip>
+                        <v-tooltip content-class="customTooltip">
                           <template #activator="{ props: tooltipProps }">
                             <v-icon
                               v-bind="tooltipProps"
                               size="25"
-                              :color="getIssueIconColor('INFO_WARNING')"
+                              color="#003366"
+                              style="padding-left: .5rem;"
                             >
-                              mdi-help-circle-outline
+                              mdi-help-circle
                             </v-icon>
                           </template>
                           <span id="assignedPenTooltip">
-                            {{ getAssignedPenTooltip(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen) }}
+                            {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).tooltip }}
                           </span>
                         </v-tooltip>
                       </span>
@@ -766,23 +767,35 @@ export default {
         return '';
       }
     },
-    getAssignedPen(assignedPen, studentPen){
-      if (!assignedPen) {
-        return 'waiting on fixes';
-      } else if (assignedPen === studentPen) {
-        return assignedPen;
-      } else {
-        return 'under review';
+    getAssignedPenDetails(assignedPen, studentPen, penMatchResult) {
+      let result = {
+        assignedPen: null,
+        tooltip: ''
+      };
+
+      switch (penMatchResult) {
+      case 'MATCH':
+        result.assignedPen = assignedPen;
+        if (studentPen && studentPen !== assignedPen) {
+          result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
+        } else if (!studentPen) {
+          result.tooltip = 'No submitted PEN was provided. The submitted details has been matched to an existing student file and assigned a PEN. The Assigned PEN will be used to prevent duplication.';
+        } else {
+          result.tooltip = 'Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.';
+        }
+        break;
+      case 'MULTI':
+      case 'NEW':
+        result.assignedPen = 'Under Review';
+        result.tooltip = 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
+        break;
+      default:
+        result.assignedPen = 'Waiting on fixes';
+        result.tooltip = 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
+        break;
       }
-    },
-    getAssignedPenTooltip(assignedPen, studentPen){
-      if (!assignedPen) {
-        return 'The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.';
-      } else if (assignedPen === studentPen) {
-        return 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
-      } else {
-        return 'The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.';
-      }
+
+      return result;
     },
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
@@ -843,7 +856,11 @@ export default {
   
     .success-message{
       vertical-align: sub;
-     }
-  
+    }
+  </style>
+  <style scoped>
+    :global(.customTooltip) {
+      max-width: 30rem !important;
+    }
   </style>
   

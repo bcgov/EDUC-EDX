@@ -31,6 +31,17 @@
                 @change="toggle()"
               />
             </div>
+            <div v-else-if="column.title === 'PEN'">
+              <div class="header-text">
+                Assigned PEN
+              </div>
+              <div
+                v-if="column.hasOwnProperty('subHeader')"
+                class="header-text"
+              >
+                {{ column.subHeader.title }}
+              </div>
+            </div>
             <div v-else>
               <div class="header-text">
                 {{ column.title }}
@@ -77,7 +88,11 @@
               {{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
             </v-tooltip>
             <div v-else>
-              <span v-if="column.key === 'legalName'">
+              <span v-if="column.key === 'studentPen'">
+                {{ getAssignedPen(props.item.raw['assignedPen']) }}
+              </span>
+
+              <span v-else-if="column.key === 'legalName'">
                 {{ displayName(props.item.raw['legalFirstName'], props.item.raw['legalMiddleNames'], props.item.raw['legalLastName']) }}
               </span>
 
@@ -247,6 +262,13 @@ export default {
         return 'Funding Warning';
       } else if (status === 'INFOWARN') {
         return 'Info Warning';
+      }
+    },
+    getAssignedPen(assignedPen) {
+      if (assignedPen) {
+        return assignedPen;
+      } else {
+        return 'Under Review';
       }
     },
     displayName(first, middle, last) {
