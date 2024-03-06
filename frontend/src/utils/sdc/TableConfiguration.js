@@ -768,13 +768,13 @@ export const FRENCH_PR = Object.freeze(
     ],
     headcountEndpoint: 'french',
     allowedFilters: {
-      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
-      FTE_FILTER: FTE_FILTER,
-      GRADE_FILTER: GRADE_FILTER,
-      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
-      FRENCH_PROGRAMS_FILTER: FRENCH_PROGRAMS_FILTER,
-      FRENCH_FUNDING_FILTER: FRENCH_FUNDING_FILTER,
-      WARNING_FILTER: WARNING_FILTER
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      frenchProgram: FRENCH_PROGRAMS_FILTER,
+      frenchFunding: FRENCH_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -794,14 +794,14 @@ export const CAREER_PR = Object.freeze(
     ],
     headcountEndpoint: 'career',
     allowedFilters: {
-      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
-      FTE_FILTER: FTE_FILTER,
-      GRADE_FILTER: GRADE_FILTER,
-      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
-      CAREER_PROGRAM_FILTER: CAREER_PROGRAM_FILTER,
-      CAREER_CODE_FILTER: CAREER_CODE_FILTER,
-      CAREER_FUNDING_FILTER: CAREER_FUNDING_FILTER,
-      WARNING_FILTER: WARNING_FILTER
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      careerPrograms: CAREER_PROGRAM_FILTER,
+      careerCode: CAREER_CODE_FILTER,
+      careerProgramsFunding: CAREER_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -822,15 +822,15 @@ export const INDSUPPORT_PR = Object.freeze(
     ],
     headcountEndpoint: 'indigenous',
     allowedFilters: {
-      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
-      FTE_FILTER: FTE_FILTER,
-      GRADE_FILTER: GRADE_FILTER,
-      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
-      INDIGENOUS_PROGRAM_FILTER: INDIGENOUS_PROGRAM_FILTER,
-      BAND_FILTER: BAND_FILTER,
-      ANCESTRY_FILTER: ANCESTRY_FILTER,
-      INDIGENOUS_FUNDING_FILTER: INDIGENOUS_FUNDING_FILTER,
-      WARNING_FILTER: WARNING_FILTER
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      indigenousPrograms: INDIGENOUS_PROGRAM_FILTER,
+      bandCode: BAND_FILTER,
+      ancestry: ANCESTRY_FILTER,
+      indigenousProgramsFunding: INDIGENOUS_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -850,13 +850,13 @@ export const SPECIALED_PR = Object.freeze(
     ],
     headcountEndpoint: 'special-ed',
     allowedFilters: {
-      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
-      FTE_FILTER: FTE_FILTER,
-      GRADE_FILTER: GRADE_FILTER,
-      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
-      SPED_FILTER: SPED_FILTER,
-      SPED_FUNDING_FILTER: SPED_FUNDING_FILTER,
-      WARNING_FILTER: WARNING_FILTER
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      sped: SPED_FILTER,
+      spedFunding: SPED_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -876,13 +876,13 @@ export const ELL = Object.freeze(
     ],
     headcountEndpoint: 'ell',
     allowedFilters: {
-      STUDENT_TYPE_FILTER: STUDENT_TYPE_FILTER,
-      FTE_FILTER: FTE_FILTER,
-      GRADE_FILTER: GRADE_FILTER,
-      FUNDING_TYPE_FILTER: FUNDING_TYPE_FILTER,
-      ELL_YEARS_FILTER: ELL_YEARS_FILTER,
-      ELL_FUNDING_FILTER: ELL_FUNDING_FILTER,
-      WARNING_FILTER: WARNING_FILTER
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      ellYears: ELL_YEARS_FILTER,
+      ellFunding: ELL_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -900,12 +900,12 @@ export const REFUGEE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
     ],
     headcountEndpoint: 'refugee',
-    allowedFilters: [
-      STUDENT_TYPE_FILTER,
-      FTE_FILTER,
-      GRADE_FILTER,
-      FUNDING_TYPE_FILTER,
-      WARNING_FILTER
-    ]
+    allowedFilters: {
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      warnings: WARNING_FILTER
+    }
   }
 );
