@@ -1,7 +1,10 @@
 <template>
   <v-row>
     <v-col>
-      <Spinner v-if="isLoading()" />
+      <Spinner
+        v-if="isLoading()"
+        style="margin-bottom: 40rem"
+      />
       <div
         v-else
       >
@@ -25,7 +28,10 @@
                         class="mt-n3"
                         style="margin-bottom: -.2rem"
                       />
-                      <span class="font-italic">
+                      <span
+                        v-if="functionType !== 'add'"
+                        class="font-italic"
+                      >
                         Assigned PEN:
                         <span id="assignedPen">
                           {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).assignedPen }}
