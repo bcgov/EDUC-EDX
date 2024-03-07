@@ -47,9 +47,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
       cy.get(selectors.studentLevelData.studentPen).should('exist').clear().type('111111111');
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
-      cy.get(selectors.studentLevelData.assignedPen).contains('under review');
+      cy.get(selectors.studentLevelData.assignedPen).contains('102866365');
       cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
-      cy.get(selectors.studentLevelData.assignedPenTooltip).contains('The submitted PEN and student details are similar to multiple student files. Upon file submission, this record will be sent to a PEN Coordinator for review to prevent duplication.');
+      cy.get(selectors.studentLevelData.assignedPenTooltip).contains('Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.');
       cy.get(selectors.studentLevelData.cancelButton).click();
 
       // test submitted and assigned match
@@ -60,16 +60,16 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
       cy.get(selectors.studentLevelData.assignedPen).contains('103169744');
       cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
-      cy.get(selectors.studentLevelData.assignedPenTooltip).contains('Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.');
+      cy.get(selectors.studentLevelData.assignedPenTooltip).contains('Same Assigned PEN and Submitted PEN indicate that the submitted details have been matched to an existing student file.');
       cy.get(selectors.studentLevelData.cancelButton).click();
 
       // test no assigned
-      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('101932770').click();
+      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('Under Review').click();
       cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
       cy.get(selectors.studentLevelData.studentPen).should('exist');
       cy.get(selectors.studentLevelData.studentPen).invoke('val').should('eq', '101932770');
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
-      cy.get(selectors.studentLevelData.assignedPen).contains('waiting on fixes');
+      cy.get(selectors.studentLevelData.assignedPen).contains('Waiting on fixes');
       cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
       cy.get(selectors.studentLevelData.assignedPenTooltip).contains('The submitted student details have errors or incomplete information. Confirm the submitted student name and date of birth.');
       cy.get(selectors.studentLevelData.cancelButton).click();
