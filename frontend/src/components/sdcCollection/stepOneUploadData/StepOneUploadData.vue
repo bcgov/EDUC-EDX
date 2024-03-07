@@ -224,7 +224,7 @@ import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {getFileNameWithMaxNameLength, humanFileSize} from '../../../utils/file';
+import {getFileNameWithMaxNameLength} from '../../../utils/file';
 import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import Spinner from '../../common/Spinner.vue';
