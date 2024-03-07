@@ -369,13 +369,6 @@ export default {
     getFileRules() {
       this.fileRules = [
         value => {
-          let ret = !value || value.length === 0 || value[0].size < 10485760 || `File size should not be larger than ${humanFileSize(10485760)}!`;
-          if (ret !== true) {
-            this.setFailureAlert(ret);
-          }
-          return ret;
-        },
-        value => {
           const extension = `.${value[0].name.split('.').slice(-1)}`;
           const failMessage = 'File extension is invalid. Extension must be ".ver" or ".std".';
 
