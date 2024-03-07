@@ -195,24 +195,24 @@
                       />
                     </v-col>
                     <v-col>
-                      <v-text-field
+                      <v-select
                         id="otherCourses"
                         v-model="sdcSchoolCollectionStudentDetailCopy.otherCourses"
                         label="Other Courses"
                         variant="underlined"
-                        :maxlength="1"
+                        :items="sdcCollection.otherCoursesValidNumbers"
                         class="mt-n3"
                       />
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col>
-                      <v-text-field
+                      <v-select
                         id="supportBlocks"
                         v-model="sdcSchoolCollectionStudentDetailCopy.supportBlocks"
                         label="Support Blocks"
                         variant="underlined"
-                        :maxlength="1"
+                        :items="sdcCollection.supportBlocksValidNumbers"
                         class="mt-n3"
                       />
                     </v-col>

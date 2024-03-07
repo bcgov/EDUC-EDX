@@ -34,7 +34,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     ancestryItems: [{code:'Y', dropdownText:'Yes'}, {code:'N', dropdownText:'No'}],
     hideStepper: false,
     programEligibilityCodesMap: new Map(),
-    zeroFteReasonCodesMap: new Map()
+    zeroFteReasonCodesMap: new Map(),
+    otherCoursesValidNumbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    supportBlocksValidNumbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8']
   }),
   getters: {
     getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
