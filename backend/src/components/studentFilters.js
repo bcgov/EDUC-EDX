@@ -446,7 +446,7 @@ function createIndigenousProgramFilter(pValue) {
   if (pValue.includes('noIndigenousPrograms')) {
     const notInValues = ENROLLED_PROGRAM_TYPE_CODE_MAP.INDIGENOUS_ENROLLED_PROGRAM_CODES.filter(value => !pValue.includes(value) && pValue!=='noIndigenousPrograms');
     if(notInValues?.length > 0) { //if all filters are selected then it is equivalent to no filters being selected
-      indigenousProgramList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      indigenousProgramList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NONE_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }
   } else {
     indigenousProgramList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
@@ -461,7 +461,7 @@ function createFrenchProgramFilter(pValue) {
   if (pValue.includes('noFrenchPrograms')) {
     const notInValues = ENROLLED_PROGRAM_TYPE_CODE_MAP.FRENCH_ENROLLED_PROGRAM_CODES.filter(value => !pValue.includes(value) && pValue!=='noFrenchPrograms');
     if(notInValues?.length > 0) { //if all filters are selected then it is equivalent to no filters being selected
-      frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NONE_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }
   } else {
     frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
@@ -476,7 +476,7 @@ function createCareerProgramFilter(pValue) {
   if (pValue.includes('noCareerPrograms')) {
     const notInValues = ENROLLED_PROGRAM_TYPE_CODE_MAP.CAREER_ENROLLED_PROGRAM_CODES.filter(value => !pValue.includes(value) && pValue!=='noCareerPrograms');
     if(notInValues?.length > 0) { //if all filters are selected then it is equivalent to no filters being selected
-      careerProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      careerProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NONE_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }
   } else {
     careerProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
