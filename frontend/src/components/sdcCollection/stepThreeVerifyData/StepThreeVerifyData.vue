@@ -17,12 +17,12 @@
 
     <v-window v-model="tab">
       <v-window-item
-        value="FTE"
+        value="All Students"
         transition="false"
         reverse-transition="false"
       >
         <FTEComponent
-          v-if="tab==='FTE'"
+          v-if="tab==='All Students'"
           :school="school"
         />
       </v-window-item>
