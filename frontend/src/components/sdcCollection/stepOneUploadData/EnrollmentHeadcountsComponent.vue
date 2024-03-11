@@ -55,6 +55,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
 import {defineComponent} from 'vue';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
 
 export default defineComponent({
   name: 'EnrollmentHeadcountsComponent',
@@ -73,32 +74,14 @@ export default defineComponent({
     }
   },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     findCellValue(sectionName, row) {
       return this.headcountTableData?.rows?.find(x => x.title.currentValue==='Headcount' && x.section.currentValue === sectionName)?.[row];
     },
     generateKey() {
       return uuidv4();
-    },
-    getComparisonIcon(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'mdi-arrow-down';
-      } else if(comparisonValue < currentValue) {
-        return 'mdi-arrow-up';
-      } else if(comparisonValue === currentValue) {
-        return 'mdi-equal';
-      } else {
-        return '';
-      }
-    },
-    getStatusColor(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'red';
-      } else if(comparisonValue < currentValue) {
-        return 'green';
-      } else {
-        return '#1976d2';
-      }
-    },
+    }
   }
 });
 </script>

@@ -48,6 +48,7 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
  
 export default {
   name: 'HeadCountReportComponent',
@@ -61,6 +62,8 @@ export default {
     }
   },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     getClassForCell(columnHeader, row) {
       if(row.title.currentValue===row.section.currentValue) {
         if(columnHeader==='title') {
@@ -78,27 +81,7 @@ export default {
     },
     generateKey() {
       return uuidv4();
-    },
-    getComparisonIcon(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'mdi-arrow-down';
-      } else if(comparisonValue < currentValue) {
-        return 'mdi-arrow-up';
-      } else if(comparisonValue === currentValue) {
-        return 'mdi-equal';
-      } else {
-        return '';
-      }
-    },
-    getStatusColor(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'red';
-      } else if(comparisonValue < currentValue) {
-        return 'green';
-      } else {
-        return '#1976d2';
-      }
-    },
+    }
   }
 };
 </script>
