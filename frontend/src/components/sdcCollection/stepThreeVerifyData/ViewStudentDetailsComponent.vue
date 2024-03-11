@@ -64,7 +64,7 @@
           </v-row>
           <v-row v-if="showFundingEligibilitySection()">
             <v-col>
-              <span><b>Program Funding Ineligiblity:</b></span>
+              <span><b>Program Funding Ineligibility:</b></span>
               <ul>
                 <li v-if="studentForEdit?.careerProgramNonEligReasonCode !== null && studentForEdit?.careerProgramNonEligReasonCode !== 'NTENRCAREE'">
                   {{ getProgramEligibiltyTypeCodesDescription(studentForEdit?.careerProgramNonEligReasonCode) }}

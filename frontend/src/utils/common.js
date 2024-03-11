@@ -31,4 +31,26 @@ export function setEmptyInputParams(params, ...excludedParams) {
   });
 }
 
+export function getComparisonIcon(comparisonValue, currentValue) {
+  if(comparisonValue > currentValue) {
+    return 'mdi-arrow-down';
+  } else if(comparisonValue < currentValue) {
+    return 'mdi-arrow-up';
+  } else if(comparisonValue === currentValue) {
+    return 'mdi-equal';
+  } else {
+    return '';
+  }
+};
+
+export function getStatusColor(comparisonValue, currentValue) {
+  if(comparisonValue > currentValue) {
+    return 'red';
+  } else if(comparisonValue < currentValue) {
+    return 'green';
+  } else {
+    return '#1976d2';
+  }
+}
+
 

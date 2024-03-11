@@ -218,17 +218,21 @@ export default {
       this.$refs.stepper.next();
     },
     checkIfWeNeedToUpdateSchoolCollection(index) {
+      const stepTwoIndex = 2;
+      if (index === stepTwoIndex) {
+        this.refreshStore(true);
+      }
       if (index < this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode)) {
         return;
       }
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
     },
-    refreshStore(backStep = false) {
+    refreshStore(skipGetIndexOfSDCCollectionByStatusCode = false) {
       this.isLoading = !this.isLoading;
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
-        if (!backStep) {
+        if (!skipGetIndexOfSDCCollectionByStatusCode) {
           this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
         }
         this.isLoading = !this.isLoading;
