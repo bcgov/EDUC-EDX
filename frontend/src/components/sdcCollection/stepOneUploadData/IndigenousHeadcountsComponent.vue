@@ -25,12 +25,23 @@
         >
           <td
             v-for="(columnHeader, idx) in headcountTableData?.headers"
-            :key="row.title + columnHeader + generateKey()"
-            :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]==='0'}"
+            :key="row.title.currentValue + columnHeader + generateKey()"
+            :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader].currentValue==='0'}"
           >
-            <span>
-              {{ row[columnHeader] }}
-            </span>
+            <div>
+              <span v-if="columnHeader === 'Total' && row[columnHeader].comparisonValue !== null" class="compare-text">
+              {{row[columnHeader].comparisonValue}}
+              </span>
+              <span v-if="columnHeader === 'Total' && row[columnHeader].comparisonValue !== null" class="compare-text">
+                <v-icon
+                  size="x-small"
+                  :color="getStatusColor(row[columnHeader].comparisonValue, row[columnHeader].currentValue)"
+                >
+                  {{ getComparisonIcon(row[columnHeader].comparisonValue, row[columnHeader].currentValue) }}
+                </v-icon>
+              </span>
+              {{ row[columnHeader].currentValue }}
+            </div>
           </td>
         </tr>
         <tr>
@@ -66,7 +77,25 @@ export default defineComponent({
     },
     generateKey() {
       return uuidv4();
-    }
+    },
+    getComparisonIcon(comparisonValue, currentValue) {
+      if(comparisonValue > currentValue) {
+        return 'mdi-arrow-down';
+      } else if(comparisonValue < currentValue) {
+        return 'mdi-arrow-up';
+      } else {
+        return 'mdi-equal';
+      }
+    },
+    getStatusColor(comparisonValue, currentValue) {
+      if(comparisonValue > currentValue) {
+        return 'red';
+      } else if(comparisonValue < currentValue) {
+        return 'green';
+      } else {
+        return '#1976d2';
+      }
+    },
   }
 });
 </script>
