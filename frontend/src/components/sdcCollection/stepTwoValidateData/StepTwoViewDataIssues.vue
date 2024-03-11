@@ -105,7 +105,7 @@
                 <span
                   id="totalStudentsWithIssuesCount"
                   style="font-size: x-large"
-                >{{ numIssueStudentsInCollection }}</span>
+                >{{ totalNumIssueStudentsInCollection }}</span>
               </div>
             </v-col>
           </v-row>
@@ -114,7 +114,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="numIssueStudentsInCollection > 0"
+        v-if="totalNumIssueStudentsInCollection > 0"
         class="pr-0"
       >
         <v-row class="searchBox">
@@ -395,6 +395,7 @@ export default {
       studentListData: [],
       totalStudents: 0,
       numIssueStudentsInCollection: 0,
+      totalNumIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
       legalUsualNameFilter: null,
       penFilter: null,
@@ -454,6 +455,7 @@ export default {
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
+      this.totalNumIssueStudentsInCollection = this.numIssueStudentsInCollection;
     });
   },
   methods: {
