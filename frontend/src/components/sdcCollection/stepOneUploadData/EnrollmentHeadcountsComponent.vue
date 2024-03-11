@@ -29,77 +29,23 @@
         <td class="section-header-title">
           {{ row }}
         </td>
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('Under School Aged', row)==='0'}">
-          <span v-if="findCellComparisonValue('Under School Aged', row) !== null" class="compare-text">
-            {{ findCellComparisonValue('Under School Aged', row) }}
+        <td v-for="(r, i) in rows" :key="r + generateKey()" :class="{'table-cell': true, 'zero-cell': findCellValue(r, row).currentValue==='0'}">
+          <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
+            {{ findCellValue(r, row).comparisonValue }}
             </span>
-            <span v-if="findCellComparisonValue('Under School Aged', row) !== null" class="compare-text">
+            <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
               <v-icon
                 size="x-small"
-                :color="getStatusColor(findCellComparisonValue('Under School Aged', row), findCellValue('Under School Aged', row))"
+                :color="getStatusColor(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue)"
               >
-              {{ getComparisonIcon(findCellComparisonValue('Under School Aged', row), findCellValue('Under School Aged', row)) }}
+              {{ getComparisonIcon(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue) }}
               </v-icon>
               </span>
 
           <span>
-            {{ findCellValue('Under School Aged', row) }}
+            {{ findCellValue(r, row).currentValue }}
           </span>
         </td>
-
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('School Aged', row)==='0'}">
-          <span v-if="findCellComparisonValue('School Aged', row) !== null" class="compare-text">
-            {{ findCellComparisonValue('School Aged', row) }}
-            </span>
-            <span v-if="findCellComparisonValue('School Aged', row) !== null" class="compare-text">
-              <v-icon
-                size="x-small"
-                :color="getStatusColor(findCellComparisonValue('School Aged', row), findCellValue('School Aged', row))"
-              >
-              {{ getComparisonIcon(findCellComparisonValue('School Aged', row), findCellValue('School Aged', row)) }}
-              </v-icon>
-              </span>
-
-          <span>
-            {{ findCellValue('School Aged', row) }}
-          </span>
-        </td>
-
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('Adult', row)==='0'}">
-          <span v-if="findCellComparisonValue('Adult', row) !== null" class="compare-text">
-            {{ findCellComparisonValue('Adult', row) }}
-            </span>
-            <span v-if="findCellComparisonValue('Adult', row) !== null" class="compare-text">
-              <v-icon
-                size="x-small"
-                :color="getStatusColor(findCellComparisonValue('Adult', row), findCellValue('Adult', row))"
-              >
-              {{ getComparisonIcon(findCellComparisonValue('Adult', row), findCellValue('Adult', row)) }}
-              </v-icon>
-              </span>
-          <span>
-            {{ findCellValue('Adult', row) }}
-          </span>
-        </td>
-
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('All Students', row)==='0'}">
-          <span v-if="findCellComparisonValue('All Students', row)" class="compare-text">
-              {{findCellComparisonValue('All Students', row)}}
-            </span>
-            <span v-if="findCellComparisonValue('All Students', row) !== null" class="compare-text">
-              <v-icon
-                size="x-small"
-                :color="getStatusColor(findCellComparisonValue('All Students', row), findCellValue('All Students', row))"
-              >
-              {{ getComparisonIcon(findCellComparisonValue('All Students', row), findCellValue('All Students', row)) }}
-              </v-icon>
-              </span>
-              
-          <span>
-            {{ findCellValue('All Students', row) }}
-          </span>
-        </td>
-
       </tr>
     </tbody>
   </v-table>
@@ -121,12 +67,14 @@ export default defineComponent({
       required: true
     }
   },
+  data() {
+    return {
+      rows: ['Under School Aged', 'School Aged', 'Adult', 'All Students']
+    }
+  },
   methods: {
     findCellValue(sectionName, row) {
-      return this.headcountTableData?.rows?.find(x => x.title.currentValue==='Headcount' && x.section.currentValue === sectionName)?.[row].currentValue;
-    },
-    findCellComparisonValue(sectionName, row) {
-      return this.headcountTableData?.rows?.find(x => x.title.currentValue==='Headcount' && x.section.currentValue === sectionName)?.[row].comparisonValue;
+      return this.headcountTableData?.rows?.find(x => x.title.currentValue==='Headcount' && x.section.currentValue === sectionName)?.[row];
     },
     generateKey() {
       return uuidv4();
@@ -173,6 +121,9 @@ th {
   font-weight: bold;
 }
 .zero-cell {
+  color: gray;
+}
+.compare-text {
   color: gray;
 }
 </style>
