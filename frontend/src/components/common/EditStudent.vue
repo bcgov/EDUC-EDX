@@ -731,7 +731,7 @@ export default {
       issuesArray.sort((a, b) => {
         // Compare by severity code
         if (a.validationIssueSeverityCode !== b.validationIssueSeverityCode) {
-          return a.validationIssueSeverityCode - b.validationIssueSeverityCode;
+          return a.validationIssueSeverityCode.localeCompare(b.validationIssueSeverityCode);
         }
         // If severity is the same, compare by validationIssueCode alphabetically
         return a.validationIssueCode.localeCompare(b.validationIssueCode);
