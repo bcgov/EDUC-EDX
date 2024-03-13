@@ -17,7 +17,6 @@
         >
           <v-alert
             id="eligible-fte-banner"
-            color="#003366"
             density="compact"
             type="info"
             variant="tonal"

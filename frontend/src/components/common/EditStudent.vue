@@ -326,8 +326,8 @@
             <v-row v-if="hasError">
               <v-col>
                 <v-alert
-                  class="clear-message-error"
-                  icon="mdi-alert-circle-outline"
+                  type="warning"
+                  variant="tonal"
                   text="Warning! Updates to student details will not be saved until all errors are fixed."
                 />
               </v-col>
@@ -434,9 +434,9 @@
           </v-col>
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
-              dismissible="true"
-              class="clear-message success-message"
-              icon="mdi-check-circle-outline"
+              closable="true"
+              type="success"
+              variant="tonal"
               text="There are no errors or warnings on this student record."
             />
           </v-col>

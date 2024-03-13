@@ -12,16 +12,15 @@
         <v-row class="d-flex justify-center">
           <v-col>
             <v-alert
-              color="#E9EBEF"
-              dense
+              density="compact"
+              variant="tonal"
               type="info"
             >
-              <p style="color: #003366">
+              <p>
                 School contacts will be
                 <strong>available to the public as of start date.</strong>
               </p>
               <p
-                style="color: #003366"
                 class="mb-1"
               >
                 Please be sure to review the new contact details carefully before saving.

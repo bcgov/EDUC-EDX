@@ -127,15 +127,11 @@
           >
             <v-alert
               :id="`publiclyAvailableAlert${districtContactType.label}`"
-              color="#003366"
               density="compact"
               type="info"
               variant="tonal"
-            >
-              <p>
-                Contacts of this type are only available to the ministry and not available to public.
-              </p>
-            </v-alert>
+              text="Contacts of this type are only available to the ministry and not available to public."
+            />
           </v-col>
         </v-row>
         <v-row

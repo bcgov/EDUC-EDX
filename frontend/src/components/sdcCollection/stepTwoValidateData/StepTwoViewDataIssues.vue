@@ -214,8 +214,8 @@
             class="mr-3"
           >
             <v-alert
-              class="clear-message-error"
-              icon="mdi-alert-outline"
+              type="warning"
+              variant="tonal"
               text="There are no results for the selected category."
             />
           </v-col>
@@ -294,8 +294,8 @@
       </v-col>
       <v-col v-else-if="!isLoading()">
         <v-alert
-          class="clear-message success-message"
-          icon="mdi-check-circle-outline"
+          type="success"
+          variant="tonal"
           text="Congratulations! There are no errors or warnings in the 1701 Submission"
         />
       </v-col>
