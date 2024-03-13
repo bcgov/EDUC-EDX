@@ -214,18 +214,10 @@
             class="mr-3"
           >
             <v-alert
-              dismissible="false"
               class="clear-message-error"
-            >
-              <v-icon
-                class="mt-2 mr-3"
-                size="30"
-                color="orange"
-              >
-                mdi-alert-outline
-              </v-icon>
-              <span class="error-message">There are no results for the selected category.</span>
-            </v-alert>
+              icon="mdi-alert-outline"
+              text="There are no results for the selected category."
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -302,18 +294,10 @@
       </v-col>
       <v-col v-else-if="!isLoading()">
         <v-alert
-          dismissible="true"
-          class="clear-message"
-        >
-          <v-icon
-            class="mt-2 mr-3"
-            size="30"
-            color="darkgreen"
-          >
-            mdi-check-circle-outline
-          </v-icon>
-          <span class="success-message">Congratulations! There are no errors or warnings in the 1701 Submission</span>
-        </v-alert>
+          class="clear-message success-message"
+          icon="mdi-check-circle-outline"
+          text="Congratulations! There are no errors or warnings in the 1701 Submission"
+        />
       </v-col>
     </v-row>
     <v-row
@@ -643,8 +627,8 @@ export default {
 
     .clear-message-error {
       border: 0.05em solid orange;
-      color: orange;
-      background-color: transparent;
+      color: #ff8000;
+      background-color: rgba(255, 220, 185, 0.66);
       padding: 0.6em;
     }
 
