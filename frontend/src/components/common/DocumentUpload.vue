@@ -44,10 +44,10 @@
       </v-form>
       <v-alert
         v-model="alert"
-        dense
-        outlined
-        dismissible
-        :class="alertType"
+        density="compact"
+        closable="true"
+        variant="tonal"
+        :type="alertType"
         class="mb-3"
       >
         {{ alertMessage }}

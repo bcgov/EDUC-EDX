@@ -14,14 +14,13 @@
             <v-alert
               width="100%"
               density="compact"
-              color="#E9EBEF"
               type="info"
+              variant="tonal"
             >
-              <p style="color: #003366">
+              <p>
                 District contacts will be <strong>available to the public as of start date</strong>.
               </p>
               <p
-                style="color: #003366"
                 class="mb-1"
               >
                 Please be sure to review the new contact details carefully before saving.

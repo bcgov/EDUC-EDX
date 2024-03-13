@@ -15,16 +15,15 @@
           <v-col>
             <v-alert
               width="100%"
-              color="#E9EBEF"
-              dense
+              density="compact"
+              variant="tonal"
               type="info"
             >
-              <p style="color: #003366">
+              <p>
                 District contacts will be <strong>available to the public as of start date</strong>.
               </p>
               <p
                 class="mb-1"
-                style="color: #003366"
               >
                 Please be sure to review the new contact details carefully before saving.
               </p>
