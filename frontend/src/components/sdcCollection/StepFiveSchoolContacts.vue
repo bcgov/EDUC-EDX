@@ -4,12 +4,10 @@
       <v-col>
         <v-alert
           density="compact"
-          color="#003366"
           type="info"
           variant="tonal"
-        >
-          Please review and verify that the details on the record for the school are accurate.
-        </v-alert>
+          text="Please review and verify that the details on the record for the school are accurate."
+        />
       </v-col>
     </v-row>
 

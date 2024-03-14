@@ -20,7 +20,7 @@
         density="compact"
         type="error"
         variant="tonal"
-        data-cy="headcount-error-banner"
+        id="headcount-error-banner"
       >
         <strong>{{ studentsInError }} students</strong> reported with errors - these students are <strong>not included in the summary counts</strong>. Eligible FTE count will be generated once all errors have been fixed in the next step.
       </v-alert>

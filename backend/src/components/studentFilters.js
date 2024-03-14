@@ -12,6 +12,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let careerCodeList = [];
   let careerProgramsList = [];
   let frenchProgramsList = [];
+  let englishProgramsList = [];
   let frenchProgramFundingList = [];
   let indigenousProgramList = [];
   let ancestryList = [];
@@ -40,6 +41,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
     if (key === 'frenchProgram' && pValue) {
       frenchProgramsList = createFrenchProgramFilter(pValue);
+    }
+    if (key === 'englishProgram' && pValue) {
+      englishProgramsList = createEnglishProgramFilter(pValue);
     }
     if( key === 'indigenousPrograms' && pValue) {
       indigenousProgramList = createIndigenousProgramFilter(pValue);
@@ -158,6 +162,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: frenchProgramsList
+    });
+  }
+  if (englishProgramsList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: englishProgramsList
     });
   }
   if (frenchProgramFundingList.length > 0) {
@@ -467,6 +477,18 @@ function createFrenchProgramFilter(pValue) {
     frenchProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
   }
   return frenchProgramsList;
+}
+
+function createEnglishProgramFilter(pValue) {
+  let englishProgramsList = [];
+
+  validateEnrolledProgramFilter(pValue);
+  if (pValue.includes('noEnglish17')) {
+    englishProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: ENROLLED_PROGRAM_TYPE_CODE_MAP.ENGLISH_ENROLLED_PROGRAM_CODES.toString(), operation: FILTER_OPERATION.NONE_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  } else {
+    englishProgramsList.push({ key: 'sdcStudentEnrolledProgramEntities.enrolledProgramCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  }
+  return englishProgramsList;
 }
 
 function createCareerProgramFilter(pValue) {

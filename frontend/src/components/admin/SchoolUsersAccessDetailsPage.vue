@@ -238,17 +238,12 @@
               >
                 <v-col class="mx-3 mb-3">
                   <v-alert
-                    dense
-                    color="#E9EBEF"
-                    outlined
+                    id="no-activation-code-banner"
+                    density="compact"
                     type="info"
-                    class="pa-2"
-                  >
-                    <span
-                      id="no-activation-code-banner"
-                      style="color: #003366"
-                    >Before adding users, a Primary Activation Code must be generated.</span>
-                  </v-alert>
+                    variant="tonal"
+                    text="Before adding users, a Primary Activation Code must be generated."
+                  />
                 </v-col>
               </v-row>
             </v-card>
