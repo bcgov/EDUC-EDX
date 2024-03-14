@@ -105,7 +105,7 @@
                 <span
                   id="totalStudentsWithIssuesCount"
                   style="font-size: x-large"
-                >{{ numIssueStudentsInCollection }}</span>
+                >{{ totalNumIssueStudentsInCollection }}</span>
               </div>
             </v-col>
           </v-row>
@@ -114,7 +114,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="numIssueStudentsInCollection > 0"
+        v-if="totalNumIssueStudentsInCollection > 0"
         class="pr-0"
       >
         <v-row class="searchBox">
@@ -214,18 +214,10 @@
             class="mr-3"
           >
             <v-alert
-              dismissible="false"
-              class="clear-message-error"
-            >
-              <v-icon
-                class="mt-2 mr-3"
-                size="30"
-                color="orange"
-              >
-                mdi-alert-outline
-              </v-icon>
-              <span class="error-message">There are no results for the selected category.</span>
-            </v-alert>
+              type="warning"
+              variant="tonal"
+              text="There are no results for the selected category."
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -302,18 +294,10 @@
       </v-col>
       <v-col v-else-if="!isLoading()">
         <v-alert
-          dismissible="true"
-          class="clear-message"
-        >
-          <v-icon
-            class="mt-2 mr-3"
-            size="30"
-            color="darkgreen"
-          >
-            mdi-check-circle-outline
-          </v-icon>
-          <span class="success-message">Congratulations! There are no errors or warnings in the 1701 Submission</span>
-        </v-alert>
+          type="success"
+          variant="tonal"
+          text="Congratulations! There are no errors or warnings in the 1701 Submission"
+        />
       </v-col>
     </v-row>
     <v-row
@@ -395,6 +379,7 @@ export default {
       studentListData: [],
       totalStudents: 0,
       numIssueStudentsInCollection: 0,
+      totalNumIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
       legalUsualNameFilter: null,
       penFilter: null,
@@ -454,6 +439,7 @@ export default {
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
+      this.totalNumIssueStudentsInCollection = this.numIssueStudentsInCollection;
     });
   },
   methods: {
@@ -641,8 +627,8 @@ export default {
 
     .clear-message-error {
       border: 0.05em solid orange;
-      color: orange;
-      background-color: transparent;
+      color: #ff8000;
+      background-color: rgba(255, 220, 185, 0.66);
       padding: 0.6em;
     }
 

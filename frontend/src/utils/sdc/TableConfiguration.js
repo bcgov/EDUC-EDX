@@ -300,6 +300,27 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
   }
 );
 
+export const ENGLISH_PROGRAMS_FILTER = Object.freeze(
+  {
+    heading: 'English Language Learning',
+    id: 'englishPrograms',
+    multiple: false,
+    key: 'englishProgram',
+    filterOptions: [
+      {
+        title: '17 - English Language Learning',
+        id: 'english17',
+        value: '17'
+      },
+      {
+        title: 'No English Language Learning',
+        id: 'noEnglish17',
+        value: 'noEnglish17'
+      }
+    ]
+  }
+);
+
 export const FRENCH_FUNDING_FILTER = Object.freeze(
   {
     heading: 'French Program Funding Eligibility',
@@ -701,6 +722,7 @@ export const FTE = Object.freeze(
           }
         ]
       },
+      englishProgram: ENGLISH_PROGRAMS_FILTER,
       ellYears: ELL_YEARS_FILTER,
       careerPrograms: {
         ...CAREER_PROGRAM_FILTER,

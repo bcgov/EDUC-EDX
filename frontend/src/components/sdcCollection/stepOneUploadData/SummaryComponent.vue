@@ -1,15 +1,26 @@
 <template>
-  <v-row align-content="space-between">
+  <v-row justify="space-between">
     <v-col class="font-weight-bold">
       Summary of Uploaded Data
     </v-col>
+    <v-col>
+        <v-switch
+          v-model="compareSwitch"
+          color="primary"
+          label="compare to previous September Collection"
+          style="justify-items: right;"
+          @update:model-value="compare()"
+        />
+      </v-col>
+  </v-row>
+  <v-row>
     <v-col cols="12">
       <v-alert
         v-if="studentsInError > 0"
         density="compact"
         type="error"
         variant="tonal"
-        data-cy="headcount-error-banner"
+        id="headcount-error-banner"
       >
         <strong>{{ studentsInError }} students</strong> reported with errors - these students are <strong>not included in the summary counts</strong>. Eligible FTE count will be generated once all errors have been fixed in the next step.
       </v-alert>
@@ -176,6 +187,9 @@ export default defineComponent({
       }).catch(error => {
         console.error(error);
       });
+    },
+    compare() {
+      this.getStudentHeadCounts();
     }
   }
 });

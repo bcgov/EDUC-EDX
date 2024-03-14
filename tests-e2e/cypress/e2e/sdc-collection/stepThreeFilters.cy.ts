@@ -340,26 +340,26 @@ describe('SDC School Collection View', () => {
       cy.wait('@paginationFilters4');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
     });
-  });
 
-  it('can search for a student by name, PEN, or local ID', () => {
-    cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
-    cy.visit('/');
-    cy.get(selectors.dashboard.dataCollectionsTile).click();
-    cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+    it('can search for a student by name, PEN, or local ID', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
 
-     cy.wait('@pagination').then(()=> {
-      cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
-      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
-      checkCommonFiltersExist();
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
+      cy.wait('@pagination').then(()=> {
+        cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
+        cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
+        checkCommonFiltersExist();
+        cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
 
-      cy.get(selectors.filters.applyFilter).click();
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
+        cy.get(selectors.filters.applyFilter).click();
+        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
 
-     });
+      });
     });
   });
+});
 
 function checkCommonFiltersExist() {
   cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.studentType).should('contain.text', 'Student Type');

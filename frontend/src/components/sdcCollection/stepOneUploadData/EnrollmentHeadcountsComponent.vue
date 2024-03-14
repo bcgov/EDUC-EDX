@@ -29,24 +29,21 @@
         <td class="section-header-title">
           {{ row }}
         </td>
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('Under School Aged', row)==='0'}">
+        <td v-for="(r, i) in rows" :key="r + generateKey()" :class="{'table-cell': true, 'zero-cell': findCellValue(r, row).currentValue==='0'}">
+          <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
+            {{ findCellValue(r, row).comparisonValue }}
+            </span>
+            <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
+              <v-icon
+                size="x-small"
+                :color="getStatusColor(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue)"
+              >
+              {{ getComparisonIcon(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue) }}
+              </v-icon>
+              </span>
+
           <span>
-            {{ findCellValue('Under School Aged', row) }}
-          </span>
-        </td>
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('School Aged', row)==='0'}">
-          <span>
-            {{ findCellValue('School Aged', row) }}
-          </span>
-        </td>
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('Adult', row)==='0'}">
-          <span>
-            {{ findCellValue('Adult', row) }}
-          </span>
-        </td>
-        <td :class="{'table-cell': true, 'zero-cell': findCellValue('All Students', row)==='0'}">
-          <span>
-            {{ findCellValue('All Students', row) }}
+            {{ findCellValue(r, row).currentValue }}
           </span>
         </td>
       </tr>
@@ -58,6 +55,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
 import {defineComponent} from 'vue';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
 
 export default defineComponent({
   name: 'EnrollmentHeadcountsComponent',
@@ -70,9 +68,16 @@ export default defineComponent({
       required: true
     }
   },
+  data() {
+    return {
+      rows: ['Under School Aged', 'School Aged', 'Adult', 'All Students']
+    }
+  },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     findCellValue(sectionName, row) {
-      return this.headcountTableData?.rows?.find(x => x.title==='Headcount' && x.section === sectionName)?.[row];
+      return this.headcountTableData?.rows?.find(x => x.title.currentValue==='Headcount' && x.section.currentValue === sectionName)?.[row];
     },
     generateKey() {
       return uuidv4();
@@ -99,6 +104,9 @@ th {
   font-weight: bold;
 }
 .zero-cell {
+  color: gray;
+}
+.compare-text {
   color: gray;
 }
 </style>

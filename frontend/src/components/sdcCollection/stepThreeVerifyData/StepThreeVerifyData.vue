@@ -17,12 +17,12 @@
 
     <v-window v-model="tab">
       <v-window-item
-        value="FTE"
+        value="All Students"
         transition="false"
         reverse-transition="false"
       >
         <FTEComponent
-          v-if="tab==='FTE'"
+          v-if="tab==='All Students'"
           :school="school"
         />
       </v-window-item>
@@ -88,14 +88,12 @@
       </v-window-item>
     </v-window>
     <v-alert
-      color="#003366"
       density="compact"
       type="info"
       variant="tonal"
-      data-cy="estimated-info-banner"
-    >
-      All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff.
-    </v-alert>
+      id="estimated-info-banner"
+      text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
+    />
   </div>
 
   <v-row justify="end">

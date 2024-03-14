@@ -17,17 +17,28 @@
     <tbody>
       <tr
         v-for="row in headcountTableData?.rows"
-        :key="row.title + generateKey()"
-        :class="row.title===row.section?'section-header':''"
+        :key="row?.title?.currentValue  + generateKey()"
+        :class="row?.title?.currentValue === row?.section?.currentValue ?'section-header':''"
       >
         <td
           v-for="columnHeader in headcountTableData?.headers"
-          :key="row.title + columnHeader + generateKey()"
+          :key="row?.title?.currentValue  + columnHeader + generateKey()"
           :class="getClassForCell(columnHeader, row)"
         >
-          <span :class="row[columnHeader]==='0'?'zero-cell':''">
-            {{ row[columnHeader] }}
-          </span>
+          <div :class="row[columnHeader]?.currentValue==='0'?'zero-cell':''">
+            <span v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+              {{row[columnHeader]?.comparisonValue}}
+            </span>
+            <span v-if="columnHeader === 'Total' && row[columnHeader] !== undefined && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+              <v-icon
+                size="x-small"
+                :color="getStatusColor(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue)"
+              >
+              {{ getComparisonIcon(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue) }}
+              </v-icon>
+            </span>
+            <span>{{ row[columnHeader]?.currentValue }}</span>
+          </div>
         </td>
       </tr>
     </tbody>
@@ -37,6 +48,7 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
  
 export default {
   name: 'HeadCountReportComponent',
@@ -50,11 +62,13 @@ export default {
     }
   },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     getClassForCell(columnHeader, row) {
-      if(row.title===row.section) {
+      if(row.title.currentValue===row.section.currentValue) {
         if(columnHeader==='title') {
           return 'section-header-title';
-        } else if(row[columnHeader]==='0') {
+        } else if(row[columnHeader]?.currentValue==='0') {
           return 'table-cell';
         } else {
           return 'section-header-cell';
@@ -92,6 +106,10 @@ th {
   text-align: center !important;
 }
 .zero-cell {
+  color: gray;
+}
+
+.compare-text {
   color: gray;
 }
 </style>

@@ -25,12 +25,23 @@
         >
           <td
             v-for="(columnHeader, idx) in headcountTableData?.headers"
-            :key="row.title + columnHeader + generateKey()"
-            :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]==='0'}"
+            :key="row?.title?.currentValue + columnHeader + generateKey()"
+            :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]?.currentValue==='0'}"
           >
-            <span>
-              {{ row[columnHeader] }}
-            </span>
+            <div>
+              <span v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+              {{row[columnHeader]?.comparisonValue}}
+              </span>
+              <span v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+                <v-icon
+                  size="x-small"
+                  :color="getStatusColor(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue)"
+                >
+                  {{ getComparisonIcon(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue) }}
+                </v-icon>
+              </span>
+              {{ row[columnHeader]?.currentValue }}
+            </div>
           </td>
         </tr>
         <tr>
@@ -48,6 +59,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
 import {defineComponent} from 'vue';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
 
 export default defineComponent({
   name: 'IndigenousHeadcountsComponent',
@@ -61,12 +73,14 @@ export default defineComponent({
     }
   },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     findCellValue(sectionName, row) {
       return this.headcountTableData?.rows?.find(x => x.title==='Headcount' && x.section === sectionName)?.[row];
     },
     generateKey() {
       return uuidv4();
-    }
+    },
   }
 });
 </script>

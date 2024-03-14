@@ -147,6 +147,7 @@ import alertMixin from '../../../mixins/alertMixin';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import HeadCountReportComponent from './HeadCountReportComponent.vue';
+import {getComparisonIcon, getStatusColor} from '../../../utils/common';
  
 export default {
   name: 'SummaryComponent',
@@ -175,6 +176,8 @@ export default {
   created() {
   },
   methods: {
+    getComparisonIcon,
+    getStatusColor,
     getStudentHeadCounts() {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
@@ -194,24 +197,6 @@ export default {
     },
     downloadReportURL() {
       return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.headcountType}/download`;
-    },
-    getComparisonIcon(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'mdi-arrow-down';
-      } else if(comparisonValue < currentValue) {
-        return 'mdi-arrow-up';
-      } else {
-        return 'mdi-equal';
-      }
-    },
-    getStatusColor(comparisonValue, currentValue) {
-      if(comparisonValue > currentValue) {
-        return 'red';
-      } else if(comparisonValue < currentValue) {
-        return 'green';
-      } else {
-        return '#1976d2';
-      }
     },
     getTitle() {
       switch (this.headcountType) {

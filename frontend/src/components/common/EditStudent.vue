@@ -323,6 +323,15 @@
             vertical
           />
           <v-col v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length > 0">
+            <v-row v-if="hasError">
+              <v-col>
+                <v-alert
+                  type="warning"
+                  variant="tonal"
+                  text="Warning! Updates to student details will not be saved until all errors are fixed."
+                />
+              </v-col>
+            </v-row>
             <v-row>
               <v-col class="pl-0 pr-6 scroll">
                 <v-timeline
@@ -425,9 +434,9 @@
           </v-col>
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
-              dismissible="true"
-              class="clear-message success-message"
-              icon="mdi-check-circle-outline"
+              closable="true"
+              type="success"
+              variant="tonal"
               text="There are no errors or warnings on this student record."
             />
           </v-col>
@@ -520,6 +529,7 @@ export default {
       sdcCollection: sdcCollectionStore(),
       selectedSdcStudentID: null,
       isValid: false,
+      hasError: false,
       sdcSchoolCollectionStudentDetail: {},
       sdcSchoolCollectionStudentDetailCopy: {},
       loadingCount: 0,
@@ -616,11 +626,13 @@ export default {
     },
     save(){
       this.loadingCount += 1;
+      this.hasError = false;
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
             setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');
             this.filterSdcSchoolCollectionStudentAndPopulateProperties(res.data);
+            this.hasError = true;
           } else {
             setSuccessAlert('Success! The student details have been updated.');
             if(this.functionType === 'add') {
@@ -645,6 +657,7 @@ export default {
         return;
       }
       this.loadingCount += 1;
+      this.hasError = false;
       ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then(() => {
           this.removeIndex = this.selectedStudents.findIndex(value => value === this.selectedSdcStudentID);
@@ -731,7 +744,7 @@ export default {
       issuesArray.sort((a, b) => {
         // Compare by severity code
         if (a.validationIssueSeverityCode !== b.validationIssueSeverityCode) {
-          return a.validationIssueSeverityCode - b.validationIssueSeverityCode;
+          return a.validationIssueSeverityCode.localeCompare(b.validationIssueSeverityCode);
         }
         // If severity is the same, compare by validationIssueCode alphabetically
         return a.validationIssueCode.localeCompare(b.validationIssueCode);
@@ -829,6 +842,12 @@ export default {
       background-color: rgb(227, 240, 217);
       padding: 0.4em;
     }
+
+   .clear-message-error {
+     color: #ff0000;
+     background-color: rgba(255, 187, 185, 0.66);
+     padding: 0.6em;
+   }
   
    .inner-border {
      display: inline-block;

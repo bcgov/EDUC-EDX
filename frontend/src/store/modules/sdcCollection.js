@@ -88,11 +88,8 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     setEnrolledGradeCodes(enrolledGradeCodes) {
-      const validGradeCodes = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
       this.enrolledGradeCodes = enrolledGradeCodes.map(item => {
-        const isGrade1To12 = validGradeCodes.includes(item.enrolledGradeCode);
-        const dropdownText = isGrade1To12 ? item.description : `${item.description} (${item.enrolledGradeCode})`;
-        return {...item, dropdownText};
+        return {...item, dropdownText: `${item.description} (${item.enrolledGradeCode})`};
       });
       this.enrolledGradeCodesMap = new Map();
       enrolledGradeCodes.forEach(enrolledGradeCode => {

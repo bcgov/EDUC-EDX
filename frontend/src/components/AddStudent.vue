@@ -3,10 +3,10 @@
     <v-alert
       id="addStudentAlert"
       v-model="alert"
-      dense
-      outlined
-      dismissible
-      :class="alertType"
+      density="compact"
+      variant="tonal"
+      closable="true"
+      :type="alertType"
       class="mb-3"
     >
       {{ alertMessage }}

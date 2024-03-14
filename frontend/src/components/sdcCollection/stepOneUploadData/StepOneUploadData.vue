@@ -19,6 +19,7 @@
       <v-col>
         <v-alert
           density="compact"
+          variant="tonal"
           type="error"
           :text="fileUploadErrorMessage"
         />
@@ -132,6 +133,7 @@
       <v-col>
         <v-alert
           density="compact"
+          variant="tonal"
           type="error"
           :text="fileUploadErrorMessage"
         />

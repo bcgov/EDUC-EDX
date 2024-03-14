@@ -20,7 +20,7 @@ const schoolContactSchema = object({
   jobTitle: string().nullable(),
   lastName: string(),
   phoneExtension: string().nullable(),
-  phoneNumber: string(),
+  phoneNumber: string().nullable(),
   schoolContactId: string().nullable(),
   schoolContactTypeCode: string(),
   schoolId: string(),
@@ -73,7 +73,7 @@ const putSchoolSchema = object({
       label: string(),
       schoolGradeCode: string(),
     }).noUnknown()),
-    independentAuthorityId: string(),
+    independentAuthorityId: string().nullable(),
     mincode: string(),
     neighborhoodLearning: array().of(object({
       createDate: date(),

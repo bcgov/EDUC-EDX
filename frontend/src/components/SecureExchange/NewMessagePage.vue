@@ -212,6 +212,7 @@
         <v-alert
           v-model="fileSizeAlert"
           density="compact"
+          variant="tonal"
           type="error"
         >
           {{ `Total files must be less than ${humanFileSize(fileRequirements.maxSize)}. Please remove some uploads. You may upload additional files later.` }}
