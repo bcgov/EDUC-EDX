@@ -227,6 +227,8 @@ export default {
         return 'Eligible Special Education Headcount';
       case 'indigenous':
         return 'Eligible Indigenous Support Program Headcount';
+      case 'band-codes':
+        return 'Eligible Band of Residence Headcount';
       }
     },
     compare() {
