@@ -393,7 +393,8 @@ export default {
     studentPen: '#studentPen',
     assignedPen: '#assignedPen',
     assignedPenTooltip: '#assignedPenTooltip',
-    cancelButton: '#cancel'
+    cancelButton: '#cancel',
+    compareSwitch: '#compare-switch'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
