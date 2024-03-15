@@ -22,7 +22,7 @@ describe('SDC School Collection View', () => {
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
     });
-    after(() => cy.logout());
+    // after(() => cy.logout());
     beforeEach(() => cy.login());
 
     it('can load dashboard & click data collection card & process collection', () => {
@@ -87,6 +87,20 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '2.8750');
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedHeadcount).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedEligibleFTE).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedTotal).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '03');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '03');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '02.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '00');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '03');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '03');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '02.8750');
     });
 
     it('verifies french programs for reported students', () => {
@@ -148,6 +162,15 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchTotal).should('contain.text', '2');
       cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchSchoolAged).should('contain.text', '2');
       cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchAdult).should('contain.text', '0');
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.coreFrenchTotal).should('contain.text', '01');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.coreFrenchSchoolAged).should('contain.text', '01');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.earlyFrenchTotal).should('contain.text', '01');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.earlyFrenchSchoolAged).should('contain.text', '01');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchTotal).should('contain.text', '02');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchSchoolAged).should('contain.text', '02');
+      cy.get(selectors.frenchComponent.tableWrapper).find(selectors.frenchComponent.allFrenchAdult).should('contain.text', '00');
     });
 
     it('verifies career programs for reported students', () => {

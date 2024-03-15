@@ -27,6 +27,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.get(selectors.sdcDocumentUploadStep.infoNote).should('exist').should('contain.text', 'Note: Eligible FTE counts are available in Step 3');
       cy.get(selectors.sdcDocumentUploadStep.errorBanner).should('not.exist');
     });
+
     it('there are the correct headcounts for the FTE tab', () => {
       const id = Cypress.env('schoolCollectionIdCareer');
       cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');
@@ -34,7 +35,15 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.wait('@headcounts');
       cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row`).should('have.length', 1);
       cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row td`).last().should('have.text', '9');
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row td`).last().should('have.text', '09');
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(2)`).last().should('have.text', '00');
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(3)`).last().should('have.text', '00');
+      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(4)`).last().should('have.text', '00');
+      
     });
+    
     it('there are the correct headcounts for the career tab', () => {
       const id = Cypress.env('schoolCollectionIdCareer');
       navigateToUploadScreen(id);
@@ -47,6 +56,15 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
           cy.wrap($cell).find('td').last().should('contain', '2');
         } else {
           cy.wrap($cell).find('td').last().should('contain', '8');
+        }
+      });
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(`${selectors.sdcDocumentUploadStep.careerTab} .section-header`).each(($cell, index) => {
+        if(index !== 4) {
+          cy.wrap($cell).find('td').last().should('contain', '02');
+        } else {
+          cy.wrap($cell).find('td').last().should('contain', '08');
         }
       });
     });
@@ -80,6 +98,15 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
           cy.wrap($cell).find('td').last().should('contain', '2');
         } else {
           cy.wrap($cell).find('td').last().should('contain', '6');
+        }
+      });
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(`${selectors.sdcDocumentUploadStep.indigenousReportRows}`).each(($cell, index) => {
+        if(index !== 3) {
+          cy.wrap($cell).find('td').last().should('contain', '02');
+        } else {
+          cy.wrap($cell).find('td').last().should('contain', '06');
         }
       });
     });
@@ -119,6 +146,21 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
           cy.wrap($cell).find('td').last().should('contain', '4');
         } else if(index === 4) {
           cy.wrap($cell).find('td').last().should('contain', '12');
+        }
+      });
+
+      cy.get(selectors.studentLevelData.compareSwitch).click();
+      cy.get(`${selectors.sdcDocumentUploadStep.spedTab} .section-header`).each(($cell, index) => {
+        if(index === 0) {
+          cy.wrap($cell).find('td').last().should('contain', '02');
+        } else if(index === 1) {
+          cy.wrap($cell).find('td').last().should('contain', '05');
+        } else if(index === 2) {
+          cy.wrap($cell).find('td').last().should('contain', '01');
+        } else if(index === 3) {
+          cy.wrap($cell).find('td').last().should('contain', '04');
+        } else if(index === 4) {
+          cy.wrap($cell).find('td').last().should('contain', '012');
         }
       });
     });
