@@ -259,7 +259,7 @@ export default {
     fteTab: '[data-cy="fteTab"]',
     careerTab: '[data-cy="careerTab"]',
     careerTabButton: '[data-cy="Career Programs"]',
-    errorBanner: '[data-cy="headcount-error-banner"]',
+    errorBanner: '#headcount-error-banner',
     indigenousReportRows: '[data-cy="indigenous-report-row"]',
     indigenousTab: '[data-cy="indigenousTab"]',
     indigenousTabButton: '[data-cy="Indigenous Students & Support Programs"]',

@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {SchoolCollectionOptions} from '../../services/sdc-collection-api-service';
+import {SchoolCollectionOptions, SdcStudentEllOption} from '../../services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -10,6 +10,14 @@ describe('SDC School Collection View', () => {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'filterData'
+        }).then(collection => {
+          const studentWithEllYears = collection.students
+            .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
+            .map(s => ({
+              studentID: s.assignedStudentId,
+              yearsInEll: 3
+            }) as SdcStudentEll);
+          cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
@@ -91,11 +99,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.filters.applyFilter).click();
 
       cy.wait('@paginationFilters1');
-      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+      cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
       cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
         cy.wrap($cell).children().last().invoke('text').then((text) => {
           expect(text).to.satisfy((value: string) => {
-            return value === 'Physically Dependent (A)' || value === 'Autism Spectrum Disorder (G)';
+            return value === 'Physically Dependent (A)';
           });
         });
       });
