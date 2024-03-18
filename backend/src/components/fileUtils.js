@@ -17,6 +17,20 @@ async function scanFilePayload(req, res, next) {
   next();
 }
 
+async function scanSecureExchangeDocumentPayload(req, res, next) {
+  let documents = req.body.secureExchangeDocuments ? req.body.secureExchangeDocuments : [];
+  for (const document of documents) {
+    let valid = await scanFile(document?.documentData);
+    if (!valid) {
+      return res.status(HttpStatus.NOT_ACCEPTABLE).json({
+        status: HttpStatus.NOT_ACCEPTABLE,
+        message: 'File has failed the virus scan'
+      });
+    }
+  }
+  return next();
+}
+
 async function scanFile(base64File){
   try{
     const ClamAVScanner = createScanner(config.get('clamav:host'), Number(config.get('clamav:port')));
@@ -35,6 +49,7 @@ async function scanFile(base64File){
 
 const utils = {
   scanFilePayload,
+  scanSecureExchangeDocumentPayload,
   scanFile
 };
 

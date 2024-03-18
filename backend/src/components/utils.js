@@ -64,12 +64,6 @@ async function deleteData(token, url, correlationID) {
 async function forwardGetReq(req, res, url) {
   try {
     const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
-
     const params = {
       params: req.query
     };
@@ -259,10 +253,7 @@ function getCodeTable(token, key, url, useCache = true) {
 function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   return async function getCodesHandler(req, res) {
     try {
-      const token = getBackendToken(req);
-      if (!token) {
-        return unauthorizedError(res);
-      }
+      const token = getAccessToken(req);
       const url = config.get(urlKey);
       const codes = await getCodeTable(token, cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
 
@@ -273,16 +264,6 @@ function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
       return errorResponse(res);
     }
   };
-}
-
-function getBackendToken(req) {
-  const thisSession = req.session;
-  return thisSession && thisSession['passport'] && thisSession['passport'].user && thisSession['passport'].user.jwt;
-}
-function unauthorizedError(res) {
-  return res.status(HttpStatus.UNAUTHORIZED).json({
-    message: 'No access token'
-  });
 }
 
 function checkEDXUserHasPermission(req, permission) {

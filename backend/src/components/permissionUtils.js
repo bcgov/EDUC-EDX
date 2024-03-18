@@ -2,6 +2,9 @@
 
 const HttpStatus = require('http-status-codes');
 const {doesSchoolBelongToDistrict, isSchoolAnOffshoreSchool} = require('./institute-cache');
+const {getAccessToken, getData, SecureExchangeStatuses} = require('./utils');
+const config = require('../config');
+const log = require('./logger');
 
 //Common checks
 function checkEDXUserAccessToRequestedInstitute(req, res, next) {
@@ -34,6 +37,39 @@ function checkEdxUserPermission(permission) {
   };
 }
 
+function checkPermissionForRequestedInstitute(districtPermission, schoolPermission) {
+  return function(req, res, next) {
+    if (!res.locals.requestedInstituteType) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: 'The requested institution type wasn\'t found in the request.'
+      });
+    }
+    let permissionToCheck = null;
+    switch (res.locals.requestedInstituteType) {
+    case 'DISTRICT':
+      permissionToCheck = districtPermission;
+      break;
+    case 'SCHOOL':
+      permissionToCheck = schoolPermission;
+      break;
+    default:
+      permissionToCheck = null;
+      break;
+    }
+    if (!permissionToCheck) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: 'The appropriate permission to check couldn\'t be determined for this action.'
+      });
+    }
+    if (!req.session.activeInstitutePermissions.includes(permissionToCheck)) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'User doesn\'t have permission.'
+      });
+    }
+    return next();
+  };
+}
+
 function verifyQueryParamValueMatchesBodyValue(paramKey, bodyKey) {
   return function(req, res, next) {
     if (!req.params[paramKey] || !req?.body?.[bodyKey] || req.params[paramKey] !== req.body[bodyKey]) {
@@ -43,6 +79,16 @@ function verifyQueryParamValueMatchesBodyValue(paramKey, bodyKey) {
     }
     return next();
   };
+}
+
+function validateAccessToken(req, res, next) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'The request didn\'t contain a valid access token.'
+    });
+  }
+  return next();
 }
 
 //School checks
@@ -61,6 +107,60 @@ function forbidActionOnOffshoreSchools(req, res, next) {
   return res.status(HttpStatus.FORBIDDEN).json({
     message: 'This action cannot be performed for offshore schools.'
   });
+}
+
+//Secure Exchange checks
+function checkSecureExchangeAccess(req, res, next) {
+  if (!res.locals.requestedSecureExchange) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested Secure Exchange wasn\'t found in the request.'
+    });
+  }
+  if (res.locals.requestedSecureExchange.secureExchangeContactTypeCode !== req.session.activeInstituteType || res.locals.requestedSecureExchange.contactIdentifier !== req.session.activeInstituteIdentifier) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'User doesn\'t have access to the requested Secure Exchange.'
+    });
+  }
+  return next();
+}
+
+function conflictActionOnClosedSecureExchange(req, res, next) {
+  if (!res.locals.requestedSecureExchange) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested Secure Exchange wasn\'t found in the request.'
+    });
+  }
+  if (res.locals.requestedSecureExchange.secureExchangeStatusCode === SecureExchangeStatuses.CLOSED) {
+    return res.status(HttpStatus.CONFLICT).json({
+      message: 'This action cannot be performed on closed Secure Exchanges.'
+    });
+  }
+  return next();
+}
+
+//Find Institute IDs
+function findInstituteInformation_query(req, res, next) {
+  res.locals.requestedInstituteType = req.query.schoolID ? 'SCHOOL' : 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.query.schoolID ?? req.query.districtID;
+  return next();
+}
+
+function findInstituteInformation_body_params(req, res, next) {
+  res.locals.requestedInstituteType = req.body.params.schoolID ? 'SCHOOL' : 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.body.params.schoolID ?? req.body.params.districtID;
+  return next();
+}
+
+function findInstituteType_params(req, res, next) {
+  let validInstituteTypes = ['SCHOOL', 'DISTRICT'];
+  let requestedInstituteType = req.params.instituteType.toUpperCase();
+  res.locals.requestedInstituteType = validInstituteTypes.includes(requestedInstituteType) ? requestedInstituteType : null;
+  return next();
+}
+
+function findInstituteIdentifier_params(req, res, next) {
+  res.locals.requestedInstituteIdentifier = req.params.instituteIdentifier;
+  return next();
 }
 
 //Find School IDs
@@ -82,7 +182,19 @@ function findSchoolID_body(req, res, next) {
   return next();
 }
 
+function findSchoolID_body_params(req, res, next) {
+  res.locals.requestedInstituteType = 'SCHOOL';
+  res.locals.requestedInstituteIdentifier = req.body.params.schoolID;
+  return next();
+}
+
 //Find District IDs
+function findDistrictID_query(req, res, next) {
+  res.locals.requestedInstituteType = 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.query.districtID;
+  return next();
+}
+
 function findDistrictID_params(req, res, next) {
   res.locals.requestedInstituteType = 'DISTRICT';
   res.locals.requestedInstituteIdentifier = req.params.districtID;
@@ -107,6 +219,36 @@ function findDistrictID_querySearchParams(req, res, next) {
   return next();
 }
 
+function findDistrictID_body_params(req, res, next) {
+  res.locals.requestedInstituteType = 'DISTRICT';
+  res.locals.requestedInstituteIdentifier = req.body.params.districtID;
+  return next();
+}
+
+//Find Secure Exchange
+function findSecureExchange_id_params(req, res, next) {
+  res.locals.requestedSecureExchangeID = req.params.id;
+  return next();
+}
+
+async function loadSecureExchange(req, res, next) {
+  if (!res.locals.requestedSecureExchangeID) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    res.locals.requestedSecureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${res.locals.requestedSecureExchangeID}`, req.session?.correlationID);
+  } catch (e) {
+    log.error('Unable to load the Secure Exchange in loadSecureExchange.', e.stack);
+  }
+  return next();
+}
+
 //Common logic
 function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType, activeInstituteID, requestedInstituteID) {
   if (activeInstituteType === 'DISTRICT' && requestedInstituteType === 'SCHOOL') {
@@ -118,15 +260,28 @@ function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType
 const permUtils = {
   checkEDXUserAccessToRequestedInstitute,
   checkEdxUserPermission,
+  checkPermissionForRequestedInstitute,
   verifyQueryParamValueMatchesBodyValue,
+  validateAccessToken,
   forbidActionOnOffshoreSchools,
+  checkSecureExchangeAccess,
+  conflictActionOnClosedSecureExchange,
+  findInstituteInformation_query,
+  findInstituteInformation_body_params,
+  findInstituteType_params,
+  findInstituteIdentifier_params,
   findSchoolID_query,
   findSchoolID_params,
   findSchoolID_body,
+  findSchoolID_body_params,
+  findDistrictID_query,
   findDistrictID_params,
   findDistrictID_body,
   findDistrictId_body,
-  findDistrictID_querySearchParams
+  findDistrictID_querySearchParams,
+  findDistrictID_body_params,
+  findSecureExchange_id_params,
+  loadSecureExchange
 };
 
 module.exports = permUtils;
