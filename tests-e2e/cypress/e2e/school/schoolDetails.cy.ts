@@ -81,8 +81,6 @@ describe('School Details Interface Test', () => {
 
     context('with an independent school', () => {
       before(() => cy.task('recreate-school', { schoolStatus: 'Open', isIndependentSchool: true }));
-      beforeEach(() => cy.login());
-      after(() => cy.logout());
       it('cannot edit grades offered if the school is an independent school', () => {
         cy.visit('/');
         cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing School');
@@ -157,6 +155,7 @@ describe('School Details Interface Test', () => {
       });
     });
     beforeEach(() => cy.login());
+    after(() => cy.logout());
 
     it('checks if no edit and add button show up', () => {
       cy.visit('/');

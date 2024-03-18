@@ -22,6 +22,7 @@
     >
       <v-col>
         <v-switch
+          id="compare-switch"
           v-model="compareSwitch"
           color="primary"
           label="compare to previous September Collection"

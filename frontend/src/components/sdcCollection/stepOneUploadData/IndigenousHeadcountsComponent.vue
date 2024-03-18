@@ -40,7 +40,7 @@
                   {{ getComparisonIcon(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue) }}
                 </v-icon>
               </span>
-              {{ row[columnHeader]?.currentValue }}
+              <span>{{ row[columnHeader]?.currentValue }}</span>
             </div>
           </td>
         </tr>
