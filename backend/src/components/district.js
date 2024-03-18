@@ -7,7 +7,6 @@ const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
-  validateAccessToken(token);
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
   ])
@@ -33,7 +32,6 @@ async function updateDistrict(req, res){
     params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const token = getAccessToken(req);
-    validateAccessToken(token);
     const result = await putData(token, params, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -60,7 +58,6 @@ async function createDistrictContact(req, res) {
   };
 
   const token = getAccessToken(req);
-  validateAccessToken(token);
   return Promise.all([
     postData(token, payload, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact`, req.session?.correlationID),
   ])
@@ -70,14 +67,6 @@ async function createDistrictContact(req, res) {
       log.error(e, 'createDistrictContact', 'Error creating district contact with API.');
       return errorResponse(res);
     });
-}
-
-function validateAccessToken(token, res) {
-  if (!token) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
-  }
 }
 
 async function updateDistrictContact(req, res) {
@@ -90,7 +79,6 @@ async function updateDistrictContact(req, res) {
     payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const token = getAccessToken(req);
-    validateAccessToken(token);
     const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -102,10 +90,7 @@ async function updateDistrictContact(req, res) {
 async function removeDistrictContact(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token);
-
     const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
-
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);

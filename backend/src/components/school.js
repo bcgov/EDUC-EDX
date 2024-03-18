@@ -91,7 +91,6 @@ async function updateSchool(req, res){
     payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
     const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${payload.schoolId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -119,7 +118,6 @@ async function addSchoolContact(req, res) {
     };
 
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
     const data = await postData(token, payload, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
@@ -139,7 +137,6 @@ async function updateSchoolContact(req, res) {
     params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -151,9 +148,7 @@ async function updateSchoolContact(req, res) {
 async function removeSchoolContact(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
     const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
-
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);
@@ -195,8 +190,6 @@ function checkSchoolBelongsToDistrict(req, res) {
 
 async function getFullSchoolDetails(req, res){
   const token = getAccessToken(req);
-  validateAccessToken(token);
-
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
   ])
@@ -210,7 +203,7 @@ async function getFullSchoolDetails(req, res){
 
 async function getAllSchoolDetails(req, res){
   return Promise.all([
-    getSchoolsPaginated(req, res)
+    getSchoolsPaginated(req)
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
@@ -220,11 +213,7 @@ async function getAllSchoolDetails(req, res){
     });
 }
 
-async function getSchoolsPaginated(req, res){
-
-  const accessToken = getAccessToken(req);
-  validateAccessToken(accessToken, res);
-
+async function getSchoolsPaginated(req){
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getSchoolsPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -245,7 +234,8 @@ async function getSchoolsPaginated(req, res){
     }
   };
 
-  return getDataWithParams(accessToken, config.get('institute:rootURL') + '/school/paginated', schoolSearchParam, req.session?.correlationID);
+  const accessToken = getAccessToken(req);
+  return getDataWithParams(accessToken, `${config.get('institute:rootURL')}/school/paginated`, schoolSearchParam, req.session?.correlationID);
 }
 
 function createSchoolSearchCriteria(searchParams){
@@ -285,14 +275,6 @@ function createSchoolSearchCriteria(searchParams){
   });
 
   return searchCriteriaList;
-}
-
-function validateAccessToken(token, res) {
-  if (!token) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
-  }
 }
 
 module.exports = {
