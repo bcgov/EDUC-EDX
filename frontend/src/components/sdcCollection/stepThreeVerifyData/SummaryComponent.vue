@@ -34,6 +34,7 @@
     <v-row class="mt-n6">
       <v-spacer />
       <v-slide-group
+          v-if="notBandHeadcount"
         class="py-4"
         show-arrows
       >
@@ -167,7 +168,8 @@ export default {
       isLoading: false,
       headcountHeaders: [],
       headcountTableData: null,
-      compareSwitch: false
+      compareSwitch: false,
+      notBandHeadcount: this.headcountType !== "band-codes"
     };
   },
   mounted() {
