@@ -8,11 +8,6 @@ const cacheService = require('./cache-service');
 async function getStudentByPEN(req, res) {
   try {
     const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
     const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       const studentMincode = result[0].mincode;
