@@ -38,6 +38,6 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     id: 'step-6',
     title: 'Submit Data',
     step: 6,
-    sdcSchoolCollectionStatusCode: 'TO_BE_CONFIRMED' //confirm this step when implemented
+    sdcSchoolCollectionStatusCode: 'SUBMITTED'
   },
 ]);

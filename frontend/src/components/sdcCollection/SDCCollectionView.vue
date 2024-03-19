@@ -143,7 +143,10 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <div>placeholder</div>
+                <StepSixSubmitData 
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  /> 
               </v-stepper-window-item>
             </v-stepper-window>
           </template>
@@ -163,6 +166,7 @@ import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.v
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourSchoolDetails from './StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './StepFiveSchoolContacts.vue';
+import StepSixSubmitData from './StepSixSubmitData.vue';
 
 export default {
   name: 'SDCCollectionView',
@@ -171,7 +175,8 @@ export default {
     StepFourSchoolDetails,
     StepThreeVerifyData,
     StepTwoViewDataIssues,
-    StepOneUploadData
+    StepOneUploadData,
+    StepSixSubmitData
   },
   props: {
     schoolCollectionID: {

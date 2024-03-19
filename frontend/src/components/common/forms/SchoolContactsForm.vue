@@ -62,7 +62,7 @@
           class="d-flex justify-md-end justify-start"
         >
           <PrimaryButton
-            v-if="canEditSchoolContacts()"
+            v-if="canEditSchoolContacts() && showEditButton()"
             id="addSchoolContactBtn"
             class="mr-0 mb-3"
             icon="mdi-plus-thick"
@@ -117,8 +117,8 @@
               :handle-open-editor="() => openEditContactSheet(contact)"
               :contact="contact"
               :school-i-d="selectedSchoolId"
-              :can-edit-school-contact="canEditSchoolContacts()"
-              :can-remove-school-contact="hasSchoolEditPermission()"
+              :can-edit-school-contact="canEditSchoolContacts() && showEditButton()"
+              :can-remove-school-contact="hasSchoolEditPermission() && showEditButton()"
               @remove-school-contact:show-confirmation-prompt="removeContact"
             />
           </v-col>
@@ -214,7 +214,12 @@ export default {
       type: String,
       required: true,
       default: null
-    }
+    },
+    schoolCollectionObject: {
+      type: Object,
+      required: false,
+      default: null
+    },
   },
   emits: ['school-contacts'],
   data() {
@@ -303,6 +308,9 @@ export default {
         }).finally(() => {
           this.loadingCount -= 1;
         });
+    },
+    showEditButton() {
+      return this.schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED';
     },
     backButtonClick() {
       if(this.isDistrictUser()){

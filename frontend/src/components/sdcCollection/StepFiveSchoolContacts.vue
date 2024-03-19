@@ -13,6 +13,7 @@
 
     <SchoolContactsForm
       :function-name="type"
+      :schoolCollectionObject="schoolCollectionObject"
       @school-contacts="checkIfPrincipalContactExists"
     />
   </div>
@@ -46,6 +47,8 @@ import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
 import {isContactCurrent} from '../../utils/institute/status';
 import { mapState } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import ApiService from '../../common/apiService';
+import { ApiRoutes } from '../../utils/constants';
   
 export default {
   name: 'StepFiveSchoolContacts',
@@ -83,7 +86,23 @@ export default {
     next() {
       if(this.isStepComplete) {
         this.$emit('next');
+      } else {
+        this.markStepAsComplete();
       }
+    },
+    markStepAsComplete() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'SCH_C_VRFD'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school contacts. Please try again later.');
+        });    
     },
     checkIfPrincipalContactExists(contacts) {
       let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));

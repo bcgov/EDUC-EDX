@@ -23,7 +23,7 @@
             id="header"
             :key="column.key"
           >
-            <div v-if="column.title === 'select'">
+            <div v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'">
               <v-checkbox
                 v-model="masterCheckbox"
                 :indeterminate="selected.length > 0 && !isAllSelected()"
@@ -42,7 +42,7 @@
                 {{ column.subHeader.title }}
               </div>
             </div>
-            <div v-else>
+            <div v-else-if="column.title !== 'select'">
               <div class="header-text">
                 {{ column.title }}
               </div>
@@ -67,7 +67,7 @@
             class="td-data"
           >
             <v-checkbox
-              v-if="column.title === 'select'"
+              v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'"
               :model-value="isSelected(props.item.raw) !== undefined"
               hide-details="true"
               @click.prevent.stop="onClick(props)"
@@ -117,7 +117,7 @@
                 </template>
               </div>
               <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
-              <span v-else>-</span>
+              <span v-else-if="column.title !== 'select'">-</span>
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
@@ -173,6 +173,11 @@ export default {
       type: Boolean,
       required: true,
       default: false
+    },
+    schoolCollection: {
+      type: Object,
+      required: true,
+      default: null
     }
   },
   emits: ['reload', 'editSelectedRow', 'selections'],
