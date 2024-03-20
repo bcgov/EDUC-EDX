@@ -79,28 +79,28 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedEligibleFTE).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedTotal).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '2.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '1');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '0.8750');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '2.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '1');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '0.8750');
 
       cy.get(selectors.studentLevelData.compareSwitch).click();
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedHeadcount).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedEligibleFTE).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.underSchoolAgedTotal).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '02.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '01');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '00.8750');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '02.8750');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '01');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '00.8750');
     });
 
     it('verifies french programs for reported students', () => {
@@ -307,13 +307,13 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
 
       // Find the table row with the student pen that should have 3 years of ell
-      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('101932770').parentsUntil('tbody')
+      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('student1').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
-          expect(text).equal('English Language Learning (17)-');
+          expect(text).equal('English Language Learning (17)3');
         });
 
       // Find the table row with the student pen that should have no record of years in ell yet
-      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('102866365').parentsUntil('tbody')
+      cy.get(`${selectors.ellComponent.tab} tbody tr`).contains('103169744').parentsUntil('tbody')
         .children().last().invoke('text').then(text => {
           expect(text).equal('English Language Learning (17)-');
         });

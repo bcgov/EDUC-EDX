@@ -359,9 +359,10 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
         cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
         checkCommonFiltersExist();
+        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters');
         cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-
         cy.get(selectors.filters.applyFilter).click();
+        cy.wait('@paginationFilters');
         cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
 
       });
