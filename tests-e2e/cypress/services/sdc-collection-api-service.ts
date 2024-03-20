@@ -631,9 +631,6 @@ export class SdcCollectionApiService {
       };
     }
 
-    console.log('*****************************')
-    console.log(sdcSchoolCollectionPayload)
-
     const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
     const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
