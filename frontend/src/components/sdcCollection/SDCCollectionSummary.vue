@@ -146,7 +146,7 @@ export default {
       return this.schoolCollectionID !== null;
     },
     calculateStep() {
-      if(this.currentStepIndex <= 5) {
+      if(this.currentStepIndex <= 6) {
         this.noOfStepsCompleted = this.currentStepIndex;
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];

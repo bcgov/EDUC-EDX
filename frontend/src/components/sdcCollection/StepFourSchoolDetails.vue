@@ -16,6 +16,7 @@
 
     <SchoolDetailsForm
       :function-name="type"
+      :schoolCollectionObject="schoolCollectionObject"
       @is-form-valid="checkFormValidity"
       @edit-toggled="toggleBanner"
     />

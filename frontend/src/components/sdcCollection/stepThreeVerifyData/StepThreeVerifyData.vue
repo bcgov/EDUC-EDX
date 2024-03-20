@@ -87,13 +87,6 @@
         />
       </v-window-item>
     </v-window>
-    <v-alert
-      density="compact"
-      type="info"
-      variant="tonal"
-      id="estimated-info-banner"
-      text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
-    />
   </div>
 
   <v-row justify="end">

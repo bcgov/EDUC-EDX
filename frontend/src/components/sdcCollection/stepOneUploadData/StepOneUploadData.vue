@@ -42,6 +42,7 @@
           id="uploadAgainButton"
           prepend-icon="mdi-file-upload"
           :loading="isReadingFile"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
           style="font-size: 16px;"
           color="#1976d2"
           variant="text"
