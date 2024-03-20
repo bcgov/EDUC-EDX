@@ -21,11 +21,11 @@ const createSdcSchoolCollectionStudent = (grades: string[] | undefined): SdcScho
   fte: 0
 });
 
-export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, districtId: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined, students: SdcSchoolCollectionStudent[] | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
+export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, districtId: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined, students: SdcSchoolCollectionStudent[] | undefined, sdcSchoolCollectionStatusCode: string | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
   createUser: 'EDXAT',
   uploadDate: LocalDate.now().format(DateTimeFormatter.ofPattern('yyyyMMdd')),
   uploadFileName: 'EDX-AT-FILE.std',
-  sdcSchoolCollectionStatusCode: 'NEW',
+  sdcSchoolCollectionStatusCode: sdcSchoolCollectionStatusCode,
   collectionTypeCode: 'SEPTEMBER',
   collectionID: collectionId,
   schoolID: schoolId,

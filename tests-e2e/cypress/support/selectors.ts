@@ -394,7 +394,8 @@ export default {
     assignedPen: '#assignedPen',
     assignedPenTooltip: '#assignedPenTooltip',
     cancelButton: '#cancel',
-    compareSwitch: '#compare-switch'
+    compareSwitch: '#compare-switch',
+    collectionSubmission: '#collection-submission'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
