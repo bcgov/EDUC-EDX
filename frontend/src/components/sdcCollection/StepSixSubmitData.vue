@@ -40,6 +40,7 @@
 
       <br>
       <v-alert
+            id="fte-info"
             density="compact"
             type="info"
             variant="tonal"
@@ -49,6 +50,7 @@
 
     <v-row v-else>
       <v-alert
+            id="collection-submission"
             density="compact"
             type="success"
             variant="tonal"
@@ -188,6 +190,3 @@ export default {
    }
 
 </style>
-    
-    
-  
