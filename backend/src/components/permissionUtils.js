@@ -44,7 +44,7 @@ function checkPermissionForRequestedInstitute(districtPermission, schoolPermissi
         message: 'The requested institution type wasn\'t found in the request.'
       });
     }
-    let permissionToCheck = null;
+    let permissionToCheck;
     switch (res.locals.requestedInstituteType) {
     case 'DISTRICT':
       permissionToCheck = districtPermission;
