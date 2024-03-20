@@ -1003,7 +1003,7 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
 }
 
 async function getSecureExchange(secureExchangeID, res, token, correlationID) {
-  if (res.locals.requestedSecureExchange) {
+  if (res.locals.requestedSecureExchange && res.locals.requestedSecureExchange.secureExchangeID === secureExchangeID) {
     return res.locals.requestedSecureExchange;
   }
   return getData(token, `${config.get('edx:exchangeURL')}/${secureExchangeID}`, correlationID);

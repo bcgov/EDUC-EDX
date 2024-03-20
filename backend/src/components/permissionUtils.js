@@ -138,6 +138,21 @@ function conflictActionOnClosedSecureExchange(req, res, next) {
   return next();
 }
 
+//SDC School Collection checks
+function checkSdcSchoolCollectionAccess(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollection) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested SDC School Collection wasn\'t found in the request.'
+    });
+  }
+  if (req.session.activeInstituteType !== 'SCHOOL' || res.locals.requestedSdcSchoolCollection.schoolID !== req.session.activeInstituteIdentifier) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'User doesn\'t have access to the requested Secure Exchange.'
+    });
+  }
+  return next();
+}
+
 //Find Institute IDs
 function findInstituteInformation_query(req, res, next) {
   res.locals.requestedInstituteType = req.query.schoolID ? 'SCHOOL' : 'DISTRICT';
@@ -249,6 +264,62 @@ async function loadSecureExchange(req, res, next) {
   return next();
 }
 
+//Find SDC School Collection
+function findSdcSchoolCollectionID_params(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionID = req.params.sdcSchoolCollectionID;
+  return next();
+}
+
+function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return next();
+  }
+  res.locals.requestedSdcSchoolCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID;
+  return next();
+}
+
+async function loadSdcSchoolCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionID) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    res.locals.requestedSdcSchoolCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${res.locals.requestedSdcSchoolCollectionID}`, req.session?.correlationID);
+  } catch (e) {
+    log.error('Unable to load the SDC School Collection in loadSdcSchoolCollection.', e.stack);
+  }
+  return next();
+}
+
+//Find SDC School Collection Student
+function findSdcSchoolCollectionStudentID_params(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionStudentID = req.params.sdcSchoolCollectionStudentID;
+  return next();
+}
+
+async function loadSdcSchoolCollectionStudent(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudentID) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    res.locals.requestedSdcSchoolCollectionStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${res.locals.requestedSdcSchoolCollectionStudentID}`, req.session?.correlationID);
+  } catch (e) {
+    log.error('Unable to load the SDC School Collection Student in loadSdcSchoolCollectionStudent.', e.stack);
+  }
+  return next();
+}
+
 //Common logic
 function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType, activeInstituteID, requestedInstituteID) {
   if (activeInstituteType === 'DISTRICT' && requestedInstituteType === 'SCHOOL') {
@@ -266,6 +337,7 @@ const permUtils = {
   forbidActionOnOffshoreSchools,
   checkSecureExchangeAccess,
   conflictActionOnClosedSecureExchange,
+  checkSdcSchoolCollectionAccess,
   findInstituteInformation_query,
   findInstituteInformation_body_params,
   findInstituteType_params,
@@ -281,7 +353,12 @@ const permUtils = {
   findDistrictID_querySearchParams,
   findDistrictID_body_params,
   findSecureExchange_id_params,
-  loadSecureExchange
+  loadSecureExchange,
+  findSdcSchoolCollectionID_params,
+  findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent,
+  loadSdcSchoolCollection,
+  findSdcSchoolCollectionStudentID_params,
+  loadSdcSchoolCollectionStudent
 };
 
 module.exports = permUtils;

@@ -266,71 +266,6 @@ function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   };
 }
 
-function checkEDXUserHasPermission(req, permission) {
-  let hasPermission = req.session.activeInstitutePermissions.includes(permission);
-  if (!hasPermission) {
-    throw new Error('403');
-  }
-}
-
-function checkEDXUserSchoolAdminPermission(req) {
-  checkEDXUserHasPermission(req, 'EDX_USER_SCHOOL_ADMIN');
-}
-
-function checkEDXUserDistrictAdminPermission(req) {
-  checkEDXUserHasPermission(req, 'EDX_USER_DISTRICT_ADMIN');
-}
-
-function checkEDXCollectionPermission(req) {
-  let permission = req.session.activeInstitutePermissions.includes('SCHOOL_SDC');
-  if (!permission) {
-    throw new Error('403');
-  }
-}
-
-function checkEDXUserAccess(req, instituteType, instituteIdentifier) {
-  if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
-    throw new Error('403');
-  }
-}
-
-function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
-  const cacheService = require('./cache-service');
-
-  let school = cacheService.getSchoolBySchoolID(schoolID);
-
-  if (req.session.activeInstituteType !== 'DISTRICT') {
-    log.warn('checkSchoolBelongstoEDXUserDistrict should only be used for District EDX users');
-  }
-
-  if (!school) {
-    log.error('unable to find school checkEDXUserSchoolBelongsToDistrict');
-    throw new Error('404');
-  }
-
-  if (school.districtID !== req.session.activeInstituteIdentifier) {
-    throw new Error('403');
-  }
-}
-
-/**
- * Helper function that combines all the permissions and security checks for
- * school admin operations. ex. editing school details.
- * @param {Object} req
- * @param {String} instituteIdentifier - SchoolID or DistrictID
- * @returns void
- * @throws Error
- */
-function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
-  checkEDXUserSchoolAdminPermission(req);
-
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
-}
-
 async function logApiError(e, functionName, message) {
   if (e?.response?.status === 404) {
     log.info('Entity not found', e);
@@ -382,11 +317,7 @@ const utils = {
   handleExceptionResponse,
   getCodes,
   getCodeTable,
-  checkEDXUserDistrictAdminPermission,
-  checkEDXUserAccess,
-  checkEDXUserAccessForSchoolAdminFunctions,
   logApiError,
-  checkEDXCollectionPermission,
   isPdf,
   isImage
 };
