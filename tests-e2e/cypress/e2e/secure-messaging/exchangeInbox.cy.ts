@@ -1,4 +1,4 @@
-import selectors from "../../support/selectors";
+import selectors from '../../support/selectors';
 
 function addDocumentToMessage() {
   cy.intercept(Cypress.env('interceptors').exchange_messages).as('exchangeMessages');
@@ -8,7 +8,7 @@ function addDocumentToMessage() {
   cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
   cy.get(selectors.secureExchangeDetail.addAttachmentConvButton).click();
   cy.get(selectors.documentUpload.uploadDocumentTypeCodeSelect).parent().click();
-  cy.get(selectors.dropdown.listItem).contains('Canadian Birth Certificate').click();
+  cy.get(selectors.dropdown.listItem).contains('Canadian Birth Certificate').as('documentType').click();
   cy.get(selectors.documentUpload.selectFileInput).selectFile('./cypress/uploads/BC.jpg');
   cy.get(selectors.documentUpload.uploadDocumentButton).click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Your document was uploaded successfully. Close');
@@ -90,8 +90,8 @@ function removeExistingDocument() {
   cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
   cy.get(selectors.secureExchangeDetail.timelineContent).contains('BC.jpg')
-      .parentsUntil(selectors.secureExchangeDetail.timelineContent)
-      .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
+    .parentsUntil(selectors.secureExchangeDetail.timelineContent)
+    .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
   cy.get(selectors.secureExchangeDetail.timelineConfirmYesButton).contains('Yes').click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The document has been removed. Close');
 }
@@ -103,8 +103,8 @@ function removeExistingStudent() {
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation test').click();
 
   cy.get(selectors.secureExchangeDetail.timelineContent).contains(Cypress.env('student')
-      .penList[0]).parentsUntil(selectors.secureExchangeDetail.timelineContent)
-      .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
+    .penList[0]).parentsUntil(selectors.secureExchangeDetail.timelineContent)
+    .find(selectors.secureExchangeDetail.timelineRemoveButton).first().click();
   cy.get(selectors.secureExchangeDetail.timelineConfirmYesButton).contains('Yes').click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success! The student has been removed. Close');
 }
@@ -114,7 +114,7 @@ function searchForMultipleMessages() {
   cy.visit('/inbox');
   cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.filtersButton).click();
-  cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
+  cy.get(selectors.secureExchangeInbox.filterSubjectInput).type('EDX automation test');
   cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).children('.v-row').should('have.length', 2);
 }
@@ -124,7 +124,7 @@ function searchForSingleMessage() {
   cy.visit('/inbox');
   cy.wait('@exchangeMessages');
   cy.get(selectors.secureExchangeInbox.filtersButton).click();
-  cy.get(selectors.secureExchangeInbox.filterSubjectInput).type(`EDX automation test`);
+  cy.get(selectors.secureExchangeInbox.filterSubjectInput).type('EDX automation test');
   cy.get(selectors.secureExchangeInbox.filterSearchButton).click();
   cy.get(selectors.secureExchangeInbox.secureExchangeResults).contains('EDX automation').should('have.length', 1);
 }

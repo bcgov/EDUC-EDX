@@ -318,27 +318,33 @@ export class SdcCollectionApiService {
         students[0].assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf';
         students[0].isGraduated = 'false';
         students[0].specialEducationCategoryCode = 'A';
+        students[0].localID = 'student1';
+        students[0].penMatchResult = 'DM';
 
         students[1].enrolledGradeCode = '11';
         students[1].enrolledProgramCodes = '431733';
         students[1].careerProgramCode = 'XH';
         students[1].indigenousSupportProgramNonEligReasonCode = 'NOTELIG';
-        students[1].studentPen = '102866365';
+        students[1].studentPen = '103169744';
         students[1].numberOfCourses = '0700';
+        students[1].localID = 'student2';
+        students[1].sdcSchoolCollectionStudentStatusCode = 'LOADED';
 
         students[2].enrolledGradeCode = '09';
         students[2].enrolledProgramCodes = '1141';
         students[2].careerProgramCode = 'XA';
-        students[2].studentPen = '103169744';
+        students[2].studentPen = '102866365';
         students[2].nativeAncestryInd = 'Y';
         students[2].numberOfCourses = '0700';
         students[2].specialEducationCategoryCode = 'G';
+        students[2].assignedPen = '101930550';
+        students[2].penMatchResult = 'MATCH';
+        students[2].localID = 'student3';
 
         students.forEach(obj => {
           obj.isSchoolAged = 'true';
           obj.isAdult = 'false';
           obj.legalLastName = 'LEGALLAST';
-          obj.sdcSchoolCollectionStudentStatusCode = 'LOADED';
         });
 
         const school = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students);
