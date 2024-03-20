@@ -30,6 +30,7 @@
             class="mr-1 mb-1"
             prepend-icon="mdi-plus"
             variant="outlined"
+            :disabled="schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
             @click="addStudent"
           />
           <v-btn
@@ -39,7 +40,7 @@
             text="Remove"
             prepend-icon="mdi-delete"
             variant="outlined"
-            :disabled="selectedStudents.length === 0"
+            :disabled="selectedStudents.length === 0 || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
             @click="removeStudents"
           />
           <v-btn
@@ -80,6 +81,7 @@
             :total-elements="totalElements"
             :is-loading="isLoading"
             :reset="resetFlag"
+            :schoolCollection="schoolCollection"
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
@@ -200,7 +202,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
+    ...mapState(sdcCollectionStore, ['schoolCollection','schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
   },
   created() {
     sdcCollectionStore().getCodes().then(() => {

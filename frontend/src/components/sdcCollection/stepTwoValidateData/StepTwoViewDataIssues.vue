@@ -197,7 +197,7 @@
               id="fixSelected"
               text="Review & Fix Selected"
               :click-action="toggleEditView"
-              :disabled="selectedStudents.length === 0"
+              :disabled="selectedStudents.length === 0 || schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
               class="mr-4"
             />
             <PrimaryButton
@@ -206,7 +206,7 @@
               class="mr-3"
               :loading="allIssueLoader"
               :click-action="getAllIssuesAndNavigate"
-              :disabled="selectedStudents.length != 0"
+              :disabled="selectedStudents.length != 0 || schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
             />
           </v-col>
           <v-col
@@ -232,7 +232,7 @@
             item-value="sdcSchoolCollectionStudentID"
             class="mt-2"
             mobile-breakpoint="0"
-            show-select
+            :show-select="schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'"
           >
             <template #column.error="{ column }">
               <v-icon

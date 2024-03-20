@@ -1,7 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { SchoolCollectionOptions, SdcStudentEllOption } from 'tests-e2e/cypress/services/sdc-collection-api-service';
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -12,6 +11,7 @@ describe('SDC School Collection View', () => {
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
+          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollectionID);
           const studentWithEllYears = collection.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
@@ -36,21 +36,20 @@ describe('SDC School Collection View', () => {
     });
 
     it('can view assigned pen of student', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
 
       // test submitted and assigned do not match
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('102866365').click();
+      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('101930550').click();
       cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
       cy.get(selectors.studentLevelData.studentPen).should('exist').clear().type('111111111');
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
-      cy.get(selectors.studentLevelData.assignedPen).contains('102866365');
+      cy.get(selectors.studentLevelData.assignedPen).contains('101930550');
       cy.get(selectors.studentLevelData.assignedPenTooltip).should('exist');
       cy.get(selectors.studentLevelData.assignedPenTooltip).contains('Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.');
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
       cy.get(selectors.studentLevelData.cancelButton).click();
+      cy.wait('@collectionStudent');
 
       // test submitted and assigned match
       cy.get(selectors.studentLevelData.editStudentRowByPen).contains('103169744').click();
@@ -76,56 +75,32 @@ describe('SDC School Collection View', () => {
     });
 
     it('can edit student', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
 
-      cy.wait('@collectionStudent');
-      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.schoolList.schoolRow).contains('student2').click();
 
-      cy.wait('@collectionStudent').then(() => {
-        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-        cy.get(selectors.studentLevelData.editStudentRow).click();
+      cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
+      cy.get(selectors.studentLevelData.fteBanner).should('exist');
+      cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0.875');
+      cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
+      cy.get(selectors.studentLevelData.adultFlag).should('exist');
 
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
-        cy.get(selectors.studentLevelData.fteBanner).should('exist');
-        cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0.875');
-        cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
-        cy.get(selectors.studentLevelData.adultFlag).should('exist');
+      cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).should('exist');
+      cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Yes').click();
 
-        cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).should('exist');
-        cy.get(selectors.studentLevelData.nativeAncestryIndValidationDropdown).parent().click();
-        cy.get(selectors.dropdown.listItem).contains('Yes').click();
-
-        cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
-      });
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
     });
 
     it('can remove students from list of reported students', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
 
-      cy.wait('@collectionStudent');
-      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-      cy.get(selectors.filters.applyFilter).click();
-
-      cy.wait('@collectionStudent').then(() => {
-        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
-        cy.get(selectors.studentLevelData.tableResultsSelect).click();
-        cy.get(selectors.studentLevelData.remove).click();
-        cy.get(selectors.studentLevelData.removeConfirm).click();
-      })
-      cy.wait('@collectionStudent');
-      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
-      cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
-      cy.get(selectors.filters.applyFilter).click();
+      cy.contains('student2').parents('tr').find('[type="checkbox"]').click();
+      //cy.get(selectors.studentLevelData.tableResultsSelect).click();
+      cy.get(selectors.studentLevelData.remove).click();
+      cy.get(selectors.studentLevelData.removeConfirm).click();
 
       cy.wait('@collectionStudent');
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 2');
@@ -137,12 +112,8 @@ describe('SDC School Collection View', () => {
     });
 
     it('can add student with no errors', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
-
-      cy.wait('@collectionStudent');
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
       cy.get(selectors.studentLevelData.addStudent).click();
 
       cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
@@ -166,12 +137,8 @@ describe('SDC School Collection View', () => {
     });
 
     it('cannot add student with errors until all errors are resolved', () => {
-      cy.visit('/');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
-
-      cy.wait('@collectionStudent');
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
       cy.get(selectors.studentLevelData.addStudent).click();
 
       cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
@@ -201,31 +168,40 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
     });
   });
+
+  context('1701 collection status is SUBMITTED', () => {
+    before(() => {
+      cy.logout();
+      cy.task<AppSetupData>('dataLoad').then(res => {
+        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+          school: res.school,
+          loadWithStudentAndValidations: true,
+          seedData: 'submittedSchoolCollection'
+        });
+        cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
+      });
+    });
+    beforeEach(() => {
+      cy.login();
+    });
+    it('Add and remove buttons should be disabled', () => {
+        cy.visit('/');
+        cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+        cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
+        cy.get(selectors.dashboard.dataCollectionsTile).click();
+        cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+
+        cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
+        cy.get(selectors.studentLevelData.stepThree).should('exist').click();
+        cy.get(selectors.studentLevelData.addStudent).should('be.disabled');
+        cy.get(selectors.studentLevelData.remove).should('be.disabled');
+    });
+  });
 });
 
-function checkCareerHeader(headerIndex: number, headerTitle: string, length: number, eligible: string, reported: string, notReported: string) {
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountHeader).should('contain.text', headerTitle);
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).should('have.length', length);
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(0).children('div').should('contain.text', 'Eligible');
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(0).children('span').should('contain.text', eligible);
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(1).children('div').should('contain.text', 'Reported');
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(1).children('span').should('contain.text', reported);
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(2).children('div').should('contain.text', 'Not Reported');
-  cy.get(selectors.careerProgramComponent.headcountCard).eq(headerIndex).find(selectors.careerProgramComponent.headcountColumnData).eq(2).children('span').should('contain.text', notReported);
-}
-
-function checkCareerTableSection(subheadingIndex: number, subheaderTitle: string, expectedValues: number[][] ){
-  const subheadings = ['XA - Business & Applied Business', 'XB - Fine Arts, Design, & Media', 'XC - Fitness & Recreation',
-    'XD - Health & Human Services', 'XE - Liberal Arts & Humanities', 'XF - Science & Applied Science', 'XG - Tourism, ' +
-    'Hospitality & Foods', 'XH - Trades & Technology'];
-
-  cy.get(selectors.careerProgramComponent.headcountTableSubHeading).eq(subheadingIndex).should('contain.text', subheaderTitle + expectedValues[0].join(''))
-    .next().should('contain.text', subheadings[0] + expectedValues[1].join(''))
-    .next().should('contain.text', subheadings[1] + expectedValues[2].join(''))
-    .next().should('contain.text', subheadings[2] + expectedValues[3].join(''))
-    .next().should('contain.text', subheadings[3] + expectedValues[4].join(''))
-    .next().should('contain.text', subheadings[4] + expectedValues[5].join(''))
-    .next().should('contain.text', subheadings[5] + expectedValues[6].join(''))
-    .next().should('contain.text', subheadings[6] + expectedValues[7].join(''))
-    .next().should('contain.text', subheadings[7] + expectedValues[8].join(''));
+function navigateToStep3Screen(id: SchoolCollectionOptions) {
+  cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
+  cy.visit('/open-collection-details/' + id);
+  cy.wait('@collectionStudent');
 }

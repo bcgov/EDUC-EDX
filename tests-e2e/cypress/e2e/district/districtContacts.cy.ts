@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 describe('District Contacts Page', () => {
   context('As an EDX district admin', () => {
@@ -32,11 +32,11 @@ describe('District Contacts Page', () => {
       cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
       cy.get(selectors.districtContacts.newContactButton).click();
       cy.get(selectors.districtContacts.newContactEffectiveDateTextField)
-          .find('input[type="text"]')
-          .invoke('val')
-          .then((value) => {
-            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
-          });
+        .find('input[type="text"]')
+        .invoke('val')
+        .then((value) => {
+          expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+        });
     });
 
     it('can edit contact details', () => {
@@ -66,7 +66,7 @@ describe('District Contacts Page', () => {
       // Clicks the clear button
       cy.get(selectors.districtContacts.filterContactClearButton).click();
       cy.get(selectors.districtContacts.searchContactFirstNameInput).should('be.empty');
-      cy.get(selectors.districtContacts.searchContactLastNameInput).should('be.empty')
+      cy.get(selectors.districtContacts.searchContactLastNameInput).should('be.empty');
       cy.get(selectors.districtContacts.searchContactTypeDropdown).should('be.empty');
 
     });

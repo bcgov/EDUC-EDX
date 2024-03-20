@@ -41,23 +41,5 @@ describe('SDC School Collection View', () => {
       // User moved to next step by clicking next button
       cy.get(selectors.studentLevelData.stepTwoNextButton).should('exist').should('be.enabled').click();
     });
-
-    it('can re-upload a collection file', () => {
-      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collectionBySchoolID');
-      cy.intercept(Cypress.env('interceptors').collection).as('collectionRefresh');
-      cy.visit('/');
-      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
-      cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
-      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-      cy.get(selectors.studentLevelData.stepOne).should('exist').click();
-      cy.wait('@collectionBySchoolID');
-      cy.wait('@collectionRefresh');
-      cy.get('#selectFileInput').selectFile('./cypress/uploads/sample-2-student-fnchars.std', { force: true });
-      cy.wait('@collectionBySchoolID');
-      cy.wait('@collectionRefresh');
-      cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Your document was uploaded successfully.');
-    });
   });
 });

@@ -41,7 +41,7 @@
             color="#003366"
             text="Save"
             class="ml-2"
-            :disabled="!studentDetailsFormValid"
+            :disabled="!studentDetailsFormValid || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
             @click="save"
           />
         </v-col>
@@ -107,6 +107,7 @@
 import alertMixin from '../../../mixins/alertMixin';
 import EditStudent from '../../common/EditStudent.vue';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import {mapState} from 'pinia';
   
 export default {
   name: 'ViewStudentDetailsComponent',
@@ -127,13 +128,15 @@ export default {
       selectedStudent: [],
       studentDetailsFormValid: true,
       saveStudent: false,
-      sdcCollection: sdcCollectionStore(),
       studentForEdit: {}
     };
   },
   created() {
     this.selectedStudent.splice(0);
     this.selectedStudent.push(this.selectedStudentIds);
+  },
+  computed: {
+    ...mapState(sdcCollectionStore, ['schoolCollection']),
   },
   mounted() {
       

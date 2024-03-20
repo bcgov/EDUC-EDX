@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
 function navigateToSchoolContactsSchoolUser() {
   cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
@@ -23,7 +23,7 @@ describe('School Contacts Page', () => {
       cy.task<AppSetupData>('dataLoad').then(() => {
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolRoles: ['EDX_EDIT_SCHOOL'], schoolCodes: ['99998'] });
       });
-    })
+    });
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
@@ -31,11 +31,11 @@ describe('School Contacts Page', () => {
       navigateToSchoolContactsSchoolUser();
       cy.get(selectors.schoolContacts.newContactButton).click();
       cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
-          .find('input[type="text"]')
-          .invoke('val')
-          .then((value) => {
-            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
-          });
+        .find('input[type="text"]')
+        .invoke('val')
+        .then((value) => {
+          expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+        });
     });
 
     it('can create a new contact', () => {
@@ -97,23 +97,25 @@ describe('School Contacts Page', () => {
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
-      cy.get('table').first().click();
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.newContactButton).click();
       cy.get(selectors.schoolContacts.newContactEffectiveDateTextField)
-          .find('input[type="text"]')
-          .invoke('val')
-          .then((value) => {
-            expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
-          });
+        .find('input[type="text"]')
+        .invoke('val')
+        .then((value) => {
+          expect(value).to.contains(LocalDate.now().format(DateTimeFormatter.ofPattern('yyyy/MM/dd')).toString());
+        });
     });
 
     it('can create a new school contact - vice principal', () => {
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').all_schools).as('allSchools');
       cy.visit('/schools');
-      cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing District');
-      cy.get('table').first().click();
+      cy.wait('@allSchools');
+      cy.wait('@allSchools');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.newContactButton).click();
@@ -128,9 +130,12 @@ describe('School Contacts Page', () => {
     });
 
     it('can edit school contact details; cancels', () => {
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').all_schools).as('allSchools');
       cy.visit('/schools');
-      cy.get('table').first().click();
+      cy.wait('@allSchools');
+      cy.wait('@allSchools');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.editContactButton).click();
@@ -141,9 +146,12 @@ describe('School Contacts Page', () => {
     });
 
     it('can edit school contact details; saves', () => {
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').all_schools).as('allSchools');
       cy.visit('/schools');
-      cy.get('table').first().click();
+      cy.wait('@allSchools');
+      cy.wait('@allSchools');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.editContactButton).click();
@@ -155,20 +163,26 @@ describe('School Contacts Page', () => {
     });
 
     it('can delete a school contact; cancel', () => {
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').all_schools).as('allSchools');
       cy.visit('/schools');
-      cy.get('table').first().click();
+      cy.wait('@allSchools');
+      cy.wait('@allSchools');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
 
       cy.get('button').contains('Contacts').click();
-        cy.get(selectors.schoolContacts.deleteContactButton).click();
-        cy.get(selectors.schoolContacts.deleteCancelButton).click();
+      cy.get(selectors.schoolContacts.deleteContactButton).click();
+      cy.get(selectors.schoolContacts.deleteCancelButton).click();
     });
 
     it('can delete a school contact; confirm', () => {
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.intercept(Cypress.env('interceptors').all_schools).as('allSchools');
       cy.visit('/schools');
-      cy.get('table').first().click();
+      cy.wait('@allSchools');
+      cy.wait('@allSchools');
+      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.deleteContactButton).click();
@@ -182,14 +196,14 @@ describe('School Contacts Page', () => {
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
       cy.get(selectors.dashboard.title).contains('Schools | EDX Automation Testing');
-      cy.get('table').first().click();
+      cy.get(selectors.schoolList.schoolRow).click();
       cy.wait('@schoolDetails');
       cy.get('button').contains('Contacts').click();
       cy.get(selectors.schoolContacts.deleteContactButton).should('exist');
       cy.get(selectors.schoolContacts.deleteContactButton).click();
       cy.on('window:confirm', (str) => {
         expect(str).to.equal('Please Confirm, Are you sure you want to remove this contact?');
-      })
+      });
       cy.get(selectors.schoolContacts.resolveButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'School contact removed successfully');
     });

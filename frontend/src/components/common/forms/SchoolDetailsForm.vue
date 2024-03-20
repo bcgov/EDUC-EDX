@@ -43,7 +43,7 @@
               class="d-flex justify-end"
             >
               <PrimaryButton
-                v-if="canEditSchoolDetails()"
+                v-if="canEditSchoolDetails() && showEditButton()"
                 id="schoolDetailsEditButton"
                 icon-left
                 icon="mdi-pencil"
@@ -609,7 +609,7 @@
           >
             <v-col>
               <a
-                v-if="canEditSchoolDetails()"
+                v-if="canEditSchoolDetails() && showEditButton()"
                 id="addAddressButton"
                 class="editField"
                 @click="toggleEdit"
@@ -1032,7 +1032,12 @@ export default {
       type: String,
       required: true,
       default: null
-    }
+    },
+    schoolCollectionObject: {
+      type: Object,
+      required: false,
+      default: null
+    },
   },
   emits: ['is-form-valid', 'edit-toggled'],
   data() {
@@ -1263,7 +1268,7 @@ export default {
         .join(', ');
     },
     showEditLinks(fieldValue) {
-      return this.canEditSchoolDetails() && !fieldValue;
+      return this.canEditSchoolDetails() && !fieldValue && this.showEditButton();
     },
     getFacilityType(school){
       return this.schoolFacilityTypes?.find((facility) => facility.facilityTypeCode === school?.facilityTypeCode)?.label;
@@ -1284,6 +1289,9 @@ export default {
     showContactButton() {
       return this.functionName !== 'SDC';
     },
+    showEditButton() {
+      return this.schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED';
+    },
     formatDate,
     formatPhoneNumber,
     getStatusColorAuthorityOrSchool,
@@ -1301,7 +1309,7 @@ export default {
         filter(perm => perm === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
       return hasPermission && !this.isOffshoreSchool;
     },
-    async clickSameAsAddressButton() {
+    async clickSameAsAddressButton() { 
       await this.$nextTick();
       await this.$refs.schoolDetailsForm.validate();
     },
