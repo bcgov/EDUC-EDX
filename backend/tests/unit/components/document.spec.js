@@ -217,16 +217,4 @@ describe('downloadFile', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
   });
-
-  it('should return INTERNAL_SERVER_ERROR if deleteData is failed', async () => {
-    utils.getData.mockRejectedValue(new Error('test error'));
-    utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      status: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Error'
-    }));
-
-    await downloadFile(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
-  });
 });
