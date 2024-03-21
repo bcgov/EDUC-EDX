@@ -24,13 +24,13 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
   },
   {
     id: 'step-4',
-    title: 'Verify School Details (1601)',
+    title: 'Verify School Details (1701)',
     step: 4,
     sdcSchoolCollectionStatusCode: 'SCH_D_VRFD'
   },
   {
     id: 'step-5',
-    title: 'Verify School Contacts (1601)',
+    title: 'Verify School Contacts (1701)',
     step: 5,
     sdcSchoolCollectionStatusCode: 'SCH_C_VRFD'
   },
