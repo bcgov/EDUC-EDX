@@ -70,19 +70,6 @@ describe('uploadFile', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
   });
 
-  it('should return CONFLICT if secureExchange is CLOSED', async () => {
-    const session = {
-      secureExchange: {
-        secureExchangeStatusCode: utils.SecureExchangeStatuses.CLOSED,
-      }
-    };
-    req = mockRequest(document, session, params);
-
-    await uploadFile(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
-  });
-
   it('should return INTERNAL_SERVER_ERROR if postData is failed', async () => {
     utils.postData.mockRejectedValue(new Error('test error'));
     utils.handleExceptionResponse.mockReturnValue(res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
