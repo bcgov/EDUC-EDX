@@ -357,16 +357,18 @@
                       style="color: black"
                   >{{ getNLCActivity(school) }}</span>
                   <v-select
-                      v-else
-                      id="schoolDetailsNlc"
-                      v-model="schoolDetailsCopy.neighborhoodLearning"
-                      :items="schoolActiveNeighborhoodLearningTypes"
-                      item-value="neighborhoodLearningTypeCode"
-                      item-title="label"
-                      variant="underlined"
-                      multiple
-                      dense
-                      class="pt-0 mt-0"
+                    v-else
+                    id="schoolDetailsNlc"
+                    v-model="schoolDetailsCopy.neighborhoodLearning"
+                    :items="schoolActiveNeighborhoodLearningTypes"
+                    item-value="neighborhoodLearningTypeCode"
+                    item-title="label"
+                    variant="underlined"
+                    multiple
+                    dense
+                    class="pt-0 mt-0"
+                    return-object
+                    @update:model-value="sortNlc()"
                   />
                 </v-col>
               </v-row>
@@ -1317,6 +1319,7 @@ export default {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
       this.addAddressesIfRequired(this.schoolDetailsCopy);
       this.sortGrades();
+      this.sortNlc();
       this.editing = !this.editing;
       this.$emit('edit-toggled', this.editing);
       await this.$nextTick();
@@ -1375,10 +1378,6 @@ export default {
           'updateDate': null,
           'addressId': null,
           'schoolId': null,
-          'districtId': null,
-          'independentAuthorityId': null,
-          'phoneNumber': null,
-          'email': null,
           'addressLine1': null,
           'addressLine2': null,
           'city': null,
@@ -1394,12 +1393,7 @@ export default {
           'updateUser': null,
           'createDate': null,
           'updateDate': null,
-          'addressId': null,
           'schoolId': null,
-          'districtId': null,
-          'independentAuthorityId': null,
-          'phoneNumber': null,
-          'email': null,
           'addressLine1': null,
           'addressLine2': null,
           'city': null,
@@ -1419,6 +1413,15 @@ export default {
       }
       this.schoolDetailsCopy.grades = gradeList;
     },
+    sortNlc() {
+      const nlcList = [];
+      for (const nlc of this.schoolActiveNeighborhoodLearningTypes) {
+        if (this.schoolDetailsCopy.neighborhoodLearning.find((rawGrade) => rawGrade.neighborhoodLearningTypeCode === nlc.neighborhoodLearningTypeCode )) {
+          nlcList.push(nlc);
+        }
+      }
+      this.schoolDetailsCopy.neighborhoodLearning = nlcList;
+    }
   }
 };
 </script>
