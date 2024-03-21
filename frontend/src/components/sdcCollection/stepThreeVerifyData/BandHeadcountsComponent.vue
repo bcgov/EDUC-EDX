@@ -1,13 +1,18 @@
 <template>
+  <v-row align-content="space-between" class="mt-3">
+    <v-col class="font-weight-bold">
+      {{ getTitle() }}
+    </v-col>
+  </v-row>
   <v-table
-      v-if="headcountTableData"
+      v-if="bandHeadcountData"
       density="compact"
       id = "band-headcount-table"
   >
     <thead>
     <tr>
       <th
-          v-for="columnHeader in headcountTableData?.headers"
+          v-for="columnHeader in bandHeadcountData?.headers"
           :id="'tableHeader'+columnHeader"
           :key="columnHeader + generateKey()"
       >
@@ -17,7 +22,7 @@
     </thead>
     <tbody>
     <template
-        v-for="(row, index) in headcountTableData?.rows"
+        v-for="(row, index) in bandHeadcountData?.rows"
         :key="'row-' + index + '-data'"
     >
       <tr
@@ -25,7 +30,7 @@
           data-cy="band-report-row"
       >
         <td
-            v-for="(columnHeader, idx) in headcountTableData?.headers"
+            v-for="(columnHeader, idx) in bandHeadcountData?.headers"
             :key="row?.title?.currentValue + columnHeader + generateKey()"
             :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]?.currentValue==='0'}"
         >
@@ -48,7 +53,7 @@
       <tr>
         <td
             class="empty-row-cells"
-            :colspan="headcountTableData?.headers?.length"
+            :colspan="bandHeadcountData?.headers?.length"
         />
       </tr>
     </template>
@@ -68,20 +73,25 @@ export default defineComponent({
   },
   mixins: [alertMixin],
   props: {
-    headcountTableData: {
+    bandHeadcountData: {
       type: Object,
       required: true
     }
   },
+  data() {
+    return {
+      isLoading: false,
+      headcountTableData: null,
+      title: 'Eligible Band of Residence Headcount'
+    };
+  },
   methods: {
     getComparisonIcon,
     getStatusColor,
-    findCellValue(sectionName, row) {
-      return this.headcountTableData?.rows?.find(x => x.title==='Headcount' && x.section === sectionName)?.[row];
-    },
     generateKey() {
       return uuidv4();
     },
+    getTitle() {return this.title;}
   }
 });
 </script>

@@ -35,7 +35,6 @@
     <v-row class="mt-n6">
       <v-spacer />
       <v-slide-group
-          v-if="notBandHeadcount"
         class="py-4"
         show-arrows
       >
@@ -163,14 +162,13 @@ export default {
       required: true,
     }
   },
-  emits: [],
+  emits: ['compare-change'],
   data() {
     return {
       isLoading: false,
       headcountHeaders: [],
       headcountTableData: null,
-      compareSwitch: false,
-      notBandHeadcount: this.headcountType !== "band-codes"
+      compareSwitch: false
     };
   },
   mounted() {
@@ -215,12 +213,11 @@ export default {
         return 'Eligible Special Education Headcount';
       case 'indigenous':
         return 'Eligible Indigenous Support Program Headcount';
-      case 'band-codes':
-        return 'Eligible Band of Residence Headcount';
       }
     },
     compare() {
       this.getStudentHeadCounts();
+      this.$emit('compare-change', this.compareSwitch)
     }
   }
 };
