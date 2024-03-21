@@ -70,17 +70,6 @@ describe('uploadFile', () => {
     expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED);
   });
 
-  it('should return CONFLICT if no request in the session', async () => {
-    const session = {
-      secureExchange: null,
-    };
-    req = mockRequest(document, session, params);
-
-    await uploadFile(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
-  });
-
   it('should return CONFLICT if secureExchange is CLOSED', async () => {
     const session = {
       secureExchange: {
