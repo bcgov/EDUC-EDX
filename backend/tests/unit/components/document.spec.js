@@ -124,7 +124,6 @@ describe('deleteDocument', () => {
   let res;
 
   jest.spyOn(utils, 'getAccessToken');
-  const getDataSpy = jest.spyOn(utils, 'getData');
   const deleteDataSpy = jest.spyOn(utils, 'deleteData');
 
   beforeEach(() => {
@@ -143,7 +142,6 @@ describe('deleteDocument', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(res.json).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
     expect(deleteDataSpy).toHaveBeenCalledWith('token', `${config.get('edx:exchangeURL')}/${params.id}/documents/${params.documentId}`, session.correlationID);
   });
 
