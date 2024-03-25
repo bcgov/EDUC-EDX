@@ -35,7 +35,6 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.headcountEndpoint"
-        v-on:compare-change="handleComparisonChange"
       >
         <template #reports="{ data }">
           <IndigenousHeadcountsComponent
@@ -44,9 +43,16 @@
           />
         </template>
       </SummaryComponent>
-      <BandHeadcountsComponent
-          :band-headcount-data="bandHeadcountData"
-      />
+      <SummaryComponent
+          :headcount-type="config.bandHeadcountEndpoint"
+          >
+        <template #reports="{ data }">
+          <BandHeadcountsComponent
+              v-if="data"
+              :headcount-table-data="data"
+          />
+        </template>
+      </SummaryComponent>
     </div>
   </v-container>
 </template>
@@ -58,8 +64,6 @@ import SummaryComponent from './SummaryComponent.vue';
 import {INDSUPPORT_PR} from '../../../utils/sdc/TableConfiguration';
 import IndigenousHeadcountsComponent from '../stepOneUploadData/IndigenousHeadcountsComponent.vue';
 import BandHeadcountsComponent from "./BandHeadcountsComponent.vue";
-import ApiService from "../../../common/apiService";
-import {ApiRoutes} from "../../../utils/constants";
   
 export default {
   name: 'IndSupportProgramsComponent',
@@ -82,43 +86,21 @@ export default {
     return {
       reportView: 'detail',
       config: INDSUPPORT_PR,
-      bandHeadcountData: null,
-      compareActive: false
     };
   },
   computed: {
     
   },
-  mounted() {
-    this.getBandHeadcountData();
+  created() {
   },
   methods: {
     showDetail() {
       this.reportView = 'detail';
+
     },
     showSummary() {
       this.reportView = 'summary';
-    },
-    handleComparisonChange(compareState){
-      this.compareActive = compareState;
-      this.getBandHeadcountData();
-    },
-    getBandHeadcountData(){
-      this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
-        params: {
-          type: 'band-codes',
-          compare: this.compareActive
-        }
-      }).then(response => {
-        this.bandHeadcountData = response.data.headcountResultsTable;
-      }).catch(error => {
-        console.error(error);
-        this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
-      }).finally(() => {
-        this.isLoading = false;
-      });
-    },
+    }
    
   }
 };
