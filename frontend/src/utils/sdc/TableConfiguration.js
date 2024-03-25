@@ -843,7 +843,6 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
     ],
     headcountEndpoint: 'indigenous',
-    bandHeadcountEndpoint: 'band-codes',
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
       fte: FTE_FILTER,
@@ -856,6 +855,35 @@ export const INDSUPPORT_PR = Object.freeze(
       warnings: WARNING_FILTER
     }
   }
+);
+
+export const BANDRES_PR = Object.freeze(
+    {
+        defaultFilter: { label: 'BANDRES_PR', description: 'Has Indigenous Support Program' },
+        tableHeaders: [
+            { title: 'select', key: 'select' },
+            { key: 'sdcSchoolCollectionStudentStatusCode' },
+            { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'indProgramEligible' } },
+            { title: 'PEN', key: 'studentPen', subHeader: { title: 'Local ID', key: 'localID' } },
+            { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+            { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
+            { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+            { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+            { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
+        ],
+        headcountEndpoint: 'band-codes',
+        allowedFilters: {
+            studentType: STUDENT_TYPE_FILTER,
+            fte: FTE_FILTER,
+            grade: GRADE_FILTER,
+            fundingType: FUNDING_TYPE_FILTER,
+            indigenousPrograms: INDIGENOUS_PROGRAM_FILTER,
+            bandCode: BAND_FILTER,
+            ancestry: ANCESTRY_FILTER,
+            indigenousProgramsFunding: INDIGENOUS_FUNDING_FILTER,
+            warnings: WARNING_FILTER
+        }
+    }
 );
 
 export const SPECIALED_PR = Object.freeze(
