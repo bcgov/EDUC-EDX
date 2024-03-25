@@ -396,7 +396,7 @@ async function downloadSdcReport(req, res) {
     let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
 
     if(reportType === 'ALL_STUDENT_CSV') {
-      res.setHeader('Content-Disposition', 'inline; attachment; filename="gradeEnrollment.csv"');
+      res.setHeader('Content-Disposition', 'inline; attachment; filename="allStudents.csv"');
       res.setHeader('Content-Type', 'text/csv');
       let returnedCSV = Buffer.from(resData.documentData, 'base64');
       return res.status(HttpStatus.OK).send(returnedCSV);
