@@ -68,13 +68,13 @@
               <v-table>
                 <thead>
                   <tr>
-                    <th class="text-left">
+                    <th id="program" class="text-left">
                       Program
                     </th>
-                    <th class="text-left">
+                    <th id="funding" class="text-left">
                       Funding Eligible
                     </th>
-                    <th class="text-left">
+                    <th id="reasonCode" class="text-left">
                       Non-Eligibility Reason
                     </th>
                   </tr>
