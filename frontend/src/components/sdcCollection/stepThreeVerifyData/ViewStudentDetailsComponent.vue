@@ -150,7 +150,7 @@ export default {
   methods: {
     setStudentContext($event) {
       this.studentForEdit = $event;
-      this.setProgramEligibility($event);
+      this.setProgramEligibility();
     },
     save() {
       this.saveStudent =true;
@@ -177,34 +177,34 @@ export default {
     getZeroFteReasonCodes(key){
       return sdcCollectionStore().zeroFteReasonCodesMap.get(key)?.message;
     },
-    setProgramEligibility(student) {
+    setProgramEligibility() {
       //french row
       let frenchRow = {};
-      frenchRow.program = 'French Programs'
+      frenchRow.program = 'French Programs';
       frenchRow.fundingEligible = this.studentForEdit?.frenchProgramNonEligReasonCode !== null ? 'No': 'Yes';
       frenchRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.frenchProgramNonEligReasonCode);
 
       let careerRow = {};
       //career row
-      careerRow.program = 'Career Programs'
+      careerRow.program = 'Career Programs';
       careerRow.fundingEligible = this.studentForEdit?.careerProgramNonEligReasonCode !== null ? 'No': 'Yes';
       careerRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.careerProgramNonEligReasonCode);
 
       //Indigenous row
       let indRow = {};
-      indRow.program = 'Indigenous Support Programs'
+      indRow.program = 'Indigenous Support Programs';
       indRow.fundingEligible = this.studentForEdit?.indigenousSupportProgramNonEligReasonCode !== null ? 'No': 'Yes';
       indRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.indigenousSupportProgramNonEligReasonCode);
 
       //sped row
       let spedRow = {};
-      spedRow.program = 'Special Education'
+      spedRow.program = 'Special Education';
       spedRow.fundingEligible = this.studentForEdit?.specialEducationNonEligReasonCode !== null ? 'No': 'Yes';
       spedRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.specialEducationNonEligReasonCode);
 
       //ell row
       let ellRow = {};
-      ellRow.program = 'English Language Learning'
+      ellRow.program = 'English Language Learning';
       ellRow.fundingEligible = this.studentForEdit?.ellNonEligReasonCode !== null ? 'No': 'Yes';
       ellRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.ellNonEligReasonCode);
 
