@@ -174,7 +174,6 @@ export default {
       headcountHeaders: [],
       headcountTableData: null,
       compareSwitch: false,
-      notBandHeadcount: this.headcountType !== "band-codes"
     };
   },
   mounted() {
