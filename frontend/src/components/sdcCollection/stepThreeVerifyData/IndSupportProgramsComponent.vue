@@ -45,6 +45,7 @@
       </SummaryComponent>
       <SummaryComponent
           :headcount-type="bandConfig.headcountEndpoint"
+          :show-headcount-headers="false"
           >
         <template #reports="{ data }">
           <BandHeadcountsComponent

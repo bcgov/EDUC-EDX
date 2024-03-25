@@ -35,7 +35,7 @@
     <v-row class="mt-n6">
       <v-spacer />
       <v-slide-group
-          v-if="notBandHeadcount"
+          v-if="showHeadcountHeaders"
         class="py-4"
         show-arrows
       >
@@ -161,6 +161,10 @@ export default {
     headcountType: {
       type: String,
       required: true,
+    },
+    showHeadcountHeaders: {
+      type: Boolean,
+      default: true
     }
   },
   emits: [],
