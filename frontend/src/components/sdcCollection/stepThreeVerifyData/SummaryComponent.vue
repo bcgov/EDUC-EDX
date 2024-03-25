@@ -35,6 +35,7 @@
     <v-row class="mt-n6">
       <v-spacer />
       <v-slide-group
+          v-if="showHeadcountHeaders"
         class="py-4"
         show-arrows
       >
@@ -160,6 +161,10 @@ export default {
     headcountType: {
       type: String,
       required: true,
+    },
+    showHeadcountHeaders: {
+      type: Boolean,
+      default: true
     }
   },
   emits: [],
@@ -168,7 +173,7 @@ export default {
       isLoading: false,
       headcountHeaders: [],
       headcountTableData: null,
-      compareSwitch: false
+      compareSwitch: false,
     };
   },
   mounted() {
@@ -213,6 +218,8 @@ export default {
         return 'Eligible Special Education Headcount';
       case 'indigenous':
         return 'Eligible Indigenous Support Program Headcount';
+      case 'band-codes':
+        return 'Eligible Band of Residence Headcount';
       }
     },
     compare() {

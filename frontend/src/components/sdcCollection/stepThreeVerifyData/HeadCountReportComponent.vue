@@ -65,7 +65,7 @@ export default {
     getComparisonIcon,
     getStatusColor,
     getClassForCell(columnHeader, row) {
-      if(row.title.currentValue===row.section.currentValue) {
+      if(row.section && row.title.currentValue===row.section.currentValue) {
         if(columnHeader==='title') {
           return 'section-header-title';
         } else if(row[columnHeader]?.currentValue==='0') {

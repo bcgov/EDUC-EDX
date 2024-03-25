@@ -28,18 +28,29 @@
   
     <div v-if="reportView === 'detail'">
       <DetailComponent
-        :config="config"
+        :config="indConfig"
         :school="school"
       />
     </div>
     <div v-if="reportView === 'summary'">
       <SummaryComponent
-        :headcount-type="config.headcountEndpoint"
+        :headcount-type="indConfig.headcountEndpoint"
       >
         <template #reports="{ data }">
           <IndigenousHeadcountsComponent
             v-if="data"
             :headcount-table-data="data"
+          />
+        </template>
+      </SummaryComponent>
+      <SummaryComponent
+          :headcount-type="bandConfig.headcountEndpoint"
+          :show-headcount-headers="false"
+          >
+        <template #reports="{ data }">
+          <BandHeadcountsComponent
+              v-if="data"
+              :headcount-table-data="data"
           />
         </template>
       </SummaryComponent>
@@ -51,12 +62,14 @@
 import alertMixin from '../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from './SummaryComponent.vue';
-import { INDSUPPORT_PR } from '../../../utils/sdc/TableConfiguration';
+import {BANDRES_PR, INDSUPPORT_PR} from '../../../utils/sdc/TableConfiguration';
 import IndigenousHeadcountsComponent from '../stepOneUploadData/IndigenousHeadcountsComponent.vue';
+import BandHeadcountsComponent from "./BandHeadcountsComponent.vue";
   
 export default {
   name: 'IndSupportProgramsComponent',
   components: {
+    BandHeadcountsComponent,
     IndigenousHeadcountsComponent,
     DetailComponent,
     SummaryComponent
@@ -73,8 +86,8 @@ export default {
   data() {
     return {
       reportView: 'detail',
-      config: INDSUPPORT_PR
-
+      indConfig: INDSUPPORT_PR,
+      bandConfig: BANDRES_PR
     };
   },
   computed: {
