@@ -10,13 +10,18 @@
             id="studentsFound"
             class="bold"
           >Students Found:  {{ totalElements }}
-            <v-icon
-              small
-              class="ml-1"
-              color="#003366"
+            <router-link
+              :to="{ path: downloadReportURL() }"
+              target="_blank"
             >
-              mdi-tray-arrow-down
-            </v-icon>
+              <v-icon
+                small
+                class="ml-1"
+                color="#003366"
+              >
+                mdi-tray-arrow-down
+              </v-icon>
+            </router-link>
           </span>
         </v-col>
         <v-col
@@ -211,6 +216,9 @@ export default {
 
   },
   methods: {
+    downloadReportURL() {
+      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/csv/download`;
+    },
     editStudent($event) {
       const selectedStudent = cloneDeep($event);
       this.studentForEdit.splice(0);
