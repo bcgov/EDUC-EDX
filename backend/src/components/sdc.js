@@ -328,6 +328,14 @@ async function downloadSdcReport(req, res) {
     }
     const token = getAccessToken(req);
     let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
+
+    if(reportType === 'ALL_STUDENT_CSV') {
+      res.setHeader('Content-Disposition', 'inline; attachment; filename="allStudents.csv"');
+      res.setHeader('Content-Type', 'text/csv');
+      let returnedCSV = Buffer.from(resData.documentData, 'base64');
+      return res.status(HttpStatus.OK).send(returnedCSV);
+    }
+
     res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
     res.setHeader('Content-type', 'application/pdf');
     let returnedPDF = Buffer.from(resData.documentData, 'base64');
