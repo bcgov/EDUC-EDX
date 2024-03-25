@@ -383,7 +383,7 @@ export default {
         payload.params.schoolID = this.instituteCode;
         url = `${url}/school`;
       } else {
-        payload.params.districtId = this.instituteCode;
+        payload.params.districtID = this.instituteCode;
         url = `${url}/district`;
       }
       ApiService.apiAxios.post(url, payload)

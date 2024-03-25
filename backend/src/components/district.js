@@ -1,5 +1,5 @@
 'use strict';
-const { errorResponse, getAccessToken, getData, checkEDXUserAccess, checkEDXUserHasPermission, putData, postData, handleExceptionResponse} = require('./utils');
+const { errorResponse, getAccessToken, getData, putData, postData, handleExceptionResponse} = require('./utils');
 const log = require('./logger');
 const config = require('../config');
 const HttpStatus = require('http-status-codes');
@@ -7,9 +7,6 @@ const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
-  validateAccessToken(token);
-  checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
   ])
@@ -23,24 +20,19 @@ async function getDistrictByDistrictID(req, res){
 
 async function updateDistrict(req, res){
   try{
-    const token = getAccessToken(req);
-    validateAccessToken(token);
-    checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
-
     const params = req.body;
-
     params.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
       addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
     });
-
     params.contacts = null;
     params.createDate = null;
     params.updateDate = null;
     params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
-    const result = await putData(token, params, config.get('institute:rootURL') + '/district/' + req.params.districtID, req.session?.correlationID);
+
+    const token = getAccessToken(req);
+    const result = await putData(token, params, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateDistrict', 'Error occurred while attempting to update a district.');
@@ -49,10 +41,6 @@ async function updateDistrict(req, res){
 }
 
 async function createDistrictContact(req, res) {
-  const token = getAccessToken(req);
-  validateAccessToken(token);
-  checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-
   const payload = {
     districtContactTypeCode: req.body.districtContactTypeCode,
     firstName: req.body.firstName,
@@ -69,6 +57,7 @@ async function createDistrictContact(req, res) {
     updateUser: 'EDX/' + req.session.edxUserData.edxUserID
   };
 
+  const token = getAccessToken(req);
   return Promise.all([
     postData(token, payload, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact`, req.session?.correlationID),
   ])
@@ -80,28 +69,16 @@ async function createDistrictContact(req, res) {
     });
 }
 
-function validateAccessToken(token, res) {
-  if (!token) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
-  }
-}
-
 async function updateDistrictContact(req, res) {
   try {
-    const token = getAccessToken(req);
-    validateAccessToken(token);
-    checkEDXUserAccess(req, 'DISTRICT', req.body.districtId);
-    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
-
-
     const payload = req.body;
     payload.updateDate = null;
     payload.createDate = null;
     payload.effectiveDate = payload.effectiveDate ? req.body.effectiveDate : null;
     payload.expiryDate = payload.expiryDate ? req.body.expiryDate : null;
     payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+
+    const token = getAccessToken(req);
     const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -113,12 +90,7 @@ async function updateDistrictContact(req, res) {
 async function removeDistrictContact(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token);
-    checkEDXUserAccess(req, 'DISTRICT', req.params.districtID);
-    checkEDXUserHasPermission(req, 'EDX_DISTRICT_EDIT');
-
     const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
-
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);

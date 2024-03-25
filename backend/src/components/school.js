@@ -1,6 +1,5 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, checkEDXUserCanViewSchoolData,checkSchoolBelongsToEDXUserDistrict, checkEDXUserAccess, checkEDXUserAccessForSchoolEditFunctions, verifyQueryParamValueMatchesBodyValue, putData, postData,
-  handleExceptionResponse } = require('./utils');
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, putData, postData, handleExceptionResponse } = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
 const config = require('../config');
@@ -8,6 +7,7 @@ const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const HttpStatus = require('http-status-codes');
 const _ = require('lodash');
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
+const {doesSchoolBelongToDistrict} = require('./institute-cache');
 
 async function getSchoolBySchoolID(req, res) {
   try {
@@ -15,7 +15,6 @@ async function getSchoolBySchoolID(req, res) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
       return res.status(200).json(allActiveSchools ? allActiveSchools : []);
     }
-    checkEDXUserCanViewSchoolData(req, req.query.schoolID);
     let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
     if (!school) {
       return res.status(200).json();
@@ -29,12 +28,6 @@ async function getSchoolBySchoolID(req, res) {
 
 async function updateSchool(req, res){
   try{
-    const token = getAccessToken(req);
-    validateAccessToken(token);
-    verifyQueryParamValueMatchesBodyValue(req, 'schoolID', 'schoolId');
-    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
-    checkIfActionOnOffshoreSchool(req.params.schoolID);
-
     const payload = req.body;
 
     payload.addresses.forEach(function(addy) {
@@ -97,7 +90,8 @@ async function updateSchool(req, res){
     payload.grades = gradesObjectArray;
     payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
-    const result = await putData(token, payload, config.get('institute:rootURL') + '/school/' + payload.schoolId, req.session?.correlationID);
+    const token = getAccessToken(req);
+    const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${payload.schoolId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateSchool', 'Error occurred while attempting to update a school.');
@@ -107,14 +101,6 @@ async function updateSchool(req, res){
 
 async function addSchoolContact(req, res) {
   try {
-    const token = getAccessToken(req);
-    validateAccessToken(token, res);
-
-    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
-    checkIfActionOnOffshoreSchool(req.params.schoolID);
-
-    const url = `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`;
-
     const payload = {
       schoolContactTypeCode: req.body.schoolContactTypeCode,
       firstName: req.body.firstName,
@@ -131,7 +117,8 @@ async function addSchoolContact(req, res) {
       updateUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
 
-    const data = await postData(token, payload, url, req.session?.correlationID);
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
@@ -142,12 +129,6 @@ async function addSchoolContact(req, res) {
 
 async function updateSchoolContact(req, res) {
   try {
-    const token = getAccessToken(req);
-    validateAccessToken(token, res);
-
-    checkEDXUserAccessForSchoolEditFunctions(req, req.body.schoolID);
-    checkIfActionOnOffshoreSchool(req.body.schoolID);
-
     const params = req.body;
     params.updateDate = null;
     params.createDate = null;
@@ -155,6 +136,7 @@ async function updateSchoolContact(req, res) {
     params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
     params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
 
+    const token = getAccessToken(req);
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -166,12 +148,7 @@ async function updateSchoolContact(req, res) {
 async function removeSchoolContact(req, res) {
   try {
     const token = getAccessToken(req);
-    validateAccessToken(token, res);
-
-    checkEDXUserAccessForSchoolEditFunctions(req, req.params.schoolID);
-
     const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
-
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);
@@ -204,20 +181,15 @@ function checkSchoolBelongsToDistrict(req, res) {
   if (!req.params.schoolID) {
     return res.status(200).json(false);
   }
-
-  try{
-    checkSchoolBelongsToEDXUserDistrict(req, req.params.schoolID);
-    return res.status(200).json(true);
-  }catch(e){
+  if (req.session.activeInstituteType !== 'DISTRICT') {
     return res.status(200).json(false);
   }
+  let schoolBelongsToEdxDistrictUser = doesSchoolBelongToDistrict(req.params.schoolID, req.session.activeInstituteIdentifier);
+  return res.status(200).json(schoolBelongsToEdxDistrictUser);
 }
 
 async function getFullSchoolDetails(req, res){
   const token = getAccessToken(req);
-  validateAccessToken(token);
-  checkEDXUserCanViewSchoolData(req, req.params.schoolID);
-
   return Promise.all([
     getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
   ])
@@ -230,12 +202,8 @@ async function getFullSchoolDetails(req, res){
 }
 
 async function getAllSchoolDetails(req, res){
-  const token = getAccessToken(req);
-  validateAccessToken(token);
-  checkEDXUserAccess(req, 'DISTRICT', req.query.searchParams.districtID);
-
   return Promise.all([
-    getSchoolsPaginated(req, res)
+    getSchoolsPaginated(req)
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
@@ -245,11 +213,7 @@ async function getAllSchoolDetails(req, res){
     });
 }
 
-async function getSchoolsPaginated(req, res){
-
-  const accessToken = getAccessToken(req);
-  validateAccessToken(accessToken, res);
-
+async function getSchoolsPaginated(req){
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getSchoolsPaginated error: User activeInstituteIdentifier does not exist in session');
   }
@@ -270,7 +234,8 @@ async function getSchoolsPaginated(req, res){
     }
   };
 
-  return getDataWithParams(accessToken, config.get('institute:rootURL') + '/school/paginated', schoolSearchParam, req.session?.correlationID);
+  const accessToken = getAccessToken(req);
+  return getDataWithParams(accessToken, `${config.get('institute:rootURL')}/school/paginated`, schoolSearchParam, req.session?.correlationID);
 }
 
 function createSchoolSearchCriteria(searchParams){
@@ -310,22 +275,6 @@ function createSchoolSearchCriteria(searchParams){
   });
 
   return searchCriteriaList;
-}
-
-function validateAccessToken(token, res) {
-  if (!token) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'No access token'
-    });
-  }
-}
-function checkIfActionOnOffshoreSchool(schoolID) {
-  const school = cacheService.getSchoolBySchoolID(schoolID);
-
-  if(school.schoolCategoryCode === 'OFFSHORE') {
-    log.error('User cannot edit contacts for an offshore school.');
-    throw new Error('403');
-  }
 }
 
 module.exports = {

@@ -64,12 +64,6 @@ async function deleteData(token, url, correlationID) {
 async function forwardGetReq(req, res, url) {
   try {
     const accessToken = getAccessToken(req);
-    if (!accessToken) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'No access token'
-      });
-    }
-
     const params = {
       params: req.query
     };
@@ -259,10 +253,7 @@ function getCodeTable(token, key, url, useCache = true) {
 function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   return async function getCodesHandler(req, res) {
     try {
-      const token = getBackendToken(req);
-      if (!token) {
-        return unauthorizedError(res);
-      }
+      const token = getAccessToken(req);
       const url = config.get(urlKey);
       const codes = await getCodeTable(token, cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
 
@@ -273,114 +264,6 @@ function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
       return errorResponse(res);
     }
   };
-}
-
-function getBackendToken(req) {
-  const thisSession = req.session;
-  return thisSession && thisSession['passport'] && thisSession['passport'].user && thisSession['passport'].user.jwt;
-}
-function unauthorizedError(res) {
-  return res.status(HttpStatus.UNAUTHORIZED).json({
-    message: 'No access token'
-  });
-}
-
-function checkEDXUserHasPermission(req, permission) {
-  let hasPermission = req.session.activeInstitutePermissions.includes(permission);
-  if (!hasPermission) {
-    throw new Error('403');
-  }
-}
-
-function checkEDXUserSchoolAdminPermission(req) {
-  checkEDXUserHasPermission(req, 'EDX_USER_SCHOOL_ADMIN');
-}
-
-function checkEDXUserDistrictAdminPermission(req) {
-  checkEDXUserHasPermission(req, 'EDX_USER_DISTRICT_ADMIN');
-}
-
-function checkEDXCollectionPermission(req) {
-  let permission = req.session.activeInstitutePermissions.includes('SCHOOL_SDC');
-  if (!permission) {
-    throw new Error('403');
-  }
-}
-
-function checkEDXUserAccess(req, instituteType, instituteIdentifier) {
-  if (req.session.activeInstituteIdentifier !== instituteIdentifier || req.session.activeInstituteType !== instituteType) {
-    throw new Error('403');
-  }
-}
-
-function checkSchoolBelongsToEDXUserDistrict(req, schoolID) {
-  const cacheService = require('./cache-service');
-
-  let school = cacheService.getSchoolBySchoolID(schoolID);
-
-  if (req.session.activeInstituteType !== 'DISTRICT') {
-    log.warn('checkSchoolBelongstoEDXUserDistrict should only be used for District EDX users');
-  }
-
-  if (!school) {
-    log.error('unable to find school checkEDXUserSchoolBelongsToDistrict');
-    throw new Error('404');
-  }
-
-  if (school.districtID !== req.session.activeInstituteIdentifier) {
-    throw new Error('403');
-  }
-}
-
-/**
- * Verify that a query param and request body param are both present and match
- * each-other in value.
- *
- * @param {Express.Request} req
- * @param {String} paramKey
- * @param {String} bodyKey
- * @throws Bad Request
- */
-function verifyQueryParamValueMatchesBodyValue(req, paramKey, bodyKey) {
-  if (!req?.params?.[paramKey]
-    || !req?.body?.[bodyKey]
-    || req.params[paramKey] !== req.body[bodyKey]) throw new Error('400');
-}
-
-/**
- * Helper function that combines all the permissions and security checks for
- * school admin operations. ex. editing school details.
- * @param {Object} req
- * @param {String} instituteIdentifier - SchoolID or DistrictID
- * @returns void
- * @throws Error
- */
-function checkEDXUserAccessForSchoolAdminFunctions(req, instituteIdentifier) {
-  checkEDXUserSchoolAdminPermission(req);
-
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
-}
-
-function checkEDXUserCanViewSchoolData(req, instituteIdentifier) {
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
-}
-
-function checkEDXUserAccessForSchoolEditFunctions(req, instituteIdentifier) {
-  checkEDXUserHasPermission(req, 'EDX_SCHOOL_EDIT');
-
-  if (req.session.activeInstituteType === 'SCHOOL') {
-    checkEDXUserAccess(req, 'SCHOOL', instituteIdentifier);
-  } else {
-    checkSchoolBelongsToEDXUserDistrict(req, instituteIdentifier);
-  }
 }
 
 async function logApiError(e, functionName, message) {
@@ -434,16 +317,7 @@ const utils = {
   handleExceptionResponse,
   getCodes,
   getCodeTable,
-  checkEDXUserDistrictAdminPermission,
-  checkEDXUserAccess,
-  checkSchoolBelongsToEDXUserDistrict,
-  checkEDXUserAccessForSchoolAdminFunctions,
-  checkEDXUserAccessForSchoolEditFunctions,
-  checkEDXUserCanViewSchoolData,
-  checkEDXUserHasPermission,
-  verifyQueryParamValueMatchesBodyValue,
   logApiError,
-  checkEDXCollectionPermission,
   isPdf,
   isImage
 };
