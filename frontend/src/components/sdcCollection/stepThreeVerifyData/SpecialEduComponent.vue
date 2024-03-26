@@ -35,7 +35,7 @@
     </div>
     <div v-if="reportView === 'summary'">
       <SummaryComponent
-        :headcount-type="config.headcountEndpoint"
+        :headcount-type="config.summaryReport"
       />
     </div>
   </v-container>
