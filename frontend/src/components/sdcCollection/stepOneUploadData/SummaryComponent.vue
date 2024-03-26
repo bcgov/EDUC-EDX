@@ -132,17 +132,17 @@ export default defineComponent({
   computed: {
     config() {
       if(this.selectedTab==='Overall') {
-        return FTE;
+        return FTE.summaryReport[0].endpoint;
       } else if(this.selectedTab==='French Programs') {
-        return FRENCH_PR;
+        return FRENCH_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='Career Programs') {
-        return CAREER_PR;
+        return CAREER_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='Special Education') {
-        return SPECIALED_PR;
+        return SPECIALED_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='Indigenous Students & Support Programs') {
-        return INDSUPPORT_PR;
+        return INDSUPPORT_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='English Language Learning') {
-        return ELL;
+        return ELL.summaryReport[0].endpoint;
       }
       return null;
     }
@@ -162,7 +162,7 @@ export default defineComponent({
       this.headcountTableData = {};
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
         params: {
-          type: this.config?.headcountEndpoint,
+          type: this.config,
           compare: this.compareSwitch
         }
       }).then(response => {
