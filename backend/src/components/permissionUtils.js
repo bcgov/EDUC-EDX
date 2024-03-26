@@ -142,12 +142,12 @@ function conflictActionOnClosedSecureExchange(req, res, next) {
 function checkSdcSchoolCollectionAccess(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'The requested SDC School Collection wasn\'t found in the request.'
+      message: 'The requested SDC School Collection was not found in the request.'
     });
   }
   if (req.session.activeInstituteType !== 'SCHOOL' || res.locals.requestedSdcSchoolCollection.schoolID !== req.session.activeInstituteIdentifier) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
-      message: 'User doesn\'t have access to the requested Secure Exchange.'
+      message: 'User does not have access to the requested Secure Exchange.'
     });
   }
   return next();
