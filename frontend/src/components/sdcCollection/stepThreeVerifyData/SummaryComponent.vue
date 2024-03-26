@@ -16,26 +16,9 @@
   </v-row>
 
   <div v-else>
-    <v-row
-      justify="end"
-      class="mb-n6"
-    >
-      <v-col>
-        <v-switch
-          id="compare-switch"
-          v-model="compareSwitch"
-          color="primary"
-          label="compare to previous September Collection"
-          style="justify-items: right;"
-          @update:model-value="compare()"
-        />
-      </v-col>
-    </v-row>
-
     <v-row class="mt-n6">
       <v-spacer />
       <v-slide-group
-          v-if="showHeadcountHeaders"
         class="py-4"
         show-arrows
       >
@@ -45,11 +28,11 @@
         >
           <v-col>
             <v-card
-              :class="`${headcountType}-headcount-card`"
+              :class="`${reportType}-headcount-card`"
               height="100%"
             >
               <v-card-item class="pb-0">
-                <v-card-title :class="`${headcountType}-headcount-header column-header`">
+                <v-card-title :class="`${reportType}-headcount-header column-header`">
                   {{ header.title }}
                 </v-card-title>
               </v-card-item>
@@ -62,29 +45,29 @@
                     v-for="(key, idx) in header.orderedColumnTitles"
                     :key="idx"
                   >
-                    <v-col :class="`${headcountType}-headcount-column-data column-data`">
+                    <v-col :class="`${reportType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
                       <span
-                        v-if="header.columns[key].comparisonValue !== null"
+                        v-if="header?.columns[key]?.comparisonValue !== null"
                         class="compare-text"
                       >
-                        {{ header.columns[key].comparisonValue }}
+                        {{ header?.columns[key]?.comparisonValue }}
                       </span>
-                      <span v-if="header.columns[key].comparisonValue !== null">
+                      <span v-if="header?.columns[key]?.comparisonValue !== null">
                         <v-icon
                           size="x-small"
-                          :color="getStatusColor(header.columns[key].comparisonValue, header.columns[key].currentValue)"
+                          :color="getStatusColor(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue)"
                         >
-                          {{ getComparisonIcon(header.columns[key].comparisonValue, header.columns[key].currentValue) }}
+                          {{ getComparisonIcon(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue) }}
                         </v-icon>
 
                       </span>
                       <span>
-                        {{ header.columns[key].currentValue }}
+                        {{ header?.columns[key]?.currentValue }}
                       </span>
                     </v-col>
                     <v-divider
-                      v-if="idx !== header.orderedColumnTitles.length - 1"
+                      v-if="idx !== header?.orderedColumnTitles?.length - 1"
                       class="my-4"
                       :vertical="true"
                     />
@@ -93,7 +76,7 @@
                 <v-row
                   v-else
                 >
-                  <v-col :class="`${headcountType}-headcount-column-data column-data`">
+                  <v-col :class="`${reportType}-headcount-column-data column-data`">
                     <span
                       v-if="header?.headCountValue?.comparisonValue"
                       class="compare-text"
@@ -119,6 +102,34 @@
       <v-spacer />
     </v-row>
   </div>
+
+  <v-row align-content="space-between">
+    <v-col cols="5">
+      <v-select
+        id="reports"
+        v-model="reportType"
+        :items="headcountType"
+        item-value="endpoint"
+        item-title="title"
+        label="Reports"
+        variant="underlined"
+        @update:model-value="getStudentHeadCounts()"
+      />
+    </v-col>
+
+    <v-col>
+        <v-switch
+          id="compare-switch"
+          v-model="compareSwitch"
+          color="primary"
+          label="compare to previous September Collection"
+          style="justify-items: right;"
+          @update:model-value="compare()"
+        />
+      </v-col>
+    
+  </v-row>
+
   <v-row align-content="space-between">
     <v-col class="font-weight-bold">
       {{ getTitle() }}
@@ -133,9 +144,11 @@
       </router-link>
     </v-col>
   </v-row>
+
   <slot
     name="reports"
     :data="headcountTableData"
+    :report-type="reportType"
   >
     <HeadCountReportComponent
       v-if="headcountTableData"
@@ -159,12 +172,8 @@ export default {
   mixins: [alertMixin],
   props: {
     headcountType: {
-      type: String,
+      type: Array,
       required: true,
-    },
-    showHeadcountHeaders: {
-      type: Boolean,
-      default: true
     }
   },
   emits: [],
@@ -174,12 +183,22 @@ export default {
       headcountHeaders: [],
       headcountTableData: null,
       compareSwitch: false,
+      reportType: null
     };
   },
   mounted() {
-    this.getStudentHeadCounts();
+    
   },
   created() {
+  },
+  watch: {
+    headcountType: {
+      handler() {
+        this.reportType = this.headcountType[0]?.endpoint;
+        this.getStudentHeadCounts();
+      },
+      immediate: true
+    }
   },
   methods: {
     getComparisonIcon,
@@ -188,7 +207,7 @@ export default {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
         params: {
-          type: this.headcountType,
+          type: this.reportType,
           compare: this.compareSwitch
         }
       }).then(response => {
@@ -202,25 +221,10 @@ export default {
       });
     },
     downloadReportURL() {
-      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.headcountType}/download`;
+      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.reportType}/download`;
     },
     getTitle() {
-      switch (this.headcountType) {
-      case 'career':
-        return 'Eligible Career Program Headcount';
-      case 'french':
-        return 'Eligible French Program Headcount';
-      case 'enrollment':
-        return 'Grade Enrolment & Eligible FTE';
-      case 'ell':
-        return 'Eligible English Language Learning Headcount';
-      case 'special-ed':
-        return 'Eligible Special Education Headcount';
-      case 'indigenous':
-        return 'Eligible Indigenous Support Program Headcount';
-      case 'band-codes':
-        return 'Eligible Band of Residence Headcount';
-      }
+      return this.headcountType.find(type => type.endpoint === this.reportType).title;
     },
     compare() {
       this.getStudentHeadCounts();
