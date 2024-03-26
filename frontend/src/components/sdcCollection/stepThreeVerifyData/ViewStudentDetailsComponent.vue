@@ -154,6 +154,7 @@ export default {
     },
     save() {
       this.saveStudent =true;
+      this.programEligibilityData.splice(0);
     },
     cancel() {
       this.$emit('close');
