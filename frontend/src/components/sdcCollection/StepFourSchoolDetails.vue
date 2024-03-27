@@ -19,7 +19,7 @@
     <SchoolDetailsForm
       :function-name="type"
       :schoolCollectionObject="schoolCollectionObject"
-      :current-step="4"
+      :is-step-four="true"
       @is-form-valid="checkFormValidity"
       @edit-toggled="toggleBanner"
       @update-is-offshore="handleIsOffshoreSchool"

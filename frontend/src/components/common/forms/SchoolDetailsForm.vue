@@ -5,7 +5,7 @@
   >
     <v-container fluid>
       <v-row
-        v-if="!loading && ![4, 5].includes(currentStep) && (editing || isOffshoreSchool)"
+        v-if="!loading && !isStepFour && (editing || isOffshoreSchool)"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -1040,10 +1040,10 @@ export default {
       required: false,
       default: null
     },
-    currentStep: {
-      type: Number,
+    isStepFour: {
+      type: Boolean,
       required: false,
-      default: null
+      default: false
     }
   },
   emits: ['is-form-valid', 'edit-toggled', 'update-is-offshore'],
