@@ -101,12 +101,12 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import PrimaryButton from '../../util/PrimaryButton.vue';
+import alertMixin from '../../../../mixins/alertMixin';
+import PrimaryButton from '../../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import { appStore } from '../../../store/modules/app';
-import { SDC_VERIFY_TABS } from '../../../utils/sdc/SdcVerifyTabs';
+import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
+import { appStore } from '../../../../store/modules/app';
+import { SDC_VERIFY_TABS } from '../../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
@@ -114,8 +114,8 @@ import SpecialEduComponent from './SpecialEduComponent.vue';
 import EnglishLangComponent from './EnglishLangComponent.vue';
 import RefugeeComponent from './RefugeeComponent.vue';
 import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 
 export default {
   name: 'StepThreeVerifyData',

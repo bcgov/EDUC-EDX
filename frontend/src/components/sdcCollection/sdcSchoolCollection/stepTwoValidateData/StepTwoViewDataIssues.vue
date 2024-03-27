@@ -333,13 +333,13 @@
 
 <script>
 
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 import {isEmpty, omitBy} from 'lodash';
-import Spinner from '../../common/Spinner.vue';
-import PrimaryButton from '../../util/PrimaryButton.vue';
-import {setFailureAlert} from '../../composable/alertComposable';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import Spinner from '../../../common/Spinner.vue';
+import PrimaryButton from '../../../util/PrimaryButton.vue';
+import {setFailureAlert} from '../../../composable/alertComposable';
+import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
 import EditAndFixStudentData from './EditAndFixStudentData.vue';
 
 export default {

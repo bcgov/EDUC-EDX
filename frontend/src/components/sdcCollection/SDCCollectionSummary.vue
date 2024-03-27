@@ -101,7 +101,7 @@ import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
-import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
+import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
 import {LocalDateTime} from '@js-joda/core';
 import {getDateFormatter} from '../../utils/format';
 
@@ -112,9 +112,12 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    districtID: {
+      type: String,
+      default: null
+    },
     schoolID: {
       type: String,
-      required: true,
       default: null
     }
   },
@@ -122,28 +125,43 @@ export default {
     return {
       noOfStepsCompleted: 0,
       incomingChartData: null,
-      schoolCollectionID: null,
+      instituteCollectionID: null,
       isLoading: false,
       currentStepIndex: 0,
       toFormatter: getDateFormatter('uuuu/MM/dd'),
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'totalStepsInCollection', 'currentStepInCollectionProcess','currentCollectionYear'])
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'currentStepInCollectionProcess','currentCollectionYear']),
+    totalStepsInCollection() {
+      if(this.schoolID) {
+        return SDC_STEPS_SCHOOL.length;
+      } else {
+        return SDC_STEPS_DISTRICT.length;
+      }
+    }
   },
   created() {
-    this.getSDCCollectionBySchoolId();
+    if(this.schoolID) {
+      this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`);
+    } else {
+      this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + `/${this.$route.params.districtID}`);
+    }
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData', 'setCurrentCollectionYear']),
     startCollection() {
-      router.push({name: 'sdcCollection', params: {schoolCollectionID: this.schoolCollectionID}});
+      if(this.schoolID) {
+        router.push({name: 'sdcCollection', params: {schoolCollectionID: this.instituteCollectionID}});
+      } else {
+        router.push({name: 'sdcDistrictCollection', params: {districtCollectionID: this.instituteCollectionID}});
+      }
     },
     backToDashboard() {
       this.$router.push({name: 'home'});
     },
     isCollectionOpen() {
-      return this.schoolCollectionID !== null;
+      return this.instituteCollectionID !== null;
     },
     calculateStep() {
       if(this.currentStepIndex <= 6) {
@@ -151,13 +169,14 @@ export default {
       }
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
     },
-    getSDCCollectionBySchoolId() {
+    getSDCCollectionByInstituteId(url) {
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`).then(response => {
+      ApiService.apiAxios.get(url).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-          this.schoolCollectionID = response.data.sdcSchoolCollectionID;
-          this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(response.data.sdcSchoolCollectionStatusCode);
+          this.instituteCollectionID = response.data.sdcDistrictCollectionID ? response.data.sdcDistrictCollectionID : response.data.sdcSchoolCollectionID;
+          const instituteStatusCode = response.data.sdcDistrictCollectionStatusCode ? response.data.sdcDistrictCollectionStatusCode : response.data.sdcSchoolCollectionStatusCode;
+          this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(instituteStatusCode);
           this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
           this.calculateStep();
         }
@@ -168,8 +187,12 @@ export default {
         this.isLoading = false;
       });
     },
-    getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
+    getIndexOfSDCCollectionByStatusCode(statusCode) {
+      if(this.schoolID) {
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.step;
+      } else {
+        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.step;
+      }
     }
   }
 };

@@ -41,14 +41,14 @@
 </template>
   
 <script>
-import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
-import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
-import {isContactCurrent} from '../../utils/institute/status';
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import SchoolContactsForm from '../../common/forms/SchoolContactsForm.vue';
+import {isContactCurrent} from '../../../utils/institute/status';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
-import ApiService from '../../common/apiService';
-import { ApiRoutes } from '../../utils/constants';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import ApiService from '../../../common/apiService';
+import { ApiRoutes } from '../../../utils/constants';
   
 export default {
   name: 'StepFiveSchoolContacts',

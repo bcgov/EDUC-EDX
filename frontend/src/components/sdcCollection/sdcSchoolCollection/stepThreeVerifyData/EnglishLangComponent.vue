@@ -1,6 +1,6 @@
 <template>
   <v-container
-    id="frenchTab"
+    id="engLangTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
@@ -15,7 +15,7 @@
           Detail View
         </v-btn>
         <v-btn
-          id="frenchSummaryButton"
+          id="engLangSummaryButton"
           size="large"
           class="summary-button"
           :class="{ 'active-button': reportView === 'summary' }"
@@ -25,7 +25,7 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-  
+
     <div v-if="reportView === 'detail'">
       <DetailComponent
         :config="config"
@@ -39,18 +39,18 @@
     </div>
   </v-container>
 </template>
-    
+
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { FRENCH_PR } from '../../../utils/sdc/TableConfiguration';
 import SummaryComponent from './SummaryComponent.vue';
-  
+import { ELL } from '../../../../utils/sdc/TableConfiguration';
+
 export default {
-  name: 'FrenchProgramsComponent',
+  name: 'EnglishLangComponent',
   components: {
-    SummaryComponent,
-    DetailComponent
+    DetailComponent,
+    SummaryComponent
   },
   mixins: [alertMixin],
   props: {
@@ -64,12 +64,11 @@ export default {
   data() {
     return {
       reportView: 'detail',
-      config: FRENCH_PR
-
+      config: ELL
     };
   },
   computed: {
-    
+
   },
   created() {
   },
@@ -81,7 +80,7 @@ export default {
     showSummary() {
       this.reportView = 'summary';
     }
-   
+
   }
 };
 </script>
@@ -90,16 +89,14 @@ export default {
 .detail-button {
   border: 1px solid lightgray;
 }
+
 .summary-button {
   border: 1px solid lightgray;
 }
+
 .active-button {
   background-color: #003366 !important;
   color: white !important;
   border: 1px solid #003366;
 }
 </style>
-      
-      
-    
-  

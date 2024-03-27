@@ -96,9 +96,9 @@
 <script>
 import {defineComponent} from 'vue';
 import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComponent.vue';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
-import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../utils/sdc/TableConfiguration';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../../utils/sdc/TableConfiguration';
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';

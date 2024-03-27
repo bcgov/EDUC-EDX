@@ -52,10 +52,10 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
 import {defineComponent} from 'vue';
-import {getComparisonIcon, getStatusColor} from '../../../utils/common';
+import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
 
 export default defineComponent({
   name: 'EnrollmentHeadcountsComponent',
@@ -71,7 +71,7 @@ export default defineComponent({
   data() {
     return {
       rows: ['Under School Aged', 'School Aged', 'Adult', 'All Students']
-    }
+    };
   },
   methods: {
     getComparisonIcon,

@@ -158,11 +158,11 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
+import alertMixin from '../../../../mixins/alertMixin';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 import HeadCountReportComponent from './HeadCountReportComponent.vue';
-import {getComparisonIcon, getStatusColor} from '../../../utils/common';
+import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
  
 export default {
   name: 'SummaryComponent',
