@@ -6,15 +6,19 @@
           density="compact"
           type="info"
           variant="tonal"
-          text="Please review and verify that the details on the record for the school are accurate."
-        />
+        >
+          <span>Please review and verify that the details on the record for the school are accurate.</span>
+          <span v-if="isOffshoreSchool"> Require updates to school details? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
+        </v-alert>
       </v-col>
     </v-row>
 
     <SchoolContactsForm
       :function-name="type"
       :schoolCollectionObject="schoolCollectionObject"
+      :is-step-five="true"
       @school-contacts="checkIfPrincipalContactExists"
+      @update-is-offshore="handleIsOffshoreSchool"
     />
   </div>
 
@@ -49,7 +53,8 @@ import { mapState } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
-  
+import {MINISTRY_CONTACTS} from '../../utils/constants/MinistryContactsInfo';
+
 export default {
   name: 'StepFiveSchoolContacts',
   components: {
@@ -73,7 +78,9 @@ export default {
     return {
       isDisabled: false,
       type: 'SDC',
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      isOffshoreSchool: false,
+      MINISTRY_CONTACTS: MINISTRY_CONTACTS
     };
   },
   computed: {
@@ -111,6 +118,9 @@ export default {
       } else {
         this.isDisabled = true;
       }
+    },
+    handleIsOffshoreSchool(isOffshore) {
+      this.isOffshoreSchool = isOffshore;
     }
   }
 };

@@ -14,7 +14,7 @@
     </v-row>
     <template v-if="!isLoading">
       <v-row
-        v-if="isOffshoreSchool"
+        v-if="isOffshoreSchool && !isStepFive"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -220,8 +220,13 @@ export default {
       required: false,
       default: null
     },
+    isStepFive: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
-  emits: ['school-contacts'],
+  emits: ['school-contacts', 'update-is-offshore'],
   data() {
     return {
       loadingCount: 0,
@@ -245,7 +250,9 @@ export default {
       return this.loadingCount !== 0;
     },
     isOffshoreSchool(){
-      return this.offshoreArray.includes(this.school.schoolCategoryCode);
+      const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      this.$emit('update-is-offshore', isOffshore);
+      return isOffshore;
     }
   },
   watch: {
