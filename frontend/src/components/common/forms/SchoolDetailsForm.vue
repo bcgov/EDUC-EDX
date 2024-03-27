@@ -5,7 +5,7 @@
   >
     <v-container fluid>
       <v-row
-        v-if="!loading && !isStepFour && (editing || isOffshoreSchool)"
+        v-if="!loading && functionName !== 'SDC' && (editing || isOffshoreSchool)"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -1040,11 +1040,6 @@ export default {
       required: false,
       default: null
     },
-    isStepFour: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
   },
   emits: ['is-form-valid', 'edit-toggled', 'update-is-offshore'],
   data() {

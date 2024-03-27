@@ -14,7 +14,7 @@
     </v-row>
     <template v-if="!isLoading">
       <v-row
-        v-if="isOffshoreSchool && !isStepFive"
+        v-if="isOffshoreSchool && functionName !== 'SDC'"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -220,11 +220,6 @@ export default {
       required: false,
       default: null
     },
-    isStepFive: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
   },
   emits: ['school-contacts', 'update-is-offshore'],
   data() {
