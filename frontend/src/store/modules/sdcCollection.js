@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
@@ -12,8 +11,8 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentStepInCollectionProcess: null,
     currentCollectionTypeCode: null,
     currentCollectionYear: null,
-    totalStepsInCollection: SDC_STEPS_SCHOOL.length,
     schoolCollection: null,
+    districtCollection: null,
     bandCodesMap: new Map(),
     bandCodes: [],
     careerProgramCodesMap: new Map(),
@@ -39,8 +38,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     supportBlocksValidNumbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8']
   }),
   getters: {
-    getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode,
-    getTotalStepsInCollection: state => state.totalStepsInCollection,
+    getCurrentCollectionTypeCode: state => state.currentCollectionTypeCode
   },
   actions: {
     setHideStepper(hideStepper) {
@@ -54,6 +52,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionYear(currentCollectionYear) {
       this.currentCollectionYear = currentCollectionYear;
+    },
+    setDistrictCollection(districtCollection) {
+      this.districtCollection = districtCollection;
     },
     setSchoolCollection(schoolCollection) {
       this.schoolCollection = schoolCollection;
@@ -152,8 +153,14 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     async getSchoolCollection(schoolCollectionId) {
-      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.BASE_URL + '/' + schoolCollectionId);
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/' + schoolCollectionId);
       this.setSchoolCollection(response.data);
+      this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+      this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
+    },
+    async getDistrictCollection(districtCollectionId) {
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/' + districtCollectionId);
+      this.setDistrictCollection(response.data);
       this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
       this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
     },

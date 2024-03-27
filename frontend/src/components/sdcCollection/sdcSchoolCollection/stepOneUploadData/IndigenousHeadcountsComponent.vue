@@ -57,10 +57,10 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import {v4 as uuidv4} from 'uuid';
 import {defineComponent} from 'vue';
-import {getComparisonIcon, getStatusColor} from '../../../utils/common';
+import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
 
 export default defineComponent({
   name: 'IndigenousHeadcountsComponent',

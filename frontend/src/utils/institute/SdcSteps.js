@@ -41,3 +41,18 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     sdcSchoolCollectionStatusCode: 'SUBMITTED'
   },
 ]);
+
+export const SDC_STEPS_DISTRICT = Object.freeze([
+  {
+    id: 'step-1',
+    title: 'Upload Data',
+    step: 1,
+    sdcDistrictCollectionStatusCode: 'NEW'
+  },
+  {
+    id: 'step-2',
+    title: 'Monitor School Submissions',
+    step: 2,
+    sdcDistrictCollectionStatusCode: 'MONITORING'
+  },
+]);

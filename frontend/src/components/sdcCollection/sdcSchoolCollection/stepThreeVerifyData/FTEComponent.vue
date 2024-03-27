@@ -1,6 +1,6 @@
 <template>
   <v-container
-    id="refugeeTab"
+    id="enrollmentTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
@@ -15,7 +15,7 @@
           Detail View
         </v-btn>
         <v-btn
-          id="refugeeSummaryButton"
+          id="fteSummaryButton"
           size="large"
           class="summary-button"
           :class="{ 'active-button': reportView === 'summary' }"
@@ -25,25 +25,32 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-  
+
     <div v-if="reportView === 'detail'">
       <DetailComponent
-        :config="config"
         :school="school"
+        :config="config"
+      />
+    </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.summaryReport"
       />
     </div>
   </v-container>
 </template>
-    
+
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { REFUGEE } from '../../../utils/sdc/TableConfiguration';
-  
+import SummaryComponent from './SummaryComponent.vue';
+import { FTE } from '../../../../utils/sdc/TableConfiguration';
+
 export default {
-  name: 'RefugeeComponent',
+  name: 'FTEComponent',
   components: {
-    DetailComponent
+    DetailComponent,
+    SummaryComponent
   },
   mixins: [alertMixin],
   props: {
@@ -57,12 +64,12 @@ export default {
   data() {
     return {
       reportView: 'detail',
-      config: REFUGEE
+      config: FTE
 
     };
   },
   computed: {
-    
+
   },
   created() {
   },
@@ -74,7 +81,7 @@ export default {
     showSummary() {
       this.reportView = 'summary';
     }
-   
+
   }
 };
 </script>
@@ -94,7 +101,3 @@ export default {
   border: 1px solid #003366;
 }
 </style>
-      
-      
-    
-  

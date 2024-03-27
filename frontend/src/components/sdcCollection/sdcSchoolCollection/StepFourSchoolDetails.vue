@@ -45,13 +45,13 @@
 </template>
   
 <script>
-import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
-import SchoolDetailsForm from '../common/forms/SchoolDetailsForm.vue';
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import SchoolDetailsForm from '../../common/forms/SchoolDetailsForm.vue';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
-import ApiService from '../../common/apiService';
-import { ApiRoutes } from '../../utils/constants';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import ApiService from '../../../common/apiService';
+import { ApiRoutes } from '../../../utils/constants';
 
 export default {
   name: 'StepFourSchoolDetails',

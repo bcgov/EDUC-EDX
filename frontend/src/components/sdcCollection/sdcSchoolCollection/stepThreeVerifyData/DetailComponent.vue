@@ -146,17 +146,17 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import CustomTable from '../../common/CustomTable.vue';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
+import alertMixin from '../../../../mixins/alertMixin';
+import CustomTable from '../../../common/CustomTable.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {mapState} from 'pinia';
-import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
-import {enrolledProgram} from '../../../utils/sdc/enrolledProgram';
-import Filters from '../../common/Filters.vue';
-import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
-import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {enrolledProgram} from '../../../../utils/sdc/enrolledProgram';
+import Filters from '../../../common/Filters.vue';
+import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import ViewStudentDetailsComponent from './ViewStudentDetailsComponent.vue';
 import AddStudentDetails from './AddStudentDetails.vue';
 

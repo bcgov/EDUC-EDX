@@ -158,8 +158,8 @@
 
 <script>
 import {mapState} from 'pinia';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
-import {SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import {SDC_STEPS_SCHOOL} from '../../../utils/institute/SdcSteps';
 
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
