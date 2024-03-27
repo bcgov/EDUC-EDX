@@ -5,7 +5,7 @@
   >
     <v-container fluid>
       <v-row
-        v-if="!loading && (editing || isOffshoreSchool)"
+        v-if="!loading && ![4, 5].includes(currentStep) && (editing || isOffshoreSchool)"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -1040,8 +1040,13 @@ export default {
       required: false,
       default: null
     },
+    currentStep: {
+      type: Number,
+      required: false,
+      default: null
+    }
   },
-  emits: ['is-form-valid', 'edit-toggled'],
+  emits: ['is-form-valid', 'edit-toggled', 'update-is-offshore'],
   data() {
     return {
       school: '',
@@ -1097,7 +1102,9 @@ export default {
       return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
     isOffshoreSchool(){
-      return this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      this.$emit('update-is-offshore', isOffshore);
+      return isOffshore;
     },
     schoolReportingRequirementType() {
       const code = this.school.schoolReportingRequirementCode;

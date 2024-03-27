@@ -276,7 +276,6 @@ export default {
           this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
           this.loading = false;
-          console.log('authority: ', this.authority);
         });
     }
   }
