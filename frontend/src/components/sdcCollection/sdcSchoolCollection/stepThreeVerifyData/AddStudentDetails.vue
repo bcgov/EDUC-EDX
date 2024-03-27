@@ -48,9 +48,9 @@
 </template>
     
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import EditStudent from '../../common/EditStudent.vue';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import alertMixin from '../../../../mixins/alertMixin';
+import EditStudent from '../../../common/EditStudent.vue';
+import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
     
 export default {
   name: 'AddStudentDetails',

@@ -24,10 +24,11 @@ import AccessDistrictUsersPage from './components/admin/DistrictUsersAccessPage.
 import ViewAllDistrictSchoolUsersPage from './components/admin/ViewAllDistrictSchoolUsersPage.vue';
 import DistrictDetails from './components/district/DistrictDetails.vue';
 import SDCCollectionSummary from './components/sdcCollection/SDCCollectionSummary.vue';
-import SDCCollectionView from './components/sdcCollection/SDCCollectionView.vue';
+import SDCCollectionView from './components/sdcCollection/sdcSchoolCollection/SDCCollectionView.vue';
 import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
 import ApiService from './common/apiService';
+import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -253,7 +254,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'open-collection-summary/:schoolID',
+          path: 'open-school-collection-summary/:schoolID',
           name: 'sdcCollectionSummary',
           component: SDCCollectionSummary,
           props: true,
@@ -272,6 +273,28 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
             permission: 'SCHOOL_SDC'
+          },
+        },
+        {
+          path: 'open-district-collection-summary/:districtID',
+          name: 'sdcDistrictCollectionSummary',
+          component: SDCCollectionSummary,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.SDC,
+            requiresAuth: true,
+            permission: 'DISTRICT_SDC'
+          },
+        },
+        {
+          path: 'open-district-collection-details/:districtCollectionID',
+          name: 'sdcDistrictCollection',
+          component: SDCDistrictCollectionView,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.SDC,
+            requiresAuth: true,
+            permission: 'DISTRICT_SDC'
           },
         }
       ]

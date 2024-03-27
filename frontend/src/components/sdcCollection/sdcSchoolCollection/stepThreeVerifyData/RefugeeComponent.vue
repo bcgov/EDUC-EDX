@@ -1,6 +1,6 @@
 <template>
   <v-container
-    id="careerTab"
+    id="refugeeTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
@@ -15,7 +15,7 @@
           Detail View
         </v-btn>
         <v-btn
-          id="careerSummaryButton"
+          id="refugeeSummaryButton"
           size="large"
           class="summary-button"
           :class="{ 'active-button': reportView === 'summary' }"
@@ -32,24 +32,17 @@
         :school="school"
       />
     </div>
-    <div v-if="reportView === 'summary'">
-      <SummaryComponent
-        :headcount-type="config.summaryReport"
-      />
-    </div>
   </v-container>
 </template>
     
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { CAREER_PR } from '../../../utils/sdc/TableConfiguration';
-import SummaryComponent from './SummaryComponent.vue';
+import { REFUGEE } from '../../../../utils/sdc/TableConfiguration';
   
 export default {
-  name: 'CareerProgramsComponent',
+  name: 'RefugeeComponent',
   components: {
-    SummaryComponent,
     DetailComponent
   },
   mixins: [alertMixin],
@@ -64,7 +57,7 @@ export default {
   data() {
     return {
       reportView: 'detail',
-      config: CAREER_PR
+      config: REFUGEE
 
     };
   },

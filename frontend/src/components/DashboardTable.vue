@@ -337,6 +337,47 @@
           </v-row>
         </v-card>
       </v-col>
+      <v-col
+        v-if="hasRequiredPermission('DISTRICT_SDC') && isLoggedInDistrictUser && !disableSdcFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="studentDataCollectionCard"
+          class="mx-auto"
+          width="25em"
+          outlined
+          rounded
+          @click="openSDCDistrictCollection()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-note-text-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.DATA_COLLECTION }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>{{ collectionDetail }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -425,6 +466,9 @@ export default {
       this.isSchoolActive();
     }
     if(this.isLoggedInDistrictUser){
+      if(this.hasRequiredPermission('DISTRICT_SDC') && !this.disableSdcFunctionality) {
+        this.getSDCCollectionByDistrictId();
+      }
       this.getDistrictsLastUpdateDate();
       this.getDistrictSchoolsLastUpdateDate();
       this.getDistrictContactsLastUpdate();
@@ -519,8 +563,26 @@ export default {
     openSDCCollection() {
       router.push({name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
+    openSDCDistrictCollection() {
+      router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}});
+    },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
+        if(response.data) {
+          this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';
+        } else {
+          this.collectionDetail = 'No open collections';
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.loadingTable = false;
+      });
+    },
+    getSDCCollectionByDistrictId() {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
           this.collectionDetail = capitalize(response.data.collectionTypeCode) + ' Collection is Open';

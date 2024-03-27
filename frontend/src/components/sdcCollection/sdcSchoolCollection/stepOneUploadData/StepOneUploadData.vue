@@ -223,17 +223,17 @@
 </template>
 
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import PrimaryButton from '../../util/PrimaryButton.vue';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
-import {getFileNameWithMaxNameLength} from '../../../utils/file';
+import alertMixin from '../../../../mixins/alertMixin';
+import PrimaryButton from '../../../util/PrimaryButton.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {getFileNameWithMaxNameLength} from '../../../../utils/file';
 import { mapState, mapActions } from 'pinia';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import Spinner from '../../common/Spinner.vue';
-import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
+import Spinner from '../../../common/Spinner.vue';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from '@js-joda/core';
-import {COLLECTIONCODETYPE} from '../../../utils/constants/CollectionCodeType';
+import {COLLECTIONCODETYPE} from '../../../../utils/constants/CollectionCodeType';
 import SummaryComponent from './SummaryComponent.vue';
 
 export default {

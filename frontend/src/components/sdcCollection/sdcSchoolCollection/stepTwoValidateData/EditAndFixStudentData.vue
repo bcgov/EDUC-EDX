@@ -67,8 +67,8 @@
 <script>
 
 
-import PrimaryButton from '../../util/PrimaryButton.vue';
-import EditStudent from '../../common/EditStudent.vue';
+import PrimaryButton from '../../../util/PrimaryButton.vue';
+import EditStudent from '../../../common/EditStudent.vue';
 
 export default {
   name: 'EditAndFixStudentData',

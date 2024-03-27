@@ -84,13 +84,13 @@
 </template>
   
 <script>
-import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
-import { appStore } from '../../store/modules/app';
-import ApiService from '../../common/apiService';
-import { ApiRoutes } from '../../utils/constants';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import { appStore } from '../../../store/modules/app';
+import ApiService from '../../../common/apiService';
+import { ApiRoutes } from '../../../utils/constants';
 
 export default {
   name: 'StepSixSubmitData',

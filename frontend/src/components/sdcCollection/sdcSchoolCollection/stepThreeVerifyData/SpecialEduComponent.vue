@@ -42,9 +42,9 @@
 </template>
     
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { SPECIALED_PR } from '../../../utils/sdc/TableConfiguration';
+import { SPECIALED_PR } from '../../../../utils/sdc/TableConfiguration';
 import SummaryComponent from './SummaryComponent.vue';
 
 export default {

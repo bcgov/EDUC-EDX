@@ -22,6 +22,21 @@ async function getCollectionBySchoolId(req, res) {
   }
 }
 
+async function getCollectionByDistrictId(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const data = await getData(token, `${config.get('sdc:districtCollectionURL')}/search/${req.params.districtID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting collection for this school', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
 async function uploadFile(req, res) {
   try {
     const payload = {
@@ -68,6 +83,17 @@ async function updateSchoolCollection(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getDistrictCollectionById(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const data = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error retrieving the district collection record', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -244,11 +270,18 @@ async function getStudentHeadcounts(req, res) {
   }
 }
 
+async function getSdcDistrictCollection(sdcDistrictCollectionID, res, token, correlationID) {
+  if (res.locals.requestedSdcDistrictCollection && res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID === sdcDistrictCollectionID) {
+    return res.locals.requestedSdcDistrictCollection;
+  }
+  return getData(token, `${config.get('sdc:districtCollectionURL')}/${sdcDistrictCollectionID}`, correlationID);
+}
+
 async function getSdcSchoolCollection(sdcSchoolCollectionID, res, token, correlationID) {
   if (res.locals.requestedSdcSchoolCollection && res.locals.requestedSdcSchoolCollection.sdcSchoolCollectionID === sdcSchoolCollectionID) {
     return res.locals.requestedSdcSchoolCollection;
   }
-  return getData(token, `${config.get('edx:exchangeURL')}/${sdcSchoolCollectionID}`, correlationID);
+  return getData(token, `${config.get('sdc:schoolCollectionURL')}/${sdcSchoolCollectionID}`, correlationID);
 }
 
 async function getSdcSchoolCollectionStudent(sdcSchoolCollectionStudentID, res, token, correlationID) {
@@ -423,7 +456,9 @@ module.exports = {
   getSdcFileProgress,
   removeSDCSchoolCollectionStudents,
   updateSchoolCollection,
+  getDistrictCollectionById,
   getSchoolCollectionById,
+  getCollectionByDistrictId,
   downloadSdcReport,
   getSDCSchoolCollectionStudentPaginated,
   getSDCSchoolCollectionStudentSummaryCounts,

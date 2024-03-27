@@ -1,6 +1,9 @@
 <template>
   <div class="border">
-    <v-row>
+    <v-row
+      v-if="displayBanner"
+      class="mb-0"
+    >
       <v-col>
         <v-alert
           density="compact"
@@ -13,10 +16,11 @@
       </v-col>
     </v-row>
 
-    <SchoolContactsForm
+    <SchoolDetailsForm
       :function-name="type"
       :schoolCollectionObject="schoolCollectionObject"
-      @school-contacts="checkIfPrincipalContactExists"
+      @is-form-valid="checkFormValidity"
+      @edit-toggled="toggleBanner"
       @update-is-offshore="handleIsOffshoreSchool"
     />
   </div>
@@ -26,14 +30,14 @@
   >
     <v-col class="error-message">
       <p class="form-hint">
-        A principal with an active start date and contact information must be added
+        Address, phone, and/or email must be added
       </p>
     </v-col>
   </v-row>
-  
+
   <v-row justify="end">
     <PrimaryButton
-      id="step-5-next-button-school"
+      id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Verify 1601 as Correct and Continue"
@@ -44,21 +48,20 @@
 </template>
   
 <script>
-import alertMixin from '../../mixins/alertMixin';
-import PrimaryButton from '../util/PrimaryButton.vue';
-import SchoolContactsForm from '../common/forms/SchoolContactsForm.vue';
-import {isContactCurrent} from '../../utils/institute/status';
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import SchoolDetailsForm from '../../common/forms/SchoolDetailsForm.vue';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
-import ApiService from '../../common/apiService';
-import { ApiRoutes } from '../../utils/constants';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import ApiService from '../../../common/apiService';
+import { ApiRoutes } from '../../../utils/constants';
 import {MINISTRY_CONTACTS} from '../../utils/constants/MinistryContactsInfo';
 
 export default {
-  name: 'StepFiveSchoolContacts',
+  name: 'StepFourSchoolDetails',
   components: {
     PrimaryButton,
-    SchoolContactsForm
+    SchoolDetailsForm
   },
   mixins: [alertMixin],
   props: {
@@ -72,12 +75,13 @@ export default {
       required: true
     }
   },
-  emits: ['next'],
+  emits: ['next', 'previous'],
   data() {
     return {
-      isDisabled: false,
       type: 'SDC',
+      isDisabled: false,
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      displayBanner: true,
       isOffshoreSchool: false,
       MINISTRY_CONTACTS: MINISTRY_CONTACTS
     };
@@ -86,7 +90,6 @@ export default {
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
   },
   created() {
-        
   },
   methods: {
     next() {
@@ -107,16 +110,14 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school contacts. Please try again later.');
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
         });    
     },
-    checkIfPrincipalContactExists(contacts) {
-      let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));
-      if(contact.length > 0 && (contact[0].phoneNumber || contact[0].email)) {
-        this.isDisabled = false;
-      } else {
-        this.isDisabled = true;
-      }
+    checkFormValidity(value) {
+      this.isDisabled = !value;
+    },
+    toggleBanner(value) {
+      this.displayBanner = !value;
     },
     handleIsOffshoreSchool(isOffshore) {
       this.isOffshoreSchool = isOffshore;
@@ -142,6 +143,7 @@ export default {
   .error-message {
     text-align: end;
    }
+
 </style>
     
     
