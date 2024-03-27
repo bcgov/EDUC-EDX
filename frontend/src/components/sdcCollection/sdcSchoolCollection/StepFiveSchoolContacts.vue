@@ -52,7 +52,7 @@ import { mapState } from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
-import {MINISTRY_CONTACTS} from '../../utils/constants/MinistryContactsInfo';
+import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
 
 export default {
   name: 'StepFiveSchoolContacts',
