@@ -3,16 +3,14 @@
     id="editAndFixCard"
   >
     <v-card-title
-        id="viewStudentCardTitle"
-        class="sheetHeader pt-1 pb-1"
-      >
-        Edit Student
-      </v-card-title>
-      <v-divider />
-      <v-card-text>
-        <v-row
-      >
-        
+      id="viewStudentCardTitle"
+      class="sheetHeader pt-1 pb-1"
+    >
+      Edit Student
+    </v-card-title>
+    <v-divider />
+    <v-card-text>
+      <v-row>
         <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"
@@ -48,34 +46,37 @@
             color="#003366"
             text="Validate & Save"
             class="mr-1"
-            @click="save"
             :disabled="!studentDetailsFormValid || showConfirmationBanner"
+            @click="save"
           />
         </v-col>
       </v-row>
 
-      <v-row class="pt-2 pb-2" v-if="showConfirmationBanner">
+      <v-row
+        v-if="showConfirmationBanner"
+        class="pt-2 pb-2"
+      >
         <v-banner
-            lines="one"
-            :border="0"
-            text="Are you sure that you would like to remove this student from the 1701 submission?"
-            style="background-color: rgb(235, 237, 239);"
-          >
-            <v-banner-actions>
-              <PrimaryButton
-                id="rejectBtn"
-                secondary
-                text="Cancel"
-                :click-action="reject"
-                class="mr-4"
-              />
-              <PrimaryButton
-                id="resolveBtn"
-                text="Yes"
-                :click-action="deleteStudent"
-              />
-            </v-banner-actions>
-          </v-banner>
+          lines="one"
+          :border="0"
+          text="Are you sure that you would like to remove this student from the 1701 submission?"
+          style="background-color: rgb(235, 237, 239);"
+        >
+          <v-banner-actions>
+            <PrimaryButton
+              id="rejectBtn"
+              secondary
+              text="Cancel"
+              :click-action="reject"
+              class="mr-4"
+            />
+            <PrimaryButton
+              id="resolveBtn"
+              text="Yes"
+              :click-action="deleteStudent"
+            />
+          </v-banner-actions>
+        </v-banner>
       </v-row>
 
       <EditStudent
@@ -88,9 +89,9 @@
         @show-issues="cancel"
         @clear-filter="clearFilter"
         @filter-pen="filterByPen"
-        @reset-pagination=resetPagination
+        @reset-pagination="resetPagination"
       />
-      </v-card-text>
+    </v-card-text>
   </v-card>
 </template>
 <script>

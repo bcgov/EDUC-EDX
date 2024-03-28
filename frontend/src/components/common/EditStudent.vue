@@ -479,14 +479,12 @@ import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
 import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
-import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
   name: 'EditStudent',
   components: {
     Spinner,
     DatePicker,
-    ConfirmationDialog,
   },
   props: {
     selectedStudents: {
