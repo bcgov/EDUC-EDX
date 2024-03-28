@@ -464,11 +464,6 @@
         </div>
       </div>
     </v-col>
-    <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
-      <template #message>
-        <p>Are you sure that you would like to remove this student from the 1701 submission?</p>
-      </template>
-    </ConfirmationDialog>
   </v-row>
 </template>
 <script>
@@ -484,14 +479,12 @@ import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
 import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
-import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
   name: 'EditStudent',
   components: {
     Spinner,
     DatePicker,
-    ConfirmationDialog,
   },
   props: {
     selectedStudents: {
@@ -520,7 +513,7 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object', 'close-success'],
+  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object', 'close-success', 'reset-pagination'],
   data() {
     return {
       page: 1,
@@ -594,9 +587,6 @@ export default {
         this.markStepAsComplete();
       }
     },
-    backToDataIssues() {
-      this.$emit('show-issues');
-    },
     clearFilter() {
       this.$emit('clear-filter');
     },
@@ -651,11 +641,6 @@ export default {
         });
     },
     async deleteStudent(){
-      const confirmation = await this.$refs.confirmRemovalOfStudentRecord.open('Confirm Removal of Student Record', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
-      if (!confirmation) {
-        this.$emit('reset-parent');
-        return;
-      }
       this.loadingCount += 1;
       this.hasError = false;
       ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
@@ -663,6 +648,7 @@ export default {
           this.removeIndex = this.selectedStudents.findIndex(value => value === this.selectedSdcStudentID);
           this.selectedStudents.splice(this.removeIndex, 1);
           setSuccessAlert('Success! The student details have been deleted.');
+          this.$emit('reset-pagination');
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
@@ -674,8 +660,8 @@ export default {
           }
           else {
             this.$emit('show-issues');
-            this.$emit('reset-parent');
           }
+          this.$emit('reset-parent');
         });
     },
     filterEnrolledProgramCodes(enrolledProgramCodes = []){

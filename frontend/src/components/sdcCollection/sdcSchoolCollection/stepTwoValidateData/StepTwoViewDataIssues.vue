@@ -320,15 +320,22 @@
       />
     </v-row>
   </div>
-  <div v-if="openEditView">
+  <v-bottom-sheet
+    v-model="openEditView"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
     <EditAndFixStudentData
       :selected-students="selectedStudents"
       :total-students="numIssueStudentsInCollection"
-      @show-issues="refresh"
       @clear-filter="clearFiltersAndReload"
       @filter-pen="filterStudentsByPen"
+      @close="refresh"
+      @reset-pagination="getSDCSchoolCollectionStudentPaginated"
     />
-  </div>
+  </v-bottom-sheet>
 </template>
 
 <script>
@@ -379,8 +386,8 @@ export default {
       studentListData: [],
       totalStudents: 0,
       numIssueStudentsInCollection: 0,
-      totalNumIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
+      totalNumIssueStudentsInCollection: 0,
       legalUsualNameFilter: null,
       penFilter: null,
       selectedSdcStudentID: null,
