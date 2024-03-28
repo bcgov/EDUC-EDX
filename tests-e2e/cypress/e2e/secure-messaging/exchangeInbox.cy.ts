@@ -8,7 +8,8 @@ function addDocumentToMessage() {
   cy.get(selectors.secureExchangeDetail.editOptionsMenu).click();
   cy.get(selectors.secureExchangeDetail.addAttachmentConvButton).click();
   cy.get(selectors.documentUpload.uploadDocumentTypeCodeSelect).parent().click();
-  cy.get(selectors.dropdown.listItem).contains('Canadian Birth Certificate').as('documentType').click();
+  cy.get('.v-list').should('be.visible');
+  cy.get(selectors.dropdown.listItem).contains('Canadian Birth Certificate').click();
   cy.get(selectors.documentUpload.selectFileInput).selectFile('./cypress/uploads/BC.jpg');
   cy.get(selectors.documentUpload.uploadDocumentButton).click();
   cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Your document was uploaded successfully. Close');
@@ -57,6 +58,7 @@ function createNewMessageWithDocumentAndStudent() {
 
   // create new secure exchange message
   cy.get(selectors.secureExchangeNewMessage.toInputDropdown).parent().click();
+  cy.get('.v-list').should('be.visible');
   cy.get(selectors.dropdown.listItem).contains('PEN Team').click();
   cy.get(selectors.secureExchangeNewMessage.subjectTxtField).type('EDX automation test');
   cy.get(selectors.secureExchangeNewMessage.newMessageTextArea).type('This message was created by an EDX automation test');
@@ -64,6 +66,7 @@ function createNewMessageWithDocumentAndStudent() {
   // add document
   cy.get(selectors.secureExchangeNewMessage.attachFileID).click();
   cy.get(selectors.documentUpload.uploadDocumentTypeCodeSelect).parent().click();
+  cy.get('.v-list').should('be.visible');
   cy.get(selectors.dropdown.listItem).contains('Canadian Birth Certificate').click();
   cy.get(selectors.documentUpload.selectFileInput).selectFile('./cypress/uploads/BC.jpg');
   cy.get(selectors.documentUpload.uploadDocumentButton).click();
