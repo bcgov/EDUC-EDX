@@ -1,54 +1,81 @@
 <template>
-  <v-container
-    class="containerSetup"
-    fluid
+  <v-card
+    id="editAndFixCard"
   >
-    <div class="inner-border">
-      <v-row
-        no-gutters
-        class="mt-2 mb-2 d-flex justify-start"
+    <v-card-title
+        id="viewStudentCardTitle"
+        class="sheetHeader pt-1 pb-1"
       >
-        <v-col
-          cols="6"
-          class="mt-1 d-flex justify-start"
-        >
-          <v-icon
-            small
-            color="#1976d2"
-          >
-            mdi-arrow-left
-          </v-icon>
-          <a
-            class="ml-1"
-            @click="backToDataIssues()"
-          >Return to List of Data Issues</a>
-        </v-col>
+        Edit Student
+      </v-card-title>
+      <v-divider />
+      <v-card-text>
+        <v-row
+      >
+        
         <v-col class="d-flex justify-end">
-          <PrimaryButton
-            id="removeRecord"
-            secondary
-            large-icon
-            icon="mdi-delete"
-            text="Remove Record"
+          <v-btn
+            id="cancel"
+            color="#003366"
+            text="Cancel"
+            variant="outlined"
             class="mr-1"
-            :click-action="deleteStudent"
+            @click="cancel"
           />
-          <PrimaryButton
+          <v-btn
+            id="removeRecord"
+            color="#003366"
+            large-icon
+            prepend-icon="mdi-delete"
+            text="Remove"
+            variant="outlined"
+            class="mr-1"
+            :disabled="showConfirmationBanner"
+            @click="showBanner"
+          />
+          <v-btn
             id="revertChanges"
             disabled
             large-icon
-            icon="mdi-arrow-u-left-top"
-            text="Revert Changes"
+            color="#003366"
+            variant="outlined"
+            prepend-icon="mdi-arrow-u-left-top"
+            text="Revert"
             class="mr-1"
           />
-          <PrimaryButton
+          <v-btn
             id="saveRecord"
+            color="#003366"
             text="Validate & Save"
             class="mr-1"
-            :click-action="save"
-            :disabled="!studentDetailsFormValid"
+            @click="save"
+            :disabled="!studentDetailsFormValid || showConfirmationBanner"
           />
         </v-col>
+      </v-row>
+
+      <v-row class="pt-2 pb-2" v-if="showConfirmationBanner">
+        <v-banner
+            lines="one"
+            :border="0"
+            text="Are you sure that you would like to remove this student from the 1701 submission?"
+            style="background-color: rgb(235, 237, 239);"
+          >
+            <v-banner-actions>
+              <PrimaryButton
+                id="rejectBtn"
+                secondary
+                text="Cancel"
+                :click-action="reject"
+                class="mr-4"
+              />
+              <PrimaryButton
+                id="resolveBtn"
+                text="Yes"
+                :click-action="deleteStudent"
+              />
+            </v-banner-actions>
+          </v-banner>
       </v-row>
 
       <EditStudent
@@ -58,11 +85,13 @@
         :remove-event="removeStudent"
         @form-validity="isValid"
         @reset-parent="reset()"
+        @show-issues="cancel"
         @clear-filter="clearFilter"
         @filter-pen="filterByPen"
+        @reset-pagination=resetPagination
       />
-    </div>
-  </v-container>
+      </v-card-text>
+  </v-card>
 </template>
 <script>
 
@@ -88,12 +117,13 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen'],
+  emits: ['next', 'clear-filter', 'filter-pen', 'close', 'reset-pagination'],
   data() {
     return {
       saveStudent: false,
       removeStudent: false,
       studentDetailsFormValid: true,
+      showConfirmationBanner: false
     };
   },
   computed: {
@@ -108,6 +138,9 @@ export default {
 
   },
   methods: {
+    resetPagination() {
+      this.$emit('reset-pagination');
+    },
     isValid($event) {
       this.studentDetailsFormValid = $event;
     },
@@ -118,11 +151,12 @@ export default {
     save() {
       this.saveStudent =true;
     },
+    showBanner() {
+      this.showConfirmationBanner = true;
+    },
     deleteStudent() {
       this.removeStudent=true;
-    },
-    backToDataIssues() {
-      this.$emit('show-issues');
+      this.showConfirmationBanner= !this.showConfirmationBanner;
     },
     clearFilter() {
       this.$emit('clear-filter');
@@ -130,6 +164,13 @@ export default {
     filterByPen($event) {
       this.$emit('filter-pen', $event);
     },
+    cancel() {
+      this.$emit('close');
+    },
+    reject() {
+      this.showConfirmationBanner= false;
+      this.reset();
+    }
   }
 };
 </script>
@@ -187,5 +228,11 @@ export default {
   .success-message{
     vertical-align: sub;
    }
+   .sheetHeader {
+        background-color: #003366;
+        color: white;
+        font-size: medium !important;
+        font-weight: bolder !important;
+    }
 
 </style>

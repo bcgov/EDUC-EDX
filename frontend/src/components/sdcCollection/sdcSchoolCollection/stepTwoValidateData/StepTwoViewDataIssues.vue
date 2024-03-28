@@ -105,7 +105,7 @@
                 <span
                   id="totalStudentsWithIssuesCount"
                   style="font-size: x-large"
-                >{{ totalNumIssueStudentsInCollection }}</span>
+                >{{ numIssueStudentsInCollection }}</span>
               </div>
             </v-col>
           </v-row>
@@ -114,7 +114,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="totalNumIssueStudentsInCollection > 0"
+        v-if="numIssueStudentsInCollection > 0"
         class="pr-0"
       >
         <v-row class="searchBox">
@@ -320,15 +320,22 @@
       />
     </v-row>
   </div>
-  <div v-if="openEditView">
+  <v-bottom-sheet
+    v-model="openEditView"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
     <EditAndFixStudentData
       :selected-students="selectedStudents"
       :total-students="numIssueStudentsInCollection"
-      @show-issues="refresh"
       @clear-filter="clearFiltersAndReload"
       @filter-pen="filterStudentsByPen"
+      @close="refresh"
+      @reset-pagination="getSDCSchoolCollectionStudentPaginated"
     />
-  </div>
+  </v-bottom-sheet>
 </template>
 
 <script>
@@ -379,7 +386,6 @@ export default {
       studentListData: [],
       totalStudents: 0,
       numIssueStudentsInCollection: 0,
-      totalNumIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
       legalUsualNameFilter: null,
       penFilter: null,
@@ -439,7 +445,6 @@ export default {
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
-      this.totalNumIssueStudentsInCollection = this.numIssueStudentsInCollection;
     });
   },
   methods: {
