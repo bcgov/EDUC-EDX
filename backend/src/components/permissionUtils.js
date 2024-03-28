@@ -37,6 +37,17 @@ function checkEdxUserPermission(permission) {
   };
 }
 
+function checkEdxUserPermissionIn(permissions) {
+  return function(req, res, next) {
+    if (!permissions.some(permission => req.session.activeInstitutePermissions.includes(permission))) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'User does not have permission.'
+      });
+    }
+    return next();
+  };
+}
+
 function checkPermissionForRequestedInstitute(districtPermission, schoolPermission) {
   return function(req, res, next) {
     if (!res.locals.requestedInstituteType) {
@@ -368,6 +379,7 @@ function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType
 const permUtils = {
   checkEDXUserAccessToRequestedInstitute,
   checkEdxUserPermission,
+  checkEdxUserPermissionIn,
   checkPermissionForRequestedInstitute,
   verifyQueryParamValueMatchesBodyValue,
   validateAccessToken,
