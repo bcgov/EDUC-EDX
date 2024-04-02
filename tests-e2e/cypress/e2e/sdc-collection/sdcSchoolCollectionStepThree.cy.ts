@@ -201,17 +201,17 @@ describe('SDC School Collection View', () => {
       cy.login();
     });
     it('Add and remove buttons should be disabled', () => {
-        cy.visit('/');
-        cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-        cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-
-        cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-        cy.get(selectors.studentLevelData.stepThree).should('exist').click();
-        cy.get(selectors.studentLevelData.addStudent).should('be.disabled');
-        cy.get(selectors.studentLevelData.remove).should('be.disabled');
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+  
+      cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
+      cy.get(selectors.studentLevelData.stepThree).should('exist').click();
+      cy.get(selectors.studentLevelData.addStudent).should('be.disabled');
+      cy.get(selectors.studentLevelData.remove).should('be.disabled');
     });
   });
 });
