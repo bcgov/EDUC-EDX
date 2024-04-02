@@ -169,19 +169,40 @@ describe('SDC School Collection View', () => {
     });
 
 
-    it('can verify the download csv link', () => {
+    it('can download all students csv', () => {
       const id = Cypress.env('schoolCollectionId');
       navigateToStep3Screen(id);
-      const csvDownloadUrl = Cypress.env('interceptors').student_csv;
-      const csvDownloadPattern = csvDownloadUrl.replace(/\*/g, '.*').replace(/\//g, '\\/');
-      const csvDownloadRegex = new RegExp(csvDownloadPattern);
 
-      cy.get(selectors.studentLevelData.csvDownloadLink)
-        .should('have.attr', 'href')
-        .and((href) => {
-          expect(csvDownloadRegex.test(href)).to.be.true;
+      cy.get(selectors.studentLevelData.csvDownloadLink).then(($link) => {
+        const href = $link.prop('href');
+        const downloadPath = 'path/to/download/directory/allStudents.csv';
+
+        cy.downloadFile(href, 'path/to/download/directory', 'allStudents.csv').then(() => {
+          cy.readFile(downloadPath, 'utf8').should((data) => {
+            expect(data).to.not.be.empty;
+            const lines = data.split('\r\n');
+            const headers = lines[0].split(',').map((header: string) => header.trim());
+            const records = lines.slice(1).map((line: string) => {
+              const values = line.split(',').map(value => value.trim());
+              return headers.reduce((obj: { [x: string]: string; }, header: string, index: number) => {
+                obj[header] = values[index];
+                return obj;
+              }, {});
+            });
+
+            expect(records).to.have.length(6);
+            const expectedPENs = ['102866365', '101932770', '103169744', ''];
+            const expectedCourses = ['0700', undefined];
+            const expectedApprenticeStatus = ['N', undefined];
+
+            records.forEach((record: { [key: string]: string | undefined }) => {
+              expect(expectedPENs).to.include(record['P.E.N.']);
+              expect(expectedCourses).to.include(record['# Courses']);
+              expect(expectedApprenticeStatus).to.include(record['Apprentice']);
+            });
+          });
         });
-      cy.get(selectors.studentLevelData.csvDownloadLink).should('have.attr', 'target', '_blank');
+      });
     });
   });
 
