@@ -167,6 +167,22 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
       cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
     });
+
+
+    it('can verify the download csv link', () => {
+      const id = Cypress.env('schoolCollectionId');
+      navigateToStep3Screen(id);
+      const csvDownloadUrl = Cypress.env('interceptors').student_csv;
+      const csvDownloadPattern = csvDownloadUrl.replace(/\*/g, '.*').replace(/\//g, '\\/');
+      const csvDownloadRegex = new RegExp(csvDownloadPattern);
+
+      cy.get(selectors.studentLevelData.csvDownloadLink)
+        .should('have.attr', 'href')
+        .and((href) => {
+          expect(csvDownloadRegex.test(href)).to.be.true;
+        });
+      cy.get(selectors.studentLevelData.csvDownloadLink).should('have.attr', 'target', '_blank');
+    });
   });
 
   context('1701 collection status is SUBMITTED', () => {
