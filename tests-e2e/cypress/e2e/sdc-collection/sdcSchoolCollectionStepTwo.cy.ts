@@ -119,7 +119,7 @@ describe('SDC School Collection View', () => {
 
       cy.intercept(Cypress.env('interceptors').collection_student).as('studentUpdate');
       cy.wait('@studentUpdate').then(()=>{
-        cy.get(selectors.studentLevelData.backToDataIssues).click();
+        cy.get(selectors.studentLevelData.cancelButton).click();
       });
 
       cy.wait('@pagination').then(()=> {
