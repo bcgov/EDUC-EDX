@@ -56,7 +56,8 @@
         v-if="showConfirmationBanner"
         class="pt-2 pb-2"
       >
-        <v-banner
+        <v-col>
+          <v-banner
           lines="one"
           :border="0"
           text="Are you sure that you would like to remove this student from the 1701 submission?"
@@ -77,6 +78,7 @@
             />
           </v-banner-actions>
         </v-banner>
+        </v-col>
       </v-row>
 
       <EditStudent
@@ -229,11 +231,16 @@ export default {
   .success-message{
     vertical-align: sub;
    }
-   .sheetHeader {
-        background-color: #003366;
-        color: white;
-        font-size: medium !important;
-        font-weight: bolder !important;
-    }
+
+  .sheetHeader {
+    background-color: #003366;
+    color: white;
+    font-size: medium !important;
+    font-weight: bolder !important;
+  }
+
+  .v-banner::v-deep .v-banner__content {
+    justify-content: space-between !important;
+  }
 
 </style>
