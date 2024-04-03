@@ -118,7 +118,8 @@ describe('SDC School Collection View', () => {
         cy.downloadFile(href, 'path/to/download/directory', 'gradeEnrollmentFTE.pdf').then(() => {
           cy.readFile(downloadPath, 'binary').should((data) => {
             expect(data).to.not.be.empty;
-            expect(data.length).to.be.greaterThan(0);
+            const expectedSizeBytes = 249045;
+            expect(data.length).to.be.closeTo(expectedSizeBytes, 10240);
           });
         });
       });

@@ -397,8 +397,7 @@ export default {
     compareSwitch: '#compare-switch',
     collectionSubmission: '#collection-submission',
     csvDownloadLink: '#studentsFound > a',
-    pdfDownloadLink: '.text-right > a'
-    //pdfDownloadLink: '#downloadReport'
+    pdfDownloadLink: '#downloadReport'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
