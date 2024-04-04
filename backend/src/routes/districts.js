@@ -12,7 +12,7 @@ const { PERMISSION } = require('../util/Permission');
  */
 
 router.post('/:districtID/contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_EDIT), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, createDistrictContact);
-router.get('/:districtID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_EDIT), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getDistrictByDistrictID);
+router.get('/:districtID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_VIEW), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getDistrictByDistrictID);
 router.post('/:districtID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_EDIT), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, updateDistrict);
 router.put('/update-contact', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_EDIT), findDistrictId_body, checkEDXUserAccessToRequestedInstitute, updateDistrictContact);
 router.delete('/:districtID/contact/:contactID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_DISTRICT_EDIT), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, removeDistrictContact);

@@ -65,7 +65,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="isLoggedInDistrictUser && isDistrictActive"
+        v-if="hasRequiredPermission('EDX_DISTRICT_VIEW') && isLoggedInDistrictUser && isDistrictActive"
         cols="12"
         md="6"
       >
@@ -108,7 +108,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="isLoggedInSchoolUser && isSchoolActive"
+        v-if="hasRequiredPermission('EDX_SCHOOL_VIEW') && isLoggedInSchoolUser && isSchoolActive"
         cols="12"
         md="6"
       >
@@ -160,7 +160,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="isLoggedInDistrictUser && isDistrictActive"
+        v-if="hasRequiredPermission('EDX_DISTRICT_VIEW') && isLoggedInDistrictUser && isDistrictActive"
         cols="12"
         md="6"
       >
@@ -212,7 +212,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="isLoggedInDistrictUser && isDistrictActive"
+        v-if="hasRequiredPermission('EDX_SCHOOL_VIEW') && isLoggedInDistrictUser && isDistrictActive"
         cols="12"
         md="6"
       >
@@ -255,7 +255,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="isLoggedInSchoolUser && isSchoolActive"
+        v-if="hasRequiredPermission('EDX_SCHOOL_VIEW') && isLoggedInSchoolUser && isSchoolActive"
         cols="12"
         md="6"
       >
@@ -454,24 +454,30 @@ export default {
   },
   created() {
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
-    if(this.hasRequiredPermission('SECURE_EXCHANGE')) {
+    if (this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
-    if(this.isLoggedInSchoolUser) {
-      if(this.hasRequiredPermission('SCHOOL_SDC') && !this.disableSdcFunctionality) {
+    if (this.isLoggedInSchoolUser) {
+      if (this.hasRequiredPermission('SCHOOL_SDC') && !this.disableSdcFunctionality) {
         this.getSDCCollectionBySchoolId();
       }
-      this.getSchoolContactsLastUpdate();
-      this.getSchoolLastUpdateDate();
+      if (this.hasRequiredPermission('EDX_SCHOOL_VIEW')) {
+        this.getSchoolContactsLastUpdate();
+        this.getSchoolLastUpdateDate();
+      }
       this.isSchoolActive();
     }
-    if(this.isLoggedInDistrictUser){
-      if(this.hasRequiredPermission('DISTRICT_SDC') && !this.disableSdcFunctionality) {
+    if (this.isLoggedInDistrictUser) {
+      if (this.hasRequiredPermission('DISTRICT_SDC') && !this.disableSdcFunctionality) {
         this.getSDCCollectionByDistrictId();
       }
-      this.getDistrictsLastUpdateDate();
-      this.getDistrictSchoolsLastUpdateDate();
-      this.getDistrictContactsLastUpdate();
+      if (this.hasRequiredPermission('EDX_DISTRICT_VIEW')) {
+        this.getDistrictsLastUpdateDate();
+        this.getDistrictContactsLastUpdate();
+      }
+      if (this.hasRequiredPermission('EDX_SCHOOL_VIEW')) {
+        this.getDistrictSchoolsLastUpdateDate();
+      }
       this.isDistrictActive();
     }
   },
