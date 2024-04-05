@@ -10,8 +10,8 @@ export class CollectionSetupUtils {
     this.sdcCollectionApi = new SdcCollectionApiService(this.config);
   }
 
-  async setUpSchoolCollection(schoolCollection: SchoolCollectionOptions) {
-    return this.sdcCollectionApi.createSchoolCollection(schoolCollection);
+  async setUpCollections(schoolCollection: SchoolCollectionOptions) {
+    return this.sdcCollectionApi.createCollections(schoolCollection);
   }
 
   async setUpStudentElls(ells: SdcStudentEll[]) {

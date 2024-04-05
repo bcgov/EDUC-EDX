@@ -18,6 +18,8 @@ export type SdcStudentEllOption = {
 
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
+const SDC_DISTRICT_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcDistrictCollection';
+const SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcDistrictCollection/search';
 const ACTIVE_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection/active';
 const SCHOOL_COLLECTION_STUDENT_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollectionStudent';
 
@@ -31,7 +33,7 @@ export class SdcCollectionApiService {
     this.restUtils = new RestUtils(this.config);
   }
 
-  async createSchoolCollection(schoolCollection: SchoolCollectionOptions) {
+  async createCollections(schoolCollection: SchoolCollectionOptions) {
     console.log('AT createSchoolCollection started');
 
     const curDate = LocalDateTime.now().minusDays(2);
@@ -41,9 +43,17 @@ export class SdcCollectionApiService {
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
+    const urlGetActiveSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.districtId;
     try {
-      const activeSdcCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection);
-      await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSdcCollection.sdcSchoolCollectionID);
+      const [activeSchoolSdcCollection, activeDistrictSdcCollection] = await Promise.all([
+        this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection),
+        this.restUtils.getData<SdcDistrictCollection>(urlGetActiveSdcDistrictCollection)
+      ]);
+      await Promise.all([
+        this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSchoolSdcCollection.sdcSchoolCollectionID),
+        this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeDistrictSdcCollection.sdcDistrictCollectionID)
+      ]);
+
     } catch (_) {
       //This is ok
     }
@@ -631,11 +641,35 @@ export class SdcCollectionApiService {
       };
     }
 
+    const sdcDistrictCollectionPayload = {
+      'createUser': 'EDXAT',
+      'updateUser': null,
+      'createDate': null,
+      'updateDate': null,
+      'sdcDistrictCollectionID': null,
+      'collectionID': activeCollection.collectionID,
+      'districtID': schoolCollection?.school?.districtId,
+      'sdcDistrictCollectionStatusCode': 'NEW',
+      'collectionTypeCode': 'SEPTEMBER',
+      'collectionOpenDate': curDate,
+      'submissionDueDate': curDate.plusWeeks(2)
+    };
+
     const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-    const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
+    const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+
+    const [schoolCollectionResponse, districtCollectionResponse] = await Promise.all([
+      this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload),
+      this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload)
+    ]);
+
+    const responses: SdcCollections = {
+      sdcSchoolCollection: schoolCollectionResponse,
+      sdcDistrictCollection: districtCollectionResponse
+    };
 
     console.log('AT createSchoolCollection completed');
-    return schoolCollectionResponse;
+    return responses;
   }
 
   async createSdcStudentElls(payload: SdcStudentEll[]) {

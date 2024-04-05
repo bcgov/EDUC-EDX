@@ -6,7 +6,7 @@ describe('SDC Step-One', () => {
   context('Upload student file', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedData'
@@ -40,7 +40,7 @@ describe('SDC Step-One', () => {
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'submittedSchoolCollection'

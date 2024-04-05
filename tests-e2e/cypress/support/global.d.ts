@@ -63,7 +63,7 @@ declare global {
         options?: Partial<Loggable & Timeoutable>
       ): Chainable<S[]>;
 
-      task<T = SchoolCollectionOptions, S = SdcSchoolCollection>(
+      task<T = SchoolCollectionOptions, S = SdcCollections>(
         event: 'setup-collections',
         collectionOptions: T,
         options?: Partial<Loggable & Timeoutable>

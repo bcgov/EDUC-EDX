@@ -6,13 +6,13 @@ describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
-          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollectionID);
-          const studentWithEllYears = collection.students
+          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          const studentWithEllYears = collection?.sdcSchoolCollection.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
               studentID: s.assignedStudentId,
@@ -210,7 +210,7 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'submittedSchoolCollection'
@@ -228,7 +228,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-  
+
       cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
       cy.get(selectors.studentLevelData.stepThree).should('exist').click();
       cy.get(selectors.studentLevelData.addStudent).should('be.disabled');
