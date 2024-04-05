@@ -23,6 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import 'cypress-downloadfile/lib/downloadFileCommand';
+
 let headers: any
 
 let requestBody: any = {}
@@ -51,3 +53,15 @@ Cypress.Commands.add('logout', () => { cy.request(Cypress.env('url').logout) });
 Cypress.on('uncaught:exception', (err, runnable) => {
     return false;
 });
+
+declare global {
+    namespace Cypress {
+        interface Chainable {
+            /**
+             * Custom command to download files.
+             * @example cy.downloadFile('https://example.com/file.pdf', 'myFolder', 'file.pdf')
+             */
+            downloadFile(url: string, directory: string, filename: string): Chainable<Element>
+        }
+    }
+}

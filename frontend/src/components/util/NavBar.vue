@@ -217,12 +217,12 @@ export default {
         {
           title: PAGE_TITLES.SCHOOL_DETAILS,
           link: { name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.SCHOOL_CONTACTS,
           link: { name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.DATA_COLLECTION,
@@ -232,17 +232,17 @@ export default {
         {
           title: PAGE_TITLES.SCHOOLS,
           link: { name: 'schools'},
-          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
           link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'details'}},
-          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_DISTRICT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
           link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}},
-          authorized: this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_DISTRICT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.ADMINISTRATION,

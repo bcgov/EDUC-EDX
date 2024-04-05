@@ -6,6 +6,9 @@ import {defineConfig} from 'cypress';
 import { InstituteOptions, SchoolOptions } from './cypress/services/institute-api-service';
 import { UserActivationUtils } from './cypress/helpers/user-activation-utils';
 import { SchoolCollectionOptions } from './cypress/services/sdc-collection-api-service';
+import axios from 'axios';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
 const loadAppSetupData = (
@@ -84,6 +87,26 @@ export default defineConfig({
         'teardown-userActivationCode': async (activationCodeId: string) => {
           await new EdxApiService(config).deleteActivationCode(activationCodeId);
           return null;
+        },
+        'downloadFile': async ({ url, directory, cookies, fileName }) => {
+          const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+
+          const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: {
+              Cookie: cookieString,
+            },
+          });
+
+          const dirPath = path.resolve(directory);
+          if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+          }
+
+          const filePath = path.join(dirPath, fileName);
+          fs.writeFileSync(filePath, response.data);
+
+          return `File downloaded successfully to ${filePath}`;
         }
       });
     },
