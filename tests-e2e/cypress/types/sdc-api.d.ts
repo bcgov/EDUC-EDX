@@ -9,6 +9,21 @@ interface Collection extends BaseApiEntity {
   signOffDueDate: string;
 }
 
+interface SdcCollections {
+  sdcDistrictCollection: SdcDistrictCollection;
+  sdcSchoolCollection: SdcSchoolCollection;
+}
+
+interface SdcDistrictCollection extends BaseApiEntity {
+  sdcDistrictCollectionID: string;
+  collectionID: string;
+  districtID: string;
+  sdcDistrictCollectionStatusCode: string;
+  collectionTypeCode: string;
+  collectionOpenDate: string;
+  submissionDueDate: string;
+}
+
 interface SdcSchoolCollection extends BaseApiEntity {
   sdcSchoolCollectionID: string;
   collectionID: string;

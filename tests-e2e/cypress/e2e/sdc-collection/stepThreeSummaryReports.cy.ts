@@ -6,12 +6,12 @@ describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
-          const studentWithEllYears = collection.students
+          const studentWithEllYears = collection?.sdcSchoolCollection?.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
               studentID: s.assignedStudentId,

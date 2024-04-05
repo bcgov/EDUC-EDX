@@ -8,12 +8,12 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryCareer'
         }).then(response => {
-          Cypress.env('schoolCollectionIdCareer', response?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdCareer', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -73,12 +73,12 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryIndigenous'
         }).then(response => {
-          Cypress.env('schoolCollectionIdIndigenous', response?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdIndigenous', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -115,12 +115,12 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummarySpecialEd'
         }).then(response => {
-          Cypress.env('schoolCollectionIdSped', response?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdSped', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -169,12 +169,12 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryEll'
         }).then(response => {
-          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
@@ -196,12 +196,12 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
-        cy.task<SchoolCollectionOptions, SdcSchoolCollection>('setup-collections', {
+        cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.school,
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryErrors'
         }).then(response => {
-          Cypress.env('schoolCollectionIdErrors', response?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdErrors', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
