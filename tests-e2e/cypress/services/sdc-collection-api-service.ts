@@ -49,8 +49,6 @@ export class SdcCollectionApiService {
         this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection),
         this.restUtils.getData<SdcDistrictCollection>(urlGetActiveSdcDistrictCollection)
       ]);
-      console.log(activeDistrictSdcCollection);
-      console.log(activeSchoolSdcCollection);
       await Promise.all([
         this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSchoolSdcCollection.sdcSchoolCollectionID),
         this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeDistrictSdcCollection.sdcDistrictCollectionID)
