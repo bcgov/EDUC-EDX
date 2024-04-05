@@ -103,6 +103,28 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '00.8750');
     });
 
+    it('can download grade enrollment and FTE report', () => {
+      cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.wait('@collection');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.fteComponent.summaryButton).click();
+
+      cy.get(selectors.studentLevelData.pdfDownloadLink).then(($link) => {
+        const href = $link.prop('href');
+        const downloadPath = 'path/to/download/directory/gradeEnrollmentFTE.pdf';
+
+        cy.downloadFile(href, 'path/to/download/directory', 'gradeEnrollmentFTE.pdf').then(() => {
+          cy.readFile(downloadPath, 'binary').should((data) => {
+            expect(data).to.not.be.empty;
+            const expectedSizeBytes = 244045;
+            expect(data.length).to.be.closeTo(expectedSizeBytes, 10240);
+          });
+        });
+      });
+    });
+
     it('verifies french programs for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
@@ -224,6 +246,27 @@ describe('SDC School Collection View', () => {
       allHeadcounts.splice(1, 1, xaHeadcountsInner);
       allHeadcounts.splice(8, 1, xhHeadcountsInner);
       checkCareerTableSection(4, 'All Career Programs', allHeadcounts);
+    });
+
+    it('can download career programs report', () => {
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.stepThreeTabSlider.careerProgramsButton).click();
+      cy.get(selectors.careerProgramComponent.summaryButton).click();
+      cy.get(selectors.studentLevelData.pdfDownloadLink).then(($link) => {
+        const href = $link.prop('href');
+        const downloadPath = 'path/to/download/directory/careerPrograms.pdf';
+
+        cy.downloadFile(href, 'path/to/download/directory', 'careerPrograms.pdf').then(() => {
+          cy.readFile(downloadPath, 'binary').should((data) => {
+            expect(data).to.not.be.empty;
+            const expectedSizeBytes = 246045;
+            expect(data.length).to.be.closeTo(expectedSizeBytes, 10240);
+          });
+        });
+      });
     });
 
     it('verifies indigenous programs for reported students', () => {

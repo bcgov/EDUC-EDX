@@ -136,6 +136,7 @@
     </v-col>
     <v-col class="text-right">
       <router-link
+        id="downloadReport"
         :to="{ path: downloadReportURL() }"
         target="_blank"
       >
