@@ -110,7 +110,7 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepThreeVerifyData
+                <StepThreeDuplicatesProcessing
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
                   @next="next"
@@ -121,7 +121,7 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepFourSchoolDetails
+                <StepThreeVerifyData
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
                   @next="next"
@@ -132,7 +132,7 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepFiveSchoolContacts
+                <StepFourSchoolDetails
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
                   @next="next"
@@ -143,10 +143,21 @@
                 transition="false"
                 reverse-transition="false"
               >
+                <StepFiveSchoolContacts
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="7"
+                transition="false"
+                reverse-transition="false"
+              >
                 <StepSixSubmitData 
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
-                  /> 
+                /> 
               </v-stepper-window-item>
             </v-stepper-window>
           </template>
@@ -163,6 +174,7 @@ import {SDC_STEPS_SCHOOL} from '../../../utils/institute/SdcSteps';
 
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
+import StepThreeDuplicatesProcessing from './stepThreeSchoolDuplicates/StepThreeDuplicatesProcessing.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourSchoolDetails from './StepFourSchoolDetails.vue';
 import StepFiveSchoolContacts from './StepFiveSchoolContacts.vue';
@@ -172,6 +184,7 @@ export default {
   name: 'SDCCollectionView',
   components: {
     StepFiveSchoolContacts,
+    StepThreeDuplicatesProcessing,
     StepFourSchoolDetails,
     StepThreeVerifyData,
     StepTwoViewDataIssues,

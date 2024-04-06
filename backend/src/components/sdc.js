@@ -253,6 +253,33 @@ async function removeSDCSchoolCollectionStudents(req, res) {
   }
 }
 
+async function getSchoolStudentDuplicates(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let studentDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
+
+    let dupsMap = new Map();
+    studentDuplicates.forEach((dup) => {
+      if(dupsMap.has(dup.assignedPen)){
+        dupsMap.get(dup.assignedPen).push(dup);
+      }else{
+        dupsMap.set(dup.assignedPen, [dup]);
+      }
+    });
+
+    let resultArray = [];
+
+    dupsMap.forEach(function(items,key){
+      resultArray.push({assignedPen: key, items});
+    });
+
+    return res.status(HttpStatus.OK).json(resultArray);
+  } catch (e) {
+    log.error('Error getting Student duplicates.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getStudentHeadcounts(req, res) {
   try {
     const params = {
@@ -454,6 +481,7 @@ module.exports = {
   getCollectionBySchoolId,
   uploadFile,
   getSdcFileProgress,
+  getSchoolStudentDuplicates,
   removeSDCSchoolCollectionStudents,
   updateSchoolCollection,
   getDistrictCollectionById,
