@@ -179,7 +179,8 @@ const reportTypeValues = [
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
   ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'], 
-  ['csv', 'ALL_STUDENT_CSV']
+  ['csv_school', 'ALL_STUDENT_SCHOOL_CSV'],
+  ['csv_dis', 'ALL_STUDENT_DIS_CSV']
 ];
 const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
 
