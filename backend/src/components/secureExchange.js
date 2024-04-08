@@ -485,6 +485,7 @@ async function removeSecureExchangeStudent(req, res) {
 
 async function updateEdxUserSchoolRoles(req, res) {
   try {
+    const token = getAccessToken(req);
     let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolID);
     if (!selectedUserSchools[0]) {
@@ -514,7 +515,6 @@ async function updateEdxUserSchoolRoles(req, res) {
     selectedUserSchool.createDate = null;
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
     selectedUserSchool.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
-    const token = getAccessToken(req);
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
