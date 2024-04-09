@@ -13,9 +13,6 @@ export type SdcStudentEllOption = {
   yearsInEll: number
 };
 
-// const COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection';
-// const COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/collection/search';
-
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
 const SDC_DISTRICT_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcDistrictCollection';
@@ -324,12 +321,14 @@ export class SdcCollectionApiService {
         students[0].enrolledProgramCodes = '082917';
         students[0].studentPen = '101932770';
         students[0].nativeAncestryInd = 'Y';
+        students[0].bandCode = '0547';
         students[0].numberOfCourses = '0700';
         students[0].assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf';
         students[0].isGraduated = 'false';
         students[0].specialEducationCategoryCode = 'A';
         students[0].localID = 'student1';
         students[0].penMatchResult = 'DM';
+        students[0].fte = 1;
 
         students[1].enrolledGradeCode = '11';
         students[1].enrolledProgramCodes = '431733';
@@ -345,11 +344,13 @@ export class SdcCollectionApiService {
         students[2].careerProgramCode = 'XA';
         students[2].studentPen = '102866365';
         students[2].nativeAncestryInd = 'Y';
+        students[2].bandCode = '0653';
         students[2].numberOfCourses = '0700';
         students[2].specialEducationCategoryCode = 'G';
         students[2].assignedPen = '101930550';
         students[2].penMatchResult = 'MATCH';
         students[2].localID = 'student3';
+        students[2].fte = .775;
 
         students.forEach(obj => {
           obj.isSchoolAged = 'true';
