@@ -9,6 +9,9 @@ export default {
   activeFiltersDrawer: {
     drawer: '.v-navigation-drawer--active',
   },
+  bandSummaryComponent: {
+    headcountTableSubHeading: '.section-header'
+  },
   careerProgramComponent: {
     tab: '#careerTab',
     filterButton: '#filters',
@@ -150,7 +153,8 @@ export default {
     summaryButton: '#indProgSummaryButton',
     headcountCard: '.indigenous-headcount-card',
     headcountHeader: '.indigenous-headcount-header',
-    headcountColumnData: '.indigenous-headcount-column-data'
+    headcountColumnData: '.indigenous-headcount-column-data',
+    reportDropdown: '#reports'
   },
   filters: {
     clearFilter: '#clear-filter',
