@@ -3,9 +3,10 @@ const { getAccessToken, handleExceptionResponse, getData, postData, putData, get
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
-const { FILTER_OPERATION, VALUE_TYPE, CONDITION } = require('../util/constants');
+const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP} = require('../util/constants');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
+const cacheService = require('./cache-service');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -261,9 +262,9 @@ async function getSchoolStudentDuplicates(req, res) {
     let dupsMap = new Map();
     studentDuplicates.forEach((dup) => {
       if(dupsMap.has(dup.assignedPen)){
-        dupsMap.get(dup.assignedPen).push(dup);
+        dupsMap.get(dup.assignedPen).push(toTableRow(dup));
       }else{
-        dupsMap.set(dup.assignedPen, [dup]);
+        dupsMap.set(dup.assignedPen, [toTableRow(dup)]);
       }
     });
 
@@ -278,6 +279,51 @@ async function getSchoolStudentDuplicates(req, res) {
     log.error('Error getting Student duplicates.', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+function toTableRow(student) {
+  let bandCodesMap = cacheService.getAllActiveBandCodesMap();
+  let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
+  let schoolFundingCodesMap = cacheService.getActiveSchoolFundingCodesMap();
+  let specialEducationCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+
+  student.mappedSpedCode = specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? `${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description} (${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode})` : null;
+  student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : nativeAncestryInd(student);
+  student.mappedFrenchEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.FRENCH_ENROLLED_PROGRAM_CODES);
+  student.mappedEllEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.ENGLISH_ENROLLED_PROGRAM_CODES);
+  student.mappedLanguageEnrolledProgram = enrolledProgramMapping(student, [...ENROLLED_PROGRAM_TYPE_CODE_MAP.ENGLISH_ENROLLED_PROGRAM_CODES, ...ENROLLED_PROGRAM_TYPE_CODE_MAP.FRENCH_ENROLLED_PROGRAM_CODES]);
+  student.careerProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.CAREER_ENROLLED_PROGRAM_CODES);
+  student.mappedIndigenousEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.INDIGENOUS_ENROLLED_PROGRAM_CODES);
+  student.mappedBandCode = bandCodesMap.get(student.bandCode) !== undefined ? `${bandCodesMap.get(student.bandCode)?.description} (${bandCodesMap.get(student.bandCode)?.bandCode})` : null;
+  student.careerProgramCode = careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${careerProgramCodesMap.get(student.careerProgramCode)?.description} (${careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
+  student.mappedSchoolFunding = schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
+  student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.yearsInEll = student.sdcStudentEll ? student.sdcStudentEll.yearsInEll : '';
+  student.mappedNoOfCourses = student.numberOfCoursesDec !== null ? student.numberOfCoursesDec.toFixed(2) : '0';
+  return student;
+}
+
+function enrolledProgramMapping(student, enrolledProgramFilter) {
+  let enrolledProgramCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+  if(!student.enrolledProgramCodes) {
+    return '';
+  }
+  return student.enrolledProgramCodes
+    .match(/.{1,2}/g)
+    .filter(programCode => enrolledProgramFilter.includes(programCode))
+    .map(programCode => {
+      const enrolledProgram = enrolledProgramCodesMap.get(programCode);
+      return enrolledProgram ? `${enrolledProgram.description} (${programCode})` : programCode;
+    })
+    .join(',');
+}
+
+function nativeAncestryInd(student) {
+  return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
 }
 
 async function getStudentHeadcounts(req, res) {

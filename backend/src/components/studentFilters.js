@@ -268,7 +268,7 @@ function validateGradeFilter(filterGrades = []) {
 }
   
 function validateFundingTypeFilter(filterFunding = []) {
-  const activeFundingCodes = cacheService.getActiveFundingCodes();
+  const activeFundingCodes = cacheService.getActiveSchoolFundingCodes();
   if (filterFunding.length > 0) {
     if (filterFunding.every(value => activeFundingCodes.includes(code => code !== 'No Funding' && value === code.schoolFundingCode))) {
       log.error('Invalid funding code filter.');
@@ -278,7 +278,7 @@ function validateFundingTypeFilter(filterFunding = []) {
 }
   
 function validateCareerCodeFilter(filterCareerCodes = []) {
-  const activeFundingCodes = cacheService.getActiveCareerCodes();
+  const activeFundingCodes = cacheService.getActiveCareerProgramCodes();
   if (filterCareerCodes.length > 0) {
     if (filterCareerCodes.every(value => activeFundingCodes.includes(code => value === code.careerProgramCode))) {
       log.error('Invalid career code filter.');
@@ -288,7 +288,7 @@ function validateCareerCodeFilter(filterCareerCodes = []) {
 }
   
 function validateEnrolledProgramFilter(filterGrades = []) {
-  const activeFundingCodes = cacheService.getActiveEnrolledPrograms();
+  const activeFundingCodes = cacheService.getActiveEnrolledProgramCodes();
   if (filterGrades.length > 0) {
     if (filterGrades.every(value => activeFundingCodes.includes(code => value === code.enrolledProgramCode))) {
       log.error('Invalid enrolled program filter.');
@@ -311,7 +311,7 @@ function validateWarningFilter(filters = []) {
 }
 
 function validateSpedCodes(filters = []) {
-  const activeSpedCodes = cacheService.getActiveSpedCodes();
+  const activeSpedCodes = cacheService.getActiveSpecialEducationCodes();
   if (filters.length > 0) {
     if (filters.every(value => activeSpedCodes.includes(code => value === code.specialEducationCategoryCode))) {
       log.error('Invalid special education filter.');
@@ -391,7 +391,7 @@ function createSpedFilter(pValue) {
   let spedCodeList = [];
   validateSpedCodes(pValue);
   if (pValue.includes('noSpedCode')) {
-    const notInValues = cacheService.getActiveSpedCodes().map(x=>x.specialEducationCategoryCode).filter(value => !pValue.includes(value) && pValue!=='noSpedCode');
+    const notInValues = cacheService.getActiveSpecialEducationCodes().map(x=>x.specialEducationCategoryCode).filter(value => !pValue.includes(value) && pValue!=='noSpedCode');
     if(notInValues?.length > 0) { //if all filters are selected then it is equivalent to no filters being selected
       spedCodeList.push({ key: 'specialEducationCategoryCode', value: notInValues.toString(), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }
@@ -511,7 +511,7 @@ function careerCodeFilter(pValue) {
 
   validateCareerCodeFilter(pValue);
   if (pValue.includes('noCareerCodes')) {
-    const notInValues = cacheService.getActiveCareerCodes().map(x=>x.careerProgramCode).filter(value => !pValue.includes(value) && pValue!=='noCareerCodes');
+    const notInValues = cacheService.getActiveCareerProgramCodes().map(x=>x.careerProgramCode).filter(value => !pValue.includes(value) && pValue!=='noCareerCodes');
     if(notInValues?.length > 0) { //if all filters are selected then it is equivalent to no filters being selected
       careerCodeList.push({ key: 'careerProgramCode', value: notInValues.toString(), operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }

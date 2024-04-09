@@ -142,6 +142,8 @@
 
 <script>
 
+import {displayName} from '../../utils/format';
+
 export default {
   name: 'CustomTable',
   components: {
@@ -281,26 +283,7 @@ export default {
         return 'Under Review';
       }
     },
-    displayName(first, middle, last) {
-      let name = '';
-      if (last) {
-        name += last;
-      }
-
-      if (first && last) {
-        name +=  `, ${first}` ;
-      } else if (first) {
-        name += first;
-      }
-
-      if ((first && middle) || (last && middle)) {
-        name += ` (${middle})`;
-      } else if (middle) {
-        name += `(${middle})`;
-      }
-
-      return name;
-    }
+    displayName
   }
 };
 </script>
