@@ -65,7 +65,7 @@ export default defineConfig({
           return null;
         },
         'setup-collections': async (schoolCollection: SchoolCollectionOptions) => {
-          return new CollectionSetupUtils(config).setUpSchoolCollection(schoolCollection);
+          return new CollectionSetupUtils(config).setUpCollections(schoolCollection);
         },
         'setup-student-ells': async (ells: SdcStudentEll[]) => {
           return new CollectionSetupUtils(config).setUpStudentElls(ells);
