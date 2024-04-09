@@ -125,8 +125,10 @@ const schoolPaginatedSchema = object({
     }).noUnknown(),
     searchParams: object({
       status: string(),
+      pubEarlyLearning: string(),
+      schoolID: string(),
       districtID: string(),
-      pubEarlyLearning: string()
+      type: string()
     }).noUnknown()
   }).noUnknown()
 }).noUnknown();
