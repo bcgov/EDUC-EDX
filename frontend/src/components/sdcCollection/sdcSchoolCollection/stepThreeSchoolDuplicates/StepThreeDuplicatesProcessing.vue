@@ -1,15 +1,17 @@
 <template>
+  <Spinner v-if="isLoading" />
   <div
     v-for="duplicateStudent in duplicateStudents"
+    v-else-if="duplicateStudents.length > 0"
     :key="duplicateStudent.assignedPen"
   >
     <v-row>
       <v-col>
-        <span style="font-weight: bold">Assigned PEN:</span> {{ duplicateStudent.assignedPen }}
+        <v-chip><span style="font-weight: bold">Assigned PEN: </span>&nbsp;{{ duplicateStudent.assignedPen }}</v-chip>
       </v-col>
     </v-row>
     <v-data-table
-      class="mb-6"
+      class="mb-10"
       :items="duplicateStudent.items"
       :headers="headers"
       mobile-breakpoint="0"
@@ -30,7 +32,7 @@
           >
             <div v-if="column.title === 'PEN'">
               <div class="header-text">
-                Submitted PEN
+                PEN
               </div>
               <div
                 v-if="column.hasOwnProperty('subHeader')"
@@ -90,7 +92,8 @@
                     <v-btn
                       id="editOptionsMenu"
                       dark
-                      text="Resolve"
+                      density="comfortable"
+                      icon="mdi-wrench-cog"
                       color="primary"
                       v-bind="props"
                     />
@@ -98,36 +101,39 @@
                   <v-list>
                     <v-list-item
                       id="newMessageToConvBtn"
+                      @click="editStudent(props.item.raw)"
                     >
                       <v-icon
                         color="#003366"
-                        class="pr-1"
+                        class="pr-1 mb-1"
                       >
-                        mdi-email-outline
+                        mdi-account-edit
                       </v-icon>
-                      <span>Message</span>
+                      <span class="ml-2">Edit</span>
                     </v-list-item>
                     <v-list-item
                       id="addAttachmentConvButton"
+                      @click="removeStudent(props.item.raw)"
                     >
                       <v-icon
                         color="#003366"
-                        class="pr-1"
+                        class="pr-1 mb-1"
                       >
-                        mdi-paperclip
+                        mdi-trash-can
                       </v-icon>
-                      <span>Attachment</span>
+                      <span class="ml-2">Remove</span>
                     </v-list-item>
                     <v-list-item
                       id="addStudentConvButton"
+                      @click="markStudentAsDifferent(props.item.raw)"
                     >
                       <v-icon
                         color="#003366"
-                        class="pr-1"
+                        class="pr-1 mb-1"
                       >
-                        mdi-emoticon-happy-outline
+                        mdi-account-question
                       </v-icon>
-                      <span>Student</span>
+                      <span class="ml-2">Request Review of PEN</span>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -168,16 +174,49 @@
       </template>
     </v-data-table>
   </div>
-  
-  <v-row justify="end">
-    <PrimaryButton
-      id="step-3-next-button-school"
-      class="mr-3 mb-3"
-      icon="mdi-check"
-      text="Verify as Correct"
-      :click-action="next"
-    />
+  <v-alert
+    v-else
+    type="success"
+    class="mb-6"
+    variant="tonal"
+    text="Congratulations! There are no duplicates in your school 1701 Submission"
+  />
+  <v-row>
+    <v-col class="d-flex justify-end">
+      <PrimaryButton
+        v-if="!isLoading"
+        id="step-3-next-button-school"
+        class="mr-3 mb-3"
+        icon="mdi-check"
+        text="Next"
+        :click-action="next"
+      />
+    </v-col>
   </v-row>
+
+  <v-bottom-sheet
+    v-model="editStudentSheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <ViewStudentDetailsComponent
+      :selected-student-ids="studentForEdit"
+      @close="editStudentSheet = !editStudentSheet; getSchoolDuplicates()"
+    />
+  </v-bottom-sheet>
+  <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
+    <template #message>
+      <p>Are you sure that you would like to remove the selected student from the 1701 submission?</p>
+    </template>
+  </ConfirmationDialog>
+
+  <ConfirmationDialog ref="confirmMarkDifferent">
+    <template #message>
+      <p>We will look into the assigned PEN we found for this student. Would you like to proceed?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 
 <script>
@@ -189,10 +228,18 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {displayName} from '../../../../utils/format';
 import {SCH_DUPLICATES} from '../../../../utils/sdc/TableConfiguration';
+import {cloneDeep} from 'lodash';
+import ViewStudentDetailsComponent from '../stepThreeVerifyData/ViewStudentDetailsComponent.vue';
+import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+import Spinner from '../../../common/Spinner.vue';
 
 export default {
   name: 'StepThreeDuplicatesProcessing',
   components: {
+    Spinner,
+    ConfirmationDialog,
+    ViewStudentDetailsComponent,
     PrimaryButton
   },
   mixins: [alertMixin],
@@ -212,6 +259,8 @@ export default {
     return {
       type: 'SDC',
       isLoading: true,
+      editStudentSheet: false,
+      studentForEdit: [],
       headers: SCH_DUPLICATES.tableHeaders,
       duplicateStudents: [],
       schoolCollection: null,
@@ -235,6 +284,7 @@ export default {
       }
     },
     getSchoolDuplicates(){
+      this.isLoading = true;
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.sdcSchoolCollectionID + '/duplicates')
         .then(response => {
           this.duplicateStudents = response.data;
@@ -246,6 +296,44 @@ export default {
         });
     },
     displayName,
+    editStudent($event) {
+      const selectedStudent = cloneDeep($event);
+      this.studentForEdit.splice(0);
+      this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
+      this.editStudentSheet = true;
+    },
+    async markStudentAsDifferent($event){
+      const selectedStudent = cloneDeep($event);
+      const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/markDiff`, selectedStudent)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+          this.getSchoolDuplicates();
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+        });
+    },
+    async removeStudent($event){
+      const selectedStudent = cloneDeep($event);
+      const confirmation = await this.$refs.confirmRemovalOfStudentRecord.open('Are you sure you wish to remove this student?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
+
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/students/remove`, selectedStudent?.sdcSchoolCollectionStudentID.split())
+        .then(() => {
+          setSuccessAlert('Success! Student has been removed.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to remove this student. Please try again later.');
+        }).finally(() => {
+          this.getSchoolDuplicates();
+        });
+    },
     markStepAsComplete() {
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
@@ -285,6 +373,10 @@ export default {
 
 :deep(.v-data-table-footer) {
   display: none;
+}
+
+:deep(.v-data-table){
+  font-size: 0.90em;
 }
 
 .divider:last-child  {

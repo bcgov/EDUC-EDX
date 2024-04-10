@@ -161,6 +161,10 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       return res.status(HttpStatus.OK).json(result);
     }
 
+    if(req?.query?.tableFormat){
+      data.content = data?.content.map(toTableRow);
+    }
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e?.status === 404) {
@@ -198,6 +202,20 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
+  try {
+    const payload = req.body;
+    payload.assignedPen = null;
+    payload.assignedStudentId = null;
+    payload.penMatchResult = 'MRKED_DIFF';
+
+    return updateAndValidateSdcSchoolCollectionStudent(req, res);
+  } catch (e) {
+    log.error('Error updating sdc school collection student detail', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -539,5 +557,6 @@ module.exports = {
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
   deleteSDCSchoolCollectionStudent,
+  markSdcSchoolCollectionStudentAsDifferent,
   getStudentHeadcounts
 };

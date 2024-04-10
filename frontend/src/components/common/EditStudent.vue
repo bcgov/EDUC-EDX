@@ -434,7 +434,7 @@
           </v-col>
           <v-col v-else-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues?.length === 0">
             <v-alert
-              closable="true"
+              :closable="true"
               type="success"
               variant="tonal"
               text="There are no errors or warnings on this student record."
