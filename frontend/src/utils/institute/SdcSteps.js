@@ -18,26 +18,32 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
   },
   {
     id: 'step-3',
-    title: 'Edit/Verify Data Issues',
+    title: 'Review & Fix Duplicates',
     step: 3,
-    sdcSchoolCollectionStatusCode: 'REVIEWED'
+    sdcSchoolCollectionStatusCode: 'SCH_DUPLI'
   },
   {
     id: 'step-4',
-    title: 'Verify School Details (1601)',
+    title: 'Edit/Verify Data Issues',
     step: 4,
-    sdcSchoolCollectionStatusCode: 'SCH_D_VRFD'
+    sdcSchoolCollectionStatusCode: 'REVIEWED'
   },
   {
     id: 'step-5',
-    title: 'Verify School Contacts (1601)',
+    title: 'Verify School Details (1601)',
     step: 5,
-    sdcSchoolCollectionStatusCode: 'SCH_C_VRFD'
+    sdcSchoolCollectionStatusCode: 'SCH_D_VRFD'
   },
   {
     id: 'step-6',
-    title: 'Submit Data',
+    title: 'Verify School Contacts (1601)',
     step: 6,
+    sdcSchoolCollectionStatusCode: 'SCH_C_VRFD'
+  },
+  {
+    id: 'step-7',
+    title: 'Submit Data',
+    step: 7,
     sdcSchoolCollectionStatusCode: 'SUBMITTED'
   },
 ]);

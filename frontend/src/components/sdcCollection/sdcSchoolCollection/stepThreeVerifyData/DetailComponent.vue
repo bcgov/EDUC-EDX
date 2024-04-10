@@ -153,7 +153,6 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import {enrolledProgram} from '../../../../utils/sdc/enrolledProgram';
 import Filters from '../../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
@@ -265,7 +264,7 @@ export default {
     },
     loadStudents() {
       this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated?tableFormat=true`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
@@ -275,7 +274,7 @@ export default {
           },
         }
       }).then(response => {
-        this.studentList = response.data.content.map(this.toTableRow);
+        this.studentList = response.data.content;
         this.totalElements = response.data.totalElements;
       }).catch(error => {
         console.error(error);
@@ -286,45 +285,6 @@ export default {
     },
     toggleFilters() {
       this.showFilters= !this.showFilters;
-    },
-    enrolledProgramMapping(student, enrolledProgramFilter) {
-      if(!student.enrolledProgramCodes) {
-        return '';
-      }
-      return student.enrolledProgramCodes
-        .match(/.{1,2}/g)
-        .filter(programCode => enrolledProgramFilter.includes(programCode))
-        .map(programCode => {
-          const enrolledProgram = this.enrolledProgramCodesMap.get(programCode);
-          return enrolledProgram ? `${enrolledProgram.description} (${programCode})` : programCode;
-        })
-        .join(',');
-    },
-    toTableRow(student) {
-      student.mappedSpedCode = this.specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? `${this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description} (${this.specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode})` : null;
-      student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : this.nativeAncestryInd(student);
-      student.mappedFrenchEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES);
-      student.mappedEllEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES);
-      student.mappedLanguageEnrolledProgram = this.enrolledProgramMapping(student, [...enrolledProgram.ENGLISH_ENROLLED_PROGRAM_CODES, ...enrolledProgram.FRENCH_ENROLLED_PROGRAM_CODES]);
-      student.careerProgram = this.enrolledProgramMapping(student, enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
-      student.mappedIndigenousEnrolledProgram = this.enrolledProgramMapping(student, enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
-      student.mappedBandCode = this.bandCodesMap.get(student.bandCode) !== undefined ? `${this.bandCodesMap.get(student.bandCode)?.description} (${this.bandCodesMap.get(student.bandCode)?.bandCode})` : null;
-      student.careerProgramCode = this.careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${this.careerProgramCodesMap.get(student.careerProgramCode)?.description} (${this.careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
-      student.mappedSchoolFunding = this.schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${this.schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
-      student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-      student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-      student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
-      student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-      student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
-      student.yearsInEll = student.sdcStudentEll ? student.sdcStudentEll.yearsInEll : '';
-      let noOfCourses = student.numberOfCourses;
-      if(noOfCourses && noOfCourses.length === 4) {
-        student.mappedNoOfCourses = (Number.parseInt(noOfCourses) / 100).toFixed(2);
-      }
-      return student;
-    },
-    nativeAncestryInd(student) {
-      return student.nativeAncestryInd === 'Y' ? 'Yes' : 'No';
     },
     reload(value) {
       if(value?.pageSize) {

@@ -22,6 +22,27 @@ export function formatDateTime(datetime, from='uuuuMMdd', to='uuuu/MM/dd', hasTi
   return result;
 }
 
+export function displayName(first, middle, last) {
+  let name = '';
+  if (last) {
+    name += last;
+  }
+
+  if (first && last) {
+    name +=  `, ${first}` ;
+  } else if (first) {
+    name += first;
+  }
+
+  if ((first && middle) || (last && middle)) {
+    name += ` (${middle})`;
+  } else if (middle) {
+    name += `(${middle})`;
+  }
+
+  return name;
+}
+
 export function formatPhoneNumber(phoneNumberString) {
   let cleaned = ('' + phoneNumberString).replace(/\D/g, '');
   let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
