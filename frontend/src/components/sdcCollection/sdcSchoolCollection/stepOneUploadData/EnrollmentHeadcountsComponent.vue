@@ -7,7 +7,7 @@
       <tr>
         <th scope="col" />
         <th scope="col">
-          Under School-Aged Students
+          Preschool Aged Students
         </th>
         <th scope="col">
           School-Aged Students
