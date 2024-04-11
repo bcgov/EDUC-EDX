@@ -216,7 +216,9 @@
     items-per-page="-1"
   >
     <template #item.schoolTitle="{ value }">
-      <a :href="`/open-collection-details/` + value.sdcSchoolCollectionId">{{ value.title }}</a>
+      <router-link :to="{ name: 'sdcCollection', params: { schoolCollectionID: value.sdcSchoolCollectionId }}">
+        {{ value.title }}
+      </router-link>
     </template>
     <template #item.uploadDate="{ value }">
       <span v-if="value">
