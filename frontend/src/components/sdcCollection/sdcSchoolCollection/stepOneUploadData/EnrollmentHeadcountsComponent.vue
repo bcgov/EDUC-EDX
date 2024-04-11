@@ -7,7 +7,7 @@
       <tr>
         <th scope="col" />
         <th scope="col">
-          Under School-Aged Students
+          Preschool Aged Students
         </th>
         <th scope="col">
           School-Aged Students
@@ -70,7 +70,7 @@ export default defineComponent({
   },
   data() {
     return {
-      rows: ['Under School Aged', 'School Aged', 'Adult', 'All Students']
+      rows: ['Preschool Aged', 'School Aged', 'Adult', 'All Students']
     };
   },
   methods: {
