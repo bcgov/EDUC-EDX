@@ -70,7 +70,7 @@ export default defineComponent({
   },
   data() {
     return {
-      rows: ['Under School Aged', 'School Aged', 'Adult', 'All Students']
+      rows: ['Preschool Aged', 'School Aged', 'Adult', 'All Students']
     };
   },
   methods: {
