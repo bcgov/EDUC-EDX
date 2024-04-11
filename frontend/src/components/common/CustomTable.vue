@@ -59,7 +59,7 @@
       <template #item="props">
         <tr
           class="hoverTable"
-          @click="rowclicked(props.item.raw)"
+          @click="rowclicked(props.item)"
         >
           <td
             v-for="column in headers"
@@ -68,45 +68,45 @@
           >
             <v-checkbox
               v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'"
-              :model-value="isSelected(props.item.raw) !== undefined"
+              :model-value="isSelected(props.item) !== undefined"
               hide-details="true"
               @click.prevent.stop="onClick(props)"
             />
             <v-tooltip
               v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
-              :style="{ display: getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) ? '' : 'none' }"
+              :style="{ display: getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode']) ? '' : 'none' }"
             >
               <template #activator="{ props: tooltipProps }">
                 <v-icon
                   v-bind="tooltipProps"
                   size="25"
-                  :color="getSdcStudentStatusIconColor(props.item.raw['sdcSchoolCollectionStudentStatusCode'])"
+                  :color="getSdcStudentStatusIconColor(props.item['sdcSchoolCollectionStudentStatusCode'])"
                 >
-                  {{ getSdcStudentIssueIcon(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+                  {{ getSdcStudentIssueIcon(props.item['sdcSchoolCollectionStudentStatusCode']) }}
                 </v-icon>
               </template>
-              {{ getSdcStudentStatusHoverText(props.item.raw['sdcSchoolCollectionStudentStatusCode']) }}
+              {{ getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode']) }}
             </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'studentPen'">
-                {{ getAssignedPen(props.item.raw['assignedPen']) }}
+                {{ getAssignedPen(props.item['assignedPen']) }}
               </span>
 
               <span v-else-if="column.key === 'legalName'">
-                {{ displayName(props.item.raw['legalFirstName'], props.item.raw['legalMiddleNames'], props.item.raw['legalLastName']) }}
+                {{ displayName(props.item['legalFirstName'], props.item['legalMiddleNames'], props.item['legalLastName']) }}
               </span>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
+                <span v-if="props.item['isAdult'] !== null || props.item['isAdult' !== undefined]">{{ props.item['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
               </div>
 
               <div v-else-if="column.key === 'fte'">
-                <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
+                <span>{{ props.item['fte'] === 0 ? 0 : props.item['fte'] }}</span>
               </div>
               <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram' || column.key === 'mappedLanguageEnrolledProgram'">
-                <template v-if="props.item.raw[column.key]">
+                <template v-if="props.item[column.key]">
                   <span
-                    v-for="(progs, idx) in props.item.raw[column.key].split(',')"
+                    v-for="(progs, idx) in props.item[column.key].split(',')"
                     :key="idx"
                   >
                     <div>{{ progs }}</div>
@@ -116,20 +116,20 @@
                   <div>-</div>
                 </template>
               </div>
-              <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
+              <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
               <span v-else-if="column.title !== 'select'">-</span>
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
-                  <span v-if="props.item.raw['usualLastName'] || props.item.raw['usualFirstName'] || props.item.raw['usualMiddleNames']">
-                    {{ displayName(props.item.raw['usualFirstName'], props.item.raw['usualMiddleNames'], props.item.raw['usualLastName']) }}
+                  <span v-if="props.item['usualLastName'] || props.item['usualFirstName'] || props.item['usualMiddleNames']">
+                    {{ displayName(props.item['usualFirstName'], props.item['usualMiddleNames'], props.item['usualLastName']) }}
                   </span>
                   <span v-else>-</span>
                 </div>
                 <div v-else-if="column.subHeader.key === 'isGraduated'">
-                  <span v-if="props.item.raw['isGraduated'] !== null || props.item.raw['isGraduated'] !== undefined">{{ props.item.raw['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
+                  <span v-if="props.item['isGraduated'] !== null || props.item['isGraduated'] !== undefined">{{ props.item['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
                 </div>
-                <span v-else-if="props.item.raw[column.subHeader.key]">{{ props.item.raw[column.subHeader.key] }}</span>
+                <span v-else-if="props.item[column.subHeader.key]">{{ props.item[column.subHeader.key] }}</span>
                 <span v-else>-</span>
               </div>
             </div>
@@ -229,11 +229,11 @@ export default {
       this.$emit('editSelectedRow', props);
     },
     onClick(prop) {
-      let selectedValue = prop.item.raw;
+      let selectedValue = prop.item;
       if(this.isSelected(selectedValue)) {
         this.selected.splice(this.selected.findIndex(value => value.sdcSchoolCollectionStudentID === selectedValue.sdcSchoolCollectionStudentID), 1);
       } else {
-        this.selected.push(prop.item.raw);
+        this.selected.push(prop.item);
       }
       this.masterCheckbox = this.selected.length > 0 && this.isAllSelected();
     },

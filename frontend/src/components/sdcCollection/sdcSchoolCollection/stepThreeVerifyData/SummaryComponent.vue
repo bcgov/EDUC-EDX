@@ -68,7 +68,7 @@
                     </v-col>
                     <v-divider
                       v-if="idx !== header?.orderedColumnTitles?.length - 1"
-                      class="my-4"
+                      class="my-4 divider"
                       :vertical="true"
                     />
                   </template>
@@ -118,16 +118,15 @@
     </v-col>
 
     <v-col>
-        <v-switch
-          id="compare-switch"
-          v-model="compareSwitch"
-          color="primary"
-          label="compare to previous September Collection"
-          style="justify-items: right;"
-          @update:model-value="compare()"
-        />
-      </v-col>
-    
+      <v-switch
+        id="compare-switch"
+        v-model="compareSwitch"
+        color="primary"
+        label="compare to previous September Collection"
+        style="justify-items: right;"
+        @update:model-value="compare()"
+      />
+    </v-col>
   </v-row>
 
   <v-row align-content="space-between">
@@ -187,11 +186,6 @@ export default {
       reportType: null
     };
   },
-  mounted() {
-    
-  },
-  created() {
-  },
   watch: {
     headcountType: {
       handler() {
@@ -200,6 +194,11 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted() {
+    
+  },
+  created() {
   },
   methods: {
     getComparisonIcon,
@@ -252,6 +251,11 @@ export default {
 
 .compare-text {
   color: gray;
+}
+
+.divider {
+  height: 3rem;
+  margin-top: 1rem;
 }
 
 .row-data {

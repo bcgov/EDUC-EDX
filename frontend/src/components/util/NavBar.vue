@@ -99,13 +99,13 @@
       color="#38598A"
       style="z-index: 1001;"
       :dark="true"
-      class="pl-4 pr-8"
-      :class="{'pl-16': $vuetify.display.mdAndUp}"
+      class="pr-8"
     >
       <v-app-bar-nav-icon
         id="menuBtn"
-        class="ml-n5"
+        :class="{'ml-11': $vuetify.display.mdAndUp}"
         style="color: white"
+        text="Menu"
         @click="drawer=true"
       >
         <v-icon v-if="!drawer">

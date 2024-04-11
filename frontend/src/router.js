@@ -287,7 +287,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'open-district-collection-details/:districtCollectionID',
+          path: 'open-district-collection-details/:sdcDistrictCollectionID',
           name: 'sdcDistrictCollection',
           component: SDCDistrictCollectionView,
           props: true,

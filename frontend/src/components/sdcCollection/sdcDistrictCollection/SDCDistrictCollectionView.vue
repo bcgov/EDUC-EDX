@@ -138,7 +138,7 @@ export default defineComponent({
   },
   created() {
     this.isLoading = !this.isLoading;
-    sdcCollectionStore().getDistrictCollection(this.$route.params.districtCollectionID).finally(() => {
+    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
       this.districtCollectionObject = this.districtCollection;
       this.districtID = this.districtCollection?.districtID;
       this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
@@ -154,7 +154,7 @@ export default defineComponent({
     },
     refreshStore(skipGetIndexOfSDCCollectionByStatusCode = false) {
       this.isLoading = !this.isLoading;
-      sdcCollectionStore().getDistrictCollection(this.$route.params.districtCollectionID).finally(() => {
+      sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection.districtID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
@@ -177,5 +177,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.v-stepper-window {
+  margin: 0 !important;
+}
 
+.v-stepper-header {
+  box-shadow: none !important;
+}
 </style>
