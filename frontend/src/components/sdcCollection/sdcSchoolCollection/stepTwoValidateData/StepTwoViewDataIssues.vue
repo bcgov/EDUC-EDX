@@ -329,7 +329,7 @@
   >
     <EditAndFixStudentData
       :selected-students="selectedStudents"
-      :total-students="numIssueStudentsInCollection"
+      :total-students="totalNumIssueStudentsInCollection"
       @clear-filter="clearFiltersAndReload"
       @filter-pen="filterStudentsByPen"
       @close="refresh"
@@ -385,7 +385,6 @@ export default {
       pageSize: 10,
       studentListData: [],
       totalStudents: 0,
-      numIssueStudentsInCollection: 0,
       sdcCollection: sdcCollectionStore(),
       totalNumIssueStudentsInCollection: 0,
       legalUsualNameFilter: null,
@@ -446,7 +445,6 @@ export default {
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
-      this.totalNumIssueStudentsInCollection = this.numIssueStudentsInCollection;
     });
   },
   methods: {
@@ -540,7 +538,7 @@ export default {
       }).then(response => {
         this.studentListData = response.data.content;
         this.totalStudents = response.data.totalElements;
-        this.numIssueStudentsInCollection = response.data.totalElements;
+        this.totalNumIssueStudentsInCollection = response.data.totalElements;
       }).catch(error => {
         console.error(error);
         setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collection students paginated. Please try again later.');
