@@ -58,26 +58,26 @@
       >
         <v-col>
           <v-banner
-          lines="one"
-          :border="0"
-          text="Are you sure that you would like to remove this student from the 1701 submission?"
-          style="background-color: rgb(235, 237, 239);"
-        >
-          <v-banner-actions>
-            <PrimaryButton
-              id="rejectBtn"
-              secondary
-              text="Cancel"
-              :click-action="reject"
-              class="mr-4"
-            />
-            <PrimaryButton
-              id="resolveBtn"
-              text="Yes"
-              :click-action="deleteStudent"
-            />
-          </v-banner-actions>
-        </v-banner>
+            lines="one"
+            :border="0"
+            text="Are you sure that you would like to remove this student from the 1701 submission?"
+            style="background-color: rgb(235, 237, 239);"
+          >
+            <v-banner-actions>
+              <PrimaryButton
+                id="rejectBtn"
+                secondary
+                text="Cancel"
+                :click-action="reject"
+                class="mr-4"
+              />
+              <PrimaryButton
+                id="resolveBtn"
+                text="Yes"
+                :click-action="deleteStudent"
+              />
+            </v-banner-actions>
+          </v-banner>
         </v-col>
       </v-row>
 
