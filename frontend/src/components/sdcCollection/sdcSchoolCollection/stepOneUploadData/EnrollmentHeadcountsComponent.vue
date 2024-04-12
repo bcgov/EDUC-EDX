@@ -29,18 +29,28 @@
         <td class="section-header-title">
           {{ row }}
         </td>
-        <td v-for="(r, i) in rows" :key="r + generateKey()" :class="{'table-cell': true, 'zero-cell': findCellValue(r, row).currentValue==='0'}">
-          <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
+        <td
+          v-for="(r, i) in rows"
+          :key="r + generateKey()"
+          :class="{'table-cell': true, 'zero-cell': findCellValue(r, row).currentValue==='0'}"
+        >
+          <span
+            v-if="findCellValue(r, row).comparisonValue !== null"
+            class="compare-text"
+          >
             {{ findCellValue(r, row).comparisonValue }}
-            </span>
-            <span v-if="findCellValue(r, row).comparisonValue !== null" class="compare-text">
-              <v-icon
-                size="x-small"
-                :color="getStatusColor(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue)"
-              >
+          </span>
+          <span
+            v-if="findCellValue(r, row).comparisonValue !== null"
+            class="compare-text"
+          >
+            <v-icon
+              size="x-small"
+              :color="getStatusColor(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue)"
+            >
               {{ getComparisonIcon(findCellValue(r, row).comparisonValue, findCellValue(r, row).currentValue) }}
-              </v-icon>
-              </span>
+            </v-icon>
+          </span>
 
           <span>
             {{ findCellValue(r, row).currentValue }}

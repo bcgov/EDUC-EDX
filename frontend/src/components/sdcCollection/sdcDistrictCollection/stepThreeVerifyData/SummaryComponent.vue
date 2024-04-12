@@ -1,7 +1,5 @@
-<template>
-  
-</template>
-
+<template />
+  <div></div>
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
@@ -27,13 +25,13 @@ export default {
       reportType: null
     };
   },
+  watch: {
+
+  },
   mounted() {
     
   },
   created() {
-  },
-  watch: {
-
   },
   methods: {
     getComparisonIcon,

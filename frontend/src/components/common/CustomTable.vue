@@ -93,7 +93,11 @@
               </span>
 
               <div v-else-if="column.key === 'schoolName'">
-                <router-link class="school-router" :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}" target="_blank">
+                <router-link
+                  class="school-router"
+                  :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}"
+                  target="_blank"
+                >
                   {{ props.item['mincode'] }} - {{ props.item['schoolName'] }} 
                 </router-link>
               </div>

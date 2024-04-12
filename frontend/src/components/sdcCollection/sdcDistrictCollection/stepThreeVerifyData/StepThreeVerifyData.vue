@@ -1,5 +1,5 @@
 <template>
-   <div class="border">
+  <div class="border">
     <v-tabs
       v-model="tab"
       color="#38598a"
@@ -139,9 +139,7 @@ export default {
     next() {
       if(this.isStepComplete) {
         this.$emit('next');
-      } else {
-       
-      }
+      } 
     },
   }
 };

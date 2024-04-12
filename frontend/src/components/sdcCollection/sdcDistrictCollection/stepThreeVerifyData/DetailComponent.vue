@@ -12,19 +12,19 @@
           >Students Found:  {{ totalElements }}
           </span>
           <router-link 
-              class="ml-2"
-              :to="{ path: downloadReportURL() }"
-              target="_blank"
+            class="ml-2"
+            :to="{ path: downloadReportURL() }"
+            target="_blank"
+          >
+            <v-icon
+              small
+              class="ml-1"
+              color="#003366"
             >
-              <v-icon
-                small
-                class="ml-1"
-                color="#003366"
-              >
-                mdi-tray-arrow-down
-              </v-icon>
-              <span class="export">Export All Student Records</span>
-            </router-link>
+              mdi-tray-arrow-down
+            </v-icon>
+            <span class="export">Export All Student Records</span>
+          </router-link>
         </v-col>
         <v-col
           cols="8"
@@ -75,7 +75,7 @@
         </v-col>
       </v-row>
     </v-col>
-</v-row>   
+  </v-row>   
 </template>
 
 <script>
@@ -85,12 +85,10 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
-    ConfirmationDialog,
     CustomTable
   },
   mixins: [alertMixin],

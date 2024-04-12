@@ -1,8 +1,8 @@
 <template>
   <v-table
     v-if="headcountTableData"
-    density="compact"
     id="indigenous-headcount-table"
+    density="compact"
   >
     <thead>
       <tr>
@@ -30,10 +30,16 @@
             :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]?.currentValue==='0'}"
           >
             <div>
-              <span v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
-              {{row[columnHeader]?.comparisonValue}}
+              <span
+                v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null"
+                class="compare-text"
+              >
+                {{ row[columnHeader]?.comparisonValue }}
               </span>
-              <span v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+              <span
+                v-if="columnHeader === 'Total' && row[columnHeader]?.comparisonValue !== null"
+                class="compare-text"
+              >
                 <v-icon
                   size="x-small"
                   :color="getStatusColor(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue)"

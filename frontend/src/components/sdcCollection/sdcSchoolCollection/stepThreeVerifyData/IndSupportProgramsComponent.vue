@@ -42,8 +42,8 @@
             :headcount-table-data="data"
           />
           <BandHeadcountsComponent
-              v-if="data && reportType === 'band-codes'"
-              :headcount-table-data="data"
+            v-if="data && reportType === 'band-codes'"
+            :headcount-table-data="data"
           />
         </template>
       </SummaryComponent>
