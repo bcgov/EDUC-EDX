@@ -32,24 +32,28 @@ export function setEmptyInputParams(params, ...excludedParams) {
 }
 
 export function getComparisonIcon(comparisonValue, currentValue) {
-  if(comparisonValue > currentValue) {
-    return 'mdi-arrow-down';
-  } else if(comparisonValue < currentValue) {
+  let previousValueNumber = Number(comparisonValue);
+  let currentValueNumber = Number(currentValue);
+  if (previousValueNumber < currentValueNumber) {
     return 'mdi-arrow-up';
-  } else if(comparisonValue === currentValue) {
-    return 'mdi-equal';
-  } else {
-    return '';
   }
-};
+  if (previousValueNumber > currentValueNumber) {
+    return 'mdi-arrow-down';
+  }
+  if (previousValueNumber === currentValueNumber) {
+    return 'mdi-equal';
+  }
+  return '';
+}
 
 export function getStatusColor(comparisonValue, currentValue) {
-  if(comparisonValue > currentValue) {
-    return 'red';
-  } else if(comparisonValue < currentValue) {
+  let previousValueNumber = Number(comparisonValue);
+  let currentValueNumber = Number(currentValue);
+  if (previousValueNumber < currentValueNumber) {
     return 'green';
-  } else {
-    return '#1976d2';
+  }
+  if (previousValueNumber > currentValueNumber) {
+    return 'red';
   }
 }
 
