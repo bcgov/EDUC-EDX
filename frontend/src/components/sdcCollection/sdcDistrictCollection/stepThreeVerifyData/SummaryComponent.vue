@@ -1,5 +1,7 @@
-<template />
-  <div></div>
+<template>
+  <div>Summary Component</div>
+</template>
+  
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
