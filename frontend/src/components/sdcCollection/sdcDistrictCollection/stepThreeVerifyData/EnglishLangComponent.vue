@@ -1,6 +1,6 @@
 <template>
   <v-container
-    id="indProgTab"
+    id="engLangTab"
     fluid
   >
     <v-row class="mt-3 mb-3">
@@ -15,7 +15,7 @@
           Detail View
         </v-btn>
         <v-btn
-          id="indProgSummaryButton"
+          id="engLangSummaryButton"
           size="large"
           class="summary-button"
           :class="{ 'active-button': reportView === 'summary' }"
@@ -25,65 +25,44 @@
         </v-btn>
       </v-btn-toggle>
     </v-row>
-  
+
     <div v-if="reportView === 'detail'">
       <DetailComponent
         :config="config"
-        :school="school"
       />
     </div>
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.summaryReport"
-      >
-        <template #reports="{ data, reportType }">
-          <IndigenousHeadcountsComponent
-            v-if="data && reportType === 'indigenous'"
-            :headcount-table-data="data"
-          />
-          <BandHeadcountsComponent
-            v-if="data && reportType === 'band-codes'"
-            :headcount-table-data="data"
-          />
-        </template>
-      </SummaryComponent>
+      />
     </div>
   </v-container>
 </template>
-    
+
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from './SummaryComponent.vue';
-import {INDSUPPORT_PR} from '../../../../utils/sdc/TableConfiguration';
-import IndigenousHeadcountsComponent from '../stepOneUploadData/IndigenousHeadcountsComponent.vue';
-import BandHeadcountsComponent from './BandHeadcountsComponent.vue';
-  
+import { ELL } from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+
 export default {
-  name: 'IndSupportProgramsComponent',
+  name: 'EnglishLangComponent',
   components: {
-    BandHeadcountsComponent,
-    IndigenousHeadcountsComponent,
     DetailComponent,
     SummaryComponent
   },
   mixins: [alertMixin],
   props: {
-    school: {
-      type: Object,
-      required: true,
-      default: null
-    }
   },
   emits: [],
   data() {
     return {
       reportView: 'detail',
-      config: INDSUPPORT_PR
+      config: ELL
     };
   },
   computed: {
-    
+
   },
   created() {
   },
@@ -95,7 +74,7 @@ export default {
     showSummary() {
       this.reportView = 'summary';
     }
-   
+
   }
 };
 </script>
@@ -115,4 +94,3 @@ export default {
   border: 1px solid #003366;
 }
 </style>
-

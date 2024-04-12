@@ -86,7 +86,7 @@
             :total-elements="totalElements"
             :is-loading="isLoading"
             :reset="resetFlag"
-            :schoolCollection="schoolCollection"
+            :school-collection="schoolCollection"
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"

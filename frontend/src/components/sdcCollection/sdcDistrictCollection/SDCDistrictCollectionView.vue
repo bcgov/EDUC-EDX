@@ -96,6 +96,13 @@
               >
                 <StepTwoMonitor />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="3"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepThreeVerifyData />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -111,12 +118,15 @@ import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {SDC_STEPS_DISTRICT} from '../../../utils/institute/SdcSteps';
 import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
+import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
+
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
   components: {
     StepOneUploadData,
-    StepTwoMonitor
+    StepTwoMonitor,
+    StepThreeVerifyData
   },
   data() {
     return {

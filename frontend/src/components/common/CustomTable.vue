@@ -92,6 +92,16 @@
                 {{ getAssignedPen(props.item['assignedPen']) }}
               </span>
 
+              <div v-else-if="column.key === 'schoolName'">
+                <router-link
+                  class="school-router"
+                  :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}"
+                  target="_blank"
+                >
+                  {{ props.item['mincode'] }} - {{ props.item['schoolName'] }} 
+                </router-link>
+              </div>
+
               <span v-else-if="column.key === 'legalName'">
                 {{ displayName(props.item['legalFirstName'], props.item['legalMiddleNames'], props.item['legalLastName']) }}
               </span>
@@ -178,7 +188,7 @@ export default {
     },
     schoolCollection: {
       type: Object,
-      required: true,
+      required: false,
       default: null
     }
   },
@@ -306,5 +316,13 @@ export default {
  tr:hover td {
   background-color: #e8e8e8 !important;
   cursor: pointer;
+}
+
+.school-router{
+  color: #003366;
+}
+
+.school-router:hover{
+  text-decoration: underline;
 }
 </style>

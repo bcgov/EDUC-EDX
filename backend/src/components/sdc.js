@@ -112,13 +112,22 @@ async function getSchoolCollectionById(req, res) {
 
 async function getSDCSchoolCollectionStudentPaginated(req, res) {
   try {
-    const search = [{
-      condition: null,
-      searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
-    }, {
+    const search = [];
+    if(req.params.sdcSchoolCollectionID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcSchoolCollectionID', value: req.params.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    } else if(req.params.sdcDistrictCollectionID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcDistrictCollectionID', value: req.params.sdcDistrictCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]   
+      });
+    }
+    search.push({
       condition: CONDITION.AND,
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
-    }];
+    });
 
     if(req.query.searchParams['tabFilter']) {
       search.push({
@@ -163,6 +172,21 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
 
     if(req?.query?.tableFormat){
       data.content = data?.content.map(toTableRow);
+    }
+
+    if(req?.params?.sdcDistrictCollectionID){
+      data?.content.forEach(value => {
+        value.schoolName = cacheService.getSchoolBySchoolID(value.schoolID)?.schoolName;
+        value.mincode = cacheService.getSchoolBySchoolID(value.schoolID)?.mincode;
+      });
+      data?.content.sort((a,b) =>  {
+        if (a.schoolName > b.schoolName) {
+          return 1;
+        } else if (a.schoolName < b.schoolName) {
+          return -1;
+        }
+        return 0;
+      });
     }
 
     return res.status(HttpStatus.OK).json(data);

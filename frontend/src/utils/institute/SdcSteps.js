@@ -61,4 +61,35 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     step: 2,
     sdcDistrictCollectionStatusCode: 'MONITORING'
   },
+  {
+    id: 'step-3',
+    title: 'Edit/Verify Data',
+    step: 3,
+    sdcDistrictCollectionStatusCode: 'REVIEWED'
+  },
+  {
+    id: 'step-4',
+    title: 'Resolve In-District Duplicates',
+    step: 4,
+    sdcDistrictCollectionStatusCode: ''
+  },
+  {
+    id: 'step-5',
+    title: 'Submit to Ministry',
+    step: 5,
+    sdcDistrictCollectionStatusCode: ''
+  },
+  {
+    id: 'step-6',
+    title: 'Resolve Province Duplicates',
+    step: 6,
+    sdcDistrictCollectionStatusCode: ''
+  },
+  {
+    id: 'step-7',
+    title: 'Review & Sign-Off Final Submission',
+    step: 7,
+    sdcDistrictCollectionStatusCode: ''
+  },
+
 ]);
