@@ -425,13 +425,13 @@ export default {
 
         await this.validateForm();
 
-        if (!this.uploadFileValue[0] || !this.validForm) {
+        if (!this.uploadFileValue || !this.validForm) {
           data = 'No File Chosen';
           this.inputKey++;
           this.isReadingFile = false;
         } else {
           let reader = new FileReader();
-          reader.readAsText(this.uploadFileValue[0]);
+          reader.readAsText(this.uploadFileValue);
           reader.onload = () => {
             data = reader.result;
             this.uploadFile(data);
@@ -443,7 +443,7 @@ export default {
     async uploadFile(fileAsString) {
       try{
         let document = {
-          fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
+          fileName: getFileNameWithMaxNameLength(this.uploadFileValue.name),
           fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/file', document);

@@ -234,7 +234,7 @@
             mobile-breakpoint="0"
             :show-select="schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'"
           >
-            <template #column.error="{ column }">
+            <template #header.error="{ column }">
               <v-icon
                 class="mt-2 mr-3"
                 size="25"
@@ -243,7 +243,7 @@
                 mdi-alert-circle-outline
               </v-icon>
             </template>
-            <template #column.fundingWarning="{ column }">
+            <template #header.fundingWarning="{ column }">
               <v-icon
                 class="mt-2 mr-3"
                 size="25"
@@ -252,7 +252,7 @@
                 mdi-alert-outline
               </v-icon>
             </template>
-            <template #column.infoWarning="{ column }">
+            <template #header.infoWarning="{ column }">
               <v-icon
                 class="mt-2 mr-3"
                 size="25"
