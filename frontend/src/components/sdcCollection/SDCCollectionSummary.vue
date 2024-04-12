@@ -59,6 +59,14 @@
               {{ currentCollectionTypeCode }} 
               {{ currentCollectionYear }} Collection
             </p>
+            <p v-if="submissionDate">
+              <i
+                id="submissionDueDate"
+                style="color: red;"
+              >
+                Submission Due: {{ submissionDate }}
+              </i>
+            </p>
           </v-col>
         </v-row>
         <v-row justify="space-around">
@@ -129,6 +137,7 @@ export default {
       isLoading: false,
       currentStepIndex: 0,
       toFormatter: getDateFormatter('uuuu/MM/dd'),
+      submissionDate: null
     };
   },
   computed: {
@@ -154,7 +163,7 @@ export default {
       if(this.schoolID) {
         router.push({name: 'sdcCollection', params: {schoolCollectionID: this.instituteCollectionID}});
       } else {
-        router.push({name: 'sdcDistrictCollection', params: {districtCollectionID: this.instituteCollectionID}});
+        router.push({name: 'sdcDistrictCollection', params: {sdcDistrictCollectionID: this.instituteCollectionID}});
       }
     },
     backToDashboard() {
@@ -174,6 +183,7 @@ export default {
       ApiService.apiAxios.get(url).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.submissionDate = response.data.submissionDueDate;
           this.instituteCollectionID = response.data.sdcDistrictCollectionID ? response.data.sdcDistrictCollectionID : response.data.sdcSchoolCollectionID;
           const instituteStatusCode = response.data.sdcDistrictCollectionStatusCode ? response.data.sdcDistrictCollectionStatusCode : response.data.sdcSchoolCollectionStatusCode;
           this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(instituteStatusCode);

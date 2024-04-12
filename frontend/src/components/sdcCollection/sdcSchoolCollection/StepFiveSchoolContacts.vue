@@ -15,7 +15,8 @@
 
     <SchoolContactsForm
       :function-name="type"
-      :schoolCollectionObject="schoolCollectionObject"
+      :school-collection-object="schoolCollectionObject"
+      :school-i-d="schoolCollectionObject?.schoolID"
       @school-contacts="checkIfPrincipalContactExists"
       @update-is-offshore="handleIsOffshoreSchool"
     />

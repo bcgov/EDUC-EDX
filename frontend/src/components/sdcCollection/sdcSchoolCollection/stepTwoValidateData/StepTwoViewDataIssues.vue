@@ -263,31 +263,31 @@
             </template>
 
             <template #item.studentPen="{ item }">
-              {{ item?.raw?.studentPen === null ? "-" : item?.raw?.studentPen }}
+              {{ item?.studentPen === null ? "-" : item?.studentPen }}
             </template>
             <template #item.localID="{ item }">
-              {{ item?.raw?.localID === null ? "-" : item?.raw?.localID }}
+              {{ item?.localID === null ? "-" : item?.localID }}
             </template>
             <template #item.legalName="{ item }">
-              {{ (item?.raw?.legalLastName === null && item?.raw?.legalMiddleNames === null && item?.raw?.legalFirstName === null) ? "-" :  
-                item?.raw?.legalLastName === null ? getNameWithoutSurname(item.raw.legalFirstName, item.raw.legalMiddleNames) : getLegalName(item.raw.legalFirstName, item.raw.legalMiddleNames, item.raw.legalLastName) 
+              {{ (item?.legalLastName === null && item?.legalMiddleNames === null && item?.legalFirstName === null) ? "-" :
+                item?.legalLastName === null ? getNameWithoutSurname(item.legalFirstName, item.legalMiddleNames) : getLegalName(item.legalFirstName, item.legalMiddleNames, item.legalLastName)
               }}
             </template>
             <template #item.usualName="{ item }">
-              {{ (item?.raw?.usualLastName === null && item?.raw?.usualMiddleNames === null && item?.raw?.usualFirstName === null) ? "-" :  
-                item?.raw?.usualLastName === null ? getNameWithoutSurname(item.raw.usualFirstName, item.raw.usualMiddleNames) : getLegalName(item.raw.usualFirstName, item.raw.usualMiddleNames, item.raw.usualLastName)
+              {{ (item?.usualLastName === null && item?.usualMiddleNames === null && item?.usualFirstName === null) ? "-" :
+                item?.usualLastName === null ? getNameWithoutSurname(item.usualFirstName, item.usualMiddleNames) : getLegalName(item.usualFirstName, item.usualMiddleNames, item.usualLastName)
               }}
             </template>
             <template #item.error="{ item }">
               <td class="td-class">
-                {{ getIssueCount('ERROR', item.raw.sdcSchoolCollectionStudentValidationIssues) }}
+                {{ getIssueCount('ERROR', item.sdcSchoolCollectionStudentValidationIssues) }}
               </td>
             </template>
             <template #item.fundingWarning="{ item }">
-              <span>{{ getIssueCount('FUNDING_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
+              <span>{{ getIssueCount('FUNDING_WARNING', item.sdcSchoolCollectionStudentValidationIssues) }}</span>
             </template>
             <template #item.infoWarning="{ item }">
-              <span>{{ getIssueCount('INFO_WARNING', item.raw.sdcSchoolCollectionStudentValidationIssues) }}</span>
+              <span>{{ getIssueCount('INFO_WARNING', item.sdcSchoolCollectionStudentValidationIssues) }}</span>
             </template>
           </v-data-table-server>
         </v-row>

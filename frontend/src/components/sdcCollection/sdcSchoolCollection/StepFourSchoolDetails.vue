@@ -18,7 +18,8 @@
 
     <SchoolDetailsForm
       :function-name="type"
-      :schoolCollectionObject="schoolCollectionObject"
+      :school-collection-object="schoolCollectionObject"
+      :school-i-d="schoolCollectionObject?.schoolID"
       @is-form-valid="checkFormValidity"
       @edit-toggled="toggleBanner"
       @update-is-offshore="handleIsOffshoreSchool"

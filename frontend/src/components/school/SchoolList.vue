@@ -54,12 +54,12 @@
               <v-list-item
                 v-bind="props"
                 prepend-icon="mdi-circle-medium"
-                :base-color="getStatusColor(item.raw.status)"
+                :base-color="getStatusColor(item.status)"
                 title=""
               >
                 <v-list-item-title style="color: black !important;">
                   {{
-                    item.raw.schoolCodeName
+                    item.schoolCodeName
                   }}
                 </v-list-item-title>
               </v-list-item>
@@ -80,11 +80,11 @@
             item-value="code"
             label="Status"
             variant="underlined"
-            @update:model-value="searchButtonClick"
             :menu-props="{
               closeOnClick: true,
               closeOnContentClick: true,
             }"
+            @update:model-value="searchButtonClick"
           >
             <template #prepend-inner>
               <v-icon
@@ -120,10 +120,10 @@
             :clearable="true"
             variant="underlined"
             :items="schoolActiveFacilityTypes"
-            @update:model-value="searchButtonClick"
             item-title="label"
             item-value="facilityTypeCode"
             label="Facility Type"
+            @update:model-value="searchButtonClick"
           />
         </v-col>
         <v-col
@@ -163,6 +163,7 @@
             hide-default-header
             mobile-breakpoint="0"
           >
+            <template #headers />
             <template #no-data>
               <v-row no-gutters>
                 <v-col class="d-flex justify-center">
@@ -174,7 +175,7 @@
               <v-row
                 no-gutters
                 class="hoverTable pt-1"
-                @click="openSchool(item.raw.schoolId)"
+                @click="openSchool(item.schoolId)"
               >
                 <v-col class="pb-0 pt-0 ml-2 mt-1 mb-1">
                   <v-row
@@ -182,20 +183,20 @@
                     class="mb-n1"
                   >
                     <v-col cols="6">
-                      <span class="subjectHeading">{{ item.raw.mincode }} - {{ item.raw.displayName }}</span>
+                      <span class="subjectHeading">{{ item.mincode }} - {{ item.displayName }}</span>
                     </v-col>
                     <v-col
                       cols="2"
                     >
                       <v-icon
                         class="ml-0 mb-1"
-                        :color="getStatusColorAuthorityOrSchool(item.raw.status)"
+                        :color="getStatusColorAuthorityOrSchool(item.status)"
                         right
                         dark
                       >
                         mdi-circle-medium
                       </v-icon>
-                      <span class="statusCodeLabel">{{ item.raw.status }}</span>
+                      <span class="statusCodeLabel">{{ item.status }}</span>
                     </v-col>
                     <v-col class="d-flex">
                       <v-icon
@@ -207,7 +208,7 @@
                       <span
                         class="principalName statusCodeLabel"
                         style="color: black"
-                      >{{ item.raw.principalsName }}</span>
+                      >{{ item.principalsName }}</span>
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
@@ -216,8 +217,8 @@
                         class="ministryLine"
                         style="color: black"
                       >{{
-                        item.raw.schoolCategory
-                      }} | {{ item.raw.facilityType }}</span>
+                        item.schoolCategory
+                      }} | {{ item.facilityType }}</span>
                     </v-col>
                     <v-col
                       cols="2"
@@ -228,7 +229,7 @@
                       >
                         mdi-phone-outline
                       </v-icon>
-                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.raw.phoneNumber) }}</span>
+                      <span class="statusCodeLabel">{{ formatPhoneNumber(item.phoneNumber) }}</span>
                     </v-col>
                     <v-col
                       cols="4"
@@ -240,7 +241,7 @@
                       >
                         mdi-at
                       </v-icon>
-                      <span class="statusCodeLabel centerSpan">{{ item.raw.email }}</span>
+                      <span class="statusCodeLabel centerSpan">{{ item.email }}</span>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -486,7 +487,7 @@ export default {
     selectItem(item){
 
       this.schoolStatusFilter = [];
-      this.schoolStatusFilter.push(item.raw);
+      this.schoolStatusFilter.push(item);
       this.searchButtonClick();
     },
     clearButtonClick() {

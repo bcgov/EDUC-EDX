@@ -541,6 +541,17 @@ function createLocalIdPenSearchCriteria(value) {
   return searchCriteriaList;
 }
 
+async function getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const data = await getData(token, `${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID}/monitorSdcSchoolCollections`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error retrieving the district collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -558,5 +569,6 @@ module.exports = {
   updateAndValidateSdcSchoolCollectionStudent,
   deleteSDCSchoolCollectionStudent,
   markSdcSchoolCollectionStudentAsDifferent,
-  getStudentHeadcounts
+  getStudentHeadcounts,
+  getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId
 };

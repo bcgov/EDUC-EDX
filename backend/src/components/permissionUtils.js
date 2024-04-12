@@ -145,12 +145,13 @@ function checkSdcSchoolCollectionAccess(req, res, next) {
       message: 'The requested SDC School Collection was not found in the request.'
     });
   }
-  if (req.session.activeInstituteType !== 'SCHOOL' || res.locals.requestedSdcSchoolCollection.schoolID !== req.session.activeInstituteIdentifier) {
+  if(edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, res.locals.requestedSdcSchoolCollection.schoolID)) {
+    return next();
+  } else {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'User does not have access to the requested sdc school collection.'
     });
   }
-  return next();
 }
 
 function checkSdcDistrictCollectionAccess(req, res, next) {
