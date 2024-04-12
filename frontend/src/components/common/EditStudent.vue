@@ -97,7 +97,7 @@
                         label="Legal Surname"
                         variant="underlined"
                         :rules="[rules.required()]"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
@@ -107,7 +107,7 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.usualLastName"
                         label="Usual Surname"
                         variant="underlined"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
@@ -119,7 +119,7 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.legalFirstName"
                         label="Legal Given"
                         variant="underlined"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
@@ -129,7 +129,7 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.usualFirstName"
                         label="Usual Given"
                         variant="underlined"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
@@ -141,7 +141,7 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.legalMiddleNames"
                         label="Legal Middle"
                         variant="underlined"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
@@ -151,7 +151,7 @@
                         v-model="sdcSchoolCollectionStudentDetailCopy.usualMiddleNames"
                         label="Usual Middle"
                         variant="underlined"
-                        :maxlength="255"
+                        :maxlength="25"
                         class="mt-n3"
                       />
                     </v-col>
