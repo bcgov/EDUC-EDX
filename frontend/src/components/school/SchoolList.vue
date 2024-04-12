@@ -162,7 +162,6 @@
             class="elevation-1 rounded"
             hide-default-header
             mobile-breakpoint="0"
-            hea
           >
             <template #headers />
             <template #no-data>

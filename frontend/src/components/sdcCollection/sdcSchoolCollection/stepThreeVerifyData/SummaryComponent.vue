@@ -195,11 +195,6 @@ export default {
       immediate: true
     }
   },
-  mounted() {
-    
-  },
-  created() {
-  },
   methods: {
     getComparisonIcon,
     getStatusColor,
