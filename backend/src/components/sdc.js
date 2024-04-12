@@ -344,7 +344,6 @@ function toTableRow(student) {
   student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
   student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
   student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.yearsInEll = student.sdcStudentEll ? student.sdcStudentEll.yearsInEll : '';
   student.mappedNoOfCourses = student.numberOfCoursesDec !== null ? student.numberOfCoursesDec.toFixed(2) : '0';
   return student;
 }
