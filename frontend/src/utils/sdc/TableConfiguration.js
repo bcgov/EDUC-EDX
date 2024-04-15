@@ -692,7 +692,7 @@ export const FTE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
-      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
     ],
@@ -816,7 +816,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
-      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
     ],
     summaryReport: [
       { title: 'Eligible Career Program Headcount', endpoint:'career'}
@@ -950,14 +950,14 @@ export const REFUGEE = Object.freeze(
 export const SCH_DUPLICATES = Object.freeze(
   {
     tableHeaders: [
-      { title: 'FTE', key: 'fte', align: 'start' },
-      { title: 'PEN', key: 'studentPen', subHeader: { title: 'Local ID', key: 'localID' } },
+      { title: 'Submitted PEN', key: 'studentPen', align: 'start' },
+      { title: 'PEN', key: 'studentPen', subHeader: { title: 'Birthdate', key: 'dob' } },
       { title: 'Legal Names', key: 'legalName', subHeader: { title: 'Usual Names', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
-      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
       { title: ' ', key: 'action' },

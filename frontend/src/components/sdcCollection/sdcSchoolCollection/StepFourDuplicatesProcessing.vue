@@ -7,7 +7,7 @@
   >
     <v-row>
       <v-col>
-        <v-chip><span style="font-weight: bold">Assigned PEN: </span>&nbsp;{{ duplicateStudent.assignedPen }}</v-chip>
+        <v-chip color="primary"><span style="font-weight: bold">Assigned PEN: </span>&nbsp;{{ duplicateStudent.assignedPen }}</v-chip>
       </v-col>
     </v-row>
     <v-data-table
@@ -66,24 +66,20 @@
           >
             <div>
               <span v-if="column.key === 'studentPen'">
-                {{ props.item.raw['studentPen'] }}
+                {{ props.item['studentPen'] }}
               </span>
 
               <span v-else-if="column.key === 'legalName'">
-                {{ displayName(props.item.raw['legalFirstName'], props.item.raw['legalMiddleNames'], props.item.raw['legalLastName']) }}
+                {{ displayName(props.item['legalFirstName'], props.item['legalMiddleNames'], props.item['legalLastName']) }}
               </span>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item.raw['isAdult'] !== null || props.item.raw['isAdult' !== undefined]">{{ props.item.raw['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
-              </div>
-
-              <div v-else-if="column.key === 'fte'">
-                <span>{{ props.item.raw['fte'] === 0 ? 0 : props.item.raw['fte'] }}</span>
+                <span v-if="props.item['isAdult'] !== null || props.item['isAdult' !== undefined]">{{ props.item['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
               </div>
 
               <div v-else-if="column.key === 'action'">
                 <v-menu
-                  v-model="editOptionsOpen[props.item.raw['sdcSchoolCollectionStudentID']]"
+                  v-model="editOptionsOpen[props.item['sdcSchoolCollectionStudentID']]"
                   transition="fab-transition"
                   location="end"
                   offset="10"
@@ -91,29 +87,30 @@
                   <template #activator="{ props }">
                     <v-btn
                       id="editOptionsMenu"
-                      dark
-                      density="comfortable"
-                      icon="mdi-wrench-cog"
+                      class="icon-button"
                       color="primary"
+                      variant="outlined"
+                      density="comfortable"
+                      icon="mdi-playlist-edit"
                       v-bind="props"
                     />
                   </template>
                   <v-list>
                     <v-list-item
                       id="newMessageToConvBtn"
-                      @click="editStudent(props.item.raw)"
+                      @click="editStudent(props.item)"
                     >
                       <v-icon
                         color="#003366"
                         class="pr-1 mb-1"
                       >
-                        mdi-account-edit
+                        mdi-pencil
                       </v-icon>
                       <span class="ml-2">Edit</span>
                     </v-list-item>
                     <v-list-item
                       id="addAttachmentConvButton"
-                      @click="removeStudent(props.item.raw)"
+                      @click="removeStudent(props.item)"
                     >
                       <v-icon
                         color="#003366"
@@ -125,7 +122,7 @@
                     </v-list-item>
                     <v-list-item
                       id="addStudentConvButton"
-                      @click="markStudentAsDifferent(props.item.raw)"
+                      @click="markStudentAsDifferent(props.item)"
                     >
                       <v-icon
                         color="#003366"
@@ -140,9 +137,9 @@
               </div>
 
               <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram' || column.key === 'mappedLanguageEnrolledProgram'">
-                <template v-if="props.item.raw[column.key]">
+                <template v-if="props.item[column.key]">
                   <span
-                    v-for="(progs, idx) in props.item.raw[column.key].split(',')"
+                    v-for="(progs, idx) in props.item[column.key].split(',')"
                     :key="idx"
                   >
                     <div>{{ progs }}</div>
@@ -152,20 +149,23 @@
                   <div>-</div>
                 </template>
               </div>
-              <span v-else-if="props.item.raw[column.key]">{{ props.item.raw[column.key] }}</span>
+              <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
               <span v-else-if="column.title !== 'select'">-</span>
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
-                  <span v-if="props.item.raw['usualLastName'] || props.item.raw['usualFirstName'] || props.item.raw['usualMiddleNames']">
-                    {{ displayName(props.item.raw['usualFirstName'], props.item.raw['usualMiddleNames'], props.item.raw['usualLastName']) }}
+                  <span v-if="props.item['usualLastName'] || props.item['usualFirstName'] || props.item['usualMiddleNames']">
+                    {{ displayName(props.item['usualFirstName'], props.item['usualMiddleNames'], props.item['usualLastName']) }}
                   </span>
                   <span v-else>-</span>
                 </div>
                 <div v-else-if="column.subHeader.key === 'isGraduated'">
-                  <span v-if="props.item.raw['isGraduated'] !== null || props.item.raw['isGraduated'] !== undefined">{{ props.item.raw['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
+                  <span v-if="props.item['isGraduated'] !== null || props.item['isGraduated'] !== undefined">{{ props.item['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
                 </div>
-                <span v-else-if="props.item.raw[column.subHeader.key]">{{ props.item.raw[column.subHeader.key] }}</span>
+                <div v-else-if="column.subHeader.key === 'dob'">
+                  <span>{{ convertDate(props.item['dob']) }}</span>
+                </div>
+                <span v-else-if="props.item[column.subHeader.key]">{{ props.item[column.subHeader.key] }}</span>
                 <span v-else>-</span>
               </div>
             </div>
@@ -220,22 +220,23 @@
 </template>
 
 <script>
-import alertMixin from '../../../../mixins/alertMixin';
-import PrimaryButton from '../../../util/PrimaryButton.vue';
+import alertMixin from '../../../mixins/alertMixin';
+import PrimaryButton from '../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
-import ApiService from '../../../../common/apiService';
-import {ApiRoutes} from '../../../../utils/constants';
-import {displayName} from '../../../../utils/format';
-import {SCH_DUPLICATES} from '../../../../utils/sdc/TableConfiguration';
+import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
+import {displayName} from '../../../utils/format';
+import {SCH_DUPLICATES} from '../../../utils/sdc/TableConfiguration';
 import {cloneDeep} from 'lodash';
-import ViewStudentDetailsComponent from '../stepThreeVerifyData/ViewStudentDetailsComponent.vue';
-import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
-import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
-import Spinner from '../../../common/Spinner.vue';
+import ViewStudentDetailsComponent from './stepThreeVerifyData/ViewStudentDetailsComponent.vue';
+import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
+import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import Spinner from '../../common/Spinner.vue';
+import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
 
 export default {
-  name: 'StepThreeDuplicatesProcessing',
+  name: 'StepFourDuplicatesProcessing',
   components: {
     Spinner,
     ConfirmationDialog,
@@ -294,6 +295,9 @@ export default {
         }).finally(() => {
           this.isLoading = false;
         });
+    },
+    convertDate(dob) {
+      return LocalDate.parse(dob, DateTimeFormatter.ofPattern('uuuuMMdd').withResolverStyle(ResolverStyle.STRICT));
     },
     displayName,
     editStudent($event) {
@@ -381,5 +385,10 @@ export default {
 
 .divider:last-child  {
   border-right: 0
+}
+
+.icon-button{
+  box-shadow: none !important;
+  border: none !important;
 }
 </style>
