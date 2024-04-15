@@ -87,14 +87,14 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepOneUploadData />
+                <StepOneUploadData @next="next"/>
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
                 transition="false"
                 reverse-transition="false"
               >
-                <StepTwoMonitor />
+                <StepTwoMonitor @next="next"/>
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="3"
@@ -181,7 +181,10 @@ export default defineComponent({
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.step;
-    }
+    },
+    next() {
+      this.$refs.stepper.next();
+    },
   }
 });
 </script>
