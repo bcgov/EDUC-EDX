@@ -356,7 +356,7 @@ function toTableRow(student) {
 }
 
 function enrolledProgramMapping(student, enrolledProgramFilter) {
-  let enrolledProgramCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+  let enrolledProgramCodesMap = cacheService.getEnrolledProgramCodesMap();
   if(!student.enrolledProgramCodes) {
     return '';
   }

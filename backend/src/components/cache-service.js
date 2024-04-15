@@ -258,7 +258,7 @@ const cacheService = {
     return careerProgramCodesMap;
   },
   getEnrolledProgramCodesMap() {
-    let enrolledProgramCodesRaw = cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;
+    let enrolledProgramCodesRaw = cachedData[constants.CACHE_KEYS.SDC_ENROLLED_PROGRAM_CODES].activeRecords;
     let enrolledProgramCodes = enrolledProgramCodesRaw.map(item => {
       return {...item, dropdownText: `${item.description} (${item.enrolledProgramCode})`};
     });
