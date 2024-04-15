@@ -190,6 +190,7 @@
         icon="mdi-check"
         text="Next"
         :click-action="next"
+        :disabled="duplicateStudents.length > 0"
       />
     </v-col>
   </v-row>
