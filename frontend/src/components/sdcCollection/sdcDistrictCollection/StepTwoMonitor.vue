@@ -371,11 +371,10 @@ export default defineComponent({
         });
     },
     next() {
-      if(this.isStepComplete) {
-        this.$emit('next');
-      } else {
-        this.markStepAsComplete();
-      }
+      this.$emit('next');
+    },
+    toggleFilters() {
+      this.showFilters= !this.showFilters;
     }
   }
 });
