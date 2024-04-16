@@ -230,10 +230,10 @@ import {ApiRoutes} from '../../../utils/constants';
 import {displayName} from '../../../utils/format';
 import {SCH_DUPLICATES} from '../../../utils/sdc/TableConfiguration';
 import {cloneDeep} from 'lodash';
-import ViewStudentDetailsComponent from './stepThreeVerifyData/ViewStudentDetailsComponent.vue';
-import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
-import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
-import Spinner from '../../common/Spinner.vue';
+import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
+import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+import Spinner from '../../../common/Spinner.vue';
 import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
 
 export default {

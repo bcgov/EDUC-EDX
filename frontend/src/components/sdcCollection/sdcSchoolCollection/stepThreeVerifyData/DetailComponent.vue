@@ -156,7 +156,7 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Filters from '../../../common/Filters.vue';
 import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
-import ViewStudentDetailsComponent from './ViewStudentDetailsComponent.vue';
+import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
 import AddStudentDetails from './AddStudentDetails.vue';
 
 export default {
