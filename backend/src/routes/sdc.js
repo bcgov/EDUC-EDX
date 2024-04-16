@@ -47,6 +47,8 @@ router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove'
 router.get('/sdcSchoolCollectionStudent/getStudentHeadcounts/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getStudentHeadcounts);
 // special case this does not use frontend axios, so need to refresh here to handle expired jwt.
 router.get('/:sdcSchoolCollectionID/report/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, downloadSdcReport);
+router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/report/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, downloadSdcReport);
+
 
 //district
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getSDCSchoolCollectionStudentPaginated);
