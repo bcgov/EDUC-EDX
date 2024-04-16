@@ -233,11 +233,18 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
 async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
   try {
     const payload = req.body;
+    payload.createDate = null;
+    payload.createUser = null;
+    payload.updateDate = null;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    
     payload.assignedPen = null;
     payload.assignedStudentId = null;
-    payload.penMatchResult = 'MRKED_DIFF';
-
-    return updateAndValidateSdcSchoolCollectionStudent(req, res);
+    payload.penMatchResult = null;
+  
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/mark-for-review`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);
     return handleExceptionResponse(e, res);
@@ -334,10 +341,10 @@ function toTableRow(student) {
   student.mappedFrenchEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.FRENCH_ENROLLED_PROGRAM_CODES);
   student.mappedEllEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.ENGLISH_ENROLLED_PROGRAM_CODES);
   student.mappedLanguageEnrolledProgram = enrolledProgramMapping(student, [...ENROLLED_PROGRAM_TYPE_CODE_MAP.ENGLISH_ENROLLED_PROGRAM_CODES, ...ENROLLED_PROGRAM_TYPE_CODE_MAP.FRENCH_ENROLLED_PROGRAM_CODES]);
-  student.careerProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.CAREER_ENROLLED_PROGRAM_CODES);
+  student.mappedCareerProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.CAREER_ENROLLED_PROGRAM_CODES);
   student.mappedIndigenousEnrolledProgram = enrolledProgramMapping(student, ENROLLED_PROGRAM_TYPE_CODE_MAP.INDIGENOUS_ENROLLED_PROGRAM_CODES);
   student.mappedBandCode = bandCodesMap.get(student.bandCode) !== undefined ? `${bandCodesMap.get(student.bandCode)?.description} (${bandCodesMap.get(student.bandCode)?.bandCode})` : null;
-  student.careerProgramCode = careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${careerProgramCodesMap.get(student.careerProgramCode)?.description} (${careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
+  student.mappedCareerProgramCode = careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${careerProgramCodesMap.get(student.careerProgramCode)?.description} (${careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
   student.mappedSchoolFunding = schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
   student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
   student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
@@ -349,7 +356,7 @@ function toTableRow(student) {
 }
 
 function enrolledProgramMapping(student, enrolledProgramFilter) {
-  let enrolledProgramCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+  let enrolledProgramCodesMap = cacheService.getEnrolledProgramCodesMap();
   if(!student.enrolledProgramCodes) {
     return '';
   }

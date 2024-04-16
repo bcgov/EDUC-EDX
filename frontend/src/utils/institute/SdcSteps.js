@@ -18,15 +18,15 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
   },
   {
     id: 'step-3',
-    title: 'Review & Fix Duplicates',
+    title: 'Edit/Verify Data Issues',
     step: 3,
-    sdcSchoolCollectionStatusCode: 'SCH_DUPLI'
+    sdcSchoolCollectionStatusCode: 'REVIEWED'
   },
   {
     id: 'step-4',
-    title: 'Edit/Verify Data Issues',
+    title: 'Review & Fix Duplicates',
     step: 4,
-    sdcSchoolCollectionStatusCode: 'REVIEWED'
+    sdcSchoolCollectionStatusCode: 'SCH_DUPLI'
   },
   {
     id: 'step-5',

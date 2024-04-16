@@ -93,7 +93,7 @@ import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
 
 export default {
-  name: 'StepSixSubmitData',
+  name: 'StepSevenSubmitData',
   components: {
     PrimaryButton
   },
