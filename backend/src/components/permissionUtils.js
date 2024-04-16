@@ -154,6 +154,31 @@ function checkSdcSchoolCollectionAccess(req, res, next) {
   }
 }
 
+function loadInstituteCollection(req, res, next) {
+  if (req.session.activeInstituteType === 'SCHOOL') {
+    return loadSdcSchoolCollection(req, res, next);
+  } else {
+    return loadSdcDistrictCollection(req, res, next);
+  }
+}
+
+function checkInstituteCollectionAccess(req, res, next) {
+  if (req.session.activeInstituteType === 'SCHOOL') {
+    return checkSdcSchoolCollectionAccess(req, res, next);
+  } else {
+    return checkSdcDistrictCollectionAccess(req, res, next);
+  }
+}
+
+function checkIfCreateorUpdateIsAllowed(req, res, next) {
+  if (req.session.activeInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'User doesn\'t have permission.'
+    });
+  }
+  return next();
+}
+
 function checkSdcDistrictCollectionAccess(req, res, next) {
   if (!res.locals.requestedSdcDistrictCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -290,11 +315,39 @@ function findSdcDistrictCollectionID_params(req, res, next) {
   return next();
 }
 
+function findSInstituteTypeCollectionID_body(req, res, next) {
+  if(req.session.activeInstituteType === 'DISTRICT') {
+    res.locals.requestedInstituteType = 'DISTRICT';
+    res.locals.requestedSdcDistrictCollectionID = req.body.sdcDistrictCollectionID;
+    return next();
+  } else {
+    res.locals.requestedInstituteType = 'SCHOOL';
+    res.locals.requestedSdcSchoolCollectionID = req.body.sdcSchoolCollectionID;
+    return next();
+  }
+}
+
+function checkStudentBelongsInCollection(req, res, next) {
+  if(req.session.activeInstituteType === 'DISTRICT') {
+    return findSdcDistrictCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next);
+  } else {
+    return findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next);
+  }
+}
+
 function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudent) {
     return next();
   }
   res.locals.requestedSdcSchoolCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID;
+  return next();
+}
+
+function findSdcDistrictCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return next();
+  }
+  res.locals.requestedSdcDistrictCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcDistrictCollectionID;
   return next();
 }
 
@@ -399,7 +452,12 @@ const permUtils = {
   loadSdcSchoolCollection,
   loadSdcDistrictCollection,
   findSdcSchoolCollectionStudentID_params,
-  loadSdcSchoolCollectionStudent
+  loadSdcSchoolCollectionStudent,
+  checkInstituteCollectionAccess,
+  checkIfCreateorUpdateIsAllowed,
+  findSInstituteTypeCollectionID_body,
+  loadInstituteCollection,
+  checkStudentBelongsInCollection
 };
 
 module.exports = permUtils;

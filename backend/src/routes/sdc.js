@@ -12,7 +12,9 @@ const constants = require('../util/constants');
 const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
-const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess, checkSdcDistrictCollectionAccess } = require('../components/permissionUtils');
+const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess, 
+  checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateIsAllowed, findSInstituteTypeCollectionID_body,
+  loadInstituteCollection, checkStudentBelongsInCollection } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 
 //cached code table calls
@@ -36,10 +38,18 @@ router.get('/sdcSchoolCollection/:sdcSchoolCollectionID', passport.authenticate(
 router.post('/:sdcSchoolCollectionID/file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, scanFilePayload, uploadFile);
 router.get('/:sdcSchoolCollectionID/file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getSdcFileProgress);
 router.put('/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, updateSchoolCollection);
+
+//student
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getSDCSchoolCollectionStudentPaginated);
 router.get('/sdcSchoolCollectionStudent/stats/error-warning-count/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getSDCSchoolCollectionStudentSummaryCounts);
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getSDCSchoolCollectionStudentDetail);
-router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, updateAndValidateSdcSchoolCollectionStudent);
+
+//update student
+router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session: false}, undefined), 
+ isValidBackendToken, validateAccessToken, findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC, PERMISSION.SCHOOL_SDC), 
+ loadInstituteCollection, checkInstituteCollectionAccess, findSInstituteTypeCollectionID_body, checkIfCreateorUpdateIsAllowed, findSdcSchoolCollectionStudentID_params,
+ loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
+
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/markDiff', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, markSdcSchoolCollectionStudentAsDifferent);
 router.delete('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, deleteSDCSchoolCollectionStudent);
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, removeSDCSchoolCollectionStudents);

@@ -75,7 +75,19 @@
         </v-col>
       </v-row>
     </v-col>
-  </v-row>   
+  </v-row>
+  <v-bottom-sheet
+    v-model="editStudentSheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <ViewStudentDetailsComponent
+      :selected-student-ids="studentForEdit"
+      @close="editStudentSheet = !editStudentSheet; loadStudents()"
+    />
+  </v-bottom-sheet>
 </template>
 
 <script>
@@ -85,11 +97,13 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
-    CustomTable
+    CustomTable,
+    ViewStudentDetailsComponent
   },
   mixins: [alertMixin],
   props: {

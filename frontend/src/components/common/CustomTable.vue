@@ -97,7 +97,8 @@
                   class="school-router"
                   :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}"
                   target="_blank"
-                >
+                  @click.stop
+                  >
                   {{ props.item['mincode'] }} - {{ props.item['schoolName'] }} 
                 </router-link>
               </div>
