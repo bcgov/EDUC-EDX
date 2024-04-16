@@ -256,6 +256,10 @@ export default {
 .row-data {
   flex-wrap: nowrap;
 }
+
+#downloadReport {
+  color: #003366;
+}
  
 </style>
        
