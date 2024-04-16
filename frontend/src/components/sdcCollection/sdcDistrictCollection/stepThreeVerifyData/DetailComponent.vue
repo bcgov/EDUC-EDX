@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/csv/download`;
+      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
     },
     editStudent($event) {
       const selectedStudent = cloneDeep($event);

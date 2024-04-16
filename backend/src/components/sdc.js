@@ -474,30 +474,39 @@ function createSearchCriteria(searchParams = []) {
 
 async function downloadSdcReport(req, res) {
   try {
-    let reportType = REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    const reportType = REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
     if (!reportType) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Invalid report type provided'
       });
     }
+
     const token = getAccessToken(req);
-    let resData =  await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${req.params.sdcSchoolCollectionID}/${reportType}`);
+    const collectionId = reportType === 'ALL_STUDENT_DIS_CSV' ? req.params.sdcDistrictCollectionID : req.params.sdcSchoolCollectionID;
+    const resData = await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${collectionId}/${reportType}`);
+    const fileDetails = getFileDetails(reportType);
 
-    if(reportType === 'ALL_STUDENT_SCHOOL_CSV' || reportType === 'ALL_STUDENT_DIS_CSV') {
-      res.setHeader('Content-Disposition', 'inline; attachment; filename="allStudents.csv"');
-      res.setHeader('Content-Type', 'text/csv');
-      let returnedCSV = Buffer.from(resData.documentData, 'base64');
-      return res.status(HttpStatus.OK).send(returnedCSV);
-    }
-
-    res.setHeader('Content-disposition', 'inline; attachment; filename=gradeEnrollmentFTE.pdf');
-    res.setHeader('Content-type', 'application/pdf');
-    let returnedPDF = Buffer.from(resData.documentData, 'base64');
-    return res.status(HttpStatus.OK).send(returnedPDF);
+    setResponseHeaders(res, fileDetails);
+    const buffer = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
     log.error('downloadSdcReport Error', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+function getFileDetails(reportType) {
+  const mappings = {
+    'ALL_STUDENT_DIS_CSV': { filename: 'allStudentsDistrict.csv', contentType: 'text/csv' },
+    'ALL_STUDENT_SCHOOL_CSV': { filename: 'allStudentsSchool.csv', contentType: 'text/csv' },
+    'DEFAULT': { filename: 'gradeEnrollmentFTE.pdf', contentType: 'application/pdf' }
+  };
+  return mappings[reportType] || mappings['DEFAULT'];
+}
+
+function setResponseHeaders(res, { filename, contentType }) {
+  res.setHeader('Content-Disposition', `inline; attachment; filename="${filename}"`);
+  res.setHeader('Content-Type', contentType);
 }
 
 function createTabFilter(searchParams) {

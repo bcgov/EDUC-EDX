@@ -8,7 +8,7 @@ The Node.js backend for the EDX application that handles authentication, authori
  
  **`Step 3`**. Add NODE_ENV=local as environment variable.
  
- **`Step 4`**. Ask for local.json file which contains all the configs from teammate, or create it by following config maps from oc console.
+ **`Step 4`**. Ask for local.json file which contains all the configs from teammate and place it in src/config, or create it by following config maps from oc console.
  
  **`Step 5`**. run `npm install` in command line from backend folder, to install required dependencies.
  
