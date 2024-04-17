@@ -13,7 +13,7 @@ const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
 const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess, 
-  checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateIsAllowed, findSInstituteTypeCollectionID_body,
+  checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSInstituteTypeCollectionID_body,
   loadInstituteCollection, checkStudentBelongsInCollection } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 
@@ -47,7 +47,7 @@ router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport
 //update student
 router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session: false}, undefined), 
  isValidBackendToken, validateAccessToken, findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC, PERMISSION.SCHOOL_SDC), 
- loadInstituteCollection, checkInstituteCollectionAccess, findSInstituteTypeCollectionID_body, checkIfCreateorUpdateIsAllowed, findSdcSchoolCollectionStudentID_params,
+ loadInstituteCollection, checkInstituteCollectionAccess, findSInstituteTypeCollectionID_body, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_params,
  loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/markDiff', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, markSdcSchoolCollectionStudentAsDifferent);

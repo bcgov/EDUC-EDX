@@ -85,7 +85,7 @@
   >
     <ViewStudentDetailsComponent
       :selected-student-ids="studentForEdit"
-      @close="editStudentSheet = !editStudentSheet; loadStudents()"
+      @close="closeAndLoadStudents"
     />
   </v-bottom-sheet>
 </template>
@@ -146,6 +146,10 @@ export default {
 
   },
   methods: {
+    closeAndLoadStudents() {
+      editStudentSheet = !editStudentSheet;
+      loadStudents();
+    },
     downloadReportURL() {
       return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
     },

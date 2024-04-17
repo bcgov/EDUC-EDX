@@ -170,7 +170,7 @@ function checkInstituteCollectionAccess(req, res, next) {
   }
 }
 
-function checkIfCreateorUpdateIsAllowed(req, res, next) {
+function checkIfCreateorUpdateSDCStudentIsAllowed(req, res, next) {
   if (req.session.activeInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'User doesn\'t have permission.'
@@ -454,7 +454,7 @@ const permUtils = {
   findSdcSchoolCollectionStudentID_params,
   loadSdcSchoolCollectionStudent,
   checkInstituteCollectionAccess,
-  checkIfCreateorUpdateIsAllowed,
+  checkIfCreateorUpdateSDCStudentIsAllowed,
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
   checkStudentBelongsInCollection
