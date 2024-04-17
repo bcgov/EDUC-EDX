@@ -329,10 +329,36 @@ function findSInstituteTypeCollectionID_body(req, res, next) {
 
 function checkStudentBelongsInCollection(req, res, next) {
   if(req.session.activeInstituteType === 'DISTRICT') {
-    return findSdcDistrictCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next);
+    return checkIfStudentBelongsInDistrictCollection(req, res, next);
   } else {
-    return findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next);
+    return checkIfStudentBelongsInSchoolCollection(req, res, next);
   }
+}
+
+function checkIfStudentBelongsInDistrictCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return res.status(HttpStatus.NOT_FOUND).json({
+      message: 'Student not found.'
+    });
+  } else if(res.locals.requestedSdcDistrictCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcDistrictCollectionID) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Student doesn\'t belong to the district.'
+    });
+  }
+  return next();
+}
+
+function checkIfStudentBelongsInSchoolCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return res.status(HttpStatus.NOT_FOUND).json({
+      message: 'Student not found.'
+    });
+  } else if(res.locals.requestedSdcSchoolCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Student doesn\'t belong to the school.'
+    });
+  }
+  return next();
 }
 
 function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
@@ -340,14 +366,6 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
     return next();
   }
   res.locals.requestedSdcSchoolCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID;
-  return next();
-}
-
-function findSdcDistrictCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
-  if (!res.locals.requestedSdcSchoolCollectionStudent) {
-    return next();
-  }
-  res.locals.requestedSdcDistrictCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcDistrictCollectionID;
   return next();
 }
 
