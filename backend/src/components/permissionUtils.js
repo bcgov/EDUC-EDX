@@ -342,7 +342,7 @@ function checkIfStudentBelongsInDistrictCollection(req, res, next) {
     });
   } else if(res.locals.requestedSdcDistrictCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcDistrictCollectionID) {
     return res.status(HttpStatus.FORBIDDEN).json({
-      message: 'Student doesn\'t belong to the district.'
+      message: 'Student doesn\'t belong in the district.'
     });
   }
   return next();
@@ -355,7 +355,7 @@ function checkIfStudentBelongsInSchoolCollection(req, res, next) {
     });
   } else if(res.locals.requestedSdcSchoolCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID) {
     return res.status(HttpStatus.FORBIDDEN).json({
-      message: 'Student doesn\'t belong to the school.'
+      message: 'Student doesn\'t belong in the school.'
     });
   }
   return next();
