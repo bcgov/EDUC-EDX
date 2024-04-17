@@ -512,19 +512,17 @@ export default defineComponent({
   },
   computed: {
     filteredItems() {
+      const { schoolFilter, issuesFilter, uploadDataFilter } = this.filters || {};
+
       return this.monitorSdcSchoolCollectionsResponse?.monitorSdcSchoolCollections?.filter(school => {
-        if (this.filters?.schoolFilter && !school.schoolTitle.toLowerCase().includes(this.filters.schoolFilter.toLowerCase())){
+        if (schoolFilter && !school.schoolTitle.toLowerCase().includes(schoolFilter.toLowerCase())) {
           return false;
         }
-        if(this.filters.issuesFilter?.length > 0) {
-          if(!this.filterForErrorsOrWarnings(school)) {
-            return false;
-          }
+        if (issuesFilter?.length > 0 && !this.filterForErrorsOrWarnings(school)) {
+          return false;
         }
-        if(this.filters.uploadDataFilter?.length > 0) {
-          if(!this.filterForUploadData(school)) {
-            return false;
-          }
+        if (uploadDataFilter?.length > 0 && !this.filterForUploadData(school)) {
+          return false;
         }
         return this.filterForStatus(school); //last check so return true if match is found
       });
@@ -551,70 +549,41 @@ export default defineComponent({
       return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
     },
     filterForErrorsOrWarnings(school) {
-      let issueFilterResult = false;
-      for (let filter of this.filters.issuesFilter) {
-        switch (filter.value) {
-        case 'infoWarnings':
-        case 'fundingWarnings':
-        case 'errors':
-          if (school[filter.value] > 0) {
-            issueFilterResult = true;
-            continue;
-          }
-          break;
-        }
-      }
-      return issueFilterResult;
+      const { issuesFilter = [] } = this.filters || {};
+
+      const filterFunctions = {
+        'infoWarnings': () => school.infoWarnings > 0,
+        'fundingWarnings': () => school.fundingWarnings > 0,
+        'errors': () => school.errors > 0
+      };
+
+      return issuesFilter.length === 0 || issuesFilter.some(filter => filterFunctions[filter.value]?.());
     },
     filterForStatus(school) {
-      const detailsFilters = Array.isArray(this.filters?.detailsFilter) ? this.filters?.detailsFilter : [];
-      const contactsFilter = Array.isArray(this.filters?.contactsFilter) ? this.filters?.contactsFilter : [];
-      const submittedFilter = Array.isArray(this.filters?.submittedFilter) ? this.filters?.submittedFilter : [];
+      const { detailsFilter = [], contactsFilter = [], submittedFilter = [] } = this.filters || {};
 
-      for (let filter of [...detailsFilters, ...contactsFilter, ...submittedFilter]) {
-        switch (filter.value) {
-        case 'detailsConfirmed':
-        case 'contactsConfirmed':
-        case 'submittedToDistrict':
-          if(!school[filter.value]) {
-            return false;
-          }
-          break;
-        case 'notDetailsConfirmed':
-          if(school.detailsConfirmed) {
-            return false;
-          }
-          break;
-        case 'notContactsConfirmed':
-          if(school.contactsConfirmed) {
-            return false;
-          }
-          break;
-        case 'notSubmittedToDistrict':
-          if(school.submittedToDistrict) {
-            return false;
-          }
-          break;
-        }
-      }
-      return true;
+      const filterFunctions = {
+        'detailsConfirmed': () => school.detailsConfirmed,
+        'contactsConfirmed': () => school.contactsConfirmed,
+        'submittedToDistrict': () => school.submittedToDistrict,
+        'notDetailsConfirmed': () => !school.detailsConfirmed,
+        'notContactsConfirmed': () => !school.contactsConfirmed,
+        'notSubmittedToDistrict': () => !school.submittedToDistrict
+      };
+
+      const allFilters = [...detailsFilter, ...contactsFilter, ...submittedFilter];
+
+      return allFilters.length === 0 || allFilters.every(filter => filterFunctions[filter.value]());
     },
     filterForUploadData(school) {
-      for (let filter of this.filters.uploadDataFilter) {
-        switch (filter.value) {
-        case 'uploadDate':
-          if(!school.uploadDate) {
-            return false;
-          }
-          break;
-        case 'notUploadDate':
-          if(school.uploadDate !== null) {
-            return false;
-          }
-          break;
-        }
-      }
-      return true;
+      const { uploadDataFilter = [] } = this.filters || {};
+
+      const filterFunctions = {
+        'uploadDate': () => !!school.uploadDate,
+        'notUploadDate': () => !school.uploadDate
+      };
+
+      return uploadDataFilter.length === 0 || uploadDataFilter.every(filter => filterFunctions[filter.value]?.());
     },
     formatDateTime,
     formatDate,

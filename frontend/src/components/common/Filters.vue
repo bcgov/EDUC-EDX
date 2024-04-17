@@ -31,7 +31,6 @@
         <v-col cols="6">
           <slot
             name="text-search"
-            :filter="setSearchFilter"
           >
             <v-text-field
               id="searchInput"
@@ -188,7 +187,7 @@ export default {
   },
   created() {
     Object.keys(this.filters).forEach(key => {
-      this.selected[key] = {};
+      this.selected[key] = [];
     });
   },
   methods: {
