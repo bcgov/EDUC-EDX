@@ -147,8 +147,8 @@ export default {
   },
   methods: {
     closeAndLoadStudents() {
-      editStudentSheet = !editStudentSheet;
-      loadStudents();
+      this.editStudentSheet = !this.editStudentSheet;
+      this.loadStudents();
     },
     downloadReportURL() {
       return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
