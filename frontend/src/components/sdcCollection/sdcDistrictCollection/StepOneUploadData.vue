@@ -18,6 +18,12 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 export default defineComponent({
   name: 'StepOneUploadData',
   components: {PrimaryButton},
+  props: {
+    isStepComplete: {
+      type: Boolean,
+      required: true
+    }
+  },
   emits: ['next'],
   methods: {
     next() {

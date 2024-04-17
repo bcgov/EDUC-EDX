@@ -87,21 +87,31 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepOneUploadData @next="next"/>
+                <StepOneUploadData
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
                 transition="false"
                 reverse-transition="false"
               >
-                <StepTwoMonitor @next="next"/>
+                <StepTwoMonitor
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="3"
                 transition="false"
                 reverse-transition="false"
               >
-                <StepThreeVerifyData />
+                <StepThreeVerifyData
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
               </v-stepper-window-item>
             </v-stepper-window>
           </template>

@@ -1,5 +1,13 @@
 <template>
-  <v-row class="mt-n6">
+  <v-row v-if="isLoading">
+    <v-col>
+      <Spinner />
+    </v-col>
+  </v-row>
+  <v-row
+    v-else
+    class="mt-n6"
+  >
     <v-spacer />
     <v-slide-group
       class="py-4"
@@ -210,9 +218,62 @@
     </v-slide-group>
     <v-spacer />
   </v-row>
+  <v-navigation-drawer
+    v-model="showFilters"
+    location="right"
+    :temporary="true"
+    width="700"
+    :persistent="true"
+    scrim="transparent"
+    :border="true"
+    style="top:0; height: 100%;"
+    rounded="true"
+  >
+    <Filters
+      :filters="allowedFilters"
+      @apply-filters="applyFilters"
+      @clear-filters="clearFilters"
+      @close="toggleFilters()"
+    >
+      <template #text-search>
+        <v-text-field
+          id="searchInput"
+          v-model="filters.schoolFilter"
+          label="School Name or Number"
+          color="primary"
+          variant="underlined"
+          class="mt-n4 mb-n4"
+          @update:model-value="addFilterCount()"
+        />
+      </template>
+    </Filters>
+  </v-navigation-drawer>
+  <v-row
+    justify="end"
+    no-gutters
+  >
+    <v-btn
+      id="filters"
+      color="#003366"
+      text="Filter"
+      class="mr-1 mb-1"
+      prepend-icon="mdi-filter-multiple-outline"
+      variant="outlined"
+      @click="toggleFilters"
+    >
+      <template #append>
+        <v-badge
+          color="error"
+          :content="filterCount"
+          floating
+          offset-y="-10"
+        />
+      </template>
+    </v-btn>
+  </v-row>
   <v-data-table
     :headers="headers"
-    :items="monitorSdcSchoolCollectionsResponse.monitorSdcSchoolCollections"
+    :items="filteredItems"
     items-per-page="-1"
   >
     <template #item.schoolTitle="{ value }">
@@ -279,13 +340,125 @@ import {ApiRoutes} from '../../../utils/constants';
 import {setFailureAlert} from '../../composable/alertComposable';
 import {formatDate, formatDateTime} from '../../../utils/format';
 import PrimaryButton from '../../util/PrimaryButton.vue';
-
+import Filters from '../../common/Filters.vue';
+import {cloneDeep, isEmpty, omitBy} from 'lodash';
+import Spinner from '../../common/Spinner.vue';
 export default defineComponent({
   name: 'StepTwoMonitor',
-  components: {PrimaryButton},
+  components: {Spinner, Filters, PrimaryButton},
+  props: {
+    districtCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    },
+    isStepComplete: {
+      type: Boolean,
+      required: true
+    }
+  },
   emits: ['next'],
   data() {
     return {
+      allowedFilters: {
+        uploadDataFilter: {
+          heading: 'Upload Data',
+          id: 'uploadDataFilter',
+          multiple: false,
+          key: 'uploadDataFilter',
+          filterOptions: [
+            {
+              title: '1701 Data Uploaded',
+              id: 'uploadDate',
+              value: 'uploadDate'
+            },
+            {
+              title: '1701 Data NOT Uploaded',
+              id: 'notUploadDate',
+              value: 'notUploadDate'
+            }
+          ]
+        },
+        issuesFilter: {
+          heading: 'Errors & Warnings',
+          id: 'issuesFilter',
+          multiple: true,
+          key: 'issuesFilter',
+          filterOptions: [
+            {
+              title: 'Errors',
+              id: 'errors',
+              value: 'errors'
+            },
+            {
+              title: 'Info Warnings',
+              id: 'infoWarnings',
+              value: 'infoWarnings'
+            },
+            {
+              title: 'Funding Warnings',
+              id: 'fundingWarnings',
+              value: 'fundingWarnings'
+            }
+          ]
+        },
+        detailsFilter: {
+          heading: 'School Details Confirmed',
+          id: 'detailsFilter',
+          multiple: false,
+          key: 'detailsFilter',
+          filterOptions: [
+            {
+              title: 'School Details Confirmed',
+              id: 'detailsConfirmed',
+              value: 'detailsConfirmed'
+            },
+            {
+              title: 'School Details NOT Confirmed',
+              id: 'notDetailsConfirmed',
+              value: 'notDetailsConfirmed'
+            }
+          ]
+        },
+        contactsFilter: {
+          heading: 'School Contacts Confirmed',
+          id: 'contactsFilter',
+          multiple: false,
+          key: 'contactsFilter',
+          filterOptions: [
+            {
+              title: 'School Contacts Confirmed',
+              id: 'contactsConfirmed',
+              value: 'contactsConfirmed'
+            },
+            {
+              title: 'School Contacts NOT Confirmed',
+              id: 'notContactsConfirmed',
+              value: 'notContactsConfirmed'
+            }
+          ]
+        },
+        submittedFilter: {
+          heading: 'Submitted to District',
+          id: 'submittedFilter',
+          multiple: false,
+          key: 'submittedFilter',
+          filterOptions: [
+            {
+              title: 'Submitted to District',
+              id: 'submittedToDistrict',
+              value: 'submittedToDistrict'
+            },
+            {
+              title: 'NOT Submitted to District',
+              id: 'notSubmittedToDistrict',
+              value: 'notSubmittedToDistrict'
+            }
+          ]
+        }
+      },
+      filters: {},
+      filterCount: 0,
       headers: [
         {
           title: 'School',
@@ -296,7 +469,7 @@ export default defineComponent({
         {
           title: 'Data Uploaded',
           align: 'center',
-          key: 'uploadDate',
+          key: 'uploadDate'
         },
         {
           title: 'Errors',
@@ -319,33 +492,103 @@ export default defineComponent({
         {
           title: 'Details Confirmed',
           align: 'center',
-          key: 'detailsConfirmed',
+          key: 'detailsConfirmed'
         },
         {
           title: 'Contacts Confirmed',
           align: 'center',
-          key: 'contactsConfirmed',
+          key: 'contactsConfirmed'
         },
         {
           title: 'Submitted to District',
           align: 'center',
-          key: 'submittedToDistrict',
+          key: 'submittedToDistrict'
         },
       ],
-      monitorSdcSchoolCollectionsResponse: []
+      isLoading: false,
+      monitorSdcSchoolCollectionsResponse: [],
+      showFilters: false
     };
+  },
+  computed: {
+    filteredItems() {
+      const { schoolFilter, issuesFilter, uploadDataFilter } = this.filters || {};
+
+      return this.monitorSdcSchoolCollectionsResponse?.monitorSdcSchoolCollections?.filter(school => {
+        if (schoolFilter && !school.schoolTitle.toLowerCase().includes(schoolFilter.toLowerCase())) {
+          return false;
+        }
+        if (issuesFilter?.length > 0 && !this.filterForErrorsOrWarnings(school)) {
+          return false;
+        }
+        if (uploadDataFilter?.length > 0 && !this.filterForUploadData(school)) {
+          return false;
+        }
+        return this.filterForStatus(school); //last check so return true if match is found
+      });
+    }
   },
   async created() {
     await this.getSdcSchoolCollections();
   },
   methods: {
+    addFilterCount() {
+      this.filterCount = Object.keys(omitBy(this.filters, isEmpty))?.length;
+    },
+    applyFilters($event) {
+      const schoolFilter = this.filters?.schoolFilter;
+      this.filters = cloneDeep($event);
+      this.filters.schoolFilter = schoolFilter;
+      this.filterCount = Object.keys(omitBy(this.filters, isEmpty))?.length;
+    },
+    clearFilters() {
+      this.filterCount = 0;
+      this.filters = {};
+    },
     disableNextButton() {
       return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
+    },
+    filterForErrorsOrWarnings(school) {
+      const { issuesFilter = [] } = this.filters || {};
+
+      const filterFunctions = {
+        'infoWarnings': () => school.infoWarnings > 0,
+        'fundingWarnings': () => school.fundingWarnings > 0,
+        'errors': () => school.errors > 0
+      };
+
+      return issuesFilter.length === 0 || issuesFilter.some(filter => filterFunctions[filter.value]?.());
+    },
+    filterForStatus(school) {
+      const { detailsFilter = [], contactsFilter = [], submittedFilter = [] } = this.filters || {};
+
+      const filterFunctions = {
+        'detailsConfirmed': () => school.detailsConfirmed,
+        'contactsConfirmed': () => school.contactsConfirmed,
+        'submittedToDistrict': () => school.submittedToDistrict,
+        'notDetailsConfirmed': () => !school.detailsConfirmed,
+        'notContactsConfirmed': () => !school.contactsConfirmed,
+        'notSubmittedToDistrict': () => !school.submittedToDistrict
+      };
+
+      const allFilters = [...detailsFilter, ...contactsFilter, ...submittedFilter];
+
+      return allFilters.length === 0 || allFilters.every(filter => filterFunctions[filter.value]());
+    },
+    filterForUploadData(school) {
+      const { uploadDataFilter = [] } = this.filters || {};
+
+      const filterFunctions = {
+        'uploadDate': () => !!school.uploadDate,
+        'notUploadDate': () => !school.uploadDate
+      };
+
+      return uploadDataFilter.length === 0 || uploadDataFilter.every(filter => filterFunctions[filter.value]?.());
     },
     formatDateTime,
     formatDate,
     async getSdcSchoolCollections(){
-      this.loadingCount += 1;
+      this.isLoading = true;
       await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sdcSchoolCollectionMonitoring`, {
       }).then(response => {
         this.monitorSdcSchoolCollectionsResponse = response?.data;
@@ -353,15 +596,15 @@ export default defineComponent({
         console.error(error);
         setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collections. Please try again later.');
       }).finally(() => {
-        this.loadingCount -= 1;
+        this.isLoading = false;
       });
     },
     markStepAsComplete(){
       let updateCollection = {
-        schoolCollection: this.schoolCollectionObject,
+        districtCollection: this.districtCollectionObject,
         status: 'REVIEWED'
       };
-      ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}`, updateCollection)
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
         .then(() => {
           this.$emit('next');
         })
@@ -371,10 +614,14 @@ export default defineComponent({
         });
     },
     next() {
-      this.$emit('next');
+      if(this.isStepComplete) {
+        this.$emit('next');
+      } else {
+        this.markStepAsComplete();
+      }
     },
     toggleFilters() {
-      this.showFilters= !this.showFilters;
+      this.showFilters = !this.showFilters;
     }
   }
 });

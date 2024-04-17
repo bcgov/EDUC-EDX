@@ -29,15 +29,19 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <v-text-field
-            id="searchInput"
-            v-model="penLocalIdNameFilter"
-            label="PEN or Local ID or Name"
-            color="primary"
-            variant="underlined"
-            class="mt-n4 mb-n4"
-            @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
-          />
+          <slot
+            name="text-search"
+          >
+            <v-text-field
+              id="searchInput"
+              v-model="penLocalIdNameFilter"
+              label="PEN or Local ID or Name"
+              color="primary"
+              variant="underlined"
+              class="mt-n4 mb-n4"
+              @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+            />
+          </slot>
         </v-col>
       </v-row>
       <div
@@ -164,7 +168,7 @@ export default {
     },
     school: {
       type: Object,
-      required: true,
+      required: false,
       default: null
     }
   },
@@ -183,7 +187,7 @@ export default {
   },
   created() {
     Object.keys(this.filters).forEach(key => {
-      this.selected[key] = {};
+      this.selected[key] = [];
     });
   },
   methods: {

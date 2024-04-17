@@ -119,7 +119,10 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-
+    isStepComplete: {
+      type: Boolean,
+      required: true
+    }
   },
   emits: ['next', 'previous'],
   data() {
