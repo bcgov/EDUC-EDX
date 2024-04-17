@@ -411,6 +411,11 @@ function findSdcSchoolCollectionStudentID_params(req, res, next) {
   return next();
 }
 
+function findSdcSchoolCollectionStudentID_body(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
+  return next();
+}
+
 async function loadSdcSchoolCollectionStudent(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudentID) {
     return next();
@@ -475,7 +480,8 @@ const permUtils = {
   checkIfCreateorUpdateSDCStudentIsAllowed,
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
-  checkStudentBelongsInCollection
+  checkStudentBelongsInCollection,
+  findSdcSchoolCollectionStudentID_body
 };
 
 module.exports = permUtils;

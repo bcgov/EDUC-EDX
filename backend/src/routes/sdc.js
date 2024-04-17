@@ -14,7 +14,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
 const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess, 
   checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSInstituteTypeCollectionID_body,
-  loadInstituteCollection, checkStudentBelongsInCollection } = require('../components/permissionUtils');
+  loadInstituteCollection, checkStudentBelongsInCollection, findSdcSchoolCollectionStudentID_body } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 
 //cached code table calls
@@ -47,7 +47,7 @@ router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport
 //update student
 router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session: false}, undefined), 
  isValidBackendToken, validateAccessToken, findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC, PERMISSION.SCHOOL_SDC), 
- loadInstituteCollection, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_params,
+ loadInstituteCollection, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_body,
  loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/markDiff', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, markSdcSchoolCollectionStudentAsDifferent);
