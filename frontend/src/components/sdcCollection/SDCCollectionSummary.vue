@@ -142,8 +142,11 @@ export default {
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'currentStepInCollectionProcess','currentCollectionYear']),
+    isSchoolCollection() {
+      return !!this.schoolID;
+    },
     totalStepsInCollection() {
-      if(this.schoolID) {
+      if(this.isSchoolCollection) {
         return SDC_STEPS_SCHOOL.length;
       } else {
         return SDC_STEPS_DISTRICT.length;
@@ -151,7 +154,7 @@ export default {
     }
   },
   created() {
-    if(this.schoolID) {
+    if(this.isSchoolCollection) {
       this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`);
     } else {
       this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + `/${this.$route.params.districtID}`);
@@ -160,7 +163,7 @@ export default {
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData', 'setCurrentCollectionYear']),
     startCollection() {
-      if(this.schoolID) {
+      if(this.isSchoolCollection) {
         router.push({name: 'sdcCollection', params: {schoolCollectionID: this.instituteCollectionID}});
       } else {
         router.push({name: 'sdcDistrictCollection', params: {sdcDistrictCollectionID: this.instituteCollectionID}});
@@ -184,8 +187,15 @@ export default {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
           this.submissionDate = response.data.submissionDueDate;
-          this.instituteCollectionID = response.data.sdcDistrictCollectionID ? response.data.sdcDistrictCollectionID : response.data.sdcSchoolCollectionID;
-          const instituteStatusCode = response.data.sdcDistrictCollectionStatusCode ? response.data.sdcDistrictCollectionStatusCode : response.data.sdcSchoolCollectionStatusCode;
+
+          let instituteStatusCode;
+          if(this.isSchoolCollection) {
+            this.instituteCollectionID = this.districtID ? response.data.sdcDistrictCollectionID : response.data.sdcSchoolCollectionID;
+            instituteStatusCode = response.data.sdcSchoolCollectionStatusCode;
+          } else {
+            this.instituteCollectionID = response.data.sdcDistrictCollectionID;
+            instituteStatusCode = response.data.sdcDistrictCollectionStatusCode;
+          }
           this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(instituteStatusCode);
           this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
           this.calculateStep();
@@ -198,7 +208,7 @@ export default {
       });
     },
     getIndexOfSDCCollectionByStatusCode(statusCode) {
-      if(this.schoolID) {
+      if(this.isSchoolCollection) {
         return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.step;
       } else {
         return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.step;
