@@ -517,70 +517,16 @@ export default defineComponent({
           return false;
         }
         if(this.filters.issuesFilter?.length > 0) {
-          let issueFilterResult = false;
-          for (let filter of this.filters.issuesFilter) {
-            switch (filter.value) {
-            case 'infoWarnings':
-            case 'fundingWarnings':
-            case 'errors':
-              if (school[filter.value] > 0) {
-                issueFilterResult = true;
-                continue;
-              }
-              break;
-            }
-          }
-          if(!issueFilterResult) {
+          if(!this.filterForErrorsOrWarnings(school)) {
             return false;
           }
         }
         if(this.filters.uploadDataFilter?.length > 0) {
-          for (let filter of this.filters.uploadDataFilter) {
-            switch (filter.value) {
-            case 'uploadDate':
-              if(!school.uploadDate) {
-                return false;
-              }
-              break;
-            case 'notUploadDate':
-              if(school.uploadDate !== null) {
-                return false;
-              }
-              break;
-            }
+          if(!this.filterForUploadData(school)) {
+            return false;
           }
         }
-        const detailsFilters = Array.isArray(this.filters?.detailsFilter) ? this.filters?.detailsFilter : [];
-        const contactsFilter = Array.isArray(this.filters?.contactsFilter) ? this.filters?.contactsFilter : [];
-        const submittedFilter = Array.isArray(this.filters?.submittedFilter) ? this.filters?.submittedFilter : [];
-
-        for (let filter of [...detailsFilters, ...contactsFilter, ...submittedFilter]) {
-          switch (filter.value) {
-          case 'detailsConfirmed':
-          case 'contactsConfirmed':
-          case 'submittedToDistrict':
-            if(!school[filter.value]) {
-              return false;
-            }
-            break;
-          case 'notDetailsConfirmed':
-            if(school.detailsConfirmed) {
-              return false;
-            }
-            break;
-          case 'notContactsConfirmed':
-            if(school.contactsConfirmed) {
-              return false;
-            }
-            break;
-          case 'notSubmittedToDistrict':
-            if(school.submittedToDistrict) {
-              return false;
-            }
-            break;
-          }
-        }
-        return true;
+        return this.filterForStatus(school); //last check so return true if match is found
       });
     }
   },
@@ -603,6 +549,72 @@ export default defineComponent({
     },
     disableNextButton() {
       return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
+    },
+    filterForErrorsOrWarnings(school) {
+      let issueFilterResult = false;
+      for (let filter of this.filters.issuesFilter) {
+        switch (filter.value) {
+        case 'infoWarnings':
+        case 'fundingWarnings':
+        case 'errors':
+          if (school[filter.value] > 0) {
+            issueFilterResult = true;
+            continue;
+          }
+          break;
+        }
+      }
+      return issueFilterResult;
+    },
+    filterForStatus(school) {
+      const detailsFilters = Array.isArray(this.filters?.detailsFilter) ? this.filters?.detailsFilter : [];
+      const contactsFilter = Array.isArray(this.filters?.contactsFilter) ? this.filters?.contactsFilter : [];
+      const submittedFilter = Array.isArray(this.filters?.submittedFilter) ? this.filters?.submittedFilter : [];
+
+      for (let filter of [...detailsFilters, ...contactsFilter, ...submittedFilter]) {
+        switch (filter.value) {
+        case 'detailsConfirmed':
+        case 'contactsConfirmed':
+        case 'submittedToDistrict':
+          if(!school[filter.value]) {
+            return false;
+          }
+          break;
+        case 'notDetailsConfirmed':
+          if(school.detailsConfirmed) {
+            return false;
+          }
+          break;
+        case 'notContactsConfirmed':
+          if(school.contactsConfirmed) {
+            return false;
+          }
+          break;
+        case 'notSubmittedToDistrict':
+          if(school.submittedToDistrict) {
+            return false;
+          }
+          break;
+        }
+      }
+      return true;
+    },
+    filterForUploadData(school) {
+      for (let filter of this.filters.uploadDataFilter) {
+        switch (filter.value) {
+        case 'uploadDate':
+          if(!school.uploadDate) {
+            return false;
+          }
+          break;
+        case 'notUploadDate':
+          if(school.uploadDate !== null) {
+            return false;
+          }
+          break;
+        }
+      }
+      return true;
     },
     formatDateTime,
     formatDate,
