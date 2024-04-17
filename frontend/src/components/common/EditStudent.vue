@@ -617,7 +617,7 @@ export default {
     save(){
       this.loadingCount += 1;
       this.hasError = false;
-      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}`, this.sdcSchoolCollectionStudentDetailCopy)
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
             setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');

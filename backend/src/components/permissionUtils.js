@@ -154,6 +154,31 @@ function checkSdcSchoolCollectionAccess(req, res, next) {
   }
 }
 
+function loadInstituteCollection(req, res, next) {
+  if (res.locals.requestedInstituteType === 'SCHOOL') {
+    return loadSdcSchoolCollection(req, res, next);
+  } else {
+    return loadSdcDistrictCollection(req, res, next);
+  }
+}
+
+function checkInstituteCollectionAccess(req, res, next) {
+  if (res.locals.requestedInstituteType === 'SCHOOL') {
+    return checkSdcSchoolCollectionAccess(req, res, next);
+  } else {
+    return checkSdcDistrictCollectionAccess(req, res, next);
+  }
+}
+
+function checkIfCreateorUpdateSDCStudentIsAllowed(req, res, next) {
+  if (res.locals.requestedInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'User doesn\'t have permission.'
+    });
+  }
+  return next();
+}
+
 function checkSdcDistrictCollectionAccess(req, res, next) {
   if (!res.locals.requestedSdcDistrictCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -290,6 +315,52 @@ function findSdcDistrictCollectionID_params(req, res, next) {
   return next();
 }
 
+function findSInstituteTypeCollectionID_body(req, res, next) {
+  if(req.session.activeInstituteType === 'DISTRICT') {
+    res.locals.requestedInstituteType = 'DISTRICT';
+    res.locals.requestedSdcDistrictCollectionID = req.body.sdcDistrictCollectionID;
+    return next();
+  } else {
+    res.locals.requestedInstituteType = 'SCHOOL';
+    res.locals.requestedSdcSchoolCollectionID = req.body.sdcSchoolCollectionID;
+    return next();
+  }
+}
+
+function checkStudentBelongsInCollection(req, res, next) {
+  if(res.locals.requestedInstituteType === 'DISTRICT') {
+    return checkIfStudentBelongsInDistrictCollection(req, res, next);
+  } else {
+    return checkIfStudentBelongsInSchoolCollection(req, res, next);
+  }
+}
+
+function checkIfStudentBelongsInDistrictCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return res.status(HttpStatus.NOT_FOUND).json({
+      message: 'Student not found.'
+    });
+  } else if(res.locals.requestedSdcDistrictCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcDistrictCollectionID) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Student doesn\'t belong in the district.'
+    });
+  }
+  return next();
+}
+
+function checkIfStudentBelongsInSchoolCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudent) {
+    return res.status(HttpStatus.NOT_FOUND).json({
+      message: 'Student not found.'
+    });
+  } else if(res.locals.requestedSdcSchoolCollectionID !== res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Student doesn\'t belong in the school.'
+    });
+  }
+  return next();
+}
+
 function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudent) {
     return next();
@@ -337,6 +408,11 @@ async function loadSdcDistrictCollection(req, res, next) {
 //Find SDC School Collection Student
 function findSdcSchoolCollectionStudentID_params(req, res, next) {
   res.locals.requestedSdcSchoolCollectionStudentID = req.params.sdcSchoolCollectionStudentID;
+  return next();
+}
+
+function findSdcSchoolCollectionStudentID_body(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
   return next();
 }
 
@@ -399,7 +475,13 @@ const permUtils = {
   loadSdcSchoolCollection,
   loadSdcDistrictCollection,
   findSdcSchoolCollectionStudentID_params,
-  loadSdcSchoolCollectionStudent
+  loadSdcSchoolCollectionStudent,
+  checkInstituteCollectionAccess,
+  checkIfCreateorUpdateSDCStudentIsAllowed,
+  findSInstituteTypeCollectionID_body,
+  loadInstituteCollection,
+  checkStudentBelongsInCollection,
+  findSdcSchoolCollectionStudentID_body
 };
 
 module.exports = permUtils;
