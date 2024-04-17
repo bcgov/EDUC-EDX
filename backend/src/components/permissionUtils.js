@@ -328,7 +328,7 @@ function findSInstituteTypeCollectionID_body(req, res, next) {
 }
 
 function checkStudentBelongsInCollection(req, res, next) {
-  if(req.session.activeInstituteType === 'DISTRICT') {
+  if(res.locals.requestedInstituteType === 'DISTRICT') {
     return checkIfStudentBelongsInDistrictCollection(req, res, next);
   } else {
     return checkIfStudentBelongsInSchoolCollection(req, res, next);
