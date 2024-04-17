@@ -71,6 +71,23 @@ async function getSdcFileProgress(req, res) {
   }
 }
 
+async function updateDistrictCollection(req, res) {
+  try {
+    const payload = req.body.districtCollection;
+    payload.createDate = null;
+    payload.createUser = null;
+    payload.updateDate = null;
+    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.sdcDistrictCollectionStatusCode = req.body.status;
+    const token = getAccessToken(req);
+    const data = await putData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error updating the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function updateSchoolCollection(req, res) {
   try {
     const payload = req.body.schoolCollection;
@@ -597,6 +614,7 @@ module.exports = {
   getSdcFileProgress,
   getSchoolStudentDuplicates,
   removeSDCSchoolCollectionStudents,
+  updateDistrictCollection,
   updateSchoolCollection,
   getDistrictCollectionById,
   getSchoolCollectionById,

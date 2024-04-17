@@ -103,7 +103,7 @@ export default {
     markStepAsComplete() {
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
-        status: 'SCH_C_VRFD'
+        status: 'SCH_D_VRFD'
       };
       ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {

@@ -266,7 +266,7 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
     }
   }
 };
