@@ -155,7 +155,7 @@ function checkSdcSchoolCollectionAccess(req, res, next) {
 }
 
 function loadInstituteCollection(req, res, next) {
-  if (req.session.activeInstituteType === 'SCHOOL') {
+  if (res.locals.requestedInstituteType === 'SCHOOL') {
     return loadSdcSchoolCollection(req, res, next);
   } else {
     return loadSdcDistrictCollection(req, res, next);
@@ -163,7 +163,7 @@ function loadInstituteCollection(req, res, next) {
 }
 
 function checkInstituteCollectionAccess(req, res, next) {
-  if (req.session.activeInstituteType === 'SCHOOL') {
+  if (res.locals.requestedInstituteType === 'SCHOOL') {
     return checkSdcSchoolCollectionAccess(req, res, next);
   } else {
     return checkSdcDistrictCollectionAccess(req, res, next);
@@ -171,7 +171,7 @@ function checkInstituteCollectionAccess(req, res, next) {
 }
 
 function checkIfCreateorUpdateSDCStudentIsAllowed(req, res, next) {
-  if (req.session.activeInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
+  if (res.locals.requestedInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'User doesn\'t have permission.'
     });
