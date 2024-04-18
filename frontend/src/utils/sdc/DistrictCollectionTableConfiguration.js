@@ -161,3 +161,105 @@ export const REFUGEE = Object.freeze(
     }
   }
 );
+
+export const MONITORING = Object.freeze(
+  {
+    allowedFilters: {
+      uploadDataFilter: {
+        heading: 'Upload Data',
+        id: 'uploadDataFilter',
+        multiple: false,
+        key: 'uploadDataFilter',
+        filterOptions: [
+          {
+            title: '1701 Data Uploaded',
+            id: 'uploadDate',
+            value: 'uploadDate'
+          },
+          {
+            title: '1701 Data NOT Uploaded',
+            id: 'notUploadDate',
+            value: 'notUploadDate'
+          }
+        ]
+      },
+      issuesFilter: {
+        heading: 'Errors & Warnings',
+        id: 'issuesFilter',
+        multiple: true,
+        key: 'issuesFilter',
+        filterOptions: [
+          {
+            title: 'Errors',
+            id: 'errors',
+            value: 'errors'
+          },
+          {
+            title: 'Info Warnings',
+            id: 'infoWarnings',
+            value: 'infoWarnings'
+          },
+          {
+            title: 'Funding Warnings',
+            id: 'fundingWarnings',
+            value: 'fundingWarnings'
+          }
+        ]
+      },
+      detailsFilter: {
+        heading: 'School Details Confirmed',
+        id: 'detailsFilter',
+        multiple: false,
+        key: 'detailsFilter',
+        filterOptions: [
+          {
+            title: 'School Details Confirmed',
+            id: 'detailsConfirmed',
+            value: 'detailsConfirmed'
+          },
+          {
+            title: 'School Details NOT Confirmed',
+            id: 'notDetailsConfirmed',
+            value: 'notDetailsConfirmed'
+          }
+        ]
+      },
+      contactsFilter: {
+        heading: 'School Contacts Confirmed',
+        id: 'contactsFilter',
+        multiple: false,
+        key: 'contactsFilter',
+        filterOptions: [
+          {
+            title: 'School Contacts Confirmed',
+            id: 'contactsConfirmed',
+            value: 'contactsConfirmed'
+          },
+          {
+            title: 'School Contacts NOT Confirmed',
+            id: 'notContactsConfirmed',
+            value: 'notContactsConfirmed'
+          }
+        ]
+      },
+      submittedFilter: {
+        heading: 'Submitted to District',
+        id: 'submittedFilter',
+        multiple: false,
+        key: 'submittedFilter',
+        filterOptions: [
+          {
+            title: 'Submitted to District',
+            id: 'submittedToDistrict',
+            value: 'submittedToDistrict'
+          },
+          {
+            title: 'NOT Submitted to District',
+            id: 'notSubmittedToDistrict',
+            value: 'notSubmittedToDistrict'
+          }
+        ]
+      }
+    }
+  }
+);

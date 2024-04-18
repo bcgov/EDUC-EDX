@@ -243,7 +243,6 @@
           color="primary"
           variant="underlined"
           class="mt-n4 mb-n4"
-          @update:model-value="addFilterCount()"
         />
       </template>
     </Filters>
@@ -283,10 +282,18 @@
     </template>
     <template #item.uploadDate="{ value }">
       <span v-if="value">
-        {{ formatDate(value, "uuuu-MM-dd'T'HH:mm:ss.SSSSSS") }}
-        <v-tooltip activator="parent">
-          {{ formatDateTime(value, "uuuu-MM-dd'T'HH:mm:ss.SSSSSS", 'uuuu/MM/dd HH:mm:ss', true) }}
-        </v-tooltip>
+        <template v-if="value.includes('.')">
+          {{ formatDate(value, "uuuu-MM-dd'T'HH:mm:ss.SSSSSS") }}
+          <v-tooltip activator="parent">
+            {{ formatDateTime(value, "uuuu-MM-dd'T'HH:mm:ss.SSSSSS", 'uuuu/MM/dd HH:mm:ss', true) }}
+          </v-tooltip>
+        </template>
+        <template v-else>
+          {{ formatDate(value, "uuuu-MM-dd'T'HH:mm:ss") }}
+          <v-tooltip activator="parent">
+            {{ formatDateTime(value, "uuuu-MM-dd'T'HH:mm:ss", 'uuuu/MM/dd HH:mm:ss', true) }}
+          </v-tooltip>
+        </template>
       </span>
       <span v-else>
         -
@@ -341,8 +348,9 @@ import {setFailureAlert} from '../../composable/alertComposable';
 import {formatDate, formatDateTime} from '../../../utils/format';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import Filters from '../../common/Filters.vue';
-import {cloneDeep, isEmpty, omitBy} from 'lodash';
+import {cloneDeep} from 'lodash';
 import Spinner from '../../common/Spinner.vue';
+import {MONITORING} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
 export default defineComponent({
   name: 'StepTwoMonitor',
   components: {Spinner, Filters, PrimaryButton},
@@ -360,105 +368,8 @@ export default defineComponent({
   emits: ['next'],
   data() {
     return {
-      allowedFilters: {
-        uploadDataFilter: {
-          heading: 'Upload Data',
-          id: 'uploadDataFilter',
-          multiple: false,
-          key: 'uploadDataFilter',
-          filterOptions: [
-            {
-              title: '1701 Data Uploaded',
-              id: 'uploadDate',
-              value: 'uploadDate'
-            },
-            {
-              title: '1701 Data NOT Uploaded',
-              id: 'notUploadDate',
-              value: 'notUploadDate'
-            }
-          ]
-        },
-        issuesFilter: {
-          heading: 'Errors & Warnings',
-          id: 'issuesFilter',
-          multiple: true,
-          key: 'issuesFilter',
-          filterOptions: [
-            {
-              title: 'Errors',
-              id: 'errors',
-              value: 'errors'
-            },
-            {
-              title: 'Info Warnings',
-              id: 'infoWarnings',
-              value: 'infoWarnings'
-            },
-            {
-              title: 'Funding Warnings',
-              id: 'fundingWarnings',
-              value: 'fundingWarnings'
-            }
-          ]
-        },
-        detailsFilter: {
-          heading: 'School Details Confirmed',
-          id: 'detailsFilter',
-          multiple: false,
-          key: 'detailsFilter',
-          filterOptions: [
-            {
-              title: 'School Details Confirmed',
-              id: 'detailsConfirmed',
-              value: 'detailsConfirmed'
-            },
-            {
-              title: 'School Details NOT Confirmed',
-              id: 'notDetailsConfirmed',
-              value: 'notDetailsConfirmed'
-            }
-          ]
-        },
-        contactsFilter: {
-          heading: 'School Contacts Confirmed',
-          id: 'contactsFilter',
-          multiple: false,
-          key: 'contactsFilter',
-          filterOptions: [
-            {
-              title: 'School Contacts Confirmed',
-              id: 'contactsConfirmed',
-              value: 'contactsConfirmed'
-            },
-            {
-              title: 'School Contacts NOT Confirmed',
-              id: 'notContactsConfirmed',
-              value: 'notContactsConfirmed'
-            }
-          ]
-        },
-        submittedFilter: {
-          heading: 'Submitted to District',
-          id: 'submittedFilter',
-          multiple: false,
-          key: 'submittedFilter',
-          filterOptions: [
-            {
-              title: 'Submitted to District',
-              id: 'submittedToDistrict',
-              value: 'submittedToDistrict'
-            },
-            {
-              title: 'NOT Submitted to District',
-              id: 'notSubmittedToDistrict',
-              value: 'notSubmittedToDistrict'
-            }
-          ]
-        }
-      },
+      allowedFilters: MONITORING.allowedFilters,
       filters: {},
-      filterCount: 0,
       headers: [
         {
           title: 'School',
@@ -511,6 +422,9 @@ export default defineComponent({
     };
   },
   computed: {
+    filterCount() {
+      return Object.values(this.filters).filter(filter => !!filter).reduce((acc, filter) => acc.concat(filter), []).length;
+    },
     filteredItems() {
       const { schoolFilter, issuesFilter, uploadDataFilter } = this.filters || {};
 
@@ -532,17 +446,12 @@ export default defineComponent({
     await this.getSdcSchoolCollections();
   },
   methods: {
-    addFilterCount() {
-      this.filterCount = Object.keys(omitBy(this.filters, isEmpty))?.length;
-    },
     applyFilters($event) {
       const schoolFilter = this.filters?.schoolFilter;
       this.filters = cloneDeep($event);
       this.filters.schoolFilter = schoolFilter;
-      this.filterCount = Object.keys(omitBy(this.filters, isEmpty))?.length;
     },
     clearFilters() {
-      this.filterCount = 0;
       this.filters = {};
     },
     disableNextButton() {

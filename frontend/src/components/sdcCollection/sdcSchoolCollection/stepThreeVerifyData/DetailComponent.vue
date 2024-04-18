@@ -202,11 +202,13 @@ export default {
       editStudentSheet: false,
       addStudentSheet: false,
       resetFlag: false,
-      filterCount: 0
     };
   },
   computed: {
     ...mapState(sdcCollectionStore, ['schoolCollection','schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
+    filterCount() {
+      return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
+    }
   },
   created() {
     sdcCollectionStore().getCodes().then(() => {
@@ -232,14 +234,11 @@ export default {
       this.addStudentSheet = true;
     },
     applyFilters($event) {
-      const clonedFilter = cloneDeep($event);
-      this.filterSearchParams.moreFilters = clonedFilter;
-      this.filterCount = Object.keys(omitBy(clonedFilter, isEmpty))?.length;
+      this.filterSearchParams.moreFilters = cloneDeep($event);
       this.loadStudents();
     },
     clearFilters() {
       this.filterSearchParams.moreFilters = {};
-      this.filterCount = 0;
       this.loadStudents();
     },
     async removeStudents(){
