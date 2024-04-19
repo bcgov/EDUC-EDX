@@ -328,6 +328,9 @@ function findSInstituteTypeCollectionID_body(req, res, next) {
 }
 
 function checkStudentBelongsInCollection(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionStudentID) {
+    return next();
+  }
   if(res.locals.requestedInstituteType === 'DISTRICT') {
     return checkIfStudentBelongsInDistrictCollection(req, res, next);
   } else {
