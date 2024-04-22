@@ -47,24 +47,29 @@
                   >
                     <v-col :class="`${reportType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
-                      <span
-                        v-if="header?.columns[key]?.comparisonValue !== null"
-                        class="compare-text"
-                      >
-                        {{ header?.columns[key]?.comparisonValue }}
-                      </span>
-                      <span v-if="header?.columns[key]?.comparisonValue !== null">
-                        <v-icon
-                          size="x-small"
-                          :color="getStatusColor(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue)"
+                      <div style="display: flex; justify-content: center">
+                        <span
+                          v-if="header?.columns[key]?.comparisonValue !== null"
+                          class="compare-text"
                         >
-                          {{ getComparisonIcon(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue) }}
-                        </v-icon>
+                          {{ header?.columns[key]?.comparisonValue }}
+                        </span>
+                        <span
+                          v-if="header?.columns[key]?.comparisonValue !== null"
+                          style="display: flex;  align-items: center"
+                        >
+                          <v-icon
+                            size="x-small"
+                            :color="getStatusColor(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue)"
+                          >
+                            {{ getComparisonIcon(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue) }}
+                          </v-icon>
 
-                      </span>
-                      <span>
-                        {{ header?.columns[key]?.currentValue }}
-                      </span>
+                        </span>
+                        <span>
+                          {{ header?.columns[key]?.currentValue }}
+                        </span>
+                      </div>
                     </v-col>
                     <v-divider
                       v-if="idx !== header?.orderedColumnTitles?.length - 1"
