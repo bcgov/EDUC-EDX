@@ -7,7 +7,7 @@
     </v-row>
   </div>
   <div class="border">
-      <v-row v-for="fileUploadErrorMessage in fileUploadErrorMessages" >
+      <v-row v-for="(fileUploadErrorMessage, index) in fileUploadErrorMessages" :key="index">
         <v-col>
           <v-alert
               density="compact"
@@ -17,7 +17,7 @@
           />
         </v-col>
       </v-row>
-      <v-row v-for="fileDateWarningMessage in fileDateWarningErrorMessages">
+      <v-row v-for="(fileDateWarningMessage, index) in fileDateWarningErrorMessages" :key="index">
         <v-col class="mb-3 d-flex justify-center">
           <v-alert
               density="compact"
@@ -28,7 +28,7 @@
 
         </v-col>
       </v-row>
-      <v-row v-for="fileUploadSuccessMessage in fileUploadSuccessMessages">
+      <v-row v-for="(fileUploadSuccessMessage, index) in fileUploadSuccessMessages" :key="index">
         <v-col class="mb-3 d-flex justify-center">
           <v-alert
               density="compact"
@@ -138,7 +138,6 @@
 </template>
 <script>
 
-import ConfirmationDialog from "../../util/ConfirmationDialog.vue";
 import Spinner from "../../common/Spinner.vue";
 import PrimaryButton from "../../util/PrimaryButton.vue";
 import {sdcCollectionStore} from "../../../store/modules/sdcCollection";
@@ -153,7 +152,6 @@ import {mapActions, mapState} from "pinia";
 export default {
   name: 'StepOneUploadData',
   components: {
-    ConfirmationDialog,
     Spinner,
     PrimaryButton
   },
