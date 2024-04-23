@@ -47,7 +47,12 @@ async function uploadFile(req, res) {
       updateUser: 'EDX/' + req.session.edxUserData.edxUserID
     };
     const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`, req.session?.correlationID);
+    let data;
+    if (req.params.sdcSchoolCollectionID){
+      data = await postData(token, payload, `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`, req.session?.correlationID);
+    } else {
+      data = await postData(token, payload, `${config.get('sdc:rootURL')}/district/${req.params.sdcDistrictCollectionID}/file`, req.session?.correlationID);
+    }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     console.log(JSON.stringify(e));
@@ -67,6 +72,18 @@ async function getSdcFileProgress(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('getSdcFileProgress Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getDistrictSdcFileProgress(req, res){
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/fileProgress`;
+    const data = await getData(token, url, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('getDistrictSdcFileProgress Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -612,6 +629,7 @@ module.exports = {
   getCollectionBySchoolId,
   uploadFile,
   getSdcFileProgress,
+  getDistrictSdcFileProgress,
   getSchoolStudentDuplicates,
   removeSDCSchoolCollectionStudents,
   updateDistrictCollection,

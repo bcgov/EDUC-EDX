@@ -88,9 +88,10 @@
                 reverse-transition="false"
               >
                 <StepOneUploadData
-                  :is-step-complete="isStepComplete"
-                  @next="next"
-                />
+                :is-step-complete="isStepComplete"
+                :district-collection-object="districtCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"/>
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
@@ -169,6 +170,20 @@ export default defineComponent({
     SDC_STEPS_DISTRICT() {
       return SDC_STEPS_DISTRICT;
     },
+    next() {
+      this.checkIfWeNeedToUpdateDistrictCollection(this.currentStep);
+      this.$refs.stepper.next();
+    },
+    checkIfWeNeedToUpdateDistrictCollection(index) {
+      const stepTwoIndex = 2;
+      if (index === stepTwoIndex) {
+        this.refreshStore(true);
+      }
+      if (index < this.getIndexOfSDCCollectionByStatusCode(this.districtCollectionObject.sdcDistrictCollectionStatusCode)) {
+        return;
+      }
+      sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
+    },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.districtID}});
     },
@@ -191,10 +206,7 @@ export default defineComponent({
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.step;
-    },
-    next() {
-      this.$refs.stepper.next();
-    },
+    }
   }
 });
 </script>
