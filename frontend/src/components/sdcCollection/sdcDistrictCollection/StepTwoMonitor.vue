@@ -20,7 +20,7 @@
           >
             <v-card-item class="pb-0">
               <v-card-title class="column-header">
-                School Data Uploaded
+                Data Uploaded
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -57,7 +57,7 @@
           >
             <v-card-item class="pb-0">
               <v-card-title class="column-header">
-                School Data Issues
+                Data Issues
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -111,7 +111,7 @@
           >
             <v-card-item class="pb-0">
               <v-card-title class="column-header">
-                School Details Confirmed
+                Details Confirmed
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -148,7 +148,7 @@
           >
             <v-card-item class="pb-0">
               <v-card-title class="column-header">
-                School Contacts Confirmed
+                Contacts Confirmed
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -185,7 +185,7 @@
           >
             <v-card-item class="pb-0">
               <v-card-title class="column-header">
-                School Submitted to District
+                Submitted to District
               </v-card-title>
             </v-card-item>
             <v-card-text>
@@ -276,7 +276,10 @@
     items-per-page="-1"
   >
     <template #item.schoolTitle="{ value }">
-      <router-link :to="{ name: 'sdcCollection', params: { schoolCollectionID: value.sdcSchoolCollectionId }}">
+      <router-link
+        :to="{ name: 'sdcCollection', params: { schoolCollectionID: value.sdcSchoolCollectionId }}"
+        target="_blank"
+      >
         {{ value.title }}
       </router-link>
     </template>
@@ -319,25 +322,26 @@
     </template>
     <template #bottom />
   </v-data-table>
+  <v-row justify="end">
+    <PrimaryButton
+      id="step-2-next-button-school"
+      class="mr-3 mt-4 mb-1"
+      icon="mdi-check"
+      text="Next"
+      :disabled="disableNextButton()"
+      :click-action="next"
+    />
+  </v-row>
   <v-row
     v-if="disableNextButton()"
     justify="end"
+    class="mb-0"
   >
     <p class="form-hint mr-3">
       {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
       schools not
       submitted
     </p>
-  </v-row>
-  <v-row justify="end">
-    <PrimaryButton
-      id="step-2-next-button-school"
-      class="mr-3 mb-3"
-      icon="mdi-check"
-      text="Next"
-      :disabled="disableNextButton()"
-      :click-action="next"
-    />
   </v-row>
 </template>
 <script>

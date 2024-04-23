@@ -11,7 +11,8 @@
             class="bold"
           >Students Found:  {{ totalElements }}
           </span>
-          <router-link 
+          <router-link
+            v-if="showExportBtn"
             class="ml-2"
             :to="{ path: downloadReportURL() }"
             target="_blank"
@@ -112,6 +113,10 @@ export default {
       required: true,
       type: Object,
       default: null
+    },
+    showExportBtn: {
+      type: Boolean,
+      default: false
     }
   },
   emits: [],

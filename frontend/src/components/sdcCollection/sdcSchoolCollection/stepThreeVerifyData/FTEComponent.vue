@@ -30,6 +30,7 @@
       <DetailComponent
         :school="school"
         :config="config"
+        :show-export-btn="true"
       />
     </div>
     <div v-if="reportView === 'summary'">

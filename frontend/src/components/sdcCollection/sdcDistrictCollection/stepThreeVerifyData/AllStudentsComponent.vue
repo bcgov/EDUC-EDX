@@ -29,6 +29,7 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent
         :config="config"
+        :show-export-btn="true"
       />
     </div>
     <div v-if="reportView === 'summary'">
