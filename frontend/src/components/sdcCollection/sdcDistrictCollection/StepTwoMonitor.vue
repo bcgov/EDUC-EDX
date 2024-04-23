@@ -325,7 +325,7 @@
   <v-row justify="end">
     <PrimaryButton
       id="step-2-next-button-school"
-      class="mr-3 mt-4 mb-1"
+      class="mr-3 mt-4 mb-3"
       icon="mdi-check"
       text="Next"
       :disabled="disableNextButton()"
@@ -335,7 +335,7 @@
   <v-row
     v-if="disableNextButton()"
     justify="end"
-    class="mb-0"
+    class="my-0"
   >
     <p class="form-hint mr-3">
       {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}

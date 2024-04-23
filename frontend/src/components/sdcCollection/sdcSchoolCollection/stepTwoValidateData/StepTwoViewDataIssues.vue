@@ -303,7 +303,7 @@
     <v-row justify="end">
       <PrimaryButton
         id="step-2-next-button-school"
-        class="mr-3 mt-3 mb-1"
+        class="mr-3 mt-3 mb-3"
         icon="mdi-check"
         text="Next"
         :disabled="nextButtonIsDisabled()"
@@ -312,7 +312,7 @@
     </v-row>
     <v-row
       v-if="nextButtonIsDisabled()"
-      class="mb-0"
+      class="my-0"
     >
       <v-col class="error-message py-0">
         <p class="form-hint">
