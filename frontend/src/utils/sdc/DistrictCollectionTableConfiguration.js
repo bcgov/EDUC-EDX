@@ -21,7 +21,8 @@ export const FTE = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
+      { title: 'Grade Enrolment & Eligible per FTE', endpoint:'grade-enrollment'}
     ],
     allowedFilters: {
 

@@ -42,7 +42,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import SummaryComponent from './SummaryComponent.vue';
+import SummaryComponent from '../../../common/SummaryComponent.vue';
 import {INDSUPPORT_PR} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
   
 export default {
