@@ -1,7 +1,7 @@
 <template>
   <v-alert
     id="banner"
-    closable="true"
+    :closable="true"
     density="compact"
     variant="tonal"
     type="warning"
