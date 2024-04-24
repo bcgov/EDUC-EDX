@@ -143,12 +143,12 @@ export default {
     },
     setSuccessAlert() {
       this.alertMessage = 'File upload successful.';
-      this.alertType = 'bootstrap-success';
+      this.alertType = 'success';
       this.alert = true;
     },
     setErrorAlert(alertMessage) {
       this.alertMessage = alertMessage;
-      this.alertType = 'bootstrap-error';
+      this.alertType = 'error';
       this.alert = true;
     },
     selectFile(file) {

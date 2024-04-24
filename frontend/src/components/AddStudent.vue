@@ -154,7 +154,7 @@ export default {
         this.showStudentDetails=false;
         this.showStudentDetailsForMinistryStaff=false;
         this.studentExist=false;
-        if(this.alertType && this.alertType !== 'bootstrap-info'){
+        if(this.alertType && this.alertType !== 'info'){
           this.alert = false;
         }
       }
@@ -166,12 +166,12 @@ export default {
   methods: {
     setErrorAlert(alertMessage) {
       this.alertMessage = alertMessage;
-      this.alertType = 'bootstrap-error';
+      this.alertType = 'error';
       this.alert = true;
     },
     setInfoAlert(alertMessage) {
       this.alertMessage = alertMessage;
-      this.alertType = 'bootstrap-info';
+      this.alertType = 'info';
       this.alert = true;
     },
     async validateForm() {
