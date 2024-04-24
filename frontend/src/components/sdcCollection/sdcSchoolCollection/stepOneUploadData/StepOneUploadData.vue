@@ -406,7 +406,7 @@ export default {
         });
     },
     async startPollingStatus() {
-      this.interval = setInterval(this.getFileProgress, 5000);  // polling the api every 10 seconds
+      this.interval = setInterval(this.getFileProgress, 60000);  // polling the api every 10 seconds
     },
     async validateForm() {
       await this.$nextTick();
