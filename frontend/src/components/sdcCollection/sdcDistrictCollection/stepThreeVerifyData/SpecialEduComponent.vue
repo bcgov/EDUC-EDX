@@ -60,7 +60,6 @@ export default {
     return {
       reportView: 'detail',
       config: SPECIALED_PR
-
     };
   },
   computed: {

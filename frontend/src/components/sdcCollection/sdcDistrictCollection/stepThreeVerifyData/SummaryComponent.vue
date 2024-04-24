@@ -1,14 +1,28 @@
 <template>
   <div>Summary Component</div>
+  <slot
+    name="reports"
+    :data="headcountTableData"
+    :report-type="reportType"
+  >
+    <HeadCountReportComponent
+      v-if="headcountTableData"
+      :headcount-table-data="headcountTableData"
+    />
+  </slot>
 </template>
   
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
- 
+import HeadCountReportComponent from './HeadCountReportComponent.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+
 export default {
   name: 'SummaryComponent',
   components: {
+    HeadCountReportComponent
   },
   mixins: [alertMixin],
   props: {
@@ -28,7 +42,13 @@ export default {
     };
   },
   watch: {
-
+    headcountType: {
+      handler() {
+        this.reportType = this.headcountType[0]?.endpoint;
+        this.getStudentHeadCounts();
+      },
+      immediate: true
+    }
   },
   mounted() {
     
@@ -38,6 +58,23 @@ export default {
   methods: {
     getComparisonIcon,
     getStatusColor,
+    getStudentHeadCounts() {
+      this.isLoading= true;
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
+        params: {
+          type: this.reportType,
+          compare: this.compareSwitch
+        }
+      }).then(response => {
+        this.headcountHeaders = response.data.headcountHeaders;
+        this.headcountTableData = response.data.headcountResultsTable;
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
     getTitle() {
       return this.headcountType.find(type => type.endpoint === this.reportType).title;
     },
