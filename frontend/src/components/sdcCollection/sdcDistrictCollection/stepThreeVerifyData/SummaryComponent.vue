@@ -11,7 +11,7 @@
     />
   </slot>
 </template>
-  
+
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
@@ -51,7 +51,7 @@ export default {
     }
   },
   mounted() {
-    
+
   },
   created() {
   },

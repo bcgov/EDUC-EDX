@@ -408,7 +408,7 @@ async function getStudentHeadcounts(req, res) {
   }
 }
 
-async function getStudentHeadcountsDistrictCollectionID(req, res) {
+async function getDistrictHeadcounts(req, res) {
   try {
     const params = {
       params: {
@@ -417,10 +417,10 @@ async function getStudentHeadcountsDistrictCollectionID(req, res) {
       }
     };
     const token = getAccessToken(req);
-    let headCounts = await getDataWithParams(token, `${config.get('sdc:districtCollectionStudentURL')}/${req.params.sdcDistrictCollectionID}`, params, req.session?.correlationID);
+    let headCounts = await getDataWithParams(token, `${config.get('sdc:rootURL')}/headcounts/${req.params.sdcDistrictCollectionID}`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(headCounts);
   } catch (e) {
-    log.error('Error getting Student headcount from DC ID.', e.stack);
+    log.error('Error getting District headcount.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -644,6 +644,6 @@ module.exports = {
   deleteSDCSchoolCollectionStudent,
   markSdcSchoolCollectionStudentAsDifferent,
   getStudentHeadcounts,
-  getStudentHeadcountsDistrictCollectionID,
-  getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId
+  getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId,
+  getDistrictHeadcounts
 };

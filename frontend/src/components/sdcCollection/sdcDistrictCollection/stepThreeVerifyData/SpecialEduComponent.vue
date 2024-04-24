@@ -44,7 +44,7 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { SPECIALED_PR } from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
-import SummaryComponent from './SummaryComponent.vue';
+import SummaryComponent from '../../../common/SummaryComponent.vue';
 
 export default {
   name: 'SpecialEduComponent',

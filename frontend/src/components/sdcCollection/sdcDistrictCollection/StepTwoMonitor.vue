@@ -328,7 +328,6 @@
       class="mr-3 mt-4 mb-3"
       icon="mdi-check"
       text="Next"
-      :disabled="disableNextButton()"
       :click-action="next"
     />
   </v-row>
