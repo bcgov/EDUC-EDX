@@ -45,7 +45,7 @@
             <template #prepend-inner>
               <v-icon
                 v-if="schoolCodeNameFilter"
-                :color="getStatusColor(schoolSearchNames.find(item=>item.value===schoolCodeNameFilter)?.raw?.status)"
+                :color="getStatusColor(schoolSearchNames.find(item=>item.schoolID===schoolCodeNameFilter)?.status)"
               >
                 mdi-circle-medium
               </v-icon>
@@ -59,7 +59,7 @@
               >
                 <v-list-item-title style="color: black !important;">
                   {{
-                    item.raw.schoolCodeName
+                    item.title
                   }}
                 </v-list-item-title>
               </v-list-item>
