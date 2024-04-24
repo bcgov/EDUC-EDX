@@ -163,11 +163,11 @@
 </template>
 
 <script>
-import alertMixin from '../../../../mixins/alertMixin';
-import ApiService from '../../../../common/apiService';
-import {ApiRoutes} from '../../../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
 import HeadCountReportComponent from './HeadCountReportComponent.vue';
-import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
+import {getComparisonIcon, getStatusColor} from '../../utils/common';
  
 export default {
   name: 'SummaryComponent',
@@ -179,6 +179,10 @@ export default {
     headcountType: {
       type: Array,
       required: true,
+    },
+    isDistrictSummary: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
@@ -205,7 +209,30 @@ export default {
     getStatusColor,
     getStudentHeadCounts() {
       this.isLoading= true;
+      if(this.isDistrictSummary) {
+        this.fetchDistrictSummaryCounts();
+      } else {
+        this.fetchSchoolSummaryCounts();
+      }
+    },
+    fetchSchoolSummaryCounts() {
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
+        params: {
+          type: this.reportType,
+          compare: this.compareSwitch
+        }
+      }).then(response => {
+        this.headcountHeaders = response.data.headcountHeaders;
+        this.headcountTableData = response.data.headcountResultsTable;
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+    fetchDistrictSummaryCounts() {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getDistrictHeadcounts/${this.$route.params.sdcDistrictCollectionID}`, {
         params: {
           type: this.reportType,
           compare: this.compareSwitch
