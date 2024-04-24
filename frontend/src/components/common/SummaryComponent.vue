@@ -208,7 +208,6 @@ export default {
     getComparisonIcon,
     getStatusColor,
     getStudentHeadCounts() {
-      console.log(this.isDistrictSummary)
       this.isLoading= true;
       if(this.isDistrictSummary) {
         this.fetchDistrictSummaryCounts();
