@@ -50,6 +50,7 @@ export const ApiRoutes = Object.freeze({
     SDC_DISTRICT_COLLECTION: sdcRoot + '/sdcDistrictCollection',
     SDC_SCHOOL_COLLECTION: sdcRoot + '/sdcSchoolCollection',
     SDC_SCHOOL_COLLECTION_STUDENT: sdcRoot + '/sdcSchoolCollectionStudent',
+    SDC_DISTRICT_COLLECTION_STUDENT_HEADCOUNTS: sdcRoot + '/headcounts',
     SDC_BAND_CODES: sdcRoot + '/band-codes',
     SDC_CAREER_PROGRAM_CODES: sdcRoot + '/career-program-codes',
     SDC_ENROLLED_GRADE_CODES: sdcRoot + '/enrolled-grade-codes',

@@ -60,7 +60,7 @@ export default {
     getStatusColor,
     getStudentHeadCounts() {
       this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION_STUDENT_HEADCOUNTS}/${this.$route.params.sdcDistrictCollectionID}`, {
         params: {
           type: this.reportType,
           compare: this.compareSwitch
