@@ -5,7 +5,7 @@
       v-model="alert"
       density="compact"
       variant="tonal"
-      closable="true"
+      :closable="true"
       :type="alertType"
       class="mb-3"
     >
