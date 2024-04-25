@@ -54,12 +54,12 @@
               <v-list-item
                 v-bind="props"
                 prepend-icon="mdi-circle-medium"
-                :base-color="getStatusColor(item.status)"
+                :base-color="getStatusColor(item.raw.status)"
                 title=""
               >
                 <v-list-item-title style="color: black !important;">
                   {{
-                    item.schoolCodeName
+                    item.title
                   }}
                 </v-list-item-title>
               </v-list-item>
@@ -487,7 +487,7 @@ export default {
     selectItem(item){
 
       this.schoolStatusFilter = [];
-      this.schoolStatusFilter.push(item);
+      this.schoolStatusFilter.push(item.raw);
       this.searchButtonClick();
     },
     clearButtonClick() {
