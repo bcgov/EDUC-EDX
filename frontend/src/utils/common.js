@@ -4,6 +4,7 @@ import {getDateFormatter} from './format';
 import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
 import rfdc from 'rfdc/default';
+import {COLLECTIONCODETYPE} from "./constants/CollectionCodeType";
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
@@ -57,4 +58,18 @@ export function getStatusColor(comparisonValue, currentValue) {
   }
 }
 
+export function     getCollectionLink(currentCollectionTypeCode) {
+  let collectionLink = '';
+  let collectionCodeType = currentCollectionTypeCode;
+  if (collectionCodeType === COLLECTIONCODETYPE.SEPTEMBER) {
+    collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/september';
+  } else if (collectionCodeType === COLLECTIONCODETYPE.FEBRUARY) {
+    collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/february';
+  } else if (collectionCodeType === COLLECTIONCODETYPE.MAY) {
+    collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/may';
+  } else if (collectionCodeType === COLLECTIONCODETYPE.JULY) {
+    collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/summer-learning';
+  }
+  return collectionLink;
+}
 
