@@ -95,7 +95,7 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import HeadCountReportComponent from '../stepThreeVerifyData/HeadCountReportComponent.vue';
+import HeadCountReportComponent from '../../../common/HeadCountReportComponent.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../../../../utils/sdc/TableConfiguration';

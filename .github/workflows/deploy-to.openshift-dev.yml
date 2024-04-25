@@ -38,8 +38,8 @@ env:
   TAG: "latest"
   MIN_REPLICAS_DEV: "1"
   MAX_REPLICAS_DEV: "2"
-  MIN_CPU: "150m"
-  MAX_CPU: "300m"
+  MIN_CPU: "300m"
+  MAX_CPU: "600m"
   MIN_MEM: "250Mi"
   MAX_MEM: "500Mi"
   # SITE_URL should have no scheme or port. It will be prepended with https://
@@ -212,6 +212,6 @@ jobs:
         oc rollout status dc/${{ env.IMAGE_NAME }}
 
     - name: ZAP Scan
-      uses: zaproxy/action-full-scan@v0.3.0
+      uses: zaproxy/action-full-scan@v0.7.0
       with:
         target: 'https://${{ env.HOST_ROUTE }}'

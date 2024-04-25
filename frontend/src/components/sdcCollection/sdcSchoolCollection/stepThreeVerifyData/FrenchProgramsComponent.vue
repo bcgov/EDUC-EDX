@@ -44,7 +44,7 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { FRENCH_PR } from '../../../../utils/sdc/TableConfiguration';
-import SummaryComponent from './SummaryComponent.vue';
+import SummaryComponent from '../../../common/SummaryComponent.vue';
   
 export default {
   name: 'FrenchProgramsComponent',
