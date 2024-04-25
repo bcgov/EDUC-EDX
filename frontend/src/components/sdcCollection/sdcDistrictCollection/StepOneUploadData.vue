@@ -61,19 +61,6 @@
             title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
         />
     </v-row>
-    <template>
-      <v-app>
-        <v-container>
-          <v-tooltip text="Tooltip">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props">Tooltip</v-btn>
-            </template>
-          </v-tooltip>
-        </v-container>
-      </v-app>
-    </template>
-
-
     <v-row class="centered">
         <div class="mt-2">
           More information on the
@@ -91,19 +78,8 @@
     <v-data-table
         :headers="headers"
         :items="schoolCollectionsInProgress"
-        items-per-page="-1"
+        items-per-page="10"
     >
-      <template #item.schoolDisplayName="{ value }">
-        <span>{{value.title}}</span>
-      </template>
-      <template #item.fileName="{ value }">
-        <span v-if="value"> {{value}} </span>
-        <span v-else> - </span>
-      </template>
-      <template #item.uploadDate="{ value }">
-        <span v-if="value">{{value.substring(0,10).replaceAll('-', '/')}}</span>
-        <span v-else> - </span>
-      </template>
       <template #item.percentageStudentsProcessed="{ value }">
         <v-icon
         v-if="value === '100'"
@@ -121,7 +97,6 @@
           <span class="ml-2">{{value}} %</span>
         </template>
       </template>
-      <template #bottom />
     </v-data-table>
   </div>
   <v-row justify="space-between">
@@ -164,6 +139,7 @@ import ApiService from "../../../common/apiService";
 import alertMixin from "../../../mixins/alertMixin";
 import {mapActions, mapState} from "pinia";
 import {DateTimeFormatter, LocalDate} from "@js-joda/core";
+import {setFailureAlert} from "../../composable/alertComposable";
 
 export default {
   name: 'StepOneUploadData',
@@ -211,19 +187,19 @@ export default {
           title: 'School',
           align: 'start',
           key: 'schoolDisplayName',
-          value: item => { return { title: item.schoolDisplayName}; }
+          value: item => item.schoolDisplayName
         },
         {
           title: 'File Name',
           align: 'center',
           key: 'fileName',
-          value: item => item.fileName
+          value: item => item.fileName ? item.fileName : '-'
         },
         {
           title: 'Date Uploaded',
           align: 'center',
           key: 'uploadDate',
-          value: item => item.uploadDate
+          value: item => item.uploadDate ? item.uploadDate.substring(0,10).replaceAll('-', '/') : '-'
         },
         {
           title: 'Processed',
@@ -278,8 +254,19 @@ export default {
         this.markStepAsComplete();
       }
     },
-    markStepAsComplete() {
-      this.$emit('next');
+    markStepAsComplete(){
+      let updateCollection = {
+        districtCollection: this.districtCollectionObject,
+        status: 'LOADED'
+      };
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
+          .then(() => {
+            this.$emit('next');
+          })
+          .catch(error => {
+            console.error(error);
+            setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
+          });
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
@@ -367,24 +354,16 @@ export default {
       }
     },
     addFileReportDateWarning(fileDate, fileName) {
-      console.log("districtCollectionObject", this.districtCollectionObject)
-      console.log("collectionCloseDate", this.collectionCloseDate)
-      console.log("collectionOpenDate", this.collectionOpenDate)
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
-      console.log("formattedFileDate", formattedFileDate)
       if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || this.formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
         let message = "The date in the " + fileName + " file is " + formattedFileDate + ". Please ensure that you have uploaded the correct data for this collection before continuing."
-        console.log("message", message);
         this.fileDateWarningErrorMessages.push(message);
-        console.log("fileDateWarningErrorMessages", this.fileDateWarningErrorMessages)
       }
     },
     collectionOpenDate() {
-      console.log("in collectionOpenDate", this.districtCollectionObject.collectionOpenDate);
       return LocalDate.parse(this.districtCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
     collectionCloseDate() {
-      console.log("in collectionCloseDate", this.districtCollectionObject.collectionCloseDate);
       return LocalDate.parse(this.districtCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
     async getFileProgress() {
