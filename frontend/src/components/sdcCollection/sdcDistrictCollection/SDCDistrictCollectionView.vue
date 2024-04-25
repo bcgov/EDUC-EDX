@@ -90,8 +90,7 @@
                 <StepOneUploadData
                 :is-step-complete="isStepComplete"
                 :district-collection-object="districtCollectionObject"
-                @next="next"
-                @refresh-store="refreshStore"/>
+                @next="next"/>
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
@@ -187,21 +186,7 @@ export default defineComponent({
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.districtID}});
     },
-    refreshStore(skipGetIndexOfSDCCollectionByStatusCode = false) {
-      this.isLoading = !this.isLoading;
-      sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
-        this.districtCollectionObject = this.districtCollection;
-        this.districtID = this.districtCollection.districtID;
-        if (!skipGetIndexOfSDCCollectionByStatusCode) {
-          this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
-        }
-        this.isLoading = !this.isLoading;
-      });
-    },
     updateCurrentStep(step) {
-      if (step < this.currentStep) {
-        this.refreshStore(true);
-      }
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {

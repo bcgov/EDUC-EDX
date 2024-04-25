@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
   </div>
-  <div class="border">
+  <div class="border" v-if="fileUploadErrorMessages.length > 0 || fileDateWarningErrorMessages.length > 0 || populatedSuccessMessage != null">
       <v-row v-for="(fileUploadErrorMessage, index) in fileUploadErrorMessages" :key="index">
         <v-col>
           <v-alert
@@ -18,7 +18,7 @@
         </v-col>
       </v-row>
       <v-row v-for="(fileDateWarningMessage, index) in fileDateWarningErrorMessages" :key="index">
-        <v-col class="mb-3 d-flex justify-center">
+        <v-col>
           <v-alert
               density="compact"
               type="warning"
@@ -28,16 +28,16 @@
 
         </v-col>
       </v-row>
-      <v-row v-for="(fileUploadSuccessMessage, index) in fileUploadSuccessMessages" :key="index">
-        <v-col class="mb-3 d-flex justify-center">
-          <v-alert
-              density="compact"
-              type="success"
-              variant="tonal"
-              :text="fileUploadSuccessMessage"
-          />
-        </v-col>
-      </v-row>
+    <v-row v-if="populatedSuccessMessage">
+      <v-col>
+        <v-alert
+            density="compact"
+            type="success"
+            variant="tonal"
+            :text="populatedSuccessMessage"
+        />
+      </v-col>
+    </v-row>
   </div>
   <div
       class="border"
@@ -58,8 +58,22 @@
             text="Upload 1701 Submission"
             :loading="isReadingFile"
             :click-action="handleFileImport"
+            title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
         />
     </v-row>
+    <template>
+      <v-app>
+        <v-container>
+          <v-tooltip text="Tooltip">
+            <template v-slot:activator="{ props }">
+              <v-btn v-bind="props">Tooltip</v-btn>
+            </template>
+          </v-tooltip>
+        </v-container>
+      </v-app>
+    </template>
+
+
     <v-row class="centered">
         <div class="mt-2">
           More information on the
@@ -73,40 +87,42 @@
           </a>
         </div>
     </v-row>
-    <div v-if="schoolCollectionsInProgress.length > 0">
-      <span id="schools-in-progress-header">School Collections Currently Being Processed</span>
-      <v-container
-          v-for="schoolCollectionRecord in schoolCollectionsInProgress"
-          :key="schoolCollectionRecord.sdcSchoolCollectionID"
-          fluid
-      >
-        <v-row>
-          <v-col
-            cols="8">
-            <span>{{schoolCollectionRecord.schoolDisplayName}} - {{schoolCollectionRecord.totalProcessed}} of {{schoolCollectionRecord.totalStudents}} students have been processed</span>
-          </v-col>
-          <v-col
-              cols="4"
-              class="pt-6"
-
-          >
-            <v-progress-linear
-                :size="128"
-                :width="12"
-                indeterminate
-                color="#38598a"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-              class="d-flex justify-end pt-0"
-          >
-            <span>{{ Math.floor(schoolCollectionRecord.totalProcessed/schoolCollectionRecord.totalStudents * 100) }}% complete</span>
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
+    <v-row class="schools-in-progress-header">Summary of Uploaded Data</v-row>
+    <v-data-table
+        :headers="headers"
+        :items="schoolCollectionsInProgress"
+        items-per-page="-1"
+    >
+      <template #item.schoolDisplayName="{ value }">
+        <span>{{value.title}}</span>
+      </template>
+      <template #item.fileName="{ value }">
+        <span v-if="value"> {{value}} </span>
+        <span v-else> - </span>
+      </template>
+      <template #item.uploadDate="{ value }">
+        <span v-if="value">{{value.substring(0,10).replaceAll('-', '/')}}</span>
+        <span v-else> - </span>
+      </template>
+      <template #item.percentageStudentsProcessed="{ value }">
+        <v-icon
+        v-if="value === '100'"
+        icon="mdi-check-circle-outline"
+        color="success"
+        />
+        <span v-if="value === '0'"> - </span>
+        <template v-if="value !== '0' && value !== '100'">
+          <v-progress-circular
+              :size="15"
+              :width="3"
+              color="primary"
+              indeterminate
+          />
+          <span class="ml-2">{{value}} %</span>
+        </template>
+      </template>
+      <template #bottom />
+    </v-data-table>
   </div>
   <v-row justify="space-between">
     <p class="text-medium-emphasis font-italic ml-3 mb-3">
@@ -141,13 +157,13 @@
 import Spinner from "../../common/Spinner.vue";
 import PrimaryButton from "../../util/PrimaryButton.vue";
 import {sdcCollectionStore} from "../../../store/modules/sdcCollection";
-import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from "@js-joda/core";
 import {COLLECTIONCODETYPE} from "../../../utils/constants/CollectionCodeType";
 import {getFileNameWithMaxNameLength} from "../../../utils/file";
 import {ApiRoutes} from "../../../utils/constants";
 import ApiService from "../../../common/apiService";
 import alertMixin from "../../../mixins/alertMixin";
 import {mapActions, mapState} from "pinia";
+import {DateTimeFormatter, LocalDate} from "@js-joda/core";
 
 export default {
   name: 'StepOneUploadData',
@@ -168,7 +184,7 @@ export default {
       default: true
     }
   },
-  emits: ['next', 'refresh-store'],
+  emits: ['next'],
   data() {
     return {
       acceptableFileExtensions: ['.std', '.ver'],
@@ -184,58 +200,42 @@ export default {
       interval: null,
       fileUploadErrorMessages: [],
       fileDateWarningErrorMessages: [],
-      fileUploadSuccessMessages: [],
+      successfulUploadCount: 0,
+      successMessage: " files were successfully uploaded. Files will continue to be processed even if you leave the page.",
+      populatedSuccessMessage: null,
       inputKey: 0,
       validForm: false,
       sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
+      headers: [
+        {
+          title: 'School',
+          align: 'start',
+          key: 'schoolDisplayName',
+          value: item => { return { title: item.schoolDisplayName}; }
+        },
+        {
+          title: 'File Name',
+          align: 'center',
+          key: 'fileName',
+          value: item => item.fileName
+        },
+        {
+          title: 'Date Uploaded',
+          align: 'center',
+          key: 'uploadDate',
+          value: item => item.uploadDate
+        },
+        {
+          title: 'Processed',
+          align: 'center',
+          key: 'percentageStudentsProcessed',
+          value: item => item.percentageStudentsProcessed
+        },
+      ]
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
-    collectionOpenDate() {
-      return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-    },
-    collectionCloseDate() {
-      return LocalDate.parse(this.schoolCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-    },
-    fileReportDate() {
-      try {
-        return LocalDate.parse(this.sdcSchoolProgress?.uploadReportDate, DateTimeFormatter.ofPattern('uuuuMMdd').withResolverStyle(ResolverStyle.STRICT));
-      } catch (e) {
-        return null;
-      }
-    },
-    fileReportDateFormatted() {
-      if (!this.sdcSchoolProgress?.uploadReportDate) {
-        return 'not specified';
-      }
-      if (!this.fileReportDate) {
-        return this.sdcSchoolProgress?.uploadReportDate;
-      }
-      return this.fileReportDate.toLocaleString();
-    },
-    showFileReportDateWarning() {
-      if (!this.sdcSchoolProgress) {
-        return false;
-      }
-      if (!this.fileReportDate) {
-        return true;
-      }
-      return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
-    },
-    fileUploadDate() {
-      try {
-        return LocalDateTime.parse(this.sdcSchoolProgress?.uploadDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-      } catch (e) {
-        return null;
-      }
-    },
-    fileUploadDateFormatted() {
-      if (!this.fileUploadDate) {
-        return 'n/a';
-      }
-      return this.fileUploadDate.format(DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm'));
-    },
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'districtCollection']),
     getLink() {
       let collectionLink = '';
       let collectionCodeType = this.currentCollectionTypeCode;
@@ -256,7 +256,7 @@ export default {
       if(this.uploadFileValue){
         this.importFile();
       }
-    },
+    }
   },
   async created() {
     await this.fireFileProgress();
@@ -300,13 +300,14 @@ export default {
       await this.$refs.documentForm.validate();
     },
     handleFileImport() {
+      this.fileUploadErrorMessages = [];
+      this.fileDateWarningErrorMessages = [];
+      this.populatedSuccessMessage = null;
+      this.successfulUploadCount = 0;
+
       this.$refs.uploader.click();
     },
     async importFile() {
-      this.fileUploadErrorMessages = [];
-      this.fileUploadSuccessMessages = [];
-      this.fileDateWarningErrorMessages = [];
-
       if (this.uploadFileValue.length > 0) {
         this.isReadingFile = true;
 
@@ -350,11 +351,11 @@ export default {
         return `Uploaded file: ${fileAsString}`;
       });
 
-      Promise.all(uploadPromises).then((results) => {
+      await Promise.all(uploadPromises).then((results) => {
         console.log("Upload results: ", results);
       })
 
-
+      this.populatedSuccessMessage = this.successfulUploadCount > 0 ? this.successfulUploadCount.toString() + this.successMessage : null;
     },
     async uploadFile(fileAsString, index) {
       let document;
@@ -363,11 +364,12 @@ export default {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
           fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
-        await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document);
+        await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
+            .then((response) => {
+              this.addFileReportDateWarning(response.data.uploadReportDate, response.data.uploadFileName);
+            })
+        this.successfulUploadCount += 1;
         await this.fireFileProgress();
-        this.$emit('refresh-store');
-        this.fileUploadSuccessMessages.push(document["fileName"] + ' was successfully uploaded');
-        console.log("this.fileUploadSuccessMessages", this.fileUploadSuccessMessages)
       } catch (e) {
         console.error(e);
         this.fileUploadErrorMessages.push('The file ' + document["fileName"] + ' could not be processed due to the following issue: ' + e.response.data);
@@ -375,10 +377,33 @@ export default {
         this.isReadingFile = false;
       }
     },
+    addFileReportDateWarning(fileDate, fileName) {
+      console.log("districtCollectionObject", this.districtCollectionObject)
+      console.log("collectionCloseDate", this.collectionCloseDate)
+      console.log("collectionOpenDate", this.collectionOpenDate)
+      let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
+      console.log("formattedFileDate", formattedFileDate)
+      if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || this.formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
+        let message = "The date in the " + fileName + " file is " + formattedFileDate + ". Please ensure that you have uploaded the correct data for this collection before continuing."
+        console.log("message", message);
+        this.fileDateWarningErrorMessages.push(message);
+        console.log("fileDateWarningErrorMessages", this.fileDateWarningErrorMessages)
+      }
+    },
+    collectionOpenDate() {
+      console.log("in collectionOpenDate", this.districtCollectionObject.collectionOpenDate);
+      return LocalDate.parse(this.districtCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    },
+    collectionCloseDate() {
+      console.log("in collectionCloseDate", this.districtCollectionObject.collectionCloseDate);
+      return LocalDate.parse(this.districtCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    },
     async getFileProgress() {
       try{
         await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/' + this.sdcDistrictCollectionID + '/fileProgress').then(response => {
           this.schoolCollectionsInProgress = response.data;
+
+          this.sortSchoolsInProgress();
 
           clearInterval(this.interval);
           this.startPollingStatus()
@@ -390,6 +415,17 @@ export default {
       } finally {
         this.initialLoad = false;
       }
+    },
+    sortSchoolsInProgress(){
+      this.schoolCollectionsInProgress.sort((a, b) => {
+        const dateA = new Date(a.uploadDate);
+        const dateB = new Date(b.uploadDate);
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1;
+        if (!dateB) return -1;
+
+        return dateB - dateA;
+      })
     }
   }
 };
@@ -408,8 +444,9 @@ export default {
   color: #003366;
 }
 
-#schools-in-progress-header {
+.schools-in-progress-header {
   margin-top: 2em;
+  margin-bottom: 2em;
   font-weight: bold;
   text-align: center;
   line-height: 1.5;
