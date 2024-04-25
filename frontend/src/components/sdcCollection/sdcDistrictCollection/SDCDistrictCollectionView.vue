@@ -170,18 +170,7 @@ export default defineComponent({
       return SDC_STEPS_DISTRICT;
     },
     next() {
-      this.checkIfWeNeedToUpdateDistrictCollection(this.currentStep);
       this.$refs.stepper.next();
-    },
-    checkIfWeNeedToUpdateDistrictCollection(index) {
-      const stepTwoIndex = 2;
-      if (index === stepTwoIndex) {
-        this.refreshStore(true);
-      }
-      if (index < this.getIndexOfSDCCollectionByStatusCode(this.districtCollectionObject.sdcDistrictCollectionStatusCode)) {
-        return;
-      }
-      sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.districtID}});
