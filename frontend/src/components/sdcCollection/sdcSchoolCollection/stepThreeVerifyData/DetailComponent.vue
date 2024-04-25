@@ -10,19 +10,22 @@
             id="studentsFound"
             class="bold"
           >Students Found:  {{ totalElements }}
-            <router-link
-              :to="{ path: downloadReportURL() }"
-              target="_blank"
-            >
-              <v-icon
-                small
-                class="ml-1"
-                color="#003366"
-              >
-                mdi-tray-arrow-down
-              </v-icon>
-            </router-link>
           </span>
+          <router-link
+            v-if="showExportBtn"
+            class="ml-2"
+            :to="{ path: downloadReportURL() }"
+            target="_blank"
+          >
+            <v-icon
+              small
+              class="ml-1"
+              color="#003366"
+            >
+              mdi-tray-arrow-down
+            </v-icon>
+            <span class="export">Export All Student Records</span>
+          </router-link>
         </v-col>
         <v-col
           cols="8"
@@ -180,6 +183,10 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    showExportBtn: {
+      type: Boolean,
+      default: false
     }
   },
   emits: [],
@@ -319,6 +326,11 @@ export default {
 .chip-margin {
   margin-right: 5px;
   margin-bottom: 5px;
+  color: #003366;
+}
+
+.export {
+  margin-left: 1px;
   color: #003366;
 }
 </style>

@@ -47,24 +47,29 @@
                   >
                     <v-col :class="`${reportType}-headcount-column-data column-data`">
                       <div>{{ key }}</div>
-                      <span
-                        v-if="header?.columns[key]?.comparisonValue !== null"
-                        class="compare-text"
-                      >
-                        {{ header?.columns[key]?.comparisonValue }}
-                      </span>
-                      <span v-if="header?.columns[key]?.comparisonValue !== null">
-                        <v-icon
-                          size="x-small"
-                          :color="getStatusColor(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue)"
+                      <div style="display: flex; justify-content: center">
+                        <span
+                          v-if="header?.columns[key]?.comparisonValue !== null"
+                          class="compare-text"
                         >
-                          {{ getComparisonIcon(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue) }}
-                        </v-icon>
+                          {{ header?.columns[key]?.comparisonValue }}
+                        </span>
+                        <span
+                          v-if="header?.columns[key]?.comparisonValue !== null"
+                          style="display: flex;  align-items: center"
+                        >
+                          <v-icon
+                            size="x-small"
+                            :color="getStatusColor(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue)"
+                          >
+                            {{ getComparisonIcon(header?.columns[key]?.comparisonValue, header?.columns[key]?.currentValue) }}
+                          </v-icon>
 
-                      </span>
-                      <span>
-                        {{ header?.columns[key]?.currentValue }}
-                      </span>
+                        </span>
+                        <span>
+                          {{ header?.columns[key]?.currentValue }}
+                        </span>
+                      </div>
                     </v-col>
                     <v-divider
                       v-if="idx !== header?.orderedColumnTitles?.length - 1"
@@ -158,11 +163,11 @@
 </template>
 
 <script>
-import alertMixin from '../../../../mixins/alertMixin';
-import ApiService from '../../../../common/apiService';
-import {ApiRoutes} from '../../../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
 import HeadCountReportComponent from './HeadCountReportComponent.vue';
-import {getComparisonIcon, getStatusColor} from '../../../../utils/common';
+import {getComparisonIcon, getStatusColor} from '../../utils/common';
  
 export default {
   name: 'SummaryComponent',
@@ -174,6 +179,10 @@ export default {
     headcountType: {
       type: Array,
       required: true,
+    },
+    isDistrictSummary: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
@@ -200,7 +209,30 @@ export default {
     getStatusColor,
     getStudentHeadCounts() {
       this.isLoading= true;
+      if(this.isDistrictSummary) {
+        this.fetchDistrictSummaryCounts();
+      } else {
+        this.fetchSchoolSummaryCounts();
+      }
+    },
+    fetchSchoolSummaryCounts() {
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getStudentHeadcounts/${this.$route.params.schoolCollectionID}`, {
+        params: {
+          type: this.reportType,
+          compare: this.compareSwitch
+        }
+      }).then(response => {
+        this.headcountHeaders = response.data.headcountHeaders;
+        this.headcountTableData = response.data.headcountResultsTable;
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+    fetchDistrictSummaryCounts() {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/getDistrictHeadcounts/${this.$route.params.sdcDistrictCollectionID}`, {
         params: {
           type: this.reportType,
           compare: this.compareSwitch

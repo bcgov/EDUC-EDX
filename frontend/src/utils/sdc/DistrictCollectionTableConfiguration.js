@@ -16,12 +16,13 @@ export const FTE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
-      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
+      { title: 'Grade Enrolment & Eligible per FTE', endpoint:'grade-enrollment'}
     ],
     allowedFilters: {
 
@@ -61,7 +62,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
-      { title: 'Career Program', key: 'careerProgram', subHeader: { title: 'Career Code', key: 'careerProgramCode' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
     ],
     summaryReport: [
      

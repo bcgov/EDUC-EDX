@@ -45,7 +45,7 @@
       <v-alert
         v-model="alert"
         density="compact"
-        closable="true"
+        :closable="true"
         variant="tonal"
         :type="alertType"
         class="mb-3"
@@ -143,12 +143,12 @@ export default {
     },
     setSuccessAlert() {
       this.alertMessage = 'File upload successful.';
-      this.alertType = 'bootstrap-success';
+      this.alertType = 'success';
       this.alert = true;
     },
     setErrorAlert(alertMessage) {
       this.alertMessage = alertMessage;
-      this.alertType = 'bootstrap-error';
+      this.alertType = 'error';
       this.alert = true;
     },
     selectFile(file) {
@@ -163,13 +163,13 @@ export default {
     submitRequest() {
       if(this.dataReady){
         try {
-          if(this.uploadFileValue[0].name && this.uploadFileValue[0].name.match('^[\\u0080-\\uFFFF\\w,\\s-_]+\\.[A-Za-z]{3,4}$')){
+          if(this.uploadFileValue.name && this.uploadFileValue.name.match('^[\\u0080-\\uFFFF\\w,\\s-_]+\\.[A-Za-z]{3,4}$')){
             this.active = true;
             const reader = new FileReader();
             reader.onload = this.uploadFile;
             reader.onabort = this.handleFileReadErr;
             reader.onerror = this.handleFileReadErr;
-            reader.readAsBinaryString(this.uploadFileValue[0]);
+            reader.readAsBinaryString(this.uploadFileValue);
           }else{
             this.active = false;
             this.setErrorAlert('Please remove special characters from file name and try uploading again.');
@@ -190,9 +190,9 @@ export default {
     },
     async uploadFile(env) {
       let document = {
-        fileName: getFileNameWithMaxNameLength(this.uploadFileValue[0].name),
-        fileExtension: this.uploadFileValue[0].type ? this.uploadFileValue[0].type : getFileExtensionWithDot(this.uploadFileValue[0].name),
-        fileSize: this.uploadFileValue[0].size,
+        fileName: getFileNameWithMaxNameLength(this.uploadFileValue.name),
+        fileExtension: this.uploadFileValue.type ? this.uploadFileValue.type : getFileExtensionWithDot(this.uploadFileValue.name),
+        fileSize: this.uploadFileValue.size,
         documentTypeCode: this.documentTypeCode,
         documentData: btoa(env.target.result)
       };
@@ -213,7 +213,7 @@ export default {
       const maxSize = this.fileRequirements.maxSize;
       this.fileRules = [
         value => {
-          if(value){
+          if(value && !!value.length){
             return true;
           }
           return 'Required';
