@@ -59,7 +59,7 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     id: 'step-2',
     title: 'Monitor School Submissions',
     step: 2,
-    sdcDistrictCollectionStatusCode: 'MONITORING'
+    sdcDistrictCollectionStatusCode: 'LOADED'
   },
   {
     id: 'step-3',
