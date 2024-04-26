@@ -35,6 +35,7 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.summaryReport"
+        :is-district-summary="true"
       />
     </div>
   </v-container>
@@ -60,7 +61,6 @@ export default {
     return {
       reportView: 'detail',
       config: SPECIALED_PR
-
     };
   },
   computed: {

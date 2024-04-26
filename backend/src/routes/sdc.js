@@ -46,9 +46,9 @@ router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport
 
 //update student
 router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session: false}, undefined),
- isValidBackendToken, validateAccessToken, findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC, PERMISSION.SCHOOL_SDC),
- loadInstituteCollection, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_body,
- loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
+  isValidBackendToken, validateAccessToken, findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC, PERMISSION.SCHOOL_SDC),
+  loadInstituteCollection, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_body,
+  loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/markDiff', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, markSdcSchoolCollectionStudentAsDifferent);
 router.delete('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/student/:sdcSchoolCollectionStudentID', passport.authenticate('jwt', {session: false}, undefined), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, deleteSDCSchoolCollectionStudent);

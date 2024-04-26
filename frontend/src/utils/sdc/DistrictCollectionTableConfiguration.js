@@ -112,7 +112,8 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Special Education Category', key: 'mappedSpedCode' },
     ],
     summaryReport: [
-   
+      { title: 'Eligible Special Education Headcount', endpoint:'special-ed'}, 
+      { title: 'Eligible Special Education Headcount per School', endpoint:'special-ed-per-school'}
     ],
     allowedFilters: {
     }
