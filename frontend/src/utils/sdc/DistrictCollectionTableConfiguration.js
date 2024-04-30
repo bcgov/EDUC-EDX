@@ -44,6 +44,10 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram' },
     ],
+    summaryReport: [
+      {title: 'Eligible French Program Headcount', endpoint: 'french'}, 
+      {title: 'Eligible French Program Headcount per School', endpoint: 'french-per-school'}
+    ],
     allowedFilters: {
      
     }
