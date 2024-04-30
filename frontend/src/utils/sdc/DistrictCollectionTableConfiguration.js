@@ -22,7 +22,7 @@ export const FTE = Object.freeze(
     ],
     summaryReport: [
       { title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
-      { title: 'Grade Enrolment & Eligible per FTE', endpoint:'grade-enrollment'}
+      { title: 'Grade Enrolment & FTE per School', endpoint:'grade-enrollment'}
     ],
     allowedFilters: {
 
@@ -69,7 +69,8 @@ export const CAREER_PR = Object.freeze(
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Career Program Headcount for District', endpoint:'career'},
+      { title: 'Eligible Career Program Headcount per School', endpoint:'career-per-school'}
     ],
     allowedFilters: {
    
