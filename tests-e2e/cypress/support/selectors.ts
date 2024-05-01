@@ -400,7 +400,7 @@ export default {
     cancelButton: '#cancel',
     compareSwitch: '#compare-switch',
     collectionSubmission: '#collection-submission',
-    csvDownloadLink: '#studentsFound > a',
+    csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport'
   },
   userActivationPage: {

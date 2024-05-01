@@ -98,7 +98,6 @@ describe('SDC School Collection View', () => {
       navigateToStep3Screen(id);
 
       cy.contains('student2').parents('tr').find('[type="checkbox"]').click();
-      //cy.get(selectors.studentLevelData.tableResultsSelect).click();
       cy.get(selectors.studentLevelData.remove).click();
       cy.get(selectors.studentLevelData.removeConfirm).click();
 
