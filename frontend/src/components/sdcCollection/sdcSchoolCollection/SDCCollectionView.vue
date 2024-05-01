@@ -7,7 +7,11 @@
       no-gutters
       class="mt-1 d-flex justify-start"
     >
-      <v-col>
+      <v-col v-if="this.userInfo.activeInstituteType === 'DISTRICT'">
+        <h2>{{ sdcSchoolSchool?.schoolName }} ({{ sdcSchoolSchool?.mincode }})</h2>
+        <h3>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h3>
+      </v-col>
+      <v-col v-else>
         <h2>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h2>
       </v-col>
     </v-row>
@@ -179,6 +183,8 @@ import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFiveSchoolDetails from './StepFiveSchoolDetails.vue';
 import StepSixSchoolContacts from './StepSixSchoolContacts.vue';
 import StepSevenSubmitData from './StepSevenSubmitData.vue';
+import {authStore} from '../../../store/modules/auth';
+import {appStore} from '../../../store/modules/app';
 
 export default {
   name: 'SDCCollectionView',
@@ -210,16 +216,25 @@ export default {
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection','currentCollectionYear']),
+    ...mapState(appStore, ['activeSchoolsMap']),
+    ...mapState(authStore, ['userInfo']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
     isStepComplete() {
       let indexCurrentCollection = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
       return this.currentStep < indexCurrentCollection;
+    },
+    sdcSchoolSchool() {
+      if (!this.schoolID) {
+        return null;
+      }
+      return this.activeSchoolsMap.get(this.schoolID);
     }
   },
   created() {
     this.isLoading = !this.isLoading;
+    appStore().getInstitutesData();
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
