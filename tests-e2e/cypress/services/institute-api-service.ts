@@ -1,9 +1,9 @@
-import { RestUtils } from "../helpers/rest-utils-ts";
-import { SearchCondition, SearchCriteria, SearchFilter, SearchValueType } from "../helpers/api-search-params";
+import { RestUtils } from '../helpers/rest-utils-ts';
+import { SearchCondition, SearchCriteria, SearchFilter, SearchValueType } from '../helpers/api-search-params';
 
-const SCHOOL_ENDPOINT = `/api/v1/institute/school`;
-const DISTRICT_ENDPOINT = `/api/v1/institute/district`;
-const AUTHORITY_ENDPOINT = `/api/v1/institute/authority`;
+const SCHOOL_ENDPOINT = '/api/v1/institute/school';
+const DISTRICT_ENDPOINT = '/api/v1/institute/district';
+const AUTHORITY_ENDPOINT = '/api/v1/institute/authority';
 
 interface BaseEntity {
   createUser: string;
@@ -97,11 +97,12 @@ export interface SchoolOptions {
   includeSchoolContact?: boolean;
   schoolStatus?: SchoolStatus;
   withPrimaryActivationCode?: boolean;
+  schoolCode?: string;
 }
 
 export interface InstituteOptions {
   districtOptions?: DistrictOptions,
-  schoolOptions?: SchoolOptions
+  schoolOptions?: SchoolOptions[]
 }
 
 export class InstituteApiService {
@@ -118,14 +119,14 @@ export class InstituteApiService {
       condition: null,
       searchCriteriaList: [
         {
-          key: "schoolNumber",
+          key: 'schoolNumber',
           operation: SearchFilter.EQUAL,
           value: schoolCode,
           valueType: SearchValueType.STRING,
           condition: SearchCondition.AND
         },
         {
-          key: "closedDate",
+          key: 'closedDate',
           operation: SearchFilter.EQUAL,
           value: null,
           valueType: SearchValueType.STRING,
@@ -163,14 +164,14 @@ export class InstituteApiService {
       condition: null,
       searchCriteriaList: [
         {
-          key: "authorityNumber",
+          key: 'authorityNumber',
           operation: SearchFilter.EQUAL,
           value: authorityNumber,
           valueType: SearchValueType.STRING,
           condition: SearchCondition.AND
         },
         {
-          key: "closedDate",
+          key: 'closedDate',
           operation: SearchFilter.EQUAL,
           value: null,
           valueType: SearchValueType.STRING,
@@ -195,14 +196,14 @@ export class InstituteApiService {
       condition: null,
       searchCriteriaList: [
         {
-          key: "displayName",
+          key: 'displayName',
           operation: SearchFilter.EQUAL,
           value: authorityName,
           valueType: SearchValueType.STRING,
           condition: SearchCondition.AND
         },
         {
-          key: "closedDate",
+          key: 'closedDate',
           operation: SearchFilter.EQUAL,
           value: null,
           valueType: SearchValueType.STRING,
@@ -223,7 +224,7 @@ export class InstituteApiService {
   }
 
   async createAuthorityWithContactToTest() {
-    let authority = await this.getAuthorityByAuthorityName('EDX Automation Testing Authority');
+    const authority = await this.getAuthorityByAuthorityName('EDX Automation Testing Authority');
 
     const authorityPayload = {
       createUser: 'EDXAT',
@@ -247,7 +248,7 @@ export class InstituteApiService {
     authorityPayload.independentAuthorityId = authority.independentAuthorityId;
     authorityPayload.authorityNumber = authority.authorityNumber;
 
-    let freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload);
+    const freshAuthority = await this.restUtils.putData(url + '/' + authority.independentAuthorityId, authorityPayload);
     await this.setupAuthorityContact(freshAuthority);
     return freshAuthority;
   }
@@ -272,8 +273,8 @@ export class InstituteApiService {
       expiryDate: null
     };
 
-    let newAuthority = await this.restUtils.getData(`${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}`, null);
-    let filteredContacts = newAuthority.contacts.filter((contact: { firstName: string; lastName: string; }) => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
+    const newAuthority = await this.restUtils.getData(`${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}`, null);
+    const filteredContacts = newAuthority.contacts.filter((contact: { firstName: string; lastName: string; }) => contact.firstName === 'EDXAutomation' && contact.lastName === 'Testing');
     const url = `${this.config.env.institute.base_url}${AUTHORITY_ENDPOINT}/${authority.independentAuthorityId}/contact`;
 
     if (filteredContacts.length < 1) {
@@ -284,7 +285,7 @@ export class InstituteApiService {
   }
 
   async createDistrictWithContactToTest({ includeDistrictAddress = true }: DistrictOptions) {
-    let districtID = await this.getDistrictIdByDistrictNumber('998');
+    const districtID = await this.getDistrictIdByDistrictNumber('998');
 
     const districtPayload: DistrictPayload = {
       addresses: [],
@@ -320,7 +321,7 @@ export class InstituteApiService {
           provinceCode: 'BC',
           countryCode: 'CA'
         }
-      ]
+      ];
     }
 
     const url = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}`;
@@ -328,7 +329,7 @@ export class InstituteApiService {
       return await this.restUtils.postData<DistrictEntity>(url, districtPayload);
     }
     districtPayload.districtId = districtID;
-    let freshDistrict = await this.restUtils.putData<DistrictEntity>(url + '/' + districtID, districtPayload);
+    const freshDistrict = await this.restUtils.putData<DistrictEntity>(url + '/' + districtID, districtPayload);
     await this.setupDistrictContact(freshDistrict);
     return freshDistrict;
   }
@@ -354,7 +355,7 @@ export class InstituteApiService {
       expiryDate: null
     };
 
-    let newDistrict = await this.restUtils.getData(`${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}`, null);
+    const newDistrict = await this.restUtils.getData(`${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}`, null);
 
     const contactUrl = `${this.config.env.institute.base_url}${DISTRICT_ENDPOINT}/${district.districtId}/contact`;
 
@@ -365,7 +366,7 @@ export class InstituteApiService {
       });
     }
 
-    console.log('adding Automation Testing district superintendent contact')
+    console.log('adding Automation Testing district superintendent contact');
     return await this.restUtils.postData(contactUrl, districtContactPayload);
 
   }
@@ -375,32 +376,33 @@ export class InstituteApiService {
     includeTombstoneValues = true,
     includeSchoolContact = true,
     schoolStatus = 'Open',
-    isIndependentSchool = false
+    isIndependentSchool = false,
+    schoolCode = '99998'
   }: SchoolOptions): Promise<SchoolEntity> {
-    let schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID('99998', districtID);
+    const schoolID = await this.getSchoolIDBySchoolCodeAndDistrictID(schoolCode, districtID);
 
-    let currentDate = new Date();
-    let tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
-    let yesterday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1);
+    const currentDate = new Date();
+    const tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
+    const yesterday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1);
     let openDate = '';
     let closeDate: string | null = null;
     switch(schoolStatus) {
-      case 'Opening':
-        openDate = tomorrow.toISOString().substring(0, 19);
-        closeDate = null;
-        break;
-      case 'Open':
-        openDate = '2022-01-01T00:00:00';
-        closeDate = null;
-        break;
-      case 'Closing':
-        openDate = yesterday.toISOString().substring(0, 19);
-        closeDate = tomorrow.toISOString().substring(0, 19);
-        break;
-      case 'Closed':
-        openDate = '2022-01-01T00:00:00';
-        closeDate = yesterday.toISOString().substring(0, 19);
-        break;
+    case 'Opening':
+      openDate = tomorrow.toISOString().substring(0, 19);
+      closeDate = null;
+      break;
+    case 'Open':
+      openDate = '2022-01-01T00:00:00';
+      closeDate = null;
+      break;
+    case 'Closing':
+      openDate = yesterday.toISOString().substring(0, 19);
+      closeDate = tomorrow.toISOString().substring(0, 19);
+      break;
+    case 'Closed':
+      openDate = '2022-01-01T00:00:00';
+      closeDate = yesterday.toISOString().substring(0, 19);
+      break;
     }
 
     const schoolPayload: SchoolPayload = {
@@ -412,7 +414,7 @@ export class InstituteApiService {
       schoolId: null,
       districtId: districtID,
       independentAuthorityId: null,
-      schoolNumber: '99998',
+      schoolNumber: schoolCode,
       faxNumber: '2505555555',
       phoneNumber: '2505555555',
       email: 'fakeuser@sd5.bc.ca',
@@ -425,7 +427,7 @@ export class InstituteApiService {
       facilityTypeCode: 'STANDARD',
       openedDate: openDate,
       closedDate: closeDate,
-    }
+    };
    
     if(isIndependentSchool) {
       schoolPayload.schoolCategoryCode = 'INDEPEND';
@@ -455,7 +457,7 @@ export class InstituteApiService {
           provinceCode: 'BC',
           countryCode: 'CA'
         }
-      ]
+      ];
     }
 
     const url = `${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}`;
@@ -463,8 +465,8 @@ export class InstituteApiService {
       return this.restUtils.postData(url, schoolPayload);
     }
     schoolPayload.schoolId = schoolID;
-    let freshSchool = await this.restUtils.putData<SchoolEntity>(`${url}/${schoolID}`, schoolPayload);
-    let contact = {
+    const freshSchool = await this.restUtils.putData<SchoolEntity>(`${url}/${schoolID}`, schoolPayload);
+    const contact = {
       createUser: 'EDXAT',
       updateUser: null,
       createDate: null,
@@ -481,7 +483,7 @@ export class InstituteApiService {
       lastName: 'Testing',
       effectiveDate: '2022-10-25T00:00:00',
       expiryDate: null
-    }
+    };
     await this.clearSchoolContacts(freshSchool);
     if (includeSchoolContact) {
       await this.setupSchoolContact(freshSchool, contact);
@@ -490,7 +492,7 @@ export class InstituteApiService {
   }
 
   async clearSchoolContacts(school: SchoolEntity) {
-    let newSchool = await this.restUtils
+    const newSchool = await this.restUtils
       .getData<SchoolEntity>(`${this.config.env.institute.base_url}${SCHOOL_ENDPOINT}/${school.schoolId}`);
 
     if (!newSchool.contacts) {
@@ -512,14 +514,14 @@ export class InstituteApiService {
       condition: null,
       searchCriteriaList: [
         {
-          key: "schoolNumber",
+          key: 'schoolNumber',
           operation: SearchFilter.EQUAL,
           value: schoolCode,
           valueType: SearchValueType.STRING,
           condition: SearchCondition.AND
         },
         {
-          key: "districtID",
+          key: 'districtID',
           operation: SearchFilter.EQUAL,
           value: districtID,
           valueType: SearchValueType.UUID,

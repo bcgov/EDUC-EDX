@@ -29,7 +29,7 @@
               >
                 <v-col class="column-data">
                   <div>Have Data</div>
-                  <span>
+                  <span id="hasUploadedValue">
                     {{ monitorSdcSchoolCollectionsResponse?.schoolsWithData }}
                   </span>
                 </v-col>
@@ -39,7 +39,7 @@
                 />
                 <v-col class="column-data">
                   <div>Missing Data</div>
-                  <span>
+                  <span id="missingUploadedValue">
                     {{
                       monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsWithData
                     }}
@@ -69,7 +69,7 @@
                   <v-icon color="#d90606">
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span>
+                  <span id="dataErrorValue">
                     {{ monitorSdcSchoolCollectionsResponse?.totalErrors }}
                   </span>
                 </v-col>
@@ -82,7 +82,7 @@
                   <v-icon color="orange">
                     mdi-alert-outline
                   </v-icon>
-                  <span>
+                  <span id="dataFundingWarnValue">
                     {{ monitorSdcSchoolCollectionsResponse?.totalFundingWarnings }}
                   </span>
                 </v-col>
@@ -95,7 +95,7 @@
                   <v-icon color="blue">
                     mdi-alert-circle-outline
                   </v-icon>
-                  <span>
+                  <span id="dataInfoWarnValue">
                     {{ monitorSdcSchoolCollectionsResponse?.totalInfoWarnings }}
                   </span>
                 </v-col>
@@ -120,7 +120,7 @@
               >
                 <v-col class="column-data">
                   <div>Confirmed</div>
-                  <span>
+                  <span  id="detailsConfirmedValue">
                     {{ monitorSdcSchoolCollectionsResponse?.schoolsDetailsConfirmed }}
                   </span>
                 </v-col>
@@ -130,7 +130,7 @@
                 />
                 <v-col class="column-data">
                   <div>Not Confirmed</div>
-                  <span>
+                  <span id="detailsNotConfirmedValue">
                     {{
                       monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsDetailsConfirmed
                     }}
@@ -157,7 +157,7 @@
               >
                 <v-col class="column-data">
                   <div>Confirmed</div>
-                  <span>
+                  <span id="contactConfirmedValue">
                     {{ monitorSdcSchoolCollectionsResponse?.schoolsContactsConfirmed }}
                   </span>
                 </v-col>
@@ -167,7 +167,7 @@
                 />
                 <v-col class="column-data">
                   <div>Not Confirmed</div>
-                  <span>
+                  <span id="noContactConfirmedValue">
                     {{
                       monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsContactsConfirmed
                     }}
@@ -194,7 +194,7 @@
               >
                 <v-col class="column-data">
                   <div>Submitted</div>
-                  <span>
+                  <span id="submittedValue">
                     {{ monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
                   </span>
                 </v-col>
@@ -204,7 +204,7 @@
                 />
                 <v-col class="column-data">
                   <div>Not Submitted</div>
-                  <span>
+                  <span id="notSubmittedValue">
                     {{
                       monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted
                     }}
@@ -271,12 +271,14 @@
     </v-btn>
   </v-row>
   <v-data-table
+    id="monitoring-table"
     :headers="headers"
     :items="filteredItems"
     items-per-page="-1"
   >
     <template #item.schoolTitle="{ value }">
       <router-link
+        class="linkToSdcSchoolCollection"
         :to="{ name: 'sdcCollection', params: { schoolCollectionID: value.sdcSchoolCollectionId }}"
         target="_blank"
       >
@@ -324,7 +326,7 @@
   </v-data-table>
   <v-row justify="end">
     <PrimaryButton
-      id="step-2-next-button-school"
+      id="step-2-next-button-district"
       class="mr-3 mt-4 mb-3"
       icon="mdi-check"
       text="Next"
@@ -337,10 +339,11 @@
     justify="end"
     class="my-0"
   >
-    <p class="form-hint mr-3">
-      {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
-      schools not
-      submitted
+    <p
+      id="schoolNotSubmittedWarning"
+      class="form-hint mr-3"
+    >
+      {{ getWarningText() }}
     </p>
   </v-row>
 </template>
@@ -349,12 +352,13 @@ import {defineComponent} from 'vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {setFailureAlert} from '../../composable/alertComposable';
-import {formatDate, formatDateTime} from '../../../utils/format';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import Filters from '../../common/Filters.vue';
 import {cloneDeep} from 'lodash';
 import Spinner from '../../common/Spinner.vue';
 import {MONITORING} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
+import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
+
 export default defineComponent({
   name: 'StepTwoMonitor',
   components: {Spinner, Filters, PrimaryButton},
@@ -498,8 +502,14 @@ export default defineComponent({
 
       return uploadDataFilter.length === 0 || uploadDataFilter.every(filter => filterFunctions[filter.value]?.());
     },
-    formatDateTime,
-    formatDate,
+    formatDate(inputDate) {
+      const date = LocalDateTime.parse(inputDate);
+      return date.format(DateTimeFormatter.ofPattern('yyyy/MM/dd'));
+    },
+    formatDateTime(inputDateTime) {
+      const dateTime = LocalDateTime.parse(inputDateTime);
+      return dateTime.format(DateTimeFormatter.ofPattern('yyyy/MM/dd HH:mm:ss'));
+    },
     async getSdcSchoolCollections(){
       this.isLoading = true;
       await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sdcSchoolCollectionMonitoring`, {
@@ -511,6 +521,13 @@ export default defineComponent({
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    getWarningText() {
+      const numSchoolsNotSubmitted = this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted;
+      if(numSchoolsNotSubmitted === 1) {
+        return '1 school not submitted';
+      }
+      return numSchoolsNotSubmitted + ' schools not submitted';
     },
     markStepAsComplete(){
       let updateCollection = {

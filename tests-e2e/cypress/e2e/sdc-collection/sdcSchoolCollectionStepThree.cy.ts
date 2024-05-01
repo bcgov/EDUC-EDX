@@ -7,12 +7,12 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
-          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollection?.sdcSchoolCollectionID);
-          const studentWithEllYears = collection?.sdcSchoolCollection.students
+          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
+          const studentWithEllYears = collection?.sdcSchoolCollections[0]?.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
               studentID: s.assignedStudentId,
@@ -211,7 +211,7 @@ describe('SDC School Collection View', () => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'submittedSchoolCollection'
         });

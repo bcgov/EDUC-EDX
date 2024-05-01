@@ -5,12 +5,12 @@ import {UserSetupUtils} from './cypress/helpers/user-set-up-utils';
 import {defineConfig} from 'cypress';
 import { InstituteOptions, SchoolOptions } from './cypress/services/institute-api-service';
 import { UserActivationUtils } from './cypress/helpers/user-activation-utils';
-import { SchoolCollectionOptions } from './cypress/services/sdc-collection-api-service';
 import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
+import {SchoolCollectionOptions, DistrictCollectionOptions} from './cypress/services/sdc-collection-api-service';
 
-export type AppSetupData = {school: SchoolEntity, district: DistrictEntity};
+export type AppSetupData = {schools: SchoolEntity[], district: DistrictEntity};
 const loadAppSetupData = (
   config: Cypress.PluginConfigOptions,
   options?: InstituteOptions
@@ -21,14 +21,15 @@ const loadAppSetupData = (
         includeDistrictAddress: true,
         withPrimaryActivationCode: true
       },
-      schoolOptions: {
+      schoolOptions: [{
         includeTombstoneValues: true,
         includeSchoolAddress: true,
         includeSchoolContact: true,
         schoolStatus: 'Open',
         withPrimaryActivationCode: true,
-        isIndependentSchool: false
-      }
+        isIndependentSchool: false,
+        schoolCode: '99998'
+      }]
     }).then(response => {
       if (response){
         resolve(response);
@@ -56,6 +57,9 @@ export default defineConfig({
         'dataLoad': async (options: InstituteOptions) => {
           return await loadAppSetupData(config, options);
         },
+        'districtDataLoad': async (options: InstituteOptions) => {
+          return await loadAppSetupData(config, options);
+        },
         'recreate-school': async (schoolOptions: SchoolOptions)=> {
           await new InstituteSetupUtils(config).recreateSchool(schoolOptions);
           return null;
@@ -66,6 +70,9 @@ export default defineConfig({
         },
         'setup-collections': async (schoolCollection: SchoolCollectionOptions) => {
           return new CollectionSetupUtils(config).setUpCollections(schoolCollection);
+        },
+        'setup-district-collections': async (districtCollectionOptions: DistrictCollectionOptions) => {
+          return new CollectionSetupUtils(config).setUpDistrictCollections(districtCollectionOptions);
         },
         'setup-student-ells': async (ells: SdcStudentEll[]) => {
           return new CollectionSetupUtils(config).setUpStudentElls(ells);

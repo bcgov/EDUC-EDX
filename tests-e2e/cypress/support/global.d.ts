@@ -1,7 +1,11 @@
 import { AppSetupData } from 'tests-e2e/cypress.config';
 import { EdxUserActivationFixture } from '../services/edx-api-service';
 import { InstituteOptions, SchoolOptions } from '../services/institute-api-service';
-import { SchoolCollectionOptions, SdcStudentEllOption } from '../services/sdc-collection-api-service';
+import {
+  DistrictCollectionOptions,
+  SchoolCollectionOptions,
+  SdcStudentEllOption
+} from '../services/sdc-collection-api-service';
 
 declare global {
   namespace Cypress {
@@ -65,6 +69,11 @@ declare global {
 
       task<T = SchoolCollectionOptions, S = SdcCollections>(
         event: 'setup-collections',
+        collectionOptions: T,
+        options?: Partial<Loggable & Timeoutable>
+      ): Chainable<S>;
+      task<T = DistrictCollectionOptions, S = SdcCollections>(
+        event: 'setup-district-collections',
         collectionOptions: T,
         options?: Partial<Loggable & Timeoutable>
       ): Chainable<S>;

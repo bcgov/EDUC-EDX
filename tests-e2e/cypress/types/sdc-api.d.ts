@@ -11,7 +11,7 @@ interface Collection extends BaseApiEntity {
 
 interface SdcCollections {
   sdcDistrictCollection: SdcDistrictCollection;
-  sdcSchoolCollection: SdcSchoolCollection;
+  sdcSchoolCollections: SdcSchoolCollection[];
 }
 
 interface SdcDistrictCollection extends BaseApiEntity {
@@ -28,7 +28,7 @@ interface SdcSchoolCollection extends BaseApiEntity {
   sdcSchoolCollectionID: string;
   collectionID: string;
   schoolID: string;
-  districtID: string;
+  sdcDistrictCollectionID: string;
   uploadDate: string;
   uploadFileName: string;
   uploadReportDate: string;

@@ -117,7 +117,8 @@ describe('School Details Interface Test', () => {
 
   context('As an EDX district admin', () => {
     before(() => {
-      cy.task<AppSetupData>('dataLoad').then(() => {
+      cy.task<AppSetupData>('dataLoad').then((appSetupDataResponse) => {
+        Cypress.env('schoolId', appSetupDataResponse?.schools[0].schoolId);
         cy.task('setup-districtUser', {
           districtRoles: ['EDX_DISTRICT_ADMIN'],
           districtCodes: ['998'] });
@@ -127,16 +128,7 @@ describe('School Details Interface Test', () => {
     after(() => cy.logout());
 
     it('can view legacy safe name', () => {
-      cy.visit('/');
-      cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
-      cy.intercept(Cypress.env('interceptors').districts).as('districts');
-      cy.wait('@districts');
-      cy.get(selectors.dashboard.title).should('be.visible').contains('Dashboard | EDX Automation Testing District');
-      cy.get(selectors.dashboard.districtUserSchoolContactsCard).click();
-      cy.get(selectors.dashboard.title).should('be.visible').contains('Schools | EDX Automation Testing');
-      cy.get(selectors.schoolList.schoolRow).should('be.visible').click();
-
-      cy.wait('@schoolDetails');
+      navigateToSchoolDetailsDistrictUser(Cypress.env('schoolId'));
       cy.get(selectors.schoolDetails.schoolDisplayNameTitle).should('be.visible').invoke('text').as('schoolName');
       cy.get('@schoolName').then(() => {
         cy.get(selectors.schoolDetails.schoolNameNoSpecialChars).should('exist');
@@ -166,3 +158,11 @@ describe('School Details Interface Test', () => {
     });
   });
 });
+
+function navigateToSchoolDetailsDistrictUser(schoolId: string) {
+  cy.intercept(Cypress.env('interceptors').school_details_by_id).as('schoolDetails');
+  cy.visit('/');
+  cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
+  cy.visit('/school/' + schoolId + '/details');
+  cy.wait('@schoolDetails');
+}

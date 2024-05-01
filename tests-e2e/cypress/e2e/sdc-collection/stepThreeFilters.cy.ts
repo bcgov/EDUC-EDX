@@ -7,11 +7,11 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'filterData'
         }).then(collection => {
-          const studentWithEllYears = collection?.sdcSchoolCollection?.students
+          const studentWithEllYears = collection?.sdcSchoolCollections[0]?.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
               studentID: s.assignedStudentId,
