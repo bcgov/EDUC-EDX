@@ -185,7 +185,7 @@
     <v-col class="d-flex justify-end">
       <PrimaryButton
         v-if="!isLoading"
-        id="step-3-next-button-school"
+        id="step-4-next-button-school"
         class="mr-3 mb-3"
         icon="mdi-check"
         text="Next"
