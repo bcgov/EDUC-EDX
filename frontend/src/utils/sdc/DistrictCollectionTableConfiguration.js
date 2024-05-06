@@ -94,7 +94,10 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Indigenous Support Program Headcount', endpoint:'indigenous'},
+      { title: 'Eligible Indigenous Support Program Headcount per School', endpoint:'indigenous-per-school'},
+      { title: 'Eligible Band of Residence Headcount', endpoint:'band-codes'},
+      { title: 'Eligible Band of Residence Headcount per School', endpoint:'band-codes-per-school'}
     ],
     allowedFilters: {
 
