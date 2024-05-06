@@ -71,13 +71,13 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     id: 'step-4',
     title: 'Resolve In-District Duplicates',
     step: 4,
-    sdcDistrictCollectionStatusCode: ''
+    sdcDistrictCollectionStatusCode: 'VERIFIED'
   },
   {
     id: 'step-5',
     title: 'Submit to Ministry',
     step: 5,
-    sdcDistrictCollectionStatusCode: ''
+    sdcDistrictCollectionStatusCode: 'D_DUP_VRFD'
   },
   {
     id: 'step-6',
