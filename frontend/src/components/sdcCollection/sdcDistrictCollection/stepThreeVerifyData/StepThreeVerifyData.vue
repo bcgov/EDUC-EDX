@@ -104,6 +104,9 @@ import SpecialEduComponent from './SpecialEduComponent.vue';
 import EnglishLangComponent from './EnglishLangComponent.vue';
 import RefugeeComponent from './RefugeeComponent.vue';
 import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {setFailureAlert} from '../../../composable/alertComposable';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -119,6 +122,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    districtCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    },
     isStepComplete: {
       type: Boolean,
       required: true
@@ -139,10 +147,26 @@ export default {
 
   },
   methods: {
+    markStepAsComplete(){
+      let updateCollection = {
+        districtCollection: this.districtCollectionObject,
+        status: 'VERIFIED'
+      };
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
+        });
+    },
     next() {
       if(this.isStepComplete) {
         this.$emit('next');
-      } 
+      } else {
+        this.markStepAsComplete();
+      }
     },
   }
 };

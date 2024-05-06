@@ -339,7 +339,7 @@
   >
     <p class="form-hint mr-3">
       {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
-      schools not
+      school(s) not
       submitted
     </p>
   </v-row>
