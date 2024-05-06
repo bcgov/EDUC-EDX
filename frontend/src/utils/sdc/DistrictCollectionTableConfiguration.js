@@ -143,7 +143,8 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInELL' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible English Language Learners Headcount for District', endpoint:'ell'},
+      { title: 'Eligible English Language Learners Headcount per school', endpoint:'ell-per-school'}
     ],
     allowedFilters: {
     }
@@ -162,9 +163,6 @@ export const REFUGEE = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
-    ],
-    summaryReport: [
-
     ],
     allowedFilters: {
 
