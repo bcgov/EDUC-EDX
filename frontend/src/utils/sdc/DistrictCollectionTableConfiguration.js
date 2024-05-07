@@ -22,7 +22,7 @@ export const FTE = Object.freeze(
     ],
     summaryReport: [
       { title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
-      { title: 'Grade Enrolment & Eligible per FTE', endpoint:'grade-enrollment'}
+      { title: 'Grade Enrolment & FTE per School', endpoint:'grade-enrollment'}
     ],
     allowedFilters: {
 
@@ -43,6 +43,10 @@ export const FRENCH_PR = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram' },
+    ],
+    summaryReport: [
+      {title: 'Eligible French Program Headcount', endpoint: 'french'}, 
+      {title: 'Eligible French Program Headcount per School', endpoint: 'french-per-school'}
     ],
     allowedFilters: {
      
@@ -65,7 +69,8 @@ export const CAREER_PR = Object.freeze(
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Career Program Headcount for District', endpoint:'career'},
+      { title: 'Eligible Career Program Headcount per School', endpoint:'career-per-school'}
     ],
     allowedFilters: {
    
