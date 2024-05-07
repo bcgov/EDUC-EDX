@@ -1,9 +1,20 @@
 import {LocalDateTime} from '@js-joda/core';
 import {RestUtils} from '../helpers/rest-utils-ts';
-import {createSdcSchoolCollection, createSdcSchoolCollectionStudents} from '../helpers/seed-data-utils';
+import {
+  createSdcDistrictCollection,
+  createSdcSchoolCollection,
+  createSdcSchoolCollectionStudents
+} from '../helpers/seed-data-utils';
 
 export interface SchoolCollectionOptions {
   school: SchoolEntity,
+  loadWithStudentAndValidations: boolean
+  seedData?: string
+}
+
+export interface DistrictCollectionOptions {
+  district: DistrictEntity,
+  schools: SchoolEntity[],
   loadWithStudentAndValidations: boolean
   seedData?: string
 }
@@ -39,21 +50,16 @@ export class SdcCollectionApiService {
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
-    const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.schoolId;
-    const urlGetActiveSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/` + schoolCollection?.school?.districtId;
-    try {
-      const [activeSchoolSdcCollection, activeDistrictSdcCollection] = await Promise.all([
-        this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection),
-        this.restUtils.getData<SdcDistrictCollection>(urlGetActiveSdcDistrictCollection)
-      ]);
-      await Promise.all([
-        this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeSchoolSdcCollection.sdcSchoolCollectionID),
-        this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeDistrictSdcCollection.sdcDistrictCollectionID)
-      ]);
+    await this.deleteExistingTestData([schoolCollection.school]);
+    const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
 
-    } catch (_) {
-      //This is ok
+    if(schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData') {
+      sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
     }
+
+    const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+
+    const sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
 
     let sdcSchoolCollectionPayload = {};
 
@@ -67,7 +73,7 @@ export class SdcCollectionApiService {
           'sdcSchoolCollectionID': null,
           'collectionID': activeCollection.collectionID,
           'schoolID': schoolCollection?.school.schoolId,
-          'districtID': schoolCollection?.school.districtId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
           'uploadDate': '20230822',
           'uploadFileName': 'EDX-AT-FILE.std',
           'sdcSchoolCollectionStatusCode': 'LOADED',
@@ -170,7 +176,7 @@ export class SdcCollectionApiService {
           'sdcSchoolCollectionID': null,
           'collectionID': activeCollection.collectionID,
           'schoolID': schoolCollection?.school.schoolId,
-          'districtID': schoolCollection?.school.districtId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
           'uploadDate': '20230822',
           'uploadFileName': 'EDX-AT-FILE.std',
           'sdcSchoolCollectionStatusCode': 'LOADED',
@@ -193,7 +199,7 @@ export class SdcCollectionApiService {
           'sdcSchoolCollectionID': null,
           'collectionID': activeCollection.collectionID,
           'schoolID': schoolCollection?.school.schoolId,
-          'districtID': schoolCollection?.school.districtId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
           'uploadDate': '20230822',
           'uploadFileName': 'EDX-AT-FILE.std',
           'sdcSchoolCollectionStatusCode': 'LOADED',
@@ -358,7 +364,7 @@ export class SdcCollectionApiService {
           obj.legalLastName = 'LEGALLAST';
         });
 
-        const school = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        const school = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
         school.sdcSchoolCollectionStatusCode = 'REVIEWED';
         sdcSchoolCollectionPayload = school;
       }
@@ -371,7 +377,7 @@ export class SdcCollectionApiService {
           'sdcSchoolCollectionID': null,
           'collectionID': activeCollection.collectionID,
           'schoolID': schoolCollection?.school.schoolId,
-          'districtID': schoolCollection?.school.districtId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
           'uploadDate': '20230822',
           'uploadFileName': 'EDX-AT-FILE.std',
           'sdcSchoolCollectionStatusCode': 'REVIEWED',
@@ -534,7 +540,7 @@ export class SdcCollectionApiService {
         };
       }
       else if (schoolCollection.seedData === 'dataUploadSummaryErrors') {
-        const seedSchoolCollection: SdcSchoolCollection = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), undefined, 'NEW');
+        const seedSchoolCollection: SdcSchoolCollection = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), undefined, 'NEW');
 
         seedSchoolCollection.students[0].sdcSchoolCollectionStudentStatusCode = 'ERROR';
         sdcSchoolCollectionPayload = seedSchoolCollection;
@@ -555,7 +561,7 @@ export class SdcCollectionApiService {
         students[7].careerProgramCode = 'XH';
         students[8].careerProgramCode = 'XH';
         students[8].careerProgramNonEligReasonCode = 'NOTELIGIBL';
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
       }
       else if (schoolCollection.seedData === 'dataUploadSummarySpecialEd') {
         const students = createSdcSchoolCollectionStudents(14, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
@@ -573,7 +579,7 @@ export class SdcCollectionApiService {
         students[11].specialEducationCategoryCode = 'R';
         students[12].specialEducationCategoryCode = 'R';
         students[12].specialEducationNonEligReasonCode = 'NOTELIGIBL';
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
       }
       else if (schoolCollection.seedData === 'dataUploadSummaryIndigenous') {
         const students = createSdcSchoolCollectionStudents(7, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
@@ -592,7 +598,7 @@ export class SdcCollectionApiService {
         students[6].enrolledProgramCodes = '36';
         students[6].nativeAncestryInd = 'N';
         students[6].indigenousSupportProgramNonEligReasonCode = 'ERRORCODE';
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
       }
       else if (schoolCollection.seedData === 'dataUploadSummaryEll') {
         const students = createSdcSchoolCollectionStudents(7, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
@@ -606,7 +612,7 @@ export class SdcCollectionApiService {
         students[2].isAdult = 'true';
         students[3].enrolledProgramCodes = '17';
         students[3].isAdult = 'true';
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
       }
       else if (schoolCollection.seedData === 'submittedSchoolCollection') {
         const students = createSdcSchoolCollectionStudents(7, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
@@ -620,7 +626,7 @@ export class SdcCollectionApiService {
         students[2].isAdult = 'true';
         students[3].enrolledProgramCodes = '17';
         students[3].isAdult = 'true';
-        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, schoolCollection?.school.districtId, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'SUBMITTED');
+        sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'SUBMITTED');
       }
     } 
     else {
@@ -632,7 +638,7 @@ export class SdcCollectionApiService {
         'sdcSchoolCollectionID': null,
         'collectionID': activeCollection.collectionID,
         'schoolID': schoolCollection?.school?.schoolId,
-        'districtID': schoolCollection?.school?.districtId,
+        'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
         'uploadDate': null,
         'uploadFileName': null,
         'sdcSchoolCollectionStatusCode': 'NEW',
@@ -642,35 +648,70 @@ export class SdcCollectionApiService {
       };
     }
 
-    const sdcDistrictCollectionPayload = {
-      'createUser': 'EDXAT',
-      'updateUser': null,
-      'createDate': null,
-      'updateDate': null,
-      'sdcDistrictCollectionID': null,
-      'collectionID': activeCollection.collectionID,
-      'districtID': schoolCollection?.school?.districtId,
-      'sdcDistrictCollectionStatusCode': 'NEW',
-      'collectionTypeCode': 'SEPTEMBER',
-      'collectionOpenDate': curDate,
-      'submissionDueDate': curDate.plusWeeks(2)
-    };
-
     const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-    const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
 
-    const [schoolCollectionResponse, districtCollectionResponse] = await Promise.all([
-      this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload),
-      this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload)
-    ]);
+    const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
     const responses: SdcCollections = {
-      sdcSchoolCollection: schoolCollectionResponse,
-      sdcDistrictCollection: districtCollectionResponse
+      sdcSchoolCollections: [schoolCollectionResponse],
+      sdcDistrictCollection: sdcDistrictCollectionResponse
     };
 
     console.log('AT createSchoolCollection completed');
     return responses;
+  }
+  async createDistrictCollection(districtCollectionOptions: DistrictCollectionOptions) {
+    console.log('AT createDistrictCollection started');
+
+    const curDate = LocalDateTime.now().minusDays(2);
+    const curCloseDate = curDate.plusDays(4);
+
+    const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
+    const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
+
+    await this.deleteExistingTestData(districtCollectionOptions.schools);
+
+    const sdcDistrictCollection = createSdcDistrictCollection(activeCollection.collectionID, districtCollectionOptions.district.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
+    const sdcSchoolCollections = districtCollectionOptions.schools.map(school => {
+      return createSdcSchoolCollection(
+        activeCollection.collectionID,
+        school?.schoolId,
+        undefined,
+        JSON.stringify(curDate),
+        JSON.stringify(curCloseDate),
+        undefined,
+        'SUBMITTED'
+      );
+    });
+
+    if(districtCollectionOptions?.seedData) {
+      this.setDistrictSeedData(sdcDistrictCollection, sdcSchoolCollections, districtCollectionOptions.seedData);
+    }
+
+    const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+    const sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollection);
+
+    sdcSchoolCollections.forEach(x => x.sdcDistrictCollectionID = sdcDistrictCollectionResponse?.sdcDistrictCollectionID);
+
+    const sdcSchoolCollectionPromises: Promise<SdcSchoolCollection>[] = [];
+
+    for (const sdcSchoolCollectionPayload of sdcSchoolCollections) {
+      const urlSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+      const promise = this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
+      sdcSchoolCollectionPromises.push(promise);
+    }
+
+    try {
+      const schoolCollectionResponses = await Promise.all(sdcSchoolCollectionPromises);
+      const responses: SdcCollections = {
+        sdcSchoolCollections: schoolCollectionResponses,
+        sdcDistrictCollection: sdcDistrictCollectionResponse
+      };
+      console.log('AT createSchoolCollection completed');
+      return responses;
+    } catch (error) {
+      console.error('Error occurred while posting school collections:', error);
+    }
   }
 
   async createSdcStudentElls(payload: SdcStudentEll[]) {
@@ -679,6 +720,49 @@ export class SdcCollectionApiService {
     const ells = await this.restUtils.postData<SdcStudentEll[]>(studentEllEndpoint, payload);
     console.log('AT createSdcStudentElls completed');
     return ells;
+  }
+
+  async deleteExistingTestData(schools: SchoolEntity[]) {
+    const districtIds = new Set();
+
+    try {
+      const deleteSchoolPromises: Promise<void>[] = [];
+      schools.forEach((school) => {
+        const schoolId = school.schoolId;
+        districtIds.add(school.districtId);
+        const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${schoolId}`;
+        const deletePromise = this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection).then(async (activeSchoolSdcCollection) => {
+          await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${activeSchoolSdcCollection.sdcSchoolCollectionID}`);
+        });
+        deleteSchoolPromises.push(deletePromise);
+      });
+      await Promise.all(deleteSchoolPromises);
+    } catch (error) {
+      console.error('An error occurred while deleting existing sdc school collection test data:', error);
+    }
+    try{
+      const deleteDistrictPromises: Promise<void>[] = [];
+      districtIds.forEach(districtId => {
+        const urlGetActiveSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/${districtId}`;
+        deleteDistrictPromises.push(this.restUtils.getData<SdcDistrictCollection>(urlGetActiveSdcDistrictCollection).then(async (activeDistrictSdcCollection) => {
+          await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/${activeDistrictSdcCollection.sdcDistrictCollectionID}`);
+        }));
+      });
+      await Promise.all(deleteDistrictPromises);
+    } catch (error) {
+      console.error('An error occurred while deleting existing sdc district collection test data:', error);
+    }
+  }
+
+  setDistrictSeedData(sdcDistrictCollection: SdcDistrictCollection, sdcSchoolCollections: SdcSchoolCollection[], seedData: string) {
+    switch (seedData) {
+    case 'sdcDistrictCollectionMonitoringSeedData':
+      sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'LOADED';
+      sdcSchoolCollections[0].sdcSchoolCollectionStatusCode = 'SCH_C_VRFD';
+      break;
+    default:
+      break;
+    }
   }
 
   studentsWithDuplicatePEN() {

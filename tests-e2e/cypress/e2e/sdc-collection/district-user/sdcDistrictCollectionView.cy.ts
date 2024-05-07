@@ -7,7 +7,7 @@ describe('SDC District Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: false,
           seedData: 'sdcDistrictCollectionSeedData'
         });

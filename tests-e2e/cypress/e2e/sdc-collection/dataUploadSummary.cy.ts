@@ -9,11 +9,11 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryCareer'
         }).then(response => {
-          Cypress.env('schoolCollectionIdCareer', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdCareer', response?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -74,11 +74,11 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryIndigenous'
         }).then(response => {
-          Cypress.env('schoolCollectionIdIndigenous', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdIndigenous', response?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -116,11 +116,11 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummarySpecialEd'
         }).then(response => {
-          Cypress.env('schoolCollectionIdSped', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdSped', response?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });
@@ -170,11 +170,11 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryEll'
         }).then(response => {
-          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdEll', response?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
@@ -197,11 +197,11 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'dataUploadSummaryErrors'
         }).then(response => {
-          Cypress.env('schoolCollectionIdErrors', response?.sdcSchoolCollection?.sdcSchoolCollectionID);
+          Cypress.env('schoolCollectionIdErrors', response?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', {schoolCodes: ['99998']});
       });

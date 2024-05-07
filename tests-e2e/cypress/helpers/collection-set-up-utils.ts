@@ -1,4 +1,7 @@
-import {SchoolCollectionOptions, SdcCollectionApiService} from '../services/sdc-collection-api-service';
+import {
+  DistrictCollectionOptions, SchoolCollectionOptions,
+  SdcCollectionApiService
+} from '../services/sdc-collection-api-service';
 
 export class CollectionSetupUtils {
 
@@ -12,6 +15,10 @@ export class CollectionSetupUtils {
 
   async setUpCollections(schoolCollection: SchoolCollectionOptions) {
     return this.sdcCollectionApi.createCollections(schoolCollection);
+  }
+
+  async setUpDistrictCollections(districtCollection: DistrictCollectionOptions) {
+    return this.sdcCollectionApi.createDistrictCollection(districtCollection);
   }
 
   async setUpStudentElls(ells: SdcStudentEll[]) {

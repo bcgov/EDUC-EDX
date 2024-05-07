@@ -7,7 +7,7 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepTwoSeedData'
         });
@@ -153,7 +153,7 @@ describe('SDC School Collection View', () => {
       before(() => {
         cy.task<AppSetupData>('dataLoad').then(res => {
           cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-            school: res.school,
+            school: res.schools[0],
             loadWithStudentAndValidations: true,
             seedData: 'stepTwoDuplicatePENData'
           });

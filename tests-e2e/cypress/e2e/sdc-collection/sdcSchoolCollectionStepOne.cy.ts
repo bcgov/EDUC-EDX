@@ -7,7 +7,7 @@ describe('SDC Step-One', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedData'
         });
@@ -41,7 +41,7 @@ describe('SDC Step-One', () => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'submittedSchoolCollection'
         });
@@ -52,16 +52,16 @@ describe('SDC Step-One', () => {
       cy.login();
     });
     it('Re-upload button is disabled', () => {
-        cy.visit('/');
-        cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-        cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-        cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-        cy.get(selectors.studentLevelData.stepOne).should('exist').click();
-        cy.get(selectors.studentLevelData.documentReUploadButton).should('be.disabled');
+      cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
+      cy.get(selectors.studentLevelData.stepOne).should('exist').click();
+      cy.get(selectors.studentLevelData.documentReUploadButton).should('be.disabled');
     });
   });
 });
