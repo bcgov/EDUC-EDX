@@ -355,7 +355,7 @@ export default {
     },
     addFileReportDateWarning(fileDate, fileName) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
-      if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || this.formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
+      if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
         let message = "The date in the " + fileName + " file is " + formattedFileDate + ". Please ensure that you have uploaded the correct data for this collection before continuing."
         this.fileDateWarningErrorMessages.push(message);
       }

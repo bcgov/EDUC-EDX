@@ -343,7 +343,9 @@
       id="schoolNotSubmittedWarning"
       class="form-hint mr-3"
     >
-      {{ getWarningText() }}
+      {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
+      school(s) not
+      submitted
     </p>
   </v-row>
 </template>

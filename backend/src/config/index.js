@@ -121,7 +121,8 @@ nconf.defaults({
     specialEdCodesURL: process.env.SDC_API_ENDPOINT + '/specialEducation-codes',
     validationIssueTypeCodesURL: process.env.SDC_API_ENDPOINT + '/validation-issue-type-codes',
     programEligibilityTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-eligibility-issue-codes',
-    zeroFteReasonCodesURL: process.env.SDC_API_ENDPOINT + '/zero-fte-reason-codes'
+    zeroFteReasonCodesURL: process.env.SDC_API_ENDPOINT + '/zero-fte-reason-codes',
+    duplicateResolutionCodesURL: process.env.SDC_API_ENDPOINT + '/duplicate-resolution-codes',
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,

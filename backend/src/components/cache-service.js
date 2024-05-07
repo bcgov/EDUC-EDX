@@ -23,6 +23,7 @@ let authoritiesMap = new Map();
 let bandCodesMap = new Map();
 let enrolledProgramCodesMap = new Map();
 let careerProgramCodesMap = new Map();
+let duplicateResolutionCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
 let specialEducationCodesMap = new Map();
 let rolePermissionsMap = new Map();
@@ -256,6 +257,13 @@ const cacheService = {
       careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
     });
     return careerProgramCodesMap;
+  },
+  getAllDuplicateResolutionCodesMap() {
+    let duplicateResolutionCodes = cachedData[constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES].records;
+    duplicateResolutionCodes.forEach(duplicateResolutionCode => {
+      duplicateResolutionCodesMap.set(duplicateResolutionCode.duplicateResolutionCode, duplicateResolutionCode);
+    });
+    return duplicateResolutionCodesMap;
   },
   getEnrolledProgramCodesMap() {
     let enrolledProgramCodesRaw = cachedData[constants.CACHE_KEYS.SDC_ENROLLED_PROGRAM_CODES].activeRecords;
