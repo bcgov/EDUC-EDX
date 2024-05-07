@@ -36,162 +36,171 @@
         {{ name }}
       </v-tab>
     </v-tabs>
-    <v-row class="mt-3 mb-3 pl-3">
-      <v-btn-toggle
-        v-model="duplicateView"
-        color="#003366"
-        rounded="0"
-        :divided="true"
+    <v-window v-model="tab">
+      <v-window-item
+        value="Enrollment Duplicates"
+        transition="false"
+        reverse-transition="false"
       >
-        <v-btn
-          id="nonAllowableButton"
-          value="nonAllowable"
-          size="large"
-          class="duplicate-type-button"
+        <v-row
+          v-if="tab==='Enrollment Duplicates'"
+          class="mt-3 mb-3 pl-3"
         >
-          Non-Allowable ({{ nonAllowableDuplicates.length }})
-        </v-btn>
-        <v-btn
-          id="allowableButton"
-          value="allowable"
-          size="large"
-          class="duplicate-type-button"
-        >
-          Allowable ({{ allowableDuplicates.length }})
-        </v-btn>
-        <v-btn
-          id="resolvedButton"
-          value="resolved"
-          size="large"
-          class="duplicate-type-button"
-        >
-          Resolved ({{ resolvedDuplicates.length }})
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <template v-if="duplicateView==='nonAllowable'">
-      <strong>Duplicate Students Found: {{ nonAllowableDuplicates.length }}</strong>
-      <v-row
-        v-for="duplicate in nonAllowableDuplicates"
-        :key="duplicate.sdcDuplicateID"
-        class="pt-4"
-        no-gutters
-      >
-        <v-col class="pa-0">
-          <v-row no-gutters>
-            <v-col class="pb-2">
-              <v-chip color="primary">
-                <v-col>Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}</v-col>
-                <v-col>Error: {{ duplicate.duplicateErrorDescriptionCode }}</v-col>
-              </v-chip>
-            </v-col>
-          </v-row>
-          <CustomTable
-            :headers="IN_DISTRICT_DUPLICATES.nonAllowableTableHeaders"
-            :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
-            :is-loading="false"
-            :reset="false"
-            :total-elements="2"
-            :hide-pagination="true"
+          <v-btn-toggle
+            v-model="duplicateView"
+            color="#003366"
+            rounded="0"
+            :divided="true"
           >
-            <template #resolution="{ sdcSchoolCollectionStudent }">
-              <v-menu
-                v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID]"
-                transition="fab-transition"
-                location="end"
-                offset="10"
-              >
-                <template #activator="{ props }">
-                  <v-btn
-                    :id="'resolveMenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
-                    color="primary"
-                    icon="mdi-playlist-edit"
-                    variant="text"
-                    v-bind="props"
-                  />
-                </template>
-                <v-list>
-                  <v-list-item v-if="sdcSchoolCollectionStudent.canChangeGrade">
-                    <v-icon
-                      color="#003366"
-                      class="pr-1 mb-1"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                    <span class="ml-2">Change Grade</span>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-icon
-                      color="#003366"
-                      class="pr-1 mb-1"
-                    >
-                      mdi-check
-                    </v-icon>
-                    <span class="ml-2">Resolve</span>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </template>
-          </CustomTable>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="nonAllowableDuplicates.length === 0"
-        class="pt-4"
-        no-gutters
-      >
-        <v-alert
-          id="enrollment-non-allowable-alert"
-          density="compact"
-          type="success"
-          variant="tonal"
-          text="Congratulations! There are no non-allowable duplicates."
-        />
-      </v-row>
-    </template>
-    <template v-if="duplicateView==='allowable'">
-      <strong>Duplicate Students Found: {{ allowableDuplicates.length }}</strong>
-      <v-row
-        v-for="duplicate in allowableDuplicates"
-        :key="duplicate.sdcDuplicateID"
-        class="pt-4"
-        no-gutters
-      >
-        <v-col class="pa-0">
-          <v-row no-gutters>
-            <v-col class="pb-2">
-              <v-chip color="primary">
-                <v-col>
-                  Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}
+            <v-btn
+              id="nonAllowableButton"
+              value="nonAllowable"
+              size="large"
+              class="duplicate-type-button"
+            >
+              Non-Allowable ({{ nonAllowableDuplicates.length }})
+            </v-btn>
+            <v-btn
+              id="allowableButton"
+              value="allowable"
+              size="large"
+              class="duplicate-type-button"
+            >
+              Allowable ({{ allowableDuplicates.length }})
+            </v-btn>
+            <v-btn
+              id="resolvedButton"
+              value="resolved"
+              size="large"
+              class="duplicate-type-button"
+            >
+              Resolved ({{ resolvedDuplicates.length }})
+            </v-btn>
+          </v-btn-toggle>
+        </v-row>
+        <template v-if="duplicateView==='nonAllowable'">
+          <strong>Duplicate Students Found: {{ nonAllowableDuplicates.length }}</strong>
+          <v-row
+            v-for="duplicate in nonAllowableDuplicates"
+            :key="duplicate.sdcDuplicateID"
+            class="pt-4"
+            no-gutters
+          >
+            <v-col class="pa-0">
+              <v-row no-gutters>
+                <v-col class="pb-2">
+                  <v-chip color="primary">
+                    <v-col>Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}</v-col>
+                    <v-col>Error: {{ duplicate.duplicateErrorDescriptionCode }}</v-col>
+                  </v-chip>
                 </v-col>
-              </v-chip>
+              </v-row>
+              <CustomTable
+                :headers="IN_DISTRICT_DUPLICATES.nonAllowableTableHeaders"
+                :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
+                :is-loading="false"
+                :reset="false"
+                :total-elements="2"
+                :hide-pagination="true"
+              >
+                <template #resolution="{ sdcSchoolCollectionStudent }">
+                  <v-menu
+                    v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID]"
+                    transition="fab-transition"
+                    location="end"
+                    offset="10"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                        :id="'resolveMenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
+                        color="primary"
+                        icon="mdi-playlist-edit"
+                        variant="text"
+                        v-bind="props"
+                      />
+                    </template>
+                    <v-list>
+                      <v-list-item v-if="sdcSchoolCollectionStudent.canChangeGrade">
+                        <v-icon
+                          color="#003366"
+                          class="pr-1 mb-1"
+                        >
+                          mdi-pencil
+                        </v-icon>
+                        <span class="ml-2">Change Grade</span>
+                      </v-list-item>
+                      <v-list-item>
+                        <v-icon
+                          color="#003366"
+                          class="pr-1 mb-1"
+                        >
+                          mdi-check
+                        </v-icon>
+                        <span class="ml-2">Resolve</span>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
+              </CustomTable>
             </v-col>
           </v-row>
-          <CustomTable
-            :headers="IN_DISTRICT_DUPLICATES.allowableTableHeaders"
-            :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
-            :is-loading="false"
-            :reset="false"
-            :total-elements="2"
-            :hide-pagination="true"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="allowableDuplicates.length === 0"
-        class="pt-4"
-        no-gutters
-      >
-        <v-alert
-          id="enrollment-allowable-alert"
-          density="compact"
-          type="info"
-          variant="tonal"
-          text="There are no allowable duplicates."
-        />
-      </v-row>
-    </template>
-    <template v-if="duplicateView==='resolved'">
+          <v-row
+            v-if="nonAllowableDuplicates.length === 0"
+            class="pt-4"
+            no-gutters
+          >
+            <v-alert
+              id="enrollment-non-allowable-alert"
+              density="compact"
+              type="success"
+              variant="tonal"
+              text="Congratulations! There are no non-allowable duplicates."
+            />
+          </v-row>
+        </template>
+        <template v-if="duplicateView==='allowable'">
+          <strong>Duplicate Students Found: {{ allowableDuplicates.length }}</strong>
+          <v-row
+            v-for="duplicate in allowableDuplicates"
+            :key="duplicate.sdcDuplicateID"
+            class="pt-4"
+            no-gutters
+          >
+            <v-col class="pa-0">
+              <v-row no-gutters>
+                <v-col class="pb-2">
+                  <v-chip color="primary">
+                    <v-col>
+                      Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}
+                    </v-col>
+                  </v-chip>
+                </v-col>
+              </v-row>
+              <CustomTable
+                :headers="IN_DISTRICT_DUPLICATES.allowableTableHeaders"
+                :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
+                :is-loading="false"
+                :reset="false"
+                :total-elements="2"
+                :hide-pagination="true"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="allowableDuplicates.length === 0"
+            class="pt-4"
+            no-gutters
+          >
+            <v-alert
+              id="enrollment-allowable-alert"
+              density="compact"
+              type="info"
+              variant="tonal"
+              text="There are no allowable duplicates."
+            />
+          </v-row>
+        </template>
+        <template v-if="duplicateView==='resolved'">
       <strong>Duplicate Students Found: {{ resolvedDuplicates.length }}</strong>
       <v-row
         v-for="duplicate in resolvedDuplicates"
@@ -233,6 +242,8 @@
         />
       </v-row>
     </template>
+      </v-window-item>
+    </v-window>
   </div>
 
   <v-row justify="end">

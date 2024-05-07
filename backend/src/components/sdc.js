@@ -658,16 +658,17 @@ async function getInDistrictDuplicates(req, res) {
       }
     };
     sdcDuplicates.forEach(sdcDuplicate => {
-      const school = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
-      sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school);
-      sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school);
+      const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
+      sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school1);
+      const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
+      sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school2);
 
       if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT && sdcDuplicate.duplicateResolutionCode) {
         setStudentResolvedMessage(sdcDuplicate);
         result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
       }
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
-        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school);
+        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
         result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
       }
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
@@ -696,11 +697,11 @@ function setStudentResolvedMessage(sdcDuplicate) {
   }
 }
 
-function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school) {
-  if(['DIST_LEARN', 'DISTONLINE'].includes(school.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledGradeCode)) {
+function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2) {
+  if(['DIST_LEARN', 'DISTONLINE'].includes(school1.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledGradeCode)) {
     sdcDuplicate.sdcSchoolCollectionStudent1Entity.canChangeGrade = true;
   }
-  if(['DIST_LEARN', 'DISTONLINE'].includes(school.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledGradeCode)) {
+  if(['DIST_LEARN', 'DISTONLINE'].includes(school2.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledGradeCode)) {
     sdcDuplicate.sdcSchoolCollectionStudent2Entity.canChangeGrade = true;
   }
 }
