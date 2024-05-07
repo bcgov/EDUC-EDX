@@ -164,7 +164,8 @@ cacheKeys = {
   SDC_SPECIAL_ED_CODES: 'sdc_special_ed_codes',
   SDC_VALIDATION_ISSUE_TYPE_CODES: 'sdc_validation_issue_type_codes',
   SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: 'sdc_program_eligibility_type_codes',
-  SDC_ZERO_FTE_REASON_CODES: 'sdc_zero_fte_reason_codes'
+  SDC_ZERO_FTE_REASON_CODES: 'sdc_zero_fte_reason_codes',
+  SDC_DUPLICATE_RESOLUTION_CODES: 'sdc_duplicate_resolution_codes'
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
@@ -191,6 +192,11 @@ const ENROLLED_PROGRAM_TYPE_CODE_MAP = Object.freeze({
   ENGLISH_ENROLLED_PROGRAM_CODES: ['17'],
 });
 
+const DUPLICATE_TYPE_CODES = Object.freeze({
+  ENROLLMENT: 'ENROLLMENT',
+  PROGRAM: 'PROGRAM'
+});
+
 module.exports = {
   FILTER_OPERATION,
   CONDITION,
@@ -203,7 +209,8 @@ module.exports = {
   INSTITUTE_CACHE_REFRESH_TOPIC,
   CACHE_KEYS,
   MOVE_SCHOOL_TOPIC,
-  ENROLLED_PROGRAM_TYPE_CODE_MAP
+  ENROLLED_PROGRAM_TYPE_CODE_MAP,
+  DUPLICATE_TYPE_CODES
 };
 /**
  * Test comment
