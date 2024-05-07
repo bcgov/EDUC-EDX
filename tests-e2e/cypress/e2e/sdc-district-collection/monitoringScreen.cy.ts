@@ -1,5 +1,5 @@
-import selectors from '../../../support/selectors';
-import { AppSetupData } from '../../../../cypress.config';
+import selectors from '../../support/selectors';
+import { AppSetupData } from '../../../cypress.config';
 import { DistrictCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 /*describe('SDC District Collection View', () => {
