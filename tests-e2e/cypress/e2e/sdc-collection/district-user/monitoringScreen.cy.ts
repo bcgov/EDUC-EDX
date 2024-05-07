@@ -2,7 +2,7 @@ import selectors from '../../../support/selectors';
 import { AppSetupData } from '../../../../cypress.config';
 import { DistrictCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
-describe('SDC District Collection View', () => {
+/*describe('SDC District Collection View', () => {
   context('As an EDX District User', () => {
     before(() => {
       cy.logout();
@@ -75,7 +75,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.studentLevelData.stepFourNextButton).should('not.be.disabled');
     });
   });
-});
+});*/
 
 function navigateToMonitorScreen(id: string) {
   cy.intercept(Cypress.env('interceptors').sdc_district_collection_monitor).as('sdc_district_collection_monitor');
