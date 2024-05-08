@@ -65,7 +65,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.bandCode})`};
       });
       this.bandCodesMap = new Map();
-      this.bandCodes.unshift({'bandCode': '', 'dropdownText': 'No Band Code'});
+      this.bandCodes.unshift({'bandCode': null, 'dropdownText': 'No Band Code'});
       bandCodes.forEach(bandCode => {
         this.bandCodesMap.set(bandCode.bandCode, bandCode);
       });
@@ -75,7 +75,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.careerProgramCode})`};
       });
       this.careerProgramCodesMap = new Map();
-      this.careerProgramCodes.unshift({'careerProgramCode': '', 'dropdownText': 'No Career Code'});
+      this.careerProgramCodes.unshift({'careerProgramCode': null, 'dropdownText': 'No Career Code'});
       careerProgramCodes.forEach(careerProgramCode => {
         this.careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
       });
@@ -117,7 +117,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.homeLanguageSpokenCode})`};
       });
       this.homeLanguageSpokenCodesMap = new Map();
-      this.homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': '', 'dropdownText': 'No Home Language Code'});
+      this.homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': null, 'dropdownText': 'No Home Language Code'});
       homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
         this.homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
       });
@@ -127,7 +127,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.schoolFundingCode})`};
       });
       this.schoolFundingCodesMap = new Map();
-      this.schoolFundingCodes.unshift({'schoolFundingCode': '', 'dropdownText': 'No Funding Code'});
+      this.schoolFundingCodes.unshift({'schoolFundingCode': null, 'dropdownText': 'No Funding Code'});
       schoolFundingCodes.forEach(schoolFundingCode => {
         this.schoolFundingCodesMap.set(schoolFundingCode.schoolFundingCode, schoolFundingCode);
       });
@@ -137,7 +137,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
       });
       this.specialEducationCodesMap = new Map();
-      this.specialEducationCodes.unshift({'specialEducationCategoryCode': '', 'dropdownText': 'No Special Ed Category Code'});
+      this.specialEducationCodes.unshift({'specialEducationCategoryCode': null, 'dropdownText': 'No Special Ed Category Code'});
       specialEducationCodes.forEach(specialEducationCategoryCode => {
         this.specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
       });
