@@ -94,7 +94,10 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
     ],
     summaryReport: [
-     
+      { title: 'Eligible Indigenous Support Program Headcount', endpoint:'indigenous'},
+      { title: 'Eligible Indigenous Support Program Headcount per School', endpoint:'indigenous-per-school'},
+      { title: 'Eligible Band of Residence Headcount', endpoint:'band-codes'},
+      { title: 'Eligible Band of Residence Headcount per School', endpoint:'band-codes-per-school'}
     ],
     allowedFilters: {
 
@@ -140,7 +143,8 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInELL' } },
     ],
     summaryReport: [
-     
+      { title: 'Eligible English Language Learners Headcount for District', endpoint:'ell'},
+      { title: 'Eligible English Language Learners Headcount per school', endpoint:'ell-per-school'}
     ],
     allowedFilters: {
     }
@@ -159,9 +163,6 @@ export const REFUGEE = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
-    ],
-    summaryReport: [
-
     ],
     allowedFilters: {
 
@@ -268,5 +269,49 @@ export const MONITORING = Object.freeze(
         ]
       }
     }
+  }
+);
+
+
+export const IN_DISTRICT_DUPLICATES = Object.freeze(
+  {
+    nonAllowableTableHeaders: [
+      { title: 'School', key: 'schoolName' },
+      { title: 'Local ID', key: 'localID', subHeader: { title: 'Birthdate', key: 'dob' } },
+      { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+      { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+      { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
+      { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInELL' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Resolution', key: 'resolution' },
+    ],
+    allowableTableHeaders: [
+      { title: 'School', key: 'schoolName' },
+      { title: 'Local ID', key: 'localID', subHeader: { title: 'Birthdate', key: 'dob' } },
+      { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+      { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+      { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
+      { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInELL' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+    ],
+    resolvedTableHeaders: [
+      { title: 'School', key: 'schoolName' },
+      { title: 'Local ID', key: 'localID', subHeader: { title: 'Birthdate', key: 'dob' } },
+      { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+      { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+      { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
+      { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInELL' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Resolution', key: 'resolution' },
+    ],
   }
 );

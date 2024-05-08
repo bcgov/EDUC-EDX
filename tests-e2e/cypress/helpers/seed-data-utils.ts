@@ -1,6 +1,16 @@
 import {faker} from '@faker-js/faker';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 
+export const createSdcDistrictCollection = (collectionID: string, districtID: string, status: string, openDate: string, dueDate: string): SdcDistrictCollection => <SdcDistrictCollection> ({
+  createUser: 'EDXAT',
+  collectionID: collectionID,
+  districtID: districtID,
+  sdcDistrictCollectionStatusCode: status,
+  collectionTypeCode: 'SEPTEMBER',
+  collectionOpenDate: openDate,
+  submissionDueDate: dueDate
+});
+
 const createSdcSchoolCollectionStudent = (grades: string[] | undefined): SdcSchoolCollectionStudent => <SdcSchoolCollectionStudent>({
   localID: faker.string.alphanumeric(9),
   studentPen: faker.string.numeric({length: 9, allowLeadingZeros: true}),
@@ -21,7 +31,7 @@ const createSdcSchoolCollectionStudent = (grades: string[] | undefined): SdcScho
   fte: 0
 });
 
-export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, districtId: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined, students: SdcSchoolCollectionStudent[] | undefined, sdcSchoolCollectionStatusCode: string | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
+export const createSdcSchoolCollection = (collectionId: string | undefined, schoolId: string | undefined, sdcDistrictCollectionID: string | undefined, collectionOpenDate: string | undefined, collectionCloseDate: string | undefined, students: SdcSchoolCollectionStudent[] | undefined, sdcSchoolCollectionStatusCode: string | undefined): SdcSchoolCollection => <SdcSchoolCollection>({
   createUser: 'EDXAT',
   uploadDate: LocalDate.now().format(DateTimeFormatter.ofPattern('yyyyMMdd')),
   uploadFileName: 'EDX-AT-FILE.std',
@@ -29,7 +39,7 @@ export const createSdcSchoolCollection = (collectionId: string | undefined, scho
   collectionTypeCode: 'SEPTEMBER',
   collectionID: collectionId,
   schoolID: schoolId,
-  districtID: districtId,
+  sdcDistrictCollectionID: sdcDistrictCollectionID,
   collectionOpenDate: collectionOpenDate,
   collectionCloseDate: collectionCloseDate,
   students: students ? students : createSdcSchoolCollectionStudents(5, undefined)

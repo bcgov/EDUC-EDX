@@ -7,11 +7,11 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
-          const studentWithEllYears = collection?.sdcSchoolCollection?.students
+          const studentWithEllYears = collection?.sdcSchoolCollections[0]?.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
               studentID: s.assignedStudentId,
@@ -351,11 +351,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.indigenousSupportComponent.reportDropdown).parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible Band of Residence Headcount').click();
 
-      var expectedValues = ["0653 - TSARTLIP10.7750", "0547 - BLUEBERRY RIVER11.0000", "All Bands & Students21.7750"];
+      const expectedValues = ['0653 - TSARTLIP10.7750', '0547 - BLUEBERRY RIVER11.0000', 'All Bands & Students21.7750'];
 
       cy.get(selectors.bandSummaryComponent.headcountTableSubHeading).eq(0).should('contain.text', expectedValues[0])
-          .next().next().should('contain.text', expectedValues[1])
-          .next().next().should('contain.text', expectedValues[2]);
+        .next().next().should('contain.text', expectedValues[1])
+        .next().next().should('contain.text', expectedValues[2]);
 
 
     });

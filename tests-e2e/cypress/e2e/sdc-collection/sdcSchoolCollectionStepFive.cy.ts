@@ -7,7 +7,7 @@ describe('SDC School Collection View', () => {
     before(() => {
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedData'
         });
@@ -58,7 +58,7 @@ describe('SDC School Collection View', () => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-          school: res.school,
+          school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'submittedSchoolCollection'
         });
@@ -69,16 +69,16 @@ describe('SDC School Collection View', () => {
       cy.login();
     });
     it('New Contact should be disabled', () => {
-        cy.visit('/');
-        cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
-        cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.visit('/');
+      cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
+      cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.title).should('exist').contains('Student Level Data (1701) | EDX Automation Testing School');
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
-        cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-        cy.get(selectors.studentLevelData.stepFive).should('exist').click();
-        cy.get(selectors.schoolContacts.newContactButton).should('not.exist');
+      cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
+      cy.get(selectors.studentLevelData.stepFive).should('exist').click();
+      cy.get(selectors.schoolContacts.newContactButton).should('not.exist');
     });
   });
 });

@@ -109,6 +109,18 @@
                 reverse-transition="false"
               >
                 <StepThreeVerifyData
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="4"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFourInDistrictDuplicates
+                  :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
                   @next="next"
                 />
@@ -129,11 +141,13 @@ import {SDC_STEPS_DISTRICT} from '../../../utils/institute/SdcSteps';
 import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
+import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
 
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
   components: {
+    StepFourInDistrictDuplicates,
     StepOneUploadData,
     StepTwoMonitor,
     StepThreeVerifyData

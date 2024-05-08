@@ -98,8 +98,8 @@
                   :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}"
                   target="_blank"
                   @click.stop
-                  >
-                  {{ props.item['mincode'] }} - {{ props.item['schoolName'] }} 
+                >
+                  {{ props.item['schoolName'] }}
                 </router-link>
               </div>
 
@@ -127,6 +127,17 @@
                   <div>-</div>
                 </template>
               </div>
+              <span v-else-if="column.key === 'resolution'">
+                <slot
+                  :sdc-school-collection-student="props.item"
+                  name="resolution"
+                >
+                  <template v-if="props.item[column.key]">
+                    {{ props.item[column.key] }}
+                  </template>
+                  <template v-else>-</template>
+                </slot>
+              </span>
               <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
               <span v-else-if="column.title !== 'select'">-</span>
 
@@ -147,6 +158,10 @@
           </td>
         </tr>
       </template>
+      <template
+        v-if="hidePagination"
+        #bottom
+      />
     </v-data-table-server>
   </div>
 </template>
@@ -171,6 +186,10 @@ export default {
       type: Array,
       required: true,
       default: null
+    },
+    hidePagination: {
+      type: Boolean,
+      default: false
     },
     totalElements: {
       type: Number,
