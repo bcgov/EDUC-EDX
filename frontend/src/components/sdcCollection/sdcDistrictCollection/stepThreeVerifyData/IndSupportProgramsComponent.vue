@@ -35,7 +35,18 @@
       <SummaryComponent
         :headcount-type="config.summaryReport"
         :is-district-summary="true"
-      />
+      >
+        <template #reports="{ data, reportType }">
+          <IndigenousHeadcountsComponent
+            v-if="data && (reportType === 'indigenous' || reportType === 'indigenous-per-school')"
+            :headcount-table-data="data"
+          />
+          <BandHeadcountsComponent
+            v-if="data && (reportType === 'band-codes' || reportType === 'band-codes-per-school')"
+            :headcount-table-data="data"
+          />
+        </template>
+      </SummaryComponent>
     </div>
   </v-container>
 </template>
@@ -45,10 +56,14 @@ import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
 import {INDSUPPORT_PR} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
-  
+import IndigenousHeadcountsComponent from '../../sdcSchoolCollection/stepOneUploadData/IndigenousHeadcountsComponent.vue';
+import BandHeadcountsComponent from '../../sdcSchoolCollection/stepThreeVerifyData/BandHeadcountsComponent.vue';
+
 export default {
   name: 'IndSupportProgramsComponent',
   components: {
+    BandHeadcountsComponent,
+    IndigenousHeadcountsComponent,
     DetailComponent,
     SummaryComponent
   },
