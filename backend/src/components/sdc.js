@@ -384,7 +384,7 @@ function toTableRow(student) {
   student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
   student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
   student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.mappedNoOfCourses = student.numberOfCoursesDec !== null ? student.numberOfCoursesDec.toFixed(2) : '0';
+  student.mappedNoOfCourses = student.numberOfCoursesDec ? student.numberOfCoursesDec.toFixed(2) : '0';
   return student;
 }
 
@@ -660,8 +660,10 @@ async function getInDistrictDuplicates(req, res) {
     sdcDuplicates.forEach(sdcDuplicate => {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school1);
+      toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
       sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school2);
+      toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
 
       if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT && sdcDuplicate.duplicateResolutionCode) {
         setStudentResolvedMessage(sdcDuplicate);
@@ -670,6 +672,12 @@ async function getInDistrictDuplicates(req, res) {
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
         setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
         result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
+      }
+      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
+        result.programDuplicates.RESOLVED.push(sdcDuplicate);
+      }
+      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
+        result.programDuplicates.NON_ALLOW.push(sdcDuplicate);
       }
     });
     res.status(HttpStatus.OK).json(result);
