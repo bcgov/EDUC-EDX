@@ -671,9 +671,6 @@ async function getInDistrictDuplicates(req, res) {
         setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
         result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
       }
-      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
-        result.programDuplicates.push(sdcDuplicate);
-      }
     });
     res.status(HttpStatus.OK).json(result);
   } catch (e) {
