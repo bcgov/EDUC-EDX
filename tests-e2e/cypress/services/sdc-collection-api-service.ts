@@ -660,6 +660,7 @@ export class SdcCollectionApiService {
     console.log('AT createSchoolCollection completed');
     return responses;
   }
+
   async createDistrictCollection(districtCollectionOptions: DistrictCollectionOptions) {
     console.log('AT createDistrictCollection started');
 
@@ -760,6 +761,17 @@ export class SdcCollectionApiService {
       sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'LOADED';
       sdcSchoolCollections[0].sdcSchoolCollectionStatusCode = 'SCH_C_VRFD';
       break;
+    case 'sdcDistrictCollectionEditViewSeedData':
+      sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'REVIEWED';
+      sdcSchoolCollections.forEach(x => x.students.map((student, index) =>  {
+        if(index % 2 === 0) {
+          student.enrolledProgramCodes = '2917';
+        } else {
+          student.enrolledProgramCodes = '1140';
+          student.careerProgramCode = 'XA';
+        }
+    }));
+    break;
     default:
       break;
     }
