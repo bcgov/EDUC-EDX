@@ -114,7 +114,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="totalNumIssueStudentsInCollection > 0"
+        v-if="totalNumIssueStudentsInCollection > 0 || penFilter || legalUsualNameFilter || fundingWarningCategoryFilter"
         class="pr-0"
       >
         <v-row class="searchBox">
