@@ -48,7 +48,7 @@
       icon="mdi-check"
       text="Submit 1701 Data to Ministry"
       :disabled="isSubmitted"
-      :click-action="next"
+      :click-action="submit"
     />
   </v-row>
 </template>
@@ -94,7 +94,7 @@ export default {
     });
   },
   methods: {
-    next() {
+    submit() {
       if(this.districtCollectionObject?.sdcDistrictCollectionStatusCode !== 'SUBMITTED') {
         this.markStepAsComplete();
       }

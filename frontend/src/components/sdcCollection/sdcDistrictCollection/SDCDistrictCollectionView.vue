@@ -133,7 +133,6 @@
                 <StepFiveSubmitToMinistry
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
-                  @next="next"
                 />
               </v-stepper-window-item>
             </v-stepper-window>
