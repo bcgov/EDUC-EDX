@@ -38,7 +38,7 @@
             text="Bulk Edit"
             prepend-icon="mdi-pencil-outline"
             variant="outlined"
-            :disabled="selectedStudents.length < 2"
+            :disabled="selectedStudents.length < 2 || districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
           />
           <v-btn
             id="filters"

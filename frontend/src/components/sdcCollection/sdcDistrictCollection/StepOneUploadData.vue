@@ -57,6 +57,7 @@
             icon="mdi-file-upload"
             text="Upload 1701 Submission"
             :loading="isReadingFile"
+            :disabled="districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
             :click-action="handleFileImport"
             title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
         />

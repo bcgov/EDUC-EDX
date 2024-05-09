@@ -47,7 +47,6 @@
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Submit 1701 Data to Ministry"
-      :hidden="isSubmitted"
       :disabled="isSubmitted"
       :click-action="next"
     />
@@ -79,7 +78,7 @@ export default {
       required: true
     }
   },
-  emits: ['next', 'previous'],
+  emits: ['previous'],
   data() {
     return {
       isSubmitted: false,
