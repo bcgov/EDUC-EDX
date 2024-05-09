@@ -4,7 +4,7 @@ const passport = require('passport');
 const express = require('express');
 const { deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers,getAllDistrictSchoolEdxUsers, updateEdxUserSchoolRoles, updateEdxUserDistrictRoles,
   createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, generateOrRegeneratePrimaryEdxActivationCode, removeSecureExchangeStudent,
-  removeUserSchoolOrDistrictAccess
+  removeUserSchoolOrDistrictAccess, updateEdxUserSchool
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const { scanFilePayload, scanSecureExchangeDocumentPayload } = require('../components/fileUtils');
@@ -60,6 +60,7 @@ router.post('/users/activation-code/primary/:instituteType/:instituteIdentifier'
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, activateEdxUser);
 router.get('/activate-user-verification', verifyActivateUserLink);
 router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));
+router.post('/users/user-school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), findSchoolID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserSchool);
 router.post('/users/roles/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN), findSchoolID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserSchoolRoles);
 router.post('/users/roles/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), findDistrictID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserDistrictRoles);
 router.get('/users/clearActiveUserSession', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, clearActiveSession) ;

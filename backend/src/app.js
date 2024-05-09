@@ -9,7 +9,6 @@ const express = require('express');
 const atob = require('atob');
 const passport = require('passport');
 const helmet = require('helmet');
-const cors = require('cors');
 const utils = require('./components/utils');
 const auth = require('./components/auth');
 const bodyParser = require('body-parser');
@@ -43,7 +42,6 @@ messagePubSub.init().then(() => {
 const app = express();
 app.set('trust proxy', 1);
 //sets security measures (headers, etc)
-app.use(cors());
 app.use(helmet());
 app.use(noCache());
 app.use(promMid({
