@@ -192,7 +192,7 @@ export default defineComponent({
         });
     },
     next() {
-      if(this.isStepComplete) {
+      if(this.isStepComplete || this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED') {
         this.$emit('next');
       } else {
         this.markStepAsComplete();
