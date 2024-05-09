@@ -88,7 +88,6 @@ export default {
   },
   mounted() {
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
-      console.log(this.districtCollectionObject.sdcDistrictCollectionStatusCode);
       this.isSubmitted = this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
       this.isLoading = !this.isLoading;
     });
