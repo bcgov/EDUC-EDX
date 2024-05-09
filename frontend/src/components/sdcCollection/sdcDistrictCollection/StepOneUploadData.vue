@@ -57,6 +57,7 @@
             icon="mdi-file-upload"
             text="Upload 1701 Submission"
             :loading="isReadingFile"
+            :disabled="districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
             :click-action="handleFileImport"
             title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
         />
@@ -248,7 +249,7 @@ export default {
       ];
     },
     next() {
-      if(this.isStepComplete) {
+      if(this.isStepComplete || this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED') {
         this.$emit('next');
       } else {
         this.markStepAsComplete();

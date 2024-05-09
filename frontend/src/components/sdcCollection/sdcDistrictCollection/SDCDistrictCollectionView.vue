@@ -66,6 +66,16 @@
                 :key="step.step"
               >
                 <v-stepper-item
+                  v-if="step.step === 5"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
@@ -125,6 +135,16 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="5"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFiveSubmitToMinistry
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -142,15 +162,17 @@ import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
+import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
 
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
   components: {
-    StepFourInDistrictDuplicates,
     StepOneUploadData,
     StepTwoMonitor,
-    StepThreeVerifyData
+    StepThreeVerifyData,
+    StepFourInDistrictDuplicates,
+    StepFiveSubmitToMinistry
   },
   data() {
     return {

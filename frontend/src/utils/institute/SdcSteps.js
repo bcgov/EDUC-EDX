@@ -77,7 +77,7 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     id: 'step-5',
     title: 'Submit to Ministry',
     step: 5,
-    sdcDistrictCollectionStatusCode: 'D_DUP_VRFD'
+    sdcDistrictCollectionStatusCode: 'SUBMITTED'
   },
   {
     id: 'step-6',

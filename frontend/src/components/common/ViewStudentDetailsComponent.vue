@@ -41,7 +41,7 @@
             color="#003366"
             text="Save"
             class="ml-2"
-            :disabled="!studentDetailsFormValid || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+            :disabled="!studentDetailsFormValid || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
             @click="save"
           />
         </v-col>
@@ -142,7 +142,7 @@ export default {
     this.selectedStudent.push(this.selectedStudentIds);
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['schoolCollection']),
+    ...mapState(sdcCollectionStore, ['schoolCollection', 'districtCollection']),
   },
   mounted() {
       
