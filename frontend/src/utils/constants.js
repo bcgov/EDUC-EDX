@@ -96,6 +96,7 @@ export const ApiRoutes = Object.freeze({
     USERS_URL: edxRoot + '/users',
     DISTRICT_SCHOOL_USERS_URL: edxRoot + '/all-district-school-users',
     EXCHANGE_ACCESS_ROLES_URL: edxRoot + '/users/roles',
+    EXCHANGE_USER_SCHOOL_ACCESS_URL: edxRoot + '/users/user-school',
     EXCHANGE_REMOVE_USER: edxRoot + '/users/remove',
     EXCHANGE_RELINK_USER: edxRoot + '/users/relink',
     INSTITUTE_SELECTION_URL: edxRoot + '/institute-selection',

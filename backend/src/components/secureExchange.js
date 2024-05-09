@@ -15,7 +15,6 @@ const {
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
-
 const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
 const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
@@ -479,6 +478,53 @@ async function removeSecureExchangeStudent(req, res) {
 
   } catch (e) {
     log.error(e, 'removeSecureExchangeStudent', 'Error occurred while attempting to remove a secure exchange student.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function updateEdxUserSchool(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+    let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.edxUserSchoolID === req.body.params.edxUserSchoolID);
+
+    let schoolAlreadyPresentForUser = edxUser.edxUserSchools.some(school => school.edxUserSchoolID !== req.body.params.edxUserSchoolID && school.schoolID === req.body.params.schoolID);
+
+    if (schoolAlreadyPresentForUser) {
+      return errorResponse(res, edxUser.firstName + ' ' + edxUser.lastName + ' is already registered to ' + cacheService.getSchoolBySchoolID(req.body.params.schoolID).schoolName, HttpStatus.CONFLICT);
+    }
+
+    if (!selectedUserSchools[0]) {
+      return errorResponse(res, 'A user school entry was not found for the selected user.', HttpStatus.NOT_FOUND);
+    }
+
+    let selectedUserSchool = selectedUserSchools[0];
+    let existingUserSchoolRoles = new Map(selectedUserSchool.edxUserSchoolRoles.map(edxUserSchoolRole => [edxUserSchoolRole.edxRoleCode, edxUserSchoolRole]));
+
+    selectedUserSchool.edxUserSchoolRoles = [];
+    req.body.params.selectedRoles.forEach(function (role) {
+      if (existingUserSchoolRoles.has(role)) {
+        selectedUserSchool.edxUserSchoolRoles.push(existingUserSchoolRoles.get(role));
+        return;
+      }
+      let newRole = {};
+      newRole.edxUserSchoolID = selectedUserSchool.edxUserSchoolID;
+      newRole.edxRoleCode = role;
+      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      selectedUserSchool.edxUserSchoolRoles.push(newRole);
+    });
+
+    selectedUserSchool.schoolID = req.body.params.schoolID;
+    selectedUserSchool.updateDate = null;
+    selectedUserSchool.createDate = null;
+    selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
+    selectedUserSchool.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+
+    const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'updateEdxUserSchool', 'Error occurred while attempting to update user school.');
     return handleExceptionResponse(e, res);
   }
 }
@@ -1027,6 +1073,7 @@ module.exports = {
   schoolUserActivationInvite,
   updateEdxUserSchoolRoles,
   updateEdxUserDistrictRoles,
+  updateEdxUserSchool,
   createSecureExchangeComment,
   clearActiveSession,
   getAndSetupEDXUserAndRedirect,

@@ -35,7 +35,6 @@
     "clamdjs": "^1.0.2",
     "config": "^3.3.3",
     "connect-redis": "^5.1.0",
-    "cors": "^2.8.5",
     "cron": "^2.1.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
