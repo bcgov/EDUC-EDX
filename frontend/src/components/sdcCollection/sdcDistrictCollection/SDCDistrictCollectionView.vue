@@ -66,6 +66,16 @@
                 :key="step.step"
               >
                 <v-stepper-item
+                  v-if="step.step === 5"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
