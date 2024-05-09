@@ -36,6 +36,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.stepTwoNextButton).scrollIntoView().should('be.visible').click();
       cy.get(selectors.studentLevelData.stepThreeNextButton).scrollIntoView().should('be.visible').click();
       cy.get(selectors.studentLevelData.stepFourNextButton).scrollIntoView().should('be.visible').click();
+      cy.get(selectors.studentLevelData.stepFiveNextButton).scrollIntoView().should('be.visible').click();
 
       // Step five of collection - school contacts
       cy.get(selectors.schoolContacts.newContactButton).scrollIntoView().should('be.visible').click();

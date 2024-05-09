@@ -8,9 +8,7 @@ function navigateToAccessSchoolUsers(schoolId: string) {
   cy.visit('/');
   cy.wait('@schools');
   cy.wait('@districts');
-  cy.intercept(Cypress.env('interceptors').edx_users).as('users');
   cy.visit('/schoolAccessDetail/' + schoolId);
-  cy.wait('@users');
 }
 
 

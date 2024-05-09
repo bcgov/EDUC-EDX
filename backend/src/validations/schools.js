@@ -28,6 +28,12 @@ const schoolContactSchema = object({
   updateUser: string().nullable(),
 }).noUnknown();
 
+const fundingGroupSchema = object({
+  schoolFundingGroupCode: string().nullable(),
+  label: string().nullable(),
+  description: string().nullable(),
+  displayOrder: string().nullable()
+}).noUnknown();
 
 const postSchoolContactSchema = object({
   body: schoolContactSchema,
@@ -54,6 +60,8 @@ const putSchoolSchema = object({
       updateDate: date().nullable(),
       updateUser: string().nullable(),
     }).noUnknown()),
+    canIssueCertificates: string().nullable(),
+    canIssueTranscripts: string().nullable(),
     closedDate: date().nullable(),
     contacts: array().of(schoolContactSchema),
     createDate: date(),
@@ -88,6 +96,7 @@ const putSchoolSchema = object({
     phoneNumber: string().nullable(),
     schoolCategory: string(),
     schoolCategoryCode: string(),
+    schoolFundingGroups: array().of(fundingGroupSchema),
     schoolId: string(),
     schoolMove: array().of(object({
       createDate: date(),

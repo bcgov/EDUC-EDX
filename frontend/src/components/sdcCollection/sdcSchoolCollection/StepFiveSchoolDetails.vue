@@ -38,7 +38,7 @@
 
   <v-row justify="end">
     <PrimaryButton
-      id="step-4-next-button-school"
+      id="step-5-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Verify 1601 as Correct and Continue"
