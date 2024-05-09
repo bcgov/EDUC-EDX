@@ -125,6 +125,17 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="5"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFiveSubmitToMinistry
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -142,15 +153,17 @@ import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
+import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
 
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
   components: {
-    StepFourInDistrictDuplicates,
     StepOneUploadData,
     StepTwoMonitor,
-    StepThreeVerifyData
+    StepThreeVerifyData,
+    StepFourInDistrictDuplicates,
+    StepFiveSubmitToMinistry
   },
   data() {
     return {
