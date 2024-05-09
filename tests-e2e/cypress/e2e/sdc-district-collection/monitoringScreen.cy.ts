@@ -2,7 +2,7 @@ import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { DistrictCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
-/*describe('SDC District Collection View', () => {
+describe('SDC District Collection View', () => {
   context('As an EDX District User', () => {
     before(() => {
       cy.logout();
@@ -47,7 +47,7 @@ import { DistrictCollectionOptions } from 'tests-e2e/cypress/services/sdc-collec
       cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTable + ' ' + selectors.sdcDistrictCollection.monitoringStep.closeIcon).should('exist').should('have.length', 1);
       cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTable + ' ' + selectors.sdcDistrictCollection.monitoringStep.checkIcon).should('exist').should('have.length', 5);
       cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringNextBtn).should('be.disabled');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.schoolNotSubmittedWarning).should('have.text', '1 school not submitted');
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.schoolNotSubmittedWarning).should('have.text', '1 school(s) not submitted ');
 
       cy.get(selectors.sdcDistrictCollection.monitoringStep.hasUploadedValue).should('have.text', '2');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.missingUploadedValue).should('have.text', '0');
@@ -75,7 +75,7 @@ import { DistrictCollectionOptions } from 'tests-e2e/cypress/services/sdc-collec
       cy.get(selectors.studentLevelData.stepFourNextButton).should('not.be.disabled');
     });
   });
-});*/
+});
 
 function navigateToMonitorScreen(id: string) {
   cy.intercept(Cypress.env('interceptors').sdc_district_collection_monitor).as('sdc_district_collection_monitor');

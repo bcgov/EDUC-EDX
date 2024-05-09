@@ -124,7 +124,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('GRADE 6').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
@@ -149,7 +149,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('GRADE 6').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
@@ -192,7 +192,7 @@ describe('SDC School Collection View', () => {
             expect(records).to.have.length(6);
             const expectedPENs = ['102866365', '101932770', '103169744', ''];
             const expectedCourses = ['0700', undefined];
-            const expectedApprenticeStatus = ['N', undefined];
+            const expectedApprenticeStatus = ['N', undefined, ''];
 
             records.forEach((record: { [key: string]: string | undefined }) => {
               expect(expectedPENs).to.include(record['P.E.N.']);
