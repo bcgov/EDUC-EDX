@@ -147,7 +147,7 @@ export default {
     },
     totalStepsInCollection() {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.length;
+        return new Set(SDC_STEPS_SCHOOL.map(step => step.step)).size;
       } else {
         return SDC_STEPS_DISTRICT.length;
       }
@@ -176,9 +176,7 @@ export default {
       return this.instituteCollectionID !== null;
     },
     calculateStep() {
-      if(this.currentStepIndex <= 6) {
-        this.noOfStepsCompleted = this.currentStepIndex;
-      }
+      this.noOfStepsCompleted = this.currentStepIndex;
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
     },
     getSDCCollectionByInstituteId(url) {
@@ -209,7 +207,14 @@ export default {
     },
     getIndexOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.index;
+      } else {
+        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.index;
+      }
+    },
+    getStepOfSDCCollectionByStatusCode(statusCode) {
+      if(this.isSchoolCollection) {
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.step;
       } else {
         return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.step;
       }

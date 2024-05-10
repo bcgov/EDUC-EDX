@@ -8,43 +8,57 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     id: 'step-1',
     title: 'Upload Data',
     step: 1,
-    sdcSchoolCollectionStatusCode: ['NEW']
+    sdcSchoolCollectionStatusCode: 'NEW',
+    index: 0
   },
   {
     id: 'step-2',
     title: 'Review & Fix Data Issues',
     step: 2,
-    sdcSchoolCollectionStatusCode: ['LOADED']
+    sdcSchoolCollectionStatusCode: 'LOADED',
+    index: 1
   },
   {
     id: 'step-3',
     title: 'Edit/Verify Data Issues',
     step: 3,
-    sdcSchoolCollectionStatusCode: ['REVIEWED']
+    sdcSchoolCollectionStatusCode: 'REVIEWED',
+    index: 2
   },
   {
     id: 'step-4',
     title: 'Review & Fix Duplicates',
     step: 4,
-    sdcSchoolCollectionStatusCode: ['VERIFIED']
+    sdcSchoolCollectionStatusCode: 'VERIFIED',
+    index: 3
   },
   {
     id: 'step-5',
     title: 'Verify School Details (1601)',
     step: 5,
-    sdcSchoolCollectionStatusCode: ['DUP_VRFD']
+    sdcSchoolCollectionStatusCode: 'DUP_VRFD',
+    index: 4
   },
   {
     id: 'step-6',
     title: 'Verify School Contacts (1601)',
     step: 6,
-    sdcSchoolCollectionStatusCode: ['SCH_D_VRFD']
+    sdcSchoolCollectionStatusCode: 'SCH_D_VRFD',
+    index: 5
   },
   {
     id: 'step-7',
     title: 'Submit Data',
     step: 7,
-    sdcSchoolCollectionStatusCode: ['SCH_C_VRFD', 'SUBMITTED']
+    sdcSchoolCollectionStatusCode: 'SCH_C_VRFD',
+    index: 6
+  },
+  {
+    id: 'step-7',
+    title: 'Submit Data',
+    step: 7,
+    sdcSchoolCollectionStatusCode: 'SUBMITTED',
+    index: 7
   },
 ]);
 
@@ -53,43 +67,50 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     id: 'step-1',
     title: 'Upload Data',
     step: 1,
-    sdcDistrictCollectionStatusCode: 'NEW'
+    sdcDistrictCollectionStatusCode: 'NEW',
+    index: 0
   },
   {
     id: 'step-2',
     title: 'Monitor School Submissions',
     step: 2,
-    sdcDistrictCollectionStatusCode: 'LOADED'
+    sdcDistrictCollectionStatusCode: 'LOADED',
+    index: 1
   },
   {
     id: 'step-3',
     title: 'Edit/Verify Data',
     step: 3,
-    sdcDistrictCollectionStatusCode: 'REVIEWED'
+    sdcDistrictCollectionStatusCode: 'REVIEWED',
+    index: 2
   },
   {
     id: 'step-4',
     title: 'Resolve In-District Duplicates',
     step: 4,
-    sdcDistrictCollectionStatusCode: 'VERIFIED'
+    sdcDistrictCollectionStatusCode: 'VERIFIED',
+    index: 3
   },
   {
     id: 'step-5',
     title: 'Submit to Ministry',
     step: 5,
-    sdcDistrictCollectionStatusCode: 'SUBMITTED'
+    sdcDistrictCollectionStatusCode: 'D_DUP_VRFD',
+    index: 4
   },
   {
     id: 'step-6',
     title: 'Resolve Province Duplicates',
     step: 6,
-    sdcDistrictCollectionStatusCode: ''
+    sdcDistrictCollectionStatusCode: 'SUBMITTED',
+    index: 5
   },
   {
     id: 'step-7',
     title: 'Review & Sign-Off Final Submission',
     step: 7,
-    sdcDistrictCollectionStatusCode: ''
+    sdcDistrictCollectionStatusCode: '',
+    index: 6
   },
 
 ]);

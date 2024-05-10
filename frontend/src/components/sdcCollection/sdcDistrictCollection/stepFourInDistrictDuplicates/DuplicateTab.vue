@@ -15,7 +15,7 @@
         Non-Allowable ({{ nonAllowableDuplicates.length }})
       </v-btn>
       <v-btn
-        v-if="allowableDuplicates.length > 0"
+        v-if="allowableDuplicates"
         id="allowableButton"
         value="2"
         size="large"
@@ -217,7 +217,7 @@ export default defineComponent({
     },
     allowableDuplicates: {
       type: Array,
-      default: () => []
+      default: null
     },
     resolvedDuplicates: {
       type: Array,
