@@ -66,7 +66,7 @@
           <template #default>
             <v-stepper-header>
               <template
-                v-for="step in SDC_STEPS_SCHOOL()"
+                v-for="step in compiledSdcSteps()"
                 :key="step.step"
               >
                 <v-stepper-item
@@ -74,11 +74,11 @@
                   :value="step.step"
                   :title="step.title"
                   :editable="step.step < currentStep"
-                  :complete="step.step < stepInCollection"
+                  :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
                 <v-divider
-                  v-if="step.step < SDC_STEPS_SCHOOL().length"
+                  v-if="step.step < compiledSdcSteps().length"
                   :class="{'step-previous-divider': step.step < currentStep}"
                   :thickness="step.step < currentStep ? 5 : 0"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -222,7 +222,7 @@ export default {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
     isStepComplete() {
-      let indexCurrentCollection = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+      let indexCurrentCollection = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
       return this.currentStep < indexCurrentCollection;
     },
     sdcSchoolSchool() {
@@ -238,24 +238,28 @@ export default {
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
-      this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
       this.isLoading = !this.isLoading;
     });
   },
   methods: {
-    SDC_STEPS_SCHOOL() {
-      return SDC_STEPS_SCHOOL;
+    compiledSdcSteps() {
+      let stepMap = {};
+      return SDC_STEPS_SCHOOL.filter(obj => {
+        if (!stepMap[obj.step]) {
+          stepMap[obj.step] = true;
+          return true;
+        }
+        return false;
+      });
     },
     next() {
       this.checkIfWeNeedToUpdateSchoolCollection(this.currentStep);
       this.$refs.stepper.next();
     },
     checkIfWeNeedToUpdateSchoolCollection(index) {
-      const stepTwoIndex = 2;
-      if (index === stepTwoIndex) {
-        this.refreshStore(true);
-      }
-      if (index < this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode)) {
+      this.refreshStore(true);
+      if (index < this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode)) {
         return;
       }
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
@@ -266,7 +270,7 @@ export default {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
-          this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
         }
         this.isLoading = !this.isLoading;
       });
@@ -281,7 +285,10 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.index;
+    },
+    getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
     }
   }
 };

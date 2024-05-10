@@ -539,11 +539,11 @@ function createFteFilter(pValue) {
 
 function createCourseRangeFilter(pValue) {
   let courseRangeList = [];
-  if(pValue[0] !== 0){
-    courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0][0], operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
-  }
-  if(pValue[1] !== 15){
-    courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0][1], operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
+
+  courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0][1], operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
+  courseRangeList.push({key:'numberOfCoursesDec', value: pValue[0][0], operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND});
+  if(pValue[0][0] === '0'){
+    courseRangeList.push({key:'numberOfCoursesDec', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR});
   }
   return courseRangeList;
 }

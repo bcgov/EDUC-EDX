@@ -80,7 +80,7 @@
                   :value="step.step"
                   :title="step.title"
                   :editable="step.step < currentStep"
-                  :complete="step.step < stepInCollection"
+                  :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
                 <v-divider
@@ -188,7 +188,7 @@ export default defineComponent({
       return this.getIndexOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
     },
     isStepComplete() {
-      let indexCurrentCollection = this.getIndexOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
+      let indexCurrentCollection = this.getStepOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
       return this.currentStep < indexCurrentCollection;
     }
   },
@@ -197,7 +197,7 @@ export default defineComponent({
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
       this.districtCollectionObject = this.districtCollection;
       this.districtID = this.districtCollection?.districtID;
-      this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
       this.isLoading = !this.isLoading;
     });
   },
@@ -206,6 +206,7 @@ export default defineComponent({
       return SDC_STEPS_DISTRICT;
     },
     next() {
+      this.refreshStore(true);
       this.$refs.stepper.next();
     },
     backToCollectionDashboard() {
@@ -217,7 +218,7 @@ export default defineComponent({
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection.districtID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
-          this.currentStep = this.getIndexOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
+          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
         }
         this.isLoading = !this.isLoading;
       });
@@ -229,6 +230,9 @@ export default defineComponent({
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
+      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.index;
+    },
+    getStepOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.step;
     }
   }
