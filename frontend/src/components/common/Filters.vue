@@ -10,7 +10,7 @@
           <a
             id="close"
             @click="close()"
-          >Cancel</a>
+          >Close</a>
         </v-col>
         <v-col
           cols="4"
