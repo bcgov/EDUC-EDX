@@ -59,7 +59,7 @@ export default {
     options: {
       color: 'primary',
       width: 290,
-      zIndex: 200,
+      zIndex: 2000000,
       dark: true,
       dense: true,
       closeIcon: false,

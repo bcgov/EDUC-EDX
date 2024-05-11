@@ -6,33 +6,24 @@
       id="viewStudentCardTitle"
       class="sheetHeader pt-1 pb-1"
     >
-      Add Student
-    </v-card-title>
-    <v-divider />
-    <v-card-text>
-      <v-row>
-        <v-col
-          class="d-flex justify-end"
-        >
+      <v-row no-gutters>
+        <v-col class="d-flex justify-start">
+          Add Student
+        </v-col>
+        <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"
-            color="#003366"
-            text="Cancel"
-            variant="outlined"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
             @click="cancel"
-          />
-  
-          <v-btn
-            id="save"
-            color="#003366"
-            text="Save"
-            class="ml-3"
-            :disabled="!studentDetailsFormValid"
-            @click="save"
           />
         </v-col>
       </v-row>
-  
+    </v-card-title>
+    <v-card-text>
       <EditStudent
         :selected-students="selectedStudent"
         :total-students="1"

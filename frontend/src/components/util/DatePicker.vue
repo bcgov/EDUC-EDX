@@ -11,6 +11,11 @@ export default defineComponent({
       type: String,
       default: null
     },
+    density:{
+      type: String,
+      required: false,
+      default: 'default'
+    },
     label: {
       type: String,
       default: null
@@ -76,6 +81,7 @@ export default defineComponent({
         prepend-inner-icon="mdi-calendar"
         :label="label"
         variant="underlined"
+        :density="density"
         placeholder="yyyy/mm/dd"
         :clearable="true"
         hide-details="auto"
