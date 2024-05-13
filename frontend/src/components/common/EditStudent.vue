@@ -1,15 +1,79 @@
 <template>
-  <v-row>
-    <v-col>
-      <Spinner
-        v-if="isLoading()"
-        style="margin-bottom: 40rem"
-      />
+  <v-row
+    class="mt-0"
+    :class="functionType !== 'add' ? 'mb-12' : 'mb-2'"
+  >
+    <v-col class="pt-0">
+      <v-row v-if="isLoading()">
+        <v-col class="d-flex justify-center">
+          <Spinner
+            :flat="true"
+            style="margin-bottom: 80rem"
+          />
+        </v-col>
+      </v-row>
       <div
+        ref="topDiv"
         v-else
       >
+        <v-row>
+          <v-col class="pt-2 mb-1">
+            <v-card
+              v-if="functionType !== 'add'"
+              variant="tonal"
+              class="pa-2 mt-0"
+            >
+              <v-row no-gutters>
+                <v-col cols="4">
+                  <span>
+                    <b>Eligible FTE:</b> {{ sdcSchoolCollectionStudentDetailCopy?.fte }}
+                    <a
+                      v-if="showFundingEligibilityDetail"
+                      style="text-decoration: underline"
+                      @click="scrollToEligibility"
+                    >(Details)</a>
+                  </span>
+                </v-col>
+                <v-col cols="4">
+                  <span id="graduatedFlag"><b>Graduated: </b>{{ sdcSchoolCollectionStudentDetailCopy?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="4">
+                  <span>
+                    <b>Assigned PEN: </b>
+                    <span id="assignedPen">
+                      {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).assignedPen }}
+                    </span>
+                    <v-tooltip content-class="customTooltip">
+                      <template #activator="{ props: tooltipProps }">
+                        <v-icon
+                          v-bind="tooltipProps"
+                          size="25"
+                          color="#003366"
+                          style="padding-left: .5rem;"
+                        >
+                          mdi-help-circle
+                        </v-icon>
+                      </template>
+                      <span id="assignedPenTooltip">
+                        {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).tooltip }}
+                      </span>
+                    </v-tooltip>
+                  </span>
+                </v-col>
+                <v-col cols="4">
+                  <span id="adultFlag"><b>Adult: </b>{{ sdcSchoolCollectionStudentDetailCopy?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
         <v-row> 
-          <v-col cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6">
+          <v-col
+            class="pt-0"
+            cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6"
+          >
             <v-form
               ref="studentDetailsForm"
               v-model="studentDetailsFormValid"
@@ -25,33 +89,8 @@
                         variant="underlined"
                         :maxlength="9"
                         :rules="penRules"
-                        class="mt-n3"
-                        style="margin-bottom: -.2rem"
+                        density="compact"
                       />
-                      <span
-                        v-if="functionType !== 'add'"
-                        class="font-italic"
-                      >
-                        Assigned PEN:
-                        <span id="assignedPen">
-                          {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).assignedPen }}
-                        </span>
-                        <v-tooltip content-class="customTooltip">
-                          <template #activator="{ props: tooltipProps }">
-                            <v-icon
-                              v-bind="tooltipProps"
-                              size="25"
-                              color="#003366"
-                              style="padding-left: .5rem;"
-                            >
-                              mdi-help-circle
-                            </v-icon>
-                          </template>
-                          <span id="assignedPenTooltip">
-                            {{ getAssignedPenDetails(sdcSchoolCollectionStudentDetailCopy.assignedPen, sdcSchoolCollectionStudentDetailCopy.studentPen, sdcSchoolCollectionStudentDetailCopy.penMatchResult).tooltip }}
-                          </span>
-                        </v-tooltip>
-                      </span>
                     </v-col>
                     <v-col>
                       <v-text-field
@@ -60,11 +99,11 @@
                         label="Local ID"
                         variant="underlined"
                         :maxlength="12"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <DatePicker
                         id="dobPicker"
@@ -72,7 +111,7 @@
                         label="Birthdate"
                         :rules="[rules.required()]"
                         model-type="yyyyMMdd"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -85,11 +124,11 @@
                         label="Gender"
                         variant="underlined"
                         :rules="[rules.required()]"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-text-field
                         id="legalLastName"
@@ -98,7 +137,7 @@
                         variant="underlined"
                         :rules="[rules.required()]"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -108,11 +147,11 @@
                         label="Usual Surname"
                         variant="underlined"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-text-field
                         id="legalFirstName"
@@ -120,7 +159,7 @@
                         label="Legal Given"
                         variant="underlined"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -130,11 +169,11 @@
                         label="Usual Given"
                         variant="underlined"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-text-field
                         id="legalMiddleNames"
@@ -142,7 +181,7 @@
                         label="Legal Middle"
                         variant="underlined"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -152,11 +191,11 @@
                         label="Usual Middle"
                         variant="underlined"
                         :maxlength="25"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-select
                         id="enrolledGradeCode"
@@ -167,7 +206,7 @@
                         item-value="enrolledGradeCode"
                         item-title="dropdownText"
                         :rules="[rules.required()]"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -179,11 +218,11 @@
                         :items="sdcCollection.schoolFundingCodes"
                         item-value="schoolFundingCode"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-text-field
                         id="numberOfCourses"
@@ -191,7 +230,7 @@
                         label="Number of Courses"
                         variant="underlined"
                         :maxlength="4"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -201,11 +240,11 @@
                         label="Other Courses"
                         variant="underlined"
                         :items="sdcCollection.otherCoursesValidNumbers"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-select
                         id="supportBlocks"
@@ -213,7 +252,7 @@
                         label="Support Blocks"
                         variant="underlined"
                         :items="sdcCollection.supportBlocksValidNumbers"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -225,11 +264,11 @@
                         :items="sdcCollection.specialEducationCodes"
                         item-value="specialEducationCategoryCode"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-select
                         id="nativeAncestryInd"
@@ -239,7 +278,7 @@
                         :items="sdcCollection.ancestryItems"
                         item-value="code"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                         :rules="[rules.required()]"
                       />
                     </v-col>
@@ -252,11 +291,11 @@
                         :items="sdcCollection.bandCodes"
                         item-value="bandCode"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-select
                         id="homeLanguageSpokenCode"
@@ -266,7 +305,7 @@
                         :items="sdcCollection.homeLanguageSpokenCodes"
                         item-value="homeLanguageSpokenCode"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -276,11 +315,11 @@
                         label="Postal Code"
                         variant="underlined"
                         :maxlength="6"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row class="mt-n4">
                     <v-col>
                       <v-select
                         id="careerProgramCode"
@@ -290,7 +329,7 @@
                         :items="sdcCollection.careerProgramCodes"
                         item-value="careerProgramCode"
                         item-title="dropdownText"
-                        class="mt-n3"
+                        density="compact"
                       />
                     </v-col>
                     <v-col>
@@ -303,7 +342,7 @@
                         item-value="enrolledProgramCode"
                         item-title="dropdownText"
                         multiple
-                        class="mt-n3"
+                        density="compact"
                         :rules="enrolledProgramRules"
                         @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
                       />
@@ -313,7 +352,6 @@
               </v-row>
             </v-form>
           </v-col>
-
           <v-divider
             v-if="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues !== undefined"
             :thickness="1"
@@ -442,29 +480,54 @@
           </v-col>
         </v-row>
       </div>
+      <div ref="eligibility"></div>
       <slot name="eligibility" />
-      <div v-if="functionType !== 'add'">
-        <div class="text-center">
-          <v-pagination 
+      <v-row
+        :class="functionType !== 'add' ? 'footer' : ''"
+        no-gutters
+      >
+        <v-col
+          v-if="functionType !== 'add' && selectedStudents.length !== 1"
+          offset="5"
+          cols="2"
+        >
+          <v-pagination
             v-model="page"
             :length="selectedStudents.length"
             :total-visible="2"
             rounded="circle"
             @update:model-value="navigate"
           />
-        </div>
-        <div class="text-center">
-          <span class="footer-text">Reviewing {{ selectedStudents.length }} of  {{ totalStudents }} Records </span>
-          <a
-            v-if="selectedStudents.length < totalStudents"
-            id="clearFilters"
-            class="filter-text"
-            @click="clearFilter()"
-          >- Clear Filters & Show all Records</a>
-        </div>
-      </div>
+        </v-col>
+        <v-col class="d-flex justify-end mr-3 mt-3">
+          <v-btn
+            v-if="functionType !== 'add'"
+            id="removeRecord"
+            color="#003366"
+            large-icon
+            prepend-icon="mdi-delete"
+            text="Remove"
+            variant="outlined"
+            class="mr-1"
+            @click="deleteStudent"
+          />
+          <v-btn
+            id="saveRecord"
+            color="#003366"
+            text="Validate & Save"
+            class="mr-1"
+            :disabled="!studentDetailsFormValid"
+            @click="save"
+          />
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
+  <ConfirmationDialog ref="confirmRemoveStudent">
+    <template #message>
+      <p>Are you sure you want to remove this student from the collection?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 <script>
   
@@ -479,10 +542,12 @@ import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
 import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
   
 export default {
   name: 'EditStudent',
   components: {
+    ConfirmationDialog,
     Spinner,
     DatePicker,
   },
@@ -491,6 +556,11 @@ export default {
       type: Array,
       required: true,
       default: null
+    },
+    showFundingEligibilityDetail:{
+      type: Boolean,
+      required: false,
+      default: false
     },
     totalStudents: {
       type: Number,
@@ -625,10 +695,11 @@ export default {
             this.hasError = true;
           } else {
             setSuccessAlert('Success! The student details have been updated.');
-            if(this.functionType === 'add') {
+            if(this.functionType === 'add'){
               this.$emit('close-success', res.data);
-            }
-            else {
+            } else if((this.page < this.selectedStudents.length)  && res.data.sdcSchoolCollectionStudentValidationIssues?.length === 0){
+              this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.page++]);
+            } else {
               this.getSdcSchoolCollectionStudentDetail(this.selectedSdcStudentID);
             }
           }
@@ -640,7 +711,20 @@ export default {
           this.$emit('reset-parent');
         });
     },
+    scrollToEligibility() {
+      const eligibility = this.$refs.eligibility;
+      this.performScroll(eligibility);
+    },
+    performScroll(element){
+      if (element) {
+        element.scrollIntoView({behavior: 'smooth'});
+      }
+    },
     async deleteStudent(){
+      const confirmation = await this.$refs.confirmRemoveStudent.open('Confirm Removal of Student', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
       this.loadingCount += 1;
       this.hasError = false;
       ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
@@ -860,9 +944,19 @@ export default {
       font-style: italic;
       color: rgb(56, 89, 138);
     }
+
+   .footer {
+     background: white;
+     position: fixed;
+     bottom: 0;
+     z-index: 20000;
+     left: 0;
+     right: 0;
+     height: 60px;
+   }
   
     .filter-text:hover {
-    text-decoration: underline;
+      text-decoration: underline;
     }
   
     .success-message{

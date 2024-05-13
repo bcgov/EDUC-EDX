@@ -6,51 +6,30 @@
       id="viewStudentCardTitle"
       class="sheetHeader pt-1 pb-1"
     >
-      Edit Student
-    </v-card-title>
-    <v-divider />
-    <v-card-text>
-      <v-row>
-        <v-col
-          cols="10"
-          class="d-flex"
-        >
-          <v-alert
-            id="eligible-fte-banner"
-            density="compact"
-            type="info"
-            variant="tonal"
-          >
-            <b>Eligible FTE: </b> {{ studentForEdit?.fte }}
-          </v-alert>
+      <v-row no-gutters>
+        <v-col class="d-flex justify-start">
+          Edit Student
         </v-col>
-        <v-col
-          cols="2"
-          class="d-flex justify-end mt-1"
-        >
+        <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"
-            color="#003366"
-            text="Cancel"
-            variant="outlined"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
             @click="cancel"
-          />
-
-          <v-btn
-            id="save"
-            color="#003366"
-            text="Save"
-            class="ml-2"
-            :disabled="!studentDetailsFormValid || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
-            @click="save"
           />
         </v-col>
       </v-row>
-
+    </v-card-title>
+    <v-divider />
+    <v-card-text>
       <EditStudent
         :selected-students="selectedStudent"
         :total-students="1"
         :save-event="saveStudent"
+        :show-funding-eligibility-detail="showFundingEligibilitySection()"
         @form-validity="isValid"
         @reset-parent="reset()"
         @student-object="setStudentContext"
@@ -68,13 +47,22 @@
               <v-table>
                 <thead>
                   <tr>
-                    <th id="program" class="text-left">
+                    <th
+                      id="program"
+                      class="text-left"
+                    >
                       Program
                     </th>
-                    <th id="funding" class="text-left">
+                    <th
+                      id="funding"
+                      class="text-left"
+                    >
                       Funding Eligible
                     </th>
-                    <th id="reasonCode" class="text-left">
+                    <th
+                      id="reasonCode"
+                      class="text-left"
+                    >
                       Non-Eligibility Reason
                     </th>
                   </tr>
@@ -90,16 +78,6 @@
                   </tr>
                 </tbody>
               </v-table>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span id="graduatedFlag"><b>Graduated:</b>{{ studentForEdit?.isGraduated === 'true' ? 'Yes' : 'No' }}</span>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span id="adultFlag"><b>Adult:</b>{{ studentForEdit?.isAdult === 'true' ? 'Yes' : 'No' }}</span>
             </v-col>
           </v-row>
         </template>

@@ -6,85 +6,28 @@
       id="viewStudentCardTitle"
       class="sheetHeader pt-1 pb-1"
     >
-      Edit Student
-    </v-card-title>
-    <v-divider />
-    <v-card-text>
-      <v-row>
+      <v-row no-gutters>
+        <v-col class="d-flex justify-start">
+          Edit Student
+        </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"
-            color="#003366"
-            text="Cancel"
-            variant="outlined"
-            class="mr-1"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
             @click="cancel"
           />
-          <v-btn
-            id="removeRecord"
-            color="#003366"
-            large-icon
-            prepend-icon="mdi-delete"
-            text="Remove"
-            variant="outlined"
-            class="mr-1"
-            :disabled="showConfirmationBanner"
-            @click="showBanner"
-          />
-          <v-btn
-            id="revertChanges"
-            disabled
-            large-icon
-            color="#003366"
-            variant="outlined"
-            prepend-icon="mdi-arrow-u-left-top"
-            text="Revert"
-            class="mr-1"
-          />
-          <v-btn
-            id="saveRecord"
-            color="#003366"
-            text="Validate & Save"
-            class="mr-1"
-            :disabled="!studentDetailsFormValid || showConfirmationBanner"
-            @click="save"
-          />
         </v-col>
       </v-row>
-
-      <v-row
-        v-if="showConfirmationBanner"
-        class="pt-2 pb-2"
-      >
-        <v-col>
-          <v-banner
-            lines="one"
-            :border="0"
-            text="Are you sure that you would like to remove this student from the 1701 submission?"
-            style="background-color: rgb(235, 237, 239);"
-          >
-            <v-banner-actions>
-              <PrimaryButton
-                id="rejectBtn"
-                secondary
-                text="Cancel"
-                :click-action="reject"
-                class="mr-4"
-              />
-              <PrimaryButton
-                id="resolveBtn"
-                text="Yes"
-                :click-action="deleteStudent"
-              />
-            </v-banner-actions>
-          </v-banner>
-        </v-col>
-      </v-row>
-
+    </v-card-title>
+    <v-divider />
+    <v-card-text>
       <EditStudent
         :selected-students="selectedStudents"
         :total-students="totalStudents"
-        :save-event="saveStudent"
         :remove-event="removeStudent"
         @form-validity="isValid"
         @reset-parent="reset()"
@@ -99,13 +42,11 @@
 <script>
 
 
-import PrimaryButton from '../../../util/PrimaryButton.vue';
 import EditStudent from '../../../common/EditStudent.vue';
 
 export default {
   name: 'EditAndFixStudentData',
   components: {
-    PrimaryButton,
     EditStudent
   },
   props: {
@@ -123,10 +64,8 @@ export default {
   emits: ['next', 'clear-filter', 'filter-pen', 'close', 'reset-pagination'],
   data() {
     return {
-      saveStudent: false,
       removeStudent: false,
-      studentDetailsFormValid: true,
-      showConfirmationBanner: false
+      studentDetailsFormValid: true
     };
   },
   computed: {
@@ -148,18 +87,7 @@ export default {
       this.studentDetailsFormValid = $event;
     },
     reset() {
-      this.saveStudent =false;
       this.removeStudent=false;
-    },
-    save() {
-      this.saveStudent =true;
-    },
-    showBanner() {
-      this.showConfirmationBanner = true;
-    },
-    deleteStudent() {
-      this.removeStudent=true;
-      this.showConfirmationBanner= !this.showConfirmationBanner;
     },
     clearFilter() {
       this.$emit('clear-filter');
@@ -170,10 +98,6 @@ export default {
     cancel() {
       this.$emit('close');
     },
-    reject() {
-      this.showConfirmationBanner= false;
-      this.reset();
-    }
   }
 };
 </script>
