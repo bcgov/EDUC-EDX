@@ -46,7 +46,14 @@
           <v-col class="pb-2">
             <v-chip color="primary">
               <v-col>Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}</v-col>
-              <v-col>Error: {{ duplicate.duplicateErrorDescriptionCode }}</v-col>
+              <v-col
+                v-if="duplicateType==='enrollment'"
+              >
+                Error: {{ duplicate.duplicateErrorDescriptionCode }}
+              </v-col>
+              <v-col v-else>
+                Duplicate Program: {{ duplicate.programDuplicateTypeCodeDescription }}
+              </v-col>
             </v-chip>
           </v-col>
         </v-row>

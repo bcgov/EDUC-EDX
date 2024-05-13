@@ -44,7 +44,7 @@
       >
         <DuplicateTab
           v-if="tab==='Enrollment Duplicates'"
-          duplicate-type="program"
+          duplicate-type="enrollment"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
