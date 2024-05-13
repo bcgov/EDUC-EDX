@@ -772,6 +772,44 @@ export class SdcCollectionApiService {
         }
     }));
     break;
+    case 'sdcDistrictCollectionSummarySeedData':
+      sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'REVIEWED';
+
+      sdcSchoolCollections.forEach(x => x.students.map((student, index) =>  {
+        if(index % 2 === 0) {
+          student.enrolledGradeCode = '09';
+          student.localID = '67890';
+          student.enrolledProgramCodes = '082917';
+          student.studentPen = '101932770';
+          student.nativeAncestryInd = 'Y';
+          student.bandCode = '0547';
+          student.numberOfCourses = '0700';
+          student.assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf';
+          student.isGraduated = 'false';
+          student.specialEducationCategoryCode = 'A';
+          student.localID = 'student1';
+          student.penMatchResult = 'DM';
+          student.fte = 1;
+        } else {
+          student.enrolledGradeCode = '10';
+          student.enrolledProgramCodes = '1141';
+          student.careerProgramCode = 'XA';
+          student.studentPen = '102866365';
+          student.nativeAncestryInd = 'Y';
+          student.bandCode = '0653';
+          student.numberOfCourses = '0700';
+          student.specialEducationCategoryCode = 'G';
+          student.assignedPen = '101930550';
+          student.penMatchResult = 'MATCH';
+          student.localID = 'student3';
+          student.fte = .775;
+        }
+
+        student.isSchoolAged = 'true';
+        student.isAdult = 'false';
+        student.legalLastName = 'LEGALLAST';
+      }));
+      break;
     default:
       break;
     }
