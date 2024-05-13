@@ -87,7 +87,7 @@
       id="step-3-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
-      text="Verify as Correct"
+      text="Verify all program tabs as correct"
       :click-action="next"
     />
   </v-row>
