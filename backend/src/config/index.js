@@ -123,6 +123,7 @@ nconf.defaults({
     programEligibilityTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-eligibility-issue-codes',
     zeroFteReasonCodesURL: process.env.SDC_API_ENDPOINT + '/zero-fte-reason-codes',
     duplicateResolutionCodesURL: process.env.SDC_API_ENDPOINT + '/duplicate-resolution-codes',
+    programDuplicateTypeCodesURL: process.env.SDC_API_ENDPINT + '/program-duplicate-type-codes'
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,

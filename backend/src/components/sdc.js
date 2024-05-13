@@ -677,6 +677,7 @@ async function getInDistrictDuplicates(req, res) {
         result.programDuplicates.RESOLVED.push(sdcDuplicate);
       }
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
+        setProgramDuplicateTypeMessage(sdcDuplicate);
         result.programDuplicates.NON_ALLOW.push(sdcDuplicate);
       }
     });
@@ -709,6 +710,11 @@ function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2) {
   if(['DIST_LEARN', 'DISTONLINE'].includes(school2.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledGradeCode)) {
     sdcDuplicate.sdcSchoolCollectionStudent2Entity.canChangeGrade = true;
   }
+}
+
+function setProgramDuplicateTypeMessage(sdcDuplicate) {
+  const programDuplicateTypeCodes = cacheService.getAllProgramDuplicateTypeCodesMap();
+  sdcDuplicate.programDuplicateTypeCodeDescription = programDuplicateTypeCodes.get(sdcDuplicate.programDuplicateTypeCode)?.label;
 }
 
 module.exports = {

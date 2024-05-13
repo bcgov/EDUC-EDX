@@ -165,7 +165,8 @@ cacheKeys = {
   SDC_VALIDATION_ISSUE_TYPE_CODES: 'sdc_validation_issue_type_codes',
   SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: 'sdc_program_eligibility_type_codes',
   SDC_ZERO_FTE_REASON_CODES: 'sdc_zero_fte_reason_codes',
-  SDC_DUPLICATE_RESOLUTION_CODES: 'sdc_duplicate_resolution_codes'
+  SDC_DUPLICATE_RESOLUTION_CODES: 'sdc_duplicate_resolution_codes',
+  SDC_PROGRAM_DUPLICATE_TYPE_CODES: 'sdc_program_duplicate_type_codes'
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
