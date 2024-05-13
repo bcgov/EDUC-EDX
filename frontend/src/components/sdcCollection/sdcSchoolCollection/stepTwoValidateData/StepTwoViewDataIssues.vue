@@ -216,7 +216,7 @@
             <v-alert
               type="warning"
               variant="tonal"
-              text="There are no results for the selected category."
+              text="No results found."
             />
           </v-col>
         </v-row>
