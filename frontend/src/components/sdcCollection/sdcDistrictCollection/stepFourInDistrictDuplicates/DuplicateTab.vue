@@ -91,7 +91,10 @@
                   </v-icon>
                   <span class="ml-2">Change Grade</span>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item 
+                  id="resolve"
+                  @click="resolveDuplicate()"
+                  >
                   <v-icon
                     color="#003366"
                     class="pr-1 mb-1"
@@ -204,15 +207,31 @@
       />
     </v-row>
   </template>
+  <v-bottom-sheet
+    v-model="openProgramResolutionView"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+  <ProgramDuplicateResolution 
+    @close="openProgramResolutionView = !openProgramResolutionView"
+    >
+  </ProgramDuplicateResolution>
+  </v-bottom-sheet>
 </template>
 <script>
 import {defineComponent} from 'vue';
 import CustomTable from '../../../common/CustomTable.vue';
 import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
-  components: {CustomTable},
+  components: { 
+    CustomTable, 
+    ProgramDuplicateResolution
+  },
   props: {
     duplicateType: {
       type: String,
@@ -234,12 +253,20 @@ export default defineComponent({
   data() {
     return {
       duplicateView: '1',
-      editOptionsOpen: []
+      editOptionsOpen: [],
+      openProgramResolutionView: false
     };
   },
   computed: {
     IN_DISTRICT_DUPLICATES() {
       return IN_DISTRICT_DUPLICATES;
+    }
+  },
+  methods: {
+    resolveDuplicate() {
+      if(this.duplicateType === 'program') {
+        this.openProgramResolutionView = !this.openProgramResolutionView;
+      }
     }
   }
 });
