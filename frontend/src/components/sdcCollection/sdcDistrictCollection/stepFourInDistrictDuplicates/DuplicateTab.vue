@@ -93,7 +93,7 @@
                 </v-list-item>
                 <v-list-item 
                   id="resolve"
-                  @click="resolveDuplicate()"
+                  @click="resolveDuplicate(duplicate)"
                   >
                   <v-icon
                     color="#003366"
@@ -254,7 +254,8 @@ export default defineComponent({
     return {
       duplicateView: '1',
       editOptionsOpen: [],
-      openProgramResolutionView: false
+      openProgramResolutionView: false,
+      selectedProgramDuplicate: {}
     };
   },
   computed: {
@@ -263,8 +264,9 @@ export default defineComponent({
     }
   },
   methods: {
-    resolveDuplicate() {
+    resolveDuplicate(duplicate) {
       if(this.duplicateType === 'program') {
+        this.selectedProgramDuplicate = duplicate;
         this.openProgramResolutionView = !this.openProgramResolutionView;
       }
     }
