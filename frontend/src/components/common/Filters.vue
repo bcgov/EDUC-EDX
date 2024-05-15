@@ -74,7 +74,6 @@
                 :value="option"
                 class="filter-button"
                 rounded="lg"
-                variant="outlined"
               >
                 {{ option?.title }}
               </v-btn>
