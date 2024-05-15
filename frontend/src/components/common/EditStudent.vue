@@ -668,8 +668,9 @@ export default {
       }
     },
     updateNumberOfCoursesDisplay(value) {
-      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(value);
-      this.numberOfCoursesDisplay = this.formatNumberOfCourses(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
+      const formattedValue = this.formatNumberOfCourses(value);
+      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(formattedValue);
+      this.numberOfCoursesDisplay = formattedValue;
     },
     formatNumberOfCourses(value) {
       if (!value) return '00.00';
