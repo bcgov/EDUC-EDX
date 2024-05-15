@@ -611,7 +611,6 @@ export default {
       studentDetailsFormValid:false,
       removeIndex: null,
       enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs'],
-      numberOfCoursesDisplay: '',
       courseOptions: []
     };
   },
