@@ -628,7 +628,61 @@ export class SdcCollectionApiService {
         students[3].isAdult = 'true';
         sdcSchoolCollectionPayload = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'SUBMITTED');
       }
-    } 
+      else if (schoolCollection.seedData === 'schoolDuplicateData') {
+        const students = createSdcSchoolCollectionStudents(3, ['KF', '01', '02', '03', '04', '05', '06', '07', 'EU', '08', '09', '10', '11', '12', 'SU']);
+        students[0].enrolledGradeCode = '09';
+        students[0].localID = '67890';
+        students[0].enrolledProgramCodes = '082917';
+        students[0].studentPen = '101932770';
+        students[0].nativeAncestryInd = 'Y';
+        students[0].bandCode = '0547';
+        students[0].numberOfCourses = '0700';
+        students[0].assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf';
+        students[0].isGraduated = 'false';
+        students[0].specialEducationCategoryCode = 'A';
+        students[0].localID = 'student1';
+        students[0].penMatchResult = 'DM';
+        students[0].fte = 1;
+
+        students[1].enrolledGradeCode = '09';
+        students[1].enrolledProgramCodes = '1141';
+        students[1].careerProgramCode = 'XA';
+        students[1].studentPen = '101930550';
+        students[1].nativeAncestryInd = 'Y';
+        students[1].bandCode = '0653';
+        students[1].numberOfCourses = '0700';
+        students[1].specialEducationCategoryCode = 'G';
+        students[1].assignedPen = '101930550';
+        students[1].assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578ddf';
+        students[1].penMatchResult = 'MATCH';
+        students[1].localID = 'student3';
+        students[1].fte = .775;
+
+        students[2].enrolledGradeCode = '09';
+        students[2].enrolledProgramCodes = '1141';
+        students[2].careerProgramCode = 'XA';
+        students[2].studentPen = '101930550';
+        students[2].nativeAncestryInd = 'Y';
+        students[2].bandCode = '0653';
+        students[2].numberOfCourses = '0700';
+        students[2].specialEducationCategoryCode = 'G';
+        students[2].assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578ddf';
+        students[2].assignedPen = '101930550';
+        students[2].penMatchResult = 'MATCH';
+        students[2].localID = 'student3';
+        students[2].fte = .775;
+
+        students.forEach(obj => {
+          obj.isSchoolAged = 'true';
+          obj.isAdult = 'false';
+          obj.legalLastName = 'LEGALLAST';
+        });
+
+        const school = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
+        school.sdcSchoolCollectionStatusCode = 'VERIFIED';
+        sdcSchoolCollectionPayload = school;
+      }
+    }
     else {
       sdcSchoolCollectionPayload = {
         'createUser': 'EDXAT',
