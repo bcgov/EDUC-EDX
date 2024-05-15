@@ -224,13 +224,14 @@
                   </v-row>
                   <v-row class="mt-n4">
                     <v-col>
-                      <v-text-field
+                      <v-autocomplete
                         id="numberOfCourses"
                         v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
+                        :items="courseOptions"
                         label="Number of Courses"
                         variant="underlined"
-                        :maxlength="4"
                         density="compact"
+                        autocomplete="off"
                       />
                     </v-col>
                     <v-col>
@@ -423,6 +424,16 @@
                               variant="underlined"
                             />
                             <v-autocomplete
+                              v-else-if="sdcFieldMappings[field]?.key === 'numberOfCourses'"
+                              :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
+                              v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                              :rules="sdcFieldMappings[field].options.rules"
+                              :items="courseOptions"
+                              item-title="dropdownText"
+                              :label="sdcFieldMappings[field].label"
+                              autocomplete="off"
+                            />
+                            <v-autocomplete
                               v-else-if="sdcFieldMappings[field]?.type === 'select'"
                               :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
                               v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
@@ -599,7 +610,8 @@ export default {
       rules: Rules,
       studentDetailsFormValid:false,
       removeIndex: null,
-      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs']
+      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs'],
+      courseOptions: []
     };
   },
   computed: {
@@ -645,11 +657,17 @@ export default {
     }
   },
   mounted() {
+    this.generateCourseOptions();
   },
   async created() {
   
   },
   methods: {
+    generateCourseOptions() {
+      for (let i = 0; i <= 30; i += 0.25) {
+        this.courseOptions.push(i.toFixed(2).padStart(5, '0'));
+      }
+    },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
         this.$emit('next');

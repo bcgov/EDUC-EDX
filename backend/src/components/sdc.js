@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -256,6 +256,10 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
 
+    if (sdcSchoolCollectionStudentData?.numberOfCourses) {
+      sdcSchoolCollectionStudentData.numberOfCourses = formatNumberOfCourses(sdcSchoolCollectionStudentData?.numberOfCourses);
+    }
+
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
@@ -296,6 +300,10 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
     }
 
+    if (payload?.numberOfCourses) {
+      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
+    }
+
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
@@ -303,6 +311,10 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL'), req.session?.correlationID);
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
+
+    if (data?.numberOfCourses) {
+      data.numberOfCourses = formatNumberOfCourses(data?.numberOfCourses);
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {

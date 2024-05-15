@@ -32,7 +32,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   ENROLLED_GRADE_CODE: {label: 'Enrolled Grade Codes', key: 'enrolledGradeCode', type: 'select', options: {items: 'enrolledGradeCodes', itemValue: 'enrolledGradeCode'}},
   ENROLLED_PROGRAM_CODE: {label: 'Program Codes', key: 'filteredEnrolledProgramCodes', type: 'multiselect', options: {rules:[v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs'], items: 'enrolledProgramCodes', itemValue: 'enrolledProgramCode'}},
   CAREER_PROGRAM_CODE: {label: 'Career Code', key: 'careerProgramCode', type: 'select', options: {items: 'careerProgramCodes', itemValue: 'careerProgramCode'}},
-  NUMBER_OF_COURSES: {label: 'Number of Courses', key: 'numberOfCourses', type: 'input', options: {maxlength: '4'}},
+  NUMBER_OF_COURSES: {label: 'Number of Courses', key: 'numberOfCourses', type: 'select', options: {maxlength: '4'}},
   BAND_CODE: {label: 'Band Codes', key: 'bandCode', type: 'select', options: {items: 'bandCodes', itemValue: 'bandCode'}},
   POSTAL_CODE: {label: 'Postal Code', key: 'postalCode', type: 'input', options: {maxlength: '6'}}
 });
