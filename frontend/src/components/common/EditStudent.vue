@@ -425,6 +425,17 @@
                               variant="underlined"
                             />
                             <v-autocomplete
+                              v-else-if="sdcFieldMappings[field]?.key === 'numberOfCourses'"
+                              :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
+                              v-model="numberOfCoursesDisplay"
+                              :rules="sdcFieldMappings[field].options.rules"
+                              :items="courseOptions"
+                              item-title="dropdownText"
+                              :label="sdcFieldMappings[field].label"
+                              autocomplete="off"
+                              @input="updateNumberOfCoursesDisplay"
+                            />
+                            <v-autocomplete
                               v-else-if="sdcFieldMappings[field]?.type === 'select'"
                               :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
                               v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
