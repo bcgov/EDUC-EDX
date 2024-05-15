@@ -308,6 +308,10 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
     }
+
+    if (data?.numberOfCourses) {
+      data.numberOfCourses = formatNumberOfCourses(data?.numberOfCourses);
+    }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);

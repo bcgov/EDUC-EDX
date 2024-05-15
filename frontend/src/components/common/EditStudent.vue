@@ -681,28 +681,6 @@ export default {
         this.markStepAsComplete();
       }
     },
-    formatNumberOfCourses(value) {
-      if (!value) return '00.00';
-
-      let formatted = '';
-      switch (value.length) {
-      case 1:
-        formatted = `0${value}.00`;
-        break;
-      case 2:
-        formatted = `${value}.00`;
-        break;
-      case 3:
-        formatted = `0${value.slice(0, 1)}.${value.slice(1)}`;
-        break;
-      case 4:
-        formatted = `${value.slice(0, 2)}.${value.slice(2)}`;
-        break;
-      default:
-        formatted = '00.00';
-      }
-      return formatted;
-    },
     clearFilter() {
       this.$emit('clear-filter');
     },
@@ -739,7 +717,6 @@ export default {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
             setWarningAlert('Warning! Updates to student details will not be saved until all errors are fixed.');
             this.filterSdcSchoolCollectionStudentAndPopulateProperties(res.data);
-            this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.formatNumberOfCourses(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
             this.hasError = true;
           } else {
             setSuccessAlert('Success! The student details have been updated.');
