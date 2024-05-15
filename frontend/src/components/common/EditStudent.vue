@@ -664,9 +664,8 @@ export default {
   },
   methods: {
     generateCourseOptions() {
-      for (let i = 0; i <= 3000; i += 25) {
-        const paddedValue = i.toString().padStart(4, '0');
-        this.courseOptions.push(`${paddedValue.slice(0, 2)}.${paddedValue.slice(2)}`);
+      for (let i = 0; i <= 30; i += 0.25) {
+        this.courseOptions.push(i.toFixed(2).padStart(5, '0'));
       }
     },
     next() {
