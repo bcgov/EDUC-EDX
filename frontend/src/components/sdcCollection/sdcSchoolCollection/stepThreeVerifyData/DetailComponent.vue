@@ -276,7 +276,7 @@ export default {
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty),
           sort: {
-            sdcSchoolCollectionStudentID: 'ASC'
+            legalLastName: 'ASC'
           },
         }
       }).then(response => {
