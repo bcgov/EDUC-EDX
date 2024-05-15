@@ -669,10 +669,6 @@ export default {
         this.courseOptions.push(`${paddedValue.slice(0, 2)}.${paddedValue.slice(2)}`);
       }
     },
-    stripNumberFormatting(value) {
-      if (!value) return '0000';
-      return value.replace('.', '');
-    },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
         this.$emit('next');
@@ -710,7 +706,6 @@ export default {
     save(){
       this.loadingCount += 1;
       this.hasError = false;
-      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {

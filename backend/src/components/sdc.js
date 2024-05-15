@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses } = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -298,6 +298,10 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
     if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
+    }
+
+    if (payload?.numberOfCourses) {
+      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
     }
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
