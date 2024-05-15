@@ -224,13 +224,15 @@
                   </v-row>
                   <v-row class="mt-n4">
                     <v-col>
-                      <v-text-field
+                      <v-autocomplete
                         id="numberOfCourses"
-                        v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
+                        v-model="numberOfCoursesDisplay"
+                        :items="courseOptions"
                         label="Number of Courses"
                         variant="underlined"
-                        :maxlength="4"
                         density="compact"
+                        autocomplete="off"
+                        @change="handleNumberOfCoursesChange"
                       />
                     </v-col>
                     <v-col>
@@ -599,13 +601,21 @@ export default {
       rules: Rules,
       studentDetailsFormValid:false,
       removeIndex: null,
-      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs']
+      enrolledProgramRules: [v => checkEnrolledProgramLength(v) || 'Select a maximum of 8 Enrolled Programs'],
+      numberOfCoursesDisplay: '',
+      courseOptions: []
     };
   },
   computed: {
   
   },
   watch: {
+    'sdcSchoolCollectionStudentDetailCopy.numberOfCourses': {
+      handler(newVal) {
+        this.updateNumberOfCoursesDisplay(newVal);
+      },
+      immediate: true
+    },
     selectedStudents: {
       handler(value) {
         if(value.length > 0) {
@@ -645,11 +655,51 @@ export default {
     }
   },
   mounted() {
+    this.generateCourseOptions();
+    this.updateNumberOfCoursesDisplay(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
   },
   async created() {
   
   },
   methods: {
+    generateCourseOptions() {
+      for (let i = 0; i <= 3000; i += 25) {
+        this.courseOptions.push(this.formatNumberOfCourses(i.toString().padStart(4, '0')));
+      }
+    },
+    handleNumberOfCoursesChange(value) {
+      this.numberOfCoursesDisplay = value;
+      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = value ? this.stripNumberFormatting(value) : '0000';
+    },
+    formatNumberOfCourses(value) {
+      if (!value) return '00.00';
+
+      let formatted = '';
+      switch (value.length) {
+      case 1:
+        formatted = `0${value}.00`;
+        break;
+      case 2:
+        formatted = `${value}.00`;
+        break;
+      case 3:
+        formatted = `0${value.slice(0, 1)}.${value.slice(1)}`;
+        break;
+      case 4:
+        formatted = `${value.slice(0, 2)}.${value.slice(2)}`;
+        break;
+      default:
+        formatted = '00.00';
+      }
+      return formatted;
+    },
+    stripNumberFormatting(value) {
+      if (!value) return '0000';
+      return value.replace('.', '');
+    },
+    updateNumberOfCoursesDisplay(value) {
+      this.numberOfCoursesDisplay = this.formatNumberOfCourses(value);
+    },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
         this.$emit('next');
