@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData} = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -254,6 +254,10 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
     let sdcSchoolCollectionStudentData = await getSdcSchoolCollectionStudent(req.params.sdcSchoolCollectionStudentID, res, token, req.session?.correlationID);
     if (sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
+
+    if (sdcSchoolCollectionStudentData?.numberOfCourses) {
+      sdcSchoolCollectionStudentData.numberOfCourses = formatNumberOfCourses(sdcSchoolCollectionStudentData?.numberOfCourses);
     }
 
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);

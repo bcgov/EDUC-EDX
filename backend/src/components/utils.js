@@ -301,6 +301,29 @@ function getFileExtensionWithDot(fileName) {
   return (extension.length > 0 ? ('.' + extension) : '');
 }
 
+function formatNumberOfCourses(value) {
+  if (!value) return '00.00';
+
+  let formatted = '';
+  switch (value.length) {
+  case 1:
+    formatted = `0${value}.00`;
+    break;
+  case 2:
+    formatted = `${value}.00`;
+    break;
+  case 3:
+    formatted = `0${value.slice(0, 1)}.${value.slice(1)}`;
+    break;
+  case 4:
+    formatted = `${value.slice(0, 2)}.${value.slice(2)}`;
+    break;
+  default:
+    formatted = '00.00';
+  }
+  return formatted;
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -319,7 +342,8 @@ const utils = {
   getCodeTable,
   logApiError,
   isPdf,
-  isImage
+  isImage,
+  formatNumberOfCourses
 };
 
 module.exports = utils;

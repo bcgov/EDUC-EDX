@@ -226,13 +226,12 @@
                     <v-col>
                       <v-autocomplete
                         id="numberOfCourses"
-                        v-model="numberOfCoursesDisplay"
+                        v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
                         :items="courseOptions"
                         label="Number of Courses"
                         variant="underlined"
                         density="compact"
                         autocomplete="off"
-                        @input="updateNumberOfCoursesDisplay"
                       />
                     </v-col>
                     <v-col>
@@ -621,12 +620,6 @@ export default {
   
   },
   watch: {
-    'sdcSchoolCollectionStudentDetailCopy.numberOfCourses': {
-      handler(newVal) {
-        this.updateNumberOfCoursesDisplay(newVal);
-      },
-      immediate: true
-    },
     selectedStudents: {
       handler(value) {
         if(value.length > 0) {
@@ -667,7 +660,6 @@ export default {
   },
   mounted() {
     this.generateCourseOptions();
-    this.updateNumberOfCoursesDisplay(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
   },
   async created() {
   
@@ -675,35 +667,8 @@ export default {
   methods: {
     generateCourseOptions() {
       for (let i = 0; i <= 3000; i += 25) {
-        this.courseOptions.push(this.formatNumberOfCourses(i.toString().padStart(4, '0')));
+        this.courseOptions.push((i / 100).toFixed(2));
       }
-    },
-    updateNumberOfCoursesDisplay(value) {
-      const formattedValue = this.formatNumberOfCourses(value);
-      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(formattedValue);
-      this.numberOfCoursesDisplay = formattedValue;
-    },
-    formatNumberOfCourses(value) {
-      if (!value) return '00.00';
-
-      let formatted = '';
-      switch (value.length) {
-      case 1:
-        formatted = `0${value}.00`;
-        break;
-      case 2:
-        formatted = `${value}.00`;
-        break;
-      case 3:
-        formatted = `0${value.slice(0, 1)}.${value.slice(1)}`;
-        break;
-      case 4:
-        formatted = `${value.slice(0, 2)}.${value.slice(2)}`;
-        break;
-      default:
-        formatted = '00.00';
-      }
-      return formatted;
     },
     stripNumberFormatting(value) {
       if (!value) return '0000';
@@ -746,7 +711,7 @@ export default {
     save(){
       this.loadingCount += 1;
       this.hasError = false;
-      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(this.numberOfCoursesDisplay);
+      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
