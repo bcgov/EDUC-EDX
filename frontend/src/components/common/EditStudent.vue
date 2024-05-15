@@ -232,7 +232,7 @@
                         variant="underlined"
                         density="compact"
                         autocomplete="off"
-                        @change="handleNumberOfCoursesChange"
+                        @input="updateNumberOfCoursesDisplay"
                       />
                     </v-col>
                     <v-col>
@@ -667,9 +667,9 @@ export default {
         this.courseOptions.push(this.formatNumberOfCourses(i.toString().padStart(4, '0')));
       }
     },
-    handleNumberOfCoursesChange(value) {
-      this.numberOfCoursesDisplay = value;
-      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = value ? this.stripNumberFormatting(value) : '0000';
+    updateNumberOfCoursesDisplay(value) {
+      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(value);
+      this.numberOfCoursesDisplay = this.formatNumberOfCourses(this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses);
     },
     formatNumberOfCourses(value) {
       if (!value) return '00.00';
@@ -696,9 +696,6 @@ export default {
     stripNumberFormatting(value) {
       if (!value) return '0000';
       return value.replace('.', '');
-    },
-    updateNumberOfCoursesDisplay(value) {
-      this.numberOfCoursesDisplay = this.formatNumberOfCourses(value);
     },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
@@ -737,6 +734,7 @@ export default {
     save(){
       this.loadingCount += 1;
       this.hasError = false;
+      this.sdcSchoolCollectionStudentDetailCopy.numberOfCourses = this.stripNumberFormatting(this.numberOfCoursesDisplay);
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
