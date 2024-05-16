@@ -2,45 +2,53 @@
   <div v-if="initialLoad">
     <v-row>
       <v-col>
-        <Spinner flat/>
+        <Spinner flat />
       </v-col>
     </v-row>
   </div>
-  <div class="border" v-if="fileUploadErrorMessages.length > 0 || fileDateWarningErrorMessages.length > 0 || populatedSuccessMessage != null">
-      <v-row v-for="(fileUploadErrorMessage, index) in fileUploadErrorMessages" :key="index">
-        <v-col>
-          <v-alert
-              density="compact"
-              variant="tonal"
-              type="error"
-              :text="fileUploadErrorMessage"
-          />
-        </v-col>
-      </v-row>
-      <v-row v-for="(fileDateWarningMessage, index) in fileDateWarningErrorMessages" :key="index">
-        <v-col>
-          <v-alert
-              density="compact"
-              type="warning"
-              variant="tonal"
-              :text="fileDateWarningMessage"
-          />
-
-        </v-col>
-      </v-row>
+  <div
+    v-if="fileUploadErrorMessages.length > 0 || fileDateWarningErrorMessages.length > 0 || populatedSuccessMessage != null"
+    class="border"
+  >
+    <v-row
+      v-for="(fileUploadErrorMessage, index) in fileUploadErrorMessages"
+      :key="index"
+    >
+      <v-col>
+        <v-alert
+          density="compact"
+          variant="tonal"
+          type="error"
+          :text="fileUploadErrorMessage"
+        />
+      </v-col>
+    </v-row>
+    <v-row
+      v-for="(fileDateWarningMessage, index) in fileDateWarningErrorMessages"
+      :key="index"
+    >
+      <v-col>
+        <v-alert
+          density="compact"
+          type="warning"
+          variant="tonal"
+          :text="fileDateWarningMessage"
+        />
+      </v-col>
+    </v-row>
     <v-row v-if="populatedSuccessMessage">
       <v-col>
         <v-alert
-            density="compact"
-            type="success"
-            variant="tonal"
-            :text="populatedSuccessMessage"
+          density="compact"
+          type="success"
+          variant="tonal"
+          :text="populatedSuccessMessage"
         />
       </v-col>
     </v-row>
   </div>
   <div
-      class="border"
+    class="border"
   >
     <v-row>
       <v-col class="mb-3 d-flex justify-center">
@@ -51,51 +59,54 @@
       <span class="mr-3">If the schools in your district are uploading their own data files, then you can continue to the next step.</span>
     </v-row>
     <v-row class="centered">
-        <PrimaryButton
-            id="uploadButton"
-            secondary
-            icon="mdi-file-upload"
-            text="Upload 1701 Submission"
-            :loading="isReadingFile"
-            :disabled="districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
-            :click-action="handleFileImport"
-            title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
-        />
+      <PrimaryButton
+        id="uploadButton"
+        secondary
+        icon="mdi-file-upload"
+        text="Upload 1701 Submission"
+        :loading="isReadingFile"
+        :disabled="districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+        :click-action="handleFileImport"
+        title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
+      />
     </v-row>
     <v-row class="centered">
-        <div class="mt-2">
-          More information on the
-          <a
-              :href="getLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color: rgb(56, 89, 138); text-decoration: underline"
-          >
-            1701 submission requirements.
-          </a>
-        </div>
+      <div class="mt-2">
+        More information on the
+        <a
+          :href="getLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="color: rgb(56, 89, 138); text-decoration: underline"
+        >
+          1701 submission requirements.
+        </a>
+      </div>
     </v-row>
-    <v-row class="schools-in-progress-header">Summary of Uploaded Data</v-row>
+    <v-row class="schools-in-progress-header">
+      Summary of Uploaded Data
+    </v-row>
     <v-data-table
-        :headers="headers"
-        :items="schoolCollectionsInProgress"
-        items-per-page="10"
+      :headers="headers"
+      :items="schoolCollectionsInProgress"
+      items-per-page="10"
     >
-      <template #item.percentageStudentsProcessed="{ value }">
+      <template #item.percentageStudentsProcessed="{ item }">
         <v-icon
-        v-if="value === '100'"
-        icon="mdi-check-circle-outline"
-        color="success"
+          v-if="item.percentageStudentsProcessed === '100'"
+          icon="mdi-check-circle-outline"
+          color="success"
         />
-        <span v-if="value === '0'"> - </span>
-        <template v-if="value !== '0' && value !== '100'">
+        <span v-if="item.positionInQueue > '1'">#{{ item.positionInQueue }} in queue</span>
+        <span v-else-if="item.percentageStudentsProcessed === '0'"> - </span>
+        <template v-if="item.percentageStudentsProcessed !== '0' && item.percentageStudentsProcessed !== '100'">
           <v-progress-circular
-              :size="15"
-              :width="3"
-              color="primary"
-              indeterminate
+            :size="15"
+            :width="3"
+            color="primary"
+            indeterminate
           />
-          <span class="ml-2">{{value}} %</span>
+          <span class="ml-2">{{ item.percentageStudentsProcessed }} %</span>
         </template>
       </template>
     </v-data-table>
@@ -105,42 +116,42 @@
       Note: Eligible FTE counts are available in Step 3
     </p>
     <PrimaryButton
-        id="step-1-next-button-district"
-        class="mr-3 ml-3 mb-3"
-        icon="mdi-check"
-        text="Next"
-        :click-action="next"
+      id="step-1-next-button-district"
+      class="mr-3 ml-3 mb-3"
+      icon="mdi-check"
+      text="Next"
+      :click-action="next"
     />
   </v-row>
   <v-form
-      ref="documentForm"
-      v-model="validForm"
+    ref="documentForm"
+    v-model="validForm"
   >
     <v-file-input
-        id="selectFileInput"
-        ref="uploader"
-        :key="inputKey"
-        v-model="uploadFileValue"
-        :rules="fileRules"
-        style="display: none"
-        :accept="acceptableFileExtensions.join(',')"
-        multiple
+      id="selectFileInput"
+      ref="uploader"
+      :key="inputKey"
+      v-model="uploadFileValue"
+      :rules="fileRules"
+      style="display: none"
+      :accept="acceptableFileExtensions.join(',')"
+      multiple
     />
   </v-form>
 </template>
 <script>
 
-import Spinner from "../../common/Spinner.vue";
-import PrimaryButton from "../../util/PrimaryButton.vue";
-import {sdcCollectionStore} from "../../../store/modules/sdcCollection";
-import {getCollectionLink} from "../../../utils/common"
-import {getFileNameWithMaxNameLength} from "../../../utils/file";
-import {ApiRoutes} from "../../../utils/constants";
-import ApiService from "../../../common/apiService";
-import alertMixin from "../../../mixins/alertMixin";
-import {mapActions, mapState} from "pinia";
-import {DateTimeFormatter, LocalDate} from "@js-joda/core";
-import {setFailureAlert} from "../../composable/alertComposable";
+import Spinner from '../../common/Spinner.vue';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {getCollectionLink} from '../../../utils/common';
+import {getFileNameWithMaxNameLength} from '../../../utils/file';
+import {ApiRoutes} from '../../../utils/constants';
+import ApiService from '../../../common/apiService';
+import alertMixin from '../../../mixins/alertMixin';
+import {mapActions, mapState} from 'pinia';
+import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {setFailureAlert} from '../../composable/alertComposable';
 
 export default {
   name: 'StepOneUploadData',
@@ -178,7 +189,7 @@ export default {
       fileUploadErrorMessages: [],
       fileDateWarningErrorMessages: [],
       successfulUploadCount: 0,
-      successMessage: " files were successfully uploaded. Files will continue to be processed even if you leave the page.",
+      successMessage: ' files were successfully uploaded. Files will continue to be processed even if you leave the page.',
       populatedSuccessMessage: null,
       inputKey: 0,
       validForm: false,
@@ -214,7 +225,7 @@ export default {
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'districtCollection']),
     getLink(){
-      return getCollectionLink(this.currentCollectionTypeCode)
+      return getCollectionLink(this.currentCollectionTypeCode);
     }
   },
   watch: {
@@ -261,13 +272,13 @@ export default {
         status: 'LOADED'
       };
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
-          .then(() => {
-            this.$emit('next');
-          })
-          .catch(error => {
-            console.error(error);
-            setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
-          });
+        .then(() => {
+          this.$emit('next');
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
+        });
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
@@ -312,7 +323,7 @@ export default {
             listOfFileData = await Promise.all(filePromises);
             await this.bulkUploadFile(listOfFileData);
           } catch (error) {
-            console.error("Error reading files:", error);
+            console.error('Error reading files:', error);
           } finally {
             this.inputKey++;
             this.isReadingFile = false;
@@ -329,8 +340,8 @@ export default {
       });
 
       await Promise.all(uploadPromises).then((results) => {
-        console.log("Upload results: ", results);
-      })
+        console.log('Upload results: ', results);
+      });
 
       this.populatedSuccessMessage = this.successfulUploadCount > 0 ? this.successfulUploadCount.toString() + this.successMessage : null;
     },
@@ -342,14 +353,14 @@ export default {
           fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
-            .then((response) => {
-              this.addFileReportDateWarning(response.data.uploadReportDate, response.data.uploadFileName);
-            })
+          .then((response) => {
+            this.addFileReportDateWarning(response.data.uploadReportDate, response.data.uploadFileName);
+          });
         this.successfulUploadCount += 1;
         await this.fireFileProgress();
       } catch (e) {
         console.error(e);
-        this.fileUploadErrorMessages.push('The file ' + document["fileName"] + ' could not be processed due to the following issue: ' + e.response.data);
+        this.fileUploadErrorMessages.push('The file ' + document['fileName'] + ' could not be processed due to the following issue: ' + e.response.data);
       } finally {
         this.isReadingFile = false;
       }
@@ -357,7 +368,7 @@ export default {
     addFileReportDateWarning(fileDate, fileName) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
       if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
-        let message = "The date in the " + fileName + " file is " + formattedFileDate + ". Please ensure that you have uploaded the correct data for this collection before continuing."
+        let message = 'The date in the ' + fileName + ' file is ' + formattedFileDate + '. Please ensure that you have uploaded the correct data for this collection before continuing.';
         this.fileDateWarningErrorMessages.push(message);
       }
     },
@@ -375,7 +386,7 @@ export default {
           this.sortSchoolsInProgress();
 
           clearInterval(this.interval);
-          this.startPollingStatus()
+          this.startPollingStatus();
 
         });
       } catch (e) {
@@ -394,7 +405,7 @@ export default {
         if (!dateB) return -1;
 
         return dateB - dateA;
-      })
+      });
     }
   }
 };

@@ -94,7 +94,8 @@
     </v-row>
     <v-row>
       <v-col class="mb-3 d-flex justify-center">
-        <span>We're processing your 1701 submission. Currently, {{ totalProcessed }} of {{ totalStudents }} student records have been processed...</span>
+        <span v-if="positionInQueue > 1">We are processing 1701 submissions from multiple schools. Your submission is currently number {{ positionInQueue }} in line to be processed.  Thank you for your patience.</span>
+        <span v-else>We're processing your 1701 submission. Currently, {{ totalProcessed }} of {{ totalStudents }} student records have been processed...</span>
       </v-col>
     </v-row>
     <v-row>
@@ -234,7 +235,7 @@ import Spinner from '../../../common/Spinner.vue';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from '@js-joda/core';
 import SummaryComponent from './SummaryComponent.vue';
-import {getCollectionLink} from "../../../../utils/common";
+import {getCollectionLink} from '../../../../utils/common';
 
 export default {
   name: 'StepOneUploadData',
@@ -279,7 +280,8 @@ export default {
       fileUploadErrorMessage: null,
       inputKey: 0,
       validForm: false,
-      sdcSchoolCollectionID: this.$route.params.schoolCollectionID
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
+      positionInQueue: 0
     };
   },
   computed: {
@@ -329,7 +331,7 @@ export default {
       return this.fileUploadDate.format(DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm'));
     },
     getLink(){
-      return getCollectionLink(this.currentCollectionTypeCode)
+      return getCollectionLink(this.currentCollectionTypeCode);
     }
   },
   watch: {
@@ -452,6 +454,7 @@ export default {
           this.sdcSchoolProgress = response.data;
           this.totalStudents = this.sdcSchoolProgress.totalStudents;
           this.totalProcessed = this.sdcSchoolProgress.totalProcessed;
+          this.positionInQueue = this.sdcSchoolProgress.positionInQueue;
           if(!this.sdcSchoolProgress.fileName){
             //Show file upload section
             this.hasFileAttached = false;
