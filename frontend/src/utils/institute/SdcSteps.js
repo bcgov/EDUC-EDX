@@ -27,7 +27,7 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
   },
   {
     id: 'step-4',
-    title: 'Review & Fix Duplicates',
+    title: 'Review & Fix Identical PENs',
     step: 4,
     sdcSchoolCollectionStatusCode: 'VERIFIED',
     index: 3
