@@ -207,16 +207,16 @@ export default {
     },
     getIndexOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.index;
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
       } else {
-        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.index;
+        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.index;
       }
     },
     getStepOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === statusCode)?.step;
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
       } else {
-        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === statusCode)?.step;
+        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.step;
       }
     }
   }

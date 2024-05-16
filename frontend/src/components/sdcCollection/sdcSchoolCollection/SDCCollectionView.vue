@@ -222,7 +222,7 @@ export default {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
     isStepComplete() {
-      let indexCurrentCollection = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+      let indexCurrentCollection = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
       return this.currentStep < indexCurrentCollection;
     },
     sdcSchoolSchool() {
@@ -238,7 +238,7 @@ export default {
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
-      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
       this.isLoading = !this.isLoading;
     });
   },
@@ -259,7 +259,7 @@ export default {
     },
     checkIfWeNeedToUpdateSchoolCollection(index) {
       this.refreshStore(true);
-      if (index < this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode)) {
+      if (index < this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode)) {
         return;
       }
       sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID);
@@ -270,7 +270,7 @@ export default {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
-          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection.sdcSchoolCollectionStatusCode);
+          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
         }
         this.isLoading = !this.isLoading;
       });
@@ -285,10 +285,10 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.index;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
     },
     getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode === sdcSchoolCollectionStatusCode)?.step;
+      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
     }
   }
 };

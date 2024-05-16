@@ -230,10 +230,10 @@ export default defineComponent({
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
-      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.index;
+      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.index;
     },
     getStepOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
-      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode === sdcDistrictCollectionStatusCode)?.step;
+      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.step;
     }
   }
 });
