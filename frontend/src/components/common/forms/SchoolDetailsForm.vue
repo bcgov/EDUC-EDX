@@ -5,7 +5,7 @@
   >
     <v-container fluid>
       <v-row
-        v-if="!loading && functionName !== 'SDC' && (editing || isOffshoreSchool)"
+        v-if="!loading && functionName !== 'SDC' && (editing)"
         class="d-flex justify-center mb-0"
       >
         <v-col>
@@ -15,8 +15,7 @@
             type="info"
             variant="tonal"
           >
-            <span v-if="isOffshoreSchool">Require updates to school details? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
-            <span v-else>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
+            <span>Require updates to non-editable fields? Please contact {{ emailBox }}</span>
           </v-alert>
         </v-col>
       </v-row>
@@ -639,7 +638,7 @@
                 </v-col>
               </v-row>
               <v-row
-                v-if="!editing || isOffshoreSchool"
+                v-if="!editing"
                 no-gutters
               >
                 <v-col>
@@ -796,7 +795,6 @@
               </v-row>
             </v-col>
             <v-col
-              v-if="!isOffshoreSchool"
               cols="3"
             >
               <v-row>
@@ -1096,11 +1094,6 @@ export default {
     hasSamePhysicalAddress(){
       return !this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
     },
-    isOffshoreSchool(){
-      const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
-      this.$emit('update-is-offshore', isOffshore);
-      return isOffshore;
-    },
     schoolReportingRequirementType() {
       const code = this.school.schoolReportingRequirementCode;
       const type = this.schoolReportingRequirementTypes
@@ -1311,7 +1304,7 @@ export default {
     canEditSchoolDetails(){
       const hasPermission = this.userInfo?.activeInstitutePermissions?.
         filter(perm => perm === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
-      return hasPermission && !this.isOffshoreSchool;
+      return hasPermission;
     },
     async clickSameAsAddressButton() { 
       await this.$nextTick();

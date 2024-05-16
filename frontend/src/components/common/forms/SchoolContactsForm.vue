@@ -13,21 +13,6 @@
       </v-col>
     </v-row>
     <template v-if="!isLoading">
-      <v-row
-        v-if="isOffshoreSchool && functionName !== 'SDC'"
-        class="d-flex justify-center mb-0"
-      >
-        <v-col>
-          <v-alert
-            id="nonEditableAlert"
-            density="compact"
-            type="info"
-            variant="tonal"
-          >
-            <span>Require updates to school contacts? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
-          </v-alert>
-        </v-col>
-      </v-row>
       <v-row>
         <v-col
           cols="12"
@@ -243,11 +228,6 @@ export default {
     ...mapState(instituteStore, ['schoolContactTypeCodes', 'independentAuthoritySchoolContacts', 'offshoreSchoolContacts', 'regularSchoolContactTypes']),
     isLoading() {
       return this.loadingCount !== 0;
-    },
-    isOffshoreSchool(){
-      const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
-      this.$emit('update-is-offshore', isOffshore);
-      return isOffshore;
     }
   },
   watch: {
@@ -334,7 +314,7 @@ export default {
       return permissions.filter(p => p === PERMISSION.EDX_SCHOOL_EDIT).length > 0;
     },
     canEditSchoolContacts() {
-      return this.hasSchoolEditPermission() && !this.isOffshoreSchool;
+      return this.hasSchoolEditPermission();
     },
     openNewContactSheet(){
       this.newContactSheet = !this.newContactSheet;

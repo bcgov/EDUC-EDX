@@ -92,22 +92,6 @@ function validateAccessToken(req, res, next) {
 }
 
 //School checks
-function forbidActionOnOffshoreSchools(req, res, next) {
-  if (!res.locals.requestedInstituteType || !res.locals.requestedInstituteIdentifier) {
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      message: 'The requested institution type and identifier wasn\'t found in the request.'
-    });
-  }
-  if (res.locals.requestedInstituteType !== 'SCHOOL') {
-    return next();
-  }
-  if (!isSchoolAnOffshoreSchool(res.locals.requestedInstituteIdentifier)) {
-    return next();
-  }
-  return res.status(HttpStatus.FORBIDDEN).json({
-    message: 'This action cannot be performed for offshore schools.'
-  });
-}
 
 //Secure Exchange checks
 function checkSecureExchangeAccess(req, res, next) {
@@ -451,7 +435,6 @@ const permUtils = {
   checkPermissionForRequestedInstitute,
   verifyQueryParamValueMatchesBodyValue,
   validateAccessToken,
-  forbidActionOnOffshoreSchools,
   checkSecureExchangeAccess,
   conflictActionOnClosedSecureExchange,
   checkSdcSchoolCollectionAccess,
