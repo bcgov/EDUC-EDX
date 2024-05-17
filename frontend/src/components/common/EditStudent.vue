@@ -471,11 +471,6 @@
                         </v-col>
                       </v-row>
                     </v-form>
-                    <a
-                      v-if="issue.validationIssueCode === 'STUDENTPENDUPLICATE'"
-                      id="duplicatePenFilter"
-                      @click="filterByPen"
-                    >Filter to records with this PEN</a>
                   </v-timeline-item>
                 </v-timeline>
               </v-col>
@@ -780,10 +775,6 @@ export default {
       this.sdcSchoolCollectionStudentDetail = filteredSdcSchoolCollectionStudent;
       this.sdcSchoolCollectionStudentDetailCopy = cloneDeep(filteredSdcSchoolCollectionStudent);
       this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = filteredSdcSchoolCollectionStudent.filteredEnrolledProgramCodes;
-    },
-    filterByPen() {
-      this.page=1;
-      this.$emit('filter-pen', this.sdcSchoolCollectionStudentDetailCopy.studentPen);
     },
     syncWithEnrolledProgramCodeOnUserInput(value){
       this.sdcSchoolCollectionStudentDetailCopy.enrolledProgramCodes = value;
