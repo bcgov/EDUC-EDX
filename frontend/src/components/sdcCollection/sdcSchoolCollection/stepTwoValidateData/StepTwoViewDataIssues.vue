@@ -114,7 +114,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="totalNumIssueStudentsInCollection > 0 || penFilter || legalUsualNameFilter || fundingWarningCategoryFilter"
+        v-if="totalNumIssueStudentsInCollection > 0 || filtersApplied"
         class="pr-0"
       >
         <v-row class="searchBox">
@@ -388,6 +388,7 @@ export default {
       totalStudents: 0,
       sdcCollection: sdcCollectionStore(),
       totalNumIssueStudentsInCollection: 0,
+      filtersApplied: false,
       legalUsualNameFilter: null,
       penFilter: null,
       selectedSdcStudentID: null,
@@ -440,7 +441,7 @@ export default {
         this.getSDCSchoolCollectionStudentPaginated();
       },
       immediate: true
-    },
+    }
   },
   mounted() {
     sdcCollectionStore().getCodes().then(async () => {
@@ -526,6 +527,8 @@ export default {
       this.headerSearchParams.penLocalIdNumber = this.penFilter;
       this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
       this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
+
+      this.filtersApplied = !!(this.penFilter || this.fundingWarningCategoryFilter || this.legalUsualNameFilter);
 
       await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
