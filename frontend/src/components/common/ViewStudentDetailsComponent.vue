@@ -157,6 +157,8 @@ export default {
       return sdcCollectionStore().zeroFteReasonCodesMap.get(key)?.message;
     },
     setProgramEligibility() {
+      this.programEligibilityData = []
+
       //french row
       let frenchRow = {};
       frenchRow.program = 'French Programs';
