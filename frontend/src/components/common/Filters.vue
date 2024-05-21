@@ -48,12 +48,12 @@
           >
             <v-text-field
               id="searchInput"
-              v-model="penLocalIdNameFilter"
-              label="PEN or Local ID or Name"
+              v-model="schoolNameNumberFilter"
+              label="School Name or Number"
               color="primary"
               variant="underlined"
               class="mt-n4 mb-n4"
-              @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+              @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
             />
           </slot>
         </v-col>
@@ -198,7 +198,8 @@ export default {
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
       courseRange: [0, 15],
-      penLocalIdNameFilter: null
+      penLocalIdNameFilter: null,
+      schoolNameNumberFilter: null
     };
   },
   watch: {
@@ -215,6 +216,15 @@ export default {
     setPenLocalIdNameFilter(key, $event) {
       if($event) {
         this.selected[key] = [{title: 'PenOrLocalIdOrName', value: $event}];
+        this.apply();
+      } else {
+        delete this.selected[key];
+        this.apply();
+      }
+    },
+    setSchoolNameNumberFilter(key, $event) {
+      if($event) {
+        this.selected[key] = [{title: 'SchoolNameOrNumber', value: $event}];
         this.apply();
       } else {
         delete this.selected[key];
@@ -261,6 +271,7 @@ export default {
       this.bandCodeValue = null;
       this.courseRange = [...this.courseRangeDefault];
       this.penLocalIdNameFilter = null;
+      this.schoolNameNumberFilter = null;
       this.$emit('clearFilters');
     },
     apply() {
