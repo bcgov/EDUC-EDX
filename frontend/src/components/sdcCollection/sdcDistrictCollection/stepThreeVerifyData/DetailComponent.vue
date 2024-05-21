@@ -76,6 +76,24 @@
         </v-col>
       </v-row>
     </v-col>
+    <v-navigation-drawer
+      v-model="showFilters"
+      location="right"
+      :temporary="true"
+      width="700"
+      :persistent="true"
+      scrim="transparent"
+      :border="true"
+      style="top:0; height: 100%;"
+      rounded="true"
+    >
+      <Filters
+        :filters="config.allowedFilters"
+        @apply-filters="applyFilters"
+        @clear-filters="clearFilters"
+        @close="showFilters= !showFilters"
+      />
+    </v-navigation-drawer>
   </v-row>
   <v-bottom-sheet
     v-model="editStudentSheet"
@@ -99,10 +117,13 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
+import Filters from '../../../common/Filters.vue';
+import {mapState} from 'pinia';
 
 export default {
   name: 'DetailComponent',
   components: {
+    Filters,
     CustomTable,
     ViewStudentDetailsComponent
   },
@@ -137,12 +158,14 @@ export default {
       showFilters: null,
       studentForEdit: [],
       editStudentSheet: false,
-      resetFlag: false,
-      filterCount: 0
+      resetFlag: false
     };
   },
   computed: {
-
+    ...mapState(sdcCollectionStore, ['schoolCollection','schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
+    filterCount() {
+      return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
+    }
   },
   created() {
     sdcCollectionStore().getCodes().then(() => {
@@ -163,7 +186,15 @@ export default {
       this.studentForEdit.splice(0);
       this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
       this.editStudentSheet = true;
-    },   
+    },
+    applyFilters($event) {
+      this.filterSearchParams.moreFilters = cloneDeep($event);
+      this.loadStudents();
+    },
+    clearFilters() {
+      this.filterSearchParams.moreFilters = {};
+      this.loadStudents();
+    },
     loadStudents() {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/paginated?tableFormat=true`, {
@@ -195,7 +226,7 @@ export default {
         this.pageNumber = value?.pageNumber;
       }
       this.loadStudents();
-    },
+    }
   }
 };
 </script>
