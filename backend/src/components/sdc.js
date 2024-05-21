@@ -213,20 +213,6 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       data?.content.forEach(value => {
         value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
       });
-
-      const moreFilters = req.query.searchParams?.moreFilters;
-      if (moreFilters && moreFilters.schoolNameNumber && moreFilters.schoolNameNumber[0]) {
-        const schoolNameNumberValue = moreFilters.schoolNameNumber[0].value;
-        const nameParts = schoolNameNumberValue.split(/\s+/);
-
-        data.content = data.content.filter(value => {
-          return nameParts.some(part =>
-            value.schoolName.toLowerCase().includes(part.toLowerCase()) ||
-            value.schoolID.toString().includes(part)
-          );
-        });
-      }
-
       data?.content.sort((a,b) =>  {
         if (a.schoolName > b.schoolName) {
           return 1;
