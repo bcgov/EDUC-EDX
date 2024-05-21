@@ -25,7 +25,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let fundingTypeList = [];
   let courseRangeList = [];
   let penLocalIdNameFilter = [];
-  let schoolNameNumberFilter = [];
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
     if (key === 'studentType' && pValue) {
@@ -108,10 +107,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
       let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
       penLocalIdNameFilter = [...nameCriteria, ...penCriteria];
-    }
-    if (key === 'schoolNameNumber' && pValue) {
-      let schoolNameNumberCriteria = createSchoolNameNumberSearchCriteria(pValue.toString());
-      schoolNameNumberFilter = [...schoolNameNumberCriteria];
     }
   }
   const search = [];
@@ -239,12 +234,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: penLocalIdNameFilter
-    });
-  }
-  if (schoolNameNumberFilter.length > 0) {
-    search.push({
-      condition: CONDITION.AND,
-      searchCriteriaList: schoolNameNumberFilter
     });
   }
   return search;
@@ -616,22 +605,6 @@ function createLocalIdPenSearchCriteria(value) {
     valueType: VALUE_TYPE.STRING,
     condition: CONDITION.OR
   });
-  return searchCriteriaList;
-}
-
-function createSchoolNameNumberSearchCriteria(nameString) {
-  const nameParts = nameString.split(/\s+/);
-
-  const searchCriteriaList = [];
-  for (const part of nameParts) {
-    searchCriteriaList.push({
-      key: 'schoolName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-  }
   return searchCriteriaList;
 }
 
