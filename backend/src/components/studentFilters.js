@@ -619,19 +619,17 @@ function createLocalIdPenSearchCriteria(value) {
   return searchCriteriaList;
 }
 
-function createSchoolNameNumberSearchCriteria(nameString) {
-  const nameParts = nameString.split(/\s+/);
-
+function createSchoolNameNumberSearchCriteria(value) {
   const searchSchoolCriteriaList = [];
-  for (const part of nameParts) {
-    searchSchoolCriteriaList.push({
-      key: 'schoolName',
-      operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
-      value: `%${part}%`,
-      valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
-    });
-  }
+
+  searchSchoolCriteriaList.push({
+    key: 'sdcSchoolCollection.schoolID',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+
   return searchSchoolCriteriaList;
 }
 

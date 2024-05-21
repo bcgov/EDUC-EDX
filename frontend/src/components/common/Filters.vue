@@ -46,13 +46,17 @@
             v-if="district"
             name="text-search"
           >
-            <v-text-field
-              id="searchInput"
+            <v-autocomplete
+              id="selectSchool"
               v-model="schoolNameNumberFilter"
-              label="School Name or Number"
-              color="primary"
               variant="underlined"
-              class="mt-n4 mb-n4"
+              :items="schoolSearchNames"
+              color="#003366"
+              label="School Name or Number"
+              single-line
+              clearable
+              item-title="schoolCodeName"
+              item-value="schoolID"
               @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
             />
           </slot>
@@ -165,7 +169,11 @@
 import alertMixin from '../../mixins/alertMixin';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import PrimaryButton from '../util/PrimaryButton.vue';
-import {isEmpty} from 'lodash';
+import {isEmpty, sortBy} from 'lodash';
+import {appStore} from "../../store/modules/app";
+import {edxStore} from "../../store/modules/edx";
+import {authStore} from "../../store/modules/auth";
+import {mapState} from "pinia";
   
 export default {
   name: 'Filters',
@@ -199,17 +207,50 @@ export default {
       courseRangeDefault: [0, 15],
       courseRange: [0, 15],
       penLocalIdNameFilter: null,
-      schoolNameNumberFilter: null
+      schoolNameNumberFilter: null,
+      schoolSearchNames: [],
     };
   },
   watch: {
   },
+  computed: {
+    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
+    ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
+    ...mapState(authStore, ['userInfo']),
+  },
+  async beforeMount() {
+    if (this.schoolRoles.length === 0) {
+      await edxStore().getSchoolExchangeRoles();
+    }
+    if(this.schoolsMap.size === 0) {
+      await appStore().getInstitutesData();
+    }
+  },
   created() {
+    authStore().getUserInfo().then(() => {
+      this.isDistrictUser = true;
+      appStore().getInstitutesData().then(() => {
+        this.setupSchoolList();
+        this.loading = false;
+      });
+    });
     Object.keys(this.filters).forEach(key => {
       this.selected[key] = [];
     });
   },
   methods: {
+    setupSchoolList(){
+      this.schoolSearchNames = [];
+      for(const school of this.notClosedSchoolsMap.values()){
+        let schoolItem = {
+          schoolCodeName: school.schoolName + ' - ' + school.mincode,
+          schoolID: school.schoolID,
+          districtID: school.districtID,
+        };
+        this.schoolSearchNames.push(schoolItem);
+      }
+      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
+    },
     close() {
       this.$emit('close');
     },
