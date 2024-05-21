@@ -89,6 +89,7 @@
     >
       <Filters
         :filters="config.allowedFilters"
+        :district="district"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
         @close="showFilters= !showFilters"
@@ -133,6 +134,11 @@ export default {
       tabFilter: Object,
       required: true,
       type: Object,
+      default: null
+    },
+    district: {
+      type: Object,
+      required: true,
       default: null
     },
     showExportBtn: {

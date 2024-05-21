@@ -42,6 +42,20 @@
               @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
             />
           </slot>
+          <slot
+            v-if="district"
+            name="text-search"
+          >
+            <v-text-field
+              id="searchInput"
+              v-model="penLocalIdNameFilter"
+              label="PEN or Local ID or Name"
+              color="primary"
+              variant="underlined"
+              class="mt-n4 mb-n4"
+              @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+            />
+          </slot>
         </v-col>
       </v-row>
       <div
@@ -166,6 +180,11 @@ export default {
       default: null
     },
     school: {
+      type: Object,
+      required: false,
+      default: null
+    },
+    district: {
       type: Object,
       required: false,
       default: null

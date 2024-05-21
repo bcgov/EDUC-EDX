@@ -23,6 +23,7 @@
       >
         <AllStudentsComponent
           v-if="tab==='All Students'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -107,6 +108,8 @@ import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {setFailureAlert} from '../../../composable/alertComposable';
+import {appStore} from '../../../../store/modules/app';
+import {mapState} from 'pinia';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -138,13 +141,17 @@ export default {
       tab: null,
       tabs: SDC_VERIFY_TABS,
       type: 'SDC',
-
+      sdcDistrictCollectionID: this.$route.params.districtCollectionID,
+      district: {}
     };
   },
   computed: {
+    ...mapState(appStore, ['activeDistrictsMap']),
   },
   created() {
-
+    appStore().getInstitutesData().finally(() => {
+      this.district = this.activeDistrictsMap.get(this.districtCollectionObject.districtID);
+    });
   },
   methods: {
     markStepAsComplete(){
