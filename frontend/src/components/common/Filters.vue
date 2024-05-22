@@ -21,44 +21,47 @@
     <v-divider />
     <v-card-text>
       <v-row>
-        <v-col cols="6">
-          <slot
-            name="text-search"
-          >
-            <v-text-field
-              id="searchInput"
-              v-model="penLocalIdNameFilter"
-              label="PEN or Local ID or Name"
-              color="primary"
-              variant="underlined"
-              @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
-            />
-          </slot>
-        </v-col>
-        <v-col>
-          <slot
-            v-if="district"
-            name="text-search"
-          >
-            <v-autocomplete
-              id="selectSchool"
-              v-model="schoolNameNumberFilter"
-              variant="underlined"
-              :items="schoolSearchNames"
-              color="#003366"
-              label="School Name or Number"
-              single-line
-              clearable
-              item-title="schoolCodeName"
-              item-value="schoolID"
-              autocomplete="off"
-              @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
-            />
-          </slot>
-        </v-col>
         <v-col
-          class="d-flex justify-end"
+          cols="6"
+          class="ml-2"
         >
+          <v-row>
+            <slot
+              name="text-search"
+            >
+              <v-text-field
+                id="searchInput"
+                v-model="penLocalIdNameFilter"
+                label="PEN or Local ID or Name"
+                color="primary"
+                variant="underlined"
+                @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
+              />
+            </slot>
+          </v-row>
+          <v-row>
+            <slot
+              v-if="district"
+              name="text-search"
+            >
+              <v-autocomplete
+                id="selectSchool"
+                v-model="schoolNameNumberFilter"
+                variant="underlined"
+                :items="schoolSearchNames"
+                color="#003366"
+                label="School Name or Number"
+                single-line
+                clearable
+                item-title="schoolCodeName"
+                item-value="schoolID"
+                autocomplete="off"
+                @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
+              />
+            </slot>
+          </v-row>
+        </v-col>
+        <v-col class="d-flex justify-end">
           <PrimaryButton
             id="clear-filter"
             secondary
@@ -66,7 +69,6 @@
             icon="mdi-filter-off-outline"
             text="Clear All"
             :click-action="clear"
-            class="mt-n1"
           />
         </v-col>
       </v-row>
