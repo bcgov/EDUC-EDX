@@ -142,6 +142,7 @@ export default {
     },
     reset() {
       this.saveStudent =false;
+      this.programEligibilityData.splice(0);
     },
     showFundingEligibilitySection() {
       return (this.studentForEdit?.careerProgramNonEligReasonCode !== null && this.studentForEdit?.careerProgramNonEligReasonCode !== 'NTENRCAREE') 
