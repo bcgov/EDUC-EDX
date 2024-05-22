@@ -38,10 +38,11 @@
               label="PEN or Local ID or Name"
               color="primary"
               variant="underlined"
-              class="mt-n4 mb-n4"
               @update:model-value="setPenLocalIdNameFilter('penLocalIdName', $event)"
             />
           </slot>
+        </v-col>
+        <v-col>
           <slot
             v-if="district"
             name="text-search"
@@ -57,6 +58,7 @@
               clearable
               item-title="schoolCodeName"
               item-value="schoolID"
+              autocomplete="off"
               @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
             />
           </slot>

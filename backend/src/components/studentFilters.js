@@ -626,8 +626,8 @@ function createSchoolNameNumberSearchCriteria(value) {
     key: 'sdcSchoolCollection.schoolID',
     operation: FILTER_OPERATION.EQUAL,
     value: value,
-    valueType: VALUE_TYPE.STRING,
-    condition: CONDITION.OR
+    valueType: VALUE_TYPE.UUID,
+    condition: CONDITION.AND
   });
 
   return searchSchoolCriteriaList;
