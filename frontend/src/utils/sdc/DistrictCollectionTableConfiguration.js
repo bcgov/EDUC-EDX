@@ -7,7 +7,7 @@ import {
   BAND_FILTER,
   CAREER_CODE_FILTER,
   CAREER_PROGRAM_FILTER,
-  COURSE_FILTER, ELL_YEARS_FILTER, ENGLISH_PROGRAMS_FILTER, FRENCH_PROGRAMS_FILTER,
+  COURSE_FILTER, ELL_YEARS_FILTER, ENGLISH_PROGRAMS_FILTER, FRENCH_FUNDING_FILTER, FRENCH_PROGRAMS_FILTER,
   FTE_FILTER, FTE_ZERO_FILTER,
   FUNDING_TYPE_FILTER,
   GRADE_FILTER, INDIGENOUS_PROGRAM_FILTER, SPED_FILTER,
@@ -135,7 +135,15 @@ export const FRENCH_PR = Object.freeze(
       {title: 'Eligible French Program Headcount per School', endpoint: 'french-per-school'}
     ],
     allowedFilters: {
-     
+      allowedFilters: {
+        studentType: STUDENT_TYPE_FILTER,
+        fte: FTE_FILTER,
+        grade: GRADE_FILTER,
+        fundingType: FUNDING_TYPE_FILTER,
+        frenchProgram: FRENCH_PROGRAMS_FILTER,
+        frenchFunding: FRENCH_FUNDING_FILTER,
+        warnings: WARNING_FILTER
+      }
     }
   }
 );
