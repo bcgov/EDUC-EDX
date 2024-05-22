@@ -182,6 +182,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
       });
     }
+
     if (req.query.searchParams['moreFilters']) {
       let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
@@ -197,6 +198,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
+
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionStudentURL')}/paginated`, params, req.session?.correlationID);
     if (req?.query?.returnKey) {

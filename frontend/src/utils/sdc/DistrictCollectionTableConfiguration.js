@@ -1,4 +1,19 @@
+/**
+ * Filters
+ */
 
+import {
+  ANCESTRY_FILTER,
+  BAND_FILTER,
+  CAREER_CODE_FILTER,
+  CAREER_PROGRAM_FILTER,
+  COURSE_FILTER, ELL_YEARS_FILTER, ENGLISH_PROGRAMS_FILTER, FRENCH_PROGRAMS_FILTER,
+  FTE_FILTER, FTE_ZERO_FILTER,
+  FUNDING_TYPE_FILTER,
+  GRADE_FILTER, INDIGENOUS_PROGRAM_FILTER, SPED_FILTER,
+  STUDENT_TYPE_FILTER, SUPPORT_BLOCKS_FILTER,
+  WARNING_FILTER
+} from './TableConfiguration';
 
 /**
  * Tables
@@ -25,7 +40,78 @@ export const FTE = Object.freeze(
       { title: 'Grade Enrolment & FTE per School', endpoint:'grade-enrollment'}
     ],
     allowedFilters: {
-
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      warnings: WARNING_FILTER,
+      courses: COURSE_FILTER,
+      support: SUPPORT_BLOCKS_FILTER,
+      fteZero: FTE_ZERO_FILTER,
+      frenchProgram: {
+        ...FRENCH_PROGRAMS_FILTER,
+        filterOptions: [
+          ...FRENCH_PROGRAMS_FILTER.filterOptions,
+          {
+            title: '05 - Programme Francophone',
+            id: 'french05',
+            value: '05'
+          },
+          {
+            title: 'No French Programs',
+            id: 'noFrenchProgram',
+            value: 'noFrenchPrograms'
+          }
+        ]
+      },
+      englishProgram: ENGLISH_PROGRAMS_FILTER,
+      ellYears: ELL_YEARS_FILTER,
+      careerPrograms: {
+        ...CAREER_PROGRAM_FILTER,
+        filterOptions: [
+          ...CAREER_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Career Programs',
+            id: 'noCareerProgram',
+            value: 'noCareerPrograms'
+          }
+        ]
+      },
+      careerCode: {
+        ...CAREER_CODE_FILTER,
+        filterOptions: [
+          ...CAREER_CODE_FILTER.filterOptions,
+          {
+            title: 'No Career Code',
+            id: 'noCareerCode',
+            value: 'noCareerCodes'
+          }
+        ]
+      },
+      indigenousPrograms: {
+        ...INDIGENOUS_PROGRAM_FILTER,
+        filterOptions: [
+          ...INDIGENOUS_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Indigenous Support Programs',
+            id: 'noIndigenousPrograms',
+            value: 'noIndigenousPrograms'
+          }
+        ]
+      },
+      bandCode: BAND_FILTER,
+      ancestry: ANCESTRY_FILTER,
+      sped: {
+        ...SPED_FILTER,
+        filterOptions: [
+          ...SPED_FILTER.filterOptions,
+          {
+            title: 'No Special Education Category',
+            id: 'noSpedCategory',
+            value: 'noSpedCode'
+          }
+        ]
+      }
     }
   }
 );

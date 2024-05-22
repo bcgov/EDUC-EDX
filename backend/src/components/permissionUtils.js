@@ -1,7 +1,7 @@
 'use strict';
 
 const HttpStatus = require('http-status-codes');
-const {doesSchoolBelongToDistrict, isSchoolAnOffshoreSchool} = require('./institute-cache');
+const {doesSchoolBelongToDistrict} = require('./institute-cache');
 const {getAccessToken, getData, SecureExchangeStatuses} = require('./utils');
 const config = require('../config');
 const log = require('./logger');
