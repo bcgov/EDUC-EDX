@@ -1,32 +1,25 @@
 <template>
   <v-card class="filter-card">
     <v-card-title class="sheetHeader pt-1 pb-1">
-      Filters
-    </v-card-title>
-    <v-divider />
-    <v-card-text>
-      <v-row justify="space-between">
-        <v-col cols="4">
-          <a
-            id="close"
-            @click="close()"
-          >Close</a>
+      <v-row no-gutters>
+        <v-col class="d-flex justify-start">
+          Filters
         </v-col>
-        <v-col
-          cols="4"
-          style="text-align: end;"
-        >
-          <PrimaryButton
-            id="clear-filter"
-            secondary
-            large-icon
-            icon="mdi-filter-off-outline"
-            text="Clear"
-            :click-action="clear"
-            class="mt-n1"
+        <v-col class="d-flex justify-end">
+          <v-btn
+            id="cancel"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
+            @click="close()"
           />
         </v-col>
       </v-row>
+    </v-card-title>
+    <v-divider />
+    <v-card-text>
       <v-row>
         <v-col cols="6">
           <slot
@@ -62,6 +55,19 @@
               @update:model-value="setSchoolNameNumberFilter('schoolNameNumber', $event)"
             />
           </slot>
+        </v-col>
+        <v-col
+          class="d-flex justify-end"
+        >
+          <PrimaryButton
+            id="clear-filter"
+            secondary
+            large-icon
+            icon="mdi-filter-off-outline"
+            text="Clear All"
+            :click-action="clear"
+            class="mt-n1"
+          />
         </v-col>
       </v-row>
       <div
@@ -325,7 +331,7 @@ export default {
 </script>
     
   <style scoped>
-    .sheetHeader {
+  .sheetHeader {
     background-color: #003366;
     color: white;
     font-size: medium !important;
