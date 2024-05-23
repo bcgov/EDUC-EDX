@@ -33,6 +33,7 @@
       >
         <FrenchProgramsComponent
           v-if="tab==='French Programs'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -42,6 +43,7 @@
       >
         <CareerProgramsComponent
           v-if="tab==='Career Programs'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -51,6 +53,7 @@
       >
         <IndSupportProgramsComponent
           v-if="tab==='Indigenous Students & Support Programs'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -60,6 +63,7 @@
       >
         <SpecialEduComponent
           v-if="tab==='Special Education'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -69,6 +73,7 @@
       >
         <EnglishLangComponent
           v-if="tab==='English Language Learning'"
+          :district="district"
         />
       </v-window-item>
       <v-window-item
@@ -78,6 +83,7 @@
       >
         <RefugeeComponent
           v-if="tab==='Refugee'"
+          :district="district"
         />
       </v-window-item>
     </v-window> 

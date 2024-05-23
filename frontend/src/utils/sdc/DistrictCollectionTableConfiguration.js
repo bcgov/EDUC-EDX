@@ -5,13 +5,24 @@
 import {
   ANCESTRY_FILTER,
   BAND_FILTER,
-  CAREER_CODE_FILTER,
+  CAREER_CODE_FILTER, CAREER_FUNDING_FILTER,
   CAREER_PROGRAM_FILTER,
-  COURSE_FILTER, ELL_YEARS_FILTER, ENGLISH_PROGRAMS_FILTER, FRENCH_PROGRAMS_FILTER,
-  FTE_FILTER, FTE_ZERO_FILTER,
+  COURSE_FILTER,
+  ELL_FUNDING_FILTER,
+  ELL_YEARS_FILTER,
+  ENGLISH_PROGRAMS_FILTER,
+  FRENCH_FUNDING_FILTER,
+  FRENCH_PROGRAMS_FILTER,
+  FTE_FILTER,
+  FTE_ZERO_FILTER,
   FUNDING_TYPE_FILTER,
-  GRADE_FILTER, INDIGENOUS_PROGRAM_FILTER, SPED_FILTER,
-  STUDENT_TYPE_FILTER, SUPPORT_BLOCKS_FILTER,
+  GRADE_FILTER,
+  INDIGENOUS_FUNDING_FILTER,
+  INDIGENOUS_PROGRAM_FILTER,
+  SPED_FILTER,
+  SPED_FUNDING_FILTER,
+  STUDENT_TYPE_FILTER,
+  SUPPORT_BLOCKS_FILTER,
   WARNING_FILTER
 } from './TableConfiguration';
 
@@ -135,7 +146,13 @@ export const FRENCH_PR = Object.freeze(
       {title: 'Eligible French Program Headcount per School', endpoint: 'french-per-school'}
     ],
     allowedFilters: {
-     
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      frenchProgram: FRENCH_PROGRAMS_FILTER,
+      frenchFunding: FRENCH_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -159,7 +176,14 @@ export const CAREER_PR = Object.freeze(
       { title: 'Eligible Career Program Headcount per School', endpoint:'career-per-school'}
     ],
     allowedFilters: {
-   
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      careerPrograms: CAREER_PROGRAM_FILTER,
+      careerCode: CAREER_CODE_FILTER,
+      careerProgramsFunding: CAREER_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -186,7 +210,15 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Eligible Band of Residence Headcount per School', endpoint:'band-codes-per-school'}
     ],
     allowedFilters: {
-
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      indigenousPrograms: INDIGENOUS_PROGRAM_FILTER,
+      bandCode: BAND_FILTER,
+      ancestry: ANCESTRY_FILTER,
+      indigenousProgramsFunding: INDIGENOUS_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -210,6 +242,13 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Eligible Special Education Headcount per School', endpoint:'special-ed-per-school'}
     ],
     allowedFilters: {
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      sped: SPED_FILTER,
+      spedFunding: SPED_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -233,6 +272,13 @@ export const ELL = Object.freeze(
       { title: 'Eligible English Language Learners Headcount per school', endpoint:'ell-per-school'}
     ],
     allowedFilters: {
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      ellYears: ELL_YEARS_FILTER,
+      ellFunding: ELL_FUNDING_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );
@@ -251,7 +297,11 @@ export const REFUGEE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
     ],
     allowedFilters: {
-
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      warnings: WARNING_FILTER
     }
   }
 );

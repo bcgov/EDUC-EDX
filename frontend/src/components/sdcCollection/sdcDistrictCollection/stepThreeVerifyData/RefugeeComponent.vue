@@ -29,6 +29,7 @@
     <div v-if="reportView === 'detail'">
       <DetailComponent
         :config="config"
+        :district="district"
       />
     </div>
   </v-container>
@@ -46,6 +47,11 @@ export default {
   },
   mixins: [alertMixin],
   props: {
+    district: {
+      type: Object,
+      required: true,
+      default: null
+    }
   },
   emits: [],
   data() {
