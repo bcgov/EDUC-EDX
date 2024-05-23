@@ -120,7 +120,7 @@
               >
                 <v-col class="column-data">
                   <div>Confirmed</div>
-                  <span  id="detailsConfirmedValue">
+                  <span id="detailsConfirmedValue">
                     {{ monitorSdcSchoolCollectionsResponse?.schoolsDetailsConfirmed }}
                   </span>
                 </v-col>
@@ -322,6 +322,16 @@
         :color="value ? 'success' : 'error'"
       />
     </template>
+    <template #item.unsubmit="{ value }">
+      <v-btn
+        v-if="value.isSubmitted"
+        :id="'unsubmitBtn' + value.sdcSchoolCollectionId"
+        color="primary"
+        icon="mdi-lock-open"
+        variant="text"
+        @click="unsubmitSdcSchoolCollection(value.sdcSchoolCollectionId)"
+      />
+    </template>
     <template #bottom />
   </v-data-table>
   <v-row justify="end">
@@ -353,7 +363,7 @@
 import {defineComponent} from 'vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {setFailureAlert} from '../../composable/alertComposable';
+import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import Filters from '../../common/Filters.vue';
 import {cloneDeep} from 'lodash';
@@ -425,6 +435,12 @@ export default defineComponent({
           align: 'center',
           key: 'submittedToDistrict'
         },
+        {
+          title: 'Unsubmit',
+          align: 'center',
+          key: 'unsubmit',
+          value: item => { return { isSubmitted: item.submittedToDistrict, sdcSchoolCollectionId: item.sdcSchoolCollectionId }; }
+        }
       ],
       isLoading: false,
       monitorSdcSchoolCollectionsResponse: [],
@@ -554,6 +570,18 @@ export default defineComponent({
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
+    },
+    unsubmitSdcSchoolCollection(sdcSchoolCollectionId) {
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/unsubmit`)
+        .then(() => {
+          setSuccessAlert('Sdc school collection has been unsubmitted');
+          this.getSdcSchoolCollections();
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while unsubmitting school collection. Please try again later.');
+        });
+      
     }
   }
 });

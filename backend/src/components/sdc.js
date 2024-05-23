@@ -731,6 +731,21 @@ function setProgramDuplicateTypeMessage(sdcDuplicate) {
   sdcDuplicate.programDuplicateTypeCodeDescription = programDuplicateTypeCodes.get(sdcDuplicate.programDuplicateTypeCode)?.label;
 }
 
+async function unsubmitSdcSchoolCollection(req, res) {
+  try {
+    const payload = {
+      'updateUser': 'EDX/' + req.session.edxUserData.edxUserID,
+      'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
+    };
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/unsubmit`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error unsubmitting the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -753,5 +768,6 @@ module.exports = {
   getStudentHeadcounts,
   getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId,
   getDistrictHeadcounts,
-  getInDistrictDuplicates
+  getInDistrictDuplicates,
+  unsubmitSdcSchoolCollection
 };
