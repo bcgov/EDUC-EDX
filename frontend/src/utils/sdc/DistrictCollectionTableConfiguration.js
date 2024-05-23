@@ -271,7 +271,7 @@ export const MONITORING = Object.freeze(
             value: 'uploadDate'
           },
           {
-            title: '1701 Data NOT Uploaded',
+            title: '1701 Data Not Uploaded',
             id: 'notUploadDate',
             value: 'notUploadDate'
           }
@@ -300,42 +300,6 @@ export const MONITORING = Object.freeze(
           }
         ]
       },
-      detailsFilter: {
-        heading: 'School Details Confirmed',
-        id: 'detailsFilter',
-        multiple: false,
-        key: 'detailsFilter',
-        filterOptions: [
-          {
-            title: 'School Details Confirmed',
-            id: 'detailsConfirmed',
-            value: 'detailsConfirmed'
-          },
-          {
-            title: 'School Details NOT Confirmed',
-            id: 'notDetailsConfirmed',
-            value: 'notDetailsConfirmed'
-          }
-        ]
-      },
-      contactsFilter: {
-        heading: 'School Contacts Confirmed',
-        id: 'contactsFilter',
-        multiple: false,
-        key: 'contactsFilter',
-        filterOptions: [
-          {
-            title: 'School Contacts Confirmed',
-            id: 'contactsConfirmed',
-            value: 'contactsConfirmed'
-          },
-          {
-            title: 'School Contacts NOT Confirmed',
-            id: 'notContactsConfirmed',
-            value: 'notContactsConfirmed'
-          }
-        ]
-      },
       submittedFilter: {
         heading: 'Submitted to District',
         id: 'submittedFilter',
@@ -348,7 +312,7 @@ export const MONITORING = Object.freeze(
             value: 'submittedToDistrict'
           },
           {
-            title: 'NOT Submitted to District',
+            title: 'Not Submitted to District',
             id: 'notSubmittedToDistrict',
             value: 'notSubmittedToDistrict'
           }

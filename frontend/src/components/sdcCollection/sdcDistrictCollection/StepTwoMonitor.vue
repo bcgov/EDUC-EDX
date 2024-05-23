@@ -304,24 +304,6 @@
         -
       </span>
     </template>
-    <template #item.detailsConfirmed="{ value }">
-      <v-icon
-        :icon="value ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline'"
-        :color="value ? 'success' : 'error'"
-      />
-    </template>
-    <template #item.contactsConfirmed="{ value }">
-      <v-icon
-        :icon="value ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline'"
-        :color="value ? 'success' : 'error'"
-      />
-    </template>
-    <template #item.submittedToDistrict="{ value }">
-      <v-icon
-        :icon="value ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline'"
-        :color="value ? 'success' : 'error'"
-      />
-    </template>
     <template #item.unsubmit="{ value }">
       <v-btn
         v-if="value.isSubmitted"
@@ -421,19 +403,10 @@ export default defineComponent({
           value: item => item.uploadDate ? item.infoWarnings : '-'
         },
         {
-          title: 'Details Confirmed',
+          title: 'School Status',
           align: 'center',
-          key: 'detailsConfirmed'
-        },
-        {
-          title: 'Contacts Confirmed',
-          align: 'center',
-          key: 'contactsConfirmed'
-        },
-        {
-          title: 'Submitted to District',
-          align: 'center',
-          key: 'submittedToDistrict'
+          key: 'schoolStatus',
+          value: item => item.schoolStatus
         },
         {
           title: 'Unsubmit',

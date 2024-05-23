@@ -33,6 +33,51 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     index: 3
   },
   {
+    id: 'step-7',
+    title: 'Submit Data',
+    step: 5,
+    sdcSchoolCollectionStatusCode: ['SCH_C_VRFD'],
+    index: 4
+  },
+  {
+    id: 'step-7',
+    title: 'Submit Data',
+    step: 5,
+    sdcSchoolCollectionStatusCode: ['SUBMITTED'],
+    index: 5
+  },
+]);
+
+export const SDC_STEPS_INDP_SCHOOL = Object.freeze([
+  {
+    id: 'step-1',
+    title: 'Upload Data',
+    step: 1,
+    sdcSchoolCollectionStatusCode: ['NEW', 'DIS_UPLOAD'],
+    index: 0
+  },
+  {
+    id: 'step-2',
+    title: 'Review & Fix Data Issues',
+    step: 2,
+    sdcSchoolCollectionStatusCode: ['LOADED'],
+    index: 1
+  },
+  {
+    id: 'step-3',
+    title: 'Edit/Verify Data Issues',
+    step: 3,
+    sdcSchoolCollectionStatusCode: ['REVIEWED'],
+    index: 2
+  },
+  {
+    id: 'step-4',
+    title: 'Review & Fix Identical PENs',
+    step: 4,
+    sdcSchoolCollectionStatusCode: ['VERIFIED'],
+    index: 3
+  },
+  {
     id: 'step-5',
     title: 'Verify School Details (1601)',
     step: 5,
