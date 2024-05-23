@@ -20,7 +20,10 @@
         :key="row?.title?.currentValue + generateKey()"
         :class="row?.title?.currentValue === row?.section?.currentValue ?'section-header':''"
       >
-        <td
+      <td colspan="20" class="section-header-title" v-if="Object.keys(row).length === 2 && row?.title?.currentValue === row?.section?.currentValue">
+        {{ row?.title?.currentValue }}
+      </td>
+        <td v-else
           v-for="columnHeader in headcountTableData?.headers"
           :key="row?.title?.currentValue + columnHeader + generateKey()"
           :class="getClassForCell(columnHeader, row)"
