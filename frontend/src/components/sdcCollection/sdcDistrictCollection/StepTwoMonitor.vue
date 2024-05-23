@@ -572,24 +572,14 @@ export default defineComponent({
       this.showFilters = !this.showFilters;
     },
     unsubmitSdcSchoolCollection(sdcSchoolCollectionId) {
-      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${sdcSchoolCollectionId}`)
-        .then(response => {
-          let updateCollection = {
-            schoolCollection: response.data,
-            status: 'DUP_VRFD'
-          };
-          ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}`, updateCollection)
-            .then(() => {
-              setSuccessAlert('Sdc school collection has been unsubmitted');
-              this.getSdcSchoolCollections();
-            })
-            .catch(error => {
-              console.error(error);
-              setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
-            });
-        }).catch(error => {
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/unsubmit`)
+        .then(() => {
+          setSuccessAlert('Sdc school collection has been unsubmitted');
+          this.getSdcSchoolCollections();
+        })
+        .catch(error => {
           console.error(error);
-          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while unsubmitting school collection. Please try again later.');
         });
       
     }
