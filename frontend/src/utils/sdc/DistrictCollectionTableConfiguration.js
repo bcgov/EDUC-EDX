@@ -150,7 +150,17 @@ export const FRENCH_PR = Object.freeze(
       fte: FTE_FILTER,
       grade: GRADE_FILTER,
       fundingType: FUNDING_TYPE_FILTER,
-      frenchProgram: FRENCH_PROGRAMS_FILTER,
+      frenchProgram: {
+        ...FRENCH_PROGRAMS_FILTER,
+        filterOptions: [
+          ...FRENCH_PROGRAMS_FILTER.filterOptions,
+          {
+            title: '05 - Programme Francophone',
+            id: 'french05',
+            value: '05'
+          }
+        ]
+      },
       frenchFunding: FRENCH_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
