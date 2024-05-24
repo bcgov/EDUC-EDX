@@ -109,7 +109,7 @@ import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
-import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL} from '../../utils/institute/SdcSteps';
+import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../utils/institute/SdcSteps';
 import {LocalDateTime} from '@js-joda/core';
 import {getDateFormatter} from '../../utils/format';
 
@@ -134,6 +134,7 @@ export default {
       noOfStepsCompleted: 0,
       incomingChartData: null,
       instituteCollectionID: null,
+      sdcDistrictCollectionID: null,
       isLoading: false,
       currentStepIndex: 0,
       toFormatter: getDateFormatter('uuuu/MM/dd'),
@@ -147,7 +148,11 @@ export default {
     },
     totalStepsInCollection() {
       if(this.isSchoolCollection) {
-        return new Set(SDC_STEPS_SCHOOL.map(step => step.step)).size;
+        if(this.sdcDistrictCollectionID){
+          return new Set(SDC_STEPS_SCHOOL.map(step => step.step)).size;
+        } else {
+          return new Set(SDC_STEPS_INDP_SCHOOL.map(step => step.step)).size;
+        }
       } else {
         return SDC_STEPS_DISTRICT.length;
       }
@@ -190,6 +195,7 @@ export default {
           if(this.isSchoolCollection) {
             this.instituteCollectionID = this.districtID ? response.data.sdcDistrictCollectionID : response.data.sdcSchoolCollectionID;
             instituteStatusCode = response.data.sdcSchoolCollectionStatusCode;
+            this.sdcDistrictCollectionID = response.data.sdcDistrictCollectionID;
           } else {
             this.instituteCollectionID = response.data.sdcDistrictCollectionID;
             instituteStatusCode = response.data.sdcDistrictCollectionStatusCode;
@@ -207,14 +213,22 @@ export default {
     },
     getIndexOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
+        if (this.sdcDistrictCollectionID != null){
+          return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
+        } else {
+          return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
+        }
       } else {
         return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.index;
       }
     },
     getStepOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
+        if(this.sdcDistrictCollectionID != null){
+          return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
+        } else {
+          return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
+        }
       } else {
         return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.step;
       }

@@ -174,7 +174,7 @@
 <script>
 import {mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import {SDC_STEPS_SCHOOL} from '../../../utils/institute/SdcSteps';
+import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/institute/SdcSteps';
 
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
@@ -245,13 +245,24 @@ export default {
   methods: {
     compiledSdcSteps() {
       let stepMap = {};
-      return SDC_STEPS_SCHOOL.filter(obj => {
-        if (!stepMap[obj.step]) {
-          stepMap[obj.step] = true;
-          return true;
-        }
-        return false;
-      });
+
+      if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
+        return SDC_STEPS_SCHOOL.filter(obj => {
+          if (!stepMap[obj.step]) {
+            stepMap[obj.step] = true;
+            return true;
+          }
+          return false;
+        });
+      } else {
+        return SDC_STEPS_INDP_SCHOOL.filter(obj => {
+          if (!stepMap[obj.step]) {
+            stepMap[obj.step] = true;
+            return true;
+          }
+          return false;
+        });
+      }
     },
     next() {
       this.checkIfWeNeedToUpdateSchoolCollection(this.currentStep);
@@ -285,10 +296,18 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
+      if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
+      } else {
+        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
+      }
     },
     getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+      if(this.schoolCollectionObject.sdcDistrictCollectionID != null) {
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+      } else {
+        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+      }
     }
   }
 };
