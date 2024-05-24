@@ -178,6 +178,7 @@ const reportTypeValues = [
   ['refugee', 'REFUGEE_HEADCOUNT'],
   ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
+  ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
   ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'], 
