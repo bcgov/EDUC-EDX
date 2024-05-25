@@ -33,14 +33,14 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     index: 3
   },
   {
-    id: 'step-7',
+    id: 'step-5',
     title: 'Submit Data',
     step: 5,
-    sdcSchoolCollectionStatusCode: ['SCH_C_VRFD'],
+    sdcSchoolCollectionStatusCode: ['DUP_VRFD'],
     index: 4
   },
   {
-    id: 'step-7',
+    id: 'step-5',
     title: 'Submit Data',
     step: 5,
     sdcSchoolCollectionStatusCode: ['SUBMITTED'],

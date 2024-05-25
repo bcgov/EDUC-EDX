@@ -85,7 +85,9 @@
                 />
               </template>
             </v-stepper-header>
-            <v-stepper-window>
+            <v-stepper-window
+              v-if="school?.schoolCategoryCode === 'INDP_FNS' || school?.schoolCategoryCode === 'INDEPEND'"
+            >
               <v-stepper-window-item
                 :value="1"
                 transition="false"
@@ -164,6 +166,65 @@
                 /> 
               </v-stepper-window-item>
             </v-stepper-window>
+            <v-stepper-window
+              v-else
+            >
+              <v-stepper-window-item
+                :value="1"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepOneUploadData
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                  @refresh-store="refreshStore"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="2"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepTwoViewDataIssues
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="3"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepThreeVerifyData
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="4"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFourDuplicatesProcessing
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="5"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepSevenSubmitData
+                  :is-step-complete="isStepComplete"
+                  :school-collection-object="schoolCollectionObject"
+                />
+              </v-stepper-window-item>
+            </v-stepper-window>
           </template>
         </v-stepper>
       </v-col>
@@ -211,7 +272,8 @@ export default {
       registerNextEvent: false,
       schoolCollectionObject: {},
       isLoading: false,
-      schoolID: null
+      schoolID: null,
+      school: {}
     };
   },
   computed: {
@@ -234,7 +296,9 @@ export default {
   },
   created() {
     this.isLoading = !this.isLoading;
-    appStore().getInstitutesData();
+    appStore().getInstitutesData().finally(() => {
+      this.school = this.activeSchoolsMap.get(this.schoolCollectionObject.schoolID);
+    });
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
       this.schoolID = this.schoolCollection.schoolID;
