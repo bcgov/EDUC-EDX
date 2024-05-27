@@ -266,6 +266,11 @@
       submitted
     </p>
   </v-row>
+  <ConfirmationDialog ref="confirmRemovalOfCollection">
+    <template #message>
+      <p>Are you sure that you would like to unsubmit the selected SDC School Collection?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 <script>
 import {defineComponent} from 'vue';
@@ -278,10 +283,11 @@ import {cloneDeep} from 'lodash';
 import Spinner from '../../common/Spinner.vue';
 import {MONITORING} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
+import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 
 export default defineComponent({
   name: 'StepTwoMonitor',
-  components: {Spinner, Filters, PrimaryButton},
+  components: {ConfirmationDialog, Spinner, Filters, PrimaryButton},
   props: {
     districtCollectionObject: {
       type: Object,
@@ -470,7 +476,11 @@ export default defineComponent({
     toggleFilters() {
       this.showFilters = !this.showFilters;
     },
-    unsubmitSdcSchoolCollection(sdcSchoolCollectionId) {
+    async unsubmitSdcSchoolCollection(sdcSchoolCollectionId) {
+      const confirmation = await this.$refs.confirmRemovalOfCollection.open('Confirm Unsubmit of SDC School Collection', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
       ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/unsubmit`)
         .then(() => {
           setSuccessAlert('Sdc school collection has been unsubmitted');
