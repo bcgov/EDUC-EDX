@@ -404,11 +404,15 @@ function toTableRow(student) {
 }
 
 function fundingEligibleRefugee(student) {
+  if (student.currentCollectionTypeCode !== 'February') {
+    return 'No';
+  }
+
   if(student.schoolFundingCode !== '16') {
     return 'No';
   }
 
-  // TODO need to check if reported in prev Sept collection
+  // TODO once refugeeNonElig column added, check this
 
   return 'Yes';
 }
