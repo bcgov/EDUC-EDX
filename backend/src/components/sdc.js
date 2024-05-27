@@ -594,6 +594,9 @@ function createTabFilter(searchParams) {
   if (searchParams.label === 'SPECIALED_PR') {
     searchCriteriaList.push({ key: 'specialEducationCategoryCode', operation: FILTER_OPERATION.IN, value: 'A,B,C,D,E,F,G,H,K,P,Q,R', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
   }
+  if (searchParams.label === 'REFUGEE') {
+    searchCriteriaList.push({ key: 'schoolFundingCode', operation: FILTER_OPERATION.IN, value: '16', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
 
   return searchCriteriaList;
 
