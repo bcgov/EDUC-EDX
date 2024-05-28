@@ -26,6 +26,7 @@ let careerProgramCodesMap = new Map();
 let duplicateResolutionCodesMap = new Map();
 let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
+let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
@@ -305,6 +306,16 @@ const cacheService = {
       specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
     });
     return specialEducationCodesMap;
+  },
+  getActiveSchoolCollectionStatusCodesMap(){
+    let schoolCollectionStatusCodesRaw = cachedData[constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES].records;
+    let schoolCollectionStatusCodes = schoolCollectionStatusCodesRaw.map(item => {
+      return {...item, dropdownText:`${item.label}`}
+    });
+    schoolCollectionStatusCodes.forEach((statusCode => {
+      schoolCollectionStatusCodesMap.set(statusCode, statusCode.label)
+    }))
+    return schoolCollectionStatusCodesMap
   },
   getActiveEnrolledGradeCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;
