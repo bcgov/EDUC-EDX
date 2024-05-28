@@ -4,7 +4,7 @@ import {getDateFormatter} from './format';
 import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
 import rfdc from 'rfdc/default';
-import {COLLECTIONCODETYPE} from "./constants/CollectionCodeType";
+import {COLLECTIONCODETYPE} from './constants/CollectionCodeType';
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);

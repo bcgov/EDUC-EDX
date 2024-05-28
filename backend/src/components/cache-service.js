@@ -28,6 +28,7 @@ let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
 let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
+let homeLanguageSpokenCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -259,6 +260,17 @@ const cacheService = {
       careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
     });
     return careerProgramCodesMap;
+  },
+  getHomeLanguageSpokenCodesMap() {
+    let homeLanguageSpokenCodeList = cachedData[constants.CACHE_KEYS.SDC_HOME_LANGUAGE_SPOKEN_CODES].activeRecords;
+    let homeLanguageSpokenCodes = homeLanguageSpokenCodeList.map(item => {
+      return {...item, dropdownText: `${item.description} (${item.homeLanguageSpokenCode})`};
+    });
+    homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': null, 'dropdownText': 'No Home Language Code'});
+    homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
+      homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
+    });
+    return homeLanguageSpokenCodesMap;
   },
   getAllDuplicateResolutionCodesMap() {
     let duplicateResolutionCodes = cachedData[constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES].records;

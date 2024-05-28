@@ -141,7 +141,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       schoolCollectionStatusCodes.forEach(schoolCollectionCode => {
         this.schoolCollectionStatusCodesMap.set(schoolCollectionCode.sdcSchoolCollectionStatusCode, schoolCollectionCode);
       });
-      },
+    },
     setSpecialEducationCodes(specialEducationCodes) {
       this.specialEducationCodes = specialEducationCodes.map(item => {
         return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
@@ -171,10 +171,10 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     async getSchoolCollectionStatusCodeMap(){
       if(this.schoolCollectionStatusCodesMap.size === 0) {
         await ApiService.getAllSchoolCollectionStatusCodes().then((res) => {
-          this.setSchoolCollectionStatusCodes(res.data)
-        })
+          this.setSchoolCollectionStatusCodes(res.data);
+        });
       }
-      return this.schoolCollectionStatusCodesMap
+      return this.schoolCollectionStatusCodesMap;
     },
     async getDuplicateResolutionCodesMap() {
       if(this.duplicateResolutionCodesMap.size === 0) {
