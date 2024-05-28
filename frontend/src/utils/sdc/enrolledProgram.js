@@ -8,4 +8,6 @@ export const enrolledProgram = Object.freeze({
 
   ENGLISH_ENROLLED_PROGRAM_CODES: ['17'],
 
+  LANGUAGE_PROGRAM_CODES: ['11', '08', '14', '05', '17']
+
 });

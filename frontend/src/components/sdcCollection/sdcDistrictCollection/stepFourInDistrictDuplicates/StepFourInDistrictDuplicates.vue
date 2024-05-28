@@ -58,6 +58,7 @@
         <DuplicateTab
           v-if="tab==='Program Duplicates'"
           duplicate-type="program"
+          @refresh-duplicates="getInDistrictDuplicates()"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
         />
@@ -154,8 +155,10 @@ export default defineComponent({
     }
   },
   async created() {
-    this.duplicateResolutionCodesMap = await sdcCollectionStore().getDuplicateResolutionCodesMap();
-    this.getInDistrictDuplicates();
+    sdcCollectionStore().getCodes().then(() => {
+      this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
+      this.getInDistrictDuplicates();
+    });
   },
   methods: {
     disableNextButton() {

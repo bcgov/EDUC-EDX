@@ -74,7 +74,7 @@
             >
               <template #activator="{ props }">
                 <v-btn
-                  :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
+                  :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID"
                   color="primary"
                   icon="mdi-playlist-edit"
                   variant="text"
@@ -209,13 +209,15 @@
   </template>
   <v-bottom-sheet
     v-model="openProgramResolutionView"
-    :inset="true"
+   
     :no-click-animation="true"
     :scrollable="true"
     :persistent="true"
   >
   <ProgramDuplicateResolution 
+    :selectedProgramDuplicate="selectedProgramDuplicate"
     @close="openProgramResolutionView = !openProgramResolutionView"
+    @close-refresh="closeAndRefreshDuplicates()"
     >
   </ProgramDuplicateResolution>
   </v-bottom-sheet>
@@ -250,6 +252,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits:['refresh-duplicates'],
   data() {
     return {
       duplicateView: '1',
@@ -269,6 +272,10 @@ export default defineComponent({
         this.selectedProgramDuplicate = duplicate;
         this.openProgramResolutionView = !this.openProgramResolutionView;
       }
+    },
+    closeAndRefreshDuplicates() {
+      this.openProgramResolutionView = !this.openProgramResolutionView;
+      this.$emit('refresh-duplicates');
     }
   }
 });
