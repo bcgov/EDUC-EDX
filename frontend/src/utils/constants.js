@@ -15,6 +15,7 @@ object = {
   MAIN_LOGIN: '/login',
   LOGIN: authRoot + '/login',
   DASHBOARD: '/',
+  LOGIN_IDIR: authRoot + '/logout?loginIDIR=true',
   LOGIN_BCEID: authRoot + '/logout?loginBceid=true',
   LOGIN_ENTRA: authRoot + '/logout?loginEntra=true',
   LOGIN_BCEID_SCHOOL_ACTIVATE: authRoot + '/logout?loginBceidActivateUser=true',

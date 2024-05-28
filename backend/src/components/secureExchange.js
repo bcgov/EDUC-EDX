@@ -650,7 +650,7 @@ async function activateEdxUser(req, res) {
     log.info('User Activation Successful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
-    getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
+    await getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
@@ -940,7 +940,7 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
-function setInstituteTypeIdentifierAndRedirect(req, res) {
+async function setInstituteTypeIdentifierAndRedirect(req, res) {
   log.info('Set InstituteTypeIdentifier And Redirect called');
   if (req.session.userSchoolIDs?.length === 1 && req.session.userDistrictIDs?.length === 0) {
     log.info('User associated to 1 School Redirecting to School Dashboard');
@@ -959,34 +959,58 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true') {
-  log.info('User Set Up and Redirect called');
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
+  log.info('User Set Up and Redirect called ' + isValidTenant);
 
-  if(!isValidTenant  || isValidTenant !== 'true'){
+  if(!isValidTenant || isValidTenant !== 'true'){
     log.info('Not a valid tenant, redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
-  }
-
-  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
-    if (edxUserData) {
-      req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
-        return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
-      }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
-      req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
-        return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
-      }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
-      if (Array.isArray(edxUserData)) {
-        req.session.edxUserData = edxUserData[0];
+  }else if(!isIDIRUser || isIDIRUser !== 'true'){
+    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
+      if (edxUserData) {
+        req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
+        }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
+        req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
+          return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
+        }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
+        if (Array.isArray(edxUserData)) {
+          req.session.edxUserData = edxUserData[0];
+        } else {
+          req.session.edxUserData = edxUserData;
+          req.session.edxUserData = edxUserData;
+        }
+        await setInstituteTypeIdentifierAndRedirect(req, res);
       } else {
-        req.session.edxUserData = edxUserData;
-        req.session.edxUserData = edxUserData;
+        log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
+        res.redirect(config.get('server:frontend') + '/unauthorized');
       }
-      setInstituteTypeIdentifierAndRedirect(req, res);
-    } else {
-      log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
+    });
+  }else{
+    let roles = req.session.passport.user._json.realm_access.roles;
+    if(roles.includes('EDX_ADMIN')){
+      Promise.all([
+        getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+        getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+      ])
+        .then(async ([userSchools, userDistricts]) => {
+          req.session.userSchoolIDs = userSchools?.filter((el) => {
+            return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
+          });//this is list of active schoolIDs associated to the user
+
+          req.session.userDistrictIDs = userDistricts?.filter((el) => {
+            return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el));
+          });//this is list of active districtIDs associated to the user
+
+          log.info('Burining out');
+          await setInstituteTypeIdentifierAndRedirect(req, res);
+          log.info('Burining out 2');
+        });
+    }else{
+      log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
-  });
+  }
 }
 
 function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
