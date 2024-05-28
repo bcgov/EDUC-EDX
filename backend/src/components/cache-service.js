@@ -29,7 +29,6 @@ let schoolFundingCodesMap = new Map();
 let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
 let homeLanguageSpokenCodesMap = new Map();
-let genderCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
