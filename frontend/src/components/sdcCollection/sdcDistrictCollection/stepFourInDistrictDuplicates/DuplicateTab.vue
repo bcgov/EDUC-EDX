@@ -94,7 +94,7 @@
                 <v-list-item 
                   id="resolve"
                   @click="resolveDuplicate(duplicate)"
-                  >
+                >
                   <v-icon
                     color="#003366"
                     class="pr-1 mb-1"
@@ -214,12 +214,11 @@
     :scrollable="true"
     :persistent="true"
   >
-  <ProgramDuplicateResolution 
-    :selectedProgramDuplicate="selectedProgramDuplicate"
-    @close="openProgramResolutionView = !openProgramResolutionView"
-    @close-refresh="closeAndRefreshDuplicates()"
-    >
-  </ProgramDuplicateResolution>
+    <ProgramDuplicateResolution 
+      :selected-program-duplicate="selectedProgramDuplicate"
+      @close="openProgramResolutionView = !openProgramResolutionView"
+      @close-refresh="closeAndRefreshDuplicates()"
+    />
   </v-bottom-sheet>
 </template>
 <script>

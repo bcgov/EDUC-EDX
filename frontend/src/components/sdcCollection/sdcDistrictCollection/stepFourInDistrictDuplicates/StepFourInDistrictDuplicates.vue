@@ -58,9 +58,9 @@
         <DuplicateTab
           v-if="tab==='Program Duplicates'"
           duplicate-type="program"
-          @refresh-duplicates="getInDistrictDuplicates()"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
+          @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
     </v-window>
