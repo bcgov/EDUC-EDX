@@ -282,16 +282,12 @@ export default {
     monitoringStep: {
       checkIcon: '.mdi-check-circle-outline',
       closeIcon: '.mdi-close-circle-outline',
-      contactConfirmedValue: '#contactConfirmedValue',
       dataErrorValue: '#dataErrorValue',
       dataInfoWarnValue: '#dataInfoWarnValue',
       dataFundingWarnValue: '#dataFundingWarnValue',
-      detailsConfirmedValue: '#detailsConfirmedValue',
-      detailsNotConfirmedValue: '#detailsNotConfirmedValue',
       filters: {
         close: '#close',
         filtersBtn: '#filters',
-        notSubmittedToDistrict: '#notSubmittedToDistrict'
       },
       hasUploadedValue: '#hasUploadedValue',
       missingUploadedValue: '#missingUploadedValue',
@@ -300,7 +296,6 @@ export default {
       monitoringNextBtn: '#step-2-next-button-district',
       monitoringTable: '#monitoring-table',
       monitoringTableRows: '#monitoring-table tbody tr',
-      noContactConfirmedValue: '#noContactConfirmedValue',
       notSubmittedValue: '#notSubmittedValue',
       schoolNotSubmittedWarning: '#schoolNotSubmittedWarning',
       submittedValue: '#submittedValue'
