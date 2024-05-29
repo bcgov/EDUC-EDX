@@ -141,7 +141,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       schoolCollectionStatusCodes.forEach(schoolCollectionCode => {
         this.schoolCollectionStatusCodesMap.set(schoolCollectionCode.sdcSchoolCollectionStatusCode, schoolCollectionCode);
       });
-      },
+    },
     setSpecialEducationCodes(specialEducationCodes) {
       this.specialEducationCodes = specialEducationCodes.map(item => {
         return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
@@ -208,7 +208,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
           ... this.validationIssueTypeCodesMap.size === 0 ? [ApiService.getAllValidationIssueTypeCodes().then((res) => this.setValidationIssueTypeCodes(res.data))] : [],
           ... this.programEligibilityCodesMap.size === 0 ? [ApiService.getAllProgramEligibilityTypeCodes().then((res) => this.setProgramEligibilityCodesMap(res.data))]: [],
           ... this.zeroFteReasonCodesMap.size === 0 ? [ApiService.getAllZeroFteReasonCodes().then((res) => this.setZeroFteReasonCodesMap(res.data))] : [],
-          ... this.schoolCollectionStatusCodesMap.size === 0 ? [ApiService.getActiveSchoolCollectionStatusCodesMap().then((res) => this.setSchoolCollectionStatusCodes(res.data))] : [],
+          ... this.schoolCollectionStatusCodesMap.size === 0 ? [ApiService.getAllSchoolCollectionStatusCodes().then((res) => this.setSchoolCollectionStatusCodes(res.data))] : [],
         ];
         return Promise.all(promises);
       }

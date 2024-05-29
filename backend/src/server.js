@@ -151,7 +151,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading SDC_PROGRAM_DUPLICATE_TYPE_CODES data during boot.', e);
     });
-    cacheService.loadDataToCache(constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES, 'sdc:schoolCollectionTypeCodesURL').then(() => {
+    cacheService.loadDataToCache(constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES, 'sdc:schoolCollectionStatusCodesURL').then(() => {
       log.info('Loaded SDC_SCHOOL_COLLECTION_STATUS_CODES data to memory');
     }).catch((e) => {
       log.error('Error loading SDC_SCHOOL_COLLECTION_STATUS_CODES data during boot.', e);

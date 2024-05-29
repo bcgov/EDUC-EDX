@@ -123,7 +123,8 @@ nconf.defaults({
     programEligibilityTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-eligibility-issue-codes',
     zeroFteReasonCodesURL: process.env.SDC_API_ENDPOINT + '/zero-fte-reason-codes',
     duplicateResolutionCodesURL: process.env.SDC_API_ENDPOINT + '/duplicate-resolution-codes',
-    programDuplicateTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-duplicate-type-codes'
+    programDuplicateTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-duplicate-type-codes',
+    schoolCollectionStatusCodesURL: process.env.SDC_API_ENDPOINT + '/school-collection-status-codes'
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
