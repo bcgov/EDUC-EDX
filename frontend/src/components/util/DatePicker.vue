@@ -7,6 +7,11 @@ export default defineComponent({
   name: 'DatePicker',
   components: {VueDatePicker},
   props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     modelValue: {
       type: String,
       default: null
@@ -59,6 +64,7 @@ export default defineComponent({
     :menu-class-name="allowTeleport ? 'teleport-datepicker' : ''"
     format="yyyy/MM/dd"
     preview-format="yyyy/MM/dd"
+    :disabled="disabled"
     :text-input="{
       enterSubmit: true,
       tabSubmit: true,
@@ -85,6 +91,7 @@ export default defineComponent({
         placeholder="yyyy/mm/dd"
         :clearable="true"
         hide-details="auto"
+        :disabled="disabled"
         @input="onInput"
         @keydown.enter.prevent="onEnter"
         @keydown.tab.prevent="onTab"
