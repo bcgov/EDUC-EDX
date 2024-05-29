@@ -1,5 +1,7 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses } = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
+  getCreateOrUpdateUserValue
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -40,11 +42,12 @@ async function getCollectionByDistrictId(req, res) {
 
 async function uploadFile(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const payload = {
       fileContents: req.body.fileContents,
       fileName: req.body.fileName,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
     };
     const token = getAccessToken(req);
     let data;
@@ -94,7 +97,7 @@ async function updateDistrictCollection(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcDistrictCollectionStatusCode = req.body.status;
     const token = getAccessToken(req);
     const data = await putData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}`, req.session?.correlationID);
@@ -111,7 +114,7 @@ async function updateSchoolCollection(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcSchoolCollectionStatusCode = req.body.status;
     const token = getAccessToken(req);
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
@@ -275,7 +278,7 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     
     payload.assignedPen = null;
     payload.assignedStudentId = null;
@@ -296,7 +299,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);;
 
     if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
@@ -737,7 +740,7 @@ function setProgramDuplicateTypeMessage(sdcDuplicate) {
 async function unsubmitSdcSchoolCollection(req, res) {
   try {
     const payload = {
-      'updateUser': 'EDX/' + req.session.edxUserData.edxUserID,
+      'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
     const token = getAccessToken(req);

@@ -301,6 +301,14 @@ function getFileExtensionWithDot(fileName) {
   return (extension.length > 0 ? ('.' + extension) : '');
 }
 
+function getCreateOrUpdateUserValue(req){
+  if(req.session.passport.user._json.idir_username){
+    return req.session.passport.user._json.idir_username;
+  }else{
+    return 'EDX/' + req.session.edxUserData.edxUserID;
+  }
+}
+
 function formatNumberOfCourses(value) {
   if (!value) return '00.00';
 
@@ -337,6 +345,7 @@ const utils = {
   deleteData,
   forwardGetReq,
   getDataWithParams,
+  getCreateOrUpdateUserValue,
   getData,
   postData,
   putData,
