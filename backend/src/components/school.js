@@ -1,5 +1,7 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, putData, postData, handleExceptionResponse } = require('./utils');
+const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, putData, postData, handleExceptionResponse,
+  getCreateOrUpdateUserValue
+} = require('./utils');
 const cacheService = require('./cache-service');
 const log = require('./logger');
 const config = require('../config');
@@ -33,7 +35,7 @@ async function updateSchool(req, res){
     payload.addresses.forEach(function(addy) {
       addy.updateDate = null;
       addy.createDate = null;
-      addy.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      addy.updateUser = getCreateOrUpdateUserValue(req);
     });
 
     payload.contacts.forEach(function(contact) {
@@ -46,22 +48,23 @@ async function updateSchool(req, res){
     const nlcObjectsArray = [];
     const gradesObjectArray = [];
 
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     for(const nlcCode of payload.neighborhoodLearning){
       //when there is an update in frontend to neigborhoodlearning system adds array of codes to the payload
       if(_.isString(nlcCode)){
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode,
           schoolId: payload.schoolId,
-          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+          createUser: createUpdateUser,
+          updateUser: createUpdateUser
         });
       }else{
         //if neighborhood learning was not changed as part of edit , it will be passed as an array of objects from frontend.
         nlcObjectsArray.push({
           neighborhoodLearningTypeCode:nlcCode.neighborhoodLearningTypeCode,
           schoolId: payload.schoolId,
-          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+          createUser: createUpdateUser,
+          updateUser: createUpdateUser
         });
       }
     }
@@ -72,23 +75,23 @@ async function updateSchool(req, res){
         gradesObjectArray.push({
           schoolGradeCode: gradeCode,
           schoolId: payload.schoolId,
-          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+          createUser: createUpdateUser,
+          updateUser: createUpdateUser
         });
       } else {
         //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
         gradesObjectArray.push({
           schoolGradeCode: gradeCode.schoolGradeCode,
           schoolId: payload.schoolId,
-          createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-          updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+          createUser: createUpdateUser,
+          updateUser: createUpdateUser
         });
       }
     }
 
     payload.neighborhoodLearning = nlcObjectsArray;
     payload.grades = gradesObjectArray;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = createUpdateUser;
 
     const token = getAccessToken(req);
     const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${payload.schoolId}`, req.session?.correlationID);
@@ -101,6 +104,7 @@ async function updateSchool(req, res){
 
 async function addSchoolContact(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const payload = {
       schoolContactTypeCode: req.body.schoolContactTypeCode,
       firstName: req.body.firstName,
@@ -113,8 +117,8 @@ async function addSchoolContact(req, res) {
       alternatePhoneExtension: req.body.alternatePhoneExtension,
       effectiveDate: req.body.effectiveDate ? req.body.effectiveDate : null,
       expiryDate: req.body.expiryDate ? req.body.expiryDate : null,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
     };
 
     const token = getAccessToken(req);
@@ -134,7 +138,7 @@ async function updateSchoolContact(req, res) {
     params.createDate = null;
     params.effectiveDate = params.effectiveDate ? req.body.effectiveDate : null;
     params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
-    params.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    params.updateUser = getCreateOrUpdateUserValue(req);
 
     const token = getAccessToken(req);
     const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
@@ -157,7 +161,7 @@ async function removeSchoolContact(req, res) {
     contact.createDate = null;
     contact.updateDate = null;
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
-    contact.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    contact.updateUser = getCreateOrUpdateUserValue(req);
 
     const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -194,6 +198,8 @@ async function getFullSchoolDetails(req, res){
     getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
+      delete dataResponse['schoolFundingGroups'];
+      delete dataResponse['schoolMove'];
       return res.status(200).json(dataResponse);
     }).catch(e => {
       log.error(e, 'getFullSchoolDetails', 'Error getting school details by ID from API.');

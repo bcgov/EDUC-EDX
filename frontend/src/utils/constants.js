@@ -125,6 +125,7 @@ export const PAGE_TITLES = Object.freeze({
   ALL_DISTRICT_SCHOOL_USERS: 'All School Users',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
+  STAFF_LOGIN:'Staff Login',
   NEW_USER_INVITE:'New User',
   SCHOOLS:'Schools',
   SCHOOL_CONTACTS:'School Contacts',

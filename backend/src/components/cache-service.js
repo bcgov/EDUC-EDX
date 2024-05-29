@@ -27,6 +27,7 @@ let duplicateResolutionCodesMap = new Map();
 let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
 let specialEducationCodesMap = new Map();
+let allPermissions = [];
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -105,6 +106,9 @@ const cacheService = {
   getAllAuthoritiesJSON() {
     return authorities;
   },
+  getAllPermissions() {
+    return allPermissions;
+  },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
   },
@@ -115,9 +119,11 @@ const cacheService = {
       const data = await getApiCredentials(); // get the tokens first to make api calls.
       const roles = await getData(data.accessToken, `${config.get('edx:edxRolePermissionsURL')}`);
       rolePermissionsMap.clear();// reset the value.
+      allPermissions = [];
       if (roles && roles.length > 0) {
         for (const role of roles) {
           rolePermissionsMap.set(`${role.edxRoleCode}`, role.edxRolePermissions.map(perm => {
+            allPermissions.push(perm.edxPermissionCode);
             return perm.edxPermissionCode;
           }));
         }

@@ -28,7 +28,8 @@ function isDistrictOrSchoolAlreadyInUserSession(req) {
 async function getUserInfo(req, res) {
   const userInfo = getSessionUser(req);
   const correlationID = req.session?.correlationID;
-  if (!userInfo || !userInfo.jwt || !userInfo._json || !userInfo._json.digitalIdentityID) {
+
+  if (!userInfo || !userInfo.jwt || !userInfo._json || (!userInfo._json.digitalIdentityID && !userInfo._json.idir_guid)) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'No session data'
     });
@@ -43,6 +44,21 @@ async function getUserInfo(req, res) {
     break;
   default:
     break;
+  }
+
+  if(userInfo._json.idir_guid){
+    let resData = {
+      displayName: userInfo._json.name.trim(),
+      accountType: 'IDIR',
+      userSchoolIDs: req.session.userSchoolIDs,
+      userDistrictIDs:req.session.userDistrictIDs,
+      activeInstituteIdentifier: req.session.activeInstituteIdentifier,
+      activeInstituteType: req.session.activeInstituteType,
+      activeInstituteTitle: activeInstituteTitle,
+      identityTypeLabel: 'IDIR',
+      activeInstitutePermissions: req.session.activeInstitutePermissions
+    };
+    return res.status(HttpStatus.OK).json(resData);
   }
 
   if (req.session.digitalIdentityData && isDistrictOrSchoolAlreadyInUserSession(req) && req.session.edxUserData) {
