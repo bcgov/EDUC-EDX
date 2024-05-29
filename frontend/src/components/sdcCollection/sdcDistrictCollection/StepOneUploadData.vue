@@ -189,7 +189,7 @@ export default {
       fileUploadErrorMessages: [],
       fileDateWarningErrorMessages: [],
       successfulUploadCount: 0,
-      successMessage: ' files were successfully uploaded. Files will continue to be processed even if you leave the page.',
+      successMessage: ' file(s) were successfully uploaded. Files will continue to be processed even if you leave the page.',
       populatedSuccessMessage: null,
       inputKey: 0,
       validForm: false,
