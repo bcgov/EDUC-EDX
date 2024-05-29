@@ -377,7 +377,7 @@ export default defineComponent({
     });
     await this.getSdcSchoolCollections();
     this.schoolCollectionStatusCodes = await sdcCollectionStore().getSchoolCollectionStatusCodeMap();
-    console.log("this.schoolCollectionStatusCodes",  this.schoolCollectionStatusCodes.get("NEW").label)
+
   },
   methods: {
     applyFilters($event) {
