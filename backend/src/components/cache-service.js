@@ -26,8 +26,10 @@ let careerProgramCodesMap = new Map();
 let duplicateResolutionCodesMap = new Map();
 let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
+let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
 let allPermissions = [];
+let homeLanguageSpokenCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -265,6 +267,17 @@ const cacheService = {
     });
     return careerProgramCodesMap;
   },
+  getHomeLanguageSpokenCodesMap() {
+    let homeLanguageSpokenCodeList = cachedData[constants.CACHE_KEYS.SDC_HOME_LANGUAGE_SPOKEN_CODES].activeRecords;
+    let homeLanguageSpokenCodes = homeLanguageSpokenCodeList.map(item => {
+      return {...item, dropdownText: `${item.description} (${item.homeLanguageSpokenCode})`};
+    });
+    homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': null, 'dropdownText': 'No Home Language Code'});
+    homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
+      homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
+    });
+    return homeLanguageSpokenCodesMap;
+  },
   getAllDuplicateResolutionCodesMap() {
     let duplicateResolutionCodes = cachedData[constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES].records;
     duplicateResolutionCodes.forEach(duplicateResolutionCode => {
@@ -311,6 +324,16 @@ const cacheService = {
       specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
     });
     return specialEducationCodesMap;
+  },
+  getActiveSchoolCollectionStatusCodesMap(){
+    let schoolCollectionStatusCodesRaw = cachedData[constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES].records;
+    let schoolCollectionStatusCodes = schoolCollectionStatusCodesRaw.map(item => {
+      return {...item, dropdownText:`${item.label}`}
+    });
+    schoolCollectionStatusCodes.forEach((statusCode => {
+      schoolCollectionStatusCodesMap.set(statusCode, statusCode.label)
+    }))
+    return schoolCollectionStatusCodesMap
   },
   getActiveEnrolledGradeCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;

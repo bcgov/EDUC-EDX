@@ -5,7 +5,8 @@ const { getCollectionBySchoolId, getCollectionByDistrictId, uploadFile, getSdcFi
   getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, removeSDCSchoolCollectionStudents,
   getStudentHeadcounts, downloadSdcReport, getSchoolStudentDuplicates,
-  markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts, getInDistrictDuplicates, unsubmitSdcSchoolCollection} = require('../components/sdc');
+  markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts,
+   getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDistrictDuplicates} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
@@ -30,6 +31,7 @@ router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session
 router.get('/program-eligibility-issue-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:programEligibilityTypeCodesURL', constants.CACHE_KEYS.SDC_PROGRAM_ELIGIBILITY_TYPE_CODES, null, true));
 router.get('/zero-fte-reason-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:zeroFteReasonCodesURL', constants.CACHE_KEYS.SDC_ZERO_FTE_REASON_CODES, null, true));
 router.get('/duplicate-resolution-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:duplicateResolutionCodesURL', constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES, null, true));
+router.get('/school-collection-status-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:schoolCollectionStatusCodeURL', constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES, null, true));
 //end cached code table calls
 
 router.get('/getCollectionBySchoolId/:schoolID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCollectionBySchoolId);
@@ -71,6 +73,6 @@ router.post('/district/:sdcDistrictCollectionID/file', passport.authenticate('jw
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/fileProgress', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getDistrictSdcFileProgress);
 router.get('/sdcSchoolCollectionStudent/getDistrictHeadcounts/:sdcDistrictCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getDistrictHeadcounts);
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/in-district-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getInDistrictDuplicates);
+router.post('/sdcDistrictCollection/:sdcDistrictCollectionID/resolve-district-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, resolveDistrictDuplicates);
 
 module.exports = router;
-

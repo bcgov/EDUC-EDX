@@ -160,6 +160,7 @@ cacheKeys = {
   SDC_ENROLLED_PROGRAM_CODES: 'sdc_enrolled_program_codes',
   SDC_GENDER_CODES: 'sdc_gender_codes',
   SDC_HOME_LANGUAGE_SPOKEN_CODES: 'sdc_home_language_spoken_codes',
+  SDC_SCHOOL_COLLECTION_STATUS_CODES: 'sdc_school_collection_status_codes',
   SDC_SCHOOL_FUNDING_CODES: 'sdc_school_funding_code',
   SDC_SPECIAL_ED_CODES: 'sdc_special_ed_codes',
   SDC_VALIDATION_ISSUE_TYPE_CODES: 'sdc_validation_issue_type_codes',

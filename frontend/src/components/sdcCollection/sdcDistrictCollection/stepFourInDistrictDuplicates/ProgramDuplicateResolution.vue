@@ -1,70 +1,275 @@
 <template>
-    <v-card
-      id="programDuplicate"
+  <v-card
+    id="programDuplicate"
+  >
+    <v-card-title
+      id="programDuplicateTitle"
+      class="sheetHeader pt-1 pb-1"
     >
-      <v-card-title
-        id="programDuplicateTitle"
-        class="sheetHeader pt-1 pb-1"
+      <v-row no-gutters>
+        <v-col class="d-flex justify-start">
+          Resolve Program Duplicates
+        </v-col>
+        <v-col class="d-flex justify-end">
+          <v-btn
+            id="cancel"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
+            @click="close"
+          />
+        </v-col>
+      </v-row>
+    </v-card-title>
+    <v-divider />
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-alert
+            id="duplicateTypeAlert"
+            class="justify-center"
+            type="error"
+            variant="tonal"
+            :text="duplicateTypeHeading"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="6">
+          <StudentDetail
+            :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity"
+            :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
+          />
+        </v-col>           
+        <v-col>
+          <StudentDetail
+            :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity"
+            :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-6">
+        <v-col class="label">
+          Duplicate Programs:
+        </v-col>
+      </v-row>
+
+      <v-form
+        ref="studentForm"
+        v-model="validForm"
       >
-        <v-row no-gutters>
-          <v-col class="d-flex justify-start">
-            Resolve Program Duplicates
-          </v-col>
-          <v-col class="d-flex justify-end">
-            <v-btn
-              id="cancel"
-              color="white"
-              text="Close"
-              size="30"
-              icon="mdi-close"
-              variant="tonal"
-              @click="cancel"
-            />
+        <v-row>
+          <v-col>
+            <div v-for="(prog, index) in getDuplicatePrograms()" :key="index">
+              <span>{{ prog?.description }}</span>
+
+              <v-radio-group
+                v-model="selected[index]"
+                direction="horizontal"
+                :inline="true"
+                :rules="[v => !!v || 'Required']"
+                validate-on="input"
+                required
+              >
+                <v-radio
+                  :id="`index`"
+                  :label="prog?.studentOne?.schoolName"
+                  :value="{dupeCode: prog?.code, studentId: prog?.studentOne?.sdcSchoolCollectionStudentID}"
+                />
+                <v-radio
+                  :id="`index`"
+                  :label="prog?.studentTwo?.schoolName"
+                  :value="{dupeCode: prog?.code , studentId: prog?.studentTwo?.sdcSchoolCollectionStudentID}"
+                />
+              </v-radio-group>
+            </div>
           </v-col>
         </v-row>
-      </v-card-title>
-      <v-divider />
-      <v-card-text>
-        here
-      </v-card-text>
-    </v-card>
-  </template>
-  <script>
-  
-  
-  
-  export default {
-    name: 'ProgramDuplicateResolution',
-    components: {
-      
-    },
-    props: {
-     
-    },
-    emits: ['close'],
-    data() {
-      return {
-       
-      };
-    },
-    computed: {
-  
-    },
-    watch: {
-     
-    },
-    mounted() {
-    },
-    async created() {
-  
-    },
-    methods: {
-      cancel() {
-        this.$emit('close');
-      },
+      </v-form>
+
+      <v-row class="mt-n2">
+        <v-col
+          cols="12"
+          class="d-flex justify-end"
+        >
+          <v-btn
+            id="release"
+            color="#003366"
+            class="mb-1 release-button"
+            text="Release selected program from School"
+            variant="outlined"
+            :disabled="!validForm"
+            @click="releaseStudent()"
+          />
+        </v-col>
+      </v-row>
+   
+      <ConfirmationDialog ref="confirmReleaseProgram">
+        <template #message>
+          <p>Are you sure you want to release selected program from school?</p>
+        </template>
+      </ConfirmationDialog>
+    </v-card-text>
+  </v-card>
+</template>
+<script>
+
+import StudentDetail from '../../../common/StudentDetail.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../../composable/alertComposable';
+import {cloneDeep} from 'lodash';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+
+
+export default {
+  name: 'ProgramDuplicateResolution',
+  components: {
+    StudentDetail,
+    ConfirmationDialog
+  },
+  props: {
+    selectedProgramDuplicate: {
+      type: Object,
+      required: true,
+      default: null
     }
-  };
-  </script>
+  },
+  emits: ['close', 'close-refresh'],
+  data() {
+    return {
+      selected:[],
+      sdcStudentOneDetailCopy: {},
+      sdcStudentTwoDetailCopy: {},
+      validForm: false,
+      type: 'PROGRAM',
+      duplicateStudents: []
+    };
+  },
+  computed: {
+    duplicateTypeHeading(){  return this.selectedProgramDuplicate?.programDuplicateTypeCodeDescription + ' Program Duplicate';}
+  },
+  watch: {
+    selectedProgramDuplicate: {
+      handler(value) {
+        if(value) {
+          this.sdcStudentOneDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
+          this.sdcStudentTwoDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
+          this.duplicateStudents = [this.sdcStudentOneDetailCopy, this.sdcStudentTwoDetailCopy];
+        }
+      },
+      immediate: true
+    }
+  },
+  mounted() {
+    this.validateForm();
+  },
+  async created() {
+  
+  },
+  methods: {
+    validateForm() {
+      this.$refs?.studentForm?.validate();
+    },
+    close() {
+      this.$emit('close');
+    },
+    cancel() {
+      this.$emit('close-refresh');
+    },
+    async releaseStudent() {
+      const confirmation = await this.$refs.confirmReleaseProgram.open('Confirm Release of Program', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Release', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      for(let value of this.selected) {
+        this.updateStudentObject(value.dupeCode, value.studentId);
+      }
+
+      this.saveAndResolve();
+    },
+    saveAndResolve() {
+      this.loadingCount += 1;
+      this.hasError = false;
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, this.duplicateStudents)
+        .then((res) => {
+          if (res.data.sdcDuplicateID === this.selectedProgramDuplicate?.sdcDuplicateID && res.data.duplicateResolutionCode !== 'RESOLVED') {
+            setWarningAlert('Warning! This update has created an error on the student record. Duplicate resolution will not be saved until all errors are resolved.');
+          } else {
+            setSuccessAlert('Success! The student details have been updated.');
+            this.cancel();
+          }
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+          this.cancel();
+        }).finally(() => {
+          this.loadingCount -= 1;
+          this.selected = [];
+          this.$nextTick().then(this.validateForm);
+        });
+    },
+    updateStudentObject(valueToBeRemoved, studentId) {
+      if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
+        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
+        studentToBeUpdated.specialEducationCategoryCode = null;
+      } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
+        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
+        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms;
+        studentToBeUpdated.careerProgramCode = null;
+      } else {
+        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
+        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms;
+      } 
+    },
+    getDuplicatePrograms() {
+      let programs = [];
+      if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
+        let description = sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode) ? `
+          ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.specialEducationCategoryCode} - ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.description}` : this.sdcStudentOneDetailCopy.specialEducationCategoryCode;
+          
+        programs.push({code: this.sdcStudentOneDetailCopy.specialEducationCategoryCode, description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
+      } else if (this.selectedProgramDuplicate?.programDuplicateTypeCode === 'INDIGENOUS') {
+        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
+
+        for(let progs of mappedPrograms) {
+          programs.push(progs);
+        }
+      } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
+        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
+
+        for(let progs of mappedPrograms) {
+          programs.push(progs);
+        }
+      } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'LANGUAGE') {
+        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.LANGUAGE_PROGRAM_CODES);
+
+        for(let progs of mappedPrograms) {
+          programs.push(progs);
+        }
+      }
+      return programs;
+    },
+    mapEnrolledProgram(enrolledProgramFilter) {
+      return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
+        .match(/.{1,2}/g)
+        .filter(programCode => enrolledProgramFilter.includes(programCode))
+        .map(programCode => {
+          const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
+          return {code: programCode, description: `${programCode} - ${enrolledProgram.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy};
+        });
+    },
+  }
+};
+</script>
   
   <style scoped>
    .containerSetup{
@@ -72,28 +277,7 @@
       padding-left: 0em !important;
     }
   
-    .border {
-      border: 2px solid grey;
-      border-radius: 5px;
-      padding: 35px;
-      margin-bottom: 2em;
-    }
-  
-    .clear-message {
-      border: 1px solid darkgreen;
-      color: darkgreen;
-      background-color: transparent;
-      padding: 10px;
-    }
-  
-   .inner-border {
-     display: inline-block;
-     min-width: 100%;
-     border: 1px solid rgba(42, 45, 38, 0.38);
-     border-radius: 5px;
-     padding: 2em;
-     margin-bottom: 2em;
-   }
+
   
     @media screen and (max-width: 1200px) {
       .containerSetup{
@@ -101,20 +285,7 @@
         padding-left: 3em !important;
       }
     }
-  
-    .footer-text {
-      font-style: italic;
-      color: grey;
-    }
-  
-    .filter-text {
-      font-style: italic;
-      color: rgb(56, 89, 138);
-    }
-  
-    .filter-text:hover {
-    text-decoration: underline;
-    }
+
   
     .success-message{
       vertical-align: sub;
@@ -126,10 +297,11 @@
       font-size: medium !important;
       font-weight: bolder !important;
     }
-  
-    .v-banner::v-deep .v-banner__content {
-      justify-content: space-between !important;
-    }
+
+    .label {
+      color: grey;
+      text-decoration-line: underline;
+   }
   
   </style>
   

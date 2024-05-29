@@ -27,6 +27,7 @@
         >
           <v-row>
             <slot
+                v-if="showStudentSearch"
               name="text-search"
             >
               <v-text-field
@@ -206,6 +207,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    showStudentSearch: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   emits: ['clearFilters', 'apply-filters', 'close'],

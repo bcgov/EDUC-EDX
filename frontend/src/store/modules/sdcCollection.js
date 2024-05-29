@@ -26,6 +26,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     genderCodes: [],
     homeLanguageSpokenCodesMap: new Map(),
     homeLanguageSpokenCodes: [],
+    schoolCollectionStatusCodesMap: new Map(),
     schoolFundingCodesMap: new Map(),
     schoolFundingCodes: [],
     specialEducationCodesMap: new Map(),
@@ -132,6 +133,15 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         this.schoolFundingCodesMap.set(schoolFundingCode.schoolFundingCode, schoolFundingCode);
       });
     },
+    setSchoolCollectionStatusCodes(schoolCollectionStatusCodes){
+      this.schoolCollectionStatusCodes = schoolCollectionStatusCodes.map(item => {
+        return {...item, dropdownText: `${item.label}`};
+      });
+      this.schoolCollectionStatusCodesMap = new Map();
+      schoolCollectionStatusCodes.forEach(schoolCollectionCode => {
+        this.schoolCollectionStatusCodesMap.set(schoolCollectionCode.sdcSchoolCollectionStatusCode, schoolCollectionCode);
+      });
+    },
     setSpecialEducationCodes(specialEducationCodes) {
       this.specialEducationCodes = specialEducationCodes.map(item => {
         return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
@@ -157,6 +167,14 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       zeroFteReasonCodesMap.forEach(issue => {
         this.zeroFteReasonCodesMap.set(issue.fteZeroReasonCode, issue);
       });
+    },
+    async getSchoolCollectionStatusCodeMap(){
+      if(this.schoolCollectionStatusCodesMap.size === 0) {
+        await ApiService.getAllSchoolCollectionStatusCodes().then((res) => {
+          this.setSchoolCollectionStatusCodes(res.data);
+        });
+      }
+      return this.schoolCollectionStatusCodesMap;
     },
     async getDuplicateResolutionCodesMap() {
       if(this.duplicateResolutionCodesMap.size === 0) {
@@ -189,7 +207,8 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
           ... this.specialEducationCodesMap.size === 0 ? [ApiService.getAllActiveSpecialEdCodes().then((res) => this.setSpecialEducationCodes(res.data))] : [],
           ... this.validationIssueTypeCodesMap.size === 0 ? [ApiService.getAllValidationIssueTypeCodes().then((res) => this.setValidationIssueTypeCodes(res.data))] : [],
           ... this.programEligibilityCodesMap.size === 0 ? [ApiService.getAllProgramEligibilityTypeCodes().then((res) => this.setProgramEligibilityCodesMap(res.data))]: [],
-          ... this.zeroFteReasonCodesMap.size === 0 ? [ApiService.getAllZeroFteReasonCodes().then((res) => this.setZeroFteReasonCodesMap(res.data))] : []
+          ... this.zeroFteReasonCodesMap.size === 0 ? [ApiService.getAllZeroFteReasonCodes().then((res) => this.setZeroFteReasonCodesMap(res.data))] : [],
+          ... this.schoolCollectionStatusCodesMap.size === 0 ? [ApiService.getActiveSchoolCollectionStatusCodesMap().then((res) => this.setSchoolCollectionStatusCodes(res.data))] : [],
         ];
         return Promise.all(promises);
       }

@@ -385,6 +385,7 @@ function toTableRow(student) {
   let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
   let schoolFundingCodesMap = cacheService.getActiveSchoolFundingCodesMap();
   let specialEducationCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+  let homeLanguageSpokenCodesMap = cacheService.getHomeLanguageSpokenCodesMap();
 
   student.mappedSpedCode = student.specialEducationCategoryCode !== '' && specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? `${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description} (${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode})` : null;
   student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : nativeAncestryInd(student);
@@ -402,6 +403,8 @@ function toTableRow(student) {
   student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
   student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
   student.mappedNoOfCourses = student.numberOfCoursesDec ? student.numberOfCoursesDec.toFixed(2) : '0';
+  student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
+  
   return student;
 }
 
@@ -749,6 +752,36 @@ async function unsubmitSdcSchoolCollection(req, res) {
   }
 }
 
+async function resolveDistrictDuplicates(req, res) {
+  try {
+    const payload = req.body;
+    payload.forEach(student => {
+      student.createDate = null;
+      student.createUser = null;
+      student.updateDate = null;
+      student.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+
+      if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
+        student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
+      }
+  
+      if (student?.numberOfCourses) {
+        student.numberOfCourses = stripNumberFormattingNumberOfCourses(student.numberOfCourses);
+      }
+  
+      student.sdcSchoolCollectionStudentValidationIssues = null;
+      student.sdcSchoolCollectionStudentEnrolledPrograms = null;
+    });
+   
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting District headcount.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -772,5 +805,6 @@ module.exports = {
   getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId,
   getDistrictHeadcounts,
   getInDistrictDuplicates,
-  unsubmitSdcSchoolCollection
+  unsubmitSdcSchoolCollection,
+  resolveDistrictDuplicates
 };

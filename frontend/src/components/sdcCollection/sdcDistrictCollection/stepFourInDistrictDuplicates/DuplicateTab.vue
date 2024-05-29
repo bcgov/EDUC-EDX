@@ -74,7 +74,7 @@
             >
               <template #activator="{ props }">
                 <v-btn
-                  :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
+                  :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID"
                   color="primary"
                   icon="mdi-playlist-edit"
                   variant="text"
@@ -94,7 +94,7 @@
                 <v-list-item 
                   id="resolve"
                   @click="resolveDuplicate(duplicate)"
-                  >
+                >
                   <v-icon
                     color="#003366"
                     class="pr-1 mb-1"
@@ -209,15 +209,16 @@
   </template>
   <v-bottom-sheet
     v-model="openProgramResolutionView"
-    :inset="true"
+   
     :no-click-animation="true"
     :scrollable="true"
     :persistent="true"
   >
-  <ProgramDuplicateResolution 
-    @close="openProgramResolutionView = !openProgramResolutionView"
-    >
-  </ProgramDuplicateResolution>
+    <ProgramDuplicateResolution 
+      :selected-program-duplicate="selectedProgramDuplicate"
+      @close="openProgramResolutionView = !openProgramResolutionView"
+      @close-refresh="closeAndRefreshDuplicates()"
+    />
   </v-bottom-sheet>
 </template>
 <script>
@@ -250,6 +251,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits:['refresh-duplicates'],
   data() {
     return {
       duplicateView: '1',
@@ -269,6 +271,10 @@ export default defineComponent({
         this.selectedProgramDuplicate = duplicate;
         this.openProgramResolutionView = !this.openProgramResolutionView;
       }
+    },
+    closeAndRefreshDuplicates() {
+      this.openProgramResolutionView = !this.openProgramResolutionView;
+      this.$emit('refresh-duplicates');
     }
   }
 });
