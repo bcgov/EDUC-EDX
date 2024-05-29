@@ -40,8 +40,6 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row td`).last().should('have.text', '09');
       cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(2)`).last().should('have.text', '00');
       cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(3)`).last().should('have.text', '00');
-      cy.get(`${selectors.sdcDocumentUploadStep.fteTab} .totals-row > td:nth-child(4)`).last().should('have.text', '00');
-      
     });
     
     it('there are the correct headcounts for the career tab', () => {

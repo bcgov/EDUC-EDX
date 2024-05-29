@@ -51,15 +51,21 @@ export class SdcCollectionApiService {
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     await this.deleteExistingTestData([schoolCollection.school]);
-    const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
 
-    if(schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData') {
-      sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+    const isIndependentSchool = schoolCollection?.school?.schoolCategoryCode === 'INDEPEND';
+    let sdcDistrictCollectionResponse;
+    if(!isIndependentSchool) {
+      const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
+
+
+      if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
+        sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+      }
+
+      const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+
+      sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
     }
-
-    const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-
-    const sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
 
     let sdcSchoolCollectionPayload = {};
 
@@ -824,8 +830,8 @@ export class SdcCollectionApiService {
           student.enrolledProgramCodes = '1140';
           student.careerProgramCode = 'XA';
         }
-    }));
-    break;
+      }));
+      break;
     case 'sdcDistrictCollectionSummarySeedData':
       sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'REVIEWED';
 

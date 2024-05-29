@@ -86,7 +86,7 @@
               </template>
             </v-stepper-header>
             <v-stepper-window
-              v-if="school?.schoolCategoryCode === 'INDP_FNS' || school?.schoolCategoryCode === 'INDEPEND'"
+              v-if="schoolCollectionObject?.sdcDistrictCollectionID === null"
             >
               <v-stepper-window-item
                 :value="1"
@@ -297,7 +297,6 @@ export default {
   created() {
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
-      this.school = this.activeSchoolsMap.get(this.schoolCollectionObject.schoolID);
     });
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.schoolCollectionObject = this.schoolCollection;
