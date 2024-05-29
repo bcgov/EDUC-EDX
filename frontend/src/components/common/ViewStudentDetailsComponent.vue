@@ -40,7 +40,7 @@
               <span id="fteReason"><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
             </v-col>
           </v-row>
-          <v-row v-if="showFundingEligibilitySection()">
+          <v-row v-if="showFundingEligibilitySection() && studentForEdit">
             <v-col cols="8">
               <span><b>Program Funding Ineligibility:</b></span>
               <br>
