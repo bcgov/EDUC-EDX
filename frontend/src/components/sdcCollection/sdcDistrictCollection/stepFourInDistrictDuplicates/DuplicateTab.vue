@@ -91,9 +91,10 @@
                   </v-icon>
                   <span class="ml-2">Change Grade</span>
                 </v-list-item>
-                <v-list-item 
+                <v-list-item
+                  v-if="duplicateType === 'program'"
                   id="resolve"
-                  @click="resolveDuplicate(duplicate)"
+                  @click="resolveProgramDuplicate(duplicate)"
                 >
                   <v-icon
                     color="#003366"
@@ -102,6 +103,31 @@
                     mdi-check
                   </v-icon>
                   <span class="ml-2">Resolve</span>
+                </v-list-item>
+                <v-list-item
+                  v-if="duplicateType === 'enrollment'"
+                  id="resolveEnrollmentDuplicateViaRemove"
+                  @click="resolveEnrollmentDuplicateViaRemove(duplicate, sdcSchoolCollectionStudent)"
+                >
+                  <v-icon
+                    color="#003366"
+                    class="pr-1 mb-1"
+                  >
+                    mdi-check
+                  </v-icon>
+                  <span class="ml-2">Remove</span>
+                </v-list-item>
+                <v-list-item
+                  v-if="duplicateType === 'enrollment' && sdcSchoolCollectionStudent.canMoveToCrossEnrollment"
+                  id="enrollmentResolveViaRemoveAndMoveToCrossEnrollment"
+                >
+                  <v-icon
+                    color="#003366"
+                    class="pr-1 mb-1"
+                  >
+                    mdi-check
+                  </v-icon>
+                  <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -209,14 +235,27 @@
   </template>
   <v-bottom-sheet
     v-model="openProgramResolutionView"
-   
     :no-click-animation="true"
     :scrollable="true"
     :persistent="true"
   >
-    <ProgramDuplicateResolution 
-      :selected-program-duplicate="selectedProgramDuplicate"
+    <ProgramDuplicateResolution
+      :selected-program-duplicate="selectedDuplicate"
       @close="openProgramResolutionView = !openProgramResolutionView"
+      @close-refresh="closeAndRefreshDuplicates()"
+    />
+  </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="openEnrollmentResolutionViaRemoveView"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <EnrollmentDuplicateResolveViaRemove
+      :duplicate="selectedDuplicate"
+      :sdc-school-collection-student="selectedSdcSchoolCollectionStudent"
+      @close="openEnrollmentResolutionViaRemoveView = !openEnrollmentResolutionViaRemoveView"
       @close-refresh="closeAndRefreshDuplicates()"
     />
   </v-bottom-sheet>
@@ -226,10 +265,12 @@ import {defineComponent} from 'vue';
 import CustomTable from '../../../common/CustomTable.vue';
 import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
+import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
-  components: { 
+  components: {
+    EnrollmentDuplicateResolveViaRemove,
     CustomTable, 
     ProgramDuplicateResolution
   },
@@ -257,7 +298,9 @@ export default defineComponent({
       duplicateView: '1',
       editOptionsOpen: [],
       openProgramResolutionView: false,
-      selectedProgramDuplicate: {}
+      openEnrollmentResolutionViaRemoveView: false,
+      selectedDuplicate: {},
+      selectedSdcSchoolCollectionStudent: {}
     };
   },
   computed: {
@@ -266,14 +309,18 @@ export default defineComponent({
     }
   },
   methods: {
-    resolveDuplicate(duplicate) {
-      if(this.duplicateType === 'program') {
-        this.selectedProgramDuplicate = duplicate;
-        this.openProgramResolutionView = !this.openProgramResolutionView;
-      }
+    resolveProgramDuplicate(duplicate) {
+      this.selectedDuplicate = duplicate;
+      this.openProgramResolutionView = !this.openProgramResolutionView;
+    },
+    resolveEnrollmentDuplicateViaRemove(duplicate, sdcSchoolCollectionStudent) {
+      this.selectedDuplicate = duplicate;
+      this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
+      this.openEnrollmentResolutionViaRemoveView = true;
     },
     closeAndRefreshDuplicates() {
-      this.openProgramResolutionView = !this.openProgramResolutionView;
+      this.openProgramResolutionView = false;
+      this.openEnrollmentResolutionViaRemoveView = false;
       this.$emit('refresh-duplicates');
     }
   }
