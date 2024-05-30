@@ -275,9 +275,9 @@ import Spinner from '../../common/Spinner.vue';
 import {MONITORING} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
-import {appStore} from "../../../store/modules/app";
-import {mapState} from "pinia";
-import {sdcCollectionStore} from "../../../store/modules/sdcCollection";
+import {appStore} from '../../../store/modules/app';
+import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 
 export default defineComponent({
   name: 'StepTwoMonitor',
@@ -375,14 +375,14 @@ export default defineComponent({
     await appStore().getInstitutesData().then(() => {
       this.district = this.activeDistrictsMap.get(this.districtCollectionObject.districtID);
     });
-    await this.getSdcSchoolCollections();
     this.schoolCollectionStatusCodes = await sdcCollectionStore().getSchoolCollectionStatusCodeMap();
+    await this.getSdcSchoolCollections();
 
   },
   methods: {
     applyFilters($event) {
       this.filters = cloneDeep($event);
-      this.filters.schoolFilter = this.filters.schoolNameNumber[0].value
+      this.filters.schoolFilter = this.filters.schoolNameNumber[0].value;
     },
     clearFilters() {
       this.filters = {};
@@ -446,13 +446,6 @@ export default defineComponent({
       }).finally(() => {
         this.isLoading = false;
       });
-    },
-    getWarningText() {
-      const numSchoolsNotSubmitted = this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted;
-      if(numSchoolsNotSubmitted === 1) {
-        return '1 school not submitted';
-      }
-      return numSchoolsNotSubmitted + ' schools not submitted';
     },
     markStepAsComplete(){
       let updateCollection = {
