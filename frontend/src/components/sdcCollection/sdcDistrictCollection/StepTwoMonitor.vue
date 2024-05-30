@@ -223,11 +223,11 @@
     </template>
     <template #item.unsubmit="{ value }">
       <v-btn
-        v-if="value.isSubmitted"
         :id="'unsubmitBtn' + value.sdcSchoolCollectionId"
         color="primary"
         icon="mdi-lock-open"
         variant="text"
+        :disabled="!value.isSubmitted"
         @click="unsubmitSdcSchoolCollection(value.sdcSchoolCollectionId)"
       />
     </template>
