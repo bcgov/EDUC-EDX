@@ -410,7 +410,7 @@ function toTableRow(student) {
 }
 
 function fundingEligibleRefugee(student) {
-  const hasIssue = student.sdcSchoolCollectionStudentValidationIssues.some(issue => issue.validationIssueCode === 'REFUGEEINSEPTCOL');
+  const hasIssue = student?.sdcSchoolCollectionStudentValidationIssues?.some(issue => issue.validationIssueCode === 'REFUGEEINSEPTCOL');
   return hasIssue ? 'No' : 'Yes';
 }
 
@@ -796,7 +796,7 @@ async function resolveDistrictDuplicates(req, res) {
     const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    log.error('Error getting District headcount.', e.stack);
+    log.error('Error resolving district duplicates.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
