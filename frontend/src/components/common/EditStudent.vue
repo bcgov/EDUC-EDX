@@ -25,7 +25,7 @@
             >
               <v-row no-gutters>
                 <v-col cols="4">
-                  <span>
+                  <span id="eligible-fte-banner">
                     <b>Eligible FTE:</b> {{ sdcSchoolCollectionStudentDetailCopy?.fte }}
                     <a
                       v-if="showFundingEligibilityDetail"

@@ -8,8 +8,16 @@ describe('District Details Interface Test', () => {
     beforeEach(() => cy.login());
     after(() => cy.logout());
 
+    before(() => {
+      cy.task<AppSetupData>('dataLoad').then(() => {
+        cy.task('setup-districtUser', { districtRoles: ['EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
+      });
+    });
+
     it('can load district details and checks field validation', () => {
+      cy.intercept(Cypress.env('interceptors').district_by_id).as('district_by_id');
       cy.visit('/');
+      cy.wait('@district_by_id');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
@@ -37,7 +45,9 @@ describe('District Details Interface Test', () => {
 
 
     it('can edit district details', () => {
+      cy.intercept(Cypress.env('interceptors').district_by_id).as('district_by_id');
       cy.visit('/');
+      cy.wait('@district_by_id');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.districtDetails.editDistrictDetailsButton).click();
       cy.get(selectors.districtDetails.editDistrictPhone).clear().type('250-555-5555');
@@ -58,7 +68,10 @@ describe('District Details Interface Test', () => {
 
 
     it('checks if the changes in edit are correct', () => {
-      cy.visit('/districtDetails');
+
+      cy.intercept(Cypress.env('interceptors').district_by_id).as('district_by_id');
+      cy.visit('/');
+      cy.wait('@district_by_id');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing District');
       cy.get(selectors.dashboard.districtDetailsCard).click();
       cy.get(selectors.dashboard.title).contains('District Details | EDX Automation Testing District');
