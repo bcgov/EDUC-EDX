@@ -6,7 +6,7 @@
       show-arrows
     >
       <v-tab
-        v-for="name in tabs"
+        v-for="name in visibleTabs"
         :key="name"
         class="divider"
         :value="name"
@@ -152,8 +152,25 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
+    ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'currentCollectionTypeCode']),
     ...mapState(appStore, ['activeSchoolsMap']),
+    showRefugeeTab() {
+      const validPublicTypes = [
+        'STANDARD',
+        'ALT_PROGS',
+        'YOUTH',
+        'SHORT_PRP',
+        'LONG_PRP',
+      ];
+      return (
+        this.currentCollectionTypeCode === 'February' &&
+        this.school.schoolCategoryCode === 'PUBLIC' &&
+        validPublicTypes.includes(this.school.facilityTypeCode)
+      );
+    },
+    visibleTabs() {
+      return this.showRefugeeTab ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee');
+    },
   },
   created() {
     appStore().getInstitutesData().finally(() => {
