@@ -38,7 +38,10 @@
       </v-row>
 
       <v-row>
-        <v-col class="border mr-1" cols="6">
+        <v-col
+          class="border mr-1"
+          cols="6"
+        >
           <StudentDetail
             :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
@@ -64,7 +67,10 @@
       >
         <v-row>
           <v-col>
-            <div v-for="(prog, index) in getDuplicatePrograms()" :key="index">
+            <div
+              v-for="(prog, index) in getDuplicatePrograms()"
+              :key="index"
+            >
               <span>{{ prog?.description }}</span>
 
               <v-radio-group

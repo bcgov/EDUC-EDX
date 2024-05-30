@@ -13,8 +13,8 @@
         </v-col>
       </v-row>
       <div
-        ref="topDiv"
         v-else
+        ref="topDiv"
       >
         <v-row>
           <v-col class="pt-2 mb-1">
@@ -366,8 +366,8 @@
                         multiple
                         density="compact"
                         :rules="enrolledProgramRules"
-                        @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
                         :disabled="isSchoolCollectionSubmitted()"
+                        @update:model-value="syncWithEnrolledProgramCodeOnUserInput"
                       />
                     </v-col>
                   </v-row>
@@ -508,7 +508,7 @@
           </v-col>
         </v-row>
       </div>
-      <div ref="eligibility"></div>
+      <div ref="eligibility" />
       <slot name="eligibility" />
       <v-row
         :class="functionType !== 'add' ? 'footer' : ''"
@@ -537,8 +537,8 @@
             text="Remove"
             variant="outlined"
             class="mr-1"
-            @click="deleteStudent"
             :disabled="isSchoolCollectionSubmitted()"
+            @click="deleteStudent"
           />
           <v-btn
             id="saveRecord"

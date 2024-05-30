@@ -83,8 +83,8 @@
               </template>
               <v-list>
                 <v-list-item 
-                  id="change-grade"
                   v-if="sdcSchoolCollectionStudent.canChangeGrade"
+                  id="change-grade"
                   @click="changeGrade(sdcSchoolCollectionStudent, duplicate)"
                 >
                   <v-icon

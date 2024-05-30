@@ -7,7 +7,9 @@
   >
     <v-row>
       <v-col>
-        <v-chip color="primary"><span style="font-weight: bold">Assigned PEN: </span>&nbsp;{{ duplicateStudent.assignedPen }}</v-chip>
+        <v-chip color="primary">
+          <span style="font-weight: bold">Assigned PEN: </span>&nbsp;{{ duplicateStudent.assignedPen }}
+        </v-chip>
       </v-col>
     </v-row>
     <v-data-table
