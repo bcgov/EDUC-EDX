@@ -718,7 +718,6 @@ export class SdcCollectionApiService {
 
   async createDistrictCollection(districtCollectionOptions: DistrictCollectionOptions) {
     console.log('AT createDistrictCollection started');
-    console.log('districtCollectionOptions', districtCollectionOptions)
 
     const curDate = LocalDateTime.now().minusDays(2);
     const curCloseDate = curDate.plusDays(4);
