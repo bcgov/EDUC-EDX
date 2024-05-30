@@ -109,7 +109,7 @@ export default {
       let updatedStudent = cloneDeep(this.selectedStudent);
       updatedStudent.enrolledGradeCode = this.changedEnrolledGradeCode;
       ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedDuplicateId +'/' +this.type, [updatedStudent])
-        .then((res) => {
+        .then(() => {
           setSuccessAlert('Success! The student details have been updated.');
         }).catch(error => {
           console.error(error);
