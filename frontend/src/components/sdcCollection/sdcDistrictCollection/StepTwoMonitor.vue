@@ -338,7 +338,7 @@ export default defineComponent({
           title: 'Unsubmit',
           align: 'center',
           key: 'unsubmit',
-          value: item => { return { isSubmitted: item.submittedToDistrict, sdcSchoolCollectionId: item.sdcSchoolCollectionId }; }
+          value: item => { return { isSubmitted: item.schoolStatus === 'SUBMITTED', sdcSchoolCollectionId: item.sdcSchoolCollectionId }; }
         }
       ],
       isLoading: false,
