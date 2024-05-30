@@ -38,13 +38,13 @@
       </v-row>
 
       <v-row>
-        <v-col cols="6">
+        <v-col class="border mr-1" cols="6">
           <StudentDetail
             :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
           />
         </v-col>           
-        <v-col>
+        <v-col class="border ml-1">
           <StudentDetail
             :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
@@ -127,7 +127,6 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 
-
 export default {
   name: 'ProgramDuplicateResolution',
   components: {
@@ -196,7 +195,6 @@ export default {
     },
     saveAndResolve() {
       this.loadingCount += 1;
-      this.hasError = false;
       ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, this.duplicateStudents)
         .then((res) => {
           if (res.data.sdcDuplicateID === this.selectedProgramDuplicate?.sdcDuplicateID && res.data.duplicateResolutionCode !== 'RESOLVED') {
@@ -299,8 +297,10 @@ export default {
     }
 
     .label {
-      color: grey;
-      text-decoration-line: underline;
+      font-weight: bold;
+   }
+   .border {
+    border: 1px thin lightgrey;
    }
   
   </style>

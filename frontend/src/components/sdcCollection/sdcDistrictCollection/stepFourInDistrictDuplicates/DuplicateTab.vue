@@ -82,7 +82,11 @@
                 />
               </template>
               <v-list>
-                <v-list-item v-if="sdcSchoolCollectionStudent.canChangeGrade">
+                <v-list-item 
+                  id="change-grade"
+                  v-if="sdcSchoolCollectionStudent.canChangeGrade"
+                  @click="changeGrade(sdcSchoolCollectionStudent, duplicate)"
+                >
                   <v-icon
                     color="#003366"
                     class="pr-1 mb-1"
@@ -245,6 +249,21 @@
       @close-refresh="closeAndRefreshDuplicates()"
     />
   </v-bottom-sheet>
+
+  <v-bottom-sheet
+    v-model="openChangeGradeView"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <ChangeGrade
+      :selected-student="selectedStudentForGradeChange"
+      :selected-duplicate-id="selectedEnrollmentDuplicate.sdcDuplicateID"
+      @close="openChangeGradeView = !openChangeGradeView"
+      @close-refresh="closeAndRefreshDuplicates()"  
+    />
+  </v-bottom-sheet>
   <v-bottom-sheet
     v-model="openEnrollmentResolutionViaRemoveView"
     :inset="true"
@@ -266,13 +285,15 @@ import CustomTable from '../../../common/CustomTable.vue';
 import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
 import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
+import ChangeGrade from './ChangeGrade.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
   components: {
     EnrollmentDuplicateResolveViaRemove,
     CustomTable, 
-    ProgramDuplicateResolution
+    ProgramDuplicateResolution,
+    ChangeGrade
   },
   props: {
     duplicateType: {
@@ -298,7 +319,9 @@ export default defineComponent({
       duplicateView: '1',
       editOptionsOpen: [],
       openProgramResolutionView: false,
+      selectedEnrollmentDuplicate: {},
       openEnrollmentResolutionViaRemoveView: false,
+      openChangeGradeView: false,
       selectedDuplicate: {},
       selectedSdcSchoolCollectionStudent: {}
     };
@@ -306,7 +329,8 @@ export default defineComponent({
   computed: {
     IN_DISTRICT_DUPLICATES() {
       return IN_DISTRICT_DUPLICATES;
-    }
+    },
+   
   },
   methods: {
     resolveProgramDuplicate(duplicate) {
@@ -321,7 +345,13 @@ export default defineComponent({
     closeAndRefreshDuplicates() {
       this.openProgramResolutionView = false;
       this.openEnrollmentResolutionViaRemoveView = false;
+      this.openChangeGradeView = false;
       this.$emit('refresh-duplicates');
+    },
+    async changeGrade(sdcSchoolCollectionStudent, duplicate) {
+      this.selectedStudentForGradeChange = sdcSchoolCollectionStudent;
+      this.selectedEnrollmentDuplicate = duplicate;
+      this.openChangeGradeView = !this.openChangeGradeView;
     }
   }
 });
