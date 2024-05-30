@@ -20,6 +20,7 @@
           variant="tonal"
           type="error"
           :text="fileUploadErrorMessage"
+          class="fileUploadErrorMessage"
         />
       </v-col>
     </v-row>
@@ -33,6 +34,7 @@
           type="warning"
           variant="tonal"
           :text="fileDateWarningMessage"
+          class="fileUploadWarningMessage"
         />
       </v-col>
     </v-row>
@@ -43,6 +45,7 @@
           type="success"
           variant="tonal"
           :text="populatedSuccessMessage"
+          class="fileUploadSuccessMessage"
         />
       </v-col>
     </v-row>
