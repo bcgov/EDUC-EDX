@@ -410,17 +410,8 @@ function toTableRow(student) {
 }
 
 function fundingEligibleRefugee(student) {
-  if (student.currentCollectionTypeCode !== 'February') {
-    return 'No';
-  }
-
-  if(student.schoolFundingCode !== '16') {
-    return 'No';
-  }
-
-  // TODO once refugeeNonElig column added, check this
-
-  return 'Yes';
+  const hasIssue = student.sdcSchoolCollectionStudentValidationIssues.some(issue => issue.validationIssueCode === 'REFUGEEINSEPTCOL');
+  return hasIssue ? 'No' : 'Yes';
 }
 
 function enrolledProgramMapping(student, enrolledProgramFilter) {
