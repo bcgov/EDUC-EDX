@@ -411,7 +411,7 @@ export const CAREER_PROGRAM_FILTER = Object.freeze(
         value: '41'
       },
       {
-        title: '42 - Apprenticeship',
+        title: '42 - Youth WORK in Trades Program',
         id: 'career42',
         value: '42'
       },
