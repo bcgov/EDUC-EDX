@@ -11,7 +11,7 @@ const {
   getCodeTable,
   getDataWithParams,
   isPdf,
-  isImage
+  isImage, getCreateOrUpdateUserValue
 } = require('./utils');
 const config = require('../config/index');
 const log = require('./logger');
@@ -30,7 +30,7 @@ async function uploadFile(req, res) {
     const edxUserInfo = req.session.edxUserData;
 
     req.body.edxUserID = edxUserInfo.edxUserID;
-    req.body.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    req.body.updateUser = getCreateOrUpdateUserValue(req);
 
     const token = getAccessToken(req);
     const data = await postData(token, req.body, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`, req.session?.correlationID);
@@ -167,15 +167,15 @@ async function createExchange(req, res) {
   try {
     const edxUserInfo = req.session.edxUserData;
     const message = req.body;
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const documentPayload = message.secureExchangeDocuments.map(document => {
-      return {...document, edxUserID: edxUserInfo.edxUserID, updateUser: 'EDX/' + edxUserInfo.edxUserID, createUser: 'EDX/' + edxUserInfo.edxUserID};
+      return {...document, edxUserID: edxUserInfo.edxUserID, updateUser: createUpdateUser, createUser: createUpdateUser};
     });
     const studentPayload = message.secureExchangeStudents.map(student => {
       return {
         studentId: student.studentID,
         edxUserID: edxUserInfo.edxUserID,
-        createUser: 'EDX/' + edxUserInfo.edxUserID
+        createUser: createUpdateUser
       };
     });
 
@@ -192,14 +192,14 @@ async function createExchange(req, res) {
           edxUserID: edxUserInfo.edxUserID,
           commentUserName: edxUserInfo.firstName + ' ' + edxUserInfo.lastName,
           content: message.content,
-          updateUser: 'EDX/' + edxUserInfo.edxUserID,
-          createUser: 'EDX/' + edxUserInfo.edxUserID
+          updateUser: createUpdateUser,
+          createUser: createUpdateUser
         }
       ],
       documentList: documentPayload,
       studentList: studentPayload,
-      updateUser: 'EDX/' + edxUserInfo.edxUserID,
-      createUser: 'EDX/' + edxUserInfo.edxUserID
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser
     };
 
     const token = getAccessToken(req);
@@ -434,7 +434,7 @@ async function markAs(req, res) {
     currentExchange.isReadByExchangeContact = isReadByExchangeContact;
     currentExchange.createDate = null;
     currentExchange.updateDate = null;
-    currentExchange.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    currentExchange.updateUser = getCreateOrUpdateUserValue(req);
     const result = await putData(token, currentExchange, config.get('edx:exchangeURL'), req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -453,7 +453,7 @@ async function createSecureExchangeStudent(req, res) {
     const secureExchangeStudent = {
       edxUserID: edxUserInfo.edxUserID,
       studentId: req.body.studentID,
-      createUser: 'EDX/' + edxUserInfo.edxUserID
+      createUser: getCreateOrUpdateUserValue(req)
     };
 
     const attachedSecureExchangeStudents = await getData(accessToken, `${exchangeURL}/${req.params.id}/students`, req.session?.correlationID);
@@ -500,7 +500,7 @@ async function updateEdxUserSchool(req, res) {
 
     let selectedUserSchool = selectedUserSchools[0];
     let existingUserSchoolRoles = new Map(selectedUserSchool.edxUserSchoolRoles.map(edxUserSchoolRole => [edxUserSchoolRole.edxRoleCode, edxUserSchoolRole]));
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     selectedUserSchool.edxUserSchoolRoles = [];
     req.body.params.selectedRoles.forEach(function (role) {
       if (existingUserSchoolRoles.has(role)) {
@@ -510,8 +510,8 @@ async function updateEdxUserSchool(req, res) {
       let newRole = {};
       newRole.edxUserSchoolID = selectedUserSchool.edxUserSchoolID;
       newRole.edxRoleCode = role;
-      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      newRole.createUser = createUpdateUser;
+      newRole.updateUser = createUpdateUser;
       selectedUserSchool.edxUserSchoolRoles.push(newRole);
     });
 
@@ -519,7 +519,7 @@ async function updateEdxUserSchool(req, res) {
     selectedUserSchool.updateDate = null;
     selectedUserSchool.createDate = null;
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
-    selectedUserSchool.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    selectedUserSchool.updateUser = createUpdateUser;
 
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
@@ -542,7 +542,7 @@ async function updateEdxUserSchoolRoles(req, res) {
     }
     let selectedUserSchool = selectedUserSchools[0];
     let existingUserSchoolRoles = new Map(selectedUserSchool.edxUserSchoolRoles.map(edxUserSchoolRole => [edxUserSchoolRole.edxRoleCode, edxUserSchoolRole]));
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     selectedUserSchool.edxUserSchoolRoles = [];
     req.body.params.selectedRoles.forEach(function (role) {
       if (existingUserSchoolRoles.has(role)) {
@@ -552,15 +552,15 @@ async function updateEdxUserSchoolRoles(req, res) {
       let newRole = {};
       newRole.edxUserSchoolID = selectedUserSchool.edxUserSchoolID;
       newRole.edxRoleCode = role;
-      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      newRole.createUser = createUpdateUser;
+      newRole.updateUser = createUpdateUser;
       selectedUserSchool.edxUserSchoolRoles.push(newRole);
     });
 
     selectedUserSchool.updateDate = null;
     selectedUserSchool.createDate = null;
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
-    selectedUserSchool.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    selectedUserSchool.updateUser = createUpdateUser;
     const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -582,7 +582,7 @@ async function updateEdxUserDistrictRoles(req, res) {
     }
     let selectedUserDistrict = selectedUserDistricts[0];
     let existingUserDistrictRoles = new Map(selectedUserDistrict.edxUserDistrictRoles.map(edxUserDistrictRole => [edxUserDistrictRole.edxRoleCode, edxUserDistrictRole]));
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     selectedUserDistrict.edxUserDistrictRoles = [];
     req.body.params.selectedRoles.forEach(function (role) {
       if (existingUserDistrictRoles.has(role)) {
@@ -592,14 +592,14 @@ async function updateEdxUserDistrictRoles(req, res) {
       let newRole = {};
       newRole.edxUserDistrictID = selectedUserDistrict.edxUserDistrictID;
       newRole.edxRoleCode = role;
-      newRole.createUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      newRole.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+      newRole.createUser = createUpdateUser;
+      newRole.updateUser = createUpdateUser;
       selectedUserDistrict.edxUserDistrictRoles.push(newRole);
     });
 
     selectedUserDistrict.updateDate = null;
     selectedUserDistrict.createDate = null;
-    selectedUserDistrict.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    selectedUserDistrict.updateUser = createUpdateUser;
     selectedUserDistrict.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
 
     const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
@@ -650,7 +650,7 @@ async function activateEdxUser(req, res) {
     log.info('User Activation Successful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
-    getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
+    await getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
@@ -720,11 +720,11 @@ async function districtUserActivationInvite(req, res) {
         message: 'No primary code exists for this district'
       });
     }
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const payload = {
       ...req.body,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser,
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
     const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
@@ -743,11 +743,11 @@ async function schoolUserActivationInvite(req, res) {
         message: 'No primary code exists for this school'
       });
     }
-
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const payload = {
       ...req.body,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser,
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
 
@@ -788,6 +788,7 @@ async function relinkUserAccess(req, res) {
 }
 
 function createRelinkPayload(req, schoolID, edxUserDetails, requestParams) {
+  let createUpdateUser = getCreateOrUpdateUserValue(req);
   if(schoolID) {
     let userSchool = edxUserDetails.edxUserSchools.find(school => school.schoolID === requestParams.schoolID);
     let activationRoles = userSchool.edxUserSchoolRoles.map(role => role.edxRoleCode);
@@ -802,8 +803,8 @@ function createRelinkPayload(req, schoolID, edxUserDetails, requestParams) {
       edxUserId: requestParams.userToRelink,
       edxUserSchoolID: requestParams.userSchoolID,
       edxUserExpiryDate: requestParams.edxUserExpiryDate,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser
     };
   } else {
     let userDistrict = edxUserDetails.edxUserDistricts.find(district => district.districtID === requestParams.districtID);
@@ -819,14 +820,15 @@ function createRelinkPayload(req, schoolID, edxUserDetails, requestParams) {
       edxUserId: requestParams.userToRelink,
       edxUserDistrictID: requestParams.edxUserDistrictID,
       edxUserExpiryDate: requestParams.edxUserExpiryDate,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser
     };
   }
 }
 
 async function createSecureExchangeComment(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const token = getAccessToken(req);
     const edxUserInfo = req.session.edxUserData;
     const payload = {
@@ -835,8 +837,8 @@ async function createSecureExchangeComment(req, res) {
       commentUserName: `${edxUserInfo.firstName} ${edxUserInfo.lastName}`,
       content: req.body.content,
       commentTimestamp: LocalDateTime.now().toJSON(),
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser
     };
 
     const result = await postData(token, payload, `${config.get('edx:exchangeURL')}/${req.params.id}/comments`, req.session.correlationID);
@@ -940,7 +942,7 @@ const createSearchParamObject = (key, value) => {
   return {key, value, operation, valueType};
 };
 
-function setInstituteTypeIdentifierAndRedirect(req, res) {
+async function setInstituteTypeIdentifierAndRedirect(req, res) {
   log.info('Set InstituteTypeIdentifier And Redirect called');
   if (req.session.userSchoolIDs?.length === 1 && req.session.userDistrictIDs?.length === 0) {
     log.info('User associated to 1 School Redirecting to School Dashboard');
@@ -959,41 +961,68 @@ function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true') {
-  log.info('User Set Up and Redirect called');
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
+  log.info('User Set Up and Redirect called ' + isValidTenant);
 
-  if(!isValidTenant  || isValidTenant !== 'true'){
+  if(!isValidTenant || isValidTenant !== 'true'){
     log.info('Not a valid tenant, redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
-  }
-
-  user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
-    if (edxUserData) {
-      req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
-        return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
-      }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
-      req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
-        return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
-      }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
-      if (Array.isArray(edxUserData)) {
-        req.session.edxUserData = edxUserData[0];
+  }else if(!isIDIRUser || isIDIRUser !== 'true'){
+    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
+      if (edxUserData) {
+        req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
+        }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
+        req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
+          return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
+        }).flatMap(el => el.districtID);//this is list of active districtIDs associated to the user
+        if (Array.isArray(edxUserData)) {
+          req.session.edxUserData = edxUserData[0];
+        } else {
+          req.session.edxUserData = edxUserData;
+          req.session.edxUserData = edxUserData;
+        }
+        await setInstituteTypeIdentifierAndRedirect(req, res);
       } else {
-        req.session.edxUserData = edxUserData;
-        req.session.edxUserData = edxUserData;
+        log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
+        res.redirect(config.get('server:frontend') + '/unauthorized');
       }
-      setInstituteTypeIdentifierAndRedirect(req, res);
-    } else {
-      log.info('User Set Up and Redirect called No User Data redirecting to Unauthorized Page');
+    });
+  }else{
+    let roles = req.session.passport.user._json.realm_access.roles;
+    if(roles.includes('EDX_ADMIN')){
+      Promise.all([
+        getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+        getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+      ])
+        .then(async ([userSchools, userDistricts]) => {
+          req.session.userSchoolIDs = userSchools?.filter((el) => {
+            return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
+          });//this is list of active schoolIDs associated to the user
+
+          req.session.userDistrictIDs = userDistricts?.filter((el) => {
+            return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el));
+          });//this is list of active districtIDs associated to the user
+
+          log.info('Burining out');
+          await setInstituteTypeIdentifierAndRedirect(req, res);
+          log.info('Burining out 2');
+        });
+    }else{
+      log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
       res.redirect(config.get('server:frontend') + '/unauthorized');
     }
-  });
+  }
 }
 
 function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
   let permissionsArray = [];
-  if(activeInstituteType === 'SCHOOL'){
+
+  if(req.session.passport.user._json.idir_guid){
+    permissionsArray = cacheService.getAllPermissions();
+  }else if(activeInstituteType === 'SCHOOL'){
     let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
     selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
       permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
@@ -1004,6 +1033,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
       permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
     });
   }
+
   req.session.activeInstitutePermissions = permissionsArray;
 }
 
@@ -1032,12 +1062,13 @@ async function checkIfPrimaryCodeExists(req,res, token, instituteType, institute
 
 async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const instituteType = req.params.instituteType.toUpperCase();
     const payload = {
       schoolID: instituteType === 'SCHOOL' ? req.params.instituteIdentifier : null,
       districtID: instituteType === 'DISTRICT' ? req.params.instituteIdentifier : null,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID
+      updateUser: createUpdateUser,
+      createUser: createUpdateUser
     };
     const token = getAccessToken(req);
     const result = await postData(token, payload, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);

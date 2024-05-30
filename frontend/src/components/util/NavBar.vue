@@ -227,7 +227,12 @@ export default {
         {
           title: PAGE_TITLES.DATA_COLLECTION,
           link: { name: 'sdcCollectionSummary', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && this.hasRequiredPermission(PERMISSION.SCHOOL_SDC) && !this.disableSdcFunctionality,
+          authorized: this.userInfo.activeInstituteType === 'SCHOOL' && this.hasRequiredPermission(PERMISSION.SCHOOL_SDC)  && !this.disableSdcFunctionality,
+        },
+        {
+          title: PAGE_TITLES.DATA_COLLECTION,
+          link: { name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT' && this.hasRequiredPermission(PERMISSION.SCHOOL_SDC)  && !this.disableSdcFunctionality,
         },
         {
           title: PAGE_TITLES.SCHOOLS,

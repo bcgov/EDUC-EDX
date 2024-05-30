@@ -26,7 +26,10 @@ let careerProgramCodesMap = new Map();
 let duplicateResolutionCodesMap = new Map();
 let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
+let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
+let allPermissions = [];
+let homeLanguageSpokenCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let documentTypeCodes = [];
@@ -105,6 +108,9 @@ const cacheService = {
   getAllAuthoritiesJSON() {
     return authorities;
   },
+  getAllPermissions() {
+    return allPermissions;
+  },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
   },
@@ -115,9 +121,11 @@ const cacheService = {
       const data = await getApiCredentials(); // get the tokens first to make api calls.
       const roles = await getData(data.accessToken, `${config.get('edx:edxRolePermissionsURL')}`);
       rolePermissionsMap.clear();// reset the value.
+      allPermissions = [];
       if (roles && roles.length > 0) {
         for (const role of roles) {
           rolePermissionsMap.set(`${role.edxRoleCode}`, role.edxRolePermissions.map(perm => {
+            allPermissions.push(perm.edxPermissionCode);
             return perm.edxPermissionCode;
           }));
         }
@@ -259,6 +267,17 @@ const cacheService = {
     });
     return careerProgramCodesMap;
   },
+  getHomeLanguageSpokenCodesMap() {
+    let homeLanguageSpokenCodeList = cachedData[constants.CACHE_KEYS.SDC_HOME_LANGUAGE_SPOKEN_CODES].activeRecords;
+    let homeLanguageSpokenCodes = homeLanguageSpokenCodeList.map(item => {
+      return {...item, dropdownText: `${item.description} (${item.homeLanguageSpokenCode})`};
+    });
+    homeLanguageSpokenCodes.unshift({'homeLanguageSpokenCode': null, 'dropdownText': 'No Home Language Code'});
+    homeLanguageSpokenCodes.forEach(homeLanguageSpokenCode => {
+      homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
+    });
+    return homeLanguageSpokenCodesMap;
+  },
   getAllDuplicateResolutionCodesMap() {
     let duplicateResolutionCodes = cachedData[constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES].records;
     duplicateResolutionCodes.forEach(duplicateResolutionCode => {
@@ -305,6 +324,16 @@ const cacheService = {
       specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
     });
     return specialEducationCodesMap;
+  },
+  getActiveSchoolCollectionStatusCodesMap(){
+    let schoolCollectionStatusCodesRaw = cachedData[constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES].records;
+    let schoolCollectionStatusCodes = schoolCollectionStatusCodesRaw.map(item => {
+      return {...item, dropdownText:`${item.label}`}
+    });
+    schoolCollectionStatusCodes.forEach((statusCode => {
+      schoolCollectionStatusCodesMap.set(statusCode, statusCode.label)
+    }))
+    return schoolCollectionStatusCodesMap
   },
   getActiveEnrolledGradeCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;

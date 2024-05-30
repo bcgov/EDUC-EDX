@@ -9,6 +9,7 @@ import Unauthorized from './components/common/Unauthorized.vue';
 import {authStore} from './store/modules/auth';
 import {appStore} from './store/modules/app';
 import Login from './components/Login.vue';
+import LoginIDIR from './components/LoginIDIR.vue';
 import BackendSessionExpired from './components/BackendSessionExpired.vue';
 import {PAGE_TITLES} from './utils/constants';
 import MessageDisplay from './components/SecureExchange/MessageDisplay.vue';
@@ -94,6 +95,15 @@ const router = createRouter({
       component: Login,
       meta: {
         pageTitle: PAGE_TITLES.LOGIN,
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/loginIDIR',
+      name: 'loginIDIR',
+      component: LoginIDIR,
+      meta: {
+        pageTitle: PAGE_TITLES.STAFF_LOGIN,
         requiresAuth: false
       }
     },

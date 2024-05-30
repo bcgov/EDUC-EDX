@@ -32,15 +32,6 @@
           class="d-flex justify-end"
         >
           <v-btn
-            id="bulkEdit"
-            color="#003366"
-            class="mr-1 mb-1"
-            text="Bulk Edit"
-            prepend-icon="mdi-pencil-outline"
-            variant="outlined"
-            :disabled="selectedStudents.length < 2 || districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
-          />
-          <v-btn
             id="filters"
             color="#003366"
             text="Filter"

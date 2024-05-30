@@ -1,11 +1,25 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
 import { SchoolCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
+import {InstituteOptions} from '../../services/institute-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
     before(() => {
-      cy.task<AppSetupData>('dataLoad').then(res => {
+      cy.task<InstituteOptions, AppSetupData>('dataLoad', {
+        districtOptions: {
+          includeDistrictAddress: true,
+          withPrimaryActivationCode: true
+        },
+        schoolOptions: [{
+          includeTombstoneValues: true,
+          includeSchoolAddress: true,
+          includeSchoolContact: true,
+          schoolStatus: 'Open',
+          withPrimaryActivationCode: true,
+          isIndependentSchool: true,
+          schoolCode: '99998'
+        }]}).then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.schools[0],
           loadWithStudentAndValidations: true,
@@ -57,7 +71,20 @@ describe('SDC School Collection View', () => {
   context('1701 collection status is SUBMITTED', () => {
     before(() => {
       cy.logout();
-      cy.task<AppSetupData>('dataLoad').then(res => {
+      cy.task<InstituteOptions, AppSetupData>('dataLoad', {
+        districtOptions: {
+          includeDistrictAddress: true,
+          withPrimaryActivationCode: true
+        },
+        schoolOptions: [{
+          includeTombstoneValues: true,
+          includeSchoolAddress: true,
+          includeSchoolContact: true,
+          schoolStatus: 'Open',
+          withPrimaryActivationCode: true,
+          isIndependentSchool: true,
+          schoolCode: '99998'
+        }]}).then(res => {
         cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
           school: res.schools[0],
           loadWithStudentAndValidations: true,

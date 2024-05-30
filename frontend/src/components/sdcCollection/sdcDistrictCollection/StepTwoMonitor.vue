@@ -157,21 +157,12 @@
   >
     <Filters
       :filters="allowedFilters"
+      :district="district"
+      :show-student-search="false"
       @apply-filters="applyFilters"
       @clear-filters="clearFilters"
       @close="toggleFilters()"
-    >
-      <template #text-search>
-        <v-text-field
-          id="searchInput"
-          v-model="filters.schoolFilter"
-          label="School Name or Number"
-          color="primary"
-          variant="underlined"
-          class="mt-n4 mb-n4"
-        />
-      </template>
-    </Filters>
+    />
   </v-navigation-drawer>
   <v-row
     justify="end"
@@ -284,6 +275,9 @@ import Spinner from '../../common/Spinner.vue';
 import {MONITORING} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {DateTimeFormatter, LocalDateTime} from '@js-joda/core';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {appStore} from "../../../store/modules/app";
+import {mapState} from "pinia";
+import {sdcCollectionStore} from "../../../store/modules/sdcCollection";
 
 export default defineComponent({
   name: 'StepTwoMonitor',
@@ -338,7 +332,7 @@ export default defineComponent({
           title: 'School Status',
           align: 'center',
           key: 'schoolStatus',
-          value: item => item.schoolStatus
+          value: item => this.schoolCollectionStatusCodes.get(item.schoolStatus).label
         },
         {
           title: 'Unsubmit',
@@ -349,10 +343,14 @@ export default defineComponent({
       ],
       isLoading: false,
       monitorSdcSchoolCollectionsResponse: [],
-      showFilters: false
+      showFilters: false,
+      district: {},
+      schoolCollectionStatusCodes: null
     };
   },
   computed: {
+    ...mapState(appStore, ['activeDistrictsMap']),
+    ...mapState(sdcCollectionStore, ['schoolCollectionStatusCodesMap']),
     filterCount() {
       return Object.values(this.filters).filter(filter => !!filter).reduce((acc, filter) => acc.concat(filter), []).length;
     },
@@ -360,7 +358,7 @@ export default defineComponent({
       const { schoolFilter, issuesFilter, uploadDataFilter } = this.filters || {};
 
       return this.monitorSdcSchoolCollectionsResponse?.monitorSdcSchoolCollections?.filter(school => {
-        if (schoolFilter && !school.schoolTitle.toLowerCase().includes(schoolFilter.toLowerCase())) {
+        if (schoolFilter && school.schoolId !== schoolFilter) {
           return false;
         }
         if (issuesFilter?.length > 0 && !this.filterForErrorsOrWarnings(school)) {
@@ -371,16 +369,20 @@ export default defineComponent({
         }
         return this.filterForStatus(school); //last check so return true if match is found
       });
-    }
+    },
   },
   async created() {
+    await appStore().getInstitutesData().then(() => {
+      this.district = this.activeDistrictsMap.get(this.districtCollectionObject.districtID);
+    });
     await this.getSdcSchoolCollections();
+    this.schoolCollectionStatusCodes = await sdcCollectionStore().getSchoolCollectionStatusCodeMap();
+
   },
   methods: {
     applyFilters($event) {
-      const schoolFilter = this.filters?.schoolFilter;
       this.filters = cloneDeep($event);
-      this.filters.schoolFilter = schoolFilter;
+      this.filters.schoolFilter = this.filters.schoolNameNumber[0].value
     },
     clearFilters() {
       this.filters = {};

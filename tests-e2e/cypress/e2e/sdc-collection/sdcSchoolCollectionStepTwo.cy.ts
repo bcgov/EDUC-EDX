@@ -108,7 +108,6 @@ describe('SDC School Collection View', () => {
         });
       });
 
-      cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 2 Records');
       cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).should('exist');
       cy.get(selectors.studentLevelData.legalLastNameValidationTextInput).type('SMITH');
       cy.get(selectors.studentLevelData.postalCodeValidationTextInput).should('exist');
@@ -174,18 +173,18 @@ describe('SDC School Collection View', () => {
           cy.get(selectors.studentLevelData.fixSelected).click();
         });
 
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 3 Records');
+        cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','1...3');
 
         cy.get(selectors.studentLevelData.duplicatePenFilter).should('exist');
         cy.get(selectors.studentLevelData.duplicatePenFilter).click();
         cy.wait('@pagination').then(()=> {
-          cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 2 of 3 Records');
+          cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','2...3');
           cy.get(selectors.studentLevelData.editStudentClearfilter).should('exist');
         });
 
         cy.get(selectors.studentLevelData.editStudentClearfilter).click();
         cy.wait('@pagination').then(()=> {
-          cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 3 of 3 Records');
+          cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','3...3');
         });
 
       });

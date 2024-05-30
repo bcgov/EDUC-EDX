@@ -1,5 +1,7 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses } = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
+  getCreateOrUpdateUserValue
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -40,11 +42,12 @@ async function getCollectionByDistrictId(req, res) {
 
 async function uploadFile(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
     const payload = {
       fileContents: req.body.fileContents,
       fileName: req.body.fileName,
-      createUser: 'EDX/' + req.session.edxUserData.edxUserID,
-      updateUser: 'EDX/' + req.session.edxUserData.edxUserID
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
     };
     const token = getAccessToken(req);
     let data;
@@ -94,7 +97,7 @@ async function updateDistrictCollection(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcDistrictCollectionStatusCode = req.body.status;
     const token = getAccessToken(req);
     const data = await putData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}`, req.session?.correlationID);
@@ -111,7 +114,7 @@ async function updateSchoolCollection(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcSchoolCollectionStatusCode = req.body.status;
     const token = getAccessToken(req);
     const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
@@ -275,7 +278,7 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     
     payload.assignedPen = null;
     payload.assignedStudentId = null;
@@ -296,7 +299,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+    payload.updateUser = getCreateOrUpdateUserValue(req);;
 
     if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
@@ -382,6 +385,7 @@ function toTableRow(student) {
   let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
   let schoolFundingCodesMap = cacheService.getActiveSchoolFundingCodesMap();
   let specialEducationCodesMap = cacheService.getActiveSpecialEducationCodesMap();
+  let homeLanguageSpokenCodesMap = cacheService.getHomeLanguageSpokenCodesMap();
 
   student.mappedSpedCode = student.specialEducationCategoryCode !== '' && specialEducationCodesMap.get(student.specialEducationCategoryCode) !== undefined ? `${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.description} (${specialEducationCodesMap.get(student.specialEducationCategoryCode)?.specialEducationCategoryCode})` : null;
   student.mappedAncestryIndicator = student.nativeAncestryInd === null ? null : nativeAncestryInd(student);
@@ -400,6 +404,8 @@ function toTableRow(student) {
   student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
   student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
   student.mappedNoOfCourses = student.numberOfCoursesDec ? student.numberOfCoursesDec.toFixed(2) : '0';
+  student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
+  
   return student;
 }
 
@@ -752,7 +758,7 @@ function setProgramDuplicateTypeMessage(sdcDuplicate) {
 async function unsubmitSdcSchoolCollection(req, res) {
   try {
     const payload = {
-      'updateUser': 'EDX/' + req.session.edxUserData.edxUserID,
+      'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
     const token = getAccessToken(req);
@@ -760,6 +766,36 @@ async function unsubmitSdcSchoolCollection(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error unsubmitting the school collection record', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function resolveDistrictDuplicates(req, res) {
+  try {
+    const payload = req.body;
+    payload.forEach(student => {
+      student.createDate = null;
+      student.createUser = null;
+      student.updateDate = null;
+      student.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+
+      if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
+        student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
+      }
+  
+      if (student?.numberOfCourses) {
+        student.numberOfCourses = stripNumberFormattingNumberOfCourses(student.numberOfCourses);
+      }
+  
+      student.sdcSchoolCollectionStudentValidationIssues = null;
+      student.sdcSchoolCollectionStudentEnrolledPrograms = null;
+    });
+   
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting District headcount.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -787,5 +823,6 @@ module.exports = {
   getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId,
   getDistrictHeadcounts,
   getInDistrictDuplicates,
-  unsubmitSdcSchoolCollection
+  unsubmitSdcSchoolCollection,
+  resolveDistrictDuplicates
 };

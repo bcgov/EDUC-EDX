@@ -60,6 +60,7 @@
           duplicate-type="program"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
+          @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
     </v-window>
@@ -154,8 +155,10 @@ export default defineComponent({
     }
   },
   async created() {
-    this.duplicateResolutionCodesMap = await sdcCollectionStore().getDuplicateResolutionCodesMap();
-    this.getInDistrictDuplicates();
+    sdcCollectionStore().getCodes().then(() => {
+      this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
+      this.getInDistrictDuplicates();
+    });
   },
   methods: {
     disableNextButton() {
