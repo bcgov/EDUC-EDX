@@ -299,7 +299,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.createDate = null;
     payload.createUser = null;
     payload.updateDate = null;
-    payload.updateUser = getCreateOrUpdateUserValue(req);;
+    payload.updateUser = getCreateOrUpdateUserValue(req);
 
     if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
@@ -691,6 +691,7 @@ async function getInDistrictDuplicates(req, res) {
       }
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
         setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
+        setCanMoveToCrossEnrollment(sdcDuplicate);
         result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
       }
       else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
@@ -729,6 +730,15 @@ function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2) {
   }
   if(['DIST_LEARN', 'DISTONLINE'].includes(school2.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledGradeCode)) {
     sdcDuplicate.sdcSchoolCollectionStudent2Entity.canChangeGrade = true;
+  }
+}
+
+function setCanMoveToCrossEnrollment(sdcDuplicate) {
+  if (['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledGradeCode)) {
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.canMoveToCrossEnrollment = true;
+  }
+  if (['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledGradeCode)) {
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.canMoveToCrossEnrollment = true;
   }
 }
 
