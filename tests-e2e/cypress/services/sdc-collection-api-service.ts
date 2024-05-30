@@ -26,6 +26,7 @@ export type SdcStudentEllOption = {
 
 const SDC_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection';
 const SDC_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/search';
+const SDC_COLLECTION_SEARCH_ALL_ENDPOINT = '/api/v1/student-data-collection/sdcSchoolCollection/searchAll?';
 const SDC_DISTRICT_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/sdcDistrictCollection';
 const SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT = '/api/v1/student-data-collection/sdcDistrictCollection/search';
 const ACTIVE_COLLECTION_ENDPOINT = '/api/v1/student-data-collection/collection/active';
@@ -717,6 +718,7 @@ export class SdcCollectionApiService {
 
   async createDistrictCollection(districtCollectionOptions: DistrictCollectionOptions) {
     console.log('AT createDistrictCollection started');
+    console.log('districtCollectionOptions', districtCollectionOptions)
 
     const curDate = LocalDateTime.now().minusDays(2);
     const curCloseDate = curDate.plusDays(4);
@@ -724,7 +726,14 @@ export class SdcCollectionApiService {
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
-    await this.deleteExistingTestData(districtCollectionOptions.schools);
+    const urlGetActiveDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/` + districtCollectionOptions.district.districtId;
+    let activeDistrictCollection = await this.restUtils.getData<SdcDistrictCollection>(urlGetActiveDistrictCollection);
+
+    if (activeDistrictCollection.sdcDistrictCollectionID !== null){
+      await this.deleteExistingTestData(districtCollectionOptions.schools, activeDistrictCollection.sdcDistrictCollectionID);
+    } else {
+      await this.deleteExistingTestData(districtCollectionOptions.schools);
+    }
 
     const sdcDistrictCollection = createSdcDistrictCollection(activeCollection.collectionID, districtCollectionOptions.district.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
     const sdcSchoolCollections = districtCollectionOptions.schools.map(school => {
@@ -777,20 +786,33 @@ export class SdcCollectionApiService {
     return ells;
   }
 
-  async deleteExistingTestData(schools: SchoolEntity[]) {
+  async deleteExistingTestData(schools: SchoolEntity[], districtCollectionID: String = '') {
     const districtIds = new Set();
 
     try {
       const deleteSchoolPromises: Promise<void>[] = [];
-      schools.forEach((school) => {
-        const schoolId = school.schoolId;
-        districtIds.add(school.districtId);
-        const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${schoolId}`;
-        const deletePromise = this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection).then(async (activeSchoolSdcCollection) => {
-          await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${activeSchoolSdcCollection.sdcSchoolCollectionID}`);
+      if (districtCollectionID !== ''){
+        const urlGetAllActiveSchoolCollections = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ALL_ENDPOINT}sdcDistrictCollectionID=${districtCollectionID}`;
+        const allActiveSchoolCollections = await this.restUtils.getData<Array<SdcSchoolCollection>>(urlGetAllActiveSchoolCollections);
+
+        allActiveSchoolCollections.forEach((schoolCollection) =>{
+          const deletePromise = this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${schoolCollection.sdcSchoolCollectionID}`);
+          deleteSchoolPromises.push(deletePromise);
+        })
+
+        districtIds.add(schools[0].districtId);
+      } else {
+        schools.forEach((school) => {
+          const schoolId = school.schoolId;
+          districtIds.add(school.districtId);
+          const urlGetActiveSdcSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${schoolId}`;
+          const deletePromise = this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSdcSchoolCollection).then(async (activeSchoolSdcCollection) => {
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${activeSchoolSdcCollection.sdcSchoolCollectionID}`);
+          });
+          deleteSchoolPromises.push(deletePromise);
         });
-        deleteSchoolPromises.push(deletePromise);
-      });
+      }
+
       await Promise.all(deleteSchoolPromises);
     } catch (error) {
       console.error('An error occurred while deleting existing sdc school collection test data:', error);

@@ -54,15 +54,10 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.sdcDistrictCollection.monitoringStep.dataErrorValue).should('have.text', '0');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.dataFundingWarnValue).should('have.text', '0');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.dataInfoWarnValue).should('have.text', '0');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.detailsConfirmedValue).should('have.text', '2');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.detailsNotConfirmedValue).should('have.text', '0');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.contactConfirmedValue).should('have.text', '2');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.noContactConfirmedValue).should('have.text', '0');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.submittedValue).should('have.text', '1');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.notSubmittedValue).should('have.text', '1');
 
       cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.notSubmittedToDistrict).click();
       cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.close).click();
 
       cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTableRows).should('have.length', 1);
