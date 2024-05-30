@@ -212,8 +212,6 @@ import {sdcCollectionStore} from '../../store/modules/sdcCollection';
 import {enrolledProgram}  from '../../utils/sdc/enrolledProgram';
 import {formatDateTime} from '../../utils/format';
 
-
-
 export default {
   name: 'StudentDetail',
   components: {

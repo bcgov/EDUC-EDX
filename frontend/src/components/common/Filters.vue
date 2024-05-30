@@ -27,7 +27,7 @@
         >
           <v-row>
             <slot
-                v-if="showStudentSearch"
+              v-if="showStudentSearch"
               name="text-search"
             >
               <v-text-field
@@ -181,10 +181,10 @@ import alertMixin from '../../mixins/alertMixin';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import PrimaryButton from '../util/PrimaryButton.vue';
 import {isEmpty, sortBy} from 'lodash';
-import {appStore} from "../../store/modules/app";
-import {edxStore} from "../../store/modules/edx";
-import {authStore} from "../../store/modules/auth";
-import {mapState} from "pinia";
+import {appStore} from '../../store/modules/app';
+import {edxStore} from '../../store/modules/edx';
+import {authStore} from '../../store/modules/auth';
+import {mapState} from 'pinia';
   
 export default {
   name: 'Filters',

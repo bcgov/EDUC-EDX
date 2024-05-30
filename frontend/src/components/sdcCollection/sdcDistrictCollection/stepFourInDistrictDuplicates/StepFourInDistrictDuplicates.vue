@@ -48,6 +48,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
+          @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
       <v-window-item
