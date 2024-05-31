@@ -514,20 +514,16 @@
         :class="functionType !== 'add' ? 'footer' : ''"
         no-gutters
       >
-        <v-col
-          v-if="functionType !== 'add' && selectedStudents.length !== 1"
-          offset="5"
-          cols="2"
-        >
+        <v-col class="d-flex justify-end mr-3 mt-3">
           <v-pagination
+            v-if="functionType !== 'add' && selectedStudents.length !== 1"
             v-model="page"
             :length="selectedStudents.length"
             :total-visible="2"
             rounded="circle"
+            class="mt-n3"
             @update:model-value="navigate"
           />
-        </v-col>
-        <v-col class="d-flex justify-end mr-3 mt-3">
           <v-btn
             v-if="functionType !== 'add'"
             id="removeRecord"
