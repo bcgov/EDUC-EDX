@@ -1020,18 +1020,24 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstituteType = activeInstituteType;
   let permissionsArray = [];
 
-  if(req.session.passport.user._json.idir_guid){
-    permissionsArray = cacheService.getAllPermissions();
-  }else if(activeInstituteType === 'SCHOOL'){
-    let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
-    selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
-      permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-    });
+  if(activeInstituteType === 'SCHOOL'){
+    if(req.session.passport.user._json.idir_guid){
+      permissionsArray = cacheService.getAllStaffSchoolPermissions();
+    }else{
+      let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
+      selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
+        permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
+      });
+    }
   }else{
-    let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
-    selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
-      permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-    });
+    if(req.session.passport.user._json.idir_guid){
+      permissionsArray = cacheService.getAllStaffDistrictPermissions();
+    }else {
+      let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
+      selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
+        permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
+      });
+    }
   }
 
   req.session.activeInstitutePermissions = permissionsArray;

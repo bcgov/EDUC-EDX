@@ -394,6 +394,7 @@ async function loadSdcDistrictCollection(req, res, next) {
 
 //Find SDC School Collection Student
 function findSdcSchoolCollectionStudentID_params(req, res, next) {
+  console.log('req.params.sdcSchoolCollectionStudentID: ' + JSON.stringify(req.params));
   res.locals.requestedSdcSchoolCollectionStudentID = req.params.sdcSchoolCollectionStudentID;
   return next();
 }
