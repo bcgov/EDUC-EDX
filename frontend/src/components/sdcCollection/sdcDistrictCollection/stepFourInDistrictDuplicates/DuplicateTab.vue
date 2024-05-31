@@ -220,7 +220,11 @@
           :reset="false"
           :total-elements="2"
           :hide-pagination="true"
-        />
+          >
+          <template #resolution="{ sdcSchoolCollectionStudent }">
+            <span>{{getDuplicateResolutionDescription(duplicate.duplicateResolutionCode)}}</span>
+          </template>
+        </CustomTable>
       </v-col>
     </v-row>
     <v-row
@@ -286,6 +290,7 @@ import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTa
 import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
 import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
 import ChangeGrade from './ChangeGrade.vue';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 
 export default defineComponent({
   name: 'DuplicateTab',
@@ -329,8 +334,7 @@ export default defineComponent({
   computed: {
     IN_DISTRICT_DUPLICATES() {
       return IN_DISTRICT_DUPLICATES;
-    },
-   
+    }
   },
   methods: {
     resolveProgramDuplicate(duplicate) {
@@ -352,6 +356,9 @@ export default defineComponent({
       this.selectedStudentForGradeChange = sdcSchoolCollectionStudent;
       this.selectedEnrollmentDuplicate = duplicate;
       this.openChangeGradeView = !this.openChangeGradeView;
+    },
+    getDuplicateResolutionDescription(key) {
+      return sdcCollectionStore().duplicateResolutionCodesMap.get(key)?.message;
     }
   }
 });
