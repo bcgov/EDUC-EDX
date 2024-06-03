@@ -343,7 +343,7 @@ async function deleteSDCSchoolCollectionStudent(req, res) {
 
 async function removeSDCSchoolCollectionStudents(req, res) {
   try {
-    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing SDC students :: ' + JSON.stringify(req.body));
+    log.info('EDX User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC students :: ' + JSON.stringify(req.body));
     const token = getAccessToken(req);
     let deletedSdcSchoolCollectionStudentData = await postData(token, req.body, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
