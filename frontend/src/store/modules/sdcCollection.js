@@ -11,6 +11,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentStepInCollectionProcess: null,
     currentCollectionTypeCode: null,
     currentCollectionYear: null,
+    currentCollectionSubmissionDueDate: null,
     schoolCollection: null,
     districtCollection: null,
     duplicateResolutionCodesMap: new Map(),
@@ -54,6 +55,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionYear(currentCollectionYear) {
       this.currentCollectionYear = currentCollectionYear;
+    },
+    setCurrentCollectionSubmissionDueDate(currentCollectionSubmissionDueDate) {
+      this.currentCollectionSubmissionDueDate = currentCollectionSubmissionDueDate;
     },
     setDistrictCollection(districtCollection) {
       this.districtCollection = districtCollection;
@@ -212,6 +216,10 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         ];
         return Promise.all(promises);
       }
+    },
+    async getCollectionByDistrictId(districtId) {
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + districtId);
+      this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
     }
   }
 });

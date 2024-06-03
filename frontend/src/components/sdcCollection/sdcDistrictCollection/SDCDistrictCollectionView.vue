@@ -70,6 +70,7 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
+                  :subtitle="submissionDueDate"
                   :editable="step.step < currentStep"
                   :complete="step.step < stepInCollection || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -98,9 +99,10 @@
                 reverse-transition="false"
               >
                 <StepOneUploadData
-                :is-step-complete="isStepComplete"
-                :district-collection-object="districtCollectionObject"
-                @next="next"/>
+                  :is-step-complete="isStepComplete"
+                  :district-collection-object="districtCollectionObject"
+                  @next="next"
+                />
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
@@ -178,6 +180,7 @@ export default defineComponent({
     return {
       currentStep: 0,
       districtID: null,
+      submissionDueDate: null,
       isLoading: false,
       districtCollectionObject: {},
     };
@@ -194,12 +197,21 @@ export default defineComponent({
   },
   created() {
     this.isLoading = !this.isLoading;
-    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
-      this.districtCollectionObject = this.districtCollection;
-      this.districtID = this.districtCollection?.districtID;
-      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
-      this.isLoading = !this.isLoading;
-    });
+    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
+      .then(() => {
+        this.districtCollectionObject = this.districtCollection;
+        this.districtID = this.districtCollection?.districtID;
+        this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+      })
+      .finally(() => {
+        this.isLoading = !this.isLoading;
+      })
+      .then(() => {
+        return sdcCollectionStore().getCollectionByDistrictId(this.districtID);
+      })
+      .then(() => {
+        this.submissionDueDate = sdcCollectionStore().currentCollectionSubmissionDueDate;
+      });
   },
   methods: {
     SDC_STEPS_DISTRICT() {
