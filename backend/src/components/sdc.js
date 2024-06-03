@@ -331,7 +331,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
 async function deleteSDCSchoolCollectionStudent(req, res) {
   try {
-    log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing SDC student :: ' + req.params.sdcSchoolCollectionStudentID);
+    log.info('User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC student :: ' + req.params.sdcSchoolCollectionStudentID);
     const token = getAccessToken(req);
     let deletedSdcSchoolCollectionStudentData = await deleteData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);

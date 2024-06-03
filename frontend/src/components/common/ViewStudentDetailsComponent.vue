@@ -31,6 +31,7 @@
         :save-event="saveStudent"
         :show-funding-eligibility-detail="showFundingEligibilitySection()"
         @form-validity="isValid"
+        @show-issues="cancel"
         @reset-parent="reset()"
         @student-object="setStudentContext"
       >

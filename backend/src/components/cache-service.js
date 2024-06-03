@@ -9,6 +9,8 @@ const {generateDistrictObject, isDistrictActive,generateAuthorityObject,isAuthor
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 const constants = require('../util/constants');
 
+let staffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'DISTRICT_SDC', 'SCHOOL_SDC'];
+let staffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCHOOL_SDC'];
 let schoolMap = new Map();
 let schools = [];
 let districts = [];
@@ -28,7 +30,6 @@ let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
 let schoolCollectionStatusCodesMap = new Map();
 let specialEducationCodesMap = new Map();
-let allPermissions = [];
 let homeLanguageSpokenCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
@@ -108,8 +109,11 @@ const cacheService = {
   getAllAuthoritiesJSON() {
     return authorities;
   },
-  getAllPermissions() {
-    return allPermissions;
+  getAllStaffSchoolPermissions() {
+    return staffSchoolPermissions;
+  },
+  getAllStaffDistrictPermissions() {
+    return staffDistrictPermissions;
   },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
@@ -121,11 +125,9 @@ const cacheService = {
       const data = await getApiCredentials(); // get the tokens first to make api calls.
       const roles = await getData(data.accessToken, `${config.get('edx:edxRolePermissionsURL')}`);
       rolePermissionsMap.clear();// reset the value.
-      allPermissions = [];
       if (roles && roles.length > 0) {
         for (const role of roles) {
           rolePermissionsMap.set(`${role.edxRoleCode}`, role.edxRolePermissions.map(perm => {
-            allPermissions.push(perm.edxPermissionCode);
             return perm.edxPermissionCode;
           }));
         }
@@ -328,12 +330,12 @@ const cacheService = {
   getActiveSchoolCollectionStatusCodesMap(){
     let schoolCollectionStatusCodesRaw = cachedData[constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES].records;
     let schoolCollectionStatusCodes = schoolCollectionStatusCodesRaw.map(item => {
-      return {...item, dropdownText:`${item.label}`}
+      return {...item, dropdownText:`${item.label}`};
     });
     schoolCollectionStatusCodes.forEach((statusCode => {
-      schoolCollectionStatusCodesMap.set(statusCode, statusCode.label)
-    }))
-    return schoolCollectionStatusCodesMap
+      schoolCollectionStatusCodesMap.set(statusCode, statusCode.label);
+    }));
+    return schoolCollectionStatusCodesMap;
   },
   getActiveEnrolledGradeCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_ENROLLED_GRADE_CODES].activeRecords;

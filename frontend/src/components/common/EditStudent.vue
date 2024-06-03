@@ -683,7 +683,7 @@ export default {
       }
     },
     isSchoolCollectionSubmitted(){
-      return this.sdcCollection.schoolCollection.sdcSchoolCollectionStatusCode === 'SUBMITTED';
+      return this.sdcCollection?.schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED';
     },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {
@@ -722,6 +722,10 @@ export default {
     save(){
       this.loadingCount += 1;
       this.hasError = false;
+
+      if(this.sdcCollection?.schoolCollection?.sdcDistrictCollectionID){
+        this.sdcSchoolCollectionStudentDetailCopy.sdcDistrictCollectionID = this.sdcCollection.schoolCollection.sdcDistrictCollectionID;
+      }
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then((res) => {
           if (res.data.sdcSchoolCollectionStudentStatusCode === 'ERROR') {
@@ -762,7 +766,7 @@ export default {
       }
       this.loadingCount += 1;
       this.hasError = false;
-      ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/student/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+      ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
         .then(() => {
           this.removeIndex = this.selectedStudents.findIndex(value => value === this.selectedSdcStudentID);
           this.selectedStudents.splice(this.removeIndex, 1);
