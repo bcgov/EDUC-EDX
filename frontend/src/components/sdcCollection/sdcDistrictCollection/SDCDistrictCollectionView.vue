@@ -76,6 +76,16 @@
                   :color="'rgba(56, 89, 138, 1)'"
                 />
                 <v-stepper-item
+                  v-else-if="step.step === 6"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :subtitle="submissionDueDate"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
                   v-else
                   :id="step.id"
                   :value="step.step"
@@ -182,6 +192,7 @@ export default defineComponent({
       currentStep: 0,
       districtID: null,
       submissionDueDate: null,
+      duplicationResolutionDueDate: null,
       isLoading: false,
       districtCollectionObject: {},
     };
@@ -212,6 +223,7 @@ export default defineComponent({
       })
       .then(() => {
         this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
+        this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
       });
   },
   methods: {
