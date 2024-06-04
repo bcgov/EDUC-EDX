@@ -241,6 +241,9 @@ export default {
   async created() {
     await this.fireFileProgress();
   },
+  beforeUnmount() {
+    clearInterval(this.interval);
+  },
   methods: {
     ...mapActions(sdcCollectionStore, ['setDistrictCollection']),
     async fireFileProgress(){
