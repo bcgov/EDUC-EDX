@@ -70,6 +70,17 @@
                 :key="step.step"
               >
                 <v-stepper-item
+                  v-if="step.step === 5"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :subtitle="submissionDueDate"
+                  :editable="step.step < currentStep"
+                  :complete="step.index < stepInCollection"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
@@ -246,6 +257,7 @@ import StepSixSchoolContacts from './StepSixSchoolContacts.vue';
 import StepSevenSubmitData from './StepSevenSubmitData.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
+import {formatSubmissionDate} from '../../../utils/format';
 
 export default {
   name: 'SDCCollectionView',
@@ -271,6 +283,7 @@ export default {
       steps: [],
       registerNextEvent: false,
       schoolCollectionObject: {},
+      submissionDueDate: null,
       isLoading: false,
       schoolID: null,
       school: {}
@@ -298,12 +311,21 @@ export default {
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
     });
-    sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
-      this.schoolCollectionObject = this.schoolCollection;
-      this.schoolID = this.schoolCollection.schoolID;
-      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
-      this.isLoading = !this.isLoading;
-    });
+    sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID)
+      .then(() => {
+        this.schoolCollectionObject = this.schoolCollection;
+        this.schoolID = this.schoolCollection.schoolID;
+        this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
+      })
+      .finally(() => {
+        this.isLoading = !this.isLoading;
+      })
+      .then(() => {
+        return sdcCollectionStore().getCollectionBySchoolId(this.schoolID);
+      })
+      .then(() => {
+        this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
+      });
   },
   methods: {
     compiledSdcSteps() {
@@ -404,4 +426,11 @@ export default {
 
 </style>
 
+<style>
+.v-stepper-item__subtitle {
+  color: red;
+  margin-top: .1em;
+  font-style: italic;
+}
+</style>
 

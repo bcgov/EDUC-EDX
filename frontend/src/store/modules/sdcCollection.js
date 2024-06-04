@@ -11,6 +11,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentStepInCollectionProcess: null,
     currentCollectionTypeCode: null,
     currentCollectionYear: null,
+    currentCollectionSubmissionDueDate: null,
+    currentCollectionResolveDupDueDate: null,
+    currentCollectionSignOffDueDate: null,
     schoolCollection: null,
     districtCollection: null,
     duplicateResolutionCodesMap: new Map(),
@@ -54,6 +57,15 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionYear(currentCollectionYear) {
       this.currentCollectionYear = currentCollectionYear;
+    },
+    setCurrentCollectionSubmissionDueDate(currentCollectionSubmissionDueDate) {
+      this.currentCollectionSubmissionDueDate = currentCollectionSubmissionDueDate;
+    },
+    setCurrentCollectionResolveDupDueDate(currentCollectionResolveDupDueDate) {
+      this.currentCollectionResolveDupDueDate = currentCollectionResolveDupDueDate;
+    },
+    setCurrentCollectionSignOffDueDate(currentCollectionSignOffDueDate) {
+      this.currentCollectionSignOffDueDate = currentCollectionSignOffDueDate;
     },
     setDistrictCollection(districtCollection) {
       this.districtCollection = districtCollection;
@@ -212,6 +224,16 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         ];
         return Promise.all(promises);
       }
+    },
+    async getCollectionByDistrictId(districtId) {
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + districtId);
+      this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
+      this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
+      this.setCurrentCollectionSignOffDueDate(response.data.signOffDueDate);
+    },
+    async getCollectionBySchoolId(schoolId) {
+      const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + '/' + schoolId);
+      this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
     }
   }
 });

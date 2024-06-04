@@ -65,6 +65,14 @@ export function formatDate(rawDate, from='uuuu-MM-dd\'T\'HH:mm:ss', to='uuuu/MM/
   return formatDateTime(rawDate,from, to);
 }
 
+export function formatSubmissionDate(dateString) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
 export function formatContactName(contact) {
   return contact.firstName ? `${contact.firstName} ${contact.lastName}` : contact.lastName;
 }

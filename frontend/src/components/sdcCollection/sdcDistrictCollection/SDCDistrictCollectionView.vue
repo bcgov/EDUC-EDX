@@ -70,8 +70,29 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
+                  :subtitle="submissionDueDate"
                   :editable="step.step < currentStep"
                   :complete="step.step < stepInCollection || districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else-if="step.step === 6"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :subtitle="duplicationResolutionDueDate"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else-if="step.step === 7"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :subtitle="signOffDueDate"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
                 <v-stepper-item
@@ -98,9 +119,10 @@
                 reverse-transition="false"
               >
                 <StepOneUploadData
-                :is-step-complete="isStepComplete"
-                :district-collection-object="districtCollectionObject"
-                @next="next"/>
+                  :is-step-complete="isStepComplete"
+                  :district-collection-object="districtCollectionObject"
+                  @next="next"
+                />
               </v-stepper-window-item>
               <v-stepper-window-item
                 :value="2"
@@ -163,6 +185,7 @@ import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
 import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
+import {formatSubmissionDate} from '../../../utils/format';
 
 
 export default defineComponent({
@@ -178,6 +201,9 @@ export default defineComponent({
     return {
       currentStep: 0,
       districtID: null,
+      submissionDueDate: null,
+      duplicationResolutionDueDate: null,
+      signOffDueDate: null,
       isLoading: false,
       districtCollectionObject: {},
     };
@@ -194,12 +220,23 @@ export default defineComponent({
   },
   created() {
     this.isLoading = !this.isLoading;
-    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
-      this.districtCollectionObject = this.districtCollection;
-      this.districtID = this.districtCollection?.districtID;
-      this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
-      this.isLoading = !this.isLoading;
-    });
+    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
+      .then(() => {
+        this.districtCollectionObject = this.districtCollection;
+        this.districtID = this.districtCollection?.districtID;
+        this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+      })
+      .finally(() => {
+        this.isLoading = !this.isLoading;
+      })
+      .then(() => {
+        return sdcCollectionStore().getCollectionByDistrictId(this.districtID);
+      })
+      .then(() => {
+        this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
+        this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
+        this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSignOffDueDate);
+      });
   },
   methods: {
     SDC_STEPS_DISTRICT() {
@@ -246,5 +283,13 @@ export default defineComponent({
 
 .v-stepper-header {
   box-shadow: none !important;
+}
+</style>
+
+<style>
+.v-stepper-item__subtitle {
+  color: red;
+  margin-top: .1em;
+  font-style: italic;
 }
 </style>
