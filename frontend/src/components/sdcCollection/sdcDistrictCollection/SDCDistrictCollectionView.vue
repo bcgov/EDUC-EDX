@@ -165,6 +165,7 @@ import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
 import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
+import {formatSubmissionDate} from '../../../utils/format';
 
 
 export default defineComponent({
@@ -210,7 +211,7 @@ export default defineComponent({
         return sdcCollectionStore().getCollectionByDistrictId(this.districtID);
       })
       .then(() => {
-        this.submissionDueDate = sdcCollectionStore().currentCollectionSubmissionDueDate;
+        this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
       });
   },
   methods: {
@@ -258,5 +259,13 @@ export default defineComponent({
 
 .v-stepper-header {
   box-shadow: none !important;
+}
+</style>
+
+<style>
+.v-stepper-item__subtitle {
+  color: red;
+  margin-top: .1em;
+  font-style: italic;
 }
 </style>
