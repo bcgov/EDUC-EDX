@@ -235,7 +235,7 @@ export default defineComponent({
       .then(() => {
         this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
         this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
-        this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().setCurrentCollectionSignOffDueDate);
+        this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSignOffDueDate);
       });
   },
   methods: {

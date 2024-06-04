@@ -13,7 +13,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentCollectionYear: null,
     currentCollectionSubmissionDueDate: null,
     currentCollectionResolveDupDueDate: null,
-    setCurrentCollectionSignOffDueDate: null,
+    currentCollectionSignOffDueDate: null,
     schoolCollection: null,
     districtCollection: null,
     duplicateResolutionCodesMap: new Map(),
