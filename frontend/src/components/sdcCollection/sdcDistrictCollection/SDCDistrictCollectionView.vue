@@ -80,7 +80,17 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
-                  :subtitle="submissionDueDate"
+                  :subtitle="duplicationResolutionDueDate"
+                  :editable="step.step < currentStep"
+                  :complete="step.step < stepInCollection"
+                  :color="'rgba(56, 89, 138, 1)'"
+                />
+                <v-stepper-item
+                  v-else-if="step.step === 7"
+                  :id="step.id"
+                  :value="step.step"
+                  :title="step.title"
+                  :subtitle="signOffDueDate"
                   :editable="step.step < currentStep"
                   :complete="step.step < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -193,6 +203,7 @@ export default defineComponent({
       districtID: null,
       submissionDueDate: null,
       duplicationResolutionDueDate: null,
+      signOffDueDate: null,
       isLoading: false,
       districtCollectionObject: {},
     };
@@ -224,6 +235,7 @@ export default defineComponent({
       .then(() => {
         this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
         this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
+        this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().setCurrentCollectionSignOffDueDate);
       });
   },
   methods: {

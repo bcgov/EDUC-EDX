@@ -13,6 +13,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentCollectionYear: null,
     currentCollectionSubmissionDueDate: null,
     currentCollectionResolveDupDueDate: null,
+    setCurrentCollectionSignOffDueDate: null,
     schoolCollection: null,
     districtCollection: null,
     duplicateResolutionCodesMap: new Map(),
@@ -62,6 +63,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     },
     setCurrentCollectionResolveDupDueDate(currentCollectionResolveDupDueDate) {
       this.currentCollectionResolveDupDueDate = currentCollectionResolveDupDueDate;
+    },
+    setCurrentCollectionSignOffDueDate(currentCollectionSignOffDueDate) {
+      this.currentCollectionSignOffDueDate = currentCollectionSignOffDueDate;
     },
     setDistrictCollection(districtCollection) {
       this.districtCollection = districtCollection;
@@ -225,11 +229,11 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + districtId);
       this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
       this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
+      this.setCurrentCollectionSignOffDueDate(response.data.signOffDueDate);
     },
     async getCollectionBySchoolId(schoolId) {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + '/' + schoolId);
       this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
-      this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
     }
   }
 });
