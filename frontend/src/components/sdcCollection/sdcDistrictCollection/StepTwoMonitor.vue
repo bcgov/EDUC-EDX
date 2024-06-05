@@ -355,10 +355,10 @@ export default defineComponent({
       return Object.values(this.filters).filter(filter => !!filter).reduce((acc, filter) => acc.concat(filter), []).length;
     },
     filteredItems() {
-      const { schoolFilter, issuesFilter, uploadDataFilter } = this.filters || {};
+      const { schoolNameNumber, issuesFilter, uploadDataFilter } = this.filters || {};
 
       return this.monitorSdcSchoolCollectionsResponse?.monitorSdcSchoolCollections?.filter(school => {
-        if (schoolFilter && school.schoolId !== schoolFilter) {
+        if (schoolNameNumber && schoolNameNumber[0]?.value && school.schoolId !== schoolNameNumber[0]?.value) {
           return false;
         }
         if (issuesFilter?.length > 0 && !this.filterForErrorsOrWarnings(school)) {
@@ -382,7 +382,6 @@ export default defineComponent({
   methods: {
     applyFilters($event) {
       this.filters = cloneDeep($event);
-      this.filters.schoolFilter = this.filters.schoolNameNumber[0].value;
     },
     clearFilters() {
       this.filters = {};
