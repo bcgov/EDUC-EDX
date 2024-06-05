@@ -300,7 +300,7 @@ export const REFUGEE = Object.freeze(
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
-      { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Funding Eligible', key: 'fundingEligible' } },
+      { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Funding Eligible', key: 'fundingEligibleRefugee' } },
       { title: 'PEN', key: 'studentPen', subHeader: { title: 'Local ID', key: 'localID' } },
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
