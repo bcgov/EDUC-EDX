@@ -558,9 +558,19 @@ async function downloadSdcReport(req, res) {
     }
 
     const token = getAccessToken(req);
-    const collectionId = reportType === 'ALL_STUDENT_DIS_CSV' ? req.params.sdcDistrictCollectionID : req.params.sdcSchoolCollectionID;
+
+    let mincode;
+    let collectionId;
+    if(req.params.sdcDistrictCollectionID){
+      mincode = cacheService.getDistrictByDistrictID(res.locals.requestedSdcDistrictCollection.districtID).districtNumber;
+      collectionId = req.params.sdcDistrictCollectionID;
+    }else{
+      mincode = cacheService.getSchoolBySchoolID(res.locals.requestedSdcSchoolCollection.schoolID).mincode;
+      collectionId = req.params.sdcSchoolCollectionID;
+    }
+
     const resData = await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${collectionId}/${reportType}`);
-    const fileDetails = getFileDetails(reportType);
+    const fileDetails = getFileDetails(reportType, mincode);
 
     setResponseHeaders(res, fileDetails);
     const buffer = Buffer.from(resData.documentData, 'base64');
@@ -571,17 +581,25 @@ async function downloadSdcReport(req, res) {
   }
 }
 
-function getFileDetails(reportType) {
+function getFileDetails(reportType, mincode) {
   const mappings = {
-    'ALL_STUDENT_DIS_CSV': { filename: 'allStudentsDistrict.csv', contentType: 'text/csv' },
-    'ALL_STUDENT_SCHOOL_CSV': { filename: 'allStudentsSchool.csv', contentType: 'text/csv' },
-    'DEFAULT': { filename: 'gradeEnrollmentFTE.pdf', contentType: 'application/pdf' }
+    'ALL_STUDENT_DIS_CSV': { filename: `AllDistrictStudents_${mincode}.csv`, contentType: 'text/csv' },
+    'ALL_STUDENT_SCHOOL_CSV': { filename: `AllSchoolStudents_${mincode}.csv`, contentType: 'text/csv' },
+    'ELL_HEADCOUNT': { filename: `ELLHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'REFUGEE_HEADCOUNT': { filename: `RefugeeHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'INDIGENOUS_HEADCOUNT': { filename: `IndigenousHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'BAND_RESIDENCE_HEADCOUNT': { filename: `BandOfResidenceHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'CAREER_HEADCOUNT': { filename: `CareerProgramsHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'FRENCH_HEADCOUNT': { filename: `FrenchProgramsHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'GRADE_ENROLLMENT_HEADCOUNT': { filename: `GradeEnrollmentHeadcount_${mincode}.csv`, contentType: 'application/pdf' },
+    'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];
 }
 
 function setResponseHeaders(res, { filename, contentType }) {
-  res.setHeader('Content-Disposition', `inline; attachment; filename="${filename}"`);
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
 }
 
