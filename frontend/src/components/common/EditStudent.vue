@@ -533,7 +533,7 @@
             text="Remove"
             variant="outlined"
             class="mr-1"
-            :disabled="isSchoolCollectionSubmitted()"
+            :disabled="isSchoolCollectionSubmitted() || isDistrictCollectionSubmitted()"
             @click="deleteStudent"
           />
           <v-btn
@@ -541,7 +541,7 @@
             color="#003366"
             text="Validate & Save"
             class="mr-1"
-            :disabled="!studentDetailsFormValid || isSchoolCollectionSubmitted()"
+            :disabled="!studentDetailsFormValid || isSchoolCollectionSubmitted() || isDistrictCollectionSubmitted()"
             @click="save"
           />
         </v-col>
@@ -684,6 +684,9 @@ export default {
     },
     isSchoolCollectionSubmitted(){
       return this.sdcCollection?.schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED';
+    },
+    isDistrictCollectionSubmitted(){
+      return this.sdcCollection?.districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED';
     },
     next() {
       if(sdcCollectionStore().currentStepInCollectionProcess.isComplete) {

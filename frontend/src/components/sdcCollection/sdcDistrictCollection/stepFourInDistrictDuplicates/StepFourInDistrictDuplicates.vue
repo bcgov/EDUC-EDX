@@ -48,6 +48,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
+          :district-collection-object="districtCollectionObject"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -61,6 +62,7 @@
           duplicate-type="program"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
+          :district-collection-object="districtCollectionObject"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>

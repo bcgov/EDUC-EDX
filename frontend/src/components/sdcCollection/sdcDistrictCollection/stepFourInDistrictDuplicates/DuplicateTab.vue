@@ -79,6 +79,7 @@
                   icon="mdi-playlist-edit"
                   variant="text"
                   v-bind="props"
+                  :disabled="isDistrictCollectionSubmitted()"
                 />
               </template>
               <v-list>
@@ -316,6 +317,10 @@ export default defineComponent({
     resolvedDuplicates: {
       type: Array,
       required: true
+    },
+    districtCollectionObject: {
+      type: Object,
+      default: null
     }
   },
   emits:['refresh-duplicates'],
@@ -337,6 +342,9 @@ export default defineComponent({
     }
   },
   methods: {
+    isDistrictCollectionSubmitted(){
+      return this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
+    },
     resolveProgramDuplicate(duplicate) {
       this.selectedDuplicate = duplicate;
       this.openProgramResolutionView = !this.openProgramResolutionView;

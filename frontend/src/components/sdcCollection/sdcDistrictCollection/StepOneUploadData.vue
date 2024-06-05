@@ -444,4 +444,8 @@ export default {
   justify-content: center;
   margin-bottom: 2em;
 }
+
+::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled[data-v-b5f27680]:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
+  color: white !important;
+}
 </style>
