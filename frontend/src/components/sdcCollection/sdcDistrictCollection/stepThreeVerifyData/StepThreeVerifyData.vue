@@ -6,7 +6,7 @@
       show-arrows
     >
       <v-tab
-        v-for="name in tabs"
+        v-for="name in visibleTabs"
         :key="name"
         class="divider"
         :value="name"
@@ -116,6 +116,7 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {setFailureAlert} from '../../../composable/alertComposable';
 import {appStore} from '../../../../store/modules/app';
 import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -152,7 +153,16 @@ export default {
     };
   },
   computed: {
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
     ...mapState(appStore, ['activeDistrictsMap']),
+    showRefugeeTab() {
+      return (
+        this.currentCollectionTypeCode === 'February'
+      );
+    },
+    visibleTabs() {
+      return this.showRefugeeTab ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee');
+    },
   },
   created() {
     appStore().getInstitutesData().finally(() => {
