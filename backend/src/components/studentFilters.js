@@ -610,6 +610,13 @@ function createLocalIdPenSearchCriteria(value) {
     condition: CONDITION.OR
   });
   searchCriteriaList.push({
+    key: 'assignedPen',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+  searchCriteriaList.push({
     key: 'localID',
     operation: FILTER_OPERATION.EQUAL,
     value: value,
