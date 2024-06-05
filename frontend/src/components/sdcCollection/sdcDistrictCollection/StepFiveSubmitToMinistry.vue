@@ -32,7 +32,7 @@
       <div v-else>
         <v-alert
           id="collection-submission"
-          class="justify-center"
+          class="justify-start"
           type="success"
           variant="tonal"
           text="Congratulations! The 1701 data has been submitted."

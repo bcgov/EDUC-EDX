@@ -227,7 +227,7 @@
         color="primary"
         icon="mdi-lock-open"
         variant="text"
-        :disabled="!value.isSubmitted"
+        :disabled="!value.isSubmitted || isDistrictCollectionSubmitted()"
         @click="unsubmitSdcSchoolCollection(value.sdcSchoolCollectionId)"
       />
     </template>
@@ -446,6 +446,9 @@ export default defineComponent({
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    isDistrictCollectionSubmitted(){
+      return this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
     },
     markStepAsComplete(){
       let updateCollection = {
