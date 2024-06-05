@@ -118,7 +118,7 @@
                     color="#003366"
                     class="pr-1 mb-1"
                   >
-                    mdi-check
+                    mdi-delete
                   </v-icon>
                   <span class="ml-2">Remove</span>
                 </v-list-item>
@@ -130,7 +130,7 @@
                     color="#003366"
                     class="pr-1 mb-1"
                   >
-                    mdi-check
+                    mdi-pencil
                   </v-icon>
                   <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>
                 </v-list-item>
@@ -221,9 +221,9 @@
           :reset="false"
           :total-elements="2"
           :hide-pagination="true"
-          >
+        >
           <template #resolution="{ sdcSchoolCollectionStudent }">
-            <span>{{getDuplicateResolutionDescription(duplicate.duplicateResolutionCode)}}</span>
+            <span>{{ getDuplicateResolutionDescription(duplicate.duplicateResolutionCode) }}</span>
           </template>
         </CustomTable>
       </v-col>
@@ -263,35 +263,25 @@
     :persistent="true"
   >
     <ChangeGrade
-      :selected-student="selectedStudentForGradeChange"
-      :selected-duplicate-id="selectedEnrollmentDuplicate.sdcDuplicateID"
+      :selected-student="selectedSdcSchoolCollectionStudent"
+      :selected-duplicate-id="selectedDuplicate.sdcDuplicateID"
       @close="openChangeGradeView = !openChangeGradeView"
       @close-refresh="closeAndRefreshDuplicates()"  
     />
   </v-bottom-sheet>
-  <v-bottom-sheet
-    v-model="openEnrollmentResolutionViaRemoveView"
-    :inset="true"
-    :no-click-animation="true"
-    :scrollable="true"
-    :persistent="true"
-  >
-    <EnrollmentDuplicateResolveViaRemove
-      :duplicate="selectedDuplicate"
-      :sdc-school-collection-student="selectedSdcSchoolCollectionStudent"
-      @close="openEnrollmentResolutionViaRemoveView = !openEnrollmentResolutionViaRemoveView"
-      @close-refresh="closeAndRefreshDuplicates()"
-    />
-  </v-bottom-sheet>
+  <EnrollmentDuplicateResolveViaRemove
+    ref="resolveEnrollmentDuplicateViaRemoveStudent"
+    @close-refresh="closeAndRefreshDuplicates()"
+  />
 </template>
 <script>
 import {defineComponent} from 'vue';
 import CustomTable from '../../../common/CustomTable.vue';
 import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
-import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
 import ChangeGrade from './ChangeGrade.vue';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
@@ -329,8 +319,6 @@ export default defineComponent({
       duplicateView: '1',
       editOptionsOpen: [],
       openProgramResolutionView: false,
-      selectedEnrollmentDuplicate: {},
-      openEnrollmentResolutionViaRemoveView: false,
       openChangeGradeView: false,
       selectedDuplicate: {},
       selectedSdcSchoolCollectionStudent: {}
@@ -352,17 +340,16 @@ export default defineComponent({
     resolveEnrollmentDuplicateViaRemove(duplicate, sdcSchoolCollectionStudent) {
       this.selectedDuplicate = duplicate;
       this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
-      this.openEnrollmentResolutionViaRemoveView = true;
+      this.$refs.resolveEnrollmentDuplicateViaRemoveStudent.removeAndResolveStudent(duplicate, sdcSchoolCollectionStudent);
     },
     closeAndRefreshDuplicates() {
       this.openProgramResolutionView = false;
-      this.openEnrollmentResolutionViaRemoveView = false;
       this.openChangeGradeView = false;
       this.$emit('refresh-duplicates');
     },
     async changeGrade(sdcSchoolCollectionStudent, duplicate) {
-      this.selectedStudentForGradeChange = sdcSchoolCollectionStudent;
-      this.selectedEnrollmentDuplicate = duplicate;
+      this.selectedDuplicate = duplicate;
+      this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
       this.openChangeGradeView = !this.openChangeGradeView;
     },
     getDuplicateResolutionDescription(key) {
