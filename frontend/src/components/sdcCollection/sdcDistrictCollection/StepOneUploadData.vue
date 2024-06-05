@@ -445,7 +445,7 @@ export default {
   margin-bottom: 2em;
 }
 
-::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled[data-v-b5f27680]:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
+::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
   color: white !important;
 }
 </style>
