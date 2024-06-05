@@ -73,31 +73,30 @@
           </v-row>
           <v-row class="d-flex justify-start">
             <v-col
-                cols="4"
-                lg="3"
-                class="pb-0 pt-0"
+              cols="2"
+              class="pb-0 pt-0"
             >
               <v-row
-                  no-gutters
-                  class="d-flex justify-start"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Status</span>
                 </v-col>
               </v-row>
               <v-row no-gutters>
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span>
                     <v-icon
-                        class="ml-n1 pr-1"
-                        :color="getStatusColorAuthorityOrSchool(school.status)"
-                        dark
+                      class="ml-n1 pr-1"
+                      :color="getStatusColorAuthorityOrSchool(school.status)"
+                      dark
                     >
                       mdi-circle-medium
                     </v-icon>
@@ -106,8 +105,7 @@
               </v-row>
             </v-col>
             <v-col
-              cols="4"
-              lg="3"
+              cols="2"
               class="pb-0 pt-0"
             >
               <v-row
@@ -117,123 +115,57 @@
                 <v-col
                   cols="10"
                   class="d-flex justify-start"
-                >
-                  <span style="color: grey">Open Date</span>
-                </v-col>
-              </v-row>
-              <v-row
-                no-gutters
-                class="pt-2"
-              >
-                <v-col
-                  cols="10"
-                  class="d-flex justify-start"
-                >
-                  <span
-                    class="ministryLine"
-                    style="color: black"
-                  >{{ formatDate(school.openedDate) || '-' }}</span>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col
-              cols="4"
-              lg="3"
-              class="pb-0 pt-0"
-            >
-              <v-row
-                no-gutters
-                class="d-flex justify-start"
-              >
-                <v-col
-                  cols="10"
-                  class="d-flex justify-start"
-                >
-                  <span style="color: grey">Close Date</span>
-                </v-col>
-              </v-row>
-              <v-row
-                no-gutters
-                class="pt-2"
-              >
-                <v-col
-                  cols="10"
-                  class="d-flex justify-start"
-                >
-                  <span
-                    class="ministryLine"
-                    style="color: black"
-                  >{{ formatDate(school.closedDate) || '-' }}</span>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row class="d-flex justify-start pt-7">
-            <v-col
-                cols="4"
-                lg="3"
-                class="pb-0 pt-0"
-            >
-              <v-row
-                  no-gutters
-                  class="d-flex justify-start"
-              >
-                <v-col
-                    cols="10"
-                    class="d-flex justify-start"
                 >
                   <span style="color: grey">School Category</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
-                  class="pt-2"
+                no-gutters
+                class="pt-2"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span
-                      class="ministryLine"
-                      style="color: black"
+                    class="ministryLine"
+                    style="color: black"
                   >{{ school.schoolCategory }}</span>
                 </v-col>
               </v-row>
             </v-col>
             <v-col
-                cols="4"
-                lg="3"
-                class="pb-0 pt-0"
+              cols="2"
+              class="pb-0 pt-0"
             >
               <v-row
-                  no-gutters
-                  class="d-flex justify-start"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Facility Type</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
-                  class="pt-2"
+                no-gutters
+                class="pt-2"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span
-                      class="ministryLine"
-                      style="color: black"
+                    class="ministryLine"
+                    style="color: black"
                   >{{ school.facilityType }}</span>
                 </v-col>
               </v-row>
             </v-col>
             <v-col
-              cols="4"
-              lg="3"
+              cols="3"
               class="pb-0 pt-0"
             >
               <v-row no-gutters>
@@ -277,83 +209,82 @@
                 </v-col>
               </v-row>
             </v-col>
-
           </v-row>
           <v-row class="d-flex justify-start pt-7">
             <v-col
-                cols="4"
-                lg="3"
-                class="pb-0 pt-0"
+              cols="4"
+              lg="3"
+              class="pb-0 pt-0"
             >
               <v-row>
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
-                    :class="editing ? 'mb-n5': ''"
+                  cols="10"
+                  class="d-flex justify-start"
+                  :class="editing ? 'mb-n5': ''"
                 >
                   <span style="color: grey">School Organization</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
-                  class="pt-2"
+                no-gutters
+                class="pt-2"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span
-                      v-if="!editing"
-                      class="ministryLine"
-                      style="color: black"
+                    v-if="!editing"
+                    class="ministryLine"
+                    style="color: black"
                   >{{
-                      getSchoolOrganization(school)
-                    }}</span>
+                    getSchoolOrganization(school)
+                  }}</span>
                   <v-select
-                      v-else
-                      v-model="schoolDetailsCopy.schoolOrganizationCode"
-                      :items="schoolActiveOrganizationTypes"
-                      item-value="schoolOrganizationCode"
-                      item-title="label"
-                      single
-                      variant="underlined"
-                      dense
-                      class="pt-0 mt-0"
-                      required
+                    v-else
+                    v-model="schoolDetailsCopy.schoolOrganizationCode"
+                    :items="schoolActiveOrganizationTypes"
+                    item-value="schoolOrganizationCode"
+                    item-title="label"
+                    single
+                    variant="underlined"
+                    dense
+                    class="pt-0 mt-0"
+                    required
                   />
                 </v-col>
               </v-row>
             </v-col>
 
             <v-col
-                cols="4"
-                lg="3"
-                class="pb-0 pt-0"
+              cols="4"
+              lg="3"
+              class="pb-0 pt-0"
             >
               <v-row
-                  no-gutters
-                  class="d-flex justify-start"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
-                    :class="editing ? 'mb-n5': ''"
+                  cols="10"
+                  class="d-flex justify-start"
+                  :class="editing ? 'mb-n5': ''"
                 >
                   <span style="color: grey">NLC Activity</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
-                  class="pt-2"
+                no-gutters
+                class="pt-2"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span
-                      v-if="!editing"
-                      class="ministryLine"
-                      style="color: black"
+                    v-if="!editing"
+                    class="ministryLine"
+                    style="color: black"
                   >{{ getNLCActivity(school) }}</span>
                   <v-select
                     v-else
@@ -374,12 +305,12 @@
             </v-col>
           </v-row>
           <v-row
-              no-gutters
-              class="mt-6 d-flex justify-start"
+            no-gutters
+            class="mt-6 d-flex justify-start"
           >
             <v-col
-                cols="12"
-                class="d-flex justify-start"
+              cols="12"
+              class="d-flex justify-start"
             >
               <h3 class="subHeading pt-4">
                 Contact Information
@@ -388,206 +319,206 @@
           </v-row>
           <v-row class="d-flex justify-start">
             <v-col
-                cols="2"
-                lg="2"
-                class="pb-0 pt-0"
+              cols="2"
+              lg="2"
+              class="pb-0 pt-0"
             >
               <v-row
-                  v-if="!editing"
-                  no-gutters
-                  class="d-flex justify-start"
+                v-if="!editing"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Phone</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
+                no-gutters
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <div v-if="!editing">
                     <span
-                        v-if="school.phoneNumber"
-                        class="ministryLine"
+                      v-if="school.phoneNumber"
+                      class="ministryLine"
                     >{{
-                        formatPhoneNumber(school.phoneNumber)
-                      }}</span>
+                      formatPhoneNumber(school.phoneNumber)
+                    }}</span>
                     <a
-                        v-if="showEditLinks(school.phoneNumber)"
-                        class="editField"
-                        @click="toggleEdit"
+                      v-if="showEditLinks(school.phoneNumber)"
+                      class="editField"
+                      @click="toggleEdit"
                     >+Phone</a>
                   </div>
                   <v-text-field
-                      v-else
-                      id="schoolDetailsPhoneNumber"
-                      v-model="schoolDetailsCopy.phoneNumber"
-                      label="Phone"
-                      class="ministryLine"
-                      variant="underlined"
-                      required
-                      :maxlength="10"
-                      :rules="[rules.phoneNumber(), rules.required()]"
-                      @keypress="isNumber($event)"
+                    v-else
+                    id="schoolDetailsPhoneNumber"
+                    v-model="schoolDetailsCopy.phoneNumber"
+                    label="Phone"
+                    class="ministryLine"
+                    variant="underlined"
+                    required
+                    :maxlength="10"
+                    :rules="[rules.phoneNumber(), rules.required()]"
+                    @keypress="isNumber($event)"
                   />
                 </v-col>
               </v-row>
             </v-col>
             <v-col
-                cols="2"
-                lg="2"
-                class="pb-0 pt-0"
+              cols="2"
+              lg="2"
+              class="pb-0 pt-0"
             >
               <v-row
-                  v-if="!editing"
-                  no-gutters
-                  class="d-flex justify-start"
+                v-if="!editing"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Fax</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
+                no-gutters
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <div v-if="!editing">
                     <span
-                        v-if="school.faxNumber"
-                        class="ministryLine"
+                      v-if="school.faxNumber"
+                      class="ministryLine"
                     >{{
-                        formatPhoneNumber(school.faxNumber)
-                      }}</span>
+                      formatPhoneNumber(school.faxNumber)
+                    }}</span>
                     <a
-                        v-if="showEditLinks(school.faxNumber)"
-                        class="editField"
-                        @click="toggleEdit"
+                      v-if="showEditLinks(school.faxNumber)"
+                      class="editField"
+                      @click="toggleEdit"
                     >+Fax</a>
                   </div>
                   <v-text-field
-                      v-else
-                      id="schoolDetailsFaxNumber"
-                      v-model="schoolDetailsCopy.faxNumber"
-                      label="Fax Number"
-                      class="ministryLine"
-                      variant="underlined"
-                      :rules="[rules.phoneNumber('Fax number must be valid')]"
-                      :maxlength="10"
-                      @keypress="isNumber($event)"
+                    v-else
+                    id="schoolDetailsFaxNumber"
+                    v-model="schoolDetailsCopy.faxNumber"
+                    label="Fax Number"
+                    class="ministryLine"
+                    variant="underlined"
+                    :rules="[rules.phoneNumber('Fax number must be valid')]"
+                    :maxlength="10"
+                    @keypress="isNumber($event)"
                   />
                 </v-col>
               </v-row>
             </v-col>
             <v-col
-                cols="4"
-                lg="4"
-                class="pb-0 pt-0"
+              cols="4"
+              lg="4"
+              class="pb-0 pt-0"
             >
               <v-row
-                  v-if="!editing"
-                  no-gutters
-                  class="d-flex justify-start"
+                v-if="!editing"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Email</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
+                no-gutters
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <div v-if="!editing">
                     <span
-                        v-if="school.email"
-                        style="word-break: break-all;"
-                        class="ministryLine"
+                      v-if="school.email"
+                      style="word-break: break-all;"
+                      class="ministryLine"
                     >{{
-                        school.email
-                      }}</span>
+                      school.email
+                    }}</span>
                     <a
-                        v-if="showEditLinks(school.email)"
-                        class="editField"
-                        @click="toggleEdit"
+                      v-if="showEditLinks(school.email)"
+                      class="editField"
+                      @click="toggleEdit"
                     >+Email</a>
                   </div>
                   <v-text-field
-                      v-else
-                      id="schoolDetailsEmail"
-                      v-model="schoolDetailsCopy.email"
-                      label="Email"
-                      class="ministryLine"
-                      variant="underlined"
-                      required
-                      :rules="[rules.email()]"
-                      :maxlength="255"
+                    v-else
+                    id="schoolDetailsEmail"
+                    v-model="schoolDetailsCopy.email"
+                    label="Email"
+                    class="ministryLine"
+                    variant="underlined"
+                    required
+                    :rules="[rules.email()]"
+                    :maxlength="255"
                   />
                 </v-col>
               </v-row>
             </v-col>
             <v-col
-                cols="4"
-                lg="4"
-                class="pb-0 pt-0"
+              cols="4"
+              lg="4"
+              class="pb-0 pt-0"
             >
               <v-row
-                  v-if="!editing"
-                  no-gutters
-                  class="d-flex justify-start"
+                v-if="!editing"
+                no-gutters
+                class="d-flex justify-start"
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <span style="color: grey">Website</span>
                 </v-col>
               </v-row>
               <v-row
-                  no-gutters
+                no-gutters
               >
                 <v-col
-                    cols="10"
-                    class="d-flex justify-start"
+                  cols="10"
+                  class="d-flex justify-start"
                 >
                   <div v-if="!editing">
                     <a
-                        v-if="cleanWebsiteUrl"
-                        style="word-break: break-all;"
-                        :href="cleanWebsiteUrl"
-                        target="_blank"
+                      v-if="cleanWebsiteUrl"
+                      style="word-break: break-all;"
+                      :href="cleanWebsiteUrl"
+                      target="_blank"
                     >{{
-                        cleanWebsiteUrl
-                      }}</a>
+                      cleanWebsiteUrl
+                    }}</a>
                     <a
-                        v-if="showEditLinks(cleanWebsiteUrl)"
-                        class="editField"
-                        @click="toggleEdit"
+                      v-if="showEditLinks(cleanWebsiteUrl)"
+                      class="editField"
+                      @click="toggleEdit"
                     >+Website</a>
                   </div>
                   <v-text-field
-                      v-if="editing"
-                      v-model="schoolDetailsCopy.website"
-                      label="Website"
-                      :rules="[rules.website()]"
-                      variant="underlined"
-                      :maxlength="255"
+                    v-if="editing"
+                    v-model="schoolDetailsCopy.website"
+                    label="Website"
+                    :rules="[rules.website()]"
+                    variant="underlined"
+                    :maxlength="255"
                   />
                 </v-col>
               </v-row>
@@ -809,7 +740,7 @@
                 </v-col>
               </v-row>
               <v-row
-                v-if="!hasSamePhysicalAddress && !editing"
+                v-if="!hasSamePhysicalAddress && (!editing || !canEditPhysicalAddress)"
                 no-gutters
               >
                 <v-col>
@@ -847,7 +778,7 @@
                     no-gutters
                   >
                     <v-col
-                      v-if="sameAsMailingCheckbox && !editing"
+                      v-if="sameAsMailingCheckbox && (!editing || !canEditPhysicalAddress)"
                       class="fontItalic"
                     >
                       <span>Same as Mailing Address</span>
@@ -1045,6 +976,7 @@ export default {
       school: '',
       district: '',
       authority: '',
+      independentArray: [SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS],
       schoolFacilityTypes: [],
       schoolCategoryTypes: [],
       schoolReportingRequirementTypes: [],
@@ -1082,6 +1014,9 @@ export default {
     ...mapState(instituteStore, ['gradeOptions']),
     dataReady: function () {
       return this.userInfo;
+    },
+    canEditPhysicalAddress(){
+      return !this.independentArray.includes(this.school.schoolCategoryCode);
     },
     emailBox(){
       if([SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS].includes(this.school.schoolCategoryCode)){
