@@ -38,7 +38,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { REFUGEE } from '../../../../utils/sdc/TableConfiguration';
+import { REFUGEE } from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
   
 export default {
   name: 'RefugeeComponent',
