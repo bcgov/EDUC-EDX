@@ -182,7 +182,9 @@ const reportTypeValues = [
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
-  ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'], 
+  ['french_dis', 'DIS_FRENCH_HEADCOUNT'],
+  ['french-per-school_dis', 'DIS_FRENCH_HEADCOUNT_PER_SCHOOL'],
+  ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'],
   ['csv_school', 'ALL_STUDENT_SCHOOL_CSV'],
   ['csv_dis', 'ALL_STUDENT_DIS_CSV']
 ];

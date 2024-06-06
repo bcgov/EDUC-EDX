@@ -248,7 +248,11 @@ export default {
       });
     },
     downloadReportURL() {
-      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.reportType}/download`;
+      if (this.isDistrictSummary) {
+        return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.sdcDistrictCollectionID}/report/${this.reportType}_dis/download`;
+      } else {
+        return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.reportType}/download`;
+      }
     },
     getTitle() {
       return this.headcountType.find(type => type.endpoint === this.reportType).title;
