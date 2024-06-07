@@ -726,6 +726,7 @@
               </v-row>
             </v-col>
             <v-col
+              v-if="!isOffshoreSchool"
               cols="3"
             >
               <v-row>
@@ -1245,6 +1246,11 @@ export default {
       await this.$nextTick();
       await this.$refs.schoolDetailsForm.validate();
     },
+    isOffshoreSchool(){
+      const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
+      this.$emit('update-is-offshore', isOffshore);
+      return isOffshore;
+    },
     async toggleEdit() {
       this.schoolDetailsCopy = this.deepCloneObject(this.school);
       this.addAddressesIfRequired(this.schoolDetailsCopy);
@@ -1306,7 +1312,7 @@ export default {
           'updateUser': null,
           'createDate': null,
           'updateDate': null,
-          'addressId': null,
+          'schoolAddressId': null,
           'schoolId': null,
           'addressLine1': null,
           'addressLine2': null,
@@ -1324,6 +1330,7 @@ export default {
           'createDate': null,
           'updateDate': null,
           'schoolId': null,
+          'schoolAddressId': null,
           'addressLine1': null,
           'addressLine2': null,
           'city': null,
