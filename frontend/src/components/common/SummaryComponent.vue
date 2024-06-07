@@ -249,7 +249,7 @@ export default {
     },
     downloadReportURL() {
       if (this.isDistrictSummary) {
-        return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.sdcDistrictCollectionID}/report/${this.reportType}_dis/download`;
+        return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/${this.reportType}_dis/download`;
       } else {
         return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.reportType}/download`;
       }
