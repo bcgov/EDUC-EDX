@@ -47,39 +47,61 @@
             </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="8">
+            <v-col cols="8" offset="1">
               <v-text-field
                 id="instituteIdentifierTextField"
                 v-model="instituteSpecificCode"
                 :rules="instituteSpecificCodeRules && requiredRules"
                 variant="underlined"
-                :hint="createInstituteSpecificCodeHint"
                 :label="createInstituteSpecificCodeLabel"
               />
             </v-col>
+            <v-col>
+              <v-tooltip >
+                <template v-slot:activator="{ props }">
+                  <v-icon size="25" class="mt-4 ml-n2" v-bind="props" icon="mdi-help-circle"></v-icon>
+                </template>
+                <span v-if="instituteTypeLabel.toLowerCase() === 'school'">This is a unique 8-digit number assigned to schools, typically starting with '0'.</span>
+                <span v-else>The unique 3-digit district number.</span>
+              </v-tooltip>
+            </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="8">
+            <v-col cols="8" offset="1">
               <v-text-field
                 id="primaryEdxCodeTextField"
                 v-model="primaryEdxCode"
                 :rules="requiredRules"
                 variant="underlined"
-                :hint="`Please enter the code obtained from your ${instituteTypeLabel.toLowerCase()} administrator`"
                 :label="`${instituteTypeLabel}'s Primary Activation Code`"
               />
             </v-col>
+            <v-col>
+              <v-tooltip >
+                <template v-slot:activator="{ props }">
+                  <v-icon size="25" class="mt-4 ml-n2" v-bind="props" icon="mdi-help-circle"></v-icon>
+                </template>
+                <span>This is a code created in EDX for each {{ instituteTypeLabel.toLowerCase() }}.<br/>If you do not know the code, please contact your EDX {{instituteTypeLabel}} Administrator.</span>
+              </v-tooltip>
+            </v-col>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-col cols="8">
+            <v-col cols="8" offset="1">
               <v-text-field
                 id="personalActivationCodeTextField"
                 v-model="personalActivationCode"
                 :rules="requiredRules"
                 variant="underlined"
                 label="Personal Activation Code"
-                hint="Please enter the personal activation code you have received in your EDX invite email"
               />
+            </v-col>
+            <v-col>
+              <v-tooltip >
+                <template v-slot:activator="{ props }">
+                  <v-icon size="25" class="mt-4 ml-n2" v-bind="props" icon="mdi-help-circle"></v-icon>
+                </template>
+                <span>This is a unique code created by EDX for each individual account.<br/>Find this code in step 6 of your EDX activation email.</span>
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row no-gutters class="d-flex justify-center">
