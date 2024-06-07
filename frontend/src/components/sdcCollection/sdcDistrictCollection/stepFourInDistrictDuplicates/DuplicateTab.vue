@@ -134,6 +134,18 @@
                   </v-icon>
                   <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>
                 </v-list-item>
+                <v-list-item
+                  id="markStudAsDiff"
+                  @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"
+                >
+                  <v-icon
+                    color="#003366"
+                    class="pr-1 mb-1"
+                  >
+                    mdi-account-question
+                  </v-icon>
+                  <span class="ml-2">Request Review of PEN</span>
+                </v-list-item>
               </v-list>
             </v-menu>
           </template>
@@ -273,6 +285,11 @@
     ref="resolveEnrollmentDuplicateViaRemoveStudent"
     @close-refresh="closeAndRefreshDuplicates()"
   />
+  <ConfirmationDialog ref="confirmMarkDifferent">
+    <template #message>
+      <p>We will look into the assigned PEN we found for this student. Would you like to proceed?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 <script>
 import {defineComponent} from 'vue';
@@ -282,10 +299,16 @@ import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
 import ChangeGrade from './ChangeGrade.vue';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
+import {cloneDeep} from 'lodash';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
   components: {
+    ConfirmationDialog,
     EnrollmentDuplicateResolveViaRemove,
     CustomTable, 
     ProgramDuplicateResolution,
@@ -332,6 +355,21 @@ export default defineComponent({
   methods: {
     isDistrictCollectionSubmitted(){
       return this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
+    },
+    async markStudentAsDifferent(sdcSchoolCollectionStudent){
+      const selectedStudent = cloneDeep(sdcSchoolCollectionStudent);
+      const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${sdcSchoolCollectionStudent.sdcSchoolCollectionID}/markDiff`, selectedStudent)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+          this.closeAndRefreshDuplicates();
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
+        });
     },
     resolveProgramDuplicate(duplicate) {
       this.selectedDuplicate = duplicate;
