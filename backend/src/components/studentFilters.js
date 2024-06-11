@@ -22,6 +22,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let spedFundingList = [];
   let ellList = [];
   let ellFunding = [];
+  let refugeeFunding = [];
   let fundingTypeList = [];
   let courseRangeList = [];
   let penLocalIdNameFilter = [];
@@ -75,6 +76,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
     if(key === 'ellFunding' && pValue) {
       ellFunding = createEllFundingFilter(pValue);
+    }
+    if(key === 'refugeeFunding' && pValue) {
+      refugeeFunding = createRefugeeFundingFilter(pValue);
     }
     if (key === 'warnings' && pValue) {
       validateWarningFilter(pValue);
@@ -221,6 +225,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: ellFunding
+    });
+  }
+  if(refugeeFunding.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: refugeeFunding
     });
   }
   if(ellList.length > 0) {
@@ -422,6 +432,18 @@ function createEllFundingFilter(pValue) {
   }
     
   return ellFundingList;
+}
+
+function createRefugeeFundingFilter(pValue) {
+  let refugeeFundingList = [];
+
+  if (pValue.toString() === 'true') {
+    refugeeFundingList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', value: 'REFUGEEINSEPTCOL', operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  } else if (pValue.toString() === 'false') {
+    refugeeFundingList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', value: 'REFUGEEINSEPTCOL', operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  }
+
+  return refugeeFundingList;
 }
 
 function createAncestryFilter(pValue) {
