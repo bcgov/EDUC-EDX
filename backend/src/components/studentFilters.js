@@ -1,6 +1,6 @@
 'use strict';
 const log = require('./logger');
-const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP} = require('../util/constants');
+const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP, STUDENT_TYPE_CODES} = require('../util/constants');
 const cacheService = require('./cache-service');
 
 function createMoreFiltersSearchCriteria(searchFilter = []) {
@@ -561,13 +561,26 @@ function createCourseRangeFilter(pValue) {
 
 function createStudentTypeFilter(pValue) {
   let studentTypeFilterList = [];
-  if (pValue.includes('isSchoolAged')) {
-    studentTypeFilterList.push({ key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+  if(pValue.includes(STUDENT_TYPE_CODES.SCHOOL_AGED) && pValue.includes(STUDENT_TYPE_CODES.ADULT) && pValue.includes(STUDENT_TYPE_CODES.PRESCHOOL_AGED)){
+    return studentTypeFilterList;
   }
-  if (pValue.includes('isAdult')) {
+  else if(pValue.includes(STUDENT_TYPE_CODES.SCHOOL_AGED) && pValue.includes(STUDENT_TYPE_CODES.ADULT)){
+    studentTypeFilterList.push({ key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
     studentTypeFilterList.push({ key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
   }
-  if (pValue.includes('isUnderSchoolAged')) {
+  else if(pValue.includes(STUDENT_TYPE_CODES.SCHOOL_AGED) && pValue.includes(STUDENT_TYPE_CODES.PRESCHOOL_AGED)){
+    studentTypeFilterList.push({ key: 'isAdult', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+  }
+  else if(pValue.includes(STUDENT_TYPE_CODES.ADULT) && pValue.includes(STUDENT_TYPE_CODES.PRESCHOOL_AGED)){
+    studentTypeFilterList.push({ key: 'isSchoolAged', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+  }
+  else if (pValue.includes('isSchoolAged')) {
+    studentTypeFilterList.push({ key: 'isSchoolAged', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+  }
+  else if (pValue.includes('isAdult')) {
+    studentTypeFilterList.push({ key: 'isAdult', value: 'true', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
+  }
+  else if (pValue.includes('isUnderSchoolAged')) {
     studentTypeFilterList.push({ key: 'isSchoolAged', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.OR });
     studentTypeFilterList.push({ key: 'isAdult', value: 'false', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.BOOLEAN, condition: CONDITION.AND });
   }
