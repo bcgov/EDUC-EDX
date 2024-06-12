@@ -186,7 +186,7 @@ const reportTypeValues = [
   ['french-per-school_dis', 'DIS_FRENCH_HEADCOUNT_PER_SCHOOL'],
   ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'], 
   ['enrollment_dis', 'DIS_GRADE_ENROLLMENT_HEADCOUNT'],
-  ['enrollment-per-school_dis', 'DIS_GRADE_ENROLLMENT_HEADCOUNT_PER_SCHOOL'],
+  ['grade-enrollment_dis', 'DIS_GRADE_ENROLLMENT_HEADCOUNT_PER_SCHOOL'],
   ['csv_school', 'ALL_STUDENT_SCHOOL_CSV'],
   ['csv_dis', 'ALL_STUDENT_DIS_CSV']
 ];
