@@ -61,7 +61,17 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.filters.applyFilter).click();
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 4');
 
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasSupportBlocks).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
 
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.noSupportBlocks).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 10');
     });
   });
 });
