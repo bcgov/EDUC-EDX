@@ -185,6 +185,7 @@ import {appStore} from '../../store/modules/app';
 import {edxStore} from '../../store/modules/edx';
 import {authStore} from '../../store/modules/auth';
 import {mapState} from 'pinia';
+import {SCHOOL_CATEGORY_CODES} from "../../utils/constants/SchoolCategoryCodeTypes";
   
 export default {
   name: 'Filters',
@@ -222,6 +223,7 @@ export default {
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
       courseRange: [0, 15],
+      indpSchoolCodes: [SCHOOL_CATEGORY_CODES.INDP_FNS, SCHOOL_CATEGORY_CODES.INDEPEND],
       penLocalIdNameFilter: null,
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
@@ -262,10 +264,11 @@ export default {
           schoolCodeName: school.schoolName + ' - ' + school.mincode,
           schoolID: school.schoolID,
           districtID: school.districtID,
+          schoolCategoryCode: school.schoolCategoryCode
         };
         this.schoolSearchNames.push(schoolItem);
       }
-      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
+      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier && !this.indpSchoolCodes.includes(school.schoolCategoryCode))), ['schoolCodeName']);
     },
     close() {
       this.$emit('close');
