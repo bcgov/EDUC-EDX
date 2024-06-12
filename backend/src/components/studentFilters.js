@@ -438,7 +438,7 @@ function createRefugeeFundingFilter(pValue) {
   let refugeeFundingList = [];
 
   if (pValue.toString() === 'true') {
-    refugeeFundingList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', value: 'REFUGEEINSEPTCOL', operation: FILTER_OPERATION.NOT_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    refugeeFundingList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', value: 'REFUGEEINSEPTCOL', operation: FILTER_OPERATION.NONE_IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
   } else if (pValue.toString() === 'false') {
     refugeeFundingList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', value: 'REFUGEEINSEPTCOL', operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
   }
