@@ -73,6 +73,19 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.filters.applyFilter).click();
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 10');
     });
+
+    it('can view French Tab Filters', () => {
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.stepThreeTabSlider.frenchProgramsButton).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 10');
+
+      //check filters
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
+      checkCommonFiltersExist();
+
+
+    });
   });
 });
 
