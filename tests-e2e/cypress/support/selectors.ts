@@ -184,6 +184,7 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
+    fteLt1: '#fteLt1',
     grade8: '#grade8',
     grade9: '#grade9',
     hasIndiAncestry: '#hasIndiAncestry',
