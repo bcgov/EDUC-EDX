@@ -647,6 +647,27 @@ export const ELL_FUNDING_FILTER = Object.freeze(
   }
 );
 
+export const REFUGEE_FUNDING_FILTER = Object.freeze(
+  {
+    heading: 'Refugee Funding Eligibility',
+    id: 'refugeeFunding',
+    multiple: false,
+    key: 'refugeeFunding',
+    filterOptions: [
+      {
+        title: 'Funding Eligible',
+        id: 'refugeeFundingEligible',
+        value: 'true'
+      },
+      {
+        title: 'Not Funding Eligible',
+        id: 'refugeeFundingNotEligible',
+        value: 'false'
+      }
+    ]
+  }
+);
+
 export const ELL_YEARS_FILTER = Object.freeze(
   {
     heading: 'Years in ELL',
@@ -942,6 +963,7 @@ export const REFUGEE = Object.freeze(
       fte: FTE_FILTER,
       grade: GRADE_FILTER,
       fundingType: FUNDING_TYPE_FILTER,
+      refugeeFunding: REFUGEE_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
   }

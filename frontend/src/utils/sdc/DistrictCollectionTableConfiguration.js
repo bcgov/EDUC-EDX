@@ -19,6 +19,7 @@ import {
   GRADE_FILTER,
   INDIGENOUS_FUNDING_FILTER,
   INDIGENOUS_PROGRAM_FILTER,
+  REFUGEE_FUNDING_FILTER,
   SPED_FILTER,
   SPED_FUNDING_FILTER,
   STUDENT_TYPE_FILTER,
@@ -311,6 +312,7 @@ export const REFUGEE = Object.freeze(
       fte: FTE_FILTER,
       grade: GRADE_FILTER,
       fundingType: FUNDING_TYPE_FILTER,
+      refugeeFunding: REFUGEE_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
   }
