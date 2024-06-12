@@ -204,6 +204,12 @@ const DUPLICATE_TYPE_CODES = Object.freeze({
   PROGRAM: 'PROGRAM'
 });
 
+const STUDENT_TYPE_CODES = Object.freeze({
+    SCHOOL_AGED: 'isSchoolAged',
+    ADULT: 'isAdult',
+    PRESCHOOL_AGED: 'isUnderSchoolAged'
+})
+
 module.exports = {
   FILTER_OPERATION,
   CONDITION,
@@ -217,7 +223,8 @@ module.exports = {
   CACHE_KEYS,
   MOVE_SCHOOL_TOPIC,
   ENROLLED_PROGRAM_TYPE_CODE_MAP,
-  DUPLICATE_TYPE_CODES
+  DUPLICATE_TYPE_CODES,
+  STUDENT_TYPE_CODES
 };
 /**
  * Test comment
