@@ -184,6 +184,7 @@ export default {
     isAdult: '#isAdult',
     fteEq0: '#fteEq0',
     fteGt0: '#fteGt0',
+    fteLt1: '#fteLt1',
     grade8: '#grade8',
     grade9: '#grade9',
     hasIndiAncestry: '#hasIndiAncestry',
@@ -192,8 +193,10 @@ export default {
     bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask',
     hasSupportBlocks: '#hasSupportBlocks',
     noSupportBlocks: '#noSupportBlocks',
+    career40: '#career40',
     career41: '#career41',
-    codeXH: '#codeXH'
+    codeXH: '#codeXH',
+    codeXA: '#codeXA'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
