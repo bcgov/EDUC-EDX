@@ -311,7 +311,6 @@ export const REFUGEE = Object.freeze(
       studentType: STUDENT_TYPE_FILTER,
       fte: FTE_FILTER,
       grade: GRADE_FILTER,
-      fundingType: FUNDING_TYPE_FILTER,
       refugeeFunding: REFUGEE_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
