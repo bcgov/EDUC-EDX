@@ -84,7 +84,42 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
       checkCommonFiltersExist();
 
+      cy.intercept(Cypress.env('interceptors').district_collection_students_pagination).as('paginationFilters1');
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('11 - Early French Immersion').click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 4');
 
+      cy.wait('@paginationFilters1');
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(4);
+      cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === 'Early French Immersion (11)';
+          });
+        });
+      });
+
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('14 - Late French Immersion').click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
+
+      cy.intercept(Cypress.env('interceptors').district_collection_students_pagination).as('paginationFilters2');
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('08 - Core French').click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 6');
+
+      cy.wait('@paginationFilters2');
+      cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(6);
+      cy.get(selectors.frenchComponent.tab).find('tbody tr').each($cell => {
+        cy.wrap($cell).children().last().invoke('text').then((text) => {
+          expect(text).to.satisfy((value: string) => {
+            return value === 'Core French (08)';
+          });
+        });
+      });
+
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
     });
   });
 });
