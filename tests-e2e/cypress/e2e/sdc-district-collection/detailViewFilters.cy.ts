@@ -121,6 +121,19 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
       cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
     });
+
+    it('can view Career Program Tab Filters', () => {
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.stepThreeTabSlider.careerProgramsButton).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 4');
+
+      //check filters
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
+      checkCommonFiltersExist();
+
+
+    });
   });
 });
 
