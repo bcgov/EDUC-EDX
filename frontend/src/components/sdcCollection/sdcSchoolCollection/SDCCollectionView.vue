@@ -70,20 +70,10 @@
                 :key="step.step"
               >
                 <v-stepper-item
-                  v-if="step.step === 5"
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
-                  :subtitle="submissionDueDate"
-                  :editable="step.step < currentStep"
-                  :complete="step.index < stepInCollection"
-                  :color="'rgba(56, 89, 138, 1)'"
-                />
-                <v-stepper-item
-                  v-else
-                  :id="step.id"
-                  :value="step.step"
-                  :title="step.title"
+                  :subtitle="step.step === stepToShowSubmissionDueDate ? submissionDueDate : null"
                   :editable="step.step < currentStep"
                   :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -305,6 +295,13 @@ export default {
         return null;
       }
       return this.activeSchoolsMap.get(this.schoolID);
+    },
+    stepToShowSubmissionDueDate() {
+      if (this.schoolCollectionObject?.sdcDistrictCollectionID === null) {
+        //Step 7 for independent schools.
+        return 7;
+      }
+      return 5;
     }
   },
   created() {
