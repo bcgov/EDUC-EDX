@@ -132,7 +132,29 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
       checkCommonFiltersExist();
 
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade9).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
 
+      cy.get(selectors.careerProgramComponent.tab).find(selectors.fteComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.codeXA).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 4');
+
+      cy.get(selectors.careerProgramComponent.tab).find(selectors.fteComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 4');
+
+      cy.get(selectors.careerProgramComponent.tab).find(selectors.fteComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career40).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 0');
     });
   });
 });

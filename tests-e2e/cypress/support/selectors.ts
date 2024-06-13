@@ -193,8 +193,10 @@ export default {
     bandCodeAutoCompleteSelector: 'div.v-list-item__content > div > span.v-autocomplete__mask',
     hasSupportBlocks: '#hasSupportBlocks',
     noSupportBlocks: '#noSupportBlocks',
+    career40: '#career40',
     career41: '#career41',
-    codeXH: '#codeXH'
+    codeXH: '#codeXH',
+    codeXA: '#codeXA'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
