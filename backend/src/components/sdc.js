@@ -488,6 +488,34 @@ async function getSdcSchoolCollectionStudent(sdcSchoolCollectionStudentID, res, 
   return await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, correlationID);
 }
 
+async function getSdcSchoolCollections(req, res) {
+  try {
+    const token = getAccessToken(req);
+
+    if (res.locals.requestedSdcDistrictCollection) {
+      let url = `${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollectionID}/sdcSchoolCollections`;
+
+      let data = await getData(token, url, req.session?.correlationID);
+      data?.forEach(value => {
+        value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
+      });
+      return res.status(HttpStatus.OK).json(data);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'No Sdc District Collection ID provided.'
+      });
+    }
+  } catch (e) {
+    if (e?.response?.status === 404) {
+      return res.status(HttpStatus.OK).json(null);
+    }
+    else {
+      log.error('Error getting sdc school collections', e.stack);
+      handleExceptionResponse(e, res);
+    }
+  }
+}
+
 /**
  * Returns an object that has the following properties key, value, operation, valueType
  * Helper function when building search params for querying SDC API
@@ -849,5 +877,6 @@ module.exports = {
   getDistrictHeadcounts,
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
-  resolveDistrictDuplicates
+  resolveDistrictDuplicates,
+  getSdcSchoolCollections
 };

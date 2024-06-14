@@ -185,6 +185,8 @@ import {appStore} from '../../store/modules/app';
 import {edxStore} from '../../store/modules/edx';
 import {authStore} from '../../store/modules/auth';
 import {mapState} from 'pinia';
+import {ApiRoutes} from "../../utils/constants";
+import ApiService from "../../common/apiService";
   
 export default {
   name: 'Filters',
@@ -257,15 +259,22 @@ export default {
   methods: {
     setupSchoolList(){
       this.schoolSearchNames = [];
-      for(const school of this.notClosedSchoolsMap.values()){
-        let schoolItem = {
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolID: school.schoolID,
-          districtID: school.districtID,
-        };
-        this.schoolSearchNames.push(schoolItem);
-      }
-      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier)), ['schoolCodeName']);
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sdcSchoolCollections`)
+          .then((res) => {
+            res.data.forEach(schoolCollection => {
+              const school = this.notClosedSchoolsMap.get(schoolCollection.schoolID);
+              let schoolItem = {
+                schoolCodeName: school.schoolName + ' - ' + school.mincode,
+                schoolID: school.schoolID,
+                districtID: school.districtID
+              };
+              this.schoolSearchNames.push(schoolItem);
+            });
+            this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
+          })
+          .catch(error => {
+            console.error(error);
+          });
     },
     close() {
       this.$emit('close');
