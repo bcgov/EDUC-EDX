@@ -49,6 +49,7 @@ export const ApiRoutes = Object.freeze({
     SDC_COLLECTION_BY_SCHOOL_ID: sdcRoot + '/getCollectionBySchoolId',
     SDC_COLLECTION_BY_DISTRICT_ID: sdcRoot + '/getCollectionByDistrictId',
     SDC_DISTRICT_COLLECTION: sdcRoot + '/sdcDistrictCollection',
+    SDC_DISTRICT_COLLECTION_SEARCH_ALL: sdcRoot + '/sdcSchoolCollection/searchAll?',
     SDC_SCHOOL_COLLECTION: sdcRoot + '/sdcSchoolCollection',
     SDC_SCHOOL_COLLECTION_STUDENT: sdcRoot + '/sdcSchoolCollectionStudent',
     SDC_SCHOOL_COLLECTION_STATUS_CODES: sdcRoot + '/school-collection-status-codes',

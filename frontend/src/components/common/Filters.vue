@@ -185,7 +185,8 @@ import {appStore} from '../../store/modules/app';
 import {edxStore} from '../../store/modules/edx';
 import {authStore} from '../../store/modules/auth';
 import {mapState} from 'pinia';
-import {SCHOOL_CATEGORY_CODES} from "../../utils/constants/SchoolCategoryCodeTypes";
+import {ApiRoutes} from "../../utils/constants";
+import ApiService from "../../common/apiService";
   
 export default {
   name: 'Filters',
@@ -223,7 +224,6 @@ export default {
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
       courseRange: [0, 15],
-      indpSchoolCodes: [SCHOOL_CATEGORY_CODES.INDP_FNS, SCHOOL_CATEGORY_CODES.INDEPEND],
       penLocalIdNameFilter: null,
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
@@ -259,16 +259,22 @@ export default {
   methods: {
     setupSchoolList(){
       this.schoolSearchNames = [];
-      for(const school of this.notClosedSchoolsMap.values()){
-        let schoolItem = {
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolID: school.schoolID,
-          districtID: school.districtID,
-          schoolCategoryCode: school.schoolCategoryCode
-        };
-        this.schoolSearchNames.push(schoolItem);
-      }
-      this.schoolSearchNames = sortBy(this.schoolSearchNames.filter((school => school.districtID === this.userInfo?.activeInstituteIdentifier && !this.indpSchoolCodes.includes(school.schoolCategoryCode))), ['schoolCodeName']);
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION_SEARCH_ALL}sdcDistrictCollectionID=${this.$route.params.sdcDistrictCollectionID}`)
+          .then((res) => {
+            res.data.forEach(schoolCollection => {
+              const school = this.notClosedSchoolsMap.get(schoolCollection.schoolID);
+              let schoolItem = {
+                schoolCodeName: school.schoolName + ' - ' + school.mincode,
+                schoolID: school.schoolID,
+                districtID: school.districtID
+              };
+              this.schoolSearchNames.push(schoolItem);
+            });
+            this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
+          })
+          .catch(error => {
+            console.error(error);
+          });
     },
     close() {
       this.$emit('close');

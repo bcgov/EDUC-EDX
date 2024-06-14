@@ -124,6 +124,9 @@ function conflictActionOnClosedSecureExchange(req, res, next) {
 
 //SDC School Collection checks
 function checkSdcSchoolCollectionAccess(req, res, next) {
+  if(res.locals.requestedSdcDistrictCollectionID){
+    return next();
+  }
   if (!res.locals.requestedSdcSchoolCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'The requested SDC School Collection was not found in the request.'
@@ -299,6 +302,13 @@ function findSdcDistrictCollectionID_params(req, res, next) {
   return next();
 }
 
+function findSearchAll_query(req, res, next) {
+  if (req.query.sdcDistrictCollectionID){
+    res.locals.requestedSdcDistrictCollectionID = req.query.sdcDistrictCollectionID;
+  }
+  return next();
+}
+
 function findSInstituteTypeCollectionID_body(req, res, next) {
   if(req.session.activeInstituteType === 'DISTRICT') {
     res.locals.requestedInstituteType = 'DISTRICT';
@@ -357,7 +367,7 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
 }
 
 async function loadSdcSchoolCollection(req, res, next) {
-  if (!res.locals.requestedSdcSchoolCollectionID) {
+  if (!res.locals.requestedSdcSchoolCollectionID || res.locals.requestedSdcDistrictCollectionID) {
     return next();
   }
   const token = getAccessToken(req);
@@ -369,6 +379,7 @@ async function loadSdcSchoolCollection(req, res, next) {
   try {
     res.locals.requestedSdcSchoolCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${res.locals.requestedSdcSchoolCollectionID}`, req.session?.correlationID);
   } catch (e) {
+    console.log("res.locals.requestedSdcSchoolCollectionID>>>>>>>>>>>>>>>", res.locals.requestedSdcSchoolCollectionID)
     log.error('Unable to load the SDC School Collection in loadSdcSchoolCollection.', e.stack);
   }
   return next();
@@ -388,6 +399,13 @@ async function loadSdcDistrictCollection(req, res, next) {
     res.locals.requestedSdcDistrictCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcDistrictCollection/${res.locals.requestedSdcDistrictCollectionID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the SDC District Collection in loadSdcDistrictCollection.', e.stack);
+  }
+  return next();
+}
+
+async function loadRelevantCollection(req, res, next){
+  if(res.locals.requestedSdcDistrictCollectionID){
+    await loadSdcDistrictCollection(req, res, next);
   }
   return next();
 }
@@ -467,7 +485,9 @@ const permUtils = {
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
   checkStudentBelongsInCollection,
-  findSdcSchoolCollectionStudentID_body
+  findSdcSchoolCollectionStudentID_body,
+  findSearchAll_query,
+  loadRelevantCollection
 };
 
 module.exports = permUtils;

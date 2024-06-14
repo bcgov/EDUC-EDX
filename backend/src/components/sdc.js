@@ -488,6 +488,27 @@ async function getSdcSchoolCollectionStudent(sdcSchoolCollectionStudentID, res, 
   return await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, correlationID);
 }
 
+async function getSdcSchoolCollections(req, res) {
+  try {
+    const token = getAccessToken(req);
+
+    if (res.locals.requestedSdcDistrictCollection) {
+      let url = `${config.get('sdc:schoolCollectionURL')}/searchAll?sdcDistrictCollectionID=${res.locals.requestedSdcDistrictCollectionID}`;
+
+      let data = await getData(token, url, req.session?.correlationID);
+      data?.forEach(value => {
+        value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
+      });
+      return res.status(HttpStatus.OK).json(data);
+    }
+  } catch (e) {
+    log.error('Error getting sdc school collections', e.stack);
+    if (e?.response?.status !== 404) {
+      handleExceptionResponse(e, res);
+    }
+  }
+}
+
 /**
  * Returns an object that has the following properties key, value, operation, valueType
  * Helper function when building search params for querying SDC API
@@ -847,5 +868,6 @@ module.exports = {
   getDistrictHeadcounts,
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
-  resolveDistrictDuplicates
+  resolveDistrictDuplicates,
+  getSdcSchoolCollections
 };
