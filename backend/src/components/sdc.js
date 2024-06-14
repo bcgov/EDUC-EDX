@@ -500,6 +500,10 @@ async function getSdcSchoolCollections(req, res) {
         value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
       });
       return res.status(HttpStatus.OK).json(data);
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'No Sdc District Collection ID provided.'
+      });
     }
   } catch (e) {
     if (e?.response?.status === 404) {
