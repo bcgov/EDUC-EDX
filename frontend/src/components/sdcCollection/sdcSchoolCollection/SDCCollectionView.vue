@@ -16,8 +16,9 @@
       </v-col>
     </v-row>
     <v-row
+      v-if="this.userInfo.activeInstituteType !== 'DISTRICT'"
       no-gutters
-      class="mt-2 mb-2 d-flex justify-start"
+      class="mt-2 d-flex justify-start"
     >
       <v-col class="mt-1 d-flex justify-start">
         <v-icon
@@ -32,7 +33,7 @@
         >Return to Data Collections</a>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row class="mt-2" no-gutters>
       <v-col>
         <v-divider class="divider" />
       </v-col>
