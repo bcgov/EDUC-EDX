@@ -187,6 +187,8 @@ const reportTypeValues = [
   ['enrollment', 'GRADE_ENROLLMENT_HEADCOUNT'], 
   ['enrollment_dis', 'DIS_GRADE_ENROLLMENT_HEADCOUNT'],
   ['grade-enrollment_dis', 'DIS_GRADE_ENROLLMENT_HEADCOUNT_PER_SCHOOL'],
+  ['career_dis', 'DIS_CAREER_HEADCOUNT'],
+  ['career-per-school_dis', 'DIS_CAREER_HEADCOUNT_PER_SCHOOL'],
   ['csv_school', 'ALL_STUDENT_SCHOOL_CSV'],
   ['csv_dis', 'ALL_STUDENT_DIS_CSV']
 ];
