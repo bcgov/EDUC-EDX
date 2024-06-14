@@ -357,7 +357,7 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
 }
 
 async function loadSdcSchoolCollection(req, res, next) {
-  if (!res.locals.requestedSdcSchoolCollectionID || res.locals.requestedSdcDistrictCollectionID) {
+  if (!res.locals.requestedSdcSchoolCollectionID) {
     return next();
   }
   const token = getAccessToken(req);
