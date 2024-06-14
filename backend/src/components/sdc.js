@@ -493,7 +493,7 @@ async function getSdcSchoolCollections(req, res) {
     const token = getAccessToken(req);
 
     if (res.locals.requestedSdcDistrictCollection) {
-      let url = `${config.get('sdc:schoolCollectionURL')}/searchAll?sdcDistrictCollectionID=${res.locals.requestedSdcDistrictCollectionID}`;
+      let url = `${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollectionID}/sdcSchoolCollections`;
 
       let data = await getData(token, url, req.session?.correlationID);
       data?.forEach(value => {
@@ -502,8 +502,11 @@ async function getSdcSchoolCollections(req, res) {
       return res.status(HttpStatus.OK).json(data);
     }
   } catch (e) {
-    log.error('Error getting sdc school collections', e.stack);
-    if (e?.response?.status !== 404) {
+    if (e?.response?.status === 404) {
+      return res.status(HttpStatus.OK).json(null);
+    }
+    else {
+      log.error('Error getting sdc school collections', e.stack);
       handleExceptionResponse(e, res);
     }
   }
