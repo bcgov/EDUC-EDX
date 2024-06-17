@@ -32,6 +32,12 @@
         :district="district"
       />
     </div>
+    <div v-if="reportView === 'summary'">
+      <SummaryComponent
+        :headcount-type="config.summaryReport"
+        :is-district-summary="true"
+      />
+    </div>
   </v-container>
 </template>
     
@@ -39,10 +45,12 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import { REFUGEE } from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+import SummaryComponent from '../../../common/SummaryComponent.vue';
   
 export default {
   name: 'RefugeeComponent',
   components: {
+    SummaryComponent,
     DetailComponent
   },
   mixins: [alertMixin],
