@@ -467,7 +467,8 @@ const permUtils = {
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
   checkStudentBelongsInCollection,
-  findSdcSchoolCollectionStudentID_body
+  findSdcSchoolCollectionStudentID_body,
+  edxUserHasAccessToInstitute
 };
 
 module.exports = permUtils;

@@ -92,7 +92,7 @@
                 {{ getAssignedPen(props.item['assignedPen']) }}
               </span>
 
-              <div v-else-if="column.key === 'schoolName'">
+              <div v-else-if="column.key === 'schoolName' && props.item['sdcSchoolCollectionID']">
                 <router-link
                   class="school-router"
                   :to="{ name: 'sdcCollection', params: { schoolCollectionID: props.item['sdcSchoolCollectionID'] }}"

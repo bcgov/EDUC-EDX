@@ -2,6 +2,7 @@
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
   getCreateOrUpdateUserValue
 } = require('./utils');
+const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -9,6 +10,7 @@ const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP,
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
 const cacheService = require('./cache-service');
+const { pick } = require('lodash');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -722,52 +724,89 @@ async function getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId(req, re
   }
 }
 
+function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate = false) {
+  const result = {
+    enrollmentDuplicates: {
+      NON_ALLOW: [],
+      ALLOWABLE: [],
+      RESOLVED: []
+    },
+    programDuplicates: {
+      NON_ALLOW: [],
+      RESOLVED: []
+    }
+  };
+  sdcDuplicates.forEach(sdcDuplicate => {
+    const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
+    const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
+
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school1);
+    sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school2);
+    toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
+    toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
+
+    if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT && sdcDuplicate.duplicateResolutionCode) {
+      setStudentResolvedMessage(sdcDuplicate);
+      result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
+    }
+    else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
+      setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
+      setCanMoveToCrossEnrollment(sdcDuplicate);
+      result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
+    }
+    else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
+      result.programDuplicates.RESOLVED.push(sdcDuplicate);
+    }
+    else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
+      setProgramDuplicateTypeMessage(sdcDuplicate);
+      result.programDuplicates.NON_ALLOW.push(sdcDuplicate);
+    }
+    if (isProvincialDuplicate) {
+      updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2);
+    }
+  });
+  return result;
+}
+
 async function getInDistrictDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates`, req.session?.correlationID);
-
-    const result = {
-      enrollmentDuplicates: {
-        NON_ALLOW: [],
-        ALLOWABLE: [],
-        RESOLVED: []
-      },
-      programDuplicates: {
-        NON_ALLOW: [],
-        RESOLVED: []
-      }
-    };
-    sdcDuplicates.forEach(sdcDuplicate => {
-      const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
-      sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school1);
-      toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
-      const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
-      sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school2);
-      toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
-
-      if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT && sdcDuplicate.duplicateResolutionCode) {
-        setStudentResolvedMessage(sdcDuplicate);
-        result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
-      }
-      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
-        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
-        setCanMoveToCrossEnrollment(sdcDuplicate);
-        result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
-      }
-      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
-        result.programDuplicates.RESOLVED.push(sdcDuplicate);
-      }
-      else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
-        setProgramDuplicateTypeMessage(sdcDuplicate);
-        result.programDuplicates.NON_ALLOW.push(sdcDuplicate);
-      }
-    });
-    res.status(HttpStatus.OK).json(result);
+    res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates));
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+async function getProvincialDuplicates(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
+    res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, true));
+  } catch (e) {
+    log.error('Error retrieving the in district duplicates', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) {
+  const district1 = cacheService.getDistrictByDistrictID(school1.districtID);
+  const district2 = cacheService.getDistrictByDistrictID(school2.districtID);
+  sdcDuplicate.sdcSchoolCollectionStudent1Entity.districtName = getDistrictName(district1);
+  sdcDuplicate.sdcSchoolCollectionStudent2Entity.districtName = getDistrictName(district2);
+  if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent1Entity, ['districtName', 'schoolName', 'fte', 'mappedNoOfCourses', 'assignedPen', 'sdcSchoolCollectionID', 'sdcDistrictCollectionID']);
+    delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionID;
+  }
+  if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
+    sdcDuplicate.sdcSchoolCollectionStudent2Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent2Entity, ['districtName', 'schoolName', 'fte', 'mappedNoOfCourses', 'assignedPen', 'sdcSchoolCollectionID', 'sdcDistrictCollectionID']);
+    delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionID;
+  }
+}
+
+function getDistrictName(district) {
+  return district.districtNumber + ' - ' + district.name;
 }
 
 function getSchoolName(school) {
@@ -878,5 +917,6 @@ module.exports = {
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
   resolveDistrictDuplicates,
-  getSdcSchoolCollections
+  getSdcSchoolCollections,
+  getProvincialDuplicates
 };

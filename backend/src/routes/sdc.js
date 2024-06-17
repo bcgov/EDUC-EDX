@@ -6,7 +6,7 @@ const { getCollectionBySchoolId, getCollectionByDistrictId, uploadFile, getSdcFi
   getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, removeSDCSchoolCollectionStudents,
   getStudentHeadcounts, downloadSdcReport, getSchoolStudentDuplicates,
   markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts,
-  getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDistrictDuplicates, getSdcSchoolCollections} = require('../components/sdc');
+  getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDistrictDuplicates, getSdcSchoolCollections, getProvincialDuplicates} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
@@ -75,6 +75,6 @@ router.get('/sdcSchoolCollectionStudent/getDistrictHeadcounts/:sdcDistrictCollec
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/in-district-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getInDistrictDuplicates);
 router.post('/sdcDistrictCollection/:sdcDistrictCollectionID/resolve-district-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, resolveDistrictDuplicates);
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/sdcSchoolCollections', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getSdcSchoolCollections);
-
+router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/provincial-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getProvincialDuplicates);
 
 module.exports = router;
