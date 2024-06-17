@@ -165,6 +165,18 @@
                 <StepFiveSubmitToMinistry
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="6"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepSixProvincialDuplicates
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
                 />
               </v-stepper-window-item>
             </v-stepper-window>
@@ -183,14 +195,16 @@ import {SDC_STEPS_DISTRICT} from '../../../utils/institute/SdcSteps';
 import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
-import StepFourInDistrictDuplicates from './stepFourInDistrictDuplicates/StepFourInDistrictDuplicates.vue';
+import StepFourInDistrictDuplicates from './duplicates/StepFourInDistrictDuplicates.vue';
 import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
 import {formatSubmissionDate} from '../../../utils/format';
+import StepSixProvincialDuplicates from './duplicates/StepSixProvincialDuplicates.vue';
 
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
   components: {
+    StepSixProvincialDuplicates,
     StepOneUploadData,
     StepTwoMonitor,
     StepThreeVerifyData,

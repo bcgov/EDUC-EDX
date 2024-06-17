@@ -58,7 +58,7 @@
           </v-col>
         </v-row>
         <CustomTable
-          :headers="IN_DISTRICT_DUPLICATES.nonAllowableTableHeaders"
+          :headers="headersConfig.nonAllowableTableHeaders"
           :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
           :is-loading="false"
           :reset="false"
@@ -185,7 +185,7 @@
           </v-col>
         </v-row>
         <CustomTable
-          :headers="IN_DISTRICT_DUPLICATES.allowableTableHeaders"
+          :headers="headersConfig.allowableTableHeaders"
           :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
           :is-loading="false"
           :reset="false"
@@ -227,7 +227,7 @@
           </v-col>
         </v-row>
         <CustomTable
-          :headers="IN_DISTRICT_DUPLICATES.resolvedTableHeaders"
+          :headers="headersConfig.resolvedTableHeaders"
           :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
           :is-loading="false"
           :reset="false"
@@ -294,7 +294,6 @@
 <script>
 import {defineComponent} from 'vue';
 import CustomTable from '../../../common/CustomTable.vue';
-import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
 import ChangeGrade from './ChangeGrade.vue';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
@@ -327,6 +326,10 @@ export default defineComponent({
       type: Array,
       default: null
     },
+    headersConfig: {
+      type: Object,
+      required: true
+    },
     resolvedDuplicates: {
       type: Array,
       required: true
@@ -346,11 +349,6 @@ export default defineComponent({
       selectedDuplicate: {},
       selectedSdcSchoolCollectionStudent: {}
     };
-  },
-  computed: {
-    IN_DISTRICT_DUPLICATES() {
-      return IN_DISTRICT_DUPLICATES;
-    }
   },
   methods: {
     isDistrictCollectionSubmitted(){

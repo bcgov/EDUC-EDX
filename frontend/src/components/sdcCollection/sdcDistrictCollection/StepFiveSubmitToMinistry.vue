@@ -43,12 +43,21 @@
 
   <v-row justify="end">
     <PrimaryButton
+      v-if="!displayNextBtn"
       id="step-5-submit-data-button"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Submit 1701 Data to Ministry"
       :disabled="isSubmitted"
       :click-action="submit"
+    />
+    <PrimaryButton
+      v-else
+      id="step-5-submit-data-button"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Next"
+      :click-action="next"
     />
   </v-row>
 </template>
@@ -78,17 +87,24 @@ export default {
       required: true
     }
   },
-  emits: ['previous'],
+  emits: ['previous', 'next'],
   data() {
     return {
+      afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
       isSubmitted: false,
       isLoading: true,
-      sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID
+      sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED']
     };
+  },
+  computed: {
+    displayNextBtn() {
+      return this.afterSubmittedStatuses.includes(this.districtCollectionObject?.sdcDistrictCollectionStatusCode);
+    }
   },
   mounted() {
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(() => {
-      this.isSubmitted = this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
+      this.isSubmitted = this.submittedStatuses.includes(this.districtCollectionObject.sdcDistrictCollectionStatusCode);
       this.isLoading = !this.isLoading;
     });
   },
@@ -114,6 +130,9 @@ export default {
         }).finally(() => {
           this.$router.go(this.$router.currentRoute);
         });
+    },
+    next() {
+      this.$emit('next');
     },
   }
 };
