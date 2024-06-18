@@ -113,7 +113,6 @@
               id="bandCode"
               v-model="bandCodeValue"
               label="Band of Residence"
-              density="compact"
               variant="underlined"
               :items="sdcCollection.bandCodes"
               item-value="bandCode"
