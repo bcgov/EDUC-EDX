@@ -91,7 +91,7 @@ router.get('/callback_entra',
   }
 );
 
-router.get('/silent_idir_login', async function (req, res, next) {
+router.get('/silent_sdc_idir_login', async function (req, res, next) {
   const client = redis.getRedisClient();
   if(req.query.schoolID && req.query.sdcSchoolCollectionID){
     await client.sadd('staffLinkInstituteID', req.query.schoolID);
@@ -111,7 +111,7 @@ router.get('/silent_idir_login', async function (req, res, next) {
 
 
 router.get(
-  '/callback_idir_silent',
+  '/callback_idir_silent_sdc',
   passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
   async (req, res) => {
     const client = redis.getRedisClient();
