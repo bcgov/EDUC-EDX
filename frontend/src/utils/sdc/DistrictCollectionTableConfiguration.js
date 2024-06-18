@@ -307,6 +307,9 @@ export const REFUGEE = Object.freeze(
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
     ],
+    summaryReport: [
+      { title: 'Eligible Newcomer Refugees by School', endpoint:'refugee-per-school'},
+    ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
       fte: FTE_FILTER,
