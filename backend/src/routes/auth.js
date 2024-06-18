@@ -6,8 +6,11 @@ const express = require('express');
 const auth = require('../components/auth');
 const log = require('../components/logger');
 const {v4: uuidv4} = require('uuid');
+const redis = require('../util/redis/redis-client');
 const {getSessionUser} = require('../components/utils');
-const {getAndSetupEDXUserAndRedirect} = require('../components/secureExchange');
+const {getAndSetupEDXUserAndRedirect, getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
+  getAndSetupStaffUserAndRedirectWithSchoolCollectionLink
+} = require('../components/secureExchange');
 
 const {
   body,
@@ -86,6 +89,46 @@ router.get('/callback_entra',
     const correlationID = req.session?.correlationID;
     getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant);
   }
+);
+
+router.get('/silent_idir_login', async function (req, res, next) {
+  const client = redis.getRedisClient();
+  if(req.query.schoolID && req.query.sdcSchoolCollectionID){
+    await client.sadd('staffLinkInstituteID', req.query.schoolID);
+    await client.sadd('staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID);
+    await client.sadd('staffLinkInstituteType', 'SCHOOL');
+  }else if(req.query.districtID && req.query.sdcDistrictCollectionID){
+    await client.sadd('staffLinkInstituteID', req.query.districtID);
+    await client.sadd('staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID);
+    await client.sadd('staffLinkInstituteType', 'DISTRICT');
+  }else{
+    res.status(401).json(UnauthorizedRsp);
+  }
+
+  const authenticator = passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' });
+  authenticator(req, res, next);
+});
+
+
+router.get(
+  '/callback_idir_silent',
+  passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
+  async (req, res) => {
+    const client = redis.getRedisClient();
+    let instituteID = await client.smembers('staffLinkInstituteID');
+    let instituteCollectionID = await client.smembers('staffLinkInstituteCollectionID');
+    let instituteType = await client.smembers('staffLinkInstituteType');
+    await client.del('staffLinkInstituteID');
+    await client.del('staffLinkInstituteCollectionID');
+    await client.del('staffLinkInstituteType');
+    const userInfo = getSessionUser(req);
+    const accessToken = userInfo.jwt;
+    if(instituteType === 'SCHOOL'){
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }else{
+      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }
+  },
 );
 
 router.get('/callback_idir',
