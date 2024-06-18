@@ -6,8 +6,11 @@ const express = require('express');
 const auth = require('../components/auth');
 const log = require('../components/logger');
 const {v4: uuidv4} = require('uuid');
+const redis = require('../util/redis/redis-client');
 const {getSessionUser} = require('../components/utils');
-const {getAndSetupEDXUserAndRedirect} = require('../components/secureExchange');
+const {getAndSetupEDXUserAndRedirect, getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
+  getAndSetupStaffUserAndRedirectWithSchoolCollectionLink
+} = require('../components/secureExchange');
 
 const {
   body,
@@ -86,6 +89,52 @@ router.get('/callback_entra',
     const correlationID = req.session?.correlationID;
     getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant);
   }
+);
+
+router.get('/silent_sdc_idir_login', async function (req, res, next) {
+  const client = redis.getRedisClient();
+
+  if(!req.query.idir_guid){
+    res.status(401).json(UnauthorizedRsp);
+  }
+  let idir_guid = req.query.idir_guid;
+  if(req.query.schoolID && req.query.sdcSchoolCollectionID){
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.schoolID);
+    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'SCHOOL');
+  }else if(req.query.districtID && req.query.sdcDistrictCollectionID){
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.districtID);
+    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'DISTRICT');
+  }else{
+    res.status(401).json(UnauthorizedRsp);
+  }
+
+  const authenticator = passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' });
+  authenticator(req, res, next);
+});
+
+
+router.get(
+  '/callback_idir_silent_sdc',
+  passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
+  async (req, res) => {
+    let idir_guid = req.session.passport.user.username;
+    const client = redis.getRedisClient();
+    let instituteID = await client.get(idir_guid + '::staffLinkInstituteID');
+    let instituteCollectionID = await client.get(idir_guid + '::staffLinkInstituteCollectionID');
+    let instituteType = await client.get(idir_guid + '::staffLinkInstituteType');
+    await client.del(idir_guid + '::staffLinkInstituteID');
+    await client.del(idir_guid + '::staffLinkInstituteCollectionID');
+    await client.del(idir_guid + '::staffLinkInstituteType');
+    const userInfo = getSessionUser(req);
+    const accessToken = userInfo.jwt;
+    if(instituteType === 'SCHOOL'){
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }else{
+      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }
+  },
 );
 
 router.get('/callback_idir',

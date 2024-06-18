@@ -961,9 +961,89 @@ async function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
-  log.info('User Set Up and Redirect called ' + isValidTenant);
+async function setInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID) {
+  log.info('Set InstituteTypeIdentifierAndRedirectToSchool And Redirect called');
 
+  if(sdcSchoolCollectionID && schoolID){
+    log.info('Staff user logged in, redirecting to selected school');
+    setSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+    res.redirect(config.get('server:frontend') + '/open-school-collection-summary/' + schoolID);
+  }else {
+    log.info('User has no associated schools or districts redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
+}
+
+async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID) {
+  log.info('Set InstituteTypeIdentifierAndRedirectToDistrict And Redirect called');
+
+  if(sdcDistrictCollectionID && districtID){
+    log.info('Staff user logged in, redirecting to selected school');
+    setSessionInstituteIdentifiers(req, districtID, 'DISTRICT');
+    res.redirect(config.get('server:frontend') + '/open-district-collection-summary/' + districtID);
+  }else {
+    log.info('User has no associated schools or districts redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
+}
+
+function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, schoolID, sdcSchoolCollectionID) {
+  let roles = req.session.passport.user._json.realm_access.roles;
+  if(roles.includes('EDX_ADMIN')){
+    Promise.all([
+      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+      getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+    ])
+      .then(async ([userSchools, userDistricts]) => {
+        req.session.userSchoolIDs = userSchools?.filter((el) => {
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
+        });//this is list of active schoolIDs associated to the user
+
+        req.session.userDistrictIDs = userDistricts?.filter((el) => {
+          return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el));
+        });//this is list of active districtIDs associated to the user
+
+        if(!req.session.userSchoolIDs.includes(schoolID)) {
+          log.info('IDIR User attempting to log into closed or non-existent school: ' + schoolID);
+          res.redirect(config.get('server:frontend') + '/unauthorized');
+        }
+        await setInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID);
+      });
+  }else{
+    log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
+}
+
+function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, districtID, sdcDistrictCollectionID) {
+  let roles = req.session.passport.user._json.realm_access.roles;
+  if(roles.includes('EDX_ADMIN')){
+    Promise.all([
+      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+      getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+    ])
+      .then(async ([userSchools, userDistricts]) => {
+        req.session.userSchoolIDs = userSchools?.filter((el) => {
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
+        });//this is list of active schoolIDs associated to the user
+
+        req.session.userDistrictIDs = userDistricts?.filter((el) => {
+          return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el));
+        });//this is list of active districtIDs associated to the user
+
+        if(!req.session.userDistrictIDs.includes(districtID)) {
+          log.info('IDIR User attempting to log into closed or non-existent district: ' + districtID);
+          res.redirect(config.get('server:frontend') + '/unauthorized');
+        }
+        await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID);
+      });
+  }else{
+    log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
+}
+
+function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
   if(!isValidTenant || isValidTenant !== 'true'){
     log.info('Not a valid tenant, redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
@@ -1004,9 +1084,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
             return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el));
           });//this is list of active districtIDs associated to the user
 
-          log.info('Burining out');
           await setInstituteTypeIdentifierAndRedirect(req, res);
-          log.info('Burining out 2');
         });
     }else{
       log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
@@ -1119,5 +1197,7 @@ module.exports = {
   relinkUserAccess,
   findPrimaryEdxActivationCode,
   removeSecureExchangeStudent,
-  generateOrRegeneratePrimaryEdxActivationCode
+  generateOrRegeneratePrimaryEdxActivationCode,
+  getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
+  getAndSetupStaffUserAndRedirectWithDistrictCollectionLink
 };
