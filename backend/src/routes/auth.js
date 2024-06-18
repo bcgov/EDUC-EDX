@@ -92,15 +92,21 @@ router.get('/callback_entra',
 );
 
 router.get('/silent_sdc_idir_login', async function (req, res, next) {
+  console.log('Req: ' + JSON.stringify(req.session));
   const client = redis.getRedisClient();
+
+  if(!req.query.idir_guid){
+    res.status(401).json(UnauthorizedRsp);
+  }
+  let idir_guid = req.query.idir_guid;
   if(req.query.schoolID && req.query.sdcSchoolCollectionID){
-    await client.sadd('staffLinkInstituteID', req.query.schoolID);
-    await client.sadd('staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID);
-    await client.sadd('staffLinkInstituteType', 'SCHOOL');
+    await client.sadd(idir_guid + '::staffLinkInstituteID', req.query.schoolID);
+    await client.sadd(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID);
+    await client.sadd(idir_guid + '::staffLinkInstituteType', 'SCHOOL');
   }else if(req.query.districtID && req.query.sdcDistrictCollectionID){
-    await client.sadd('staffLinkInstituteID', req.query.districtID);
-    await client.sadd('staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID);
-    await client.sadd('staffLinkInstituteType', 'DISTRICT');
+    await client.sadd(idir_guid + '::staffLinkInstituteID', req.query.districtID);
+    await client.sadd(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID);
+    await client.sadd(idir_guid + '::staffLinkInstituteType', 'DISTRICT');
   }else{
     res.status(401).json(UnauthorizedRsp);
   }
@@ -114,13 +120,14 @@ router.get(
   '/callback_idir_silent_sdc',
   passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
   async (req, res) => {
+    let idir_guid = req.session.passport.user.username;
     const client = redis.getRedisClient();
-    let instituteID = await client.smembers('staffLinkInstituteID');
-    let instituteCollectionID = await client.smembers('staffLinkInstituteCollectionID');
-    let instituteType = await client.smembers('staffLinkInstituteType');
-    await client.del('staffLinkInstituteID');
-    await client.del('staffLinkInstituteCollectionID');
-    await client.del('staffLinkInstituteType');
+    let instituteID = await client.smembers(idir_guid + '::staffLinkInstituteID');
+    let instituteCollectionID = await client.smembers(idir_guid + '::staffLinkInstituteCollectionID');
+    let instituteType = await client.smembers(idir_guid + '::staffLinkInstituteType');
+    await client.del(idir_guid + '::staffLinkInstituteID');
+    await client.del(idir_guid + '::staffLinkInstituteCollectionID');
+    await client.del(idir_guid + '::staffLinkInstituteType');
     const userInfo = getSessionUser(req);
     const accessToken = userInfo.jwt;
     if(instituteType === 'SCHOOL'){
