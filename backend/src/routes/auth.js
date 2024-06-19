@@ -119,6 +119,10 @@ router.get(
   '/callback_idir_silent_sdc',
   passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
   async (req, res) => {
+    if(!req.session.passport.user._json.idir_guid){
+      await res.redirect(config.get('server:frontend') + '/unauthorized');
+      return;
+    }
     let idir_guid = req.session.passport.user.username;
     const client = redis.getRedisClient();
     let instituteID = await client.get(idir_guid + '::staffLinkInstituteID');

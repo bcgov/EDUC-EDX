@@ -1005,7 +1005,8 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
 
         if(!req.session.userSchoolIDs.includes(schoolID)) {
           log.info('IDIR User attempting to log into closed or non-existent school: ' + schoolID);
-          res.redirect(config.get('server:frontend') + '/unauthorized');
+          res.redirect(config.get('server:frontend') + '/unauthorizedNoEDXUser');
+          return;
         }
         await setInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID);
       });
@@ -1033,7 +1034,8 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
 
         if(!req.session.userDistrictIDs.includes(districtID)) {
           log.info('IDIR User attempting to log into closed or non-existent district: ' + districtID);
-          res.redirect(config.get('server:frontend') + '/unauthorized');
+          res.redirect(config.get('server:frontend') + '/unauthorizedNoEDXUser');
+          return;
         }
         await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID);
       });
