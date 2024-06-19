@@ -6,6 +6,7 @@ import SessionExpired from './components/SessionExpired.vue';
 import ErrorPage from './components/ErrorPage.vue';
 import LoginError from './components/LoginError.vue';
 import Unauthorized from './components/common/Unauthorized.vue';
+import UnauthorizedNoEDXUser from './components/common/UnauthorizedNoEDXUser.vue';
 import {authStore} from './store/modules/auth';
 import {appStore} from './store/modules/app';
 import Login from './components/Login.vue';
@@ -61,6 +62,14 @@ const router = createRouter({
       path: '/unauthorized',
       name: 'unauthorized',
       component: Unauthorized,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/unauthorizedNoEDXUser',
+      name: 'unauthorizedNoEDXUser',
+      component: UnauthorizedNoEDXUser,
       meta: {
         requiresAuth: false
       }
