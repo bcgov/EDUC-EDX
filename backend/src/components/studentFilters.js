@@ -443,14 +443,14 @@ function createRefugeeFundingFilter(pValue) {
       value: 'REFUGEEINPREVCOL',
       operation: FILTER_OPERATION.NONE_IN,
       valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
+      condition: CONDITION.AND
     });
     refugeeFundingList.push({
       key: 'sdcStudentValidationIssueEntities.validationIssueCode',
       value: 'REFUGEEISADULT',
       operation: FILTER_OPERATION.NONE_IN,
       valueType: VALUE_TYPE.STRING,
-      condition: CONDITION.OR
+      condition: CONDITION.AND
     });
   } else if (pValue.toString() === 'false') {
     refugeeFundingList.push({
