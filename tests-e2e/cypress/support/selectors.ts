@@ -373,7 +373,8 @@ export default {
     englishLanguageLearningButton: 'button[value="English Language Learning"]',
     frenchProgramsButton: 'button[value="French Programs"]',
     indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
-    specialEducationButton: 'button[value="Special Education"]'
+    specialEducationButton: 'button[value="Special Education"]',
+    refugeeButton: 'button[value="Refugee"]'
   },
   studentLevelData: {
     detailsLoadingBar: 'div[class*=\'v-progress-linear--active\']',
