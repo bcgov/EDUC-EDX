@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :district-collection-object="districtCollectionObject"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -64,7 +64,7 @@
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :district-collection-object="districtCollectionObject"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -110,7 +110,7 @@ import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTa
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
-import DuplicateTab from './DuplicateTab.vue';
+import DuplicateTab from '../../../common/DuplicateTab.vue';
 
 export default defineComponent({
   name: 'StepFourInDistrictDuplicates',
