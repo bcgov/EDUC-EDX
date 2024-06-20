@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="false"
+          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST'"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>

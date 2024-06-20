@@ -897,7 +897,7 @@ async function unsubmitSdcSchoolCollection(req, res) {
   }
 }
 
-async function resolveDistrictDuplicates(req, res) {
+async function resolveDuplicates(req, res) {
   try {
     const payload = req.body;
     payload.forEach(student => {
@@ -919,7 +919,7 @@ async function resolveDistrictDuplicates(req, res) {
     });
    
     const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error resolving district duplicates.', e.stack);
@@ -951,7 +951,7 @@ module.exports = {
   getDistrictHeadcounts,
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
-  resolveDistrictDuplicates,
+  resolveDuplicates: resolveDuplicates,
   getSdcSchoolCollections,
   getProvincialDuplicates,
   getProvincialDuplicatesForSchool

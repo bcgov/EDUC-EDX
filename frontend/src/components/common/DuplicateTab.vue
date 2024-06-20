@@ -67,6 +67,7 @@
         >
           <template #resolution="{ sdcSchoolCollectionStudent }">
             <v-menu
+              v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
               v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID]"
               transition="fab-transition"
               location="end"
@@ -79,7 +80,7 @@
                   icon="mdi-playlist-edit"
                   variant="text"
                   v-bind="props"
-                  :disabled="!canResolveDuplicates()"
+                  :disabled="!canResolveDuplicates"
                 />
               </template>
               <v-list>
