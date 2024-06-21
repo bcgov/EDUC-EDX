@@ -412,7 +412,9 @@ function toTableRow(student) {
 }
 
 function fundingEligibleRefugee(student) {
-  const hasIssue = student?.sdcSchoolCollectionStudentValidationIssues?.some(issue => issue.validationIssueCode === 'REFUGEEINPREVCOL');
+  const hasIssue = student?.sdcSchoolCollectionStudentValidationIssues?.some(issue =>
+    issue.validationIssueCode === 'REFUGEEINPREVCOL' || issue.validationIssueCode === 'REFUGEEISADULT'
+  );
   return hasIssue ? 'No' : 'Yes';
 }
 
