@@ -78,8 +78,8 @@ export default {
       required: true,
       default: null
     },
-    selectedDuplicateId: {
-      type: String,
+    selectedDuplicate: {
+      type: Object,
       required: true,
       default: null
     }
@@ -108,7 +108,11 @@ export default {
     changeGradeForStudent() {
       let updatedStudent = cloneDeep(this.selectedStudent);
       updatedStudent.enrolledGradeCode = this.changedEnrolledGradeCode;
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedDuplicateId +'/' +this.type, [updatedStudent])
+      let payload = {
+        student: this.sdcSchoolCollectionStudent,
+        duplicate: this.selectedDuplicate
+      };
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedDuplicate.selectedDuplicateId +'/' +this.type, payload)
         .then(() => {
           setSuccessAlert('Success! The student details have been updated.');
         }).catch(error => {
