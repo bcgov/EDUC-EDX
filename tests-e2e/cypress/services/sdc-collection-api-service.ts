@@ -51,21 +51,37 @@ export class SdcCollectionApiService {
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
-    await this.deleteExistingTestData([schoolCollection.school]);
+    const school = schoolCollection.school;
+    const urlGetActiveSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${school.schoolId}`;
+
+    try {
+      const existingSchoolCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSchoolCollection);
+      if (existingSchoolCollection && existingSchoolCollection.sdcSchoolCollectionID) {
+        console.log(`Existing data found for school ID ${school.schoolId}, proceeding with deletion...`);
+        await this.deleteExistingTestData([schoolCollection.school]);
+      } else {
+        console.log(`No existing school collection data found for school ID ${school.schoolId}, skipping deletion.`);
+      }
+    } catch (error) {
+      console.error('Error fetching existing school collection data:', error);
+    }
 
     const isIndependentSchool = schoolCollection?.school?.schoolCategoryCode === 'INDEPEND';
     let sdcDistrictCollectionResponse;
     if(!isIndependentSchool) {
-      const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
+      try {
+        const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
 
+        if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
+          sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+        }
 
-      if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
-        sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+        const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+
+        sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
+      } catch (error) {
+        console.log('error creating sdcDistrictCollection data in create collections', error);
       }
-
-      const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-
-      sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
     }
 
     let sdcSchoolCollectionPayload = {};
