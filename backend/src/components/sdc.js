@@ -11,6 +11,7 @@ const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
 const cacheService = require('./cache-service');
 const { pick } = require('lodash');
+const redisUtil = require('../util/redis/redis-utils');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -297,6 +298,14 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
 
 async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
   try {
+    const token = getAccessToken(req);
+    let sdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
+    let currentStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    if(req.body.updateDate !== currentStudent.updateDate){
+      throw new Error(HttpStatus.CONFLICT.toString());
+    }
+    let studentLock = await redisUtil.lockSdcStudentBeingProcessedInRedis(sdcSchoolCollectionStudentID);
+
     const payload = req.body;
     payload.createDate = null;
     payload.createUser = null;
@@ -314,8 +323,8 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
-    const token = getAccessToken(req);
     const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL'), req.session?.correlationID);
+    await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
     }
@@ -325,6 +334,12 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
+    if (e.message === '409' || e.status === '409' || e.status === 409) {
+      return res.status(HttpStatus.CONFLICT).json({
+        status: HttpStatus.CONFLICT,
+        message: 'The student you are attempting to update is already being saved by another user. Please refresh your screen and try again.'
+      });
+    }
     log.error('Error updating sdc school collection student detail', e.stack);
     return handleExceptionResponse(e, res);
   }
@@ -901,7 +916,15 @@ async function unsubmitSdcSchoolCollection(req, res) {
 
 async function resolveDuplicates(req, res) {
   try {
-    const payload = req.body;
+    const token = getAccessToken(req);
+    let sdcDuplicateID = req.body.duplicate.sdcDuplicateID;
+    let currentDuplicate = await getData(token, `${config.get('sdc:schoolCollectionURL')}/duplicate/${sdcDuplicateID}`, req.session?.correlationID);
+    if(req.body.duplicate.updateDate !== currentDuplicate.updateDate){
+      throw new Error(HttpStatus.CONFLICT.toString());
+    }
+
+    let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(sdcDuplicateID);
+    const payload = req.body.students;
     payload.forEach(student => {
       student.createDate = null;
       student.createUser = null;
@@ -911,19 +934,25 @@ async function resolveDuplicates(req, res) {
       if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
         student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
       }
-  
+
       if (student?.numberOfCourses) {
         student.numberOfCourses = stripNumberFormattingNumberOfCourses(student.numberOfCourses);
       }
-  
+
       student.sdcSchoolCollectionStudentValidationIssues = null;
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
-   
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
+    if (e.message === '409' || e.status === '409' || e.status === 409) {
+      return res.status(HttpStatus.CONFLICT).json({
+        status: HttpStatus.CONFLICT,
+        message: 'The duplicate you are attempting to update is already being saved by another user. Please refresh your screen and try again.'
+      });
+    }
     log.error('Error resolving district duplicates.', e.stack);
     return handleExceptionResponse(e, res);
   }
@@ -953,7 +982,7 @@ module.exports = {
   getDistrictHeadcounts,
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
-  resolveDuplicates: resolveDuplicates,
+  resolveDuplicates,
   getSdcSchoolCollections,
   getProvincialDuplicates,
   getProvincialDuplicatesForSchool

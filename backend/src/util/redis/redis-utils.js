@@ -5,7 +5,9 @@ const sagaEventKey = 'EDX_SAGA_EVENTS';
 const safeStringify = require('fast-safe-stringify');
 const RedLock = require('redlock');
 const {LocalDateTime} = require('@js-joda/core');
+const HttpStatus = require('http-status-codes');
 let redLock;
+let redLockNoRetry;
 const redisUtil = {
   /**
    *
@@ -61,27 +63,6 @@ const redisUtil = {
       log.error('Redis client is not available, this should not have happened');
     }
   },
-  /**
-   *
-   * @param digitalID it is mandatory
-   */
-  async isSagaInProgressForDigitalID(digitalID) {
-    let sagaInProgress = false;
-    if(digitalID){
-      const eventsArrayFromRedis = await this.getSagaEvents();
-      for (const eventString of eventsArrayFromRedis) {
-        const event = JSON.parse(eventString);
-        if (event && event.digitalID && event.digitalID === digitalID) {
-          sagaInProgress = true; // show generic message in frontend.
-          break;
-        }
-      }
-      return sagaInProgress;
-    }else {
-      throw Error('digitalID is required');
-    }
-
-  },
   async removeElementfromSagaRecordInRedis(sagaId, eventToDelete) {
     const redisClient = Redis.getRedisClient();
     try {
@@ -89,6 +70,36 @@ const redisUtil = {
       await redisClient.srem(sagaEventKey, safeStringify(eventToDelete));
     } catch (e) {
       log.info(`this pod could not acquire lock for locks:edx-saga:deleteFromSet-${sagaId}, check other pods. ${e}`);
+    }
+  },
+  async lockSdcDuplicateBeingProcessedInRedis(sdcSchoolStudentID) {
+    try {
+      return await this.getRedLockNoRetry().acquire(`locks:edx-sdc-duplicate:${sdcSchoolStudentID}`, 6000);
+    } catch (e) {
+      log.info(`This pod could not acquire lock for locks:edx-sdc-duplicate:${sdcSchoolStudentID}, check other pods. ${e}`);
+      throw new Error(HttpStatus.CONFLICT.toString());
+    }
+  },
+  async unlockSdcDuplicateBeingProcessedInRedis(lock) {
+    try {
+      await this.getRedLockNoRetry().unlock(lock);
+    } catch (e) {
+      log.info(`This pod could not release lock for: ${lock}, check other pods. ${e}`);
+    }
+  },
+  async lockSdcStudentBeingProcessedInRedis(sdcSchoolStudentID) {
+    try {
+      return await this.getRedLockNoRetry().acquire(`locks:edx-sdc-student:${sdcSchoolStudentID}`, 6000);
+    } catch (e) {
+      log.info(`This pod could not acquire lock for locks:edx-sdc-student:${sdcSchoolStudentID}, check other pods. ${e}`);
+      throw new Error(HttpStatus.CONFLICT.toString());
+    }
+  },
+  async unlockSdcStudentBeingProcessedInRedis(lock) {
+    try {
+      await this.getRedLockNoRetry().unlock(lock);
+    } catch (e) {
+      log.info(`This pod could not release lock for: ${lock}, check other pods. ${e}`);
     }
   },
   async addElementToSagaRecordInRedis(sagaId, eventToAdd) {
@@ -129,6 +140,36 @@ const redisUtil = {
       log.error('A redis connection error has occurred in getRedLock of redis-util:', err);
     });
     return redLock;
+  },
+  getRedLockNoRetry() {
+    if (redLockNoRetry) {
+      return redLockNoRetry; // reusable red lock object.
+    } else {
+      redLockNoRetry = new RedLock(
+        [Redis.getRedisClient()],
+        {
+          // the expected clock drift; for more details
+          // see http://redis.io/topics/distlock
+          driftFactor: 0.01, // time in ms
+
+          // the max number of times Redlock will attempt
+          // to lock a resource before erroring
+          retryCount: 0,
+
+          // the time in ms between attempts
+          retryDelay: 50, // time in ms
+
+          // the max time in ms randomly added to retries
+          // to improve performance under high contention
+          // see https://www.awsarchitectureblog.com/2015/03/backoff.html
+          retryJitter: 25 // time in ms
+        }
+      );
+    }
+    redLockNoRetry.on('clientError', function (err) {
+      log.error('A redis connection error has occurred in getRedLock of redis-util:', err);
+    });
+    return redLockNoRetry;
   }
 
 };

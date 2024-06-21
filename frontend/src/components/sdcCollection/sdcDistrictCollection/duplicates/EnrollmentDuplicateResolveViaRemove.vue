@@ -31,7 +31,11 @@ export default {
       if (!confirmation) {
         return;
       }
-      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.sdcSchoolCollectionStudent.sdcSchoolCollectionID}/resolve-duplicates/${duplicate?.sdcDuplicateID}/DELETE_ENROLLMENT_DUPLICATE`, [this.sdcSchoolCollectionStudent])
+      let payload = {
+        students: [this.sdcSchoolCollectionStudent],
+        duplicate: duplicate
+      };
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.sdcSchoolCollectionStudent.sdcSchoolCollectionID}/resolve-duplicates/${duplicate?.sdcDuplicateID}/DELETE_ENROLLMENT_DUPLICATE`, payload)
         .then(() => {
           setSuccessAlert('Success! The student has been removed.');
         }).catch(error => {
