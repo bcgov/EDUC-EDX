@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :district-collection-object="districtCollectionObject"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST'"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
@@ -64,7 +64,7 @@
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :district-collection-object="districtCollectionObject"
+          :can-resolve-duplicates="false"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
@@ -106,14 +106,14 @@ import PrimaryButton from '../../../util/PrimaryButton.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {setFailureAlert} from '../../../composable/alertComposable';
-import {PROVINCIAL_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+import {DISTRICT_PROVINCIAL_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
-import DuplicateTab from './DuplicateTab.vue';
+import DuplicateTab from '../../../common/DuplicateTab.vue';
 
 export default defineComponent({
-  name: 'StepFourInDistrictDuplicates',
+  name: 'StepSixProvincialDuplicates',
   components: {
     DuplicateTab,
     Spinner,
@@ -124,7 +124,6 @@ export default defineComponent({
     districtCollectionObject: {
       type: Object,
       required: true,
-      default: null
     },
     isStepComplete: {
       type: Boolean,
@@ -156,7 +155,7 @@ export default defineComponent({
   },
   computed: {
     PROVINCIAL_DUPLICATES() {
-      return PROVINCIAL_DUPLICATES;
+      return DISTRICT_PROVINCIAL_DUPLICATES;
     }
   },
   async created() {

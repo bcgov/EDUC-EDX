@@ -332,7 +332,7 @@ export default defineComponent({
           title: 'School Status',
           align: 'center',
           key: 'schoolStatus',
-          value: item => this.schoolCollectionStatusCodes.get(item.schoolStatus).label
+          value: item => this.schoolCollectionStatusCodes.get(item.schoolStatus)?.label
         },
         {
           title: 'Unsubmit',
