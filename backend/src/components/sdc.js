@@ -914,7 +914,7 @@ async function unsubmitSdcSchoolCollection(req, res) {
   }
 }
 
-async function resolveDistrictDuplicates(req, res) {
+async function resolveDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicateID = req.body.duplicate.sdcDuplicateID;
