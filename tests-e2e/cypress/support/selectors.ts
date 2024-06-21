@@ -155,6 +155,9 @@ export default {
     allSchoolFTETotal: ':nth-child(9) > :nth-child(19) > div > span',
     availableReports: '#reports'
   },
+  refugeeComponent: {
+    filterButton: '#filters',
+  },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
     districtUserManagementOption: '#DistrictUserManagementMenuBtn',
@@ -196,7 +199,9 @@ export default {
     career40: '#career40',
     career41: '#career41',
     codeXH: '#codeXH',
-    codeXA: '#codeXA'
+    codeXA: '#codeXA',
+    refugeeFundingEligible: '#refugeeFundingEligible',
+    refugeeFundingNotEligible: '#refugeeFundingNotEligible'
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
@@ -438,6 +443,8 @@ export default {
     gender: '#gender',
     enrolledGradeCode: '#enrolledGradeCode',
     nativeAncestryInd: '#nativeAncestryInd',
+    schoolFundingCodes: '#schoolFundingCode',
+    numberofCourses: '#numberOfCourses',
     studentPen: '#studentPen',
     assignedPen: '#assignedPen',
     assignedPenTooltip: '#assignedPenTooltip',

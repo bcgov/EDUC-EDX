@@ -1,6 +1,6 @@
 import selectors from '../../support/selectors';
 import { AppSetupData } from '../../../cypress.config';
-import { SchoolCollectionOptions, SdcStudentEllOption } from 'tests-e2e/cypress/services/sdc-collection-api-service';
+import { SchoolCollectionOptions } from 'tests-e2e/cypress/services/sdc-collection-api-service';
 
 describe('SDC School Collection View', () => {
   context('As an EDX School User', () => {
@@ -10,15 +10,6 @@ describe('SDC School Collection View', () => {
           school: res.schools[0],
           loadWithStudentAndValidations: true,
           seedData: 'stepThreeSeedDataForFebruary'
-        }).then(collection => {
-          Cypress.env('schoolCollectionId', collection?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
-          const studentWithEllYears = collection?.sdcSchoolCollections[0]?.students
-            .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
-            .map(s => ({
-              studentID: s.assignedStudentId,
-              yearsInEll: 3
-            }) as SdcStudentEll);
-          cy.task<SdcStudentEllOption, SdcStudentEll>('setup-student-ells', studentWithEllYears);
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
       });
@@ -26,19 +17,86 @@ describe('SDC School Collection View', () => {
     after(() => cy.logout());
     beforeEach(() => cy.login());
 
-    it('can navigate to refugee tab', () => {
-      const id = Cypress.env('schoolCollectionId');
-      navigateToStep3Screen(id);
+    it('can navigate to refugee tab, create 2 refugee students, check one does not receive funding by filters', () => {
+      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
 
-      cy.get(selectors.stepThreeTabSlider.refugeeButton).click();
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.studentLevelData.stepTwoNextButton).click();
 
+      // create two students in feb col, one with refugee errors, one without
+
+      cy.get(selectors.studentLevelData.addStudent).click();
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
+      cy.get(selectors.studentLevelData.legalLastName).type('SMITH');
+      cy.get(selectors.studentLevelData.dobPicker).type('2016');
+      cy.get(selectors.datePicker.day).click();
+
+      cy.get(selectors.studentLevelData.gender).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
+
+      cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
+
+      cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('N').click();
+
+      cy.get(selectors.studentLevelData.schoolFundingCodes).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Newcomer Refugee (16)').click();
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
+      cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
+      cy.reload();
+
+      cy.get(selectors.studentLevelData.addStudent).click();
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
+      cy.get(selectors.studentLevelData.legalLastName).type('MARTIN');
+      cy.get(selectors.studentLevelData.dobPicker).type('2001');
+      cy.get(selectors.datePicker.day).click();
+
+      cy.get(selectors.studentLevelData.gender).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
+
+      cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Graduated Adult (GA)').click();
+
+      cy.get(selectors.studentLevelData.numberofCourses).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('1.00').click();
+
+      cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('N').click();
+
+      cy.get(selectors.studentLevelData.schoolFundingCodes).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Newcomer Refugee (16)').click();
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
+
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
+      cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
+      cy.reload();
+
+      // checks tab available in Feb
+      cy.contains('February 2024 Collection').should('be.visible').should('exist');
+      cy.get(selectors.stepThreeTabSlider.refugeeButton).should('exist').click();
+      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+
+      // checks special filter for refugee funding
+      cy.get(selectors.refugeeComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingEligible).click();
+      cy.get(selectors.filters.applyFilter).click();
+
+      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+
+      cy.get(selectors.refugeeComponent.filterButton).click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingNotEligible).click();
+      cy.get(selectors.filters.applyFilter).click();
+      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
     });
   });
 });
-
-
-function navigateToStep3Screen(id: SchoolCollectionOptions) {
-  cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('collectionStudent');
-  cy.visit('/open-collection-details/' + id);
-  cy.wait('@collectionStudent');
-}
