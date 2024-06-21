@@ -51,21 +51,37 @@ export class SdcCollectionApiService {
     const urlGetActiveCollection = `${this.config.env.studentDataCollection.base_url}${ACTIVE_COLLECTION_ENDPOINT}`;
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
-    await this.deleteExistingTestData([schoolCollection.school]);
+    const school = schoolCollection.school;
+    const urlGetActiveSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${school.schoolId}`;
+
+    try {
+      const existingSchoolCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSchoolCollection);
+      if (existingSchoolCollection && existingSchoolCollection.sdcSchoolCollectionID) {
+        console.log(`Existing data found for school ID ${school.schoolId}, proceeding with deletion...`);
+        await this.deleteExistingTestData([schoolCollection.school]);
+      } else {
+        console.log(`No existing school collection data found for school ID ${school.schoolId}, skipping deletion.`);
+      }
+    } catch (error) {
+      console.error('Error fetching existing school collection data:', error);
+    }
 
     const isIndependentSchool = schoolCollection?.school?.schoolCategoryCode === 'INDEPEND';
     let sdcDistrictCollectionResponse;
     if(!isIndependentSchool) {
-      const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
+      try {
+        const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
 
+        if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
+          sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+        }
 
-      if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
-        sdcDistrictCollectionPayload.sdcDistrictCollectionStatusCode = 'LOADED';
+        const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
+
+        sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
+      } catch (error) {
+        console.log('error creating sdcDistrictCollection data in create collections', error);
       }
-
-      const urlSdcDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/` + activeCollection.collectionID;
-
-      sdcDistrictCollectionResponse = await this.restUtils.postData<SdcDistrictCollection>(urlSdcDistrictCollection, sdcDistrictCollectionPayload);
     }
 
     let sdcSchoolCollectionPayload = {};
@@ -374,8 +390,81 @@ export class SdcCollectionApiService {
         const school = createSdcSchoolCollection(activeCollection.collectionID, schoolCollection?.school.schoolId, sdcDistrictCollectionResponse?.sdcDistrictCollectionID, JSON.stringify(curDate), JSON.stringify(curCloseDate), students, 'NEW');
         school.sdcSchoolCollectionStatusCode = 'REVIEWED';
         sdcSchoolCollectionPayload = school;
-      }
-      else if (schoolCollection.seedData === 'filterData') {
+      } else if (schoolCollection.seedData === 'stepThreeSeedDataForFebruary') {
+        sdcSchoolCollectionPayload = {
+          'createUser': 'EDXAT',
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'sdcSchoolCollectionID': null,
+          'collectionID': activeCollection.collectionID,
+          'schoolID': schoolCollection?.school?.schoolId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
+          'uploadDate': '20230822',
+          'uploadFileName': 'EDX-AT-FILE.std',
+          'sdcSchoolCollectionStatusCode': 'LOADED',
+          'collectionTypeCode': 'FEBRUARY',
+          'collectionOpenDate': curDate,
+          'collectionCloseDate': curCloseDate,
+          'students': [
+            {
+              'createUser': 'EDXAT',
+              'localID': '12345',
+              'studentPen': '101932770',
+              'legalFirstName': 'LEGALFIRST',
+              'legalMiddleNames': null,
+              'legalLastName': 'LEGALLAST',
+              'usualFirstName': 'USUALFIRST',
+              'usualMiddleNames': 'USUALMIDDLE',
+              'usualLastName': 'USUALLAST',
+              'dob': '20090630',
+              'gender': 'M',
+              'specialEducationCategoryCode': null,
+              'schoolFundingCode': '20',
+              'nativeAncestryInd': 'N',
+              'homeLanguageSpokenCode': '943',
+              'otherCourses': '0',
+              'supportBlocks': null,
+              'enrolledGradeCode': '07',
+              'careerProgramCode': null,
+              'numberOfCourses': '0700',
+              'bandCode': '0684',
+              'enrolledProgramCodes': '40',
+              'sdcSchoolCollectionStudentStatusCode': 'FIXABLE',
+              'isAdult': 'false',
+              'isSchoolAged': 'true',
+              'fte': 1,
+              'postalCode': 'V8R2Y9',
+              'fteZeroReasonCode': null,
+              'frenchProgramNonEligReasonCode': null,
+              'ellNonEligReasonCode': 'NTENRELL',
+              'indigenousSupportProgramNonEligReasonCode': 'NTENRINDIG',
+              'careerProgramNonEligReasonCode': 'NTENRCAREE',
+              'specialEducationNonEligReasonCode': 'NOSPECIAL',
+              'isGraduated': 'false',
+              'assignedStudentId': null,
+              'assignedPen': null,
+              'sdcSchoolCollectionStudentValidationIssues': [],
+              'sdcSchoolCollectionStudentEnrolledPrograms': [
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '14'
+                },
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '14'
+                }
+              ]
+            },
+          ]
+        };
+      } else if (schoolCollection.seedData === 'filterData') {
         sdcSchoolCollectionPayload = {
           'createUser': 'EDXAT',
           'updateUser': null,
