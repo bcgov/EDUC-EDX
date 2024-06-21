@@ -67,6 +67,7 @@
         >
           <template #resolution="{ sdcSchoolCollectionStudent }">
             <v-menu
+              v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
               v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID]"
               transition="fab-transition"
               location="end"
@@ -79,7 +80,7 @@
                   icon="mdi-playlist-edit"
                   variant="text"
                   v-bind="props"
-                  :disabled="isDistrictCollectionSubmitted()"
+                  :disabled="!canResolveDuplicates"
                 />
               </template>
               <v-list>
@@ -233,11 +234,7 @@
           :reset="false"
           :total-elements="2"
           :hide-pagination="true"
-        >
-          <template #resolution="{ sdcSchoolCollectionStudent }">
-            <span>{{ getDuplicateResolutionDescription(duplicate.duplicateResolutionCode) }}</span>
-          </template>
-        </CustomTable>
+        />
       </v-col>
     </v-row>
     <v-row
@@ -293,16 +290,15 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import CustomTable from '../../../common/CustomTable.vue';
-import ProgramDuplicateResolution from './ProgramDuplicateResolution.vue';
-import ChangeGrade from './ChangeGrade.vue';
-import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import EnrollmentDuplicateResolveViaRemove from './EnrollmentDuplicateResolveViaRemove.vue';
+import CustomTable from './CustomTable.vue';
+import ProgramDuplicateResolution from '../sdcCollection/sdcDistrictCollection/duplicates/ProgramDuplicateResolution.vue';
+import ChangeGrade from '../sdcCollection/sdcDistrictCollection/duplicates/ChangeGrade.vue';
+import EnrollmentDuplicateResolveViaRemove from '../sdcCollection/sdcDistrictCollection/duplicates/EnrollmentDuplicateResolveViaRemove.vue';
 import {cloneDeep} from 'lodash';
-import ApiService from '../../../../common/apiService';
-import {ApiRoutes} from '../../../../utils/constants';
-import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
-import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {setFailureAlert, setSuccessAlert} from '../composable/alertComposable';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
@@ -334,9 +330,9 @@ export default defineComponent({
       type: Array,
       required: true
     },
-    districtCollectionObject: {
-      type: Object,
-      default: null
+    canResolveDuplicates: {
+      type: Boolean,
+      required: true
     }
   },
   emits:['refresh-duplicates'],
@@ -351,9 +347,6 @@ export default defineComponent({
     };
   },
   methods: {
-    isDistrictCollectionSubmitted(){
-      return this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED';
-    },
     async markStudentAsDifferent(sdcSchoolCollectionStudent){
       const selectedStudent = cloneDeep(sdcSchoolCollectionStudent);
       const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
@@ -387,9 +380,6 @@ export default defineComponent({
       this.selectedDuplicate = duplicate;
       this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
       this.openChangeGradeView = !this.openChangeGradeView;
-    },
-    getDuplicateResolutionDescription(key) {
-      return sdcCollectionStore().duplicateResolutionCodesMap.get(key)?.message;
     }
   }
 });

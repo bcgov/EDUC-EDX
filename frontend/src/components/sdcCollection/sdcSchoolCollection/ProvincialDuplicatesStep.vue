@@ -33,7 +33,7 @@
         class="divider"
         :value="name"
       >
-        {{ name }} {{name === 'Enrollment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length  + ')'}}
+        {{ name }}
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
@@ -45,12 +45,12 @@
         <DuplicateTab
           v-if="tab==='Enrollment Duplicates'"
           duplicate-type="enrollment"
-          :headers-config="IN_DISTRICT_DUPLICATES"
+          :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
-          @refresh-duplicates="getInDistrictDuplicates()"
+          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST'"
+          @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
       <v-window-item
@@ -61,11 +61,11 @@
         <DuplicateTab
           v-if="tab==='Program Duplicates'"
           duplicate-type="program"
-          :headers-config="IN_DISTRICT_DUPLICATES"
+          :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
-          @refresh-duplicates="getInDistrictDuplicates()"
+          :can-resolve-duplicates="false"
+          @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
     </v-window>
@@ -102,18 +102,18 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import PrimaryButton from '../../../util/PrimaryButton.vue';
-import ApiService from '../../../../common/apiService';
-import {ApiRoutes} from '../../../../utils/constants';
-import {setFailureAlert} from '../../../composable/alertComposable';
-import {IN_DISTRICT_DUPLICATES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
-import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import Spinner from '../../../common/Spinner.vue';
-import alertMixin from '../../../../mixins/alertMixin';
-import DuplicateTab from '../../../common/DuplicateTab.vue';
+import PrimaryButton from '../../util/PrimaryButton.vue';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
+import {setFailureAlert} from '../../composable/alertComposable';
+import {SCHOOL_PROVINCIAL_DUPLICATES} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import Spinner from '../../common/Spinner.vue';
+import alertMixin from '../../../mixins/alertMixin';
+import DuplicateTab from '../../common/DuplicateTab.vue';
 
 export default defineComponent({
-  name: 'StepFourInDistrictDuplicates',
+  name: 'ProvincialDuplicatesStep',
   components: {
     DuplicateTab,
     Spinner,
@@ -121,7 +121,7 @@ export default defineComponent({
   },
   mixins: [alertMixin],
   props: {
-    districtCollectionObject: {
+    schoolCollectionObject: {
       type: Object,
       required: true,
       default: null
@@ -146,7 +146,6 @@ export default defineComponent({
       duplicateView: 'nonAllowable',
       programDuplicateView: 'nonAllowableProgram',
       duplicateResolutionCodesMap: null,
-      sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
       tab: null,
       tabs: [
         'Enrollment Duplicates',
@@ -155,23 +154,23 @@ export default defineComponent({
     };
   },
   computed: {
-    IN_DISTRICT_DUPLICATES() {
-      return IN_DISTRICT_DUPLICATES;
-    }
+    PROVINCIAL_DUPLICATES() {
+      return SCHOOL_PROVINCIAL_DUPLICATES;
+    },
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {
       this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
-      this.getInDistrictDuplicates();
+      this.getProvincialDuplicates();
     });
   },
   methods: {
     disableNextButton() {
       return this.nonAllowableDuplicates.length > 0 || this.nonAllowableProgramDuplicates.length > 0;
     },
-    getInDistrictDuplicates(){
+    getProvincialDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.sdcDistrictCollectionID + '/in-district-duplicates').then(response => {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/provincial-duplicates').then(response => {
         this.nonAllowableDuplicates = response.data?.enrollmentDuplicates?.NON_ALLOW;
         this.allowableDuplicates = response.data?.enrollmentDuplicates?.ALLOWABLE;
         this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
@@ -185,12 +184,12 @@ export default defineComponent({
         this.isLoading = false;
       });
     },
-    markStepAsComplete(){
+    markSchoolStepAsComplete(){
       let updateCollection = {
-        districtCollection: this.districtCollectionObject,
-        status: 'D_DUP_VRFD'
+        schoolCollection: this.schoolCollectionObject,
+        status: 'P_DUP_VRFD'
       };
-      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.$route.params.schoolCollectionID}`, updateCollection)
         .then(() => {
           this.$emit('next');
         })
@@ -200,10 +199,10 @@ export default defineComponent({
         });
     },
     next() {
-      if(this.isStepComplete || this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED') {
+      if(this.isStepComplete) {
         this.$emit('next');
       } else {
-        this.markStepAsComplete();
+        this.markSchoolStepAsComplete();
       }
     },
   }

@@ -165,7 +165,19 @@
                 <StepSevenSubmitData 
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
+                  @next="next"
                 /> 
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="8"
+                transition="false"
+                reverse-transition="false"
+              >
+                <ProvincialDuplicatesStep
+                  :school-collection-object="schoolCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
               </v-stepper-window-item>
             </v-stepper-window>
             <v-stepper-window
@@ -224,6 +236,18 @@
                 <StepSevenSubmitData
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="6"
+                transition="false"
+                reverse-transition="false"
+              >
+                <ProvincialDuplicatesStep
+                  :school-collection-object="schoolCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
                 />
               </v-stepper-window-item>
             </v-stepper-window>
@@ -249,10 +273,12 @@ import StepSevenSubmitData from './StepSevenSubmitData.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
+import ProvincialDuplicatesStep from './ProvincialDuplicatesStep.vue';
 
 export default {
   name: 'SDCCollectionView',
   components: {
+    ProvincialDuplicatesStep,
     StepFourDuplicatesProcessing,
     StepFiveSchoolDetails,
     StepThreeVerifyData,
@@ -380,16 +406,16 @@ export default {
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
       if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
       } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.index;
+        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
       }
     },
     getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
       if(this.schoolCollectionObject.sdcDistrictCollectionID != null) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
       } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(sdcSchoolCollectionStatusCode))?.step;
+        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
       }
     }
   }
