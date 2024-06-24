@@ -273,7 +273,7 @@
   >
     <ChangeGrade
       :selected-student="selectedSdcSchoolCollectionStudent"
-      :selected-duplicate-id="selectedDuplicate"
+      :selected-duplicate="selectedDuplicate"
       @close="openChangeGradeView = !openChangeGradeView"
       @close-refresh="closeAndRefreshDuplicates()"  
     />
