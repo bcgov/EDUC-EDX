@@ -81,7 +81,7 @@ describe('SDC School Collection View', () => {
       cy.reload();
 
       // checks tab available in Feb
-      cy.contains('February 2024 Collection').should('be.visible').should('exist');
+      cy.get(selectors.studentLevelData.collectionTypeDate).should('exist').contains('February 2024 Collection');
       cy.get(selectors.stepThreeTabSlider.refugeeButton).should('exist').click();
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(2);
 
