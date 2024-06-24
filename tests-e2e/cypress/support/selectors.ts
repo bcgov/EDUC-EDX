@@ -219,6 +219,9 @@ export default {
       step7: '#step-7 .v-stepper-item__title',
       step8: '#step-8 .v-stepper-item__title',
       step9: '#step-9 .v-stepper-item__title',
+    },
+    verifySchoolDetails: {
+      schoolDetails: '.ministryLine',
     }
   },
   invitationSelection: {

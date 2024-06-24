@@ -60,5 +60,29 @@ describe('SDC School Collection View', () => {
           .and('have.text', expectedTitle);
       });
     });
+
+    it('can navigate to and verify; verify school details 1601', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.studentLevelData.stepTwoNextButton).click();
+      cy.get(selectors.studentLevelData.stepThreeNextButton).click();
+      cy.get(selectors.studentLevelData.stepFourNextButton).click();
+
+      cy.get(selectors.independent1601.verifySchoolDetails.schoolDetails).should('contain', 'Independent');
+      cy.get(selectors.independent1601.verifySchoolDetails.schoolDetails).should('contain', 'Standard');
+      cy.get(selectors.independent1601.verifySchoolDetails.schoolDetails).should('contain', 'Two Semester');
+      cy.get(selectors.independent1601.verifySchoolDetails.schoolDetails).should('contain', '250-555-5555');
+      cy.get(selectors.independent1601.verifySchoolDetails.schoolDetails).should('contain', 'fakeuser@sd5.bc.ca');
+    });
+
+    it('can navigate to and verify; verify school contacts 1601', () => {
+      cy.visit('/');
+      cy.get(selectors.dashboard.dataCollectionsTile).click();
+      cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
+      cy.get(selectors.studentLevelData.stepFiveNextButton).click();
+
+
+    });
   });
 });
