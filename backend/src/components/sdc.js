@@ -298,13 +298,16 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
 
 async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
   try {
+    let studentLock;
     const token = getAccessToken(req);
-    let sdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
-    let currentStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, req.session?.correlationID);
-    if(req.body.updateDate !== currentStudent.updateDate){
-      throw new Error(HttpStatus.CONFLICT.toString());
+    if(req.body.sdcSchoolCollectionStudentID) {
+      let sdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
+      let currentStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+      if (req.body.updateDate !== currentStudent.updateDate) {
+        throw new Error(HttpStatus.CONFLICT.toString());
+      }
+      studentLock = await redisUtil.lockSdcStudentBeingProcessedInRedis(sdcSchoolCollectionStudentID);
     }
-    let studentLock = await redisUtil.lockSdcStudentBeingProcessedInRedis(sdcSchoolCollectionStudentID);
 
     const payload = req.body;
     payload.createDate = null;
@@ -324,7 +327,9 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
     const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL'), req.session?.correlationID);
-    await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);
+    if(studentLock) {
+      await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);
+    }
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
     }
