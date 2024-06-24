@@ -33,7 +33,7 @@
         class="divider"
         :value="name"
       >
-        {{ name }} {{name === 'Enrollment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length  + ')'}}
+        {{ name }} {{ name === 'Enrollment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length + ')' }}
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode !== 'SUBMITTED'"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -64,7 +64,7 @@
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode !== 'SUBMITTED'"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
