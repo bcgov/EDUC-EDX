@@ -222,6 +222,13 @@ export default {
     },
     verifySchoolDetails: {
       schoolDetails: '.ministryLine',
+    },
+    verifySchoolContacts: {
+      contactName: '.contactName',
+      contactEffectiveDate: '#contactEffectiveDate',
+      contactEmailBreak: '.contactEmailBreak',
+      contactPhoneNumber: '#contactPhoneNumber',
+      contactAlternatePhoneNumber: '#contactAlternatePhoneNumber',
     }
   },
   invitationSelection: {

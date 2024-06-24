@@ -82,7 +82,11 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.studentLevelData.stepFiveNextButton).click();
 
-
+      cy.get(selectors.independent1601.verifySchoolContacts.contactName).should('contain', 'EDXAutomation Testing');
+      cy.get(selectors.independent1601.verifySchoolContacts.contactEffectiveDate).should('contain', '2022/10/25');
+      cy.get(selectors.independent1601.verifySchoolContacts.contactEmailBreak).should('contain', 'test@test.com');
+      cy.get(selectors.independent1601.verifySchoolContacts.contactPhoneNumber).should('contain', '250-665-6585');
+      cy.get(selectors.independent1601.verifySchoolContacts.contactAlternatePhoneNumber).should('contain', '250-654-4578');
     });
   });
 });
