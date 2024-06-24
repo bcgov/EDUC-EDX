@@ -464,6 +464,80 @@ export class SdcCollectionApiService {
             },
           ]
         };
+      } else if (schoolCollection.seedData === 'independentSchoolSeedData') {
+        sdcSchoolCollectionPayload = {
+          'createUser': 'EDXAT',
+          'updateUser': null,
+          'createDate': null,
+          'updateDate': null,
+          'sdcSchoolCollectionID': null,
+          'collectionID': activeCollection.collectionID,
+          'schoolID': schoolCollection?.school?.schoolId,
+          'sdcDistrictCollectionID': sdcDistrictCollectionResponse?.sdcDistrictCollectionID,
+          'uploadDate': '20230822',
+          'uploadFileName': 'EDX-AT-FILE.std',
+          'sdcSchoolCollectionStatusCode': 'LOADED',
+          'collectionTypeCode': 'SEPTEMBER',
+          'collectionOpenDate': curDate,
+          'collectionCloseDate': curCloseDate,
+          'students': [
+            {
+              'createUser': 'EDXAT',
+              'localID': '12345',
+              'studentPen': '101932770',
+              'legalFirstName': 'LEGALFIRST',
+              'legalMiddleNames': null,
+              'legalLastName': 'LEGALLAST',
+              'usualFirstName': 'USUALFIRST',
+              'usualMiddleNames': 'USUALMIDDLE',
+              'usualLastName': 'USUALLAST',
+              'dob': '20090630',
+              'gender': 'M',
+              'specialEducationCategoryCode': null,
+              'schoolFundingCode': '20',
+              'nativeAncestryInd': 'N',
+              'homeLanguageSpokenCode': '943',
+              'otherCourses': '0',
+              'supportBlocks': null,
+              'enrolledGradeCode': '07',
+              'careerProgramCode': null,
+              'numberOfCourses': '0700',
+              'bandCode': '0684',
+              'enrolledProgramCodes': '40',
+              'sdcSchoolCollectionStudentStatusCode': 'FIXABLE',
+              'isAdult': 'false',
+              'isSchoolAged': 'true',
+              'fte': 1,
+              'postalCode': 'V8R2Y9',
+              'fteZeroReasonCode': null,
+              'frenchProgramNonEligReasonCode': null,
+              'ellNonEligReasonCode': 'NTENRELL',
+              'indigenousSupportProgramNonEligReasonCode': 'NTENRINDIG',
+              'careerProgramNonEligReasonCode': 'NTENRCAREE',
+              'specialEducationNonEligReasonCode': 'NOSPECIAL',
+              'isGraduated': 'false',
+              'assignedStudentId': null,
+              'assignedPen': null,
+              'sdcSchoolCollectionStudentValidationIssues': [],
+              'sdcSchoolCollectionStudentEnrolledPrograms': [
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '14'
+                },
+                {
+                  'createUser': 'EDXAT',
+                  'updateUser': null,
+                  'createDate': null,
+                  'updateDate': null,
+                  'enrolledProgramCode': '14'
+                }
+              ]
+            },
+          ]
+        };
       } else if (schoolCollection.seedData === 'filterData') {
         sdcSchoolCollectionPayload = {
           'createUser': 'EDXAT',
