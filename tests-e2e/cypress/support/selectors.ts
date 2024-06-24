@@ -21,6 +21,10 @@ export default {
     headcountColumnData: '.career-headcount-column-data',
     headcountTableSubHeading: '.section-header'
   },
+  collectionSummary: {
+    stepsComplete: '.steps > span',
+    continue: '.navigate'
+  },
   dashboard: {
     dataCollectionsTile: '#studentDataCollectionCard',
     dataCollectionsTileTitle: '#studentDataCollectionCard > div.v-row.pl-4 > div.v-col.mt-2 > div:nth-child(1) > div > h4',
@@ -202,6 +206,20 @@ export default {
     codeXA: '#codeXA',
     refugeeFundingEligible: '#refugeeFundingEligible',
     refugeeFundingNotEligible: '#refugeeFundingNotEligible'
+  },
+  independent1601: {
+    stepper: '.v-stepper-header',
+    steps: {
+      step1: '#step-1 .v-stepper-item__title',
+      step2: '#step-2 .v-stepper-item__title',
+      step3: '#step-3 .v-stepper-item__title',
+      step4: '#step-4 .v-stepper-item__title',
+      step5: '#step-5 .v-stepper-item__title',
+      step6: '#step-6 .v-stepper-item__title',
+      step7: '#step-7 .v-stepper-item__title',
+      step8: '#step-8 .v-stepper-item__title',
+      step9: '#step-9 .v-stepper-item__title',
+    }
   },
   invitationSelection: {
     loginButtonBCeID: '#login-button-bceid',
