@@ -272,7 +272,7 @@ export default {
     schoolDetailsEmail: '#schoolDetailsEmail',
     schoolDetailsNlc: '#schoolDetailsNlc',
     schoolDetailsPhoneNumber: '#schoolDetailsPhoneNumber',
-    schoolDetailsWebsite: 'form > div > div:nth-child(2) > div > div:nth-child(6) > div:nth-child(4) > div > div > div > div > div > div:nth-child(3) > input',
+    schoolDetailsWebsite: '#schoolDetailsWebsite',
     schoolDisplayNameTitle: '#displayName',
     schoolGradesDropdown: '#schoolGrades',
     schoolGradesValue: '#schoolGradesValue',

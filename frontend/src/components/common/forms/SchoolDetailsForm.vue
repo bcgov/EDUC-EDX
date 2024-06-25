@@ -514,6 +514,7 @@
                   </div>
                   <v-text-field
                     v-if="editing"
+                    id="schoolDetailsWebsite"
                     v-model="schoolDetailsCopy.website"
                     label="Website"
                     :rules="[rules.website()]"
