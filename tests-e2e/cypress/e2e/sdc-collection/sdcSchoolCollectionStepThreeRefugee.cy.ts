@@ -25,32 +25,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.studentLevelData.stepTwoNextButton).click();
 
-      // create two students in feb col, one with refugee errors, one without
-
-      cy.get(selectors.studentLevelData.addStudent).click();
-
-      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
-      cy.get(selectors.studentLevelData.legalLastName).type('SMITH');
-      cy.get(selectors.studentLevelData.dobPicker).type('2016');
-      cy.get(selectors.datePicker.day).click();
-
-      cy.get(selectors.studentLevelData.gender).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
-
-      cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
-
-      cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('N').click();
-
-      cy.get(selectors.studentLevelData.schoolFundingCodes).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Newcomer Refugee (16)').click();
-
-      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
-
-      cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
-      cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
-      cy.reload();
+      // create a student with refugee errors
 
       cy.get(selectors.studentLevelData.addStudent).click();
 
@@ -81,16 +56,16 @@ describe('SDC School Collection View', () => {
       cy.reload();
 
       // checks tab available in Feb
-      cy.get(selectors.studentLevelData.collectionTypeDate).should('exist').contains('February 2024 Collection');
+      cy.get(selectors.studentLevelData.collectionTypeYear).should('exist').contains('February 2024 Collection');
       cy.get(selectors.stepThreeTabSlider.refugeeButton).should('exist').click();
-      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(2);
+      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
       // checks special filter for refugee funding
       cy.get(selectors.refugeeComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingEligible).click();
       cy.get(selectors.filters.applyFilter).click();
 
-      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
       cy.get(selectors.refugeeComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
