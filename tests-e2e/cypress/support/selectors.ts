@@ -481,7 +481,7 @@ export default {
     collectionSubmission: '#collection-submission',
     csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport',
-    collectionTypeDate: '#collectionTypeDate'
+    collectionTypeYear: '#collectionTypeYear'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
