@@ -9,10 +9,14 @@
     >
       <v-col v-if="this.userInfo.activeInstituteType === 'DISTRICT'">
         <h2>{{ sdcSchoolSchool?.schoolName }} ({{ sdcSchoolSchool?.mincode }})</h2>
-        <h3>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h3>
+        <h3 id="collectionTypeYear">
+          {{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection
+        </h3>
       </v-col>
       <v-col v-else>
-        <h2>{{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection</h2>
+        <h2 id="collectionTypeYear">
+          {{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection
+        </h2>
       </v-col>
     </v-row>
     <v-row
@@ -33,7 +37,10 @@
         >Return to Data Collections</a>
       </v-col>
     </v-row>
-    <v-row class="mt-2" no-gutters>
+    <v-row
+      class="mt-2"
+      no-gutters
+    >
       <v-col>
         <v-divider class="divider" />
       </v-col>
