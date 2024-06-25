@@ -28,15 +28,15 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_student).as('student');
       cy.get(selectors.secureExchangeDetail.newMessageToConvBtn).click();
       cy.wait('@student');
-      cy.intercept(Cypress.env('interceptors').delete_sdc_school_collection_student).as('deleteStudent');
       cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecord).click();
       cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
-      cy.wait('@deleteStudent');
+      cy.wait('@student');
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success!');
       cy.get(selectors.studentLevelData.cancelButton).click();
       cy.get('.text-success').should('exist');
       cy.get(selectors.studentLevelData.stepFourNextButton).should('not.be.disabled');
     });
+
     it('can request review', () => {
       navigateToDuplicateScreen(Cypress.env('sdcSchoolCollectionID'));
       cy.get(selectors.secureExchangeDetail.editOptionsMenu).first().click();
