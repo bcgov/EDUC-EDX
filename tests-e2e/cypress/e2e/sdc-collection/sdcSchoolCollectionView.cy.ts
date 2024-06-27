@@ -32,7 +32,8 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.stepThreeNextButton).should('exist').should('be.enabled').click();
 
       // checking if the previous button is clickable and the user is taken to the previous step; brings to step 2
-      cy.get(selectors.studentLevelData.stepTwo).should('exist').trigger('click'); //odd issue clicking on stepper with .click() does not always fire.
+      cy.get(selectors.studentLevelData.stepTwo).should('exist'); //odd issue clicking on stepper with .click() does not always fire.
+      cy.get(selectors.studentLevelData.stepTwo).click(); //odd issue clicking on stepper with .click() does not always fire.
       cy.get(selectors.studentLevelData.stepTwo).should('exist').should('have.class', 'v-stepper-item--selected');
 
       // Step three should be disabled

@@ -52,15 +52,14 @@ export class SdcCollectionApiService {
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     const school = schoolCollection.school;
-    const urlGetActiveSchoolCollection = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ENDPOINT}/${school.schoolId}`;
+    const urlGetSchoolCollections = `${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_SEARCH_ALL_ENDPOINT}schoolID=${school.schoolId}`;
 
     try {
-      const existingSchoolCollection = await this.restUtils.getData<SdcSchoolCollection>(urlGetActiveSchoolCollection);
-      if (existingSchoolCollection && existingSchoolCollection.sdcSchoolCollectionID) {
-        console.log(`Existing data found for school ID ${school.schoolId}, proceeding with deletion...`);
-        await this.deleteExistingTestData([schoolCollection.school]);
-      } else {
-        console.log(`No existing school collection data found for school ID ${school.schoolId}, skipping deletion.`);
+      const existingSchoolCollections = await this.restUtils.getData<SdcSchoolCollection[]>(urlGetSchoolCollections);
+
+      for (const schoolCollection of existingSchoolCollections) {
+        console.log(`Existing school collection found for school, removing sdc school collection: ${schoolCollection.sdcSchoolCollectionID}, proceeding with deletion...`);
+        await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${schoolCollection.sdcSchoolCollectionID}`);
       }
     } catch (error) {
       console.error('Error fetching existing school collection data:', error);
@@ -70,6 +69,21 @@ export class SdcCollectionApiService {
     let sdcDistrictCollectionResponse;
     if(!isIndependentSchool) {
       try {
+        const urlGetActiveDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/` + school.districtId;
+        const activeDistrictCollection = await this.restUtils.getData<SdcDistrictCollection>(urlGetActiveDistrictCollection);
+
+        if(activeDistrictCollection){
+          const urlGetActiveSchoolCollectionsInDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/${activeDistrictCollection.sdcDistrictCollectionID}/sdcSchoolCollections`;
+          const activeSchoolCollections = await this.restUtils.getData<SdcSchoolCollection[]>(urlGetActiveSchoolCollectionsInDistrictCollection);
+          for (const schoolCollection of activeSchoolCollections) {
+            console.log(`Existing school collection found for school, removing sdc school collection: ${schoolCollection.sdcSchoolCollectionID}, proceeding with deletion...`);
+            await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${schoolCollection.sdcSchoolCollectionID}`);
+          }
+        }
+
+        if (activeDistrictCollection.sdcDistrictCollectionID !== null){
+          await this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_ENDPOINT}/${activeDistrictCollection.sdcDistrictCollectionID}`);
+        }
         const sdcDistrictCollectionPayload = createSdcDistrictCollection(activeCollection.collectionID, schoolCollection?.school?.districtId, 'NEW', curDate.toString(), curDate.plusWeeks(2).toString());
 
         if (schoolCollection.seedData === 'sdcDistrictCollectionMonitoringSeedData' && !isIndependentSchool) {
@@ -895,7 +909,7 @@ export class SdcCollectionApiService {
     const activeCollection = await this.restUtils.getData<Collection>(urlGetActiveCollection);
 
     const urlGetActiveDistrictCollection = `${this.config.env.studentDataCollection.base_url}${SDC_DISTRICT_COLLECTION_SEARCH_ENDPOINT}/` + districtCollectionOptions.district.districtId;
-    let activeDistrictCollection = await this.restUtils.getData<SdcDistrictCollection>(urlGetActiveDistrictCollection);
+    const activeDistrictCollection = await this.restUtils.getData<SdcDistrictCollection>(urlGetActiveDistrictCollection);
 
     if (activeDistrictCollection.sdcDistrictCollectionID !== null){
       await this.deleteExistingTestData(districtCollectionOptions.schools, activeDistrictCollection.sdcDistrictCollectionID);
@@ -954,7 +968,7 @@ export class SdcCollectionApiService {
     return ells;
   }
 
-  async deleteExistingTestData(schools: SchoolEntity[], districtCollectionID: String = '') {
+  async deleteExistingTestData(schools: SchoolEntity[], districtCollectionID: string = '') {
     const districtIds = new Set();
 
     try {
@@ -966,7 +980,7 @@ export class SdcCollectionApiService {
         allActiveSchoolCollections.forEach((schoolCollection) =>{
           const deletePromise = this.restUtils.deleteData(`${this.config.env.studentDataCollection.base_url}${SDC_COLLECTION_ENDPOINT}/${schoolCollection.sdcSchoolCollectionID}`);
           deleteSchoolPromises.push(deletePromise);
-        })
+        });
 
         districtIds.add(schools[0].districtId);
       } else {
