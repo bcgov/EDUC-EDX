@@ -385,7 +385,7 @@ export default {
       if (!confirmation) {
         return;
       }
-      await this.handleConfirmZeroEnrollment();
+      await this.handleReportZeroEnrollment();
     },
     getFileRules() {
       this.fileRules = [
@@ -435,6 +435,11 @@ export default {
       this.uploadFileValue = null;
       this.$refs.uploader.click();
     },
+    handleReportZeroEnrollment() {
+      this.fileUploadErrorMessage = null;
+      this.uploadFileValue = null;
+      this.reportZeroEnrollment();
+    },
     async importFile() {
       if(this.uploadFileValue) {
         this.isDisabled = true;
@@ -473,6 +478,15 @@ export default {
         this.fileUploadErrorMessage = 'The file could not be processed due to the following issue: ' + e.response.data;
       } finally {
         this.isReadingFile = false;
+      }
+    },
+    async reportZeroEnrollment() {
+      try {
+        await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/reportZeroEnrollment');
+        this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
+      } catch(e) {
+        console.error(e);
+        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.response.data;
       }
     },
     async getFileProgress() {
