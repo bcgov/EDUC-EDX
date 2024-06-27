@@ -176,7 +176,7 @@ const MOVE_SCHOOL_TOPIC = 'MOVE_SCHOOL_TOPIC';
 
 const reportTypeValues = [
   ['ell', 'ELL_HEADCOUNT'],
-  ['refugee', 'REFUGEE_HEADCOUNT'],
+  ['refugee-per-school_dis', 'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL'],
   ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
