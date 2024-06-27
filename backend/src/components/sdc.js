@@ -638,7 +638,7 @@ function getFileDetails(reportType, mincode) {
     'ALL_STUDENT_DIS_CSV': { filename: `AllDistrictStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_SCHOOL_CSV': { filename: `AllSchoolStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ELL_HEADCOUNT': { filename: `ELLHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
-    'REFUGEE_HEADCOUNT': { filename: `RefugeeHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL': { filename: `RefugeeHeadcount_${mincode}_Dis.pdf`, contentType: 'application/pdf' },
     'SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'INDIGENOUS_HEADCOUNT': { filename: `IndigenousHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'BAND_RESIDENCE_HEADCOUNT': { filename: `BandOfResidenceHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
