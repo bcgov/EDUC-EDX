@@ -50,6 +50,19 @@
         >
           Upload Replacement File
         </v-btn>
+        <span>or</span>
+        <v-btn
+          id="uploadAgainButton"
+          prepend-icon="mdi-numeric-0-circle"
+          :loading="isReadingFile"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          style="font-size: 16px;"
+          color="#1976d2"
+          variant="text"
+          @click="clickReportZeroEnrollment"
+        >
+          Report Zero Enrollment
+        </v-btn>
         <div class="pl-4">
           More information on the
           <a
@@ -221,6 +234,13 @@
       <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
     </template>
   </ConfirmationDialog>
+  <ConfirmationDialog ref="confirmZeroEnrollment">
+    <template #message>
+      <p>Please confirm you would like to report zero enrollment for this collection.</p>
+      &nbsp;
+      <p>Confirming below will <strong>finalize your 1701 submission</strong> and <strong>remove your ability to edit data for this collection.</strong></p>
+    </template>
+  </ConfirmationDialog>
 </template>
 
 <script>
@@ -359,6 +379,13 @@ export default {
         return;
       }
       await this.handleFileImport();
+    },
+    async clickReportZeroEnrollment(){
+      const confirmation = await this.$refs.confirmZeroEnrollment.open('Confirm Zero Enrollment', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      await this.handleConfirmZeroEnrollment();
     },
     getFileRules() {
       this.fileRules = [
