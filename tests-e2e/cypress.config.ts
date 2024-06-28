@@ -96,7 +96,7 @@ export default defineConfig({
           return null;
         },
         'downloadFile': async ({ url, directory, cookies, fileName }) => {
-          const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+          const cookieString = cookies.map((cookie: { name: never; value: never; }) => `${cookie.name}=${cookie.value}`).join('; ');
 
           const response = await axios.get(url, {
             responseType: 'arraybuffer',

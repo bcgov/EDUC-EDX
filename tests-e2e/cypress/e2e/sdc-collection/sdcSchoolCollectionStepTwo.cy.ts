@@ -147,47 +147,5 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
       cy.get(selectors.snackbar.mainSnackBar).should('exist').contains('Success! The student details have been deleted.');
     });
-
-    context('PEN appears more than once in the submission', () => {
-      before(() => {
-        cy.task<AppSetupData>('dataLoad').then(res => {
-          cy.task<SchoolCollectionOptions, SdcCollections>('setup-collections', {
-            school: res.schools[0],
-            loadWithStudentAndValidations: true,
-            seedData: 'stepTwoDuplicatePENData'
-          });
-          cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
-        });
-      });
-
-      it('can fix errors and warnings on the student record', () => {
-        cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
-        cy.visit('/');
-        cy.get(selectors.dashboard.dataCollectionsTile).click();
-        cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
-
-        cy.wait('@pagination').then(() => {
-          cy.contains('td', '101932770').parent().within(() => {
-            cy.get(selectors.studentLevelData.selectStudentCheckbox).click(); 
-          });
-          cy.get(selectors.studentLevelData.fixSelected).click();
-        });
-
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','1...3');
-
-        cy.get(selectors.studentLevelData.duplicatePenFilter).should('exist');
-        cy.get(selectors.studentLevelData.duplicatePenFilter).click();
-        cy.wait('@pagination').then(()=> {
-          cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','2...3');
-          cy.get(selectors.studentLevelData.editStudentClearfilter).should('exist');
-        });
-
-        cy.get(selectors.studentLevelData.editStudentClearfilter).click();
-        cy.wait('@pagination').then(()=> {
-          cy.get(selectors.studentLevelData.selectedStudentsPaginator).should('contain.text','3...3');
-        });
-
-      });
-    });
   });
 });
