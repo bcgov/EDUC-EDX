@@ -919,6 +919,22 @@ async function unsubmitSdcSchoolCollection(req, res) {
   }
 }
 
+async function reportZeroEnrollment(req, res) {
+  try {
+    const payload = {
+      'updateUser': getCreateOrUpdateUserValue(req),
+      'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
+    };
+    console.log(payload);
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/reportZeroEnrollment`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('reportZeroEnrollment Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function resolveDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
@@ -966,6 +982,7 @@ async function resolveDuplicates(req, res) {
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
+  reportZeroEnrollment,
   getSdcFileProgress,
   getDistrictSdcFileProgress,
   getSchoolStudentDuplicates,
