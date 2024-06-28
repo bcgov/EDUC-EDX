@@ -438,7 +438,7 @@ export default {
     handleReportZeroEnrollment() {
       this.fileUploadErrorMessage = null;
       this.uploadFileValue = null;
-      this.reportZeroEnrollment();
+      this.reportZeroEnrollment(this.sdcSchoolCollectionID);
     },
     async importFile() {
       if(this.uploadFileValue) {
@@ -480,14 +480,13 @@ export default {
         this.isReadingFile = false;
       }
     },
-    async reportZeroEnrollment() {
-      try {
-        await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID + '/reportZeroEnrollment');
+    async reportZeroEnrollment(sdcSchoolCollectionId) {
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/reportZeroEnrollment`).then(() => {
         this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
-      } catch(e) {
+      }).catch(e => {
         console.error(e);
         this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.response.data;
-      }
+      });
     },
     async getFileProgress() {
       try{
