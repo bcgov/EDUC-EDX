@@ -12,6 +12,8 @@ const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
 const cacheService = require('./cache-service');
 const { pick } = require('lodash');
 const redisUtil = require('../util/redis/redis-utils');
+const broadcastUtil = require('../socket/broadcast-utils');
+const CONSTANTS = require('../util/constants');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -59,6 +61,8 @@ async function uploadFile(req, res) {
     } else {
       data = await postData(token, payload, `${config.get('sdc:rootURL')}/district/${req.params.sdcDistrictCollectionID}/file`, req.session?.correlationID);
     }
+    broadcastUtil.publishSdcEvents(data, CONSTANTS.SDC_UPLOAD_TOPIC);
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     console.log(JSON.stringify(e));

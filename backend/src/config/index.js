@@ -131,7 +131,8 @@ nconf.defaults({
     bannerColor: process.env.BANNER_COLOR,
     disableSdcFunctionality: process.env.DISABLE_SDC_FUNCTIONALITY === 'true',
     termsOfUseURL: process.env.TERMS_OF_USE,
-    helpURL: process.env.HELP
+    helpURL: process.env.HELP,
+    webSocketURL: process.env.WEB_SOCKET_URL
   },
   clamav: {
     host: process.env.CLAMAV_HOST,
