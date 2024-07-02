@@ -192,7 +192,7 @@
               <v-alert
                 density="compact"
                 type="warning"
-                title="File re-uploaded!"
+                title="File Re-uploaded!"
                 :text="wsNotificationText"
                 class="pb-5 pt-5"
               />
@@ -261,8 +261,7 @@ export default defineComponent({
       if (notificationData) {
           try {
             let updateUser = notificationData.updateUser.split('/');
-            var condition = updateUser.length === 2 && updateUser[1] !== this.userInfo.edxUserID ? true : false;
-            if (notificationData.sdcDistrictCollectionID === this.$route.params.sdcDistrictCollectionID && condition) { 
+            if (notificationData.sdcDistrictCollectionID === this.$route.params.sdcDistrictCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
               let school = this.schoolsMap.get(notificationData?.schoolID);
               this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
               this.disableScreen = true;
