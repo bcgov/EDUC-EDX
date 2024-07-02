@@ -1,6 +1,6 @@
 import {wsNotifications} from '../store/modules/wsNotifications';
 
-let webSocketsService = {};
+const webSocketsService = {};
 
 webSocketsService.install = function (Vue, options) {
   let ws = null;

@@ -276,7 +276,7 @@ export default defineComponent({
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
-    }),
+    });
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
       .then(() => {
         this.districtCollectionObject = this.districtCollection;
