@@ -80,7 +80,7 @@ interface SdcSchoolCollectionStudent extends BaseApiEntity {
   penMatchResult: string;
   sdcSchoolCollectionStudentValidationIssues: [];
   sdcSchoolCollectionStudentEnrolledPrograms: [];
-  sdcStudentEll?: SdcStudentEll;
+  yearsInEll: string;
 }
 
 interface SdcStudentEll extends BaseApiEntity {
