@@ -925,7 +925,6 @@ async function reportZeroEnrollment(req, res) {
       'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
-    console.log(payload);
     const token = getAccessToken(req);
     const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/reportZeroEnrollment`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
