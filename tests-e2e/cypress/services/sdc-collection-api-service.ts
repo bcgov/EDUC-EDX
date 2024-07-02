@@ -372,6 +372,7 @@ export class SdcCollectionApiService {
         students[0].localID = 'student1';
         students[0].penMatchResult = 'DM';
         students[0].fte = 1;
+        students[0].yearsInEll = '3';
 
         students[1].enrolledGradeCode = '11';
         students[1].enrolledProgramCodes = '431733';
