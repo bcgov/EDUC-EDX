@@ -37,6 +37,7 @@ messagePubSub.init().then(() => {
   require('./messaging/handlers/institute-jetstream-subscriber').subscribe();
   require('./messaging/handlers/edx-jetstream-subscriber').subscribe();
   require('./messaging/handlers/edx-event-handler').subscribe();
+  require('./messaging/handlers/sdc-event-handler').subscribe();
 }).catch((e) => log.error(e));
 //initialize app
 const app = express();
@@ -190,12 +191,6 @@ app.use((err, _req, res, next) => {
   log.error(err?.stack);
   res?.redirect(config?.get('server:frontend') + '/error?message=500_internal_error');
   next();
-});
-
-// Handle 404 error
-app.use((_req, res) => {
-  log.error('404 Error');
-  res.redirect(config?.get('server:frontend') + '/error?message=404_Page_Not_Found');
 });
 
 // Prevent unhandled errors from crashing application

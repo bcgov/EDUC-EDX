@@ -48,6 +48,14 @@ export default {
       return /Trident\/|MSIE/.test(window.navigator.userAgent);
     }
   },
+  watch: {
+    isAuthenticated()  {
+      this.handleWebSocket();
+    }
+  },
+  mounted() {
+    this.handleWebSocket();
+  },
   async created() {
     await this.setLoading(true);
     await this.getConfig();
@@ -69,7 +77,14 @@ export default {
     ...mapActions(appStore, ['getConfig']),
     isInstituteSelectionPage(){
       return PAGE_TITLES.SELECTION === this.pageTitle;
-    }
+    },
+    handleWebSocket() {
+      if(this.isAuthenticated) {
+        this.$webSocketsConnect();
+      } else {
+        this.$webSocketsDisconnect();
+      }
+    },
   }
 };
 </script>

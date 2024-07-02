@@ -14,6 +14,8 @@ import * as directives from 'vuetify/directives';
 import '@mdi/font/css/materialdesignicons.css';
 import 'viewerjs/dist/viewer.css';
 import component from 'v-viewer';
+import webSocketService from './services/web-socket-service';
+import ApiService from './common/apiService';
 
 const myCustomLightTheme = {
   dark: false,
@@ -44,5 +46,10 @@ const pinia = createPinia();
 
 const newApp = createApp(App);
 
+const config = await ApiService.getConfig();
+
 newApp.provide('$moment', moment);
-newApp.use(router).use(createMetaManager()).use(pinia).use(vuetify).use(component).mount('#app');
+newApp.use(router).use(webSocketService, {
+  newApp,
+  url: config.data.WEB_SOCKET_URL || 'wss://'+window.location.hostname+'/api/socket'
+}).use(createMetaManager()).use(pinia).use(vuetify).use(component).mount('#app');

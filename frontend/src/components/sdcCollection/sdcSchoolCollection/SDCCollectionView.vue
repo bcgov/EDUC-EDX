@@ -262,6 +262,21 @@
         </v-stepper>
       </v-col>
     </v-row>
+    <div v-if="disableScreen">
+      <v-overlay :model-value="disableScreen" activator="parent" class="align-center justify-center" :persistent="true">
+          <v-row>
+            <v-col>
+              <v-alert
+                density="compact"
+                type="warning"
+                title="File re-uploaded!"
+                :text="wsNotificationText"
+                class="pb-5 pt-5"
+              />
+            </v-col>
+          </v-row>
+      </v-overlay>
+    </div>
   </v-container>
 </template>
 
@@ -269,7 +284,7 @@
 import {mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/institute/SdcSteps';
-
+import {wsNotifications} from '../../../store/modules/wsNotifications';
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
 import StepFourDuplicatesProcessing from './StepFourDuplicatesProcessing.vue';
@@ -310,13 +325,17 @@ export default {
       submissionDueDate: null,
       isLoading: false,
       schoolID: null,
-      school: {}
+      school: {},
+      disableScreen: false,
+      wsNotificationText: '',
+      schoolsMap: null
     };
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'schoolCollection','currentCollectionYear']),
     ...mapState(appStore, ['activeSchoolsMap']),
     ...mapState(authStore, ['userInfo']),
+    ...mapState(wsNotifications, ['notification']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     },
@@ -338,9 +357,27 @@ export default {
       return 5;
     }
   },
+  watch: {
+    notification(notificationData) {
+      if (notificationData) {
+          try {
+            let updateUser = notificationData.updateUser.split('/');
+            var condition = updateUser.length === 2 && updateUser[1] !== this.userInfo.edxUserID ? true : false;
+            if (notificationData.sdcSchoolCollectionID === this.$route.params.schoolCollectionID && condition) { 
+              let school = this.schoolsMap.get(notificationData?.schoolID);
+              this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
+              this.disableScreen = true;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+      }
+    },
+  },
   created() {
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
+      this.schoolsMap = this.activeSchoolsMap;
     });
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID)
       .then(() => {
