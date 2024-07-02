@@ -54,8 +54,7 @@
         <v-btn
           id="uploadAgainButton"
           prepend-icon="mdi-numeric-0-circle"
-          :loading="isReadingFile"
-          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || isReadingFile"
           style="font-size: 16px;"
           color="#1976d2"
           variant="text"
@@ -166,6 +165,7 @@
           icon="mdi-file-upload"
           text="Upload 1701 Submission"
           :loading="isReadingFile"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
           :click-action="handleFileImport"
         />
         <div class="mt-2">
@@ -192,6 +192,7 @@
                 <v-checkbox-btn
                   label="This school does not have a file for this collection."
                   style="font-style: italic"
+                  :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
                 />
               </v-col>
             </v-row>
