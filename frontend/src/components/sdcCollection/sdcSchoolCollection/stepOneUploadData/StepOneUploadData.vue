@@ -486,7 +486,7 @@ export default {
         this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
       }).catch(e => {
         console.error(e);
-        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.response.data;
+        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.message;
       });
     },
     async getFileProgress() {
