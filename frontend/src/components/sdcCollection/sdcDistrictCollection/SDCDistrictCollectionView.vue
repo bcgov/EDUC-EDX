@@ -184,6 +184,22 @@
         </v-stepper>
       </v-col>
     </v-row>
+
+    <div v-if="disableScreen">
+      <v-overlay :model-value="disableScreen" activator="parent" class="align-center justify-center" :persistent="true">
+          <v-row>
+            <v-col>
+              <v-alert
+                density="compact"
+                type="warning"
+                title="File Re-uploaded!"
+                :text="wsNotificationText"
+                class="pb-5 pt-5"
+              />
+            </v-col>
+          </v-row>
+      </v-overlay>
+    </div>
   </v-container>
 </template>
 
@@ -191,6 +207,7 @@
 import {defineComponent} from 'vue';
 import StepOneUploadData from './StepOneUploadData.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {wsNotifications} from '../../../store/modules/wsNotifications';
 import {SDC_STEPS_DISTRICT} from '../../../utils/institute/SdcSteps';
 import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
@@ -199,7 +216,8 @@ import StepFourInDistrictDuplicates from './duplicates/StepFourInDistrictDuplica
 import StepFiveSubmitToMinistry from './StepFiveSubmitToMinistry.vue';
 import {formatSubmissionDate} from '../../../utils/format';
 import StepSixProvincialDuplicates from './duplicates/StepSixProvincialDuplicates.vue';
-
+import { appStore } from '../../../store/modules/app';
+import {authStore} from '../../../store/modules/auth';
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
@@ -220,10 +238,16 @@ export default defineComponent({
       signOffDueDate: null,
       isLoading: false,
       districtCollectionObject: {},
+      disableScreen: false,
+      wsNotificationText: '',
+      schoolsMap: null
     };
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'districtCollection','currentCollectionYear']),
+    ...mapState(wsNotifications, ['notification']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(authStore, ['userInfo']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
     },
@@ -232,8 +256,27 @@ export default defineComponent({
       return this.currentStep < indexCurrentCollection;
     }
   },
+  watch: {
+    notification(notificationData) {
+      if (notificationData) {
+          try {
+            let updateUser = notificationData.updateUser.split('/');
+            if (notificationData.sdcDistrictCollectionID === this.$route.params.sdcDistrictCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
+              let school = this.schoolsMap.get(notificationData?.schoolID);
+              this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
+              this.disableScreen = true;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+      }
+    },
+  },
   created() {
     this.isLoading = !this.isLoading;
+    appStore().getInstitutesData().finally(() => {
+      this.schoolsMap = this.activeSchoolsMap;
+    });
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
       .then(() => {
         this.districtCollectionObject = this.districtCollection;
