@@ -74,7 +74,7 @@
             />
             <v-tooltip
               v-else-if="column.key === 'sdcSchoolCollectionStudentStatusCode'"
-              :style="{ display: getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode']) ? '' : 'none' }"
+              :style="{ display: getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode'], props.item['sdcSchoolCollectionStudentValidationIssues']) ? '' : 'none'}"
             >
               <template #activator="{ props: tooltipProps }">
                 <v-icon
@@ -85,7 +85,7 @@
                   {{ getSdcStudentIssueIcon(props.item['sdcSchoolCollectionStudentStatusCode']) }}
                 </v-icon>
               </template>
-              {{ getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode']) }}
+              {{ getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode'], props.item['sdcSchoolCollectionStudentValidationIssues']) }}
             </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'studentPen'">
@@ -171,6 +171,7 @@
 <script>
 
 import {displayName} from '../../utils/format';
+import {sdcCollectionStore} from "../../store/modules/sdcCollection";
 
 export default {
   name: 'CustomTable',
@@ -301,11 +302,16 @@ export default {
         return 'mdi-alert-circle-outline';
       }
     },
-    getSdcStudentStatusHoverText(status) {
-      if (status === 'FUNDWARN') {
-        return 'Funding Warning';
-      } else if (status === 'INFOWARN') {
-        return 'Info Warning';
+    getSdcStudentStatusHoverText(status, codes) {
+      if (status === 'FUNDWARN' || status === 'INFOWARN') {
+        let hoverText = '';
+        codes.forEach((code, index) => {
+          if (index !== 0){
+            hoverText += '\n';
+          }
+          hoverText += sdcCollectionStore().validationIssueTypeCodesMap.get(code.validationIssueCode)?.message;
+        })
+        return hoverText;
       }
     },
     getAssignedPen(assignedPen) {
