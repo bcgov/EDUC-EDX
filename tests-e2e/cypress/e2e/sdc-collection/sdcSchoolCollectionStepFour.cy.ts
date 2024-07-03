@@ -32,7 +32,6 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.sdcSchoolStudentCollection.sdcCollectionStepTwo.removeRecordConfirmButton).click();
       cy.wait('@student');
       cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'Success!');
-      cy.get(selectors.studentLevelData.cancelButton).click();
       cy.get('.text-success').should('exist');
       cy.get(selectors.studentLevelData.stepFourNextButton).should('not.be.disabled');
     });

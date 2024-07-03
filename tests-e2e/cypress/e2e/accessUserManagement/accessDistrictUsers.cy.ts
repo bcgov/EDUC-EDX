@@ -1,6 +1,6 @@
-import { AppSetupData } from "tests-e2e/cypress.config";
-import { InstituteOptions } from "tests-e2e/cypress/services/institute-api-service";
-import selectors from "../../support/selectors";
+import { AppSetupData } from 'tests-e2e/cypress.config';
+import { InstituteOptions } from 'tests-e2e/cypress/services/institute-api-service';
+import selectors from '../../support/selectors';
 
 describe('Access District Users Page Tests', () => {
   context('As a district admin', () => {
@@ -32,9 +32,8 @@ describe('Access District Users Page Tests', () => {
             expect(response?.body.activationCode).not.eq(initialCode);
           });
 
-          cy.get(selectors.newUserInvites.primaryActivationCode).invoke("text").then(newCode => {
-            cy.get(selectors.snackbar.mainSnackBar)
-                .should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
+          cy.get(selectors.newUserInvites.primaryActivationCode).invoke('text').then(newCode => {
+            cy.get(selectors.snackbar.mainSnackBar).should('include.text', `The new Primary Activation Code is ${newCode}. Close`);
             expect(initialCode).not.eq(newCode);
           });
         });
@@ -64,9 +63,9 @@ describe('Access District Users Page Tests', () => {
           districtRoles: ['EDX_DISTRICT_ADMIN'],
           districtCodes: ['998']
         }).then((user: EdxUserEntity) => {
-            tempUserId = user.edxUserID;
-            tempDisplayName = `${user.firstName} ${user.lastName}`.trim();
-          });
+          tempUserId = user.edxUserID;
+          tempDisplayName = `${user.firstName} ${user.lastName}`.trim();
+        });
       });
       beforeEach(() => {
         cy.wrap(tempUserId).as('tempUserId');
@@ -114,9 +113,9 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#access-user-roles-${uid}`).should('exist').within(() => {
             cy.get('div[value="EDX_DISTRICT_ADMIN"] input').should('not.be.checked');
             cy.get('div[value="SECURE_EXCHANGE_DISTRICT"] input').should('be.checked');
-            });
           });
         });
+      });
 
       it('can cancel relinking a user', () => {
         cy.visit('/districtAccess');
@@ -124,10 +123,10 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#user-relink-button-${uid}`).click();
           cy.get(selectors.accessUsersPage.confirmationDialog).should('exist')
             .should('include.text', 'Re-linking an account will remove the current user and resend the activation code so that the user can set up EDX access with their new credentials.');
-          cy.get(`#rejectBtn`).should('exist').click();
-          cy.get(`#userRelinkWarningText`).should('not.exist');
+          cy.get('#rejectBtn').should('exist').click();
+          cy.get('#userRelinkWarningText').should('not.exist');
         });
-      })
+      });
 
       it('can relink a user', () => {
         cy.visit('/districtAccess');
@@ -135,11 +134,11 @@ describe('Access District Users Page Tests', () => {
           cy.get(`#user-relink-button-${uid}`).click();
           cy.get(selectors.accessUsersPage.confirmationDialog).should('exist')
             .should('include.text', 'Re-linking an account will remove the current user and resend the activation code so that the user can set up EDX access with their new credentials.');
-          cy.get(`#resolveBtn`).should('exist').click();
+          cy.get('#resolveBtn').should('exist').click();
           cy.get(selectors.snackbar.mainSnackBar)
             .should('contain', 'User has been removed, email sent with instructions to re-link. Close');
         });
-      })
+      });
 
     });
 
@@ -161,14 +160,14 @@ describe('Access District Users Page Tests', () => {
       });
       after(() => {
         cy.get('@tempUserId').then(uid => cy.task('teardown-edxUser', uid));
-        cy.logout()
+        cy.logout();
       });
 
       it('can find delete option and cancel delete', () => {
         cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-remove-button-${uid}`).click();
-          cy.get(`#rejectBtn`).click();
+          cy.get('#rejectBtn').click();
         });
       });
 
@@ -176,7 +175,7 @@ describe('Access District Users Page Tests', () => {
         cy.visit('/districtAccess');
         cy.get('@tempUserId').then(uid => {
           cy.get(`#user-remove-button-${uid}`).click();
-          cy.get(`#resolveBtn`).click();
+          cy.get('#resolveBtn').click();
           cy.get(selectors.snackbar.mainSnackBar).should('include.text', 'User has been removed. Close');
         });
       });
