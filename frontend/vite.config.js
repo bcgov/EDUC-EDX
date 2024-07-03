@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
   plugins: [vue()],
   build: {
-    target: 'esnext'
+    target: 'es2022'
   },
   server: {
     port: 8081,
