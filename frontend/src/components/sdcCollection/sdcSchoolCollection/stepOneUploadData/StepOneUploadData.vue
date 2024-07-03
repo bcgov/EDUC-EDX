@@ -50,6 +50,18 @@
         >
           Upload Replacement File
         </v-btn>
+        <span>or</span>
+        <v-btn
+          id="uploadAgainButton"
+          prepend-icon="mdi-numeric-0-circle"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || isReadingFile"
+          style="font-size: 16px;"
+          color="#1976d2"
+          variant="text"
+          @click="clickReportZeroEnrollment"
+        >
+          Report Zero Enrollment
+        </v-btn>
         <div class="pl-4">
           More information on the
           <a
@@ -153,6 +165,7 @@
           icon="mdi-file-upload"
           text="Upload 1701 Submission"
           :loading="isReadingFile"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
           :click-action="handleFileImport"
         />
         <div class="mt-2">
@@ -179,6 +192,7 @@
                 <v-checkbox-btn
                   label="This school does not have a file for this collection."
                   style="font-style: italic"
+                  :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
                 />
               </v-col>
             </v-row>
@@ -219,6 +233,13 @@
       <p>Uploading a replacement file will remove all data associated with the existing file you have uploaded.</p>
           &nbsp;
       <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
+    </template>
+  </ConfirmationDialog>
+  <ConfirmationDialog ref="confirmZeroEnrollment">
+    <template #message>
+      <p>Please confirm you would like to report zero enrollment for this collection.</p>
+      &nbsp;
+      <p>Confirming below will <strong>finalize your 1701 submission</strong> and <strong>remove your ability to edit data for this collection.</strong></p>
     </template>
   </ConfirmationDialog>
 </template>
@@ -360,6 +381,13 @@ export default {
       }
       await this.handleFileImport();
     },
+    async clickReportZeroEnrollment(){
+      const confirmation = await this.$refs.confirmZeroEnrollment.open('Confirm Zero Enrollment', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      await this.handleReportZeroEnrollment();
+    },
     getFileRules() {
       this.fileRules = [
         value => {
@@ -408,6 +436,11 @@ export default {
       this.uploadFileValue = null;
       this.$refs.uploader.click();
     },
+    handleReportZeroEnrollment() {
+      this.fileUploadErrorMessage = null;
+      this.uploadFileValue = null;
+      this.reportZeroEnrollment(this.sdcSchoolCollectionID);
+    },
     async importFile() {
       if(this.uploadFileValue) {
         this.isDisabled = true;
@@ -447,6 +480,14 @@ export default {
       } finally {
         this.isReadingFile = false;
       }
+    },
+    async reportZeroEnrollment(sdcSchoolCollectionId) {
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/reportZeroEnrollment`).then(() => {
+        this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
+      }).catch(e => {
+        console.error(e);
+        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.message;
+      });
     },
     async getFileProgress() {
       try{
