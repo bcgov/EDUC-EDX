@@ -952,7 +952,7 @@ async function resolveDuplicates(req, res) {
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
 
-    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
