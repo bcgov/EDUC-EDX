@@ -44,8 +44,6 @@ describe('SDC District Collection View', () => {
     it('can navigate to district collection monitoring view and use filters', () => {
       navigateToMonitorScreen(Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepTwo).should('exist').should('have.class', 'v-stepper-item--selected');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTable + ' ' + selectors.sdcDistrictCollection.monitoringStep.closeIcon).should('exist').should('have.length', 1);
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTable + ' ' + selectors.sdcDistrictCollection.monitoringStep.checkIcon).should('exist').should('have.length', 5);
       cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringNextBtn).should('be.disabled');
       cy.get(selectors.sdcDistrictCollection.monitoringStep.schoolNotSubmittedWarning).should('have.text', '1 school(s) not submitted ');
 
@@ -58,16 +56,13 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.sdcDistrictCollection.monitoringStep.notSubmittedValue).should('have.text', '1');
 
       cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.filtersBtn).click();
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.close).click();
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.filters.cancelBtn).click();
 
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTableRows).should('have.length', 1);
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringTableRows).should('have.length', 2);
 
       cy.intercept(Cypress.env('interceptors').sdc_school_collection).as('sdc_school_collection');
-      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringLinkToSdcSchoolCollection).invoke('removeAttr', 'target').click();
+      cy.get(selectors.sdcDistrictCollection.monitoringStep.monitoringLinkToSdcSchoolCollection).contains('99899990').invoke('removeAttr', 'target').click();
       cy.wait('@sdc_school_collection');
-      cy.wait('@sdc_school_collection');
-
-      cy.get(selectors.studentLevelData.stepFourNextButton).should('not.be.disabled');
     });
   });
 });

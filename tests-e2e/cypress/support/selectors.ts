@@ -316,8 +316,8 @@ export default {
       dataInfoWarnValue: '#dataInfoWarnValue',
       dataFundingWarnValue: '#dataFundingWarnValue',
       filters: {
-        close: '#close',
         filtersBtn: '#filters',
+        cancelBtn: '#cancel'
       },
       hasUploadedValue: '#hasUploadedValue',
       missingUploadedValue: '#missingUploadedValue',

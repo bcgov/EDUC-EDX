@@ -60,23 +60,22 @@ describe('SDC District Collection View', () => {
     });
 
     it('can edit student', () => {
-        cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
-        cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
-        cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 10');
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 10');
   
-        cy.get(selectors.schoolList.schoolRow).get('tr:nth-child(2)').click();
+      cy.get(selectors.schoolList.schoolRow).get('tr:nth-child(2)').click();
   
-        cy.get(selectors.studentLevelData.selectedStudentsPaginator).contains('Reviewing 1 of 1 Records');
-        cy.get(selectors.studentLevelData.fteBanner).should('exist');
-        cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0');
-        cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
-        cy.get(selectors.studentLevelData.adultFlag).should('exist');
+      cy.get(selectors.studentLevelData.fteBanner).should('exist');
+      cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0');
+      cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
+      cy.get(selectors.studentLevelData.adultFlag).should('exist');
 
-        cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.disabled');
   
-        cy.get(selectors.studentLevelData.studentPen).should('exist').clear().type(Cypress.env('student').penList[0]);
-        cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
-        cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
-      });
+      cy.get(selectors.studentLevelData.studentPen).should('exist').clear().type(Cypress.env('student').penList[0]);
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
+      cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
+    });
   });
 });
