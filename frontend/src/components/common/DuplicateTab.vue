@@ -35,124 +35,141 @@
   </v-row>
   <template v-if="duplicateView==='1'">
     <strong>Duplicate Students Found: {{ nonAllowableDuplicates.length }}</strong>
-    <v-row
-      v-for="duplicate in nonAllowableDuplicates"
-      :key="duplicate.sdcDuplicateID"
-      class="pt-4"
-      no-gutters
+    <v-data-iterator
+      :items="nonAllowableDuplicates"
+      :items-per-page="10"
+      v-model:page.sync="pageNumber"
     >
-      <v-col class="pa-0">
-        <v-row no-gutters>
-          <v-col class="pb-2">
-            <v-chip color="primary">
-              <v-col>Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}</v-col>
-              <v-col
-                v-if="duplicateType==='enrollment'"
-              >
-                Error: {{ duplicate.duplicateErrorDescriptionCode }}
+      <template v-slot:default="{ items }">
+        <v-row
+          v-for="duplicate in items"
+          :key="duplicate?.raw?.sdcDuplicateID"
+          class="pt-4"
+          no-gutters
+        >
+          <v-col class="pa-0">
+            <v-row no-gutters>
+              <v-col class="pb-2">
+                <v-chip color="primary">
+                  <v-col>Assigned PEN: {{ duplicate?.raw?.sdcSchoolCollectionStudent1Entity?.assignedPen }}</v-col>
+                  <v-col
+                    v-if="duplicateType==='enrollment'"
+                  >
+                    Error: {{ duplicate?.raw?.duplicateErrorDescriptionCode }}
+                  </v-col>
+                  <v-col v-else>
+                    Duplicate Program: {{ duplicate?.raw?.programDuplicateTypeCodeDescription }}
+                  </v-col>
+                </v-chip>
               </v-col>
-              <v-col v-else>
-                Duplicate Program: {{ duplicate.programDuplicateTypeCodeDescription }}
-              </v-col>
-            </v-chip>
+            </v-row>
+
+            <CustomTable
+              :headers="headersConfig.nonAllowableTableHeaders"
+              :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
+              :is-loading="false"
+              :reset="false"
+              :total-elements="2"
+              :hide-pagination="true"
+            >
+                <template #resolution="{ sdcSchoolCollectionStudent }">
+                <v-menu
+                  v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
+                  v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
+                  transition="fab-transition"
+                  location="end"
+                  offset="10"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
+                      color="primary"
+                      icon="mdi-playlist-edit"
+                      variant="text"
+                      v-bind="props"
+                      :disabled="!canResolveDuplicates"
+                    />
+                  </template>
+                  <v-list>
+                    <v-list-item 
+                      v-if="sdcSchoolCollectionStudent.canChangeGrade"
+                      id="change-grade"
+                      @click="changeGrade(sdcSchoolCollectionStudent, duplicate?.raw)"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1 mb-1"
+                      >
+                        mdi-pencil
+                      </v-icon>
+                      <span class="ml-2">Change Grade</span>
+                    </v-list-item>
+                    <v-list-item
+                      v-if="duplicateType === 'program'"
+                      id="resolve"
+                      @click="resolveProgramDuplicate(duplicate?.raw)"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1 mb-1"
+                      >
+                        mdi-check
+                      </v-icon>
+                      <span class="ml-2">Resolve</span>
+                    </v-list-item>
+                    <v-list-item
+                      v-if="duplicateType === 'enrollment'"
+                      id="resolveEnrollmentDuplicateViaRemove"
+                      @click="resolveEnrollmentDuplicateViaRemove(duplicate?.raw, sdcSchoolCollectionStudent)"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1 mb-1"
+                      >
+                        mdi-delete
+                      </v-icon>
+                      <span class="ml-2">Remove</span>
+                    </v-list-item>
+                    <v-list-item
+                      v-if="duplicateType === 'enrollment' && sdcSchoolCollectionStudent.canMoveToCrossEnrollment"
+                      id="enrollmentResolveViaRemoveAndMoveToCrossEnrollment"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1 mb-1"
+                      >
+                        mdi-pencil
+                      </v-icon>
+                      <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>
+                    </v-list-item>
+                    <v-list-item
+                      id="markStudAsDiff"
+                      @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"
+                    >
+                      <v-icon
+                        color="#003366"
+                        class="pr-1 mb-1"
+                      >
+                        mdi-account-question
+                      </v-icon>
+                      <span class="ml-2">Request Review of PEN</span>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </template>
+            </CustomTable>
           </v-col>
         </v-row>
-        <CustomTable
-          :headers="headersConfig.nonAllowableTableHeaders"
-          :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
-          :is-loading="false"
-          :reset="false"
-          :total-elements="2"
-          :hide-pagination="true"
-        >
-          <template #resolution="{ sdcSchoolCollectionStudent }">
-            <v-menu
-              v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
-              v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID]"
-              transition="fab-transition"
-              location="end"
-              offset="10"
-            >
-              <template #activator="{ props }">
-                <v-btn
-                  :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate.sdcDuplicateID"
-                  color="primary"
-                  icon="mdi-playlist-edit"
-                  variant="text"
-                  v-bind="props"
-                  :disabled="!canResolveDuplicates"
-                />
-              </template>
-              <v-list>
-                <v-list-item 
-                  v-if="sdcSchoolCollectionStudent.canChangeGrade"
-                  id="change-grade"
-                  @click="changeGrade(sdcSchoolCollectionStudent, duplicate)"
-                >
-                  <v-icon
-                    color="#003366"
-                    class="pr-1 mb-1"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                  <span class="ml-2">Change Grade</span>
-                </v-list-item>
-                <v-list-item
-                  v-if="duplicateType === 'program'"
-                  id="resolve"
-                  @click="resolveProgramDuplicate(duplicate)"
-                >
-                  <v-icon
-                    color="#003366"
-                    class="pr-1 mb-1"
-                  >
-                    mdi-check
-                  </v-icon>
-                  <span class="ml-2">Resolve</span>
-                </v-list-item>
-                <v-list-item
-                  v-if="duplicateType === 'enrollment'"
-                  id="resolveEnrollmentDuplicateViaRemove"
-                  @click="resolveEnrollmentDuplicateViaRemove(duplicate, sdcSchoolCollectionStudent)"
-                >
-                  <v-icon
-                    color="#003366"
-                    class="pr-1 mb-1"
-                  >
-                    mdi-delete
-                  </v-icon>
-                  <span class="ml-2">Remove</span>
-                </v-list-item>
-                <v-list-item
-                  v-if="duplicateType === 'enrollment' && sdcSchoolCollectionStudent.canMoveToCrossEnrollment"
-                  id="enrollmentResolveViaRemoveAndMoveToCrossEnrollment"
-                >
-                  <v-icon
-                    color="#003366"
-                    class="pr-1 mb-1"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                  <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>
-                </v-list-item>
-                <v-list-item
-                  id="markStudAsDiff"
-                  @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"
-                >
-                  <v-icon
-                    color="#003366"
-                    class="pr-1 mb-1"
-                  >
-                    mdi-account-question
-                  </v-icon>
-                  <span class="ml-2">Request Review of PEN</span>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
-        </CustomTable>
-      </v-col>
-    </v-row>
+      </template>
+    </v-data-iterator>
+    <v-pagination
+      v-if="nonAllowableDuplicates.length > 0"
+      v-model="pageNumber"
+      :length="Math.ceil(nonAllowableDuplicates.length/10)"
+      total-visible="5"
+      rounded="circle"
+    ></v-pagination>
+
     <v-row
       v-if="nonAllowableDuplicates.length === 0"
       class="pt-4"
@@ -167,34 +184,50 @@
       />
     </v-row>
   </template>
+
   <template v-if="duplicateView==='2'">
     <strong>Duplicate Students Found: {{ allowableDuplicates.length }}</strong>
-    <v-row
-      v-for="duplicate in allowableDuplicates"
-      :key="duplicate.sdcDuplicateID"
-      class="pt-4"
-      no-gutters
+    <v-data-iterator
+      :items="allowableDuplicates"
+      :items-per-page="10"
+      v-model:page.sync="pageNumber"
     >
-      <v-col class="pa-0">
-        <v-row no-gutters>
-          <v-col class="pb-2">
-            <v-chip color="primary">
-              <v-col>
-                Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}
+      <template v-slot:default="{ items }">
+        <v-row
+          v-for="duplicate in items"
+          :key="duplicate?.raw?.sdcDuplicateID"
+          class="pt-4"
+          no-gutters
+        >
+          <v-col class="pa-0">
+            <v-row no-gutters>
+              <v-col class="pb-2">
+                <v-chip color="primary">
+                  <v-col>
+                    Assigned PEN: {{ duplicate?.raw?.sdcSchoolCollectionStudent1Entity?.assignedPen }}
+                  </v-col>
+                </v-chip>
               </v-col>
-            </v-chip>
+            </v-row>
+            <CustomTable
+              :headers="headersConfig.allowableTableHeaders"
+              :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
+              :is-loading="false"
+              :reset="false"
+              :total-elements="2"
+              :hide-pagination="true"
+            />
           </v-col>
         </v-row>
-        <CustomTable
-          :headers="headersConfig.allowableTableHeaders"
-          :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
-          :is-loading="false"
-          :reset="false"
-          :total-elements="2"
-          :hide-pagination="true"
-        />
-      </v-col>
-    </v-row>
+      </template>
+    </v-data-iterator>
+    <v-pagination
+      v-if="allowableDuplicates.length > 0"
+      v-model="pageNumber"
+      :length="Math.ceil(allowableDuplicates.length/10)"
+      total-visible="5"
+      rounded="circle"
+    ></v-pagination>
     <v-row
       v-if="allowableDuplicates.length === 0"
       class="pt-4"
@@ -211,32 +244,47 @@
   </template>
   <template v-if="duplicateView==='3'">
     <strong>Duplicate Students Found: {{ resolvedDuplicates.length }}</strong>
-    <v-row
-      v-for="duplicate in resolvedDuplicates"
-      :key="duplicate.sdcDuplicateID"
-      class="pt-4"
-      no-gutters
+    <v-data-iterator
+      :items="resolvedDuplicates"
+      :items-per-page="10"
+      v-model:page.sync="pageNumber"
     >
-      <v-col class="pa-0">
-        <v-row no-gutters>
-          <v-col class="pb-2">
-            <v-chip color="primary">
-              <v-col>
-                Assigned PEN: {{ duplicate.sdcSchoolCollectionStudent1Entity.assignedPen }}
+      <template v-slot:default="{ items }">
+        <v-row
+          v-for="duplicate in items"
+          :key="duplicate?.raw?.sdcDuplicateID"
+          class="pt-4"
+          no-gutters
+        >
+          <v-col class="pa-0">
+            <v-row no-gutters>
+              <v-col class="pb-2">
+                <v-chip color="primary">
+                  <v-col>
+                    Assigned PEN: {{ duplicate?.raw?.sdcSchoolCollectionStudent1Entity?.assignedPen }}
+                  </v-col>
+                </v-chip>
               </v-col>
-            </v-chip>
+            </v-row>
+            <CustomTable
+              :headers="headersConfig.resolvedTableHeaders"
+              :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
+              :is-loading="false"
+              :reset="false"
+              :total-elements="2"
+              :hide-pagination="true"
+            />
           </v-col>
         </v-row>
-        <CustomTable
-          :headers="headersConfig.resolvedTableHeaders"
-          :data="[duplicate?.sdcSchoolCollectionStudent1Entity, duplicate?.sdcSchoolCollectionStudent2Entity]"
-          :is-loading="false"
-          :reset="false"
-          :total-elements="2"
-          :hide-pagination="true"
-        />
-      </v-col>
-    </v-row>
+      </template>
+    </v-data-iterator>
+    <v-pagination
+      v-if="resolvedDuplicates.length > 0"
+      v-model="pageNumber"
+      :length="Math.ceil(resolvedDuplicates.length/10)"
+      total-visible="5"
+      rounded="circle"
+    ></v-pagination>
     <v-row
       v-if="resolvedDuplicates.length === 0"
       class="pt-4"
@@ -343,7 +391,8 @@ export default defineComponent({
       openProgramResolutionView: false,
       openChangeGradeView: false,
       selectedDuplicate: {},
-      selectedSdcSchoolCollectionStudent: {}
+      selectedSdcSchoolCollectionStudent: {},
+      pageNumber: 1
     };
   },
   methods: {
