@@ -149,7 +149,6 @@
       </router-link>
     </v-col>
   </v-row>
-  {{tableID}}
   <slot
     name="reports"
     :data="headcountTableData"
