@@ -1,5 +1,4 @@
 <template>
-  {{tableID}} Marco
   <v-table
     v-if="headcountTableData"
     :id="tableID"

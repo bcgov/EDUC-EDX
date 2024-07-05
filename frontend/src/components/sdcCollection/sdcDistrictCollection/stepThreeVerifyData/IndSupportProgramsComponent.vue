@@ -41,12 +41,12 @@
           <IndigenousHeadcountsComponent
             v-if="data && (reportType === 'indigenous' || reportType === 'indigenous-per-school')"
             :headcount-table-data="data"
-            :table-i-d="getIndigenousHeadcountsComponentReport()"
+            :table-i-d="reportType === 'indigenous' ? getIndigenousHeadcountsComponentReport() : getIndigenousHeadcountsComponentPerSchoolReport()"
           />
           <BandHeadcountsComponent
             v-if="data && (reportType === 'band-codes' || reportType === 'band-codes-per-school')"
             :headcount-table-data="data"
-            :table-i-d="getBandHeadcountsComponentReport()"
+            :table-i-d="reportType === 'band-codes' ? getBandHeadcountsComponentReport() : getBandHeadcountsComponentPerSchoolReport()"
           />
         </template>
       </SummaryComponent>
@@ -99,9 +99,15 @@ export default {
       this.reportView = 'summary';
     },
     getIndigenousHeadcountsComponentReport() {
+      return INDSUPPORT_PR.summaryReport[0].tableID;
+    },
+    getIndigenousHeadcountsComponentPerSchoolReport() {
       return INDSUPPORT_PR.summaryReport[1].tableID;
     },
     getBandHeadcountsComponentReport() {
+      return INDSUPPORT_PR.summaryReport[2].tableID;
+    },
+    getBandHeadcountsComponentPerSchoolReport() {
       return INDSUPPORT_PR.summaryReport[3].tableID;
     },
   }
