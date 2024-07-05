@@ -151,6 +151,7 @@ describe('SDC District Collection View', () => {
       cy.get('#reports').parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible Special Education Headcount per School').click();
       cy.wait('@tableLoaded');
+      cy.wait(selectors.specialEducationComponent.headcountReportPerSchool);
 
       // check summary table
       const expectedRows = ['KF01020304050607EU0809101112SUTotal', 'All Schools00000000006400010', '99899990 - EDX Automation Testing School0000000000320005', '99899991 - EDX Automation Testing School0000000000320005'];
@@ -204,6 +205,7 @@ describe('SDC District Collection View', () => {
       cy.get('#reports').parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible French Program Headcount per School').click();
       cy.wait('@tableLoaded');
+      cy.wait(selectors.frenchComponent.headcountReportPerSchool);
 
       // check summary table
       const expectedRows = ['KF01020304050607EU0809101112SUGATotal', 'All Schools000000000064000010', '99899990 - EDX Automation Testing School00000000003200005', '99899991 - EDX Automation Testing School00000000003200005'];
@@ -266,6 +268,7 @@ describe('SDC District Collection View', () => {
       cy.get('#reports').parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible Indigenous Support Program Headcount per School').click();
       cy.wait('@tableLoaded');
+      cy.wait(selectors.indigenousSupportComponent.headcountReportPerSchool);
 
       // check summary table
       const expectedRows = ['KF01020304050607EU0809101112SUTotal', 'All Schools0000000000600006', '', '99899990 - EDX Automation Testing School0000000000300003', '', '99899991 - EDX Automation Testing School0000000000300003', ''];
@@ -286,6 +289,7 @@ describe('SDC District Collection View', () => {
       cy.get('#reports').parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible Band of Residence Headcount').click();
       cy.wait('@tableLoaded');
+      cy.wait(selectors.indigenousSupportComponent.bandHeadcountReport);
 
       // check summary table
       cy.get('.v-table').should('exist').contains(1);
@@ -310,6 +314,7 @@ describe('SDC District Collection View', () => {
       cy.get('#reports').parent().click();
       cy.get(selectors.dropdown.listItem).contains('Eligible Band of Residence Headcount per School').click();
       cy.wait('@tableLoaded');
+      cy.wait(selectors.indigenousSupportComponent.bandHeadcountReportPerSchool);
 
       // check summary table
       const expectedRows = ['HeadcountFTE', '99899990 - EDX Automation Testing School54.5500', '', '99899991 - EDX Automation Testing School54.5500', '', 'All Bands & Students109.1000', ''];
