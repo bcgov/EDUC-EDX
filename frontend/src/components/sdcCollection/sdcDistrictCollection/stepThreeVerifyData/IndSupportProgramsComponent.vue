@@ -41,10 +41,12 @@
           <IndigenousHeadcountsComponent
             v-if="data && (reportType === 'indigenous' || reportType === 'indigenous-per-school')"
             :headcount-table-data="data"
+            :table-i-d="getIndigenousHeadcountsComponentReport()"
           />
           <BandHeadcountsComponent
             v-if="data && (reportType === 'band-codes' || reportType === 'band-codes-per-school')"
             :headcount-table-data="data"
+            :table-i-d="getBandHeadcountsComponentReport()"
           />
         </template>
       </SummaryComponent>
@@ -95,8 +97,13 @@ export default {
     },
     showSummary() {
       this.reportView = 'summary';
-    }
-   
+    },
+    getIndigenousHeadcountsComponentReport() {
+      return INDSUPPORT_PR.summaryReport[1].tableID;
+    },
+    getBandHeadcountsComponentReport() {
+      return INDSUPPORT_PR.summaryReport[3].tableID;
+    },
   }
 };
 </script>

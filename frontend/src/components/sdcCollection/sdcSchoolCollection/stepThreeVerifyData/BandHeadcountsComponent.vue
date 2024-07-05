@@ -1,57 +1,63 @@
 <template>
   <v-table
-      v-if="headcountTableData"
-      density="compact"
-      id = "band-headcount-table"
+    v-if="headcountTableData"
+    :id="tableID"
+    density="compact"
   >
     <thead>
-    <tr>
-      <th
+      <tr>
+        <th
           v-for="columnHeader in headcountTableData?.headers"
           :id="'tableHeader'+columnHeader"
           :key="columnHeader + generateKey()"
-      >
-        {{ columnHeader==="title"?'':columnHeader }}
-      </th>
-    </tr>
+        >
+          {{ columnHeader==="title"?'':columnHeader }}
+        </th>
+      </tr>
     </thead>
     <tbody>
-    <template
+      <template
         v-for="(row, index) in headcountTableData?.rows"
         :key="'row-' + index + '-data'"
-    >
-      <tr
+      >
+        <tr
           class="section-header"
           data-cy="band-report-row"
-      >
-        <td
+        >
+          <td
             v-for="(columnHeader, idx) in headcountTableData?.headers"
             :key="row?.title?.currentValue + columnHeader + generateKey()"
             :class="{'section-header-title': idx===0,'table-cell': idx!==0, 'zero-cell': row[columnHeader]?.currentValue==='0'}"
-        >
-          <div>
-              <span v-if="columnHeader !== 'title' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
-              {{row[columnHeader]?.comparisonValue}}
+          >
+            <div>
+              <span
+                v-if="columnHeader !== 'title' && row[columnHeader]?.comparisonValue !== null"
+                class="compare-text"
+              >
+                {{ row[columnHeader]?.comparisonValue }}
               </span>
-            <span v-if= " columnHeader !== 'title' && row[columnHeader]?.comparisonValue !== null" class="compare-text">
+              <span
+                v-if=" columnHeader !== 'title' && row[columnHeader]?.comparisonValue !== null"
+                class="compare-text"
+              >
                 <v-icon
-                    size="x-small"
-                    :color="getStatusColor(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue)"
+                  size="x-small"
+                  :color="getStatusColor(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue)"
                 >
                   {{ getComparisonIcon(row[columnHeader]?.comparisonValue, row[columnHeader]?.currentValue) }}
                 </v-icon>
               </span>
-            <span>{{ row[columnHeader]?.currentValue }}</span>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td
+              <span>{{ row[columnHeader]?.currentValue }}</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td
             class="empty-row-cells"
             :colspan="headcountTableData?.headers?.length"
-        />
-      </tr>
-    </template>
+          />
+        </tr>
+      </template>
     </tbody>
   </v-table>
 </template>
@@ -70,6 +76,10 @@ export default defineComponent({
   props: {
     headcountTableData: {
       type: Object,
+      required: true
+    },
+    tableID: {
+      type: String,
       required: true
     }
   },
