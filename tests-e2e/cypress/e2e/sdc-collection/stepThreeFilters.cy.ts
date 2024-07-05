@@ -37,28 +37,28 @@ describe('SDC School Collection View', () => {
         checkCommonFiltersExist();
 
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.isAdult).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
         cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.isSchoolAged).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.fteGt0).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
 
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
 
         cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasSupportBlocks).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
 
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
         cy.get(selectors.fteComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.noSupportBlocks).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
 
         cy.get(selectors.fteComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
       });
@@ -78,7 +78,7 @@ describe('SDC School Collection View', () => {
 
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.fteGt0).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
         cy.get(selectors.specialEducationComponent.tab).find('tbody tr').each($cell => {
@@ -96,7 +96,7 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters1');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('A - Physically Dependent').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters1');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -112,7 +112,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('G - Autism Spectrum Disorder').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters2');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -128,6 +128,8 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.specialEducationComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
+      cy.get(selectors.filters.cancelBtn).click();
+
       cy.wait('@paginationFilters3');
       cy.get(selectors.specialEducationComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
     });
@@ -147,18 +149,18 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade9).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
         cy.get(selectors.careerProgramComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.codeXH).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
         cy.get(selectors.careerProgramComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.career41).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.careerProgramComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
       });
     });
@@ -186,6 +188,7 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters1');
       cy.get(selectors.frenchComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('11 - Early French Immersion').click();
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters1');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -201,7 +204,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('14 - Late French Immersion').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters2');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
@@ -210,7 +213,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('08 - Core French').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters3');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -226,7 +229,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Funding Eligible').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters4');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
@@ -235,7 +238,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.frenchComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
-
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters5');
       cy.get(selectors.frenchComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
@@ -254,7 +257,7 @@ describe('SDC School Collection View', () => {
         checkCommonFiltersExist();
 
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasIndiAncestry).click();
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.fteComponent.filterButton).click();
@@ -264,11 +267,15 @@ describe('SDC School Collection View', () => {
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('{selectall}{backspace}');
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.bandCodeSelector).type('KWANLIN DUN (0500)');
         cy.get(selectors.filters.bandCodeAutoCompleteSelector).contains('KWANLIN DUN (0500)').click();
+        cy.get(selectors.filters.cancelBtn).click();
+
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(3);
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.fteComponent.filterButton).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.clearFilter).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.hasBandCode).click();
         cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.grade8).click();
+        cy.get(selectors.filters.cancelBtn).click();
+
         cy.get(selectors.indigenousSupportComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
       });
     });
@@ -296,6 +303,7 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters1');
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('1-5 years in ELL').click();
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters1');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
@@ -311,6 +319,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('6+ years in ELL').click();
+      cy.get(selectors.filters.cancelBtn).click();
       cy.wait('@paginationFilters2');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
@@ -318,6 +327,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Funding Eligible').click();
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters3');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(2);
@@ -333,6 +343,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Not Funding Eligible').click();
+      cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters4');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
@@ -350,7 +361,7 @@ describe('SDC School Collection View', () => {
         checkCommonFiltersExist();
         cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters');
         cy.get(selectors.studentLevelData.stepThreeSearchField).type('102866365');
-
+        cy.get(selectors.filters.cancelBtn).click();
         cy.wait('@paginationFilters');
         cy.get(selectors.studentLevelData.stepThreeStudentsFound).contains('Students Found: 1');
 
