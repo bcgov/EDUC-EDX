@@ -1,6 +1,7 @@
 <template>
   <v-table
     v-if="headcountTableData"
+    :id="tableID"
     density="compact"
   >
     <thead>
@@ -72,6 +73,10 @@ export default defineComponent({
   props: {
     headcountTableData: {
       type: Object,
+      required: true
+    },
+    tableID: {
+      type: String,
       required: true
     }
   },

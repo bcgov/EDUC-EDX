@@ -63,11 +63,14 @@ describe('SDC School Collection View', () => {
       // checks special filter for refugee funding
       cy.get(selectors.refugeeComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingEligible).click();
+      cy.get(selectors.filters.cancelBtn).click();
+
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
       cy.get(selectors.refugeeComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
       cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingNotEligible).click();
+      cy.get(selectors.filters.cancelBtn).click();
       cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
     });
   });
