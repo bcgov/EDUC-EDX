@@ -53,41 +53,48 @@
           v-if="selectedTab==='Overall'"
           data-cy="fteTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="French Programs">
         <HeadCountReportComponent
           data-cy="frenchTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="Career Programs">
         <HeadCountReportComponent
           data-cy="careerTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="Indigenous Students & Support Programs">
         <IndigenousHeadcountsComponent
           data-cy="indigenousTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="Special Education">
         <HeadCountReportComponent
           data-cy="spedTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="English Language Learning">
         <HeadCountReportComponent
           data-cy="ellTab"
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
       <v-window-item value="Refugee">
         <HeadCountReportComponent
           :headcount-table-data="headcountTableData"
+          :table-i-d="currentTableID"
         />
       </v-window-item>
     </v-window>
@@ -115,6 +122,7 @@ export default defineComponent({
       headcountHeaders: [],
       headcountTableData: {},
       compareSwitch: false,
+      currentTableID: null,
       tabs: [
         'Overall',
         'French Programs',
@@ -145,6 +153,22 @@ export default defineComponent({
         return ELL.summaryReport[0].endpoint;
       }
       return null;
+    },
+    tableID() {
+      if(this.selectedTab==='Overall') {
+        return FTE.summaryReport[0].tableID;
+      } else if(this.selectedTab==='French Programs') {
+        return FRENCH_PR.summaryReport[0].tableID;
+      } else if(this.selectedTab==='Career Programs') {
+        return CAREER_PR.summaryReport[0].tableID;
+      } else if(this.selectedTab==='Special Education') {
+        return SPECIALED_PR.summaryReport[0].tableID;
+      } else if(this.selectedTab==='Indigenous Students & Support Programs') {
+        return INDSUPPORT_PR.summaryReport[0].tableID;
+      } else if(this.selectedTab==='English Language Learning') {
+        return ELL.summaryReport[0].tableID;
+      }
+      return null;
     }
   },
   watch: {
@@ -168,6 +192,7 @@ export default defineComponent({
       }).then(response => {
         this.headcountHeaders = response.data.headcountHeaders;
         this.headcountTableData = response.data.headcountResultsTable;
+        this.currentTableID = this.tableID;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');

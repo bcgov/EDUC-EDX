@@ -158,6 +158,7 @@
     <HeadCountReportComponent
       v-if="headcountTableData"
       :headcount-table-data="headcountTableData"
+      :table-i-d="tableID"
     />
   </slot>
 </template>
@@ -192,13 +193,15 @@ export default {
       headcountHeaders: [],
       headcountTableData: null,
       compareSwitch: false,
-      reportType: null
+      reportType: null,
+      tableID: null
     };
   },
   watch: {
     headcountType: {
       handler() {
         this.reportType = this.headcountType[0]?.endpoint;
+        this.tableID = this.headcountType[0]?.tableID;
         this.getStudentHeadCounts();
       },
       immediate: true

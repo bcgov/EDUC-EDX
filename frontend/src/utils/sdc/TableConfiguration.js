@@ -718,7 +718,7 @@ export const FTE = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
     ],
     summaryReport: [
-      { title: 'Grade Enrolment & Eligible FTE', endpoint:'enrollment'}
+      { tableID: 'eligEnrolmentFTE', title: 'Grade Enrolment & Eligible FTE', endpoint:'enrollment'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -812,7 +812,7 @@ export const FRENCH_PR = Object.freeze(
       { title: 'French Program', key: 'mappedFrenchEnrolledProgram' },
     ],
     summaryReport: [
-      { title: 'Eligible French Program Headcount', endpoint:'french'}
+      { tableID: 'eligFrenchHeadcounts', title: 'Eligible French Program Headcount', endpoint:'french'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -840,7 +840,7 @@ export const CAREER_PR = Object.freeze(
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
     ],
     summaryReport: [
-      { title: 'Eligible Career Program Headcount', endpoint:'career'}
+      { tableID: 'eligEnrolmentCareerProgHeadcount', title: 'Eligible Career Program Headcount', endpoint:'career'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -870,8 +870,8 @@ export const INDSUPPORT_PR = Object.freeze(
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram' },
     ],
     summaryReport: [
-      { title: 'Eligible Indigenous Support Program Headcount', endpoint:'indigenous'},
-      { title: 'Eligible Band of Residence Headcount', endpoint:'band-codes'},
+      { tableID: 'eligIndigenousSupportHeadcount', title: 'Eligible Indigenous Support Program Headcount', endpoint:'indigenous'},
+      { tableID: 'eligBandOfResidenceHeadcount', title: 'Eligible Band of Residence Headcount', endpoint:'band-codes'},
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -901,7 +901,7 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Special Education Category', key: 'mappedSpedCode' },
     ],
     summaryReport: [
-      { title: 'Eligible Special Education Headcount', endpoint:'special-ed'}
+      { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Special Education Headcount', endpoint:'special-ed'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -929,7 +929,7 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
     ],
     summaryReport: [
-      { title: 'Eligible English Language Learning Headcount', endpoint:'ell'}
+      { tableID: 'eligELLHeadcount', title: 'Eligible English Language Learning Headcount', endpoint:'ell'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -956,7 +956,7 @@ export const REFUGEE = Object.freeze(
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } }
     ],
     summaryReport: [
-      { title: 'TODO', endpoint:'refugee'}
+      { tableID: 'eligRefugeeHeadcount', title: 'TODO', endpoint:'refugee'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,

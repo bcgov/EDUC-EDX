@@ -1,6 +1,7 @@
 <template>
   <v-table
     v-if="headcountTableData"
+    :id="tableID"
     density="compact"
   >
     <thead>
@@ -20,11 +21,16 @@
         :key="row?.title?.currentValue + generateKey()"
         :class="row?.title?.currentValue === row?.section?.currentValue ?'section-header':''"
       >
-      <td colspan="20" class="section-header-title" v-if="Object.keys(row).length === 2 && row?.title?.currentValue === row?.section?.currentValue">
-        {{ row?.title?.currentValue }}
-      </td>
-        <td v-else
+        <td
+          v-if="Object.keys(row).length === 2 && row?.title?.currentValue === row?.section?.currentValue"
+          colspan="20"
+          class="section-header-title"
+        >
+          {{ row?.title?.currentValue }}
+        </td>
+        <td
           v-for="columnHeader in headcountTableData?.headers"
+          v-else
           :key="row?.title?.currentValue + columnHeader + generateKey()"
           :class="getClassForCell(columnHeader, row)"
         >
@@ -67,6 +73,10 @@ export default {
   props: {
     headcountTableData: {
       type: Object,
+      required: true
+    },
+    tableID: {
+      type: String,
       required: true
     }
   },
