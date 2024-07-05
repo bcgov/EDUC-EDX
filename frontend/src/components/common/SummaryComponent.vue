@@ -149,7 +149,6 @@
       </router-link>
     </v-col>
   </v-row>
-
   <slot
     name="reports"
     :data="headcountTableData"
@@ -205,7 +204,8 @@ export default {
         this.getStudentHeadCounts();
       },
       immediate: true
-    }
+    },
+
   },
   methods: {
     getComparisonIcon,
@@ -227,6 +227,7 @@ export default {
       }).then(response => {
         this.headcountHeaders = response.data.headcountHeaders;
         this.headcountTableData = response.data.headcountResultsTable;
+        this.tableID = this.headcountType.filter(headcount => headcount.endpoint === this.reportType).pop().tableID;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
@@ -243,6 +244,7 @@ export default {
       }).then(response => {
         this.headcountHeaders = response.data.headcountHeaders;
         this.headcountTableData = response.data.headcountResultsTable;
+        this.tableID = this.headcountType.filter(headcount => headcount.endpoint === this.reportType).pop().tableID;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
