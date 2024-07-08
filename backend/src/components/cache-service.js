@@ -351,6 +351,9 @@ const cacheService = {
   },
   getActiveSpecialEducationCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_SPECIAL_ED_CODES].activeRecords;
+  },
+  getAllStudentValidationIssueCodes() {
+    return cachedData[constants.CACHE_KEYS.SDC_VALIDATION_ISSUE_TYPE_CODES].records;
   }
 };
 

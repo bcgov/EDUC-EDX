@@ -157,6 +157,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading SDC_SCHOOL_COLLECTION_STATUS_CODES data during boot.', e);
     });
+    cacheService.loadDataToCache(constants.CACHE_KEYS.SDC_VALIDATION_ISSUE_TYPE_CODES, 'sdc:validationIssueTypeCodesURL').then(() => {
+      log.info('Loaded SDC_VALIDATION_ISSUE_TYPE_CODES data to memory');
+    }).catch((e) => {
+      log.error('Error loading SDC_VALIDATION_ISSUE_TYPE_CODES data during boot.', e);
+    });
   }
 }
 WS.init(app, server);
