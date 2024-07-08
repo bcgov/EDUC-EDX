@@ -85,7 +85,9 @@
                   {{ getSdcStudentIssueIcon(props.item['sdcSchoolCollectionStudentStatusCode']) }}
                 </v-icon>
               </template>
-              {{ getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode'], props.item['sdcSchoolCollectionStudentValidationIssues']) }}
+              <div style="white-space: pre-line;">
+                {{ getSdcStudentStatusHoverText(props.item['sdcSchoolCollectionStudentStatusCode'], props.item['sdcSchoolCollectionStudentValidationIssues']) }}
+              </div>
             </v-tooltip>
             <div v-else>
               <span v-if="column.key === 'studentPen'">
@@ -304,14 +306,11 @@ export default {
     },
     getSdcStudentStatusHoverText(status, codes) {
       if (status === 'FUNDWARN' || status === 'INFOWARN') {
-        let hoverText = '';
+        let hoverTextSet = new Set();
         codes.forEach((code, index) => {
-          if (index !== 0){
-            hoverText += '\n';
-          }
-          hoverText += sdcCollectionStore().validationIssueTypeCodesMap.get(code.validationIssueCode)?.message;
+          hoverTextSet.add(sdcCollectionStore().validationIssueTypeCodesMap.get(code.validationIssueCode)?.message);
         })
-        return hoverText;
+        return Array.from(hoverTextSet).join("\n");
       }
     },
     getAssignedPen(assignedPen) {
