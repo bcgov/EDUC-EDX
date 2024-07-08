@@ -175,17 +175,6 @@
                   @next="next"
                 /> 
               </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="8"
-                transition="false"
-                reverse-transition="false"
-              >
-                <ProvincialDuplicatesStep
-                  :school-collection-object="schoolCollectionObject"
-                  :is-step-complete="isStepComplete"
-                  @next="next"
-                />
-              </v-stepper-window-item>
             </v-stepper-window>
             <v-stepper-window
               v-else
@@ -246,17 +235,6 @@
                   @next="next"
                 />
               </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="6"
-                transition="false"
-                reverse-transition="false"
-              >
-                <ProvincialDuplicatesStep
-                  :school-collection-object="schoolCollectionObject"
-                  :is-step-complete="isStepComplete"
-                  @next="next"
-                />
-              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -295,12 +273,10 @@ import StepSevenSubmitData from './StepSevenSubmitData.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
-import ProvincialDuplicatesStep from './ProvincialDuplicatesStep.vue';
 
 export default {
   name: 'SDCCollectionView',
   components: {
-    ProvincialDuplicatesStep,
     StepFourDuplicatesProcessing,
     StepFiveSchoolDetails,
     StepThreeVerifyData,
