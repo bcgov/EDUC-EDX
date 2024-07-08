@@ -312,8 +312,9 @@
     />
   </v-bottom-sheet>
 
-  <v-bottom-sheet
+  <v-dialog
     v-model="openChangeGradeView"
+    :max-width="600"
     :inset="true"
     :no-click-animation="true"
     :scrollable="true"
@@ -325,7 +326,7 @@
       @close="openChangeGradeView = !openChangeGradeView"
       @close-refresh="closeAndRefreshDuplicates()"  
     />
-  </v-bottom-sheet>
+  </v-dialog>
   <EnrollmentDuplicateResolveViaRemove
     ref="resolveEnrollmentDuplicateViaRemoveStudent"
     @close-refresh="closeAndRefreshDuplicates()"
