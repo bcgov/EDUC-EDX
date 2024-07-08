@@ -312,8 +312,9 @@
     />
   </v-bottom-sheet>
 
-  <v-bottom-sheet
+  <v-dialog
     v-model="openChangeGradeView"
+    :max-width="600"
     :inset="true"
     :no-click-animation="true"
     :scrollable="true"
@@ -325,14 +326,14 @@
       @close="openChangeGradeView = !openChangeGradeView"
       @close-refresh="closeAndRefreshDuplicates()"  
     />
-  </v-bottom-sheet>
+  </v-dialog>
   <EnrollmentDuplicateResolveViaRemove
     ref="resolveEnrollmentDuplicateViaRemoveStudent"
     @close-refresh="closeAndRefreshDuplicates()"
   />
   <ConfirmationDialog ref="confirmMarkDifferent">
     <template #message>
-      <p>We will look into the assigned PEN we found for this student. Would you like to proceed?</p>
+      <p>Requesting the review of the PEN will send the student record to the Ministry staff for review. This action cannot be undone.</p>
     </template>
   </ConfirmationDialog>
 </template>
@@ -398,7 +399,7 @@ export default defineComponent({
   methods: {
     async markStudentAsDifferent(sdcSchoolCollectionStudent){
       const selectedStudent = cloneDeep(sdcSchoolCollectionStudent);
-      const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
       if (!confirmation) {
         return;
       }

@@ -173,27 +173,27 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       searchCriteriaList: createSearchCriteria(req.query.searchParams)
     });
 
-    if(req.query.searchParams['tabFilter']) {
+    if(req.query.searchParams?.['tabFilter']) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: createTabFilter(req.query.searchParams['tabFilter'])
       });
     }
 
-    if (req.query.searchParams['multiFieldName']) {
+    if (req.query.searchParams?.['multiFieldName']) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: createMultiFieldNameSearchCriteria(req.query.searchParams['multiFieldName'])
       });
     }
-    if (req.query.searchParams['penLocalIdNumber']) {
+    if (req.query.searchParams?.['penLocalIdNumber']) {
       search.push({
         condition: CONDITION.AND,
         searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
       });
     }
 
-    if (req.query.searchParams['moreFilters']) {
+    if (req.query.searchParams?.['moreFilters']) {
       let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
@@ -552,36 +552,7 @@ async function getSdcSchoolCollections(req, res) {
  */
 function createSearchCriteria(searchParams = []) {
   let searchCriteriaList = [];
-  let fundingWarningCategories = [
-    {
-      categoryCode: 'NOPROGFUNDINGHS',
-      validationErrors: ['PROGRAMCODEHSLANG', 'PROGRAMCODEHSIND', 'PROGRAMCODEHSSPED']
-    },
-    {
-      categoryCode: 'ZEROCOURSE',
-      validationErrors: ['ADULTZEROCOURSEH', 'SCHOOLAGEDZEROCOURSEH']
-    },
-    {
-      categoryCode: 'STUDTOOYOUNG',
-      validationErrors: ['AGELESSTHANFIVE']
-    },
-    {
-      categoryCode: 'NOINDIGFUND',
-      validationErrors: ['PROGRAMCODEIND']
-    },
-    {
-      categoryCode: 'NOPROGFUNDINGOOP',
-      validationErrors: ['ENROLLEDCODEFUNDINGERR', 'ENROLLEDCODEINDERR', 'ENROLLEDCODECAREERERR']
-    },
-    {
-      categoryCode: 'NOFUNDSUPPORT',
-      validationErrors: ['SUPPORTFACILITYNA', 'ADULTSUPPORTERR', 'CHANGEME']
-    },
-    {
-      categoryCode: 'NOFUNDGRADADULT',
-      validationErrors: ['CHANGEME']
-    }
-  ];
+  let fundingWarningCategories = cacheService.getAllStudentValidationIssueCodes();
 
   Object.keys(searchParams).forEach(function(key) {
     let pValue = searchParams[key];
@@ -594,10 +565,10 @@ function createSearchCriteria(searchParams = []) {
     }
     if (key === 'fundingWarningCategory') {
       let fundingCat = fundingWarningCategories.filter(function(fund) {
-        return fund.categoryCode === pValue;
+        return fund.validationIssueTypeCode === pValue;
       });
       if (fundingCat) {
-        searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', operation: FILTER_OPERATION.IN, value: fundingCat[0].validationErrors.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'sdcStudentValidationIssueEntities.validationIssueCode', operation: FILTER_OPERATION.EQUAL, value: fundingCat[0].validationIssueTypeCode, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
     }
   });
@@ -953,7 +924,8 @@ async function resolveDuplicates(req, res) {
       student.createDate = null;
       student.createUser = null;
       student.updateDate = null;
-      student.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
+
+      student.updateUser = getCreateOrUpdateUserValue(req);
 
       if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
         student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
@@ -978,6 +950,17 @@ async function resolveDuplicates(req, res) {
       });
     }
     log.error('Error resolving district duplicates.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getStudentValidationIssueCodes(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let studentValidationIssueCodes = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/student-validation-issue-codes`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(studentValidationIssueCodes);
+  } catch (e) {
+    log.error('Error getting Student validation issue codes.', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -1010,5 +993,6 @@ module.exports = {
   resolveDuplicates,
   getSdcSchoolCollections,
   getProvincialDuplicates,
-  getProvincialDuplicatesForSchool
+  getProvincialDuplicatesForSchool,
+  getStudentValidationIssueCodes
 };

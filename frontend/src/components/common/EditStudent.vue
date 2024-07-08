@@ -608,7 +608,7 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'show-issues', 'clear-filter', 'filter-pen', 'form-validity', 'reset-parent', 'student-object', 'close-success', 'reset-pagination'],
+  emits: ['next', 'show-issues', 'form-validity', 'reset-parent', 'student-object', 'close-success', 'reset-pagination'],
   data() {
     return {
       page: 1,
@@ -694,9 +694,6 @@ export default {
       } else {
         this.markStepAsComplete();
       }
-    },
-    clearFilter() {
-      this.$emit('clear-filter');
     },
     navigate() {
       this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.page - 1]);
