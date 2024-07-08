@@ -89,6 +89,7 @@
     </v-window> 
   </div>
 
+  <!-- TODO need to hide this if all 7 steps are completed -->
   <v-row justify="end">
     <PrimaryButton
       id="step-3-next-button-school"

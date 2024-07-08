@@ -48,6 +48,59 @@
         />
       </v-col>
     </v-row>
+    <!-- TODO need make this logic be based on all 7 steps being completed, ie completely signed off -->
+    <v-row v-else-if="districtCollection?.sdcDistrictCollectionStatusCode === 'SUBMITTED' || true">
+      <v-tabs
+        v-model="tab"
+        color="#38598a"
+        show-arrows
+      >
+        <v-tab
+          class="divider"
+          value="allStudents"
+        >
+          All Students
+        </v-tab>
+        <v-tab
+          class="divider"
+          value="studentDifferences"
+        >
+          Student Differences
+        </v-tab>
+        <v-tab
+          class="divider"
+          value="resolvedDuplicates"
+        >
+          Resolved Duplicates
+        </v-tab>
+      </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item
+          value="allStudents"
+          transition="false"
+          reverse-transition="false"
+        >
+          <StepThreeVerifyData
+            :district-collection-object="districtCollectionObject"
+            :is-step-complete="true"
+          />
+        </v-window-item>
+        <v-window-item
+          value="studentDifferences"
+          transition="false"
+          reverse-transition="false"
+        >
+          studentDifferences
+        </v-window-item>
+        <v-window-item
+          value="resolvedDuplicates"
+          transition="false"
+          reverse-transition="false"
+        >
+          resolvedDuplicates
+        </v-window-item>
+      </v-window>
+    </v-row>
     <v-row v-else>
       <v-col>
         <v-stepper
@@ -240,7 +293,8 @@ export default defineComponent({
       districtCollectionObject: {},
       disableScreen: false,
       wsNotificationText: '',
-      schoolsMap: null
+      schoolsMap: null,
+      tab: null
     };
   },
   computed: {
