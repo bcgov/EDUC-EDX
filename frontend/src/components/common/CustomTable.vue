@@ -307,7 +307,7 @@ export default {
     getSdcStudentStatusHoverText(status, codes) {
       if (status === 'FUNDWARN' || status === 'INFOWARN') {
         let hoverTextSet = new Set();
-        codes.forEach((code, index) => {
+        codes.forEach(code => {
           hoverTextSet.add(sdcCollectionStore().validationIssueTypeCodesMap.get(code.validationIssueCode)?.message);
         })
         return Array.from(hoverTextSet).join("\n");
