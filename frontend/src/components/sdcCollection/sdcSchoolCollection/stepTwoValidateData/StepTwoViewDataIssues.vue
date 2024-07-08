@@ -114,78 +114,87 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="totalNumIssueStudentsInCollection > 0 || filtersApplied"
+        v-if="totalNumIssueStudentsInCollection > 0 || filterCount > 0"
         class="pr-0"
       >
-        <v-row class="searchBox">
-          <v-col class="mx-4 pb-6">
-            <v-row>
-              <v-col class="d-flex justify-center">
-                <v-select
-                  id="fundingWarningCategorySelect"
-                  v-model="fundingWarningCategoryFilter"
-                  :items="fundingWarningCategories"
-                  item-title="category"
-                  item-value="categoryCode"
-                  label="Funding Warning Category"
-                  variant="underlined"
-                  hide-details="auto"
-                />
-              </v-col>
-
-              <v-col class="d-flex justify-center">
-                <v-text-field
-                  id="legalUsualNameSearch"
-                  v-model="legalUsualNameFilter"
-                  label="Legal or Usual Name"
-                  variant="underlined"
-                  hide-details="auto"
-                />
-              </v-col>
-
-              <v-col
-
-                class="d-flex justify-start"
+        <v-navigation-drawer
+          v-model="showFilters"
+          location="right"
+          :temporary="true"
+          width="700"
+          :persistent="true"
+          scrim="transparent"
+          :border="true"
+          style="top:0; height: 100%;"
+          rounded="true"
+        >
+          <Filters
+            :filters="{}"
+            :show-student-search="true"
+            @apply-filters="applyFilters"
+            @clear-filters="clearFilters"
+            @close="showFilters= !showFilters"
+          >
+            <template #custom-filter>
+              <v-select
+                id="fundingWarningCategorySelect"
+                v-model="fundingWarningCategoryFilter"
+                :items="fundingWarningCategories"
+                item-title="message"
+                item-value="validationIssueTypeCode"
+                label="Funding Warning Category"
+                variant="underlined"
+                hide-details="auto"
+                :clearable="true"
+                @update:model-value="applyFundingWarningFilter"
               >
-                <v-text-field
-                  id="penSearch"
-                  v-model="penFilter"
-                  label="PEN or Local ID"
-                  variant="underlined"
-                  hide-details="auto"
+                <template #prepend-inner>
+                  <v-icon
+                    v-if="fundingWarningCategoryFilter"
+                    :icon="getIcon(fundingWarningCategories.find(item => item.validationIssueTypeCode === fundingWarningCategoryFilter)?.severityTypeCode)"
+                    :color="getIconColour(fundingWarningCategories.find(item => item.validationIssueTypeCode === fundingWarningCategoryFilter)?.severityTypeCode)"
+                  />
+                </template>
+                <template #item="{ props, item }">
+                  <v-list-item
+                    v-bind="props"
+                    :prepend-icon="getIcon(item.raw.severityTypeCode)"
+                    :base-color="getIconColour(item.raw.severityTypeCode)"
+                    title=""
+                  >
+                    <v-list-item-title style="color: black !important;">
+                      {{
+                        item.title
+                      }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-select>
+            </template>
+          </Filters>
+        </v-navigation-drawer>
+        <v-row>
+          <v-col class="text-right">
+            <v-btn
+              id="filters"
+              color="#003366"
+              text="Filter"
+              class="mr-4 mb-1"
+              prepend-icon="mdi-filter-multiple-outline"
+              variant="outlined"
+              @click="toggleFilters"
+            >
+              <template #append>
+                <v-badge
+                  color="error"
+                  :content="filterCount"
+                  floating
+                  offset-y="-10"
                 />
-              </v-col>
-
-              <v-col
-                cols="1"
-                align-self="end"
-              >
-                <PrimaryButton
-                  id="clearSearch"
-                  :click-action="clearSearchFields"
-                  secondary
-                  width="100%"
-                  text="Clear"
-                  class="mr-2"
-                />
-              </v-col>
-
-              <v-col
-                cols="1"
-                align-self="end"
-              >
-                <PrimaryButton
-                  id="searchButton"
-                  :click-action="getSDCSchoolCollectionStudentPaginated"
-                  text="Search"
-                  width="100%"
-                  class="mr-2"
-                />
-              </v-col>
-            </v-row>
+              </template>
+            </v-btn>
           </v-col>
         </v-row>
-
         <v-row
           class="pt-3 pb-3"
         >
@@ -206,7 +215,7 @@
               class="mr-3"
               :loading="allIssueLoader"
               :click-action="getAllIssuesAndNavigate"
-              :disabled="selectedStudents.length != 0 || schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+              :disabled="selectedStudents.length !== 0 || schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
             />
           </v-col>
           <v-col
@@ -331,8 +340,6 @@
     <EditAndFixStudentData
       :selected-students="selectedStudents"
       :total-students="totalNumIssueStudentsInCollection"
-      @clear-filter="clearFiltersAndReload"
-      @filter-pen="filterStudentsByPen"
       @close="refresh"
       @reset-pagination="getSDCSchoolCollectionStudentPaginated"
     />
@@ -343,16 +350,18 @@
 
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import Spinner from '../../../common/Spinner.vue';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
 import {setFailureAlert} from '../../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
 import EditAndFixStudentData from './EditAndFixStudentData.vue';
+import Filters from '../../../common/Filters.vue';
 
 export default {
   name: 'StepTwoViewDataIssues',
   components: {
+    Filters,
     Spinner,
     PrimaryButton,
     EditAndFixStudentData
@@ -371,6 +380,12 @@ export default {
   emits: ['next'],
   data() {
     return {
+      filterSearchParams: {
+        tabFilter: { label: 'DATA_ISSUES' },
+        sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN',
+        moreFilters: {}
+      },
+      showFilters: false,
       selectedStudents: [],
       openEditView: false,
       headers: [
@@ -388,9 +403,6 @@ export default {
       totalStudents: 0,
       sdcCollection: sdcCollectionStore(),
       totalNumIssueStudentsInCollection: 0,
-      filtersApplied: false,
-      legalUsualNameFilter: null,
-      penFilter: null,
       selectedSdcStudentID: null,
       selectedSdcStudentIndex: 0,
       fundingWarningCategoryFilter: null,
@@ -399,41 +411,17 @@ export default {
       errorCount: 0,
       fundingWarningCount: 0,
       infoWarningCount: 0,
-      headerSearchParams: {
-        penNumber: '',
-        sdcSchoolCollectionStudentStatusCode: 'ERROR,INFOWARN,FUNDWARN'
-      },
-      fundingWarningCategories: [
-        {
-          category: 'No program funding for home school students',
-          categoryCode: 'NOPROGFUNDINGHS'
-        },
-        {
-          category: 'Zero courses reported',
-          categoryCode: 'ZEROCOURSE'
-        },
-        {
-          category: 'Student too young',
-          categoryCode: 'STUDTOOYOUNG'
-        },
-        {
-          category: 'No Indigenous Support Program funding',
-          categoryCode: 'NOINDIGFUND'
-        },
-        {
-          category: 'No program funding for Out-of-Province/International Students',
-          categoryCode: 'NOPROGFUNDINGOOP'
-        },
-        {
-          category: 'No funding for Support Blocks',
-          categoryCode: 'NOFUNDSUPPORT'
-        },
-        {
-          category: 'No funding for Graduated Adults',
-          categoryCode: 'NOFUNDGRADADULT'
-        }
-      ]
+      fundingWarningCategories: []
     };
+  },
+  computed: {
+    filterCount() {
+      let numFilters = Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
+      if(this.fundingWarningCategoryFilter !== null) {
+        numFilters++;
+      }
+      return numFilters;
+    }
   },
   watch: {
     pageNumber: {
@@ -444,12 +432,30 @@ export default {
     }
   },
   mounted() {
+    this.getStudentValidationIssueCodesInCollection();
     sdcCollectionStore().getCodes().then(async () => {
       this.getSummaryCounts();
       await this.getSDCSchoolCollectionStudentPaginated();
     });
   },
   methods: {
+    applyFilters($event) {
+      this.filterSearchParams.moreFilters = cloneDeep($event);
+      this.getSummaryCounts();
+      this.getSDCSchoolCollectionStudentPaginated();
+    },
+    applyFundingWarningFilter() {
+      this.filterSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
+      this.getSummaryCounts();
+      this.getSDCSchoolCollectionStudentPaginated();
+    },
+    clearFilters() {
+      this.filterSearchParams.moreFilters = {};
+      this.filterSearchParams.fundingWarningCategory = null;
+      this.fundingWarningCategoryFilter = null;
+      this.getSummaryCounts();
+      this.getSDCSchoolCollectionStudentPaginated();
+    },
     next() {
       if(this.isStepComplete) {
         this.$emit('next');
@@ -466,21 +472,37 @@ export default {
       this.getSDCSchoolCollectionStudentPaginated();
       this.selectedStudents=[];
     },
-    clearFiltersAndReload() {
-      this.openEditView = !this.openEditView;
-      this.selectedStudents=[];
-      this.penFilter = '';
-      this.fundingWarningCategoryFilter = '';
-      this.legalUsualNameFilter = '';
-      this.getAllIssuesAndNavigate();
+    getIcon(severityTypeCode) {
+      let icon = '';
+      if(severityTypeCode === 'ERROR') {
+        icon = 'mdi-alert-circle-outline';
+      } else if(severityTypeCode === 'INFO_WARNING') {
+        icon = 'mdi-alert-circle-outline';
+      } else if(severityTypeCode === 'FUNDING_WARNING') {
+        icon = 'mdi-alert-outline';
+      }
+      return icon;
     },
-    async filterStudentsByPen(pen) {
-      this.openEditView = !this.openEditView;
-      this.selectedStudents=[];
-      this.penFilter = pen;
-      this.fundingWarningCategoryFilter = '';
-      this.legalUsualNameFilter = '';
-      this.getAllIssuesAndNavigate();
+    getIconColour(severityTypeCode) {
+      let colour = '';
+      if(severityTypeCode === 'ERROR') {
+        colour = '#d90606';
+      } else if(severityTypeCode === 'INFO_WARNING') {
+        colour = 'blue';
+      } else if(severityTypeCode === 'FUNDING_WARNING') {
+        colour = 'orange';
+      }
+      return colour;
+    },
+    getStudentValidationIssueCodesInCollection() {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.$route.params.schoolCollectionID}/student-validation-issue-codes`)
+        .then((response) => {
+          this.fundingWarningCategories = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred attempting to load the page. Please refresh to try again.');
+        });
     },
     markStepAsComplete(){
       let updateCollection = {
@@ -522,19 +544,16 @@ export default {
       this.infoWarningCount = infoWarn === undefined ? 0 : infoWarn.total;
 
     },
+    toggleFilters() {
+      this.showFilters = !this.showFilters;
+    },
     async getSDCSchoolCollectionStudentPaginated(){
       this.loadingCount += 1;
-      this.headerSearchParams.penLocalIdNumber = this.penFilter;
-      this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
-      this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
-
-      this.filtersApplied = !!(this.penFilter || this.fundingWarningCategoryFilter || this.legalUsualNameFilter);
-
       await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
           sort: {
             sdcSchoolCollectionStudentStatusCode: 'ASC'
           },
@@ -552,15 +571,12 @@ export default {
     },
     getAllIssuesAndNavigate() {
       this.allIssueLoader = true;
-      this.headerSearchParams.penLocalIdNumber = this.penFilter;
-      this.headerSearchParams.fundingWarningCategory = this.fundingWarningCategoryFilter;
-      this.headerSearchParams.multiFieldName = this.legalUsualNameFilter;
 
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.$route.params.schoolCollectionID}/paginated`, {
         params: {
           pageNumber: 0,
           pageSize: 2000,
-          searchParams: omitBy(this.headerSearchParams, isEmpty),
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
           sort: {
             sdcSchoolCollectionStudentStatusCode: 'ASC'
           },
@@ -578,12 +594,6 @@ export default {
     },
     isLoading(){
       return this.loadingCount > 0;
-    },
-    clearSearchFields(){
-      this.fundingWarningCategoryFilter = null;
-      this.legalUsualNameFilter = null;
-      this.penFilter = null;
-      this.getSDCSchoolCollectionStudentPaginated();
     },
     getLegalName(first, middle, last){
       if(first && middle){

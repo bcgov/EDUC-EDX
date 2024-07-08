@@ -32,8 +32,6 @@
         @form-validity="isValid"
         @reset-parent="reset()"
         @show-issues="cancel"
-        @clear-filter="clearFilter"
-        @filter-pen="filterByPen"
         @reset-pagination="resetPagination"
       />
     </v-card-text>
@@ -61,7 +59,7 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'clear-filter', 'filter-pen', 'close', 'reset-pagination'],
+  emits: ['next', 'close', 'reset-pagination'],
   data() {
     return {
       removeStudent: false,
@@ -88,12 +86,6 @@ export default {
     },
     reset() {
       this.removeStudent=false;
-    },
-    clearFilter() {
-      this.$emit('clear-filter');
-    },
-    filterByPen($event) {
-      this.$emit('filter-pen', $event);
     },
     cancel() {
       this.$emit('close');

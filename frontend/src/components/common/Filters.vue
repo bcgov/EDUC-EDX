@@ -61,6 +61,9 @@
               />
             </slot>
           </v-row>
+          <v-row>
+            <slot name="custom-filter" />
+          </v-row>
         </v-col>
         <v-col class="d-flex justify-end">
           <PrimaryButton
@@ -184,8 +187,8 @@ import {appStore} from '../../store/modules/app';
 import {edxStore} from '../../store/modules/edx';
 import {authStore} from '../../store/modules/auth';
 import {mapState} from 'pinia';
-import {ApiRoutes} from "../../utils/constants";
-import ApiService from "../../common/apiService";
+import {ApiRoutes} from '../../utils/constants';
+import ApiService from '../../common/apiService';
   
 export default {
   name: 'Filters',
@@ -228,8 +231,6 @@ export default {
       schoolSearchNames: [],
     };
   },
-  watch: {
-  },
   computed: {
     ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
@@ -259,21 +260,21 @@ export default {
     setupSchoolList(){
       this.schoolSearchNames = [];
       ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sdcSchoolCollections`)
-          .then((res) => {
-            res.data.forEach(schoolCollection => {
-              const school = this.notClosedSchoolsMap.get(schoolCollection.schoolID);
-              let schoolItem = {
-                schoolCodeName: school.schoolName + ' - ' + school.mincode,
-                schoolID: school.schoolID,
-                districtID: school.districtID
-              };
-              this.schoolSearchNames.push(schoolItem);
-            });
-            this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
-          })
-          .catch(error => {
-            console.error(error);
+        .then((res) => {
+          res.data.forEach(schoolCollection => {
+            const school = this.notClosedSchoolsMap.get(schoolCollection.schoolID);
+            let schoolItem = {
+              schoolCodeName: school.schoolName + ' - ' + school.mincode,
+              schoolID: school.schoolID,
+              districtID: school.districtID
+            };
+            this.schoolSearchNames.push(schoolItem);
           });
+          this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     close() {
       this.$emit('close');
@@ -365,6 +366,10 @@ export default {
     padding: 5px;
     margin: 0px 8px 8px 8px;
     border: 1px solid #003366;
+  }
+
+  .filter-card {
+    height: 100%;
   }
 
   .filter-toggle {
