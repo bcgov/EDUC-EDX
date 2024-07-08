@@ -954,11 +954,7 @@ async function resolveDuplicates(req, res) {
       student.createUser = null;
       student.updateDate = null;
 
-      if (req.session.edxUserData?.edxUserID) {
-        student.updateUser = 'EDX/' + req.session.edxUserData.edxUserID;
-      } else {
-        student.updateUser = 'EDX/' + req.session.passport.user.id;
-      }
+      student.updateUser = getCreateOrUpdateUserValue(req);
 
       if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
         student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
