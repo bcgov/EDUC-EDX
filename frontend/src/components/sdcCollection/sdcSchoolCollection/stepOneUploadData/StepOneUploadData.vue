@@ -52,7 +52,7 @@
         </v-btn>
         <span>or</span>
         <v-btn
-          id="uploadAgainButton"
+          id="reportZeroEnrollment"
           prepend-icon="mdi-numeric-0-circle"
           :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || isReadingFile"
           style="font-size: 16px;"
@@ -161,7 +161,6 @@
         >Option 1:</span>
         <PrimaryButton
           id="uploadButton"
-          secondary
           icon="mdi-file-upload"
           text="Upload 1701 Submission"
           :loading="isReadingFile"
@@ -185,17 +184,21 @@
       <v-col offset="4">
         <v-row>
           <v-col>
-            <span style="font-weight: bold">Option 2:</span>
-            <span class="ml-4">Report a zero enrollment for the school. This should only be used if ...</span>
-            <v-row>
-              <v-col style="padding-left: 6.5em">
-                <v-checkbox-btn
-                  label="This school does not have a file for this collection."
-                  style="font-style: italic"
-                  :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
-                />
-              </v-col>
-            </v-row>
+            <span
+              class="mr-3"
+              style="font-weight: bold"
+            >Option 2:</span>
+            <PrimaryButton
+              id="reportZeroEnrollment"
+              icon="mdi-numeric-0-circle"
+              text="Report Zero Enrollment"
+              :loading="isReadingFile"
+              :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+              :click-action="clickReportZeroEnrollment"
+            />
+            <div class="mt-2">
+              This should only be used if this school does not have a file for this collection.
+            </div>
           </v-col>
         </v-row>
       </v-col>
@@ -287,7 +290,7 @@ export default {
       isReadingFile: false,
       uploadFileValue: null,
       fileInputError: [],
-      isDisabled: true,
+      isDisabled: false,
       sdcSchoolProgress: null,
       hasFileAttached: false,
       fileLoaded: false,
@@ -484,6 +487,7 @@ export default {
     async reportZeroEnrollment(sdcSchoolCollectionId) {
       ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/reportZeroEnrollment`).then(() => {
         this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
+        this.$emit('refresh-store');
       }).catch(e => {
         console.error(e);
         this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.message;
@@ -501,7 +505,9 @@ export default {
             this.hasFileAttached = false;
             this.fileLoaded = false;
             this.processing = false;
-            this.isDisabled = true;
+            if (this.schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED') {
+              this.isDisabled = true;
+            }
           }else if(this.totalStudents === this.totalProcessed){
             //Show summary
             this.hasFileAttached = true;
