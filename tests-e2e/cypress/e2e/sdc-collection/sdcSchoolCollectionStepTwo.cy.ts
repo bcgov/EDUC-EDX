@@ -60,11 +60,10 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.wait('@pagination').then(({response}) => {
-        cy.get(selectors.studentLevelData.stepTwoNameFilter).should('exist');
         expect(response?.body?.totalElements).eq(2);
 
-        cy.get(selectors.studentLevelData.stepTwoNameFilter).type('TEST');
-        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.filterButton).click();
+        cy.get(selectors.studentLevelData.stepTwoSearchField).type('TEST');
         cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
 
         cy.get(selectors.studentLevelData.stepTwoClearSearchFilter).click();
@@ -80,17 +79,15 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.wait('@pagination').then(({response}) => {
-        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).should('exist');
         expect(response?.body?.totalElements).eq(2);
 
-        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).type('101930550');
-        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.filterButton).click();
+        cy.get(selectors.studentLevelData.stepTwoSearchField).type('101930550');
         cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
 
         cy.get(selectors.studentLevelData.stepTwoClearSearchFilter).click();
 
-        cy.get(selectors.studentLevelData.stepTwoPenLocalIdFilter).type('10000');
-        cy.get(selectors.studentLevelData.stepTwoSearchButton).click();
+        cy.get(selectors.studentLevelData.stepTwoSearchField).type('10000');
         cy.get(selectors.studentLevelData.stepTwoTableFirstRow).contains('TESTFIRST');
       });
     });

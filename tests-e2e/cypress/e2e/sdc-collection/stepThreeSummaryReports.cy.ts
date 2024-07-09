@@ -202,7 +202,7 @@ describe('SDC School Collection View', () => {
       checkCareerHeader(0, 'Career Preparation', 2, '0', '0');
       checkCareerHeader(1, 'Co-Operative Education', 2, '1', '1');
       checkCareerHeader(2, 'Youth Work in Trades Program', 2, '0', '0');
-      checkCareerHeader(3, 'Career Technical or Youth in Trades', 2, '1', '1');
+      checkCareerHeader(3, 'Career Technical or Youth Train in Trades', 2, '1', '1');
 
       //check table contents
       const numOfSubsectionRows = 9;
@@ -220,7 +220,7 @@ describe('SDC School Collection View', () => {
       const techOrYouthHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
       techOrYouthHeadcounts.splice(0, 1, techOrYouthHeadcountsInner);
       techOrYouthHeadcounts.splice(8, 1, techOrYouthHeadcountsInner);
-      checkCareerTableSection(2, 'Career Technical or Youth in Trades', techOrYouthHeadcounts);
+      checkCareerTableSection(2, 'Career Technical or Youth Train in Trades', techOrYouthHeadcounts);
 
       checkCareerTableSection(3, 'Youth Work in Trades Program', emptyHeadcounts);
 

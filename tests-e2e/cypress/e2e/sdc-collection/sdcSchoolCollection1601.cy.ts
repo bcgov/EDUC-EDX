@@ -30,7 +30,7 @@ describe('SDC School Collection View', () => {
     it('can navigate to open school collection tile and see pie chart is different', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.collectionSummary.stepsComplete).should('exist').contains('1 / 9 Steps Complete');
+      cy.get(selectors.collectionSummary.stepsComplete).should('exist').contains('1 / 7 Steps Complete');
     });
 
     it('can verify all stepper headers and their titles', () => {
@@ -49,9 +49,7 @@ describe('SDC School Collection View', () => {
         step4: 'Review & Fix Identical PENs',
         step5: 'Verify School Details (1601)',
         step6: 'Verify School Contacts (1601)',
-        step7: 'Submit Data',
-        step8: 'Resolve Province Duplicates',
-        step9: 'Review & Sign-Off Final Submission'
+        step7: 'Submit Data'
       };
       
       Object.entries(steps).forEach(([stepId, expectedTitle]) => {
