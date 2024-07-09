@@ -188,13 +188,12 @@
               class="mr-3"
               style="font-weight: bold"
             >Option 2:</span>
-            <PrimaryButton
+            <v-btn
               id="reportZeroEnrollment"
-              icon="mdi-numeric-0-circle"
+              variant="outlined"
               text="Report Zero Enrollment"
-              :loading="isReadingFile"
               :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
-              :click-action="clickReportZeroEnrollment"
+              @click="clickReportZeroEnrollment"
             />
             <div class="mt-2">
               This should only be used if this school does not have a file for this collection.

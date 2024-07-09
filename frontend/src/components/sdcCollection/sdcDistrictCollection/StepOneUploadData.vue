@@ -64,7 +64,6 @@
     <v-row class="centered">
       <PrimaryButton
         id="uploadButton"
-        secondary
         icon="mdi-file-upload"
         text="Upload 1701 Submission"
         :loading="isReadingFile"
