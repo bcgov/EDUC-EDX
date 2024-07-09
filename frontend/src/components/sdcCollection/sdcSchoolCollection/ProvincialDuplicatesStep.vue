@@ -64,7 +64,7 @@
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :can-resolve-duplicates="false"
+          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST'"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
