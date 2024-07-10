@@ -191,6 +191,7 @@
     id="monitoring-table"
     :headers="headers"
     :items="filteredItems"
+    :sort-by="sortBy"
     items-per-page="-1"
   >
     <template #item.schoolTitle="{ value }">
@@ -221,14 +222,14 @@
         -
       </span>
     </template>
-    <template #item.unsubmit="{ value }">
+    <template #item.unsubmit="{ value, item }">
       <v-btn
         :id="'unsubmitBtn' + value.sdcSchoolCollectionId"
         color="primary"
         icon="mdi-lock-open"
         variant="text"
         :disabled="!value.isSubmitted || isDistrictCollectionSubmitted()"
-        @click="unsubmitSdcSchoolCollection(value.sdcSchoolCollectionId)"
+        @click="unsubmitSdcSchoolCollection(item)"
       />
     </template>
     <template #bottom />
@@ -259,7 +260,6 @@
   </v-row>
   <ConfirmationDialog ref="confirmRemovalOfCollection">
     <template #message>
-      <p>Are you sure that you would like to unsubmit the selected SDC School Collection?</p>
     </template>
   </ConfirmationDialog>
 </template>
@@ -298,6 +298,7 @@ export default defineComponent({
     return {
       allowedFilters: MONITORING.allowedFilters,
       filters: {},
+      sortBy: [{ key: 'schoolTitle', order:'asc'}],
       headers: [
         {
           title: 'School',
@@ -473,12 +474,13 @@ export default defineComponent({
     toggleFilters() {
       this.showFilters = !this.showFilters;
     },
-    async unsubmitSdcSchoolCollection(sdcSchoolCollectionId) {
-      const confirmation = await this.$refs.confirmRemovalOfCollection.open('Confirm Unsubmit of SDC School Collection', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+    async unsubmitSdcSchoolCollection(sdcSchoolCollection) {
+      let schoolName = sdcSchoolCollection.schoolTitle.split('-')[1];
+      const confirmation = await this.$refs.confirmRemovalOfCollection.open('Confirm Unsubmit of SDC School Collection', `Are you sure that you would like to unsubmit ${schoolName}'s data collection?`, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
       if (!confirmation) {
         return;
       }
-      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/unsubmit`)
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollection.sdcSchoolCollectionId}/unsubmit`)
         .then(() => {
           setSuccessAlert('Sdc school collection has been unsubmitted');
           this.getSdcSchoolCollections();
