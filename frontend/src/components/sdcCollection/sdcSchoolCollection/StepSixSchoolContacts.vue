@@ -133,7 +133,6 @@ export default {
       this.isDisabled = true;
     },
     handleIsOffshoreSchool(isOffshore) {
-      console.log('Not here');
       this.isOffshoreSchool = isOffshore;
     }
   }
