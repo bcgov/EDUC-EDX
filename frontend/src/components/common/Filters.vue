@@ -263,12 +263,14 @@ export default {
         .then((res) => {
           res.data.forEach(schoolCollection => {
             const school = this.notClosedSchoolsMap.get(schoolCollection.schoolID);
-            let schoolItem = {
-              schoolCodeName: school.schoolName + ' - ' + school.mincode,
-              schoolID: school.schoolID,
-              districtID: school.districtID
-            };
-            this.schoolSearchNames.push(schoolItem);
+            if (school) {
+              let schoolItem = {
+                schoolCodeName: school.schoolName + ' - ' + school.mincode,
+                schoolID: school.schoolID,
+                districtID: school.districtID
+              };
+              this.schoolSearchNames.push(schoolItem);
+            }
           });
           this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
         })
