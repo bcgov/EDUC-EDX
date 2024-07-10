@@ -12,7 +12,7 @@
         size="large"
         class="duplicate-type-button"
       >
-        Non-Allowable ({{ nonAllowableDuplicates.length }})
+        Non-Allowable ({{ nonAllowableDuplicates?.length }})
       </v-btn>
       <v-btn
         v-if="allowableDuplicates"
@@ -21,7 +21,7 @@
         size="large"
         class="duplicate-type-button"
       >
-        Allowable ({{ allowableDuplicates.length }})
+        Allowable ({{ allowableDuplicates?.length }})
       </v-btn>
       <v-btn
         :id="'resolved' + duplicateType + 'Button'"
@@ -29,12 +29,12 @@
         size="large"
         class="duplicate-type-button"
       >
-        Resolved ({{ resolvedDuplicates.length }})
+        Resolved ({{ resolvedDuplicates?.length }})
       </v-btn>
     </v-btn-toggle>
   </v-row>
   <template v-if="duplicateView==='1'">
-    <strong>Duplicate Students Found: {{ nonAllowableDuplicates.length }}</strong>
+    <strong>Duplicate Students Found: {{ nonAllowableDuplicates?.length }}</strong>
     <v-data-iterator
       :items="nonAllowableDuplicates"
       :items-per-page="10"
@@ -156,6 +156,63 @@
                     </v-list-item>
                   </v-list>
                 </v-menu>
+                <div v-if="sdcSchoolCollectionStudent.showContact">
+                  {{ 'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID }}
+                  <v-menu
+                   v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
+                   :close-on-content-click="false"
+                   transition="fab-transition"
+                   location="end"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                      :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
+                      color="primary"
+                      icon="mdi-phone-outline"
+                      variant="text"
+                      v-bind="props"
+                    />
+                    </template>
+                    <v-card min-width="300">
+                      <v-list>
+                        <v-list-item
+                          :title="sdcSchoolCollectionStudent?.contactInfo?.isSchoolContact ? sdcSchoolCollectionStudent?.schoolName : sdcSchoolCollectionStudent?.districtName">
+                        </v-list-item>
+                      </v-list>
+                      <v-divider></v-divider>
+
+                      <v-list>
+                        <v-list-item>
+                          <v-icon
+                            icon="mdi-phone"
+                            :start="true"
+                          />
+                          {{ formatPhoneNumber(sdcSchoolCollectionStudent?.contactInfo?.phoneNumber) }}
+                          <template v-slot:append>
+                            <v-tooltip
+                              v-model="showTooltip"
+                              location="right"
+                              :open-on-hover="false"
+                            >
+                              <template #activator="{ props }">
+                                <v-btn
+                                  id="copyPhone"
+                                  color="primary"
+                                  icon="mdi-content-copy"
+                                  variant="text"
+                                  v-bind="props"
+                                  @click="copy(formatPhoneNumber(sdcSchoolCollectionStudent?.contactInfo?.phoneNumber))"
+                                />
+                              </template>
+                              <span>Copied {{ formatPhoneNumber(sdcSchoolCollectionStudent?.contactInfo?.phoneNumber) }}.</span>
+                            </v-tooltip>
+                            
+                          </template>
+                        </v-list-item>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
+                </div>
               </template>
             </CustomTable>
           </v-col>
@@ -163,15 +220,15 @@
       </template>
     </v-data-iterator>
     <v-pagination
-      v-if="nonAllowableDuplicates.length > 0"
+      v-if="nonAllowableDuplicates?.length > 0"
       v-model="pageNumber"
-      :length="Math.ceil(nonAllowableDuplicates.length/10)"
+      :length="Math.ceil(nonAllowableDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
     ></v-pagination>
 
     <v-row
-      v-if="nonAllowableDuplicates.length === 0"
+      v-if="nonAllowableDuplicates?.length === 0"
       class="pt-4"
       no-gutters
     >
@@ -186,7 +243,7 @@
   </template>
 
   <template v-if="duplicateView==='2'">
-    <strong>Duplicate Students Found: {{ allowableDuplicates.length }}</strong>
+    <strong>Duplicate Students Found: {{ allowableDuplicates?.length }}</strong>
     <v-data-iterator
       :items="allowableDuplicates"
       :items-per-page="10"
@@ -222,14 +279,14 @@
       </template>
     </v-data-iterator>
     <v-pagination
-      v-if="allowableDuplicates.length > 0"
+      v-if="allowableDuplicates?.length > 0"
       v-model="pageNumber"
-      :length="Math.ceil(allowableDuplicates.length/10)"
+      :length="Math.ceil(allowableDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
     ></v-pagination>
     <v-row
-      v-if="allowableDuplicates.length === 0"
+      v-if="allowableDuplicates?.length === 0"
       class="pt-4"
       no-gutters
     >
@@ -243,7 +300,7 @@
     </v-row>
   </template>
   <template v-if="duplicateView==='3'">
-    <strong>Duplicate Students Found: {{ resolvedDuplicates.length }}</strong>
+    <strong>Duplicate Students Found: {{ resolvedDuplicates?.length }}</strong>
     <v-data-iterator
       :items="resolvedDuplicates"
       :items-per-page="10"
@@ -279,14 +336,14 @@
       </template>
     </v-data-iterator>
     <v-pagination
-      v-if="resolvedDuplicates.length > 0"
+      v-if="resolvedDuplicates?.length > 0"
       v-model="pageNumber"
-      :length="Math.ceil(resolvedDuplicates.length/10)"
+      :length="Math.ceil(resolvedDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
     ></v-pagination>
     <v-row
-      v-if="resolvedDuplicates.length === 0"
+      v-if="resolvedDuplicates?.length === 0"
       class="pt-4"
       no-gutters
     >
@@ -348,6 +405,7 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {setFailureAlert, setSuccessAlert} from '../composable/alertComposable';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import {formatPhoneNumber} from '../../utils/format';
 
 export default defineComponent({
   name: 'DuplicateTab',
@@ -393,10 +451,13 @@ export default defineComponent({
       openChangeGradeView: false,
       selectedDuplicate: {},
       selectedSdcSchoolCollectionStudent: {},
-      pageNumber: 1
+      pageNumber: 1,
+      contactMenu: [],
+      showTooltip: false
     };
   },
   methods: {
+    formatPhoneNumber,
     async markStudentAsDifferent(sdcSchoolCollectionStudent){
       const selectedStudent = cloneDeep(sdcSchoolCollectionStudent);
       const confirmation = await this.$refs.confirmMarkDifferent.open('Request Review of PEN?', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
@@ -430,6 +491,12 @@ export default defineComponent({
       this.selectedDuplicate = duplicate;
       this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
       this.openChangeGradeView = !this.openChangeGradeView;
+    },
+    copy(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showTooltip = true;
+        setTimeout(() => this.showTooltip = false, 2000);
+      });
     }
   }
 });

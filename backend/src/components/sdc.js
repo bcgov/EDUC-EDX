@@ -733,7 +733,7 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       RESOLVED: []
     }
   };
-  sdcDuplicates.forEach(sdcDuplicate => {
+  sdcDuplicates?.forEach(sdcDuplicate => {
     const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
     const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
 
@@ -768,6 +768,48 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
   return result;
 }
 
+async function getUserWithSdcRole(req, sdcDuplicates) {
+  const token = getAccessToken(req);
+  
+  for(let sdcDuplicate of sdcDuplicates) {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT' && sdcDuplicate.duplicateResolutionCode === '') {
+      const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
+      const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
+    
+      let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
+      let sdcUser1 = responseEntity1?.find(user => {
+        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'))  
+      });
+    
+      let responseEntity2 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
+      let sdcUser2 = responseEntity2?.find(user => {
+        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'))  
+      });
+    
+      if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
+        
+        if(sdcUser1 !== undefined) {
+          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
+          sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
+        } else {
+          let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school1.districtID}`, req.session?.correlationID);
+          sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
+        }
+      }
+    
+      if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
+        if(sdcUser2 !== undefined) {
+          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
+          sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
+        } else {
+          let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school2.districtID}`, req.session?.correlationID);
+          sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
+        }
+      }
+    }
+  }
+}
+
 async function getInDistrictDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
@@ -783,7 +825,9 @@ async function getProvincialDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
-    res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, true, false));
+    await getUserWithSdcRole(req, sdcDuplicates);
+    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, false)
+    res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
     return handleExceptionResponse(e, res);
@@ -794,7 +838,9 @@ async function getProvincialDuplicatesForSchool(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
-    res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, true, true));
+    await getUserWithSdcRole(req, sdcDuplicates);
+    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, true);
+    res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
     return handleExceptionResponse(e, res);
@@ -807,15 +853,19 @@ function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) 
   sdcDuplicate.sdcSchoolCollectionStudent1Entity.districtName = getDistrictName(district1);
   sdcDuplicate.sdcSchoolCollectionStudent2Entity.districtName = getDistrictName(district2);
 
-  const retainedProperties = ['districtName', 'schoolName', 'fte', 'mappedNoOfCourses', 'assignedPen', 'resolution'];
+  const retainedProperties = ['districtName', 'schoolName', 'fte', 'mappedNoOfCourses', 'assignedPen', 'resolution', 'contactInfo'];
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
     sdcDuplicate.sdcSchoolCollectionStudent1Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent1Entity, retainedProperties);
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.showContact = true;
   }
+
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
     sdcDuplicate.sdcSchoolCollectionStudent2Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent2Entity, retainedProperties);
+    sdcDuplicate.sdcSchoolCollectionStudent2Entity.showContact = true;
   }
   delete sdcDuplicate.retainedSdcSchoolCollectionStudentEntity;
 }
+
 function removeSchoolLinks(sdcDuplicate) {
   sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolNameNoLink = sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName;
   sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolNameNoLink = sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName;

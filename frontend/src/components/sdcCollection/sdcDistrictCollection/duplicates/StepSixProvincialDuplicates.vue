@@ -166,7 +166,7 @@ export default defineComponent({
   },
   methods: {
     disableNextButton() {
-      return this.nonAllowableDuplicates.length > 0 || this.nonAllowableProgramDuplicates.length > 0;
+      return this.nonAllowableDuplicates?.length > 0 || this.nonAllowableProgramDuplicates?.length > 0;
     },
     getProvincialDuplicates(){
       this.isLoading = true;
