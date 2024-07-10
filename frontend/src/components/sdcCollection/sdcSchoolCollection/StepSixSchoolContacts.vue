@@ -8,7 +8,7 @@
           variant="tonal"
         >
           <span>Please review and verify that the details on the record for the school are accurate.</span>
-          <span v-if="isOffshoreSchool"> Require updates to school details? Please contact {{ MINISTRY_CONTACTS.OFFSHORE_ADMIN }}</span>
+
         </v-alert>
       </v-col>
     </v-row>
@@ -17,7 +17,7 @@
       :function-name="type"
       :school-collection-object="schoolCollectionObject"
       :school-i-d="schoolCollectionObject?.schoolID"
-      @school-contacts="checkIfPrincipalContactExists"
+      @school-contacts="checkIfRequiredSchoolContactsExists"
       @update-is-offshore="handleIsOffshoreSchool"
     />
   </div>
@@ -26,8 +26,11 @@
     v-if="isDisabled"
   >
     <v-col class="error-message">
-      <p class="form-hint">
-        A principal with an active start date and contact information must be added
+      <p class="form-hint" v-if="isOffshoreSchool">
+        A principal with an active start date and contact information must be added.
+      </p>
+      <p class="form-hint" v-else>
+        A principal, safe schools coordinator and safe schools coordinator backup<br>with an active start date and contact information must be added.
       </p>
     </v-col>
   </v-row>
@@ -111,15 +114,26 @@ export default {
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school contacts. Please try again later.');
         });    
     },
-    checkIfPrincipalContactExists(contacts) {
-      let contact = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));
-      if(contact.length > 0 && (contact[0].phoneNumber || contact[0].email)) {
+    checkIfRequiredSchoolContactsExists(contacts) {
+      let principal = contacts.filter(contact => contact.schoolContactTypeCode === 'PRINCIPAL' && isContactCurrent(contact));
+
+      if(this.isOffshoreSchool && (principal.length > 0 && (principal[0].phoneNumber !== null || principal[0].email !== null))){
         this.isDisabled = false;
-      } else {
-        this.isDisabled = true;
+        return;
+      }else{
+        let safeSchoolsCoordinator = contacts.filter(contact => contact.schoolContactTypeCode === 'SAFE_COORD' && isContactCurrent(contact));
+        let safeSchoolsCoordinatorBackup = contacts.filter(contact => contact.schoolContactTypeCode === 'SFECOORDBU' && isContactCurrent(contact));
+        if((principal.length > 0 && (principal[0].phoneNumber || principal[0].email))
+            && (safeSchoolsCoordinator.length > 0 && (safeSchoolsCoordinator[0].phoneNumber || safeSchoolsCoordinator[0].email))
+            && (safeSchoolsCoordinatorBackup.length > 0 && (safeSchoolsCoordinatorBackup[0].phoneNumber || safeSchoolsCoordinatorBackup[0].email))) {
+          this.isDisabled = false;
+          return;
+        }
       }
+      this.isDisabled = true;
     },
     handleIsOffshoreSchool(isOffshore) {
+      console.log('Not here');
       this.isOffshoreSchool = isOffshore;
     }
   }

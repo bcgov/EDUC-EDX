@@ -249,9 +249,6 @@ export default {
     this.getThisSchoolsContacts();
   },
   methods: {
-    redirectToSchoolDetails() {
-      this.$router.push({name: 'schoolDetails', params: {schoolID: this.school.schoolId}});
-    },
     async loadSchoolContactTypeCodes() {
       this.loadingCount += 1;
       await instituteStore().getSchoolContactTypeCodes()
@@ -271,6 +268,8 @@ export default {
         .then(response => {
           this.schoolContacts = new Map();
           this.school = response.data;
+          let isOffshore = this.offshoreArray.includes(this.school.schoolCategoryCode);
+          this.$emit('update-is-offshore', isOffshore);
           response.data.contacts = sortBy(response.data.contacts, ['firstName']);
           response.data.contacts.forEach(contact => {
             if(!isExpired(contact)){
