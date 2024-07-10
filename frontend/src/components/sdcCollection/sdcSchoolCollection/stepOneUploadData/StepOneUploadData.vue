@@ -154,11 +154,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col offset="4">
-        <span
-          class="mr-3"
-          style="font-weight: bold"
-        >Option 1:</span>
+      <v-col class="d-flex justify-end mt-1">
         <PrimaryButton
           id="uploadButton"
           icon="mdi-file-upload"
@@ -167,39 +163,51 @@
           :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
           :click-action="handleFileImport"
         />
-        <div class="mt-2">
-          More information on the
-          <a
-            :href="getLink"
-            target="_blank"
-            rel="noopener noreferrer"
-            style="color: rgb(56, 89, 138); text-decoration: underline"
-          >
-            1701 submission requirements.
-          </a>
-        </div>
+      </v-col>
+      <v-col class="d-flex justify-start">
+        <v-row>
+          <v-col>
+            <span>
+              More information on the
+              <a
+                :href="getLink"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: rgb(56, 89, 138); text-decoration: underline"
+              >
+                1701 submission requirements.
+              </a>
+            </span>
+            <span>
+              <br>To manually add all student enrollment data for this collection,
+              <a
+                @click="triggerManualEnrollment"
+                rel="noopener noreferrer"
+                style="color: rgb(56, 89, 138); text-decoration: underline"
+              >
+                click here.
+              </a>
+            </span>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>
-      <v-col offset="4">
-        <v-row>
-          <v-col>
-            <span
-              class="mr-3"
-              style="font-weight: bold"
-            >Option 2:</span>
-            <v-btn
-              id="reportZeroEnrollment"
-              variant="outlined"
-              text="Report Zero Enrollment"
-              :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
-              @click="clickReportZeroEnrollment"
-            />
-            <div class="mt-2">
-              This should only be used if this school does not have a file for this collection.
-            </div>
-          </v-col>
-        </v-row>
+      <v-col class="d-flex justify-end mt-2">
+        <v-btn
+          id="reportZeroEnrollment"
+          variant="outlined"
+          color="#003366"
+          prepend-icon="mdi-numeric-0-circle"
+          text="Report Zero Enrollment"
+          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          @click="clickReportZeroEnrollment"
+        />
+      </v-col>
+      <v-col class="d-flex justify-start">
+        <div class="mt-2">
+          This option should only be used if this school does not have a file for this collection.
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -423,7 +431,21 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying school details. Please try again later.');
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while marking step complete. Please try again later.');
+        });
+    },
+    triggerManualEnrollment() {
+      let updateCollection = {
+        schoolCollection: this.schoolCollectionObject,
+        status: 'REVIEWED'
+      };
+      ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
+        .then(() => {
+          this.$emit('refresh-store');
+        })
+        .catch(error => {
+          console.error(error);
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while triggering manual enrollment. Please try again later.');
         });
     },
     async startPollingStatus() {
