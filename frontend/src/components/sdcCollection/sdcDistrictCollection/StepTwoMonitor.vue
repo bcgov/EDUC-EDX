@@ -482,7 +482,7 @@ export default defineComponent({
       }
       ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollection.sdcSchoolCollectionId}/unsubmit`)
         .then(() => {
-          setSuccessAlert('Sdc school collection has been unsubmitted');
+          setSuccessAlert('School collection has been unsubmitted');
           this.getSdcSchoolCollections();
         })
         .catch(error => {
