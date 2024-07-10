@@ -155,9 +155,12 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end mt-1">
-        <PrimaryButton
+        <v-btn
           id="uploadButton"
-          icon="mdi-file-upload"
+          prepend-icon="mdi-file-upload"
+          style="width: 18em"
+          variant="elevated"
+          color="#003366"
           text="Upload 1701 Submission"
           :loading="isReadingFile"
           :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
@@ -198,6 +201,7 @@
           id="reportZeroEnrollment"
           variant="outlined"
           color="#003366"
+          style="width: 18em"
           prepend-icon="mdi-numeric-0-circle"
           text="Report Zero Enrollment"
           :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
@@ -206,7 +210,7 @@
       </v-col>
       <v-col class="d-flex justify-start">
         <div class="mt-2">
-          This option should only be used if this school does not have a file for this collection.
+          This option should only be used for schools with no student<br> enrollment to report for this collection.
         </div>
       </v-col>
     </v-row>
