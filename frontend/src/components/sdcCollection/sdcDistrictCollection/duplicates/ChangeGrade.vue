@@ -51,7 +51,7 @@
             color="#003366"
             class="mb-1 release-button"
             text="Change Grade"
-            variant="outlined"
+            variant="elevated"
             :disabled="changedEnrolledGradeCode === null"
             @click="changeGradeForStudent()"
           />

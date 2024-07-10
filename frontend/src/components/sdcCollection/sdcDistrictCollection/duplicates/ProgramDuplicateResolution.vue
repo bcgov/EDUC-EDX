@@ -107,7 +107,7 @@
             color="#003366"
             class="mb-1 release-button"
             text="Release selected program from School"
-            variant="outlined"
+            variant="elevated"
             :disabled="!validForm"
             @click="releaseStudent()"
           />
