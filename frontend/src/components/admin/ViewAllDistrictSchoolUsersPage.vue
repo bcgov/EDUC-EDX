@@ -252,8 +252,8 @@ import {deepCloneObject} from '../../utils/common';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import DatePicker from '../util/DatePicker.vue';
 import PrimaryButton from '../util/PrimaryButton.vue';
-import {PERMISSION} from '../../utils/constants/Permission';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {ROLES} from '../../utils/constants/Roles';
 
 export default {
   name: 'ViewAllDistrictSchoolUsersPage',
@@ -282,6 +282,7 @@ export default {
       districtSchools: [],
       roleSearchNames: [],
       selectedRoles: [],
+      schoolSDCRoles: [ROLES.SCHOOL_SDC, ROLES.SCH_SDC_RO],
       allowedSchoolCategories: ['PUBLIC', 'EAR_LEARN'],
       accessExpiryDate: null,
       minExpiryDate: LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString()
@@ -297,7 +298,7 @@ export default {
     ...mapState(authStore, ['userInfo']),
     ...mapState(edxStore, ['schoolRoles']),
     filteredSchoolRoles() {
-      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => role.edxRoleCode !== PERMISSION.SCHOOL_SDC) : this.schoolRoles;
+      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => !this.schoolSDCRoles.includes(role.edxRoleCode)) : this.schoolRoles;
     }
   },
   watch: {

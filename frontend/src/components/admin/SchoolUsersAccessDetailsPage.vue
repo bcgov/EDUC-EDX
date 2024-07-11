@@ -303,7 +303,6 @@ import InviteUserPage from './InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
 import alertMixin from '../../mixins/alertMixin';
 import { ROLES } from '../../utils/constants/Roles.js';
-import { PERMISSION } from '../../utils/constants/Permission';
 
 export default {
   name: 'SchoolUsersAccessDetailsPage',
@@ -334,6 +333,7 @@ export default {
       primaryEdxActivationCode: null,
       instituteCode: '',
       instituteTypeLabel: 'School',
+      schoolSDCRoles: [ROLES.SCHOOL_SDC, ROLES.SCH_SDC_RO],
       doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
       showTooltip: false
     };
@@ -348,7 +348,7 @@ export default {
       })?.length > 0;
     },
     filteredSchoolRoles() {
-      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => role.edxRoleCode !== PERMISSION.SCHOOL_SDC) : this.schoolRoles;
+      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => !this.schoolSDCRoles.includes(role.edxRoleCode)) : this.schoolRoles;
     }
   },
   async beforeMount() {

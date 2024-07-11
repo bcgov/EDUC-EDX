@@ -31,6 +31,7 @@ import InviteSelection from './components/InviteSelection.vue';
 import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDetailsPage.vue';
 import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
+import {PERMISSION} from './utils/constants/Permission';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -280,7 +281,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'SCHOOL_SDC'
+            permission: PERMISSION.SCHOOL_SDC_VIEW
           },
         },
         {
@@ -291,7 +292,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'SCHOOL_SDC'
+            permission: PERMISSION.SCHOOL_SDC_VIEW
           },
         },
         {
@@ -302,7 +303,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'DISTRICT_SDC'
+            permission: PERMISSION.DISTRICT_SDC_VIEW
           },
         },
         {
@@ -313,7 +314,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
-            permission: 'DISTRICT_SDC'
+            permission: PERMISSION.DISTRICT_SDC_VIEW
           },
         }
       ]

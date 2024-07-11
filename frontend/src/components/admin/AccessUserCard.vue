@@ -236,6 +236,7 @@ import {formatDate} from '../../utils/format';
 import DatePicker from '../util/DatePicker.vue';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {PERMISSION} from '../../utils/constants/Permission';
+import {ROLES} from '../../utils/constants/Roles';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
@@ -290,14 +291,14 @@ export default {
     },
     roleListValidMessage() {
       if(this.isDistrictUser()){
-        let district1701Role = this.selectedRoles.filter(userRole => userRole === 'DISTRICT_SDC');
-        let district1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === 'DIS_SDC_RO');
+        let district1701Role = this.selectedRoles.filter(userRole => userRole === ROLES.DISTRICT_SDC);
+        let district1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === ROLES.DIS_SDC_RO);
         if(district1701Role.length > 0 && district1701ReadOnlyRole.length > 0){
           return 'Only one district Student Data Collection role can be selected.';
         }
       }else{
-        let school1701Role = this.selectedRoles.filter(userRole => userRole === 'SCHOOL_SDC');
-        let school1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === 'SCH_SDC_RO');
+        let school1701Role = this.selectedRoles.filter(userRole => userRole === ROLES.SCHOOL_SDC);
+        let school1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === ROLES.SCH_SDC_RO);
         if(school1701Role.length > 0 && school1701ReadOnlyRole.length > 0){
           return 'Only one school Student Data Collection role can be selected.';
         }
