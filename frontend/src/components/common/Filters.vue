@@ -370,6 +370,7 @@ export default {
 
   .filter-card {
     height: 100%;
+    overflow-y: auto;
   }
 
   .filter-toggle {
