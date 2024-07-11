@@ -251,7 +251,7 @@
   </ConfirmationDialog>
   <ConfirmationDialog ref="confirmZeroEnrollment">
     <template #message>
-      <p>Please confirm you would like to report zero enrollment for this collection.</p>
+      <p>Please confirm if you would like to report zero enrollment for this collection.</p>
       &nbsp;
       <p>Confirming below will <strong>finalize your 1701 submission</strong> and <strong>remove your ability to edit data for this collection.</strong></p>
     </template>
