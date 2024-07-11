@@ -61,7 +61,7 @@
                             :hint="rolesHint"
                             persistent-hint
                             required
-                            :rules="requireRoleRules"
+                            :rules="conflictingRoleRules"
                             class="mb-3 mt-0 pt-0"
                           >
                             <template #no-data />
@@ -220,15 +220,23 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    instituteNameAndCode() {
-      switch(this.instituteTypeCode) {
-      case 'SCHOOL':
-        return `${this.schoolName} (${this.schoolMincode})`;
-      case 'DISTRICT':
-        return `${this.districtName} (${this.districtNumber})`;
-      default:
-        return '';
+    conflictingRoleRules() {
+      if(this.edxActivationRoleCodes.length < 1){
+        return ['Role Selection is required'];
+      }else if(this.isDistrictUser()){
+        let district1701Role = this.edxActivationRoleCodes.filter(userRole => userRole === 'DISTRICT_SDC');
+        let district1701ReadOnlyRole = this.edxActivationRoleCodes.filter(userRole => userRole === 'DIS_SDC_RO');
+        if(district1701Role.length > 0 && district1701ReadOnlyRole.length > 0){
+          return ['Only one district Student Data Collection role can be selected.'];
+        }
+      }else{
+        let school1701Role = this.edxActivationRoleCodes.filter(userRole => userRole === 'SCHOOL_SDC');
+        let school1701ReadOnlyRole = this.edxActivationRoleCodes.filter(userRole => userRole === 'SCH_SDC_RO');
+        if(school1701Role.length > 0 && school1701ReadOnlyRole.length > 0){
+          return ['Only one school Student Data Collection role can be selected.'];
+        }
       }
+      return [true];
     },
     emailRules() {
       return [
@@ -241,6 +249,9 @@ export default {
     this.validateForm();
   },
   methods: {
+    isDistrictUser(){
+      return this.instituteTypeCode === 'DISTRICT';
+    },
     navigateToList() {
       this.$emit('access-user:cancel-message');
     },
