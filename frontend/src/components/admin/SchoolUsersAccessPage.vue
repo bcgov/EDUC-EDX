@@ -102,8 +102,6 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import Spinner from '../common/Spinner.vue';
 import {sortBy} from 'lodash';
 import alertMixin from '../../mixins/alertMixin';
-import { ROLES } from '../../utils/constants/Roles.js';
-import { PERMISSION } from '../../utils/constants/Permission';
 
 export default {
   name: 'SchoolUsersAccessPage',
@@ -137,14 +135,6 @@ export default {
     ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
-    hasAdminUsers() {
-      return this.users.filter(user => {
-        return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
-      })?.length > 0;
-    },
-    filteredSchoolRoles() {
-      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => role.edxRoleCode !== PERMISSION.SCHOOL_SDC) : this.schoolRoles;
-    }
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {

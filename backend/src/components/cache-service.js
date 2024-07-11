@@ -9,8 +9,8 @@ const {generateDistrictObject, isDistrictActive,generateAuthorityObject,isAuthor
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 const constants = require('../util/constants');
 
-let staffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'DISTRICT_SDC', 'SCHOOL_SDC'];
-let staffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCHOOL_SDC'];
+let staffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_SDC_EDIT', 'DIS_SDC_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
+let staffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
 let schoolMap = new Map();
 let schools = [];
 let districts = [];

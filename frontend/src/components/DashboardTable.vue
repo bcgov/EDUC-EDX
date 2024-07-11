@@ -297,7 +297,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="hasRequiredPermission('SCHOOL_SDC') && isLoggedInSchoolUser && !disableSdcFunctionality"
+        v-if="hasRequiredPermission(getSchoolSDCViewPermission) && isLoggedInSchoolUser && !disableSdcFunctionality"
         cols="12"
         md="6"
       >
@@ -338,7 +338,7 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="hasRequiredPermission('DISTRICT_SDC') && isLoggedInDistrictUser && !disableSdcFunctionality"
+        v-if="hasRequiredPermission(getDistrictSDCViewPermission) && isLoggedInDistrictUser && !disableSdcFunctionality"
         cols="12"
         md="6"
       >
@@ -394,6 +394,7 @@ import {formatDateTime, getDateFormatter} from '../utils/format';
 import {isEmpty, omitBy, capitalize} from 'lodash';
 import { sdcCollectionStore } from '../store/modules/sdcCollection';
 import {LocalDate} from '@js-joda/core';
+import {PERMISSION} from '../utils/constants/Permission';
 
 export default {
   name: 'DashboardTable',
@@ -451,6 +452,12 @@ export default {
     isLoggedInSchoolUser(){
       return this.userInfo.activeInstituteType === 'SCHOOL';
     },
+    getSchoolSDCViewPermission(){
+      return PERMISSION.SCHOOL_SDC_VIEW;
+    },
+    getDistrictSDCViewPermission(){
+      return PERMISSION.DISTRICT_SDC_VIEW;
+    }
   },
   created() {
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
@@ -458,7 +465,7 @@ export default {
       this.getExchangesCount();
     }
     if (this.isLoggedInSchoolUser) {
-      if (this.hasRequiredPermission('SCHOOL_SDC') && !this.disableSdcFunctionality) {
+      if (this.hasRequiredPermission(PERMISSION.SCHOOL_SDC_VIEW) && !this.disableSdcFunctionality) {
         this.getSDCCollectionBySchoolId();
       }
       if (this.hasRequiredPermission('EDX_SCHOOL_VIEW')) {
@@ -468,7 +475,7 @@ export default {
       this.isSchoolActive();
     }
     if (this.isLoggedInDistrictUser) {
-      if (this.hasRequiredPermission('DISTRICT_SDC') && !this.disableSdcFunctionality) {
+      if (this.hasRequiredPermission(PERMISSION.DISTRICT_SDC_VIEW) && !this.disableSdcFunctionality) {
         this.getSDCCollectionByDistrictId();
       }
       if (this.hasRequiredPermission('EDX_DISTRICT_VIEW')) {
