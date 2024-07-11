@@ -147,6 +147,17 @@
         >
           <span>Please select at least one role for {{ userDisplayName }}.</span>
         </v-alert>
+        <v-alert
+          v-else-if="roleListValidMessage !== null"
+          id="logoutAlert"
+          class="mt-4"
+          color="#003366"
+          density="compact"
+          type="info"
+          variant="tonal"
+        >
+          <span>{{ roleListValidMessage }}</span>
+        </v-alert>
         <v-list
           :id="`access-user-roles-${user.edxUserID}`"
           v-model:selected="selectedRoles"
@@ -203,7 +214,7 @@
             <PrimaryButton
               :id="`user-save-action-button-${user.edxUserID}`"
               text="Save"
-              :disabled="!minimumRolesSelected"
+              :disabled="!minimumRolesSelected || roleListValidMessage !== null"
               variant="flat"
               :click-action="clickSaveButton"
             />
@@ -276,6 +287,22 @@ export default {
     },
     userDisplayName() {
       return `${this.user.firstName} ${this.user.lastName}`.trim();
+    },
+    roleListValidMessage() {
+      if(this.isDistrictUser()){
+        let district1701Role = this.selectedRoles.filter(userRole => userRole === 'DISTRICT_SDC');
+        let district1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === 'DIS_SDC_RO');
+        if(district1701Role.length > 0 && district1701ReadOnlyRole.length > 0){
+          return 'Only one district Student Data Collection role can be selected.';
+        }
+      }else{
+        let school1701Role = this.selectedRoles.filter(userRole => userRole === 'SCHOOL_SDC');
+        let school1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === 'SCH_SDC_RO');
+        if(school1701Role.length > 0 && school1701ReadOnlyRole.length > 0){
+          return 'Only one school Student Data Collection role can be selected.';
+        }
+      }
+      return null;
     }
   },
   methods: {
