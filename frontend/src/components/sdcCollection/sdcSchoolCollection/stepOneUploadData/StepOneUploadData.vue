@@ -42,7 +42,7 @@
           id="uploadAgainButton"
           prepend-icon="mdi-file-upload"
           :loading="isReadingFile"
-          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          :disabled="!hasEditPermission"
           style="font-size: 16px;"
           color="#1976d2"
           variant="text"
@@ -54,7 +54,7 @@
         <v-btn
           id="reportZeroEnrollment"
           prepend-icon="mdi-numeric-0-circle"
-          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED' || isReadingFile"
+          :disabled="!hasEditPermission || isReadingFile"
           style="font-size: 16px;"
           color="#1976d2"
           variant="text"
@@ -224,7 +224,7 @@
       class="mr-3 ml-3 mb-3"
       icon="mdi-check"
       text="Next"
-      :disabled="isDisabled"
+      :disabled="isDisabled || !canMoveForward()"
       :click-action="next"
     />
   </v-row>
@@ -393,6 +393,9 @@ export default {
       if(this.processing){
         this.startPollingStatus();
       }
+    },
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
     },
     async clickFileReUpload(){
       const confirmation = await this.$refs.confirmReplacementFile.open('Confirm Replacement File', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Select a Replacement File', rejectText: 'Cancel'});

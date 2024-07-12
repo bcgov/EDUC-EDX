@@ -75,7 +75,7 @@
     <PrimaryButton
       id="step-4-next-button-district"
       class="mr-3 mb-3"
-      :disabled="disableNextButton() || apiError"
+      :disabled="disableNextButton() || apiError || !canMoveForward()"
       icon="mdi-check"
       text="Verify as Correct"
       :click-action="next"
@@ -111,6 +111,9 @@ import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import Spinner from '../../common/Spinner.vue';
 import alertMixin from '../../../mixins/alertMixin';
 import DuplicateTab from '../../common/DuplicateTab.vue';
+import {PERMISSION} from '../../../utils/constants/Permission';
+import {mapState} from 'pinia';
+import {authStore} from '../../../store/modules/auth';
 
 export default defineComponent({
   name: 'ProvincialDuplicatesStep',
@@ -154,6 +157,7 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     PROVINCIAL_DUPLICATES() {
       return SCHOOL_PROVINCIAL_DUPLICATES;
     },
@@ -165,6 +169,12 @@ export default defineComponent({
     });
   },
   methods: {
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     disableNextButton() {
       return this.nonAllowableDuplicates.length > 0 || this.nonAllowableProgramDuplicates.length > 0;
     },

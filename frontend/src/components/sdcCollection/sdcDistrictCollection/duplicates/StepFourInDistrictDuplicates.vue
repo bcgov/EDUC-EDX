@@ -75,9 +75,9 @@
     <PrimaryButton
       id="step-4-next-button-district"
       class="mr-3 mb-3"
-      :disabled="disableNextButton() || apiError"
+      :disabled="disableNextButton() || apiError || !canMoveForward()"
       icon="mdi-check"
-      text="Verify as Correct"
+      text="Next"
       :click-action="next"
     />
   </v-row>
@@ -173,6 +173,9 @@ export default defineComponent({
     });
   },
   methods: {
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     disableNextButton() {
       return this.nonAllowableDuplicates.length > 0 || this.nonAllowableProgramDuplicates.length > 0;
     },

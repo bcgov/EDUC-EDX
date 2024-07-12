@@ -315,7 +315,7 @@
         class="mr-3 mt-3 mb-3"
         icon="mdi-check"
         text="Next"
-        :disabled="nextButtonIsDisabled()"
+        :disabled="nextButtonIsDisabled() || !canMoveForward()"
         :click-action="next"
       />
     </v-row>
@@ -357,6 +357,9 @@ import {setFailureAlert} from '../../../composable/alertComposable';
 import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
 import EditAndFixStudentData from './EditAndFixStudentData.vue';
 import Filters from '../../../common/Filters.vue';
+import {mapState} from 'pinia';
+import {authStore} from '../../../../store/modules/auth';
+import {PERMISSION} from '../../../../utils/constants/Permission';
 
 export default {
   name: 'StepTwoViewDataIssues',
@@ -415,13 +418,17 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     filterCount() {
       let numFilters = Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
       if(this.fundingWarningCategoryFilter !== null) {
         numFilters++;
       }
       return numFilters;
-    }
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
   },
   watch: {
     pageNumber: {
@@ -439,6 +446,9 @@ export default {
     });
   },
   methods: {
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     applyFilters($event) {
       this.filterSearchParams.moreFilters = cloneDeep($event);
       this.getSummaryCounts();

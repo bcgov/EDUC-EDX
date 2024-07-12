@@ -38,11 +38,20 @@
 
   <v-row justify="end">
     <PrimaryButton
+      v-if="!isStepComplete"
       id="step-5-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Verify 1601 as Correct and Continue"
-      :disabled="isDisabled"
+      :disabled="isDisabled || !canMoveForward()"
+      :click-action="next"
+    />
+    <PrimaryButton
+      v-else
+      id="step-5-next-button-school"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Next"
       :click-action="next"
     />
   </v-row>
@@ -57,6 +66,8 @@ import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
 import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
+import {PERMISSION} from '../../../utils/constants/Permission';
+import {authStore} from '../../../store/modules/auth';
 
 export default {
   name: 'StepFiveSchoolDetails',
@@ -88,7 +99,11 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
   },
   created() {
   },
@@ -99,6 +114,9 @@ export default {
       } else {
         this.markStepAsComplete();
       }
+    },
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
     },
     markStepAsComplete() {
       let updateCollection = {

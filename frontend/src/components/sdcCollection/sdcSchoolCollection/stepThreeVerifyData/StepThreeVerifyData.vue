@@ -91,10 +91,20 @@
 
   <v-row justify="end">
     <PrimaryButton
+      v-if="!isStepComplete"
       id="step-3-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
+      :disabled="!canMoveForward()"
       text="Verify all program tabs as correct"
+      :click-action="next"
+    />
+    <PrimaryButton
+      v-else
+      id="step-3-next-button-school"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Next"
       :click-action="next"
     />
   </v-row>
@@ -116,6 +126,8 @@ import RefugeeComponent from './RefugeeComponent.vue';
 import FrenchProgramsComponent from './FrenchProgramsComponent.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
+import {PERMISSION} from '../../../../utils/constants/Permission';
+import {authStore} from '../../../../store/modules/auth';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -152,8 +164,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'currentCollectionTypeCode']),
     ...mapState(appStore, ['activeSchoolsMap']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
     showRefugeeTab() {
       const validPublicTypes = [
         'STANDARD',
@@ -184,6 +200,9 @@ export default {
       } else {
         this.markStepAsComplete();
       }
+    },
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
     },
     markStepAsComplete() {
       let updateCollection = {
