@@ -57,6 +57,7 @@
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Next"
+      :disabled="!canMoveForward()"
       :click-action="next"
     />
   </v-row>
@@ -116,6 +117,9 @@ export default {
     });
   },
   methods: {
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     submit() {
       if(this.districtCollectionObject?.sdcDistrictCollectionStatusCode !== 'SUBMITTED') {
         this.markStepAsComplete();

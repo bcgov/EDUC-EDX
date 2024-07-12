@@ -122,6 +122,7 @@
       class="mr-3 ml-3 mb-3"
       icon="mdi-check"
       text="Next"
+      :disabled="!canMoveForward()"
       :click-action="next"
     />
   </v-row>
@@ -251,6 +252,9 @@ export default {
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setDistrictCollection']),
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     async fireFileProgress(){
       await this.getFileProgress();
       this.getFileRules();

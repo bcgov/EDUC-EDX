@@ -91,10 +91,20 @@
 
   <v-row justify="end">
     <PrimaryButton
+      v-if="!isStepComplete"
       id="step-3-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
+      :disabled="!canMoveForward()"
       text="Verify all program tabs as correct"
+      :click-action="next"
+    />
+    <PrimaryButton
+      v-else
+      id="step-3-next-button-school"
+      class="mr-3 mb-3"
+      icon="mdi-check"
+      text="Next"
       :click-action="next"
     />
   </v-row>
@@ -117,6 +127,8 @@ import {setFailureAlert} from '../../../composable/alertComposable';
 import {appStore} from '../../../../store/modules/app';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {PERMISSION} from '../../../../utils/constants/Permission';
+import {authStore} from '../../../../store/modules/auth';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -153,8 +165,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
     ...mapState(appStore, ['activeDistrictsMap']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
+    },
     showRefugeeTab() {
       return (
         this.currentCollectionTypeCode === 'February'
@@ -170,6 +186,9 @@ export default {
     });
   },
   methods: {
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     markStepAsComplete(){
       let updateCollection = {
         districtCollection: this.districtCollectionObject,

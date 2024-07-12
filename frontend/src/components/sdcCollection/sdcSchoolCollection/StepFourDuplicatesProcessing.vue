@@ -195,7 +195,7 @@
         icon="mdi-check"
         text="Next"
         :click-action="next"
-        :disabled="duplicateStudents.length > 0"
+        :disabled="duplicateStudents.length > 0 || !canMoveForward()"
       />
     </v-col>
   </v-row>
@@ -295,6 +295,9 @@ export default {
       } else {
         this.markStepAsComplete();
       }
+    },
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
     },
     getSchoolDuplicates(){
       this.isLoading = true;

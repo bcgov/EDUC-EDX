@@ -240,7 +240,7 @@
       class="mr-3 mt-4 mb-3"
       icon="mdi-check"
       text="Next"
-      :disabled="disableNextButton()"
+      :disabled="disableNextButton() || !canMoveForward()"
       :click-action="next"
     />
   </v-row>
@@ -387,6 +387,9 @@ export default defineComponent({
 
   },
   methods: {
+    canMoveForward(){
+      return this.isStepComplete || this.hasEditPermission;
+    },
     applyFilters($event) {
       this.filters = cloneDeep($event);
     },
