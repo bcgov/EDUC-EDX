@@ -100,6 +100,7 @@
                   <v-list>
                     <v-list-item
                       id="newMessageToConvBtn"
+                      :disabled="!hasEditPermission"
                       @click="editStudent(props.item)"
                     >
                       <v-icon
@@ -112,6 +113,7 @@
                     </v-list-item>
                     <v-list-item
                       id="addAttachmentConvButton"
+                      :disabled="!hasEditPermission"
                       @click="removeStudent(props.item)"
                     >
                       <v-icon
@@ -124,6 +126,7 @@
                     </v-list-item>
                     <v-list-item
                       id="addStudentConvButton"
+                      :disabled="!hasEditPermission"
                       @click="markStudentAsDifferent(props.item)"
                     >
                       <v-icon
@@ -237,6 +240,8 @@ import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import Spinner from '../../common/Spinner.vue';
 import {DateTimeFormatter, LocalDate, ResolverStyle} from '@js-joda/core';
+import {authStore} from '../../../store/modules/auth';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StepFourDuplicatesProcessing',
@@ -274,7 +279,11 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
   },
   created() {
     this.getSchoolDuplicates();

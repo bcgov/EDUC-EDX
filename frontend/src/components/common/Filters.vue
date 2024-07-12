@@ -234,7 +234,7 @@ export default {
   computed: {
     ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
-    ...mapState(authStore, ['userInfo']),
+    ...mapState(authStore, ['userInfo'])
   },
   async beforeMount() {
     if (this.schoolRoles.length === 0) {
@@ -246,9 +246,10 @@ export default {
   },
   created() {
     authStore().getUserInfo().then(() => {
-      this.isDistrictUser = true;
       appStore().getInstitutesData().then(() => {
-        this.setupSchoolList();
+        if(this.district){
+          this.setupSchoolList();
+        }
         this.loading = false;
       });
     });

@@ -88,7 +88,7 @@
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
-      :disabled="isSubmitted"
+      :disabled="isSubmitted || !hasEditPermission"
       :text="getButtonText()"
       :click-action="submit"
     />
@@ -111,6 +111,8 @@ import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import { appStore } from '../../../store/modules/app';
 import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
+import {authStore} from '../../../store/modules/auth';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StepSevenSubmitData',
@@ -141,11 +143,15 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'schoolCollection']),
     ...mapState(appStore, ['activeSchoolsMap']),
     displayNextBtn() {
       return this.afterSubmittedStatuses.includes(this.schoolCollectionObject?.sdcSchoolCollectionStatusCode);
-    }
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
   },
   mounted() {
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {

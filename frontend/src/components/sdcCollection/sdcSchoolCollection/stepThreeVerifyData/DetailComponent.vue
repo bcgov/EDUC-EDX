@@ -38,7 +38,7 @@
             class="mr-1 mb-1"
             prepend-icon="mdi-plus"
             variant="outlined"
-            :disabled="schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+            :disabled="!hasEditPermission"
             @click="addStudent"
           />
           <v-btn
@@ -48,7 +48,7 @@
             text="Remove"
             prepend-icon="mdi-delete"
             variant="outlined"
-            :disabled="selectedStudents.length === 0 || schoolCollection?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+            :disabled="selectedStudents.length === 0 || !hasEditPermission"
             @click="removeStudents"
           />
           <v-btn
@@ -152,6 +152,8 @@ import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposa
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
 import AddStudentDetails from './AddStudentDetails.vue';
+import {PERMISSION} from '../../../../utils/constants/Permission';
+import {authStore} from '../../../../store/modules/auth';
 
 export default {
   name: 'DetailComponent',
@@ -203,9 +205,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['schoolCollection','schoolFundingCodesMap', 'enrolledProgramCodesMap', 'careerProgramCodesMap', 'bandCodesMap', 'specialEducationCodesMap']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     }
   },
   created() {

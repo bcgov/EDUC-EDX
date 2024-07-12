@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST'"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
@@ -64,7 +64,7 @@
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :can-resolve-duplicates="false"
+          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
@@ -111,6 +111,9 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
 import DuplicateTab from '../../../common/DuplicateTab.vue';
+import {mapState} from 'pinia';
+import {authStore} from '../../../../store/modules/auth';
+import {PERMISSION} from '../../../../utils/constants/Permission';
 
 export default defineComponent({
   name: 'StepSixProvincialDuplicates',
@@ -154,8 +157,12 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     PROVINCIAL_DUPLICATES() {
       return DISTRICT_PROVINCIAL_DUPLICATES;
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
     }
   },
   async created() {

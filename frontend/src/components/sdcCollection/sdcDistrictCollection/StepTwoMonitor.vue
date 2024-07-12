@@ -228,7 +228,7 @@
         color="primary"
         icon="mdi-lock-open"
         variant="text"
-        :disabled="!value.isSubmitted || isDistrictCollectionSubmitted()"
+        :disabled="!value.isSubmitted || isDistrictCollectionSubmitted() || !hasEditPermission"
         @click="unsubmitSdcSchoolCollection(item)"
       />
     </template>
@@ -278,6 +278,8 @@ import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {appStore} from '../../../store/modules/app';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {authStore} from '../../../store/modules/auth';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default defineComponent({
   name: 'StepTwoMonitor',
@@ -350,10 +352,14 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeDistrictsMap']),
     ...mapState(sdcCollectionStore, ['schoolCollectionStatusCodesMap']),
     filterCount() {
       return Object.values(this.filters).filter(filter => !!filter).reduce((acc, filter) => acc.concat(filter), []).length;
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
     },
     filteredItems() {
       const { schoolNameNumber, issuesFilter, uploadDataFilter } = this.filters || {};

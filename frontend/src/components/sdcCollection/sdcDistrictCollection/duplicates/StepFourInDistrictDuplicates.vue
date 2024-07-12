@@ -49,7 +49,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode !== 'SUBMITTED'"
+          :can-resolve-duplicates="hasEditPermission"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -64,7 +64,7 @@
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
-          :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode !== 'SUBMITTED'"
+          :can-resolve-duplicates="hasEditPermission"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
       </v-window-item>
@@ -111,6 +111,9 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
 import DuplicateTab from '../../../common/DuplicateTab.vue';
+import {mapState} from 'pinia';
+import {authStore} from '../../../../store/modules/auth';
+import {PERMISSION} from '../../../../utils/constants/Permission';
 
 export default defineComponent({
   name: 'StepFourInDistrictDuplicates',
@@ -155,9 +158,13 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     IN_DISTRICT_DUPLICATES() {
       return IN_DISTRICT_DUPLICATES;
-    }
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
+    },
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {
