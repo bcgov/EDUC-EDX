@@ -533,7 +533,7 @@
             text="Remove"
             variant="outlined"
             class="mr-1"
-            :disabled="isSchoolCollectionSubmitted() || isDistrictCollectionSubmitted()"
+            :disabled="!hasEditPermission"
             @click="deleteStudent"
           />
           <v-btn
@@ -541,7 +541,7 @@
             color="#003366"
             text="Validate & Save"
             class="mr-1"
-            :disabled="!studentDetailsFormValid || isSchoolCollectionSubmitted() || isDistrictCollectionSubmitted()"
+            :disabled="!studentDetailsFormValid || !hasEditPermission"
             @click="save"
           />
         </v-col>
@@ -568,6 +568,9 @@ import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
 import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import {PERMISSION} from '../../utils/constants/Permission';
+import {mapState} from 'pinia';
+import {authStore} from '../../store/modules/auth';
   
 export default {
   name: 'EditStudent',
@@ -629,7 +632,10 @@ export default {
     };
   },
   computed: {
-  
+    ...mapState(authStore, ['userInfo']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
   },
   watch: {
     selectedStudents: {

@@ -67,7 +67,7 @@
         icon="mdi-file-upload"
         text="Upload 1701 Submission"
         :loading="isReadingFile"
-        :disabled="districtCollectionObject?.sdcDistrictCollectionStatusCode === 'SUBMITTED'"
+        :disabled="!hasEditPermission"
         :click-action="handleFileImport"
         title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
       />
@@ -154,6 +154,8 @@ import alertMixin from '../../../mixins/alertMixin';
 import {mapActions, mapState} from 'pinia';
 import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {setFailureAlert} from '../../composable/alertComposable';
+import {authStore} from '../../../store/modules/auth';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StepOneUploadData',
@@ -225,10 +227,14 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'districtCollection']),
     getLink(){
       return getCollectionLink(this.currentCollectionTypeCode);
-    }
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
+    },
   },
   watch: {
     uploadFileValue() {
@@ -332,7 +338,6 @@ export default {
           } finally {
             this.inputKey++;
             this.isReadingFile = false;
-            this.isDisabled = false;
           }
         }
       }

@@ -163,7 +163,7 @@
           color="#003366"
           text="Upload 1701 Submission"
           :loading="isReadingFile"
-          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          :disabled="!hasEditPermission"
           :click-action="handleFileImport"
         />
       </v-col>
@@ -181,7 +181,7 @@
                 1701 submission requirements.
               </a>
             </span>
-            <span>
+            <span v-if="hasEditPermission">
               <br>To manually add all student enrollment data for this collection,
               <a
                 @click="triggerManualEnrollment"
@@ -204,7 +204,7 @@
           style="width: 18em"
           prepend-icon="mdi-numeric-0-circle"
           text="Report Zero Enrollment"
-          :disabled="schoolCollectionObject?.sdcSchoolCollectionStatusCode === 'SUBMITTED'"
+          :disabled="!hasEditPermission"
           @click="clickReportZeroEnrollment"
         />
       </v-col>
@@ -271,6 +271,8 @@ import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {DateTimeFormatter, LocalDate, LocalDateTime, ResolverStyle} from '@js-joda/core';
 import SummaryComponent from './SummaryComponent.vue';
 import {getCollectionLink} from '../../../../utils/common';
+import {authStore} from '../../../../store/modules/auth';
+import {PERMISSION} from '../../../../utils/constants/Permission';
 
 export default {
   name: 'StepOneUploadData',
@@ -320,9 +322,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode','currentStepInCollectionProcess', 'schoolCollection']),
     collectionOpenDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
     collectionCloseDate() {
       return LocalDate.parse(this.schoolCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));

@@ -48,7 +48,7 @@
       class="mr-3 mb-3"
       icon="mdi-check"
       text="Submit 1701 Data to Ministry"
-      :disabled="isSubmitted"
+      :disabled="isSubmitted || !hasEditPermission"
       :click-action="submit"
     />
     <PrimaryButton
@@ -69,6 +69,9 @@ import {ApiRoutes} from '../../../utils/constants';
 import {setFailureAlert} from '../../composable/alertComposable';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {mapState} from 'pinia';
+import {authStore} from '../../../store/modules/auth';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StepFiveSubmitToMinistry',
@@ -98,8 +101,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     displayNextBtn() {
       return this.afterSubmittedStatuses.includes(this.districtCollectionObject?.sdcDistrictCollectionStatusCode);
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
     }
   },
   mounted() {
