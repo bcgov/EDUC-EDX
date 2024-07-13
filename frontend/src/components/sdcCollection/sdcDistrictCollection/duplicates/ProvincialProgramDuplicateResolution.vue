@@ -43,13 +43,13 @@
           cols="6"
         >
           <StudentDetail
-            :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity"
+            :student="currentUsersStudent"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
           />
         </v-col>           
         <v-col class="border ml-1">
           <StudentDetail
-            :student="selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity"
+            :student="otherSchoolsStudent"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
           />
         </v-col>
@@ -57,46 +57,27 @@
 
       <v-row class="mt-6">
         <v-col class="label">
-          Duplicate Programs:
+          <span>Select the program codes to remove from your school for this student:</span>
         </v-col>
       </v-row>
-
-      <v-form
-        ref="studentForm"
-        v-model="validForm"
-      >
-        <v-row>
-          <v-col>
-            <div
-              v-for="(prog, index) in getDuplicatePrograms()"
-              :key="index"
-            >
-              <span>{{ prog?.description }}</span>
-
-              <v-radio-group
-                v-model="selected[index]"
-                direction="horizontal"
-                :inline="true"
-                :rules="[v => !!v || 'Required']"
-                validate-on="input"
-                required
-              >
-                <v-radio
-                  :id="`index`"
-                  :label="prog?.studentOne?.schoolName"
-                  :value="{dupeCode: prog?.code, studentId: prog?.studentOne?.sdcSchoolCollectionStudentID}"
-                />
-                <v-radio
-                  :id="`index`"
-                  :label="prog?.studentTwo?.schoolName"
-                  :value="{dupeCode: prog?.code , studentId: prog?.studentTwo?.sdcSchoolCollectionStudentID}"
-                />
-              </v-radio-group>
-            </div>
-          </v-col>
-        </v-row>
-      </v-form>
-
+      <v-row>
+        <v-col>
+          <div
+            v-for="(prog, index) in getDuplicatePrograms()"
+            :key="index"
+          >
+            <v-checkbox
+              :id="`${prog?.code}-checkbox`"
+              v-model="selected[index]"
+              color="#003366"
+              :label="prog?.description"
+              :value="prog?.code"
+              density="compact"
+              hide-details
+            />
+          </div>
+        </v-col>
+      </v-row>
       <v-row class="mt-n2">
         <v-col
           cols="12"
@@ -107,8 +88,7 @@
             color="#003366"
             class="mb-1 release-button"
             text="Release selected program from School"
-            variant="elevated"
-            :disabled="!validForm"
+            :disabled="!selected.some(value => value !== false)"
             @click="releaseStudent()"
           />
         </v-col>
@@ -129,12 +109,10 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../../composable/alertComposable';
 import {cloneDeep} from 'lodash';
-import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 
 export default {
-  name: 'ProgramDuplicateResolution',
+  name: 'ProvincialProgramDuplicateResolution',
   components: {
     StudentDetail,
     ConfirmationDialog
@@ -150,9 +128,8 @@ export default {
   data() {
     return {
       selected:[],
-      sdcStudentOneDetailCopy: {},
-      sdcStudentTwoDetailCopy: {},
-      validForm: false,
+      currentUsersStudent: {},
+      otherSchoolsStudent: {},
       type: 'PROGRAM',
       duplicateStudents: []
     };
@@ -161,22 +138,18 @@ export default {
     duplicateTypeHeading(){  return this.selectedProgramDuplicate?.programDuplicateTypeCodeDescription + ' Program Duplicate';}
   },
   watch: {
-    selectedProgramDuplicate: {
-      handler(value) {
-        if(value) {
-          this.sdcStudentOneDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
-          this.sdcStudentTwoDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
-          this.duplicateStudents = [this.sdcStudentOneDetailCopy, this.sdcStudentTwoDetailCopy];
-        }
-      },
-      immediate: true
-    }
   },
   mounted() {
     this.validateForm();
   },
   async created() {
-  
+    if(!this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity?.sdcSchoolCollectionStudentID) {
+      this.currentUsersStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
+      this.otherSchoolsStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
+    } else {
+      this.currentUsersStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
+      this.otherSchoolsStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
+    }
   },
   methods: {
     validateForm() {
@@ -194,15 +167,14 @@ export default {
         return;
       }
       for(let value of this.selected) {
-        this.updateStudentObject(value.dupeCode, value.studentId);
+        this.updateStudentObject(value, this.currentUsersStudent.sdcSchoolCollectionStudentID);
       }
-
       this.saveAndResolve();
     },
     saveAndResolve() {
       this.loadingCount += 1;
       let payload = {
-        students: this.duplicateStudents,
+        students: [this.currentUsersStudent],
         duplicate: this.selectedProgramDuplicate
       };
       ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, payload)
@@ -223,66 +195,49 @@ export default {
           this.$nextTick().then(this.validateForm);
         });
     },
-    updateStudentObject(valueToBeRemoved, studentId) {
+    updateStudentObject(valueToBeRemoved) {
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
-        studentToBeUpdated.specialEducationCategoryCode = null;
+        this.currentUsersStudent.specialEducationCategoryCode = null;
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
-        studentToBeUpdated.careerProgramCode = null;
+        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
+        this.currentUsersStudent.careerProgramCode = null;
       } else {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
+        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
       } 
     },
     getDuplicatePrograms() {
       let programs = [];
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
-        let description = sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode) ? `
-          ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.specialEducationCategoryCode} - ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.description}` : this.sdcStudentOneDetailCopy.specialEducationCategoryCode;
-          
-        programs.push({code: this.sdcStudentOneDetailCopy.specialEducationCategoryCode, description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
+        programs.push({code: this.currentUsersStudent.specialEducationCategoryCode, description: this.currentUsersStudent?.mappedSpedCode});
       } else if (this.selectedProgramDuplicate?.programDuplicateTypeCode === 'INDIGENOUS') {
-        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
-
+        let mappedPrograms = this.currentUsersStudent.mappedIndigenousEnrolledProgram.split(',').filter(value => this.otherSchoolsStudent.mappedIndigenousEnrolledProgram.split(',').includes(value));
         for(let progs of mappedPrograms) {
-          programs.push(progs);
+          programs.push({code: progs.match(/(?<=\()\d+(?=\))/)?.[0], description: progs});
         }
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
-
+        let mappedPrograms = this.currentUsersStudent.mappedCareerProgram.split(',').filter(value => this.otherSchoolsStudent.mappedCareerProgram.split(',').includes(value));
         for(let progs of mappedPrograms) {
-          programs.push(progs);
+          programs.push({code: progs.match(/(?<=\()\d+(?=\))/)?.[0], description: progs});
         }
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'LANGUAGE') {
-        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.LANGUAGE_PROGRAM_CODES);
 
+        let mappedPrograms = this.currentUsersStudent.mappedLanguageEnrolledProgram.split(',').filter(value => this.otherSchoolsStudent.mappedLanguageEnrolledProgram.split(',').includes(value));
         for(let progs of mappedPrograms) {
-          programs.push(progs);
+          programs.push({code: progs.match(/(?<=\()\d+(?=\))/)?.[0], description: progs});
         }
       }
-      return programs;
-    },
-    mapEnrolledProgram(enrolledProgramFilter) {
-      return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
-        .match(/.{1,2}/g)
-        .filter(programCode => enrolledProgramFilter.includes(programCode))
-        .map(programCode => {
-          const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
-          return {code: programCode, description: `${programCode} - ${enrolledProgram.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy};
-        });
-    },
+      return programs.sort((a, b) => a.code - b.code);
+    }
   }
 };
 </script>
   
   <style scoped>
    .containerSetup{
-      padding-right: 0em !important;
-      padding-left: 0em !important;
+      padding-right: 0 !important;
+      padding-left: 0 !important;
     }
   
 
@@ -311,6 +266,9 @@ export default {
    }
    .border {
     border: 1px thin lightgrey;
+   }
+   :deep(.v-checkbox .v-label) {
+     opacity: 1;
    }
   
   </style>

@@ -45,6 +45,7 @@
         <DuplicateTab
           v-if="tab==='Enrollment Duplicates'"
           duplicate-type="enrollment"
+          duplicate-level="PROVINCIAL"
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
@@ -62,6 +63,7 @@
           v-if="tab==='Program Duplicates'"
           duplicate-type="program"
           :headers-config="PROVINCIAL_DUPLICATES"
+          duplicate-level="PROVINCIAL"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
           :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"

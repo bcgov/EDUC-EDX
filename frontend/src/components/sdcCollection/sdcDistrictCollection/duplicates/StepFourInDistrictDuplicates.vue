@@ -45,6 +45,7 @@
         <DuplicateTab
           v-if="tab==='Enrollment Duplicates'"
           duplicate-type="enrollment"
+          duplicate-level="DISTRICT"
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
@@ -61,6 +62,7 @@
         <DuplicateTab
           v-if="tab==='Program Duplicates'"
           duplicate-type="program"
+          duplicate-level="DISTRICT"
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :resolved-duplicates="resolvedProgramDuplicates"
