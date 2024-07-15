@@ -18,13 +18,13 @@
       </v-row>
     </div>
 
-    <v-table v-else>
+    <v-table id="signatures" v-else>
       <thead>
         <tr class="header-row">
-          <th class="sign-table header-text">
+          <th id="sign-off-action" class="sign-table header-text">
             Sign-Off Actions
           </th>
-          <th class="header-text">
+          <th id="sign-off-details" class="header-text">
             Sign-Off Details
           </th>
         </tr>
