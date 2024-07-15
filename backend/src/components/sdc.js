@@ -773,21 +773,15 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
   const token = getAccessToken(req);
 
   for(let sdcDuplicate of sdcDuplicates) {
-    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT' && sdcDuplicate.duplicateResolutionCode === '') {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT' && sdcDuplicate.duplicateResolutionCode === null) {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
 
-      let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
-      let sdcUser1 = responseEntity1?.find(user => {
-        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
-      });
-
-      let responseEntity2 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
-      let sdcUser2 = responseEntity2?.find(user => {
-        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
-      });
-
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
+        let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
+        let sdcUser1 = responseEntity1?.find(user => {
+          return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
+        });
 
         if(sdcUser1 !== undefined) {
           let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
@@ -799,6 +793,11 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
       }
 
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
+        let responseEntity2 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
+        let sdcUser2 = responseEntity2?.find(user => {
+          return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
+        });
+
         if(sdcUser2 !== undefined) {
           let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
