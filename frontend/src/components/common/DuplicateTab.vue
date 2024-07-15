@@ -131,6 +131,7 @@
                       <span class="ml-2">Remove</span>
                     </v-list-item>
                     <v-list-item
+                      v-if="duplicateType === 'enrollment'"
                       id="markStudAsDiff"
                       @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"
                     >

@@ -57,6 +57,11 @@
       </tbody>
     </v-table>
   </v-container>
+  <ConfirmationDialog ref="confirmSignOff">
+    <template #message>
+      <p>Are you sure that you would like to provide sign-off for all programs?</p>
+    </template>
+  </ConfirmationDialog>
 </template>
       
 <script>
@@ -69,10 +74,12 @@ import {ApiRoutes} from '../../utils/constants';
 import {setSuccessAlert, setFailureAlert} from '../composable/alertComposable';
 import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
 import {capitalize} from 'lodash';
+import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 
 export default {
   name: 'SignOffSignatures',
   components: {
+    ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
@@ -147,7 +154,11 @@ export default {
       } 
     },
 
-    submit(selectedAction) {
+    async submit(selectedAction) {
+      const confirmation = await this.$refs.confirmSignOff.open('Confirm Sign-Off', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+      if (!confirmation) {
+        return;
+      }
       this.isLoading = true;
       const payload = {districtSignatoryRole: selectedAction?.role};
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sign-off`, payload)
