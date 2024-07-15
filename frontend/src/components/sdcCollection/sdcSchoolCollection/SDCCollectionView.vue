@@ -7,7 +7,7 @@
       no-gutters
       class="mt-1 d-flex justify-start"
     >
-      <v-col v-if="this.userInfo.activeInstituteType === 'DISTRICT'">
+      <v-col v-if="userInfo.activeInstituteType === 'DISTRICT'">
         <h2>{{ sdcSchoolSchool?.schoolName }} ({{ sdcSchoolSchool?.mincode }})</h2>
         <h3 id="collectionTypeYear">
           {{ currentCollectionTypeCode }} {{ currentCollectionYear }} Collection
@@ -20,7 +20,7 @@
       </v-col>
     </v-row>
     <v-row
-      v-if="this.userInfo.activeInstituteType !== 'DISTRICT'"
+      v-if="userInfo.activeInstituteType !== 'DISTRICT'"
       no-gutters
       class="mt-2 d-flex justify-start"
     >
@@ -241,18 +241,23 @@
       </v-col>
     </v-row>
     <div v-if="disableScreen">
-      <v-overlay :model-value="disableScreen" activator="parent" class="align-center justify-center" :persistent="true">
-          <v-row>
-            <v-col>
-              <v-alert
-                density="compact"
-                type="warning"
-                title="File Re-uploaded!"
-                :text="wsNotificationText"
-                class="pb-5 pt-5"
-              />
-            </v-col>
-          </v-row>
+      <v-overlay
+        :model-value="disableScreen"
+        activator="parent"
+        class="align-center justify-center"
+        :persistent="true"
+      >
+        <v-row>
+          <v-col>
+            <v-alert
+              density="compact"
+              type="warning"
+              title="File Re-uploaded!"
+              :text="wsNotificationText"
+              class="pb-5 pt-5"
+            />
+          </v-col>
+        </v-row>
       </v-overlay>
     </div>
   </v-container>
@@ -336,16 +341,16 @@ export default {
   watch: {
     notification(notificationData) {
       if (notificationData) {
-          try {
-            let updateUser = notificationData.updateUser.split('/');
-            if (notificationData.sdcSchoolCollectionID === this.$route.params.schoolCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
-              let school = this.schoolsMap.get(notificationData?.schoolID);
-              this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
-              this.disableScreen = true;
-            }
-          } catch (e) {
-            console.error(e);
+        try {
+          let updateUser = notificationData.updateUser.split('/');
+          if (notificationData.sdcSchoolCollectionID === this.$route.params.schoolCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
+            let school = this.schoolsMap.get(notificationData?.schoolID);
+            this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
+            this.disableScreen = true;
           }
+        } catch (e) {
+          console.error(e);
+        }
       }
     },
   },

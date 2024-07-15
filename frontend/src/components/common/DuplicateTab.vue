@@ -130,18 +130,6 @@
                       </v-icon>
                       <span class="ml-2">Remove</span>
                     </v-list-item>
-<!--                    <v-list-item-->
-<!--                      v-if="duplicateType === 'enrollment' && sdcSchoolCollectionStudent.canMoveToCrossEnrollment"-->
-<!--                      id="enrollmentResolveViaRemoveAndMoveToCrossEnrollment"-->
-<!--                    >-->
-<!--                      <v-icon-->
-<!--                        color="#003366"-->
-<!--                        class="pr-1 mb-1"-->
-<!--                      >-->
-<!--                        mdi-pencil-->
-<!--                      </v-icon>-->
-<!--                      <span class="ml-2">Remove & Move to 8/9 Cross Enrollment</span>-->
-<!--                    </v-list-item>-->
                     <v-list-item
                       id="markStudAsDiff"
                       @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"

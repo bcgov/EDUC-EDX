@@ -13,8 +13,12 @@
       >
         {{ name }}
       </v-tab>
-      <v-tab class="sign-off-tab" v-if="isFinalSignOff">
-            Signatures</v-tab>      
+      <v-tab
+        v-if="isFinalSignOff"
+        class="sign-off-tab"
+      >
+        Signatures
+      </v-tab>      
     </v-tabs>
 
     <v-window v-model="tab">
@@ -26,7 +30,7 @@
         <AllStudentsComponent
           v-if="tab==='All Students'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -37,7 +41,7 @@
         <FrenchProgramsComponent
           v-if="tab==='French Programs'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -48,7 +52,7 @@
         <CareerProgramsComponent
           v-if="tab==='Career Programs'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -59,7 +63,7 @@
         <IndSupportProgramsComponent
           v-if="tab==='Indigenous Students & Support Programs'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -70,7 +74,7 @@
         <SpecialEduComponent
           v-if="tab==='Special Education'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -81,7 +85,7 @@
         <EnglishLangComponent
           v-if="tab==='English Language Learning'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -92,7 +96,7 @@
         <RefugeeComponent
           v-if="tab==='Refugee'"
           :district="district"
-          :isFinalSignOff="isFinalSignOff"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -103,13 +107,16 @@
       >
         <SignOffSignatures
           :district="district"
-          :districtCollectionObject="districtCollectionObject"
+          :district-collection-object="districtCollectionObject"
         />
       </v-window-item>
     </v-window> 
   </div>
 
-  <v-row v-if="!isFinalSignOff" justify="end">
+  <v-row
+    v-if="!isFinalSignOff"
+    justify="end"
+  >
     <PrimaryButton
       v-if="!isStepComplete"
       id="step-3-next-button-school"

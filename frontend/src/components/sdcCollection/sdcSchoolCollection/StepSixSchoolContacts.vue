@@ -8,7 +8,6 @@
           variant="tonal"
         >
           <span>Please review and verify that the details on the record for the school are accurate.</span>
-
         </v-alert>
       </v-col>
     </v-row>
@@ -26,10 +25,16 @@
     v-if="isDisabled"
   >
     <v-col class="error-message">
-      <p class="form-hint" v-if="isOffshoreSchool">
+      <p
+        v-if="isOffshoreSchool"
+        class="form-hint"
+      >
         A principal with an active start date and contact information must be added.
       </p>
-      <p class="form-hint" v-else>
+      <p
+        v-else
+        class="form-hint"
+      >
         A principal, safe schools coordinator and safe schools coordinator backup<br>with an active start date and contact information must be added.
       </p>
     </v-col>

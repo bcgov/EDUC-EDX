@@ -259,8 +259,7 @@
     </p>
   </v-row>
   <ConfirmationDialog ref="confirmRemovalOfCollection">
-    <template #message>
-    </template>
+    <template #message />
   </ConfirmationDialog>
 </template>
 <script>

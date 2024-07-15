@@ -35,7 +35,7 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.summaryReport"
-        :isDistrictSummary="true"
+        :is-district-summary="true"
       />
     </div>
   </v-container>
