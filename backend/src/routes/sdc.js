@@ -6,7 +6,7 @@ const { getCollectionBySchoolId, getCollectionByDistrictId, uploadFile, reportZe
   getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, removeSDCSchoolCollectionStudents,
   getStudentHeadcounts, downloadSdcReport, getSchoolStudentDuplicates, getProvincialDuplicatesForSchool,
   markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts,
-  getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDuplicates, getSdcSchoolCollections, getProvincialDuplicates, getStudentValidationIssueCodes} = require('../components/sdc');
+  getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDuplicates, getSdcSchoolCollections, getProvincialDuplicates, getStudentValidationIssueCodes, submitDistrictSignature} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
@@ -81,4 +81,5 @@ router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/in-district-duplicat
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/sdcSchoolCollections', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getSdcSchoolCollections);
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/provincial-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getProvincialDuplicates);
 
+router.post('/sdcDistrictCollection/:sdcDistrictCollectionID/sign-off', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_EDIT), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, submitDistrictSignature);
 module.exports = router;

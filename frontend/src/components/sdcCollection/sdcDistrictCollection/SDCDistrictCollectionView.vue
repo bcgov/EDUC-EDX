@@ -179,6 +179,16 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="7"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepSevenFinalSubmission
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -186,18 +196,23 @@
     </v-row>
 
     <div v-if="disableScreen">
-      <v-overlay :model-value="disableScreen" activator="parent" class="align-center justify-center" :persistent="true">
-          <v-row>
-            <v-col>
-              <v-alert
-                density="compact"
-                type="warning"
-                title="File Re-uploaded!"
-                :text="wsNotificationText"
-                class="pb-5 pt-5"
-              />
-            </v-col>
-          </v-row>
+      <v-overlay
+        :model-value="disableScreen"
+        activator="parent"
+        class="align-center justify-center"
+        :persistent="true"
+      >
+        <v-row>
+          <v-col>
+            <v-alert
+              density="compact"
+              type="warning"
+              title="File Re-uploaded!"
+              :text="wsNotificationText"
+              class="pb-5 pt-5"
+            />
+          </v-col>
+        </v-row>
       </v-overlay>
     </div>
   </v-container>
@@ -218,6 +233,7 @@ import {formatSubmissionDate} from '../../../utils/format';
 import StepSixProvincialDuplicates from './duplicates/StepSixProvincialDuplicates.vue';
 import { appStore } from '../../../store/modules/app';
 import {authStore} from '../../../store/modules/auth';
+import StepSevenFinalSubmission from './StepSevenFinalSubmission.vue';
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
@@ -227,7 +243,8 @@ export default defineComponent({
     StepTwoMonitor,
     StepThreeVerifyData,
     StepFourInDistrictDuplicates,
-    StepFiveSubmitToMinistry
+    StepFiveSubmitToMinistry,
+    StepSevenFinalSubmission
   },
   data() {
     return {
@@ -259,16 +276,16 @@ export default defineComponent({
   watch: {
     notification(notificationData) {
       if (notificationData) {
-          try {
-            let updateUser = notificationData.updateUser.split('/');
-            if (notificationData.sdcDistrictCollectionID === this.$route.params.sdcDistrictCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
-              let school = this.schoolsMap.get(notificationData?.schoolID);
-              this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
-              this.disableScreen = true;
-            }
-          } catch (e) {
-            console.error(e);
+        try {
+          let updateUser = notificationData.updateUser.split('/');
+          if (notificationData.sdcDistrictCollectionID === this.$route.params.sdcDistrictCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
+            let school = this.schoolsMap.get(notificationData?.schoolID);
+            this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
+            this.disableScreen = true;
           }
+        } catch (e) {
+          console.error(e);
+        }
       }
     },
   },

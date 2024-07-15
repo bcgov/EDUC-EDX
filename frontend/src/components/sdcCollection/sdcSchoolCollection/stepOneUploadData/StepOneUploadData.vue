@@ -184,9 +184,9 @@
             <span v-if="hasEditPermission">
               <br>To manually add all student enrollment data for this collection,
               <a
-                @click="triggerManualEnrollment"
                 rel="noopener noreferrer"
                 style="color: rgb(56, 89, 138); text-decoration: underline"
+                @click="triggerManualEnrollment"
               >
                 click here.
               </a>

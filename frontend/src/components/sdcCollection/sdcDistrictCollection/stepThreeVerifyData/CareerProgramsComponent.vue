@@ -35,7 +35,7 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.summaryReport"
-        :isDistrictSummary="true"
+        :is-district-summary="true"
       />
     </div>
   </v-container>
@@ -59,12 +59,16 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
   data() {
     return {
-      reportView: 'detail',
+      reportView: this.isFinalSignOff ? 'summary' : 'detail',
       config: CAREER_PR
     };
   },

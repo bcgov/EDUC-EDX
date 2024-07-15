@@ -76,12 +76,16 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
   data() {
     return {
-      reportView: 'detail',
+      reportView: this.isFinalSignOff ? 'summary' : 'detail',
       config: INDSUPPORT_PR
     };
   },

@@ -173,7 +173,7 @@
 <script>
 
 import {displayName} from '../../utils/format';
-import {sdcCollectionStore} from "../../store/modules/sdcCollection";
+import {sdcCollectionStore} from '../../store/modules/sdcCollection';
 
 export default {
   name: 'CustomTable',
@@ -309,8 +309,8 @@ export default {
         let hoverTextSet = new Set();
         codes.forEach(code => {
           hoverTextSet.add(sdcCollectionStore().validationIssueTypeCodesMap.get(code.validationIssueCode)?.message);
-        })
-        return Array.from(hoverTextSet).join("\n");
+        });
+        return Array.from(hoverTextSet).join('\n');
       }
     },
     getAssignedPen(assignedPen) {
