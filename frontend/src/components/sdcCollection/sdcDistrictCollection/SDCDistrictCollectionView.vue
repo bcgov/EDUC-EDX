@@ -179,6 +179,16 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="7"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepSevenFinalSubmission
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -218,6 +228,7 @@ import {formatSubmissionDate} from '../../../utils/format';
 import StepSixProvincialDuplicates from './duplicates/StepSixProvincialDuplicates.vue';
 import { appStore } from '../../../store/modules/app';
 import {authStore} from '../../../store/modules/auth';
+import StepSevenFinalSubmission from './StepSevenFinalSubmission.vue';
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
@@ -227,7 +238,8 @@ export default defineComponent({
     StepTwoMonitor,
     StepThreeVerifyData,
     StepFourInDistrictDuplicates,
-    StepFiveSubmitToMinistry
+    StepFiveSubmitToMinistry,
+    StepSevenFinalSubmission
   },
   data() {
     return {

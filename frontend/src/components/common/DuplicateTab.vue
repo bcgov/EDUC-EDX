@@ -157,7 +157,6 @@
                   </v-list>
                 </v-menu>
                 <div v-if="sdcSchoolCollectionStudent.showContact">
-                  {{ 'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID }}
                   <v-menu
                     v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
                     :close-on-content-click="false"

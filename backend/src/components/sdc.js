@@ -1006,6 +1006,27 @@ async function getStudentValidationIssueCodes(req, res) {
   }
 }
 
+async function submitDistrictSignature(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const payload = {
+      districtSignatoryRole: req.body.districtSignatoryRole,
+      sdcDistrictCollectionID: req.params.sdcDistrictCollectionID,
+      districtSignatoryUserID: getCreateOrUpdateUserValue(req),
+      updateUser: getCreateOrUpdateUserValue(req),
+      signatureDate: null,
+      updateDate: null,
+      createUser: null,
+      createDate: null
+    }
+    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/sign-off`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error submitting district signature for sign-off', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -1035,5 +1056,6 @@ module.exports = {
   getSdcSchoolCollections,
   getProvincialDuplicates,
   getProvincialDuplicatesForSchool,
-  getStudentValidationIssueCodes
+  getStudentValidationIssueCodes,
+  submitDistrictSignature
 };

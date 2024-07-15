@@ -13,6 +13,8 @@
       >
         {{ name }}
       </v-tab>
+      <v-tab class="sign-off-tab" v-if="isFinalSignOff">
+            Signatures</v-tab>      
     </v-tabs>
 
     <v-window v-model="tab">
@@ -24,6 +26,7 @@
         <AllStudentsComponent
           v-if="tab==='All Students'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -34,6 +37,7 @@
         <FrenchProgramsComponent
           v-if="tab==='French Programs'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -44,6 +48,7 @@
         <CareerProgramsComponent
           v-if="tab==='Career Programs'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -54,6 +59,7 @@
         <IndSupportProgramsComponent
           v-if="tab==='Indigenous Students & Support Programs'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -64,6 +70,7 @@
         <SpecialEduComponent
           v-if="tab==='Special Education'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -74,6 +81,7 @@
         <EnglishLangComponent
           v-if="tab==='English Language Learning'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -84,12 +92,24 @@
         <RefugeeComponent
           v-if="tab==='Refugee'"
           :district="district"
+          :isFinalSignOff="isFinalSignOff"
+        />
+      </v-window-item>
+      <v-window-item
+        v-if="isFinalSignOff"
+        value="SignOff"
+        transition="false"
+        reverse-transition="false"
+      >
+        <SignOffSignatures
+          :district="district"
+          :districtCollectionObject="districtCollectionObject"
         />
       </v-window-item>
     </v-window> 
   </div>
 
-  <v-row justify="end">
+  <v-row v-if="!isFinalSignOff" justify="end">
     <PrimaryButton
       v-if="!isStepComplete"
       id="step-3-next-button-school"
@@ -129,6 +149,7 @@ import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
+import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -140,7 +161,8 @@ export default {
     SpecialEduComponent,
     EnglishLangComponent,
     RefugeeComponent,
-    FrenchProgramsComponent
+    FrenchProgramsComponent,
+    SignOffSignatures
   },
   mixins: [alertMixin],
   props: {
@@ -151,7 +173,11 @@ export default {
     },
     isStepComplete: {
       type: Boolean,
-      required: true
+      required: false
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: ['next', 'previous'],
@@ -235,5 +261,11 @@ export default {
 
 .divider:last-child  {
   border-right: 0
+}
+
+.sign-off-tab {
+    background-color: #003366 !important;
+    color: white !important;
+    border: 1px solid #003366;
 }
 </style>
