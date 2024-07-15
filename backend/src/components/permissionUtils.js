@@ -429,6 +429,68 @@ function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType
   return activeInstituteType === requestedInstituteType && activeInstituteID === requestedInstituteID;
 }
 
+async function checkSdcDuplicateAccess(req, res, next) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  res.locals.sdcDuplicate = await getData(token, `${config.get('sdc:schoolCollectionURL')}/duplicate/${req.body.duplicate.sdcDuplicateID}`, req.session?.correlationID);
+  if(req.body.duplicate?.updateDate !== res.locals.sdcDuplicate?.updateDate){
+    return res.status(HttpStatus.CONFLICT).json({
+      status: HttpStatus.CONFLICT,
+      message: 'The duplicate you are attempting to update is already being saved by another user. Please refresh your screen and try again.'
+    });
+  }
+  let sdcDupStudents = [res.locals.sdcDuplicate?.sdcSchoolCollectionStudent1Entity, res.locals.sdcDuplicate?.sdcSchoolCollectionStudent2Entity];
+  res.locals.sdcSchoolCollectionStudentsToUpdate = sdcDupStudents?.filter(dupStudent => req.body.students?.map(student => student.sdcSchoolCollectionStudentID)?.includes(dupStudent.sdcSchoolCollectionStudentID));
+  if(res.locals.sdcSchoolCollectionStudentsToUpdate?.length !== req.body.students?.length) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Student does not belong to this duplicate.'
+    });
+  }
+  
+  return next();
+}
+
+function findSdcSchoolCollectionsInDuplicate(req, res, next) {
+  res.locals.requestedInstituteType = 'SCHOOL';
+  res.locals.requestedSdcSchoolCollectionIDs = res.locals.sdcSchoolCollectionStudentsToUpdate.map(student => student.sdcSchoolCollectionID);
+  return next();
+}
+
+async function checkUserAccessToDuplicateSdcSchoolCollections(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionIDs) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    let promises = [];
+    res.locals.requestedSdcSchoolCollectionIDs.forEach(id => {
+      promises.push(getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${id}`, req.session?.correlationID));
+    });
+    res.locals.requestedSdcSchoolCollections = await Promise.all(promises);
+
+    res.locals.requestedSdcSchoolCollections.forEach(schoolCollection => {
+      if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, schoolCollection.schoolID)) {
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          message: 'User does not have access to the requested sdc school collection.'
+        });
+      }
+    });
+    return next();
+  } catch (e) {
+    log.error('Unable to load the SDC School Collection in loadSdcSchoolCollection.', e.stack);
+  }
+  return next();
+}
+
 const permUtils = {
   checkEDXUserAccessToRequestedInstitute,
   checkEdxUserPermission,
@@ -468,7 +530,10 @@ const permUtils = {
   loadInstituteCollection,
   checkStudentBelongsInCollection,
   findSdcSchoolCollectionStudentID_body,
-  edxUserHasAccessToInstitute
+  edxUserHasAccessToInstitute,
+  findSdcSchoolCollectionsInDuplicate,
+  checkSdcDuplicateAccess,
+  checkUserAccessToDuplicateSdcSchoolCollections
 };
 
 module.exports = permUtils;

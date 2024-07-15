@@ -112,7 +112,7 @@ export default {
         students: [updatedStudent],
         duplicate: this.selectedDuplicate
       };
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/resolve-district-duplicates' + '/'+ this.selectedDuplicate.sdcDuplicateID +'/' +this.type, payload)
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ this.selectedDuplicate?.sdcDuplicateID +'/' + this.type, payload)
         .then(() => {
           setSuccessAlert('Success! The student details have been updated.');
         }).catch(error => {

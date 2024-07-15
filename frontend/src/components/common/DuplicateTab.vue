@@ -36,11 +36,11 @@
   <template v-if="duplicateView==='1'">
     <strong>Duplicate Students Found: {{ nonAllowableDuplicates?.length }}</strong>
     <v-data-iterator
+      v-model:page.sync="pageNumber"
       :items="nonAllowableDuplicates"
       :items-per-page="10"
-      v-model:page.sync="pageNumber"
     >
-      <template v-slot:default="{ items }">
+      <template #default="{ items }">
         <v-row
           v-for="duplicate in items"
           :key="duplicate?.raw?.sdcDuplicateID"
@@ -72,7 +72,7 @@
               :total-elements="2"
               :hide-pagination="true"
             >
-                <template #resolution="{ sdcSchoolCollectionStudent }">
+              <template #resolution="{ sdcSchoolCollectionStudent }">
                 <v-menu
                   v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
                   v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
@@ -159,27 +159,27 @@
                 <div v-if="sdcSchoolCollectionStudent.showContact">
                   {{ 'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID }}
                   <v-menu
-                   v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
-                   :close-on-content-click="false"
-                   transition="fab-transition"
-                   location="end"
+                    v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
+                    :close-on-content-click="false"
+                    transition="fab-transition"
+                    location="end"
                   >
                     <template #activator="{ props }">
                       <v-btn
-                      :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
-                      color="primary"
-                      icon="mdi-phone-outline"
-                      variant="text"
-                      v-bind="props"
-                    />
+                        :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
+                        color="primary"
+                        icon="mdi-phone-outline"
+                        variant="text"
+                        v-bind="props"
+                      />
                     </template>
                     <v-card min-width="300">
                       <v-list>
                         <v-list-item
-                          :title="sdcSchoolCollectionStudent?.contactInfo?.isSchoolContact ? sdcSchoolCollectionStudent?.schoolName : sdcSchoolCollectionStudent?.districtName">
-                        </v-list-item>
+                          :title="sdcSchoolCollectionStudent?.contactInfo?.isSchoolContact ? sdcSchoolCollectionStudent?.schoolName : sdcSchoolCollectionStudent?.districtName"
+                        />
                       </v-list>
-                      <v-divider></v-divider>
+                      <v-divider />
 
                       <v-list>
                         <v-list-item>
@@ -188,7 +188,7 @@
                             :start="true"
                           />
                           {{ formatPhoneNumber(sdcSchoolCollectionStudent?.contactInfo?.phoneNumber) }}
-                          <template v-slot:append>
+                          <template #append>
                             <v-tooltip
                               v-model="showTooltip"
                               location="right"
@@ -206,7 +206,6 @@
                               </template>
                               <span>Copied {{ formatPhoneNumber(sdcSchoolCollectionStudent?.contactInfo?.phoneNumber) }}.</span>
                             </v-tooltip>
-                            
                           </template>
                         </v-list-item>
                       </v-list>
@@ -225,7 +224,7 @@
       :length="Math.ceil(nonAllowableDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
-    ></v-pagination>
+    />
 
     <v-row
       v-if="nonAllowableDuplicates?.length === 0"
@@ -245,11 +244,11 @@
   <template v-if="duplicateView==='2'">
     <strong>Duplicate Students Found: {{ allowableDuplicates?.length }}</strong>
     <v-data-iterator
+      v-model:page.sync="pageNumber"
       :items="allowableDuplicates"
       :items-per-page="10"
-      v-model:page.sync="pageNumber"
     >
-      <template v-slot:default="{ items }">
+      <template #default="{ items }">
         <v-row
           v-for="duplicate in items"
           :key="duplicate?.raw?.sdcDuplicateID"
@@ -284,7 +283,7 @@
       :length="Math.ceil(allowableDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
-    ></v-pagination>
+    />
     <v-row
       v-if="allowableDuplicates?.length === 0"
       class="pt-4"
@@ -302,11 +301,11 @@
   <template v-if="duplicateView==='3'">
     <strong>Duplicate Students Found: {{ resolvedDuplicates?.length }}</strong>
     <v-data-iterator
+      v-model:page.sync="pageNumber"
       :items="resolvedDuplicates"
       :items-per-page="10"
-      v-model:page.sync="pageNumber"
     >
-      <template v-slot:default="{ items }">
+      <template #default="{ items }">
         <v-row
           v-for="duplicate in items"
           :key="duplicate?.raw?.sdcDuplicateID"
@@ -341,7 +340,7 @@
       :length="Math.ceil(resolvedDuplicates?.length/10)"
       total-visible="5"
       rounded="circle"
-    ></v-pagination>
+    />
     <v-row
       v-if="resolvedDuplicates?.length === 0"
       class="pt-4"
@@ -362,7 +361,14 @@
     :scrollable="true"
     :persistent="true"
   >
+    <ProvincialProgramDuplicateResolution
+      v-if="duplicateLevel==='PROVINCIAL'"
+      :selected-program-duplicate="selectedDuplicate"
+      @close="openProgramResolutionView = !openProgramResolutionView"
+      @close-refresh="closeAndRefreshDuplicates()"
+    />
     <ProgramDuplicateResolution
+      v-else
       :selected-program-duplicate="selectedDuplicate"
       @close="openProgramResolutionView = !openProgramResolutionView"
       @close-refresh="closeAndRefreshDuplicates()"
@@ -406,6 +412,8 @@ import {ApiRoutes} from '../../utils/constants';
 import {setFailureAlert, setSuccessAlert} from '../composable/alertComposable';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import {formatPhoneNumber} from '../../utils/format';
+import ProvincialProgramDuplicateResolution
+  from '../sdcCollection/sdcDistrictCollection/duplicates/ProvincialProgramDuplicateResolution.vue';
 
 export default defineComponent({
   name: 'DuplicateTab',
@@ -414,9 +422,14 @@ export default defineComponent({
     EnrollmentDuplicateResolveViaRemove,
     CustomTable, 
     ProgramDuplicateResolution,
+    ProvincialProgramDuplicateResolution,
     ChangeGrade
   },
   props: {
+    duplicateLevel: {
+      type: String,
+      required: true
+    },
     duplicateType: {
       type: String,
       required: true

@@ -238,17 +238,18 @@ export default {
         .filter(programCode => enrolledProgramFilter.includes(programCode))
         .map(programCode => {
           const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
-          return {code: programCode, description: `${programCode} - ${enrolledProgram.description}`};
-        });
+          return {code: programCode, description: `${enrolledProgram.description} (${programCode})`};
+        })
+        .sort((a, b) => a.code - b.code);
     },
     enrolledPrograms(student) {
       let code = this.mapEnrolledProgram(student, [...enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES, ...enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES, ...enrolledProgram.LANGUAGE_PROGRAM_CODES]);
-      return code?.map(val => val.description).join(',');
-    }   
+      return code?.map(val => val.description).join(', ');
+    }
   }
 };
 </script>
-  
+
   <style scoped>
    .label {
     color: grey;
@@ -257,6 +258,6 @@ export default {
    .release-button {
     width: 100%;
    }
-  
+
   </style>
   

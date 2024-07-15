@@ -10,7 +10,6 @@ const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP,
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
 const cacheService = require('./cache-service');
-const { pick } = require('lodash');
 const redisUtil = require('../util/redis/redis-utils');
 const broadcastUtil = require('../socket/broadcast-utils');
 const CONSTANTS = require('../util/constants');
@@ -747,7 +746,9 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
-      setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
+      if(!isProvincialDuplicate) {
+        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
+      }
       setCanMoveToCrossEnrollment(sdcDuplicate);
       result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
     }
@@ -770,24 +771,24 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
 
 async function getUserWithSdcRole(req, sdcDuplicates) {
   const token = getAccessToken(req);
-  
+
   for(let sdcDuplicate of sdcDuplicates) {
     if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT' && sdcDuplicate.duplicateResolutionCode === '') {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
-    
+
       let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
       let sdcUser1 = responseEntity1?.find(user => {
-        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'))  
+        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
       });
-    
+
       let responseEntity2 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
       let sdcUser2 = responseEntity2?.find(user => {
-        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'))  
+        return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
       });
-    
+
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
-        
+
         if(sdcUser1 !== undefined) {
           let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
@@ -796,7 +797,7 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
         }
       }
-    
+
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
         if(sdcUser2 !== undefined) {
           let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
@@ -826,7 +827,7 @@ async function getProvincialDuplicates(req, res) {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
     await getUserWithSdcRole(req, sdcDuplicates);
-    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, false)
+    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, false);
     res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
@@ -853,14 +854,15 @@ function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) 
   sdcDuplicate.sdcSchoolCollectionStudent1Entity.districtName = getDistrictName(district1);
   sdcDuplicate.sdcSchoolCollectionStudent2Entity.districtName = getDistrictName(district2);
 
-  const retainedProperties = ['districtName', 'schoolName', 'fte', 'mappedNoOfCourses', 'assignedPen', 'resolution', 'contactInfo'];
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
-    sdcDuplicate.sdcSchoolCollectionStudent1Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent1Entity, retainedProperties);
+    delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionStudentID;
+    delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionID;
     sdcDuplicate.sdcSchoolCollectionStudent1Entity.showContact = true;
   }
 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
-    sdcDuplicate.sdcSchoolCollectionStudent2Entity = pick(sdcDuplicate.sdcSchoolCollectionStudent2Entity, retainedProperties);
+    delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionStudentID;
+    delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionID;
     sdcDuplicate.sdcSchoolCollectionStudent2Entity.showContact = true;
   }
   delete sdcDuplicate.retainedSdcSchoolCollectionStudentEntity;
@@ -904,7 +906,6 @@ function setStudentResolvedMessage(sdcDuplicate) {
     }
   }
 }
-
 
 function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2) {
   if(['DIST_LEARN', 'DISTONLINE'].includes(school1.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledGradeCode)) {
@@ -962,13 +963,9 @@ async function reportZeroEnrollment(req, res) {
 async function resolveDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
-    let sdcDuplicateID = req.body.duplicate.sdcDuplicateID;
-    let currentDuplicate = await getData(token, `${config.get('sdc:schoolCollectionURL')}/duplicate/${sdcDuplicateID}`, req.session?.correlationID);
-    if(req.body.duplicate.updateDate !== currentDuplicate.updateDate){
-      throw new Error(HttpStatus.CONFLICT.toString());
-    }
 
-    let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(sdcDuplicateID);
+
+    let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(res.locals.sdcDuplicate.sdcDuplicateID);
     const payload = req.body.students;
     payload.forEach(student => {
       student.createDate = null;
@@ -989,16 +986,10 @@ async function resolveDuplicates(req, res) {
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
 
-    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/in-district-duplicates/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    if (e.message === '409' || e.status === '409' || e.status === 409) {
-      return res.status(HttpStatus.CONFLICT).json({
-        status: HttpStatus.CONFLICT,
-        message: 'The duplicate you are attempting to update is already being saved by another user. Please refresh your screen and try again.'
-      });
-    }
     log.error('Error resolving district duplicates.', e.stack);
     return handleExceptionResponse(e, res);
   }
