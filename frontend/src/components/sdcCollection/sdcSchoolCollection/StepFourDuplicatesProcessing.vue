@@ -92,6 +92,7 @@
                       class="icon-button"
                       color="primary"
                       variant="outlined"
+                      :disabled="!hasEditPermission"
                       density="comfortable"
                       icon="mdi-playlist-edit"
                       v-bind="props"
