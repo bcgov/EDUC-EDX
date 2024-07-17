@@ -160,6 +160,9 @@ export default {
   },
   refugeeComponent: {
     filterButton: '#filters',
+    refugeeHeadcountReportPerSchool: '#eligRefugeePerSchool',
+    summaryButton: '#refugeeSummaryButton',
+    pdfDownloadLink: '#downloadReport',
   },
   hamburgerMenu: {
     administrationMenuOption: '#AdministrationMenuBtn',
