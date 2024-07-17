@@ -325,5 +325,44 @@ describe('SDC District Collection View', () => {
         });
     });
 
+    it('can view Refugee Headcount per School if February', () => {
+      cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=refugee-per-school&compare=false').as('tableLoaded');
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+
+      cy.get('body').then($body => {
+        // only execute if refugee tab is available since it is not always (based on collection type)
+        if ($body.find(selectors.stepThreeTabSlider.refugeeButton).length > 0) {
+          cy.get(selectors.stepThreeTabSlider.refugeeButton).click();
+          cy.get(selectors.refugeeComponent.summaryButton).should('exist').click();
+          cy.get('#reports').parent().click();
+          cy.get(selectors.dropdown.listItem).contains('Eligible Newcomer Refugees by School').click();
+          cy.wait('@tableLoaded');
+          cy.get(selectors.refugeeComponent.refugeeHeadcountReportPerSchool).should('be.visible');
+
+          const expectedRows = ['HeadcountFTEELL', 'All Newcomer Refugees000', '99899991 - EDX Automation Testing School000', '99899990 - EDX Automation Testing School000'];
+          cy.get('tr')
+            .each(($row, index) => {
+              const rowText = $row.text();
+              expect(rowText).to.equal(expectedRows[index]);
+            });
+
+          cy.get(selectors.refugeeComponent.pdfDownloadLink).then(($link) => {
+            const href = $link.prop('href');
+            const downloadPath = 'path/to/download/directory/refugee.pdf';
+
+            cy.downloadFile(href, 'path/to/download/directory', 'refugee.pdf').then(() => {
+              cy.readFile(downloadPath, 'binary').should((data) => {
+                expect(data).to.not.be.empty;
+                const expectedSizeBytes = 246045;
+                expect(data.length).to.be.closeTo(expectedSizeBytes, 20240);
+              });
+            });
+          });
+        } else {
+          cy.log('Refugee button does not exist on this page');
+        }
+      });
+    });
   });
 });
