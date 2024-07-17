@@ -753,6 +753,7 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
+      setProgramDuplicateTypeMessage(sdcDuplicate);
       result.programDuplicates.RESOLVED.push(sdcDuplicate);
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {

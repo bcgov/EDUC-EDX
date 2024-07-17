@@ -307,11 +307,17 @@
                   <v-col>
                     Assigned PEN: {{ duplicate?.raw?.sdcSchoolCollectionStudent1Entity?.assignedPen }}
                   </v-col>
+                  <v-col
+                    v-if="duplicateType==='program'"
+                  >
+                    Duplicate Program: {{ duplicate?.raw?.programDuplicateTypeCodeDescription }}
+                  </v-col>
+                  
                 </v-chip>
               </v-col>
             </v-row>
             <CustomTable
-              :headers="headersConfig.resolvedTableHeaders"
+              :headers="duplicateType ==='program' ? headersConfig.resolvedProgramDuplicateTableHeaders : headersConfig.resolvedTableHeaders"
               :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
               :is-loading="false"
               :reset="false"
