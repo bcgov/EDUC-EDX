@@ -533,7 +533,7 @@
             text="Remove"
             variant="outlined"
             class="mr-1"
-            :disabled="!hasEditPermission"
+            :disabled="!hasEditPermission || isFinalSignOff"
             @click="deleteStudent"
           />
           <v-btn
@@ -541,7 +541,7 @@
             color="#003366"
             text="Validate & Save"
             class="mr-1"
-            :disabled="!studentDetailsFormValid || !hasEditPermission"
+            :disabled="!studentDetailsFormValid || !hasEditPermission || isFinalSignOff"
             @click="save"
           />
         </v-col>
@@ -609,6 +609,10 @@ export default {
       type: String,
       required: false,
       default: null
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: ['next', 'show-issues', 'form-validity', 'reset-parent', 'student-object', 'close-success', 'reset-pagination'],

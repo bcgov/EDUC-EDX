@@ -100,7 +100,7 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
-                  :editable="step.step < currentStep"
+                  :editable="step.step < currentStep && !submittedStatuses.includes(districtCollectionObject.sdcDistrictCollectionStatusCode)"
                   :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
@@ -257,7 +257,8 @@ export default defineComponent({
       districtCollectionObject: {},
       disableScreen: false,
       wsNotificationText: '',
-      schoolsMap: null
+      schoolsMap: null,
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED']
     };
   },
   computed: {
