@@ -78,6 +78,11 @@
             Any additional changes to 1701 must be coordinated through your district.
           </p>
         </v-col>
+
+        <StepThreeVerifyData
+          :district-collection-object="districtCollectionObject"
+          :is-final-sign-off="true"
+        />
       </v-row>
     </div>
   </div>
@@ -113,11 +118,13 @@ import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
+import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 
 export default {
   name: 'StepSevenSubmitData',
   components: {
-    PrimaryButton
+    PrimaryButton,
+    StepThreeVerifyData
   },
   mixins: [alertMixin],
   props: {
@@ -131,7 +138,7 @@ export default {
       required: true
     }
   },
-  emits: ['previous', 'next'],
+  emits: ['previous', 'next', 'refresh-store'],
   data() {
     return {
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
@@ -178,6 +185,7 @@ export default {
       };
       ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {
+          this.$emit('refresh-store');
           this.isSubmitted = true;
         })
         .catch(error => {

@@ -39,9 +39,9 @@
         />
 
         <StepThreeVerifyData
-        :district-collection-object="districtCollectionObject"
-        :is-final-sign-off="true"
-      />
+          :district-collection-object="districtCollectionObject"
+          :is-final-sign-off="true"
+        />
       </div>
     </div>
   </div>

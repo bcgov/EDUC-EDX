@@ -30,6 +30,7 @@
       <DetailComponent
         :config="config"
         :school="school"
+        :is-final-sign-off="isFinalSignOff"
       />
     </div>
   </v-container>
@@ -51,12 +52,16 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
   data() {
     return {
-      reportView: 'detail',
+      reportView: this.isFinalSignOff ? 'summary' : 'detail',
       config: REFUGEE
 
     };

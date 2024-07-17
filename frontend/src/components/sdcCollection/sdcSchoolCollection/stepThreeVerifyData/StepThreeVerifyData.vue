@@ -24,6 +24,7 @@
         <FTEComponent
           v-if="tab==='All Students'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -34,6 +35,7 @@
         <FrenchProgramsComponent
           v-if="tab==='French Programs'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -44,6 +46,7 @@
         <CareerProgramsComponent
           v-if="tab==='Career Programs'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -54,6 +57,7 @@
         <IndSupportProgramsComponent
           v-if="tab==='Indigenous Students & Support Programs'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -64,6 +68,7 @@
         <SpecialEduComponent
           v-if="tab==='Special Education'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -74,6 +79,7 @@
         <EnglishLangComponent
           v-if="tab==='English Language Learning'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
       <v-window-item
@@ -84,12 +90,13 @@
         <RefugeeComponent
           v-if="tab==='Refugee'"
           :school="school"
+          :is-final-sign-off="isFinalSignOff"
         />
       </v-window-item>
     </v-window>
   </div>
 
-  <v-row justify="end">
+  <v-row v-if="!isFinalSignOff" justify="end">
     <PrimaryButton
       v-if="!isStepComplete"
       id="step-3-next-button-school"
@@ -151,6 +158,10 @@ export default {
     isStepComplete: {
       type: Boolean,
       required: true
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: ['next', 'previous'],
