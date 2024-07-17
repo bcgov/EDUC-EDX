@@ -30,6 +30,7 @@
       <DetailComponent
         :config="config"
         :district="district"
+        :is-final-sign-off="isFinalSignOff"
       />
     </div>
     <div v-if="reportView === 'summary'">

@@ -32,11 +32,16 @@
       <div v-else>
         <v-alert
           id="collection-submission"
-          class="justify-start"
+          class="justify-start mb-3"
           type="success"
           variant="tonal"
           text="Congratulations! The 1701 data has been submitted."
         />
+
+        <StepThreeVerifyData
+        :district-collection-object="districtCollectionObject"
+        :is-final-sign-off="true"
+      />
       </div>
     </div>
   </div>
@@ -73,11 +78,13 @@ import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {mapState} from 'pinia';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
+import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 
 export default {
   name: 'StepFiveSubmitToMinistry',
   components: {
-    PrimaryButton
+    PrimaryButton,
+    StepThreeVerifyData
   },
   mixins: [alertMixin],
   props: {

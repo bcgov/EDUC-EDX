@@ -31,6 +31,7 @@
         :config="config"
         :district="district"
         :show-export-btn="true"
+        :is-final-sign-off="isFinalSignOff"
       />
     </div>
     <div v-if="reportView === 'summary'">
