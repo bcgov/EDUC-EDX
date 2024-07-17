@@ -117,6 +117,7 @@
   >
     <ViewStudentDetailsComponent
       :selected-student-ids="studentForEdit"
+      :is-final-sign-off="isFinalSignOff"
       @close="editStudentSheet = !editStudentSheet; loadStudents()"
     />
   </v-bottom-sheet>
@@ -180,6 +181,10 @@ export default {
     showExportBtn: {
       type: Boolean,
       default: false
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],

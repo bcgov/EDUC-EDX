@@ -82,7 +82,7 @@
                   :value="step.step"
                   :title="step.title"
                   :subtitle="step.step === stepToShowSubmissionDueDate ? submissionDueDate : null"
-                  :editable="step.step < currentStep"
+                  :editable="step.step < currentStep && !submittedStatuses.includes(schoolCollection?.sdcSchoolCollectionStatusCode)"
                   :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
                 />
@@ -172,6 +172,7 @@
                 <StepSevenSubmitData 
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
+                  @refresh-store="refreshStore"
                   @next="next"
                 /> 
               </v-stepper-window-item>
@@ -232,6 +233,7 @@
                 <StepSevenSubmitData
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
+                  @refresh-store="refreshStore"
                   @next="next"
                 />
               </v-stepper-window-item>
@@ -309,7 +311,8 @@ export default {
       school: {},
       disableScreen: false,
       wsNotificationText: '',
-      schoolsMap: null
+      schoolsMap: null,
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
     };
   },
   computed: {

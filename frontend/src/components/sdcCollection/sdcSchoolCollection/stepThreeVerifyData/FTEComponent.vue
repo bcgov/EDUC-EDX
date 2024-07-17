@@ -31,6 +31,7 @@
         :school="school"
         :config="config"
         :show-export-btn="true"
+        :is-final-sign-off="isFinalSignOff"
       />
     </div>
     <div v-if="reportView === 'summary'">
@@ -59,12 +60,16 @@ export default {
       type: Object,
       required: true,
       default: null
+    },
+    isFinalSignOff: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
   data() {
     return {
-      reportView: 'detail',
+      reportView: this.isFinalSignOff ? 'summary' : 'detail',
       config: FTE
 
     };
