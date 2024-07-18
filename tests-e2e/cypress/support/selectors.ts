@@ -185,6 +185,15 @@ export default {
     headcountColumnData: '.indigenous-headcount-column-data',
     reportDropdown: '#reports'
   },
+  provincialDuplicatesComponent : {
+    enrollmentDuplicatesTab: 'button[value="Enrollment Duplicates"]',
+    programDuplicatesTab: 'button[value="Program Duplicates"]',
+    nonAllowableEnrollmentTab: '#nonAllowableenrollmentButton',
+    nonAllowableProgramTab: '#nonAllowableprogramButton',
+    resolvedEnrollmentTab: '#resolvedenrollmentButton',
+    resolvedProgramTab: '#resolvedprogramButton',
+    allowableTab: '#allowableButton',
+  },
   filters: {
     clearFilter: '#clear-filter',
     studentType: '#studentType', 

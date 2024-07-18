@@ -42,9 +42,17 @@ describe('SDC District Collection View', () => {
     beforeEach(() => cy.login());
 
     
-    it('can view resolve provincial duplicates', () => {
+    it('can view resolve provincial duplicates tabs', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepSix).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.provincialDuplicatesComponent.enrollmentDuplicatesTab).should('exist').should('have.class', 'v-tab--selected');
+      cy.get(selectors.provincialDuplicatesComponent.allowableTab).should('exist');
+      cy.get(selectors.provincialDuplicatesComponent.nonAllowableEnrollmentTab).should('exist');
+      cy.get(selectors.provincialDuplicatesComponent.resolvedEnrollmentTab).should('exist');
+      cy.get(selectors.provincialDuplicatesComponent.programDuplicatesTab).should('exist').click();
+      cy.get(selectors.provincialDuplicatesComponent.programDuplicatesTab).should('exist').should('have.class', 'v-tab--selected');
+      cy.get(selectors.provincialDuplicatesComponent.nonAllowableProgramTab).should('exist');
+      cy.get(selectors.provincialDuplicatesComponent.resolvedProgramTab).should('exist');
     });
   });
 });
