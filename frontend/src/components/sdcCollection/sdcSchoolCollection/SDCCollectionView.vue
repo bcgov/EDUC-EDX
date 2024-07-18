@@ -60,13 +60,13 @@
         />
       </v-col>
     </v-row>
-    <v-row
+    <v-column
       v-else-if="submittedStatuses.includes(schoolCollection?.sdcSchoolCollectionStatusCode)"
     >
       <CollectionSubmissionDetails
         :school-collection-object="schoolCollectionObject"
       />
-    </v-row>
+    </v-column>
     <v-row v-else>
       <v-col>
         <v-stepper
