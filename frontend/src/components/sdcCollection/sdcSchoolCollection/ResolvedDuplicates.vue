@@ -126,7 +126,6 @@
                     <v-col>
                       Duplicate Program: {{ duplicate?.raw?.programDuplicateTypeCodeDescription }}
                     </v-col>
-
                   </v-chip>
                 </v-col>
               </v-row>
@@ -176,6 +175,13 @@ import Spinner from '../../common/Spinner.vue';
 export default {
   name: 'ResolvedDuplicates',
   components: {Spinner, CustomTable},
+  props: {
+    schoolCollectionObject: {
+      type: Object,
+      required: true,
+      default: null
+    },
+  },
   data() {
     return {
       pageNumber: 1,
@@ -189,16 +195,16 @@ export default {
   async created() {
     sdcCollectionStore().getCodes().then(() => {
       this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
-      this.getProvincialDuplicates();
+      this.getInDistrictDuplicates();
     });
   },
   methods: {
     switchView(view) {
       this.duplicateView = view;
     },
-    getProvincialDuplicates(){
+    getInDistrictDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/provincial-duplicates').then(response => {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.schoolCollectionObject.sdcDistrictCollectionID + '/in-district-duplicates').then(response => {
         this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
         this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
       }).catch(error => {
@@ -207,8 +213,6 @@ export default {
         this.apiError = true;
       }).finally(() => {
         this.isLoading = false;
-        console.log(this.resolvedDuplicates.length);
-        console.log(this.resolvedProgramDuplicates.length);
       });
     },
   }

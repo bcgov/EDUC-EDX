@@ -38,7 +38,9 @@
       transition="false"
       reverse-transition="false"
     >
-      <ResolvedDuplicates />
+      <ResolvedDuplicates
+        :school-collection-object="schoolCollectionObject"
+      />
     </v-window-item>
   </v-window>
 </template>
