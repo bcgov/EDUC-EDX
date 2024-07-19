@@ -102,6 +102,21 @@ const redisUtil = {
       log.info(`This pod could not release lock for: ${lock}, check other pods. ${e}`);
     }
   },
+  async lockSdcDistrictWhileSignatureIsBeingProcessedInRedis(sdcDistrictcollectionID) {
+    try {
+      return await this.getRedLockNoRetry().acquire(`locks:edx-sdc-district-collection:${sdcDistrictcollectionID}`, 6000);
+    } catch (e) {
+      log.info(`This pod could not acquire lock for locks:edx-sdc-district-collection:${sdcDistrictcollectionID}, check other pods. ${e}`);
+      throw new Error(HttpStatus.CONFLICT.toString());
+    }
+  },
+  async unlockSdcDistrictWhileSignatureIsBeingProcessedInRedis(lock) {
+    try {
+      await this.getRedLockNoRetry().unlock(lock);
+    } catch (e) {
+      log.info(`This pod could not release lock for: ${lock}, check other pods. ${e}`);
+    }
+  },
   async addElementToSagaRecordInRedis(sagaId, eventToAdd) {
     const redisClient = Redis.getRedisClient();
     try {
