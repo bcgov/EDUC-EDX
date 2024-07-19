@@ -741,6 +741,38 @@ async function getStudentDifferencesByInstituteCollectionId(req, res) {
       searchCriteriaList: [{ key: 'originalDemogHash,currentDemogHash', value: 'N/A', operation: FILTER_OPERATION.NOT_EQUAL_OTHER_COLUMN, valueType: VALUE_TYPE.STRING }]
     });
 
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: createSearchCriteria(req.query.searchParams)
+    });
+
+    if(req.query.searchParams?.['tabFilter']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createTabFilter(req.query.searchParams['tabFilter'])
+      });
+    }
+
+    if (req.query.searchParams?.['multiFieldName']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createMultiFieldNameSearchCriteria(req.query.searchParams['multiFieldName'])
+      });
+    }
+    if (req.query.searchParams?.['penLocalIdNumber']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createLocalIdPenSearchCriteria(req.query.searchParams['penLocalIdNumber'])
+      });
+    }
+
+    if (req.query.searchParams?.['moreFilters']) {
+      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      criteriaArray.forEach(criteria => {
+        search.push(criteria);
+      });
+    }
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
