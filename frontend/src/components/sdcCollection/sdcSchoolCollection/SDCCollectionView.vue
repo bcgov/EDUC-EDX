@@ -169,12 +169,12 @@
                 transition="false"
                 reverse-transition="false"
               >
-                <StepSevenSubmitData 
+                <StepSevenSubmitData
                   :is-step-complete="isStepComplete"
                   :school-collection-object="schoolCollectionObject"
                   @refresh-store="refreshStore"
                   @next="next"
-                /> 
+                />
               </v-stepper-window-item>
             </v-stepper-window>
             <v-stepper-window
@@ -290,7 +290,7 @@ export default {
     StepTwoViewDataIssues,
     StepOneUploadData,
     StepSixSchoolContacts,
-    StepSevenSubmitData
+    StepSevenSubmitData,
   },
   props: {
     schoolCollectionID: {
