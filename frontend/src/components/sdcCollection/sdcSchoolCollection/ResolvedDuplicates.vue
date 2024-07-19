@@ -70,7 +70,7 @@
                 </v-col>
               </v-row>
               <CustomTable
-                :headers="headersConfig.resolvedTableHeaders"
+                :headers="IN_DISTRICT_DUPLICATES.resolvedTableHeaders"
                 :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
                 :is-loading="false"
                 :reset="false"
@@ -130,7 +130,7 @@
                 </v-col>
               </v-row>
               <CustomTable
-                :headers="headersConfig.resolvedProgramDuplicateTableHeaders"
+                :headers="IN_DISTRICT_DUPLICATES.resolvedProgramDuplicateTableHeaders"
                 :data="[duplicate?.raw?.sdcSchoolCollectionStudent1Entity, duplicate?.raw?.sdcSchoolCollectionStudent2Entity]"
                 :is-loading="false"
                 :reset="false"
@@ -171,6 +171,7 @@ import {ApiRoutes} from '../../../utils/constants';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import CustomTable from '../../common/CustomTable.vue';
 import Spinner from '../../common/Spinner.vue';
+import {IN_DISTRICT_DUPLICATES} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
 
 export default {
   name: 'ResolvedDuplicates',
@@ -190,30 +191,36 @@ export default {
       apiError: false,
       resolvedDuplicates: [],
       resolvedProgramDuplicates: [],
+      duplicateStudents: []
     };
+  },
+  computed: {
+    IN_DISTRICT_DUPLICATES() {
+      return IN_DISTRICT_DUPLICATES;
+    },
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {
       this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
-      this.getInDistrictDuplicates();
+      this.getSchoolDuplicates();
     });
   },
   methods: {
     switchView(view) {
       this.duplicateView = view;
     },
-    getInDistrictDuplicates(){
+    getSchoolDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.schoolCollectionObject.sdcDistrictCollectionID + '/in-district-duplicates').then(response => {
-        this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
-        this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
-      }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-        this.apiError = true;
-      }).finally(() => {
-        this.isLoading = false;
-      });
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/duplicates')
+        .then(response => {
+          this.duplicateStudents = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
+        }).finally(() => {
+          this.isLoading = false;
+          console.log(this.duplicateStudents);
+        });
     },
   }
 };
