@@ -43,7 +43,7 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     id: 'step-5',
     title: 'Submit Data',
     step: 5,
-    sdcSchoolCollectionStatusCode: ['SUBMITTED'],
+    sdcSchoolCollectionStatusCode: ['SUBMITTED', 'COMPLETED'],
     index: 5
   }
 ]);
@@ -102,7 +102,7 @@ export const SDC_STEPS_INDP_SCHOOL = Object.freeze([
     id: 'step-7',
     title: 'Submit Data',
     step: 7,
-    sdcSchoolCollectionStatusCode: ['SUBMITTED'],
+    sdcSchoolCollectionStatusCode: ['SUBMITTED', 'COMPLETED'],
     index: 7
   }
 ]);
@@ -154,7 +154,7 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
     id: 'step-7',
     title: 'Review & Sign-Off Final Submission',
     step: 7,
-    sdcDistrictCollectionStatusCode: 'P_DUP_VRFD',
+    sdcDistrictCollectionStatusCode: ['P_DUP_VRFD', 'COMPLETED'],
     index: 6
   },
 

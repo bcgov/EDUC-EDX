@@ -1058,7 +1058,12 @@ async function getStudentValidationIssueCodes(req, res) {
 async function submitDistrictSignature(req, res) {
   try {
     const token = getAccessToken(req);
-    const payload = {
+    let signatureLock = await redisUtil.lockSdcDistrictWhileSignatureIsBeingProcessedInRedis(req.params.sdcDistrictCollectionID);
+
+    const payload = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+    let signatures = Array.from(payload?.submissionSignatures);
+
+    const newSignature = {
       districtSignatoryRole: req.body.districtSignatoryRole,
       sdcDistrictCollectionID: req.params.sdcDistrictCollectionID,
       districtSignatoryUserID: getCreateOrUpdateUserValue(req),
@@ -1068,7 +1073,13 @@ async function submitDistrictSignature(req, res) {
       createUser: null,
       createDate: null
     }
+
+    signatures.push(newSignature);
+    payload.submissionSignatures = signatures;
+
     const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/sign-off`, req.session?.correlationID);
+    await redisUtil.unlockSdcDistrictWhileSignatureIsBeingProcessedInRedis(signatureLock);
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error submitting district signature for sign-off', e.stack);
