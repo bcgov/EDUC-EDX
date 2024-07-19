@@ -46,7 +46,7 @@
       </v-btn>
     </v-row>
     <template v-if="duplicateView==='1'">
-      <strong>Duplicate Students Found: {{ resolvedDuplicates?.length }}</strong>
+      <strong>Resolved Enrollment Duplicate Students Found: {{ resolvedDuplicates?.length }}</strong>
       <v-data-iterator
         v-model:page.sync="pageNumber"
         :items="resolvedDuplicates"
@@ -103,7 +103,7 @@
       </v-row>
     </template>
     <template v-else-if="duplicateView==='2'">
-      <strong>Duplicate Students Found: {{ resolvedProgramDuplicates?.length }}</strong>
+      <strong>Resolved Program Duplicate Students Found: {{ resolvedProgramDuplicates?.length }}</strong>
       <v-data-iterator
         v-model:page.sync="pageNumber"
         :items="resolvedProgramDuplicates"
