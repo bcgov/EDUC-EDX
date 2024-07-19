@@ -48,7 +48,7 @@
 <script>
 
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
-import ResolvedDuplicates from './ResolvedDuplicates.vue';
+import ResolvedDuplicates from '../../common/ResolvedDuplicates.vue';
 
 export default {
   name: 'CollectionSubmissionDetails',

@@ -168,12 +168,12 @@
 </template>
 
 <script>
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
-import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
-import CustomTable from '../../common/CustomTable.vue';
-import Spinner from '../../common/Spinner.vue';
-import {IN_DISTRICT_DUPLICATES} from '../../../utils/sdc/DistrictCollectionTableConfiguration';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import {sdcCollectionStore} from '../../store/modules/sdcCollection';
+import CustomTable from './CustomTable.vue';
+import Spinner from './Spinner.vue';
+import {IN_DISTRICT_DUPLICATES} from '../../utils/sdc/DistrictCollectionTableConfiguration';
 
 export default {
   name: 'ResolvedDuplicates',
