@@ -721,6 +721,55 @@ function createLocalIdPenSearchCriteria(value) {
   return searchCriteriaList;
 }
 
+async function getStudentDifferencesByInstituteCollectionId(req, res) {
+  try {
+    const search = [];
+    if(res.locals.requestedSdcSchoolCollection) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcSchoolCollectionID', value: res.locals.requestedSdcSchoolCollection.sdcSchoolCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    } else if(res.locals.requestedSdcDistrictCollection) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcDistrictCollectionID', value: res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    }
+
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: [{ key: 'originalDemogHash,currentDemogHash', value: 'N/A', operation: FILTER_OPERATION.NOT_EQUAL_OTHER_COLUMN, valueType: VALUE_TYPE.STRING }]
+    });
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: req.query.sort,
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    const token = getAccessToken(req);
+    let data = await getDataWithParams(token, `${config.get('sdc:rootURL')}/reportGeneration/differences`, params, req.session?.correlationID);
+
+    data.forEach(difference => {
+      difference.currentStudent.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(difference.currentStudent.schoolID));
+      difference.originalStudent.type = 'Original';
+      difference.currentStudent.type = 'Current';
+    });
+
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error retrieving the district student differences', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
 async function getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId(req, res) {
   try {
     const token = getAccessToken(req);
@@ -1070,5 +1119,6 @@ module.exports = {
   getProvincialDuplicates,
   getProvincialDuplicatesForSchool,
   getStudentValidationIssueCodes,
-  submitDistrictSignature
+  submitDistrictSignature,
+  getStudentDifferencesByInstituteCollectionId
 };

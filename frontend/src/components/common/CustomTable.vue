@@ -105,29 +105,36 @@
                 </router-link>
               </div>
 
-              <span v-else-if="column.key === 'legalName'">
+              <span :class="shouldShowDiff(props.index, ['legalFirstName', 'legalMiddleNames', 'legalLastName'])" v-else-if="column.key === 'legalName'">
                 {{ displayName(props.item['legalFirstName'], props.item['legalMiddleNames'], props.item['legalLastName']) }}
               </span>
 
               <div v-else-if="column.key === 'isAdult'">
-                <span v-if="props.item['isAdult'] !== null && props.item['isAdult'] !== undefined">{{ props.item['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
-                <span v-else>-</span>
+                <span v-if="props.item['isAdult'] !== null && props.item['isAdult'] !== undefined" :class="shouldShowDiff(props.index, ['isAdult'])">{{ props.item['isAdult'] === "true" ? 'Yes' : 'No' }}</span>
+                <span v-else :class="shouldShowDiff(props.index, ['isAdult'])">-</span>
+              </div>
+
+              <div v-else-if="column.key === 'type'">
+                <v-chip :color="props.index === 0 ? 'primary' : 'green'">
+                  <v-col>{{ props.item[column.key] }}</v-col>
+                </v-chip>
               </div>
 
               <div v-else-if="column.key === 'fte'">
-                <span>{{ props.item['fte'] === 0 ? 0 : props.item['fte'] }}</span>
+                <span :class="shouldShowDiff(props.index, ['fte'])">{{ props.item['fte'] === 0 ? 0 : props.item['fte'] }}</span>
               </div>
               <div v-else-if="column.key === 'mappedIndigenousEnrolledProgram' || column.key === 'mappedLanguageEnrolledProgram'">
                 <template v-if="props.item[column.key]">
                   <span
                     v-for="(progs, idx) in props.item[column.key].split(',')"
+                    :class="shouldShowDiff(props.index, [column.key])"
                     :key="idx"
                   >
-                    <div>{{ progs }}</div>
+                    <div :class="shouldShowDiff(props.index, [column.key])">{{ progs }}</div>
                   </span>
                 </template>
                 <template v-else>
-                  <div>-</div>
+                  <div :class="shouldShowDiff(props.index, [column.key])">-</div>
                 </template>
               </div>
               <span v-else-if="column.key === 'resolution'">
@@ -141,22 +148,22 @@
                   <template v-else>-</template>
                 </slot>
               </span>
-              <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
+              <span v-else-if="props.item[column.key]" :class="shouldShowDiff(props.index, [column.key])">{{ props.item[column.key] }}</span>
               <span v-else-if="column.title !== 'select'">-</span>
 
               <div v-if="column.hasOwnProperty('subHeader')">
                 <div v-if="column.subHeader.key === 'usualName'">
-                  <span v-if="props.item['usualLastName'] || props.item['usualFirstName'] || props.item['usualMiddleNames']">
+                  <span :class="shouldShowDiff(props.index, ['usualFirstName', 'usualMiddleNames', 'usualLastName'])" v-if="props.item['usualLastName'] || props.item['usualFirstName'] || props.item['usualMiddleNames']">
                     {{ displayName(props.item['usualFirstName'], props.item['usualMiddleNames'], props.item['usualLastName']) }}
                   </span>
-                  <span v-else>-</span>
+                  <span v-else :class="shouldShowDiff(props.index, ['usualFirstName', 'usualMiddleNames', 'usualLastName'])">-</span>
                 </div>
                 <div v-else-if="column.subHeader.key === 'isGraduated'">
-                  <span v-if="props.item['isGraduated'] !== null && props.item['isGraduated'] !== undefined">{{ props.item['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
-                  <span v-else>-</span>
+                  <span v-if="props.item['isGraduated'] !== null && props.item['isGraduated'] !== undefined" :class="shouldShowDiff(props.index, ['isGraduated'])">{{ props.item['isGraduated'] === "true" ? 'Yes' :'No' }}</span>
+                  <span v-else :class="shouldShowDiff(props.index, ['isGraduated'])">-</span>
                 </div>
-                <span v-else-if="props.item[column.subHeader.key]">{{ props.item[column.subHeader.key] }}</span>
-                <span v-else>-</span>
+                <span v-else-if="props.item[column.subHeader.key]" :class="shouldShowDiff(props.index, [column.subHeader.key])">{{ props.item[column.subHeader.key] }}</span>
+                <span v-else :class="shouldShowDiff(props.index, [column.subHeader.key])">-</span>
               </div>
             </div>
           </td>
@@ -191,6 +198,10 @@ export default {
       type: Array,
       required: true,
       default: null
+    },
+    showDiff: {
+      type: Boolean,
+      default: false
     },
     hidePagination: {
       type: Boolean,
@@ -260,6 +271,20 @@ export default {
 
   },
   methods: {
+    shouldShowDiff(index, fieldNames){
+      let returnClass = '';
+      if(index === 0 || !this.showDiff){
+        return returnClass;
+      }
+
+      fieldNames.forEach(fieldName => {
+        if(this.data[0][fieldName] !== this.data[1][fieldName]){
+          returnClass = 'valueIsDiff';
+        }
+      });
+
+      return returnClass;
+    },
     rowclicked(props) {
       this.$emit('editSelectedRow', props);
     },
@@ -347,6 +372,10 @@ export default {
 
 .school-router{
   color: #003366;
+}
+
+.valueIsDiff{
+  color: green;
 }
 
 .school-router:hover{

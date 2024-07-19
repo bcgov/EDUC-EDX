@@ -9,6 +9,10 @@ const FILTER_OPERATION = Object.freeze(
      */
     NOT_EQUAL: 'neq',
     /**
+     * Not equal column filter operation.
+     */
+    NOT_EQUAL_OTHER_COLUMN: 'neqc',
+    /**
      * Greater than filter operation.
      */
     GREATER_THAN: 'gt',

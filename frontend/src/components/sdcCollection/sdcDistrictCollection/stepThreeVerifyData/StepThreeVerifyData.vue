@@ -15,6 +15,15 @@
       </v-tab>
       <v-tab
         v-if="isFinalSignOff"
+        key="StudentDifferences"
+        value="StudentDifferences"
+      >
+        Student Differences
+      </v-tab>
+      <v-tab
+        v-if="isFinalSignOff"
+        key="SignOff"
+        value="SignOff"
         class="sign-off-tab"
       >
         Signatures
@@ -101,6 +110,16 @@
       </v-window-item>
       <v-window-item
         v-if="isFinalSignOff"
+        value="StudentDifferences"
+        transition="false"
+        reverse-transition="false"
+      >
+        <StudentDifferencesComponent
+          :district="district"
+        />
+      </v-window-item>
+      <v-window-item
+        v-if="isFinalSignOff" 
         value="SignOff"
         transition="false"
         reverse-transition="false"
@@ -157,6 +176,7 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
 import SignOffSignatures from '../../../common/SignOffSignatures.vue';
+import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -169,7 +189,8 @@ export default {
     EnglishLangComponent,
     RefugeeComponent,
     FrenchProgramsComponent,
-    SignOffSignatures
+    SignOffSignatures,
+    StudentDifferencesComponent
   },
   mixins: [alertMixin],
   props: {
