@@ -20,7 +20,7 @@
   </v-row>
   <v-container
     v-else
-    id="resolvedDuplicates"
+    id="resolvedSchoolDuplicates"
     fluid
   >
     <v-row class="mt-3 mb-3 pl-3">
@@ -76,6 +76,7 @@
                 :reset="false"
                 :total-elements="2"
                 :hide-pagination="true"
+                :school-collection="schoolCollectionObject"
               />
             </v-col>
           </v-row>
@@ -136,6 +137,7 @@
                 :reset="false"
                 :total-elements="2"
                 :hide-pagination="true"
+                :school-collection="schoolCollectionObject"
               />
             </v-col>
           </v-row>
@@ -191,7 +193,6 @@ export default {
       apiError: false,
       resolvedDuplicates: [],
       resolvedProgramDuplicates: [],
-      duplicateStudents: []
     };
   },
   computed: {
@@ -211,15 +212,15 @@ export default {
     },
     getSchoolDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/duplicates')
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/sdc-duplicates')
         .then(response => {
-          this.duplicateStudents = response.data;
+          this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
+          this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
         }).catch(error => {
           console.error(error);
           this.setFailureAlert(error.response?.data?.message || error.message);
         }).finally(() => {
           this.isLoading = false;
-          console.log(this.duplicateStudents);
         });
     },
   }

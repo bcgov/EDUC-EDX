@@ -405,6 +405,18 @@ async function getSchoolStudentDuplicates(req, res) {
   }
 }
 
+async function getSchoolSdcDuplicates(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let sdcDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
+
+    res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, false, false));
+  } catch (e) {
+    log.error('Error getting Student duplicates.', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function toTableRow(student) {
   let bandCodesMap = cacheService.getAllActiveBandCodesMap();
   let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
@@ -1034,6 +1046,7 @@ module.exports = {
   getSdcFileProgress,
   getDistrictSdcFileProgress,
   getSchoolStudentDuplicates,
+  getSchoolSdcDuplicates,
   removeSDCSchoolCollectionStudents,
   updateDistrictCollection,
   updateSchoolCollection,
