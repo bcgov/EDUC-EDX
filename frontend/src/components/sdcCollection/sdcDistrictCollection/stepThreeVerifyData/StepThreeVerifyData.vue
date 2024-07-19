@@ -17,8 +17,17 @@
         v-if="isFinalSignOff"
         key="StudentDifferences"
         value="StudentDifferences"
+        class="divider"
       >
         Student Differences
+      </v-tab>
+      <v-tab
+        v-if="isFinalSignOff"
+        key="resolvedDuplicates"
+        value="resolvedDuplicates"
+        class="divider"
+      >
+        Resolved Duplicates
       </v-tab>
       <v-tab
         v-if="isFinalSignOff"
@@ -119,6 +128,16 @@
         />
       </v-window-item>
       <v-window-item
+        v-if="isFinalSignOff"
+        value="resolvedDuplicates"
+        transition="false"
+        reverse-transition="false"
+      >
+        <ResolvedDuplicates
+          :is-school-collection="false"
+        />
+      </v-window-item>
+      <v-window-item
         v-if="isFinalSignOff" 
         value="SignOff"
         transition="false"
@@ -177,10 +196,12 @@ import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
 import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
+import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
+    ResolvedDuplicates,
     PrimaryButton,
     AllStudentsComponent,
     CareerProgramsComponent,

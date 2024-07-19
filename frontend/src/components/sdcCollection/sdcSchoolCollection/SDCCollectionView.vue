@@ -60,13 +60,6 @@
         />
       </v-col>
     </v-row>
-    <v-column
-      v-else-if="submittedStatuses.includes(schoolCollection?.sdcSchoolCollectionStatusCode)"
-    >
-      <CollectionSubmissionDetails
-        :school-collection-object="schoolCollectionObject"
-      />
-    </v-column>
     <v-row v-else>
       <v-col>
         <v-stepper
@@ -284,7 +277,6 @@ import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFiveSchoolDetails from './StepFiveSchoolDetails.vue';
 import StepSixSchoolContacts from './StepSixSchoolContacts.vue';
 import StepSevenSubmitData from './StepSevenSubmitData.vue';
-import CollectionSubmissionDetails from './CollectionSubmissionDetails.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
@@ -299,7 +291,6 @@ export default {
     StepOneUploadData,
     StepSixSchoolContacts,
     StepSevenSubmitData,
-    CollectionSubmissionDetails
   },
   props: {
     schoolCollectionID: {

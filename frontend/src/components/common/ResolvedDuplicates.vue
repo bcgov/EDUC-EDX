@@ -142,14 +142,14 @@
         </template>
       </v-data-iterator>
       <v-pagination
-        v-if="resolvedDuplicates?.length > 0"
+        v-if="resolvedProgramDuplicates?.length > 0"
         v-model="pageNumber"
-        :length="Math.ceil(resolvedDuplicates?.length/10)"
+        :length="Math.ceil(resolvedProgramDuplicates?.length/10)"
         total-visible="5"
         rounded="circle"
       />
       <v-row
-        v-if="resolvedDuplicates?.length === 0"
+        v-if="resolvedProgramDuplicates?.length === 0"
         class="pt-4"
         no-gutters
       >
@@ -177,11 +177,10 @@ export default {
   name: 'ResolvedDuplicates',
   components: {Spinner, CustomTable},
   props: {
-    schoolCollectionObject: {
-      type: Object,
-      required: false,
-      default: null
-    },
+    isSchoolCollection: {
+      type: Boolean,
+      required: false
+    }
   },
   data() {
     return {
@@ -201,7 +200,7 @@ export default {
   async created() {
     sdcCollectionStore().getCodes().then(() => {
       this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
-      if (this.schoolCollectionObject !== null) {
+      if (this.isSchoolCollection === true) {
         this.getSchoolDuplicates();
       } else {
         this.getInDistrictDuplicates();
