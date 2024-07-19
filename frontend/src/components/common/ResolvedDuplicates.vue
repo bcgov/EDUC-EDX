@@ -76,7 +76,6 @@
                 :reset="false"
                 :total-elements="2"
                 :hide-pagination="true"
-                :school-collection="schoolCollectionObject"
               />
             </v-col>
           </v-row>
@@ -137,7 +136,6 @@
                 :reset="false"
                 :total-elements="2"
                 :hide-pagination="true"
-                :school-collection="schoolCollectionObject"
               />
             </v-col>
           </v-row>
@@ -181,7 +179,7 @@ export default {
   props: {
     schoolCollectionObject: {
       type: Object,
-      required: true,
+      required: false,
       default: null
     },
   },
@@ -203,12 +201,29 @@ export default {
   async created() {
     sdcCollectionStore().getCodes().then(() => {
       this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
-      this.getSchoolDuplicates();
+      if (this.schoolCollectionObject !== null) {
+        this.getSchoolDuplicates();
+      } else {
+        this.getInDistrictDuplicates();
+      }
     });
   },
   methods: {
     switchView(view) {
       this.duplicateView = view;
+    },
+    getInDistrictDuplicates(){
+      this.isLoading = true;
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.$route.params.sdcDistrictCollectionID + '/in-district-duplicates').then(response => {
+        this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
+        this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+        this.apiError = true;
+      }).finally(() => {
+        this.isLoading = false;
+      });
     },
     getSchoolDuplicates(){
       this.isLoading = true;
