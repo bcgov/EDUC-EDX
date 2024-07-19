@@ -15,6 +15,8 @@
       </v-tab>
       <v-tab
         v-if="isFinalSignOff"
+        key="SignOff"
+        value="SignOff"
         class="sign-off-tab"
       >
         Signatures
@@ -100,7 +102,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff" 
         value="SignOff"
         transition="false"
         reverse-transition="false"
