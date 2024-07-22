@@ -90,8 +90,12 @@
                         :maxlength="9"
                         :rules="penRules"
                         density="compact"
+                        class="mb-0"
                         :disabled="isSchoolCollectionSubmitted()"
                       />
+                      <a
+                        @click="togglePENRequestDialog"
+                      >Request a PEN</a>
                     </v-col>
                     <v-col>
                       <v-text-field
@@ -553,28 +557,39 @@
       <p>Are you sure you want to remove this student from the collection?</p>
     </template>
   </ConfirmationDialog>
+  <v-dialog
+    v-model="showPenRequestDialog"
+    :max-width="600"
+  >
+    <SDCPenMatch
+      @cancel="togglePENRequestDialog"
+      :sdc-student="sdcSchoolCollectionStudentDetailCopy"
+    />
+  </v-dialog>
 </template>
 <script>
-  
+
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {cloneDeep} from 'lodash';
 import {formatDob} from '../../utils/format';
 import Spinner from '../common/Spinner.vue';
-import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/alertComposable';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import {setFailureAlert, setSuccessAlert, setWarningAlert} from '../composable/alertComposable';
+import {sdcCollectionStore} from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
+import {checkEnrolledProgramLength, isValidPEN} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import {PERMISSION} from '../../utils/constants/Permission';
 import {mapState} from 'pinia';
 import {authStore} from '../../store/modules/auth';
-  
+import SDCPenMatch from '../sdcCollection/SDCPenMatch.vue';
+
 export default {
   name: 'EditStudent',
   components: {
+    SDCPenMatch,
     ConfirmationDialog,
     Spinner,
     DatePicker,
@@ -625,6 +640,7 @@ export default {
       selectedSdcStudentID: null,
       isValid: false,
       hasError: false,
+      showPenRequestDialog: false,
       sdcSchoolCollectionStudentDetail: {},
       sdcSchoolCollectionStudentDetailCopy: {},
       loadingCount: 0,
@@ -710,6 +726,9 @@ export default {
     },
     isLoading(){
       return this.loadingCount > 0;
+    },
+    togglePENRequestDialog(){
+      this.showPenRequestDialog = !this.showPenRequestDialog;
     },
     getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID) {
       this.loadingCount += 1;

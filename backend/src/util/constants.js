@@ -206,16 +206,20 @@ const ENROLLED_PROGRAM_TYPE_CODE_MAP = Object.freeze({
   ENGLISH_ENROLLED_PROGRAM_CODES: ['17'],
 });
 
+const NOT_FOUND_PEN_MATCH_STATUSES = Object.freeze(['B0', 'C0', 'D0', 'G0', 'F0']);
+const VALID_PEN_MATCH_STATUSES = Object.freeze(['AA', 'B1', 'C1', 'D1', 'F1']);
+const MULTI_PEN_MATCH_STATUSES = Object.freeze(['BM', 'CM', 'DM']);
+
 const DUPLICATE_TYPE_CODES = Object.freeze({
   ENROLLMENT: 'ENROLLMENT',
   PROGRAM: 'PROGRAM'
 });
 
 const STUDENT_TYPE_CODES = Object.freeze({
-    SCHOOL_AGED: 'isSchoolAged',
-    ADULT: 'isAdult',
-    PRESCHOOL_AGED: 'isUnderSchoolAged'
-})
+  SCHOOL_AGED: 'isSchoolAged',
+  ADULT: 'isAdult',
+  PRESCHOOL_AGED: 'isUnderSchoolAged'
+});
 
 module.exports = {
   FILTER_OPERATION,
@@ -232,7 +236,10 @@ module.exports = {
   ENROLLED_PROGRAM_TYPE_CODE_MAP,
   DUPLICATE_TYPE_CODES,
   STUDENT_TYPE_CODES,
-  SDC_UPLOAD_TOPIC
+  SDC_UPLOAD_TOPIC,
+  VALID_PEN_MATCH_STATUSES,
+  MULTI_PEN_MATCH_STATUSES,
+  NOT_FOUND_PEN_MATCH_STATUSES
 };
 /**
  * Test comment

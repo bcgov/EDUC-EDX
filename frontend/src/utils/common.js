@@ -73,3 +73,20 @@ export function     getCollectionLink(currentCollectionTypeCode) {
   return collectionLink;
 }
 
+export function constructPenMatchObjectFromSdcStudent(student) {
+  return {
+    pen: student.studentPen,
+    localID: student.localID,
+    surname: student.legalLastName,
+    givenName: student.legalFirstName,
+    middleName: student.legalMiddleNames,
+    usualSurname: student.usualLastName,
+    usualGiven: student.usualFirstName,
+    usualMiddleName: student.usualMiddleNames,
+    dob: student.dob,
+    sex: student.genderCode,
+    enrolledGradeCode: student.gradeCode,
+    postal: student.postalCode
+  };
+}
+
