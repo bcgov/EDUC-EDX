@@ -111,7 +111,7 @@ export default {
       required: false
     }
   },
-  emits: ['close'],
+  emits: ['close', 'reload-students'],
   data() {
     return {
       selectedStudent: [],
@@ -149,6 +149,7 @@ export default {
     reset() {
       this.saveStudent =false;
       this.programEligibilityData.splice(0);
+      this.$emit('reload-students');
     },
     showFundingEligibilitySection() {
       return (this.studentForEdit?.careerProgramNonEligReasonCode !== null && this.studentForEdit?.careerProgramNonEligReasonCode !== 'NTENRCAREE') 

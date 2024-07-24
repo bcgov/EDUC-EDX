@@ -59,7 +59,7 @@ export default {
       default: null
     }
   },
-  emits: ['next', 'close', 'reset-pagination'],
+  emits: ['next', 'close', 'reset-pagination', 'reload-students'],
   data() {
     return {
       removeStudent: false,
@@ -86,6 +86,7 @@ export default {
     },
     reset() {
       this.removeStudent=false;
+      this.$emit('reload-students');
     },
     cancel() {
       this.$emit('close');
