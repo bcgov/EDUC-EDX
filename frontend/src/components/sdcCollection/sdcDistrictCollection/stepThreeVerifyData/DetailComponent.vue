@@ -97,6 +97,7 @@
     <ViewStudentDetailsComponent
       :selected-student-ids="studentForEdit"
       :is-final-sign-off="isFinalSignOff"
+      @reload-students="reloadStudentsFlag = true"
       @close="closeAndLoadStudents"
     />
   </v-bottom-sheet>
@@ -160,7 +161,8 @@ export default {
       showFilters: null,
       studentForEdit: [],
       editStudentSheet: false,
-      resetFlag: false
+      resetFlag: false,
+      reloadStudentsFlag: false,
     };
   },
   computed: {
@@ -178,7 +180,10 @@ export default {
   methods: {
     closeAndLoadStudents() {
       this.editStudentSheet = !this.editStudentSheet;
-      this.loadStudents();
+      if (this.reloadStudentsFlag === true) {
+        this.loadStudents();
+      }
+      this.reloadStudentsFlag = false;
     },
     downloadReportURL() {
       return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
