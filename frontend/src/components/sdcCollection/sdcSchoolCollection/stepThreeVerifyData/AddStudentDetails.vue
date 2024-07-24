@@ -51,7 +51,7 @@ export default {
   mixins: [alertMixin],
   props: {
   },
-  emits: ['close', 'open-edit'],
+  emits: ['close', 'open-edit', 'reload-students'],
   data() {
     return {
       selectedStudent: [],
@@ -83,6 +83,7 @@ export default {
     },
     reset() {
       this.saveStudent =false;
+      this.$emit('reload-students');
     },
     openinEditMode($event) {
       this.$emit('open-edit', $event);
