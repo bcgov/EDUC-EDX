@@ -4,6 +4,7 @@
       v-model="duplicateView"
       color="#003366"
       rounded="0"
+      mandatory="true"
       :divided="true"
     >
       <v-btn
@@ -312,7 +313,6 @@
                   >
                     Duplicate Program: {{ duplicate?.raw?.programDuplicateTypeCodeDescription }}
                   </v-col>
-                  
                 </v-chip>
               </v-col>
             </v-row>
