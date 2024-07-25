@@ -57,7 +57,7 @@
 
       <v-row class="mt-6">
         <v-col class="label">
-          Duplicate Programs:
+          <span>Select which school to remove the program code from for this student:</span>
         </v-col>
       </v-row>
 
@@ -269,7 +269,8 @@ export default {
     mapEnrolledProgram(enrolledProgramFilter) {
       return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
         .match(/.{1,2}/g)
-        .filter(programCode => enrolledProgramFilter.includes(programCode))
+        .filter(programCode => enrolledProgramFilter.includes(programCode) &&
+            this.sdcStudentTwoDetailCopy?.enrolledProgramCodes.includes(programCode))
         .map(programCode => {
           const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
           return {code: programCode, description: `${programCode} - ${enrolledProgram.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy};
