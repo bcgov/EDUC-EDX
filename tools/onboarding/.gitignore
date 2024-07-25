@@ -1,5 +1,0 @@
-.env
-dist/
-sample*.csv
-user-records.csv
-Session.vim

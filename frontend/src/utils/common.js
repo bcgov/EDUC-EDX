@@ -5,6 +5,9 @@ import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
 import rfdc from 'rfdc/default';
 import {COLLECTIONCODETYPE} from './constants/CollectionCodeType';
+import ApiService from '../common/apiService';
+import {ApiRoutes} from './constants';
+
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
@@ -56,6 +59,18 @@ export function getStatusColor(comparisonValue, currentValue) {
   if (previousValueNumber > currentValueNumber) {
     return 'red';
   }
+}
+
+export function getDemogValidationResults(student) {
+  return new Promise((resolve, reject) => {
+    ApiService.apiAxios.post(ApiRoutes.penServices.VALIDATE_DEMOGRAPHICS, student)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
 }
 
 export function     getCollectionLink(currentCollectionTypeCode) {

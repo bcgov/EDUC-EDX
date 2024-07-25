@@ -75,6 +75,10 @@ nconf.defaults({
     natsUrl:process.env.NATS_URL,
     natsCluster:process.env.NATS_CLUSTER
   },
+  penServices: {
+    nextPenURL: process.env.PEN_SERVICES_API_URL + '/next-pen-number',
+    validateDemographicsURL: process.env.PEN_SERVICES_API_URL + '/validation/student-request'
+  },
   edx: {
     rootURL: process.env.EDX_API_ENDPOINT,
     exchangeURL: process.env.EDX_API_ENDPOINT + '/exchange',

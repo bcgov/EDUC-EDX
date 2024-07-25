@@ -69,7 +69,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row> 
+        <v-row>
           <v-col
             class="pt-0"
             cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6"
@@ -92,10 +92,18 @@
                         density="compact"
                         class="mb-0"
                         :disabled="isSchoolCollectionSubmitted()"
-                      />
-                      <a
-                        @click="togglePENRequestDialog"
-                      >Request a PEN</a>
+                      >
+                        <template #append-inner>
+                          <v-btn
+                            id="saveRecord"
+                            color="#003366"
+                            icon="mdi-magnify"
+                            size="x-small"
+                            class="mr-1"
+                            @click="togglePENRequestDialog"
+                          />
+                        </template>
+                      </v-text-field>
                     </v-col>
                     <v-col>
                       <v-text-field
@@ -562,8 +570,10 @@
     :max-width="600"
   >
     <SDCPenMatch
-      @cancel="togglePENRequestDialog"
       :sdc-student="sdcSchoolCollectionStudentDetailCopy"
+      @cancel="togglePENRequestDialog"
+      @use-found-p-e-n="useFoundPEN"
+      @request-staff-p-e-n-check="requestStaffPENCheck"
     />
   </v-dialog>
 </template>
@@ -700,7 +710,7 @@ export default {
     this.generateCourseOptions();
   },
   async created() {
-  
+
   },
   methods: {
     generateCourseOptions() {
@@ -777,6 +787,21 @@ export default {
         }).finally(() => {
           this.loadingCount -= 1;
           this.$emit('reset-parent');
+        });
+    },
+    useFoundPEN(pen){
+      this.togglePENRequestDialog();
+      this.sdcSchoolCollectionStudentDetailCopy.studentPen = pen;
+    },
+    requestStaffPENCheck(){
+      this.togglePENRequestDialog();
+      const selectedStudent = cloneDeep(this.sdcSchoolCollectionStudentDetailCopy);
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionID}/markDiff`, selectedStudent)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
         });
     },
     scrollToEligibility() {
@@ -927,7 +952,8 @@ export default {
       };
 
       switch (penMatchResult) {
-      case 'MATCH':
+      case 'MAN_MATCH':
+      case 'SYS_MATCH':
         result.assignedPen = assignedPen;
         if (studentPen && studentPen !== assignedPen) {
           result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
@@ -957,79 +983,79 @@ export default {
   }
 };
 </script>
-  
-  <style scoped>
-   .containerSetup{
-      padding-right: 0em !important;
-      padding-left: 0em !important;
-    }
-  
-    .border {
-      border: 2px solid grey;
-      border-radius: 5px;
-      padding: 35px;
-      margin-bottom: 2em;
-    }
-  
-    .clear-message {
-      color: darkgreen;
-      background-color: rgb(227, 240, 217);
-      padding: 0.4em;
-    }
 
-   .clear-message-error {
-     color: #ff0000;
-     background-color: rgba(255, 187, 185, 0.66);
-     padding: 0.6em;
-   }
-  
-   .inner-border {
-     display: inline-block;
-     min-width: 100%;
-     border: 1px solid rgba(42, 45, 38, 0.38);
-     border-radius: 5px;
-     padding: 2em;
-     margin-bottom: 2em;
-   }
-  
-    @media screen and (max-width: 1200px) {
-      .containerSetup{
-        padding-right: 3em !important;
-        padding-left: 3em !important;
-      }
-    }
-  
-    .footer-text {
-      font-style: italic;
-      color: grey;
-    }
-  
-    .filter-text {
-      font-style: italic;
-      color: rgb(56, 89, 138);
-    }
+<style scoped>
+.containerSetup{
+  padding-right: 0em !important;
+  padding-left: 0em !important;
+}
 
-   .footer {
-     background: white;
-     position: fixed;
-     bottom: 0;
-     z-index: 20000;
-     left: 0;
-     right: 0;
-     height: 60px;
-   }
-  
-    .filter-text:hover {
-      text-decoration: underline;
-    }
-  
-    .success-message{
-      vertical-align: sub;
-    }
-  </style>
-  <style scoped>
-    :global(.customTooltip) {
-      max-width: 30rem !important;
-    }
-  </style>
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin-bottom: 2em;
+}
+
+.clear-message {
+  color: darkgreen;
+  background-color: rgb(227, 240, 217);
+  padding: 0.4em;
+}
+
+.clear-message-error {
+  color: #ff0000;
+  background-color: rgba(255, 187, 185, 0.66);
+  padding: 0.6em;
+}
+
+.inner-border {
+  display: inline-block;
+  min-width: 100%;
+  border: 1px solid rgba(42, 45, 38, 0.38);
+  border-radius: 5px;
+  padding: 2em;
+  margin-bottom: 2em;
+}
+
+@media screen and (max-width: 1200px) {
+  .containerSetup{
+    padding-right: 3em !important;
+    padding-left: 3em !important;
+  }
+}
+
+.footer-text {
+  font-style: italic;
+  color: grey;
+}
+
+.filter-text {
+  font-style: italic;
+  color: rgb(56, 89, 138);
+}
+
+.footer {
+  background: white;
+  position: fixed;
+  bottom: 0;
+  z-index: 20000;
+  left: 0;
+  right: 0;
+  height: 60px;
+}
+
+.filter-text:hover {
+  text-decoration: underline;
+}
+
+.success-message{
+  vertical-align: sub;
+}
+</style>
+<style scoped>
+:global(.customTooltip) {
+  max-width: 30rem !important;
+}
+</style>
   
