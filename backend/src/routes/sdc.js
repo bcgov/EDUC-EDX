@@ -5,8 +5,7 @@ const { getCollectionBySchoolId, getCollectionByDistrictId, uploadFile, reportZe
   getSDCSchoolCollectionStudentPaginated, getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail, updateAndValidateSdcSchoolCollectionStudent, deleteSDCSchoolCollectionStudent, removeSDCSchoolCollectionStudents,
   getStudentHeadcounts, downloadSdcReport, getSchoolStudentDuplicates, getSchoolSdcDuplicates, getProvincialDuplicatesForSchool, getStudentDifferencesByInstituteCollectionId,
-  markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts,
-  getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDuplicates, getSdcSchoolCollections, getProvincialDuplicates, getStudentValidationIssueCodes, submitDistrictSignature} = require('../components/sdc');
+  markSdcSchoolCollectionStudentAsDifferent, getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId, updateDistrictCollection, getDistrictHeadcounts, getInDistrictDuplicates, unsubmitSdcSchoolCollection, resolveDuplicates, getSdcSchoolCollections, getProvincialDuplicates, getStudentValidationIssueCodes, submitDistrictSignature} = require('../components/sdc');
 const {getCachedSDCData} = require('../components/sdc-cache');
 const auth = require('../components/auth');
 const constants = require('../util/constants');
