@@ -4,7 +4,7 @@ const NATS = require('../messaging/message-pub-sub');
 const {v4: guid} = require('uuid');
 const log = require('./logger');
 const cacheService = require('./cache-service');
-const {VALID_PEN_MATCH_STATUSES, MULTI_PEN_MATCH_STATUSES, NOT_FOUND_PEN_MATCH_STATUSES} = require('../util/constants');
+const {VALID_PEN_MATCH_STATUSES, MULTI_PEN_MATCH_STATUSES} = require('../util/constants');
 
 async function getPenMatch(req, res) {
   try {
