@@ -75,7 +75,7 @@
 
   <v-row justify="end">
     <PrimaryButton
-      v-if="!displayNextBtn"
+      v-if="!displayNextBtn && !isSubmitted"
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -84,7 +84,7 @@
       :click-action="submit"
     />
     <PrimaryButton
-      v-else
+      v-else-if="!isSubmitted"
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
