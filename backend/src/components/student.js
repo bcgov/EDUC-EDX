@@ -71,7 +71,7 @@ async function createNewStudent(req, res) {
     const student = req.body.student;
     student.dob = formatDate(student.dob?.replace(/\D/g, ''));
     student.pen = penNumber;
-    let school = cacheService.getSchoolBySchoolID(student.schoolID);
+    let school = cacheService.getSchoolBySchoolID(res.locals.requestedSdcSchoolCollection.schoolID);
     student.mincode = school.mincode;
     student.genderCode = student.gender;
     student.gradeCode = student.enrolledGradeCode;

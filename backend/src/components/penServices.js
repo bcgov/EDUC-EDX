@@ -12,7 +12,8 @@ async function validateStudentDemogData(req, res) {
     Object.keys(student).forEach(key => {
       student[key] = student[key] || ''; // send empty string than null or undefined.
     });
-    let school = cacheService.getSchoolBySchoolID(student.schoolID);
+
+    let school = cacheService.getSchoolBySchoolID(res.locals.requestedSdcSchoolCollection.schoolID);
     student.mincode = school.mincode;
     student.genderCode = student.gender;
     student.gradeCode = student.enrolledGradeCode;

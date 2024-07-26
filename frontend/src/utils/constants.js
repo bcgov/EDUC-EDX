@@ -51,7 +51,7 @@ export const ApiRoutes = Object.freeze({
   },
   penServices: {
     ROOT_ENDPOINT: penServicesRoot,
-    VALIDATE_DEMOGRAPHICS: penServicesRoot + '/demog-validation',
+    VALIDATE_DEMOGRAPHICS: penServicesRoot + '/sdcSchoolCollection',
     PRB_VALIDATION_ISSUE_TYPE_CODE_URL: penServicesRoot + '/prbValidationTypeCodes',
   },
   sdc: {
