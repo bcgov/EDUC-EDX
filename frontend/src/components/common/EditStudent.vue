@@ -962,8 +962,7 @@ export default {
       };
 
       switch (penMatchResult) {
-      case 'MAN_MATCH':
-      case 'SYS_MATCH':
+      case 'MATCH':
         result.assignedPen = assignedPen;
         if (studentPen && studentPen !== assignedPen) {
           result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
