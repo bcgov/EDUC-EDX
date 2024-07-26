@@ -1,7 +1,6 @@
 'use strict';
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
-  getCreateOrUpdateUserValue,errorResponse, formatDate
-} = require('./utils');
+  getCreateOrUpdateUserValue} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -13,7 +12,6 @@ const cacheService = require('./cache-service');
 const redisUtil = require('../util/redis/redis-utils');
 const broadcastUtil = require('../socket/broadcast-utils');
 const CONSTANTS = require('../util/constants');
-const {v4: uuidv4} = require('uuid');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -276,45 +274,6 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
     return handleExceptionResponse(e, res);
-  }
-}
-
-async function createNewStudent(req, res) {
-  try {
-    let transactionID;
-    if (req.session.create_new_student_transactionID) {
-      transactionID = req.session.create_new_student_transactionID;
-    } else {
-      transactionID = uuidv4();
-      req.session.create_new_student_transactionID = transactionID; // store it in session so that it can be reused when the api call to create student fails.
-    }
-    const params = {
-      params: {
-        transactionID
-      }
-    };
-
-    const penNumber = await getData(config.get('penServices:nextPenURL'), params);
-    const student = req.body.student;
-    student.dob = formatDate(student.dob?.replace(/\D/g, ''));
-    student.pen = penNumber;
-    student.sexCode = student.genderCode; // sex code is mandatory in API.
-    student.historyActivityCode = student.historyActivityCode || 'REQNEW';
-    student.emailVerified = student.emailVerified || 'N';
-    student.demogCode = student.demogCode || 'A';
-    student.statusCode = student.statusCode || 'A';
-    student.createDate = null;
-    student.updateDate = null;
-    let user = getCreateOrUpdateUserValue(req);
-    student.createUser = user;
-    student.updateUser = user;
-    const token = getAccessToken(req);
-    const result = await postData(token, student, config.get(`${config.get('student:apiEndpoint')}`), null);
-    delete req.session.create_new_student_transactionID; // delete it when student is created successfully.
-    return res.status(HttpStatus.OK).json(result);
-  } catch (e) {
-    log.error(e, 'createNewStudent', 'Error occurred while attempting to create a new student.');
-    return errorResponse(res);
   }
 }
 
@@ -1160,7 +1119,7 @@ async function submitDistrictSignature(req, res) {
       updateDate: null,
       createUser: null,
       createDate: null
-    }
+    };
 
     signatures.push(newSignature);
     payload.submissionSignatures = signatures;
@@ -1201,7 +1160,6 @@ module.exports = {
   getDistrictHeadcounts,
   getInDistrictDuplicates,
   unsubmitSdcSchoolCollection,
-  createNewStudent,
   resolveDuplicates,
   getSdcSchoolCollections,
   getProvincialDuplicates,

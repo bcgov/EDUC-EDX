@@ -171,7 +171,8 @@ cacheKeys = {
   SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: 'sdc_program_eligibility_type_codes',
   SDC_ZERO_FTE_REASON_CODES: 'sdc_zero_fte_reason_codes',
   SDC_DUPLICATE_RESOLUTION_CODES: 'sdc_duplicate_resolution_codes',
-  SDC_PROGRAM_DUPLICATE_TYPE_CODES: 'sdc_program_duplicate_type_codes'
+  SDC_PROGRAM_DUPLICATE_TYPE_CODES: 'sdc_program_duplicate_type_codes',
+  PRB_VALIDATION_ISSUE_TYPE_CODES: 'prb_validation_issue_type_codes'
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
@@ -207,7 +208,7 @@ const ENROLLED_PROGRAM_TYPE_CODE_MAP = Object.freeze({
 });
 
 const NOT_FOUND_PEN_MATCH_STATUSES = Object.freeze(['B0', 'C0', 'D0', 'G0', 'F0']);
-const VALID_PEN_MATCH_STATUSES = Object.freeze(['AA', 'B1', 'C1', 'D1', 'F1']);
+const VALID_PEN_MATCH_STATUSES = Object.freeze(['AA', 'B1', 'C1', 'D1']);
 const MULTI_PEN_MATCH_STATUSES = Object.freeze(['BM', 'CM', 'DM']);
 
 const DUPLICATE_TYPE_CODES = Object.freeze({

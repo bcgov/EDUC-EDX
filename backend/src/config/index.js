@@ -77,7 +77,8 @@ nconf.defaults({
   },
   penServices: {
     nextPenURL: process.env.PEN_SERVICES_API_URL + '/next-pen-number',
-    validateDemographicsURL: process.env.PEN_SERVICES_API_URL + '/validation/student-request'
+    validateDemographicsURL: process.env.PEN_SERVICES_API_URL + '/validation/student-request',
+    prbValidationTypeCodesURL: process.env.PEN_SERVICES_API_URL + '/validation/issue-type-code'
   },
   edx: {
     rootURL: process.env.EDX_API_ENDPOINT,

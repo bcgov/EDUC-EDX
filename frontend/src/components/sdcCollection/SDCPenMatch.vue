@@ -1,13 +1,9 @@
 <template>
   <v-card v-if="isLoadingMatches">
     <v-card-text>
-      <v-row>
-        <v-col class="d-flex justify-center">
-          <Spinner
-            :flat="true"
-          />
-        </v-col>
-      </v-row>
+      <Spinner
+        :flat="true"
+      />
     </v-card-text>
   </v-card>
   <div v-else>
@@ -109,6 +105,7 @@
                           id="dobPicker"
                           v-model="sdcStudent.dob"
                           label="Birthdate"
+                          style="z-index: 20000"
                           :rules="[rules.required()]"
                           model-type="yyyyMMdd"
                           :error-messages="err.birthDateError"
@@ -125,6 +122,7 @@
                           label="Gender"
                           variant="underlined"
                           :rules="[rules.required()]"
+                          :error-messages="err.genderError"
                           density="compact"
                         />
                       </v-col>
@@ -247,6 +245,7 @@
               color="#003366"
               variant="elevated"
               text="Generate PEN"
+              :disabled="!studentDetailsFormValid"
               @click="issueNewPEN"
             />
           </v-col>
@@ -267,6 +266,8 @@ import DatePicker from '../util/DatePicker.vue';
 import {isValidPEN} from '../../utils/validation';
 import * as Rules from '../../utils/institute/formRules';
 import {sdcCollectionStore} from '../../store/modules/sdcCollection';
+import {mapState} from 'pinia';
+import {penServicesStore} from '../../store/modules/penServices';
 
 export default {
   name: 'SDCPenMatch',
@@ -291,6 +292,7 @@ export default {
         legalFirstNameError: '',
         legalLastNameError: '',
         birthDateError: '',
+        genderError: ''
       },
       sdcCollection: sdcCollectionStore(),
       studentDetailsFormValid: false,
@@ -302,6 +304,13 @@ export default {
       showNewStatus: false,
       bestMatchPEN: null
     };
+  },
+  computed: {
+    ...mapState(penServicesStore, ['prbValidationIssueTypeCodes']),
+  },
+  created() {
+    penServicesStore().getCodes();
+    this.$nextTick().then(this.validateForm);
   },
   methods: {
     cancelClicked(){
@@ -315,7 +324,7 @@ export default {
     },
     async issueNewPEN() {
       if (this.$refs.studentDetailsForm.validate()) {
-        this.isLoading = true;
+        this.isLoadingMatches = true;
         try {
           const payload = {
             student: {
@@ -336,15 +345,18 @@ export default {
             this.err.usualLastNameError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'USUALLAST')?.penRequestBatchValidationIssueTypeCode || '';
             this.err.usualMiddleNamesError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'USUALMID')?.penRequestBatchValidationIssueTypeCode || '';
             this.err.birthDateError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'BIRTHDATE')?.penRequestBatchValidationIssueTypeCode || '';
+            this.err.genderError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'GENDER')?.penRequestBatchValidationIssueTypeCode || '';
           } else {
-            const studentResponse = await ApiService.apiAxios.post(ApiRoutes.student.ROOT_ENDPOINT, payload);
-            await this.$router.push(`/student/${studentResponse.data.studentID}`);
+            const studentResponse = await ApiService.apiAxios.post(ApiRoutes.studentRequest.ROOT_ENDPOINT, payload);
+            this.bestMatchPEN = studentResponse.data.pen;
+            this.setSuccessAlert('PEN record was generated successfully for this student!');
+            this.useFoundPEN();
           }
         } catch (e) {
           console.error(e);
           this.setFailureAlert('PEN could not be created, Please retry later.');
         } finally {
-          this.isLoading = false;
+          this.isLoadingMatches = false;
         }
       }
     },
@@ -368,11 +380,16 @@ export default {
       } finally {
         this.isLoadingMatches = false;
       }
+    },
+    validateForm() {
+      this.$refs?.studentDetailsForm?.validate();
     }
   }
 };
 </script>
 
 <style scoped>
-
+:deep(#dobPicker > div.dp__outer_menu_wrap.dp--menu-wrapper > div){
+  position: fixed;
+}
 </style>

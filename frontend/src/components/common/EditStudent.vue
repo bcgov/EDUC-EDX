@@ -88,20 +88,30 @@
                         label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
-                        :rules="penRules"
+                        :rules="[rules.required(),rules.validPEN()]"
                         density="compact"
                         class="mb-0"
                         :disabled="isSchoolCollectionSubmitted()"
                       >
-                        <template #append-inner>
+                        <template #append>
                           <v-btn
                             id="saveRecord"
                             color="#003366"
-                            icon="mdi-magnify"
-                            size="x-small"
-                            class="mr-1"
+                            variant="elevated"
+                            density="compact"
+                            class="mx-0 px-2"
+                            text="Get PEN"
+                            :disabled="sdcSchoolCollectionStudentDetailCopy.studentPen !== null && sdcSchoolCollectionStudentDetailCopy.studentPen !== ''"
                             @click="togglePENRequestDialog"
-                          />
+                          >
+                            <template #prepend>
+                              <v-icon
+                                small
+                              >
+                                mdi-magnify
+                              </v-icon>
+                            </template>
+                          </v-btn>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -438,7 +448,7 @@
                       </v-col>
                     </v-row>
                     <v-form
-                      ref="form"
+                      ref="errorsForm"
                       v-model="isValid"
                     >
                       <v-row>
@@ -710,7 +720,7 @@ export default {
     this.generateCourseOptions();
   },
   async created() {
-
+    await this.validateErrorsForm;
   },
   methods: {
     generateCourseOptions() {
@@ -979,6 +989,10 @@ export default {
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
     },
+    async validateErrorsForm() {
+      await this.$nextTick();
+      await this.$refs?.errorsForm?.validate();
+    },
     formatDob
   }
 };
@@ -1028,6 +1042,11 @@ export default {
 .footer-text {
   font-style: italic;
   color: grey;
+}
+
+
+:deep(#saveRecord > span.v-btn__prepend){
+  margin-right: 0.1em;
 }
 
 .filter-text {

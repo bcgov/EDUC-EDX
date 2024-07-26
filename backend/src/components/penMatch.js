@@ -33,16 +33,16 @@ async function getPenMatch(req, res) {
     const eventPayload = JSON.parse(parsedEvent.eventPayload);
 
     if(eventPayload?.penStatus && VALID_PEN_MATCH_STATUSES.includes(eventPayload.penStatus)){
-    //   returnPayload = {
-    //     bestMatchPEN: eventPayload.matchingRecords[0].matchingPEN,
-    //     bestMatchStudentID: eventPayload.matchingRecords[0].studentID,
-    //     status: 'MATCH'
-    //   };
-    // }else if(eventPayload?.penStatus && MULTI_PEN_MATCH_STATUSES.includes(eventPayload.penStatus)){
-    //   returnPayload = {
-    //     status: 'MULTI'
-    //   };
-    // }else if(eventPayload?.penStatus && NOT_FOUND_PEN_MATCH_STATUSES.includes(eventPayload.penStatus)){
+      returnPayload = {
+        bestMatchPEN: eventPayload.matchingRecords[0].matchingPEN,
+        bestMatchStudentID: eventPayload.matchingRecords[0].studentID,
+        status: 'MATCH'
+      };
+    }else if(eventPayload?.penStatus && MULTI_PEN_MATCH_STATUSES.includes(eventPayload.penStatus)){
+      returnPayload = {
+        status: 'MULTI'
+      };
+    }else if(eventPayload?.penStatus){
       returnPayload = {
         status: 'NEW'
       };

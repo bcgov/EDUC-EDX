@@ -13,6 +13,7 @@
 //  under data do rules: Rules <- allows you to use in <template>.
 
 import {LocalDate} from '@js-joda/core';
+import {isValidPEN} from '../validation';
 
 /**
  * Rule for emails
@@ -73,6 +74,10 @@ const required = (message = 'Required') => {
   return v => !!(v && v.trim()) || message;
 };
 
+const validPEN = (message = 'Must be a valid PEN') => {
+  return v => isValidPEN(v) || message;
+};
+
 /**
  * Custom endDate Rule! Checks that we have start date and that end date
  * happens after start date. Date format should be 2022-12-10 YYYY-MM-DD.
@@ -111,5 +116,6 @@ export {
   phoneNumber,
   postalCode,
   required,
-  website
+  website,
+  validPEN
 };

@@ -162,6 +162,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading SDC_VALIDATION_ISSUE_TYPE_CODES data during boot.', e);
     });
+    cacheService.loadDataToCache(constants.CACHE_KEYS.PRB_VALIDATION_ISSUE_TYPE_CODES, 'penServices:prbValidationTypeCodesURL').then(() => {
+      log.info('Loaded PRB_VALIDATION_FIELD_CODES data to memory');
+    }).catch((e) => {
+      log.error('Error loading PRB_VALIDATION_FIELD_CODES data during boot.', e);
+    });
   }
 }
 WS.init(app, server);
