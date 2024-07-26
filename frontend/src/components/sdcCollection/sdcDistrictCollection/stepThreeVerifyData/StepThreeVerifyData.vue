@@ -125,6 +125,7 @@
       >
         <StudentDifferencesComponent
           :district="district"
+          :table-config="DISTRICT_STUDENT_DIFFERENCES"
         />
       </v-window-item>
       <v-window-item
@@ -197,6 +198,7 @@ import {authStore} from '../../../../store/modules/auth';
 import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
 import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
+import {DISTRICT_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -240,6 +242,9 @@ export default {
     };
   },
   computed: {
+    DISTRICT_STUDENT_DIFFERENCES() {
+      return DISTRICT_STUDENT_DIFFERENCES
+    },
     ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
     ...mapState(appStore, ['activeDistrictsMap']),
