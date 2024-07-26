@@ -50,6 +50,7 @@ router.get('/sdcSchoolCollection/:sdcSchoolCollectionID/student-validation-issue
 router.get('/sdcSchoolCollection/:sdcSchoolCollectionID/studentDifferences', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_VIEW), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getStudentDifferencesByInstituteCollectionId);
 
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID/penMatch', passport.authenticate('jwt', {session: false}, undefined), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getPenMatch);
+router.post('/sdcSchoolCollection/:sdcSchoolCollectionID/newStudent/penMatch', passport.authenticate('jwt', {session: false}, undefined), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getPenMatch);
 
 //student
 router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_VIEW), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getSDCSchoolCollectionStudentPaginated);

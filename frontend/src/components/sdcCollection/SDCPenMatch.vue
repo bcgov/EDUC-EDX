@@ -37,6 +37,7 @@
                           :maxlength="25"
                           :error-messages="err.legalLastNameError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                       <v-col>
@@ -48,6 +49,7 @@
                           :maxlength="25"
                           :error-messages="err.usualLastNameError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -61,6 +63,7 @@
                           :maxlength="25"
                           :error-messages="err.legalFirstNameError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                       <v-col>
@@ -72,6 +75,7 @@
                           :maxlength="25"
                           :error-messages="err.usualFirstNameError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -85,6 +89,7 @@
                           :maxlength="25"
                           :error-messages="err.legalMiddleNamesError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                       <v-col>
@@ -96,6 +101,7 @@
                           :maxlength="25"
                           :error-messages="err.usualMiddleNamesError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -108,8 +114,9 @@
                           style="z-index: 20000"
                           :rules="[rules.required()]"
                           model-type="yyyyMMdd"
-                          :error-messages="err.birthDateError"
+                          :error-message="err.birthDateError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                       <v-col>
@@ -124,6 +131,7 @@
                           :rules="[rules.required()]"
                           :error-messages="err.genderError"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -136,6 +144,7 @@
                           variant="underlined"
                           :maxlength="12"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                       <v-col>
@@ -149,6 +158,7 @@
                           item-title="dropdownText"
                           :rules="[rules.required()]"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -161,6 +171,7 @@
                           variant="underlined"
                           :maxlength="6"
                           density="compact"
+                          @update:model-value="formUpdated"
                         />
                       </v-col>
                     </v-row>
@@ -306,7 +317,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(penServicesStore, ['prbValidationIssueTypeCodes']),
+    ...mapState(penServicesStore, ['prbValidationIssueTypeCodes'])
   },
   created() {
     penServicesStore().getCodes();
@@ -315,6 +326,11 @@ export default {
   methods: {
     cancelClicked(){
       this.$emit('cancel');
+    },
+    formUpdated(){
+      Object.keys(this.err).forEach(key => {
+        this.err[key] = '';
+      });
     },
     useFoundPEN(){
       this.$emit('useFoundPEN', this.bestMatchPEN);
@@ -331,7 +347,7 @@ export default {
               ...this.sdcStudent
             }
           };
-          const result = await getDemogValidationResults(payload);
+          const result = await getDemogValidationResults(payload, this.sdcStudent.sdcSchoolCollectionID);
           const onlyErrors = result.filter(el => el.penRequestBatchValidationIssueSeverityCode === 'ERROR');
           let validationIssues = onlyErrors.map(y => {
             y.penRequestBatchValidationIssueTypeCode = this.prbValidationIssueTypeCodes.find(obj => obj.code === y.penRequestBatchValidationIssueTypeCode)?.description || y.penRequestBatchValidationIssueTypeCode;
@@ -347,7 +363,7 @@ export default {
             this.err.birthDateError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'BIRTHDATE')?.penRequestBatchValidationIssueTypeCode || '';
             this.err.genderError = validationIssues.find(el => el.penRequestBatchValidationFieldCode === 'GENDER')?.penRequestBatchValidationIssueTypeCode || '';
           } else {
-            const studentResponse = await ApiService.apiAxios.post(ApiRoutes.studentRequest.ROOT_ENDPOINT, payload);
+            const studentResponse = await ApiService.apiAxios.post(ApiRoutes.studentRequest.ROOT_ENDPOINT + '/sdcSchoolCollection/' + this.sdcStudent.sdcSchoolCollectionID + '/createStudent', payload);
             this.bestMatchPEN = studentResponse.data.pen;
             this.setSuccessAlert('PEN record was generated successfully for this student!');
             this.useFoundPEN();
@@ -363,7 +379,11 @@ export default {
     async runPenMatch() {
       this.isLoadingMatches = true;
       try {
-        const result =  await ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcStudent.sdcSchoolCollectionStudentID}/penMatch`, constructPenMatchObjectFromSdcStudent(this.sdcStudent));
+        let url = `${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcStudent.sdcSchoolCollectionStudentID}/penMatch`;
+        if(!this.sdcStudent.sdcSchoolCollectionStudentID){
+          url = `${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.sdcStudent.sdcSchoolCollectionID}/newStudent/penMatch`;
+        }
+        const result =  await ApiService.apiAxios.post(url, constructPenMatchObjectFromSdcStudent(this.sdcStudent));
         this.penMatchStatus = result.data.status;
         if(this.penMatchStatus === 'MATCH'){
           this.bestMatchPEN = result.data.bestMatchPEN;

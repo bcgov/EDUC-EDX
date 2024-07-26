@@ -16,6 +16,11 @@ export default defineComponent({
       type: String,
       default: null
     },
+    errorMessage:{
+      type: String,
+      required: false,
+      default: null
+    },
     density:{
       type: String,
       required: false,
@@ -88,6 +93,7 @@ export default defineComponent({
         :label="label"
         variant="underlined"
         :density="density"
+        :error-messages="errorMessage"
         placeholder="yyyy/mm/dd"
         :clearable="true"
         hide-details="auto"

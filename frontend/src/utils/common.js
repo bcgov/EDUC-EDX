@@ -61,9 +61,9 @@ export function getStatusColor(comparisonValue, currentValue) {
   }
 }
 
-export function getDemogValidationResults(student) {
+export function getDemogValidationResults(student, sdcSchoolCollectionID) {
   return new Promise((resolve, reject) => {
-    ApiService.apiAxios.post(ApiRoutes.penServices.VALIDATE_DEMOGRAPHICS, student)
+    ApiService.apiAxios.post(ApiRoutes.penServices.VALIDATE_DEMOGRAPHICS + '/' + sdcSchoolCollectionID + '/demog-validation', student)
       .then(response => {
         resolve(response.data);
       })
