@@ -131,7 +131,7 @@ export default {
       school: {},
       isSubmitted: false,
       isLoading: true,
-      submittedStatuses: ['SUBMITTED', 'COMPLETED'],
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
       afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
     };
   },
