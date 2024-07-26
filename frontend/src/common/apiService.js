@@ -164,6 +164,7 @@ export default {
   getAllDuplicateResolutionCodes:getCodes(`${ApiRoutes.sdc.SDC_DUPLICATE_RESOLUTION_CODES}`),
   getAllSchoolCollectionStatusCodes:getCodes(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STATUS_CODES}`),
   getAllActiveBandCodes:getCodes(`${ApiRoutes.sdc.SDC_BAND_CODES}?active=true`),
+  getPRBValidationIssueTypeCodes:getCodes(`${ApiRoutes.penServices.PRB_VALIDATION_ISSUE_TYPE_CODE_URL}`),
   getAllActiveCareerProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_CAREER_PROGRAM_CODES}?active=true`),
   getAllActiveEnrolledProgramCodes:getCodes(`${ApiRoutes.sdc.SDC_ENROLLED_PROGRAM_CODES}?active=true`),
   getAllActiveGenderCodes:getCodes(`${ApiRoutes.sdc.SDC_GENDER_CODES}?active=true`),

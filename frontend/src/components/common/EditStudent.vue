@@ -69,7 +69,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row> 
+        <v-row>
           <v-col
             class="pt-0"
             cols="sdcSchoolCollectionStudentDetailCopy?.sdcSchoolCollectionStudentValidationIssues === undefined ? 12 : 6"
@@ -88,10 +88,32 @@
                         label="Submitted PEN"
                         variant="underlined"
                         :maxlength="9"
-                        :rules="penRules"
+                        :rules="[rules.required(),rules.validPEN()]"
                         density="compact"
+                        class="mb-0"
                         :disabled="isSchoolCollectionSubmitted()"
-                      />
+                      >
+                        <template #append>
+                          <v-btn
+                            id="saveRecord"
+                            color="#003366"
+                            variant="elevated"
+                            density="compact"
+                            class="mx-0 px-2"
+                            text="Get PEN"
+                            :disabled="sdcSchoolCollectionStudentDetailCopy.studentPen !== null && sdcSchoolCollectionStudentDetailCopy.studentPen !== ''"
+                            @click="togglePENRequestDialog"
+                          >
+                            <template #prepend>
+                              <v-icon
+                                small
+                              >
+                                mdi-magnify
+                              </v-icon>
+                            </template>
+                          </v-btn>
+                        </template>
+                      </v-text-field>
                     </v-col>
                     <v-col>
                       <v-text-field
@@ -426,7 +448,7 @@
                       </v-col>
                     </v-row>
                     <v-form
-                      ref="form"
+                      ref="errorsForm"
                       v-model="isValid"
                     >
                       <v-row>
@@ -553,28 +575,41 @@
       <p>Are you sure you want to remove this student from the collection?</p>
     </template>
   </ConfirmationDialog>
+  <v-dialog
+    v-model="showPenRequestDialog"
+    :max-width="600"
+  >
+    <SDCPenMatch
+      :sdc-student="sdcSchoolCollectionStudentDetailCopy"
+      @cancel="togglePENRequestDialog"
+      @use-found-p-e-n="useFoundPEN"
+      @request-staff-p-e-n-check="requestStaffPENCheck"
+    />
+  </v-dialog>
 </template>
 <script>
-  
+
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import {SDC_VALIDATION_FIELD_MAPPINGS} from '../../utils/sdc/sdcValidationFieldMappings';
 import {cloneDeep} from 'lodash';
 import {formatDob} from '../../utils/format';
 import Spinner from '../common/Spinner.vue';
-import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../composable/alertComposable';
-import { sdcCollectionStore } from '../../store/modules/sdcCollection';
+import {setFailureAlert, setSuccessAlert, setWarningAlert} from '../composable/alertComposable';
+import {sdcCollectionStore} from '../../store/modules/sdcCollection';
 import DatePicker from '../util/DatePicker.vue';
 import * as Rules from '../../utils/institute/formRules';
-import {isValidPEN, checkEnrolledProgramLength} from '../../utils/validation';
+import {checkEnrolledProgramLength, isValidPEN} from '../../utils/validation';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
 import {PERMISSION} from '../../utils/constants/Permission';
 import {mapState} from 'pinia';
 import {authStore} from '../../store/modules/auth';
-  
+import SDCPenMatch from '../sdcCollection/SDCPenMatch.vue';
+
 export default {
   name: 'EditStudent',
   components: {
+    SDCPenMatch,
     ConfirmationDialog,
     Spinner,
     DatePicker,
@@ -625,6 +660,7 @@ export default {
       selectedSdcStudentID: null,
       isValid: false,
       hasError: false,
+      showPenRequestDialog: false,
       sdcSchoolCollectionStudentDetail: {},
       sdcSchoolCollectionStudentDetailCopy: {},
       loadingCount: 0,
@@ -684,7 +720,7 @@ export default {
     this.generateCourseOptions();
   },
   async created() {
-  
+    await this.validateErrorsForm;
   },
   methods: {
     generateCourseOptions() {
@@ -710,6 +746,9 @@ export default {
     },
     isLoading(){
       return this.loadingCount > 0;
+    },
+    togglePENRequestDialog(){
+      this.showPenRequestDialog = !this.showPenRequestDialog;
     },
     getSdcSchoolCollectionStudentDetail(sdcSchoolCollectionStudentID) {
       this.loadingCount += 1;
@@ -758,6 +797,21 @@ export default {
         }).finally(() => {
           this.loadingCount -= 1;
           this.$emit('reset-parent');
+        });
+    },
+    useFoundPEN(pen){
+      this.togglePENRequestDialog();
+      this.sdcSchoolCollectionStudentDetailCopy.studentPen = pen;
+    },
+    requestStaffPENCheck(){
+      this.togglePENRequestDialog();
+      const selectedStudent = cloneDeep(this.sdcSchoolCollectionStudentDetailCopy);
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionID}/markDiff`, selectedStudent)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
         });
     },
     scrollToEligibility() {
@@ -908,7 +962,8 @@ export default {
       };
 
       switch (penMatchResult) {
-      case 'MATCH':
+      case 'MAN_MATCH':
+      case 'SYS_MATCH':
         result.assignedPen = assignedPen;
         if (studentPen && studentPen !== assignedPen) {
           result.tooltip = 'Differences between the Assigned PEN and Submitted PEN indicate an existing student file has been matched to the submitted details. The Assigned PEN will be used to prevent duplication.';
@@ -934,83 +989,92 @@ export default {
     validateForm() {
       this.$refs?.studentDetailsForm?.validate();
     },
+    async validateErrorsForm() {
+      await this.$nextTick();
+      await this.$refs?.errorsForm?.validate();
+    },
     formatDob
   }
 };
 </script>
-  
-  <style scoped>
-   .containerSetup{
-      padding-right: 0em !important;
-      padding-left: 0em !important;
-    }
-  
-    .border {
-      border: 2px solid grey;
-      border-radius: 5px;
-      padding: 35px;
-      margin-bottom: 2em;
-    }
-  
-    .clear-message {
-      color: darkgreen;
-      background-color: rgb(227, 240, 217);
-      padding: 0.4em;
-    }
 
-   .clear-message-error {
-     color: #ff0000;
-     background-color: rgba(255, 187, 185, 0.66);
-     padding: 0.6em;
-   }
-  
-   .inner-border {
-     display: inline-block;
-     min-width: 100%;
-     border: 1px solid rgba(42, 45, 38, 0.38);
-     border-radius: 5px;
-     padding: 2em;
-     margin-bottom: 2em;
-   }
-  
-    @media screen and (max-width: 1200px) {
-      .containerSetup{
-        padding-right: 3em !important;
-        padding-left: 3em !important;
-      }
-    }
-  
-    .footer-text {
-      font-style: italic;
-      color: grey;
-    }
-  
-    .filter-text {
-      font-style: italic;
-      color: rgb(56, 89, 138);
-    }
+<style scoped>
+.containerSetup{
+  padding-right: 0em !important;
+  padding-left: 0em !important;
+}
 
-   .footer {
-     background: white;
-     position: fixed;
-     bottom: 0;
-     z-index: 20000;
-     left: 0;
-     right: 0;
-     height: 60px;
-   }
-  
-    .filter-text:hover {
-      text-decoration: underline;
-    }
-  
-    .success-message{
-      vertical-align: sub;
-    }
-  </style>
-  <style scoped>
-    :global(.customTooltip) {
-      max-width: 30rem !important;
-    }
-  </style>
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin-bottom: 2em;
+}
+
+.clear-message {
+  color: darkgreen;
+  background-color: rgb(227, 240, 217);
+  padding: 0.4em;
+}
+
+.clear-message-error {
+  color: #ff0000;
+  background-color: rgba(255, 187, 185, 0.66);
+  padding: 0.6em;
+}
+
+.inner-border {
+  display: inline-block;
+  min-width: 100%;
+  border: 1px solid rgba(42, 45, 38, 0.38);
+  border-radius: 5px;
+  padding: 2em;
+  margin-bottom: 2em;
+}
+
+@media screen and (max-width: 1200px) {
+  .containerSetup{
+    padding-right: 3em !important;
+    padding-left: 3em !important;
+  }
+}
+
+.footer-text {
+  font-style: italic;
+  color: grey;
+}
+
+
+:deep(#saveRecord > span.v-btn__prepend){
+  margin-right: 0.1em;
+}
+
+.filter-text {
+  font-style: italic;
+  color: rgb(56, 89, 138);
+}
+
+.footer {
+  background: white;
+  position: fixed;
+  bottom: 0;
+  z-index: 20000;
+  left: 0;
+  right: 0;
+  height: 60px;
+}
+
+.filter-text:hover {
+  text-decoration: underline;
+}
+
+.success-message{
+  vertical-align: sub;
+}
+</style>
+<style scoped>
+:global(.customTooltip) {
+  max-width: 30rem !important;
+}
+</style>
   

@@ -332,6 +332,19 @@ function formatNumberOfCourses(value) {
   return formatted;
 }
 
+function formatDate(date) {
+  if (date && (date.length === 8)) {
+    const year = date.substring(0, 4);
+    const month = date.substring(4, 6);
+    const day = date.substring(6, 8);
+
+    return `${year}-${month}-${day}`;
+  } else {
+    log.error('Invalid date received from VMS. Using null instead. Check the data.');
+    return null;
+  }
+}
+
 function stripNumberFormattingNumberOfCourses(value) {
   if (!value) return '0000';
   return value.replace('.', '');
@@ -349,6 +362,7 @@ const utils = {
   getData,
   postData,
   putData,
+  formatDate,
   SecureExchangeStatuses,
   errorResponse,
   handleExceptionResponse,

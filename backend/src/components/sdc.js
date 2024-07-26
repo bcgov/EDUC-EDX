@@ -1,7 +1,6 @@
 'use strict';
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
-  getCreateOrUpdateUserValue
-} = require('./utils');
+  getCreateOrUpdateUserValue} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -289,7 +288,11 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     payload.assignedPen = null;
     payload.assignedStudentId = null;
     payload.penMatchResult = null;
-  
+
+    if (payload?.numberOfCourses) {
+      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
+    }
+
     const token = getAccessToken(req);
     const data = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/mark-for-review`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
@@ -1116,7 +1119,7 @@ async function submitDistrictSignature(req, res) {
       updateDate: null,
       createUser: null,
       createDate: null
-    }
+    };
 
     signatures.push(newSignature);
     payload.submissionSignatures = signatures;

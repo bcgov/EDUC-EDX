@@ -1,9 +1,10 @@
 'use strict';
-const {errorResponse, getAccessToken, getDataWithParams} = require('./utils');
+const {errorResponse, getAccessToken, getDataWithParams, formatDate, postData, getCreateOrUpdateUserValue} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../config');
 const log = require('./logger');
 const cacheService = require('./cache-service');
+const {v4: uuidv4} = require('uuid');
 
 async function getStudentByPEN(req, res) {
   try {
@@ -46,6 +47,53 @@ async function getStudentByPEN(req, res) {
   }
 }
 
+/**
+ * This method first checks if a transaction ID is stored in session for previous attempt to create a new student,
+ * if so it reuses the same transaction ID or else generate a new guid. transaction ID must be a GUID.
+ * after getting the PEN NUMBER from SERVICES API call student api to create student with associations.
+ */
+async function createNewStudent(req, res) {
+  try {
+    let transactionID;
+    if (req.session.create_new_student_transactionID) {
+      transactionID = req.session.create_new_student_transactionID;
+    } else {
+      transactionID = uuidv4();
+      req.session.create_new_student_transactionID = transactionID; // store it in session so that it can be reused when the api call to create student fails.
+    }
+    const params = {
+      params: {
+        transactionID
+      }
+    };
+    const token = getAccessToken(req);
+    const penNumber = await getDataWithParams(token, config.get('penServices:nextPenURL'), params, null);
+    const student = req.body.student;
+    student.dob = formatDate(student.dob?.replace(/\D/g, ''));
+    student.pen = penNumber;
+    let school = cacheService.getSchoolBySchoolID(student.schoolID);
+    student.mincode = school.mincode;
+    student.genderCode = student.gender;
+    student.gradeCode = student.enrolledGradeCode;
+    student.sexCode = student.genderCode; // sex code is mandatory in API.
+    student.historyActivityCode = student.historyActivityCode || 'REQNEW';
+    student.emailVerified = student.emailVerified || 'N';
+    student.demogCode = student.demogCode || 'A';
+    student.statusCode = student.statusCode || 'A';
+    student.createDate = null;
+    student.updateDate = null;
+    let user = getCreateOrUpdateUserValue(req);
+    student.createUser = user;
+    student.updateUser = user;
+    const result = await postData(token, student, config.get('student:apiEndpoint'), null);
+    delete req.session.create_new_student_transactionID; // delete it when student is created successfully.
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error(e, 'createNewStudent', 'Error occurred while attempting to create a new student.');
+    return errorResponse(res);
+  }
+}
 module.exports = {
-  getStudentByPEN
+  getStudentByPEN,
+  createNewStudent
 };

@@ -5,6 +5,9 @@ import {LocalDate} from '@js-joda/core';
 import {isPlainObject} from 'lodash';
 import rfdc from 'rfdc/default';
 import {COLLECTIONCODETYPE} from './constants/CollectionCodeType';
+import ApiService from '../common/apiService';
+import {ApiRoutes} from './constants';
+
 
 export const getLocalDateFromString = (date, pattern = 'uuuu-MM-dd') => {
   const formatter = getDateFormatter(pattern);
@@ -58,6 +61,18 @@ export function getStatusColor(comparisonValue, currentValue) {
   }
 }
 
+export function getDemogValidationResults(student) {
+  return new Promise((resolve, reject) => {
+    ApiService.apiAxios.post(ApiRoutes.penServices.VALIDATE_DEMOGRAPHICS, student)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 export function     getCollectionLink(currentCollectionTypeCode) {
   let collectionLink = '';
   let collectionCodeType = currentCollectionTypeCode;
@@ -71,5 +86,22 @@ export function     getCollectionLink(currentCollectionTypeCode) {
     collectionLink = 'https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/data-collections/summer-learning';
   }
   return collectionLink;
+}
+
+export function constructPenMatchObjectFromSdcStudent(student) {
+  return {
+    pen: student.studentPen,
+    localID: student.localID,
+    surname: student.legalLastName,
+    givenName: student.legalFirstName,
+    middleName: student.legalMiddleNames,
+    usualSurname: student.usualLastName,
+    usualGiven: student.usualFirstName,
+    usualMiddleName: student.usualMiddleNames,
+    dob: student.dob,
+    sex: student.genderCode,
+    enrolledGradeCode: student.gradeCode,
+    postal: student.postalCode
+  };
 }
 
