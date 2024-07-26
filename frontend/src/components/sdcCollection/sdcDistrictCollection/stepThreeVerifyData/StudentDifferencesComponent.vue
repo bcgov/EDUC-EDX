@@ -110,9 +110,6 @@
 import {defineComponent} from 'vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
-import {
-  DISTRICT_STUDENT_DIFFERENCES
-} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
@@ -135,6 +132,15 @@ export default defineComponent({
       type: Object,
       required: false,
       default: null
+    },
+    school: {
+      type: Object,
+      required: false,
+      default: null
+    },
+    tableConfig: {
+      type: Object,
+      required: true
     }
   },
   emits: ['next'],
@@ -149,10 +155,10 @@ export default defineComponent({
         tabFilter: null,
         moreFilters: {}
       },
-      allowedFilters: DISTRICT_STUDENT_DIFFERENCES.allowedFilters,
-      headers: DISTRICT_STUDENT_DIFFERENCES.tableHeaders,
+      headers: this.tableConfig.tableHeaders,
+      allowedFilters: this.tableConfig.allowedFilters,
       sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
-      sdcSchoolCollectionID: this.$route.params.sdcSchoolCollectionID,
+      sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
     };
   },
   computed: {
@@ -180,7 +186,12 @@ export default defineComponent({
     },
     getStudentDifferences(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.sdcDistrictCollectionID + '/studentDifferences', {
+      let url = ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.sdcDistrictCollectionID + '/studentDifferences';
+      if(this.sdcSchoolCollectionID){
+        url = ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.sdcSchoolCollectionID + '/studentDifferences';
+      }
+
+      ApiService.apiAxios.get(url, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,

@@ -478,6 +478,97 @@ export const DISTRICT_STUDENT_DIFFERENCES = Object.freeze(
   }
 );
 
+export const SCHOOL_STUDENT_DIFFERENCES = Object.freeze(
+  {
+    tableHeaders: [
+      { title: '', key: 'type' },
+      { title: 'Local ID', key: 'localID', subHeader: { title: 'Birthdate', key: 'dob' } },
+      { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
+      { title: 'Gender', key: 'gender', subHeader: { title: 'Postal Code', key: 'postalCode' } },
+      { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
+      { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
+      { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
+      { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
+      { title: 'Other Courses', key: 'otherCourses' }
+    ],
+    allowedFilters: {
+      studentType: STUDENT_TYPE_FILTER,
+      fte: FTE_FILTER,
+      grade: GRADE_FILTER,
+      fundingType: FUNDING_TYPE_FILTER,
+      warnings: WARNING_FILTER,
+      courses: COURSE_FILTER,
+      support: SUPPORT_BLOCKS_FILTER,
+      fteZero: FTE_ZERO_FILTER,
+      frenchProgram: {
+        ...FRENCH_PROGRAMS_FILTER,
+        filterOptions: [
+          ...FRENCH_PROGRAMS_FILTER.filterOptions,
+          {
+            title: '05 - Programme Francophone',
+            id: 'french05',
+            value: '05'
+          },
+          {
+            title: 'No French Programs',
+            id: 'noFrenchProgram',
+            value: 'noFrenchPrograms'
+          }
+        ]
+      },
+      englishProgram: ENGLISH_PROGRAMS_FILTER,
+      ellYears: ELL_YEARS_FILTER,
+      careerPrograms: {
+        ...CAREER_PROGRAM_FILTER,
+        filterOptions: [
+          ...CAREER_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Career Programs',
+            id: 'noCareerProgram',
+            value: 'noCareerPrograms'
+          }
+        ]
+      },
+      careerCode: {
+        ...CAREER_CODE_FILTER,
+        filterOptions: [
+          ...CAREER_CODE_FILTER.filterOptions,
+          {
+            title: 'No Career Code',
+            id: 'noCareerCode',
+            value: 'noCareerCodes'
+          }
+        ]
+      },
+      indigenousPrograms: {
+        ...INDIGENOUS_PROGRAM_FILTER,
+        filterOptions: [
+          ...INDIGENOUS_PROGRAM_FILTER.filterOptions,
+          {
+            title: 'No Indigenous Support Programs',
+            id: 'noIndigenousPrograms',
+            value: 'noIndigenousPrograms'
+          }
+        ]
+      },
+      bandCode: BAND_FILTER,
+      ancestry: ANCESTRY_FILTER,
+      sped: {
+        ...SPED_FILTER,
+        filterOptions: [
+          ...SPED_FILTER.filterOptions,
+          {
+            title: 'No Special Education Category',
+            id: 'noSpedCategory',
+            value: 'noSpedCode'
+          }
+        ]
+      }
+    }
+  }
+);
 
 export const IN_DISTRICT_DUPLICATES = Object.freeze(
   {

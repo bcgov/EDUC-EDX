@@ -15,6 +15,14 @@
       </v-tab>
       <v-tab
         v-if="isFinalSignOff"
+        key="StudentDifferences"
+        value="StudentDifferences"
+        class="divider"
+      >
+        Student Differences
+      </v-tab>
+      <v-tab
+        v-if="isFinalSignOff"
         key="resolvedDuplicates"
         value="resolvedDuplicates"
         class="divider"
@@ -22,7 +30,6 @@
         Resolved Duplicates
       </v-tab>
     </v-tabs>
-
     <v-window v-model="tab">
       <v-window-item
         value="All Students"
@@ -103,6 +110,17 @@
       </v-window-item>
       <v-window-item
         v-if="isFinalSignOff"
+        value="StudentDifferences"
+        transition="false"
+        reverse-transition="false"
+      >
+        <StudentDifferencesComponent
+          :school="school"
+          :table-config="SCHOOL_STUDENT_DIFFERENCES"
+        />
+      </v-window-item>
+      <v-window-item
+        v-if="isFinalSignOff"
         value="resolvedDuplicates"
         transition="false"
         reverse-transition="false"
@@ -114,7 +132,10 @@
     </v-window>
   </div>
 
-  <v-row v-if="!isFinalSignOff" justify="end">
+  <v-row
+    v-if="!isFinalSignOff"
+    justify="end"
+  >
     <PrimaryButton
       v-if="!isStepComplete"
       id="step-3-next-button-school"
@@ -154,10 +175,14 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
 import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
+import StudentDifferencesComponent
+  from '../../sdcDistrictCollection/stepThreeVerifyData/StudentDifferencesComponent.vue';
+import {SCHOOL_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
+    StudentDifferencesComponent,
     ResolvedDuplicates,
     PrimaryButton,
     FTEComponent,
@@ -195,6 +220,9 @@ export default {
     };
   },
   computed: {
+    SCHOOL_STUDENT_DIFFERENCES() {
+      return SCHOOL_STUDENT_DIFFERENCES
+    },
     ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'currentCollectionTypeCode']),
     ...mapState(appStore, ['activeSchoolsMap']),

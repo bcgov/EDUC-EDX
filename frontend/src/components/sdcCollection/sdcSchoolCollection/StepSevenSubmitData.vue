@@ -55,35 +55,21 @@
       </v-row>
 
       <v-row v-else>
-        <v-alert
-          id="collection-submission"
-          density="compact"
-          type="success"
-          variant="tonal"
-          text="Congratulations! The 1701 data has been submitted."
-        />
-        <v-col
-          v-if="getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND'"
-          cols="12"
-        >
-          <p>
-            Any additional changes to 1701 must be coordinated through the Ministry.
-          </p>
+        <v-col class="mb-1">
+          <v-alert
+            id="collection-submission"
+            density="compact"
+            type="success"
+            variant="tonal"
+            :text=" getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND' ? 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through the Ministry.' : 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through your district.'"
+          />
         </v-col>
-        <v-col
-          v-else
-          cols="12"
-        >
-          <p>
-            Any additional changes to 1701 must be coordinated through your district.
-          </p>
-        </v-col>
-
-        <StepThreeVerifyData
-          :district-collection-object="districtCollectionObject"
-          :is-final-sign-off="true"
-        />
       </v-row>
+      <StepThreeVerifyData
+        :school-collection-object="schoolCollectionObject"
+        :is-step-complete="true"
+        :is-final-sign-off="true"
+      />
     </div>
   </div>
 
