@@ -13,6 +13,7 @@ const helmet = require('helmet');
 const utils = require('./components/utils');
 const auth = require('./components/auth');
 const bodyParser = require('body-parser');
+const lusca = require('lusca');
 const connectRedis = require('connect-redis');
 dotenv.config();
 
@@ -103,6 +104,16 @@ app.use(session({
   saveUninitialized: true,
   cookie: cookie,
   store: dbSession
+}));
+app.use(lusca({
+  csrf: {
+    cookie: {name: '_csrf'}
+  },
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+  nosniff: true,
+  referrerPolicy: 'same-origin',
+  xframe: 'SAMEORIGIN',
+  xssProtection: true,
 }));
 app.use(require('./routes/health-check').router);
 //initialize routing and session. Cookies are now only reachable via requests (not js)

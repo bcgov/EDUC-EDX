@@ -91,7 +91,6 @@ export const authStore = defineStore('auth', {
         }
       } else {  //inital login and redirect
         const response = await AuthService.getAuthToken();
-
         if (response.jwtFrontend) {
           await this.setJwtToken(response.jwtFrontend);
           ApiService.setAuthHeader(response.jwtFrontend);

@@ -60,6 +60,7 @@ export default {
   setAuthHeader(token) {
     if (token) {
       apiAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      apiAxios.defaults.headers.common['X-CSRF-TOKEN'] = AuthService.getCSRFValue();
     } else {
       delete apiAxios.defaults.headers.common['Authorization'];
     }
