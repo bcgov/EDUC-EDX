@@ -60,8 +60,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8.4.21",
     "stylus": "^0.59.0",
-    "stylus-loader": "^7.1.0",
-    "vue-template-compiler": "^2.7.14"
+    "stylus-loader": "^7.1.0"
   },
   "browserslist": [
     "> 1%",
