@@ -84,12 +84,12 @@
                 <v-radio
                   :id="`index`"
                   :label="prog?.studentOne?.schoolName"
-                  :value="{dupeCode: prog?.code, studentId: prog?.studentOne?.sdcSchoolCollectionStudentID}"
+                  :value="{dupeCode: prog?.code[0], studentId: prog?.studentOne?.sdcSchoolCollectionStudentID}"
                 />
                 <v-radio
                   :id="`index`"
                   :label="prog?.studentTwo?.schoolName"
-                  :value="{dupeCode: prog?.code , studentId: prog?.studentTwo?.sdcSchoolCollectionStudentID}"
+                  :value="{dupeCode: prog?.code[1], studentId: prog?.studentTwo?.sdcSchoolCollectionStudentID}"
                 />
               </v-radio-group>
             </div>
@@ -224,27 +224,28 @@ export default {
         });
     },
     updateStudentObject(valueToBeRemoved, studentId) {
+      let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
+      let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+      studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
+
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
         studentToBeUpdated.specialEducationCategoryCode = null;
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
         studentToBeUpdated.careerProgramCode = null;
-      } else {
-        let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
-      } 
+      }
+
     },
     getDuplicatePrograms() {
       let programs = [];
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
-        let description = sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode) ? `
+        let specEdProg1Description = sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode) ? `
           ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.specialEducationCategoryCode} - ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentOneDetailCopy.specialEducationCategoryCode)?.description}` : this.sdcStudentOneDetailCopy.specialEducationCategoryCode;
-          
-        programs.push({code: this.sdcStudentOneDetailCopy.specialEducationCategoryCode, description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
+        let specEdProg2Description = sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentTwoDetailCopy.specialEducationCategoryCode) ? `
+          ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentTwoDetailCopy.specialEducationCategoryCode)?.specialEducationCategoryCode} - ${sdcCollectionStore().specialEducationCodesMap.get(this.sdcStudentTwoDetailCopy.specialEducationCategoryCode)?.description}` : this.sdcStudentTwoDetailCopy.specialEducationCategoryCode;
+
+        let description = specEdProg1Description + ' & ' + specEdProg2Description;
+
+        programs.push({code: [this.sdcStudentOneDetailCopy.specialEducationCategoryCode, this.sdcStudentTwoDetailCopy.specialEducationCategoryCode], description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
       } else if (this.selectedProgramDuplicate?.programDuplicateTypeCode === 'INDIGENOUS') {
         let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.INDIGENOUS_ENROLLED_PROGRAM_CODES);
 
@@ -252,11 +253,16 @@ export default {
           programs.push(progs);
         }
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES);
+        let stud1CareerProgramCode = this.sdcStudentOneDetailCopy.enrolledProgramCodes.match(/.{1,2}/g).filter(code => enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(code))[0];
+        let stud2CareerProgramCode = this.sdcStudentTwoDetailCopy.enrolledProgramCodes.match(/.{1,2}/g).filter(code => enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(code))[0];
 
-        for(let progs of mappedPrograms) {
-          programs.push(progs);
-        }
+        let careerProg1Description = sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode) ? `
+          ${sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode)?.enrolledProgramCode} - ${sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode).description}` : this.sdcStudentOneDetailCopy.careerProgramCode;
+        let careerProg2Description = sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode) ? `
+          ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode)?.enrolledProgramCode} - ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode).description}` : this.sdcStudentOneDetailCopy.careerProgramCode;
+
+        let description = careerProg1Description + ' & ' + careerProg2Description;
+        programs.push({code: [stud1CareerProgramCode, stud2CareerProgramCode], description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy})
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'LANGUAGE') {
         let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.LANGUAGE_PROGRAM_CODES);
 
@@ -273,7 +279,7 @@ export default {
             this.sdcStudentTwoDetailCopy?.enrolledProgramCodes.includes(programCode))
         .map(programCode => {
           const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
-          return {code: programCode, description: `${programCode} - ${enrolledProgram.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy};
+          return {code: [programCode, programCode], description: `${programCode} - ${enrolledProgram.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy};
         });
     },
   }
