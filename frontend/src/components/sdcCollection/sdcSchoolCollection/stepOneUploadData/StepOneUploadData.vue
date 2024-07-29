@@ -164,7 +164,7 @@
           text="Upload 1701 Submission"
           :loading="isReadingFile"
           :disabled="!hasEditPermission"
-          :click-action="handleFileImport"
+          @click="handleFileImport"
         />
       </v-col>
       <v-col class="d-flex justify-start">
@@ -469,6 +469,7 @@ export default {
       await this.$refs.documentForm.validate();
     },
     handleFileImport() {
+      console.log('Marco');
       this.fileUploadErrorMessage = null;
       this.uploadFileValue = null;
       this.$refs.uploader.click();
