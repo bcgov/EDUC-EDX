@@ -8,7 +8,7 @@ const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 async function getDistrictByDistrictID(req, res){
   const token = getAccessToken(req);
   return Promise.all([
-    getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID),
+    getData(token, `${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
@@ -32,7 +32,7 @@ async function updateDistrict(req, res){
     params.updateUser = getCreateOrUpdateUserValue(req);
 
     const token = getAccessToken(req);
-    const result = await putData(token, params, `${config.get('institute:rootURL')}/district/${req.params.districtID}`, req.session?.correlationID);
+    const result = await putData(token, params, `${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateDistrict', 'Error occurred while attempting to update a district.');
@@ -60,7 +60,7 @@ async function createDistrictContact(req, res) {
 
   const token = getAccessToken(req);
   return Promise.all([
-    postData(token, payload, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact`, req.session?.correlationID),
+    postData(token, payload, `${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}/contact`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       return res.status(200).json(dataResponse);
@@ -80,7 +80,7 @@ async function updateDistrictContact(req, res) {
     payload.updateUser = getCreateOrUpdateUserValue(req);
 
     const token = getAccessToken(req);
-    const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${req.body.districtId}/contact/${req.body.districtContactId}` , req.session?.correlationID);
+    const result = await putData(token, payload,`${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedDistrictContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateDistrictContact', 'Error occurred while attempting to update a district contact.');
@@ -91,7 +91,7 @@ async function updateDistrictContact(req, res) {
 async function removeDistrictContact(req, res) {
   try {
     const token = getAccessToken(req);
-    const contact = await getData(token, `${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}`);
+    const contact = await getData(token, `${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedDistrictContactId}`);
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);
@@ -102,7 +102,7 @@ async function removeDistrictContact(req, res) {
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
     contact.updateUser = getCreateOrUpdateUserValue(req);
 
-    const result = await putData(token, contact,`${config.get('institute:rootURL')}/district/${req.params.districtID}/contact/${req.params.contactID}` , req.session?.correlationID);
+    const result = await putData(token, contact,`${config.get('institute:rootURL')}/district/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedDistrictContactId}` , req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'removeDistrictContact', 'Error occurred while attempting to remove a district contact.');

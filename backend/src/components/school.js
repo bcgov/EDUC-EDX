@@ -13,11 +13,11 @@ const {doesSchoolBelongToDistrict} = require('./institute-cache');
 
 async function getSchoolBySchoolID(req, res) {
   try {
-    if (!req.query.schoolID) {
+    if (!res.locals.requestedInstituteIdentifier) {
       let allActiveSchools = cacheService.getAllActiveSchoolsJSON();
       return res.status(200).json(allActiveSchools ? allActiveSchools : []);
     }
-    let school = cacheService.getSchoolBySchoolID(req.query.schoolID);
+    let school = cacheService.getSchoolBySchoolID(res.locals.requestedInstituteIdentifier);
     if (!school) {
       return res.status(200).json();
     }
@@ -94,7 +94,7 @@ async function updateSchool(req, res){
     payload.updateUser = createUpdateUser;
 
     const token = getAccessToken(req);
-    const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${payload.schoolId}`, req.session?.correlationID);
+    const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateSchool', 'Error occurred while attempting to update a school.');
@@ -122,7 +122,7 @@ async function addSchoolContact(req, res) {
     };
 
     const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact`, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
@@ -141,7 +141,7 @@ async function updateSchoolContact(req, res) {
     params.updateUser = getCreateOrUpdateUserValue(req);
 
     const token = getAccessToken(req);
-    const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${req.body.schoolID}/contact/${req.body.schoolContactId}`, req.session?.correlationID);
+    const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'updateSchoolContact', 'Error occurred while attempting to update a school contact.');
@@ -152,7 +152,7 @@ async function updateSchoolContact(req, res) {
 async function removeSchoolContact(req, res) {
   try {
     const token = getAccessToken(req);
-    const contact = await getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`);
+    const contact = await getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`);
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);
@@ -163,7 +163,7 @@ async function removeSchoolContact(req, res) {
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
     contact.updateUser = getCreateOrUpdateUserValue(req);
 
-    const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${req.params.schoolID}/contact/${req.params.contactID}`, req.session?.correlationID);
+    const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     await logApiError(e, 'removeSchoolContact', 'Error occurred while attempting to remove a school contact.');
@@ -182,20 +182,20 @@ async function getAllCachedSchools(_req, res){
 }
 
 function checkSchoolBelongsToDistrict(req, res) {
-  if (!req.params.schoolID) {
+  if (!res.locals.requestedInstituteIdentifier) {
     return res.status(200).json(false);
   }
   if (req.session.activeInstituteType !== 'DISTRICT') {
     return res.status(200).json(false);
   }
-  let schoolBelongsToEdxDistrictUser = doesSchoolBelongToDistrict(req.params.schoolID, req.session.activeInstituteIdentifier);
+  let schoolBelongsToEdxDistrictUser = doesSchoolBelongToDistrict(res.locals.requestedInstituteIdentifier, req.session.activeInstituteIdentifier);
   return res.status(200).json(schoolBelongsToEdxDistrictUser);
 }
 
 async function getFullSchoolDetails(req, res){
   const token = getAccessToken(req);
   return Promise.all([
-    getData(token, `${config.get('institute:rootURL')}/school/${req.params.schoolID}`, req.session?.correlationID),
+    getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       delete dataResponse['schoolFundingGroups'];
