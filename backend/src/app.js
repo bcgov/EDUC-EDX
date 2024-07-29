@@ -6,6 +6,7 @@ const log = require('./components/logger');
 const morgan = require('morgan');
 const session = require('express-session');
 const express = require('express');
+const {rateLimit}  = require('express-rate-limit');
 const atob = require('atob');
 const passport = require('passport');
 const helmet = require('helmet');
@@ -64,7 +65,19 @@ const logStream = {
   }
 };
 
-
+if (config.get('rateLimit:enabled')) {
+  const limiter = rateLimit({
+    windowMs: config.get('rateLimit:windowInSec') * 1000,
+    limit: config.get('rateLimit:limit'),
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers,
+    skipSuccessfulRequests: false, // Do not count successful responses
+    message: async () => {
+      return `You can only make ${config.get('rateLimit:limit')} requests every ${config.get('rateLimit:windowMs')} seconds.`;
+    }
+  });
+  app.use(limiter);
+}
 
 
 const Redis = require('./util/redis/redis-client');
@@ -199,4 +212,5 @@ app.use((err, _req, res, next) => {
 process.on('unhandledRejection', err => {
   log.error('Unhandled Rejection at:', err?.stack || err);
 });
+
 module.exports = app;
