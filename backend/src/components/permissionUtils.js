@@ -221,6 +221,16 @@ function findSchoolID_body(req, res, next) {
   return next();
 }
 
+function findSchoolContactId_body(req, res, next) {
+  res.locals.requestedSchoolContactId = req.body.schoolContactId;
+  return next();
+}
+
+function findSchoolContactId_params(req, res, next) {
+  res.locals.requestedSchoolContactId = req.params.contactID;
+  return next();
+}
+
 function findSchoolID_body_params(req, res, next) {
   res.locals.requestedInstituteType = 'SCHOOL';
   res.locals.requestedInstituteIdentifier = req.body.params.schoolID;
@@ -249,6 +259,16 @@ function findDistrictID_body(req, res, next) {
 function findDistrictId_body(req, res, next) {
   res.locals.requestedInstituteType = 'DISTRICT';
   res.locals.requestedInstituteIdentifier = req.body.districtId;
+  return next();
+}
+
+function findDistrictContactId_body(req, res, next) {
+  res.locals.requestedDistrictContactId = req.body.districtContactId;
+  return next();
+}
+
+function findDistrictContactId_params(req, res, next) {
+  res.locals.requestedDistrictContactId = req.params.contactID;
   return next();
 }
 
@@ -353,6 +373,24 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
     return next();
   }
   res.locals.requestedSdcSchoolCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID;
+  return next();
+}
+
+async function loadDistrict(req, res, next) {
+  if (!res.locals.requestedSdcSchoolCollectionID) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    res.locals.requestedSdcSchoolCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${res.locals.requestedSdcSchoolCollectionID}`, req.session?.correlationID);
+  } catch (e) {
+    log.error('Unable to load the SDC School Collection in loadSdcSchoolCollection.', e.stack);
+  }
   return next();
 }
 
@@ -522,15 +560,19 @@ const permUtils = {
   findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent,
   loadSdcSchoolCollection,
   loadSdcDistrictCollection,
+  findDistrictContactId_body,
   findSdcSchoolCollectionStudentID_params,
   loadSdcSchoolCollectionStudent,
   checkInstituteCollectionAccess,
   checkIfCreateorUpdateSDCStudentIsAllowed,
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
+  findSchoolContactId_body,
+  findDistrictContactId_params,
   checkStudentBelongsInCollection,
   findSdcSchoolCollectionStudentID_body,
   edxUserHasAccessToInstitute,
+  findSchoolContactId_params,
   findSdcSchoolCollectionsInDuplicate,
   checkSdcDuplicateAccess,
   checkUserAccessToDuplicateSdcSchoolCollections
