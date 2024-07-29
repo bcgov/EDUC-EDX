@@ -80,6 +80,11 @@ nconf.defaults({
     validateDemographicsURL: process.env.PEN_SERVICES_API_URL + '/validation/student-request',
     prbValidationTypeCodesURL: process.env.PEN_SERVICES_API_URL + '/validation/issue-type-code'
   },
+  rateLimit: {
+    enabled: process.env.IS_RATE_LIMIT_ENABLED || false, // Disable if rate limiting is not required
+    windowInSec: process.env.RATE_LIMIT_WINDOW_IN_SEC || 60, // 1 minute
+    limit: process.env.RATE_LIMIT_LIMIT || 100, // Limit each IP to 100 requests per `window` (here, per 1 minute)
+  },
   edx: {
     rootURL: process.env.EDX_API_ENDPOINT,
     exchangeURL: process.env.EDX_API_ENDPOINT + '/exchange',

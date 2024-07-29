@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {ApiRoutes} from '../utils/constants';
 import AuthService from '../common/authService';
+import {setFailureAlert} from '../components/composable/alertComposable';
 
 // Buffer concurrent requests while refresh token is being acquired
 let failedQueue = [];
@@ -22,7 +23,10 @@ const apiAxios = axios.create();
 const apiAxiosConfig = axios.create();
 const intercept = apiAxios.interceptors.response.use(config => config, error => {
   const originalRequest = error.config;
-  if (error.response.status !== 401) {
+  if (error.response.status === 429) {
+    setFailureAlert('We have processed too many requests from your session. Please try again later.');
+    return Promise.reject(error);
+  }else if (error.response.status !== 401) {
     return Promise.reject(error);
   }
   axios.interceptors.response.eject(intercept);
