@@ -21,6 +21,10 @@ function processQueue(error, token = null) {
 // Create new non-global axios instance and intercept strategy
 const apiAxios = axios.create();
 const apiAxiosConfig = axios.create();
+apiAxios.defaults.withXSRFToken = true;
+apiAxios.defaults.withCredentials = true;
+apiAxios.defaults.xsrfCookieName = '_csrf';
+apiAxios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
 const intercept = apiAxios.interceptors.response.use(config => config, error => {
   const originalRequest = error.config;
   if (error.response.status === 429) {
@@ -60,7 +64,7 @@ export default {
   setAuthHeader(token) {
     if (token) {
       apiAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      apiAxios.defaults.headers.common['X-CSRF-TOKEN'] = AuthService.getCSRFValue();
+      // apiAxios.defaults.headers.common['X-CSRF-TOKEN'] = AuthService.getCSRFValue();
     } else {
       delete apiAxios.defaults.headers.common['Authorization'];
     }

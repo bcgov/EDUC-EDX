@@ -1,25 +1,37 @@
 import axios from 'axios';
 import { AuthRoutes } from '../utils/constants.js';
 
+function getAxios() {
+
+}
+
 export default {
 
   //Retrieves an auth token from the API endpoint
   async getAuthToken() {
     try {
-      axios.defaults.headers.common['X-CSRF-TOKEN'] = this.getCSRFValue();
-      const response = await axios.get(AuthRoutes.TOKEN);
+      const response = await this.getAxios().get(AuthRoutes.TOKEN);
       return response.data;
     } catch (e) {
       console.log(`Failed to acquire JWT token - ${e}`); // eslint-disable-line no-console
       throw e;
     }
   },
-
+  axiosInstance: null,
+  getAxios(){
+    if(this.axiosInstance === null){
+      this.axiosInstance = axios;
+      this.axiosInstance.defaults.withXSRFToken = true;
+      this.axiosInstance.defaults.withCredentials = true;
+      this.axiosInstance.defaults.xsrfCookieName = '_csrf';
+      this.axiosInstance.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
+    }
+    return this.axiosInstance
+  },
   //Refreshes the users auth token
   async refreshAuthToken(token) {
     try {
-      axios.defaults.headers.common['X-CSRF-TOKEN'] = this.getCSRFValue();
-      const response = await axios.post(AuthRoutes.REFRESH, {
+      const response = await this.getAxios().post(AuthRoutes.REFRESH, {
         refreshToken: token
       });
 
@@ -32,19 +44,5 @@ export default {
       console.log(`Failed to refresh JWT token - ${e}`); // eslint-disable-line no-console
       throw e;
     }
-  },
-  getCSRFValue() {
-    if (!document.cookie) {
-      return null;
-    }
-
-    const xsrfCookies = document.cookie.split(';')
-      .map(c => c.trim())
-      .filter(c => c.startsWith('_csrf='));
-
-    if (xsrfCookies.length === 0) {
-      return null;
-    }
-    return decodeURIComponent(xsrfCookies[0].split('=')[1]);
   }
 };
