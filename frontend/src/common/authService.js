@@ -22,7 +22,7 @@ export default {
       this.axiosInstance.defaults.xsrfCookieName = '_csrf';
       this.axiosInstance.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
     }
-    return this.axiosInstance
+    return this.axiosInstance;
   },
   //Refreshes the users auth token
   async refreshAuthToken(token) {
