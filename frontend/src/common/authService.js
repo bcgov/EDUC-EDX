@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { AuthRoutes } from '../utils/constants.js';
 
-function getAxios() {
-
-}
-
 export default {
 
   //Retrieves an auth token from the API endpoint
