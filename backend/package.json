@@ -86,7 +86,7 @@
     "babel-preset-airbnb": "^5.0.0",
     "core-js": "^3.12.1",
     "eslint": "^7.26.0",
-    "jest": "^27.0.3",
+    "jest": "^29.7.0",
     "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^3.1.4",
     "redis-mock": "^0.56.3",
