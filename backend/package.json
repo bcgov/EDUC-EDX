@@ -136,11 +136,9 @@
     "not ie <= 8"
   ],
   "jest": {
-    "preset": "ts-jest",
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.ts$": "ts-jest"
+      "^.+\\.js$": "babel-jest"
     },
     "transformIgnorePatterns": [
       "node_modules/(?!axios/.*)"
