@@ -199,12 +199,10 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     }
 
     const params = {
-      params: {
-        pageNumber: req.query.pageNumber,
-        pageSize: req.query.pageSize,
-        sort: req.query.sort,
-        searchCriteriaList: JSON.stringify(search),
-      }
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: JSON.stringify(search),
     };
 
     const token = getAccessToken(req);
