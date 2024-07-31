@@ -47,7 +47,6 @@
     "has-ansi": "^4.0.0",
     "helmet": "^4.4.1",
     "http-status-codes": "^1.4.0",
-    "identity-obj-proxy": "^3.0.0",
     "ioredis": "^4.27.6",
     "jest-junit": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -137,22 +136,6 @@
     "not ie <= 8"
   ],
   "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!axios/.*)"
-    ],
-    "moduleNameMapper": {
-      "\\.(css|less|scss|sss|styl)$": "identity-obj-proxy"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig.json",
-        "useESM": true
-      }
-    },
     "reporters": [
       "default",
       "jest-junit"
@@ -161,6 +144,9 @@
       "js",
       "json"
     ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
     "testMatch": [
       "**/tests/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
