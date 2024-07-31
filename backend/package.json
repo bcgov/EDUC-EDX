@@ -136,6 +136,21 @@
     "not ie <= 8"
   ],
   "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.ts$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios/.*)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json",
+        "useESM": true
+      }
+    },
     "reporters": [
       "default",
       "jest-junit"
