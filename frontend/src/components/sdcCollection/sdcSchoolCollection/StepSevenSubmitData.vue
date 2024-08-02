@@ -16,7 +16,10 @@
     </div>
 
     <div v-else>
-      <v-row v-if="!isSubmitted">
+      <v-row
+        v-if="!isSubmitted"
+        class="mb-4"
+      >
         <v-col
           v-if="getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND'"
           cols="12"
@@ -43,15 +46,6 @@
             Please ensure your data is correct before completing the submission. Data can be reviewed on the “Edit/Verify Data Issues” step.
           </p>
         </v-col>
-
-        <br>
-        <v-alert
-          id="fte-info"
-          density="compact"
-          type="info"
-          variant="tonal"
-          text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
-        />
       </v-row>
 
       <v-row v-else>
@@ -71,6 +65,14 @@
         :is-final-sign-off="true"
       />
     </div>
+    <v-alert
+      v-if="!isSubmitted"
+      id="fte-info"
+      density="compact"
+      type="info"
+      variant="tonal"
+      text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
+    />
   </div>
 
   <v-row justify="end">
