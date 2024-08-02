@@ -28,7 +28,10 @@
         >Return to Data Collections</a>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row
+      v-if="isSdcDistrictCollectionActive"
+      no-gutters
+    >
       <v-col>
         <v-divider class="divider" />
       </v-col>
@@ -48,7 +51,7 @@
         />
       </v-col>
     </v-row>
-    <v-row no-gutters v-else>
+    <v-row no-gutters v-else-if="isSdcDistrictCollectionActive">
       <v-col>
         <v-stepper
           ref="stepper"
@@ -143,6 +146,7 @@
                 <StepThreeVerifyData
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
+                  :is-collection-active="isSdcDistrictCollectionActive"
                   @next="next"
                 />
               </v-stepper-window-item>
@@ -187,6 +191,7 @@
                 <StepSevenFinalSubmission
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
+                  :is-collection-active="isSdcDistrictCollectionActive"
                 />
               </v-stepper-window-item>
             </v-stepper-window>
@@ -194,7 +199,12 @@
         </v-stepper>
       </v-col>
     </v-row>
-
+    <StepSevenFinalSubmission
+      v-else
+      :district-collection-object="districtCollectionObject"
+      :is-step-complete="isStepComplete"
+      :is-collection-active="isSdcDistrictCollectionActive"
+    />
     <div v-if="disableScreen">
       <v-overlay
         :model-value="disableScreen"
@@ -224,7 +234,7 @@ import StepOneUploadData from './StepOneUploadData.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
 import {SDC_STEPS_DISTRICT} from '../../../utils/sdc/SdcSteps';
-import {mapState} from 'pinia';
+import {mapActions, mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 import StepFourInDistrictDuplicates from './duplicates/StepFourInDistrictDuplicates.vue';
@@ -234,6 +244,8 @@ import StepSixProvincialDuplicates from './duplicates/StepSixProvincialDuplicate
 import { appStore } from '../../../store/modules/app';
 import {authStore} from '../../../store/modules/auth';
 import StepSevenFinalSubmission from './StepSevenFinalSubmission.vue';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
@@ -258,7 +270,8 @@ export default defineComponent({
       disableScreen: false,
       wsNotificationText: '',
       schoolsMap: null,
-      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED']
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+      isSdcDistrictCollectionActive: false
     };
   },
   computed: {
@@ -290,12 +303,12 @@ export default defineComponent({
       }
     },
   },
-  created() {
+  async created() {
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
     });
-    sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
+    await sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
       .then(() => {
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection?.districtID;
@@ -303,17 +316,11 @@ export default defineComponent({
       })
       .finally(() => {
         this.isLoading = !this.isLoading;
-      })
-      .then(() => {
-        return sdcCollectionStore().getCollectionByDistrictId(this.districtID);
-      })
-      .then(() => {
-        this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
-        this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
-        this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSignOffDueDate);
       });
+    this.getActiveSdcDistrictCollection();
   },
   methods: {
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate', 'setCurrentCollectionResolveDupDueDate', 'setCurrentCollectionSignOffDueDate']),
     SDC_STEPS_DISTRICT() {
       return SDC_STEPS_DISTRICT;
     },
@@ -330,7 +337,7 @@ export default defineComponent({
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection.districtID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
-          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection.sdcDistrictCollectionStatusCode);
+          this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
         }
         this.isLoading = !this.isLoading;
       });
@@ -346,6 +353,20 @@ export default defineComponent({
     },
     getStepOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.step;
+    },
+    getActiveSdcDistrictCollection() {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
+        .then(response => {
+          this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
+          this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
+          this.setCurrentCollectionSignOffDueDate(response.data.signOffDueDate);
+          this.isSdcDistrictCollectionActive = response.data.sdcDistrictCollectionID === this.districtCollectionObject?.sdcDistrictCollectionID;
+
+          this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
+          this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
+          this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSignOffDueDate);
+        });
+
     }
   }
 });

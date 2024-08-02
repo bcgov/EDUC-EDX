@@ -17,7 +17,7 @@
 
     <div v-else>
       <v-row
-        v-if="!isSubmitted"
+        v-if="!isSubmitted && isCollectionActive"
         class="mb-4"
       >
         <v-col
@@ -48,7 +48,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-else>
+      <v-row v-else-if="isCollectionActive">
         <v-col class="mb-1">
           <v-alert
             id="collection-submission"
@@ -63,6 +63,7 @@
         :school-collection-object="schoolCollectionObject"
         :is-step-complete="true"
         :is-final-sign-off="true"
+        :is-collection-active="isCollectionActive"
       />
     </div>
     <v-alert
@@ -75,7 +76,10 @@
     />
   </div>
 
-  <v-row justify="end">
+  <v-row
+    v-if="isCollectionActive"
+    justify="end"
+  >
     <PrimaryButton
       v-if="!displayNextBtn && !isSubmitted"
       id="step-4-next-button-school"
@@ -124,7 +128,11 @@ export default {
     isStepComplete: {
       type: Boolean,
       required: true
-    }
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
+    },
   },
   emits: ['previous', 'next', 'refresh-store'],
   data() {
