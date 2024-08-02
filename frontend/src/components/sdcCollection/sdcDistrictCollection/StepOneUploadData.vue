@@ -7,50 +7,6 @@
     </v-row>
   </div>
   <div
-    v-if="fileUploadErrorMessages.length > 0 || fileDateWarningErrorMessages.length > 0 || populatedSuccessMessage != null"
-    class="border"
-  >
-    <v-row
-      v-for="(fileUploadErrorMessage, index) in fileUploadErrorMessages"
-      :key="index"
-    >
-      <v-col>
-        <v-alert
-          density="compact"
-          variant="tonal"
-          type="error"
-          :text="fileUploadErrorMessage"
-          class="fileUploadErrorMessage"
-        />
-      </v-col>
-    </v-row>
-    <v-row
-      v-for="(fileDateWarningMessage, index) in fileDateWarningErrorMessages"
-      :key="index"
-    >
-      <v-col>
-        <v-alert
-          density="compact"
-          type="warning"
-          variant="tonal"
-          :text="fileDateWarningMessage"
-          class="fileUploadWarningMessage"
-        />
-      </v-col>
-    </v-row>
-    <v-row v-if="populatedSuccessMessage">
-      <v-col>
-        <v-alert
-          density="compact"
-          type="success"
-          variant="tonal"
-          :text="populatedSuccessMessage"
-          class="fileUploadSuccessMessage"
-        />
-      </v-col>
-    </v-row>
-  </div>
-  <div
     class="border"
   >
     <v-row>
@@ -66,7 +22,7 @@
         id="uploadButton"
         icon="mdi-file-upload"
         text="Upload 1701 Submission"
-        :loading="isReadingFile"
+        :loading="isLoadingFiles"
         :disabled="!hasEditPermission"
         :click-action="handleFileImport"
         title="Hold down either the Shift or Ctrl/Cmd key to select multiple files"
@@ -135,12 +91,105 @@
       ref="uploader"
       :key="inputKey"
       v-model="uploadFileValue"
-      :rules="fileRules"
       style="display: none"
       :accept="acceptableFileExtensions.join(',')"
       multiple
     />
   </v-form>
+  <v-overlay
+    v-model="isLoadingFiles"
+    class="align-center justify-center"
+    :persistent="true"
+  >
+    <v-card width="30em">
+      <v-card-text style="overflow-y: scroll; max-height:30em">
+        <v-row>
+          <v-col>
+            <v-alert
+              density="compact"
+              type="info"
+              text="Please wait until all files have completed uploading before leaving the screen."
+              variant="tonal"
+            >
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="(file, index) in fileUploadList"
+          :key="index"
+          height="20em"
+          style="overflow: hidden; overflow-y: auto;"
+        >
+          <v-col>
+            <v-row
+              v-if="file.status === fileUploadPending"
+              class="mt-1 mx-1 fileUploadWarning"
+            >
+              <v-col cols="1">
+                <v-progress-circular
+                  color="#003366"
+                  size="15"
+                  indeterminate
+                />
+              </v-col>
+              <v-col cols="11">
+                <span>{{ file.name + ' - ' + fileUploadPending }}</span>
+              </v-col>
+            </v-row>
+            <v-row
+              v-else-if="file.status === fileUploadSuccess && file.warning === null && file.error === null"
+              class="mt-1 mx-1 fileUploadSuccess"
+            >
+              <v-col cols="1">
+                <v-icon
+                  icon="mdi-file-document"
+                />
+              </v-col>
+              <v-col>
+                <span><b>{{ file.name }}</b> - {{ fileUploadSuccess }}</span>
+              </v-col>
+            </v-row>
+            <v-row
+              v-else-if="file.warning !== null"
+              class="mt-1 mx-1 fileUploadWarning"
+            >
+              <v-col cols="1">
+                <v-icon
+                  icon="mdi-file-document"
+                />
+              </v-col>
+              <v-col cols="11">
+                <span><b>{{ file.name }}</b> - {{ file.warning }}</span>
+              </v-col>
+            </v-row>
+            <v-row
+              v-else-if="file.error !== null"
+              class="mt-1 mx-1 fileUploadError"
+            >
+              <v-col cols="1">
+                <v-icon
+                  icon="mdi-file-document"
+                />
+              </v-col>
+              <v-col cols="11">
+                <span><b>{{ file.name }}</b> - {{ file.error }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn
+          id="closeOverlayBtn"
+          color="#003366"
+          variant="elevated"
+          text="Close"
+          :disabled="uploadFileValue !== null"
+          @click="closeOverlay"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-overlay>
 </template>
 <script>
 
@@ -157,6 +206,7 @@ import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {setFailureAlert} from '../../composable/alertComposable';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
+import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
 
 export default {
   name: 'StepOneUploadData',
@@ -184,19 +234,21 @@ export default {
       requiredRules: [v => !!v || 'Required'],
       fileRules: [],
       schoolCollectionsInProgress: [],
-      isReadingFile: false,
+      isLoadingFiles: false,
       uploadFileValue: null,
       fileInputError: [],
       fileLoaded: false,
+      fileUploadPending: FILE_UPLOAD_STATUS.PENDING,
+      fileUploadSuccess: FILE_UPLOAD_STATUS.UPLOADED,
+      fileUploadError: FILE_UPLOAD_STATUS.ERROR,
       processing: false,
       initialLoad: true,
       interval: null,
-      fileUploadErrorMessages: [],
-      fileDateWarningErrorMessages: [],
       successfulUploadCount: 0,
       successMessage: ' file(s) were successfully uploaded. Files will continue to be processed even if you leave the page.',
       populatedSuccessMessage: null,
       inputKey: 0,
+      fileUploadList: [],
       validForm: false,
       sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
       headers: [
@@ -255,24 +307,24 @@ export default {
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
     },
+    closeOverlay(){
+      this.isLoadingFiles = !this.isLoadingFiles;
+      this.fileUploadList = [];
+      this.this.uploadFileValue = null;
+    },
     async fireFileProgress(){
       await this.getFileProgress();
-      this.getFileRules();
     },
-    getFileRules() {
-      this.fileRules = [
-        value => {
-          const extension = `.${value[0].name.split('.').slice(-1)}`;
-          const failMessage = 'File extension for file ' + value[0].name + ' is invalid. Extension must be ".ver" or ".std".';
+    async validateFileExtension(fileJSON) {
+      const extension = `.${fileJSON.name.split('.').slice(-1)}`;
+      const failMessage = 'File extension for this file is invalid. Extension must be ".ver" or ".std".';
 
-          if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
-            return true;
-          }
+      if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+        return true;
+      }
 
-          this.fileUploadErrorMessages.push(failMessage);
-          return failMessage;
-        }
-      ];
+      fileJSON.status = this.fileUploadError;
+      fileJSON.error = failMessage;
     },
     next() {
       if(this.isStepComplete || this.districtCollectionObject.sdcDistrictCollectionStatusCode === 'SUBMITTED') {
@@ -303,8 +355,6 @@ export default {
       await this.$refs.documentForm.validate();
     },
     handleFileImport() {
-      this.fileUploadErrorMessages = [];
-      this.fileDateWarningErrorMessages = [];
       this.populatedSuccessMessage = null;
       this.successfulUploadCount = 0;
 
@@ -312,78 +362,85 @@ export default {
     },
     async importFile() {
       if (this.uploadFileValue.length > 0) {
-        this.isReadingFile = true;
+        this.isLoadingFiles = true;
 
         await this.validateForm();
 
         if (!this.uploadFileValue[0] || !this.validForm) {
           this.inputKey++;
-          this.isReadingFile = false;
+          this.isLoadingFiles = false;
         } else {
-          let listOfFileData = [];
-          const filePromises = this.uploadFileValue.map((fileValue) => {
+          let fileIndex = 0;
+          this.filePromises = this.uploadFileValue.map((fileValue) => {
             return new Promise((resolve, reject) => {
               let reader = new FileReader();
               reader.readAsText(fileValue);
               reader.onload = () => {
-                resolve(reader.result);
+                let statusJson = {
+                  name: fileValue.name,
+                  index: fileIndex++,
+                  fileContents: reader.result,
+                  status: FILE_UPLOAD_STATUS.PENDING,
+                  error: null,
+                  warning: null
+                };
+                this.validateFileExtension(statusJson);
+                this.fileUploadList.push(statusJson);
+                resolve(statusJson);
               };
               reader.onerror = (error) => {
-                reject(error);
+                let statusJson = {
+                  name: fileValue.name,
+                  index: fileIndex++,
+                  fileContents: null,
+                  status: FILE_UPLOAD_STATUS.ERROR,
+                  error: error,
+                  warning: null
+                };
+                this.fileUploadList.push(statusJson);
+                reject(statusJson);
               };
             });
           });
 
-          try {
-            listOfFileData = await Promise.all(filePromises);
-            await this.bulkUploadFile(listOfFileData);
-          } catch (error) {
-            console.error('Error reading files:', error);
-          } finally {
-            this.inputKey++;
-            this.isReadingFile = false;
+          await Promise.all(this.filePromises);
+
+          for await (const fileJSON of this.fileUploadList) {
+            if(fileJSON.error === null){
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              await this.uploadFile(fileJSON, fileJSON.index);
+              this.inputKey++;
+            }
           }
+          await this.getFileProgress();
+          this.uploadFileValue = null;
         }
       }
     },
-    async bulkUploadFile(listOfFilesAsString){
-
-      const uploadPromises = listOfFilesAsString.map(async (fileAsString, index) => {
-        await this.uploadFile(fileAsString, index);
-        return `Uploaded file: ${fileAsString}`;
-      });
-
-      await Promise.all(uploadPromises).then((results) => {
-        console.log('Upload results: ', results);
-      });
-
-      this.populatedSuccessMessage = this.successfulUploadCount > 0 ? this.successfulUploadCount.toString() + this.successMessage : null;
-    },
-    async uploadFile(fileAsString, index) {
+    async uploadFile(fileJSON, index) {
       let document;
       try{
         document = {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
-          fileContents: btoa(unescape(encodeURIComponent(fileAsString)))
+          fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
           .then((response) => {
-            this.addFileReportDateWarning(response.data.uploadReportDate, response.data.uploadFileName);
+            this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
           });
         this.successfulUploadCount += 1;
+        fileJSON.status = this.fileUploadSuccess;
         await this.fireFileProgress();
       } catch (e) {
         console.error(e);
-        this.fileUploadErrorMessages.push('The file ' + document['fileName'] + ' could not be processed due to the following issue: ' + e.response.data);
-      } finally {
-        this.isReadingFile = false;
-      }
+        fileJSON.error = e.response.data;
+        fileJSON.status = this.fileUploadError;
+      } 
     },
-    addFileReportDateWarning(fileDate, fileName) {
+    addFileReportDateWarningIfRequired(fileDate, fileJSON) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
       if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
-        let message = 'The date in the ' + fileName + ' file is ' + formattedFileDate + '. Please ensure that you have uploaded the correct data for this collection before continuing.';
-        this.fileDateWarningErrorMessages.push(message);
+        fileJSON.warning = 'The date in this file is ' + formattedFileDate + '. Please ensure that you have uploaded the correct data for this collection before continuing.';
       }
     },
     collectionOpenDate() {
@@ -445,6 +502,23 @@ export default {
   text-align: center;
   line-height: 1.5;
   font-size: 1rem;
+}
+
+.fileUploadError{
+  background-color: #d5304a;
+  color: white;
+  border-radius: 5px;
+}
+
+.fileUploadSuccess{
+  background-color: rgba(58, 161, 22, 0.88);
+  color: white;
+  border-radius: 5px;
+}
+
+.fileUploadWarning{
+  background-color: #f1e786;
+  border-radius: 5px;
 }
 
 .centered{
