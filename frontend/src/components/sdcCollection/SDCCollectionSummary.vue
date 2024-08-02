@@ -42,61 +42,111 @@
         />
       </v-col>
     </v-row>
-    <v-row v-else>
-      <div
-        v-if="isCollectionOpen()"
-        class="border"
+    <v-container class="border">
+      <v-row
+        v-if="!isLoading"
       >
-        <v-row>
-          <v-col cols="4">
-            <DoughnutChart :incoming-chart-data="incomingChartData" />
-          </v-col>
-          <v-col cols="8">
-            <h2 class="subjectHeading">
-              Student Level Data (1701)
-            </h2>
-            <p>
-              {{ currentCollectionTypeCode }} 
-              {{ currentCollectionYear }} Collection
-            </p>
-            <p v-if="submissionDate">
-              <i
-                id="submissionDueDate"
-                style="color: red;"
-              >
-                Submission Due: {{ submissionDate }}
-              </i>
-            </p>
-          </v-col>
-        </v-row>
-        <v-row justify="space-around">
-          <v-col
-            cols="4"
-            class="steps"
-          >
-            <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span>
-          </v-col>
-          <v-col
-            cols="8"
-            class="navigate"
-          >
-            <a
-              class="ml-1"
-              @click="startCollection()"
-            >Continue</a>
-            <v-icon
-              small
-              color="#1976d2"
+        <v-col v-if="isCollectionOpen()">
+          <v-row>
+            <v-col cols="4">
+              <DoughnutChart :incoming-chart-data="incomingChartData" />
+            </v-col>
+            <v-col cols="8">
+              <h2 class="subjectHeading">
+                Student Level Data (1701)
+              </h2>
+              <p>
+                {{ currentCollectionTypeCode }}
+                {{ currentCollectionYear }} Collection
+              </p>
+              <p v-if="submissionDate">
+                <i
+                  id="submissionDueDate"
+                  style="color: red;"
+                >
+                  Submission Due: {{ submissionDate }}
+                </i>
+              </p>
+            </v-col>
+          </v-row>
+          <v-row justify="space-around">
+            <v-col
+              cols="4"
+              class="steps"
             >
-              mdi-arrow-right
-            </v-icon>
-          </v-col>
-        </v-row>
-      </div>
-      <div v-else>
-        <p>Currently, there are no open collections.</p>
-      </div>
-    </v-row>
+              <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span>
+            </v-col>
+            <v-col
+              cols="8"
+              class="navigate"
+            >
+              <a
+                class="ml-1"
+                @click="startCollection()"
+              >Continue</a>
+              <v-icon
+                small
+                color="#1976d2"
+              >
+                mdi-arrow-right
+              </v-icon>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col v-else>
+          <p>Currently, there are no open collections.</p>
+        </v-col>
+      </v-row>
+      <v-divider class="py-6 mt-6" />
+      <v-row>
+        <v-icon icon="mdi-history" />
+        <h3 class="pl-2">
+          Collection History
+        </h3>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-select
+            v-model="searchParams.collectionType"
+            label="Collection Type"
+            density="compact"
+            variant="outlined"
+            hide-details
+            clearable
+            :items="collectionTypeCodes"
+            item-value="key"
+            item-text="value"
+            item-title="value"
+            @update:model-value="getHistoricCollections"
+          />
+        </v-col>
+        <v-col>
+          <VueDatePicker
+            v-model="searchParams.year"
+            placeholder="Year"
+            year-picker
+            reverse-years
+            :year-range="[1990, maxDate]"
+            auto-apply
+            @update:model-value="getHistoricCollections"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-data-table-server
+          id="collection-history-dataTable"
+          :items-per-page="itemsPerPage"
+          :page="pageNumber"
+          :items="collections"
+          :items-length="totalElements"
+          :headers="headers"
+          :loading="searchLoading"
+          hover
+          @update:options="loadItems"
+          @click:row="openCollection"
+        />
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 
@@ -108,15 +158,18 @@ import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
-import {capitalize} from 'lodash';
+import { capitalize } from 'lodash';
 import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../utils/sdc/SdcSteps';
-import {LocalDateTime} from '@js-joda/core';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 import {getDateFormatter} from '../../utils/format';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
   name: 'SdcCollectionSummary',
   components: {
-    DoughnutChart
+    DoughnutChart,
+    VueDatePicker
   },
   mixins: [alertMixin],
   props: {
@@ -138,11 +191,37 @@ export default {
       isLoading: false,
       currentStepIndex: 0,
       toFormatter: getDateFormatter('uuuu/MM/dd'),
-      submissionDate: null
+      submissionDate: null,
+      headers: [
+        {
+          title: 'Collection Type',
+          key: 'collectionTypeCode',
+          sortable: false
+        },
+        {
+          title: 'Year',
+          key: 'submissionDueDate',
+          sortable: false,
+          value: item => LocalDate.parse(item.submissionDueDate)?.year()
+        }
+      ],
+      itemsPerPage: 5,
+      pageNumber: 1,
+      collections: [],
+      searchLoading: false,
+      searchParams: {
+        collectionType: null,
+        year: ''
+      },
+      submissionDueDate: null,
+      totalElements: 0,
     };
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'currentStepInCollectionProcess','currentCollectionYear']),
+    maxDate() {
+      return LocalDate.now().year();
+    },
     isSchoolCollection() {
       return !!this.schoolID;
     },
@@ -156,6 +235,16 @@ export default {
       } else {
         return SDC_STEPS_DISTRICT.length;
       }
+    },
+    historicCollectionUrl() {
+      if(this.isSchoolCollection) {
+        return `${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.schoolID}/historic-paginated`;
+      } else {
+        return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.districtID}/historic-paginated`;
+      }
+    },
+    collectionTypeCodes() {
+      return Object.entries(COLLECTIONCODETYPE).map(([key, value]) => ({ key, value }));
     }
   },
   created() {
@@ -183,6 +272,28 @@ export default {
     calculateStep() {
       this.noOfStepsCompleted = this.currentStepIndex;
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
+    },
+    getHistoricCollections() {
+      this.searchLoading = true;
+      ApiService.apiAxios.get(this.historicCollectionUrl, {
+        params: {
+          pageNumber: this.pageNumber - 1,
+          pageSize: this.itemsPerPage,
+          searchParams: this.searchParams,
+          sort: {
+            'collectionEntity.submissionDueDate': 'DESC'
+          },
+        }
+      })
+        .then(response => {
+          this.collections = response?.data?.content.map(collection => {
+            return { ...collection, collectionTypeCode: COLLECTIONCODETYPE[collection.collectionTypeCode]};
+          });
+          this.totalElements = response?.data?.totalElements;
+        })
+        .finally(() => {
+          this.searchLoading = false;
+        });
     },
     getSDCCollectionByInstituteId(url) {
       this.isLoading = true;
@@ -232,12 +343,27 @@ export default {
       } else {
         return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.step;
       }
+    },
+    loadItems({ page, itemsPerPage }) {
+      this.pageNumber = page;
+      this.itemsPerPage = itemsPerPage;
+      this.getHistoricCollections();
+    },
+    openCollection(e, { item }) {
+      if(this.isSchoolCollection) {
+        router.push({name: 'sdcCollection', params: {schoolCollectionID: item?.sdcSchoolCollectionID}});
+      } else {
+        router.push({name: 'sdcDistrictCollection', params: {sdcDistrictCollectionID: item?.sdcDistrictCollectionID}});
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+:deep(.v-data-table-footer__items-per-page) {
+  display: none;
+}
 .containerSetup{
   padding-right: 10em !important;
   padding-left: 10em !important;
@@ -255,7 +381,6 @@ export default {
   padding: 35px;
   margin-bottom: 2em;
   margin-top: 2em;
-  width: 70%;
 }
 
 .steps {

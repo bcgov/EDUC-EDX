@@ -14,7 +14,7 @@
         {{ name }}
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         key="StudentDifferences"
         value="StudentDifferences"
         class="divider"
@@ -22,7 +22,7 @@
         Student Differences
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         key="resolvedDuplicates"
         value="resolvedDuplicates"
         class="divider"
@@ -40,6 +40,7 @@
           v-if="tab==='All Students'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -51,6 +52,7 @@
           v-if="tab==='French Programs'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -62,6 +64,7 @@
           v-if="tab==='Career Programs'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -73,6 +76,7 @@
           v-if="tab==='Indigenous Students & Support Programs'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -84,6 +88,7 @@
           v-if="tab==='Special Education'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -95,6 +100,7 @@
           v-if="tab==='English Language Learning'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -106,10 +112,11 @@
           v-if="tab==='Refugee'"
           :school="school"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         value="StudentDifferences"
         transition="false"
         reverse-transition="false"
@@ -120,7 +127,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         value="resolvedDuplicates"
         transition="false"
         reverse-transition="false"
@@ -178,6 +185,7 @@ import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
 import StudentDifferencesComponent
   from '../../sdcDistrictCollection/stepThreeVerifyData/StudentDifferencesComponent.vue';
 import {SCHOOL_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -207,6 +215,10 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['next', 'previous'],
@@ -221,11 +233,11 @@ export default {
   },
   computed: {
     SCHOOL_STUDENT_DIFFERENCES() {
-      return SCHOOL_STUDENT_DIFFERENCES
+      return SCHOOL_STUDENT_DIFFERENCES;
     },
     ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'currentCollectionTypeCode']),
-    ...mapState(appStore, ['activeSchoolsMap']),
+    ...mapState(appStore, ['activeSchoolsMap', 'config']),
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
@@ -246,6 +258,9 @@ export default {
     visibleTabs() {
       return this.showRefugeeTab ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee');
     },
+    isMigratedCollection() { //we don't show student differences or resolved duplicates for collections before EDX go live
+      return LocalDateTime.parse(this.schoolCollectionObject.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE));
+    }
   },
   created() {
     appStore().getInstitutesData().finally(() => {

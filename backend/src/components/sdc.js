@@ -12,6 +12,7 @@ const cacheService = require('./cache-service');
 const redisUtil = require('../util/redis/redis-utils');
 const broadcastUtil = require('../socket/broadcast-utils');
 const CONSTANTS = require('../util/constants');
+const {LocalDate} = require('@js-joda/core');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -1134,6 +1135,93 @@ async function submitDistrictSignature(req, res) {
   }
 }
 
+async function getSdcSchoolCollectionPaginated(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const search = [];
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolID', value: res.locals.requestedInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+    });
+
+    addHistoricCollectionSearchCriteria(search, req);
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionURL')}/paginated`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting collection paginated list', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
+function addHistoricCollectionSearchCriteria(search, req) {
+  search.push({
+    condition: CONDITION.AND,
+    searchCriteriaList: [{ key: 'collectionEntity.collectionStatusCode', value: 'COMPLETED', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING }]
+  });
+
+  if(req.query.searchParams?.['collectionType']) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: [{ key: 'collectionEntity.collectionTypeCode', value: req.query.searchParams?.['collectionType'], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING }]
+    });
+  }
+
+  if(req.query.searchParams?.['year']) {
+    const yearStart = LocalDate.of(req.query.searchParams?.['year'], 1, 1);
+    const yearEnd = LocalDate.of(req.query.searchParams?.['year'], 12, 31);
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: [{ key: 'collectionEntity.submissionDueDate', value: `${yearStart},${yearEnd}`, operation: FILTER_OPERATION.BETWEEN, valueType: VALUE_TYPE.DATE }]
+    });
+  }
+}
+
+async function getSdcDistrictCollectionPaginated(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const search = [];
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'districtID', value: res.locals.requestedInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+    });
+
+    addHistoricCollectionSearchCriteria(search, req);
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    let data = await getDataWithParams(token, `${config.get('sdc:districtCollectionURL')}/paginated`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting collection paginated list', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -1166,5 +1254,7 @@ module.exports = {
   getProvincialDuplicatesForSchool,
   getStudentValidationIssueCodes,
   submitDistrictSignature,
-  getStudentDifferencesByInstituteCollectionId
+  getStudentDifferencesByInstituteCollectionId,
+  getSdcDistrictCollectionPaginated,
+  getSdcSchoolCollectionPaginated
 };

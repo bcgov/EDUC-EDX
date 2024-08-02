@@ -37,6 +37,7 @@
       <SummaryComponent
         :headcount-type="config.summaryReport"
         :is-district-summary="true"
+        :is-collection-active="isCollectionActive"
       />
     </div>
   </v-container>
@@ -64,6 +65,10 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: [],

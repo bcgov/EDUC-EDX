@@ -14,7 +14,7 @@
         {{ name }}
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         key="StudentDifferences"
         value="StudentDifferences"
         class="divider"
@@ -22,7 +22,7 @@
         Student Differences
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         key="resolvedDuplicates"
         value="resolvedDuplicates"
         class="divider"
@@ -30,7 +30,7 @@
         Resolved Duplicates
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         key="SignOff"
         value="SignOff"
         class="sign-off-tab"
@@ -49,6 +49,7 @@
           v-if="tab==='All Students'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -60,6 +61,7 @@
           v-if="tab==='French Programs'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -71,6 +73,7 @@
           v-if="tab==='Career Programs'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-historic-view="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -82,6 +85,7 @@
           v-if="tab==='Indigenous Students & Support Programs'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -93,6 +97,7 @@
           v-if="tab==='Special Education'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -104,6 +109,7 @@
           v-if="tab==='English Language Learning'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
@@ -115,10 +121,11 @@
           v-if="tab==='Refugee'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         value="StudentDifferences"
         transition="false"
         reverse-transition="false"
@@ -129,7 +136,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff"
+        v-if="isFinalSignOff && !isMigratedCollection"
         value="resolvedDuplicates"
         transition="false"
         reverse-transition="false"
@@ -139,7 +146,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff" 
+        v-if="isFinalSignOff && !isMigratedCollection"
         value="SignOff"
         transition="false"
         reverse-transition="false"
@@ -153,7 +160,7 @@
   </div>
 
   <v-row
-    v-if="!isFinalSignOff"
+    v-if="!isFinalSignOff && isCollectionActive"
     justify="end"
   >
     <PrimaryButton
@@ -199,6 +206,7 @@ import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
 import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
 import {DISTRICT_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'StepThreeVerifyData',
@@ -229,6 +237,10 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['next', 'previous'],
@@ -243,11 +255,11 @@ export default {
   },
   computed: {
     DISTRICT_STUDENT_DIFFERENCES() {
-      return DISTRICT_STUDENT_DIFFERENCES
+      return DISTRICT_STUDENT_DIFFERENCES;
     },
     ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
-    ...mapState(appStore, ['activeDistrictsMap']),
+    ...mapState(appStore, ['activeDistrictsMap', 'config']),
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.DISTRICT_SDC_EDIT).length > 0);
     },
@@ -259,6 +271,9 @@ export default {
     visibleTabs() {
       return this.showRefugeeTab ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee');
     },
+    isMigratedCollection() { //we don't show student differences or resolved duplicates for collections before EDX go live
+      return LocalDateTime.parse(this.districtCollectionObject.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE));
+    }
   },
   created() {
     appStore().getInstitutesData().finally(() => {
