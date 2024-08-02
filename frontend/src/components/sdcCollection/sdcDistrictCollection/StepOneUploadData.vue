@@ -179,14 +179,19 @@
         </v-row>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn
-          id="closeOverlayBtn"
-          color="#003366"
-          variant="elevated"
-          text="Close"
-          :disabled="uploadFileValue !== null"
-          @click="closeOverlay"
-        />
+        <v-row>
+          <v-col class="d-flex justify-end">
+            <span class="mr-2 mt-1">{{inputKey}} of {{ fileUploadList.length }} Complete</span>
+            <v-btn
+              id="closeOverlayBtn"
+              color="#003366"
+              variant="elevated"
+              text="Close"
+              :disabled="uploadFileValue !== null"
+              @click="closeOverlay"
+            />
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-card>
   </v-overlay>
@@ -310,7 +315,8 @@ export default {
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
-      this.this.uploadFileValue = null;
+      this.uploadFileValue = null;
+      this.inputKey=0;
     },
     async fireFileProgress(){
       await this.getFileProgress();
