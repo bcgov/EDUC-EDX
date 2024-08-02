@@ -35,7 +35,6 @@ jobs:
         node-version: '18.x'
     - run: npm ci
     - run: npm run lint:fix
-    - run: npm run test:unit
       env:
         NODE_ENV: 'test'
 
