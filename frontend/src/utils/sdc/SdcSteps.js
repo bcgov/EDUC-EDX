@@ -145,14 +145,14 @@ export const SDC_STEPS_DISTRICT = Object.freeze([
   },
   {
     id: 'step-6',
-    title: 'Resolve Province Duplicates',
+    title: 'Provincial Duplicates',
     step: 6,
     sdcDistrictCollectionStatusCode: 'P_DUP_POST',
     index: 5
   },
   {
     id: 'step-7',
-    title: 'Review & Sign-Off Final Submission',
+    title: 'Sign-Off Final Submission',
     step: 7,
     sdcDistrictCollectionStatusCode: ['P_DUP_VRFD', 'COMPLETED'],
     index: 6

@@ -268,7 +268,7 @@
 <script>
 import {mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/institute/SdcSteps';
+import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/sdc/SdcSteps';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';

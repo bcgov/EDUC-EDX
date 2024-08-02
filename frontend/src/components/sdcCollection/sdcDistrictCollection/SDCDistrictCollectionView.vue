@@ -48,7 +48,7 @@
         />
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row no-gutters v-else>
       <v-col>
         <v-stepper
           ref="stepper"
@@ -223,7 +223,7 @@ import {defineComponent} from 'vue';
 import StepOneUploadData from './StepOneUploadData.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
-import {SDC_STEPS_DISTRICT} from '../../../utils/institute/SdcSteps';
+import {SDC_STEPS_DISTRICT} from '../../../utils/sdc/SdcSteps';
 import {mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';

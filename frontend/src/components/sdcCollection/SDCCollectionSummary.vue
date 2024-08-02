@@ -109,7 +109,7 @@ import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
 import {capitalize} from 'lodash';
-import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../utils/institute/SdcSteps';
+import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../utils/sdc/SdcSteps';
 import {LocalDateTime} from '@js-joda/core';
 import {getDateFormatter} from '../../utils/format';
 
