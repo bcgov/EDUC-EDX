@@ -115,7 +115,7 @@
                 />
               </template>
             </v-stepper-header>
-            <v-stepper-window>
+            <v-stepper-window v-if="SDC_STEPS_DISTRICT() === 'SDC_STEPS_DISTRICT'">
               <v-stepper-window-item
                 :value="1"
                 transition="false"
@@ -195,6 +195,53 @@
                 />
               </v-stepper-window-item>
             </v-stepper-window>
+
+            <v-stepper-window v-else>
+              <v-stepper-window-item
+                :value="1"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepOneUploadData
+                  :is-step-complete="isStepComplete"
+                  :district-collection-object="districtCollectionObject"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="2"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepTwoMonitor
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="3"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepThreeVerifyData
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="4"
+                transition="false"
+                reverse-transition="false"
+              >
+                <StepFiveSubmitToMinistry
+                  :district-collection-object="districtCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @next="next"
+                />
+              </v-stepper-window-item>
+            </v-stepper-window>
           </template>
         </v-stepper>
       </v-col>
@@ -233,7 +280,7 @@ import {defineComponent} from 'vue';
 import StepOneUploadData from './StepOneUploadData.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
-import {SDC_STEPS_DISTRICT} from '../../../utils/sdc/SdcSteps';
+import {SDC_STEPS_DISTRICT, SDC_STEPS_SUMMER_DISTRICT} from '../../../utils/sdc/SdcSteps';
 import {mapActions, mapState} from 'pinia';
 import StepTwoMonitor from './StepTwoMonitor.vue';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
@@ -322,7 +369,7 @@ export default defineComponent({
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate', 'setCurrentCollectionResolveDupDueDate', 'setCurrentCollectionSignOffDueDate']),
     SDC_STEPS_DISTRICT() {
-      return SDC_STEPS_DISTRICT;
+      return this.districtCollectionObject?.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_DISTRICT : SDC_STEPS_DISTRICT;
     },
     next() {
       this.refreshStore(true);

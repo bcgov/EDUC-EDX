@@ -84,7 +84,7 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
-                  :subtitle="step.step === stepToShowSubmissionDueDate ? submissionDueDate : null"
+                  :subtitle="step.showSubmissionDate ? submissionDueDate : null"
                   :editable="step.step < currentStep && !submittedStatuses.includes(schoolCollection?.sdcSchoolCollectionStatusCode)"
                   :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -97,9 +97,7 @@
                 />
               </template>
             </v-stepper-header>
-            <v-stepper-window
-              v-if="schoolCollectionObject?.sdcDistrictCollectionID === null"
-            >
+            <v-stepper-window v-if="schoolCollectionObject?.sdcDistrictCollectionID === null">
               <v-stepper-window-item
                 :value="1"
                 transition="false"
@@ -181,6 +179,18 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="8"
+                transition="false"
+                reverse-transition="false"
+              >
+                <ProvincialDuplicatesStep
+                  :school-collection-object="schoolCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @refresh-store="refreshStore"
+                  @next="next"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
             <v-stepper-window
               v-else
@@ -244,6 +254,18 @@
                   @next="next"
                 />
               </v-stepper-window-item>
+              <v-stepper-window-item
+                :value="6"
+                transition="false"
+                reverse-transition="false"
+              >
+                <ProvincialDuplicatesStep
+                  :school-collection-object="schoolCollectionObject"
+                  :is-step-complete="isStepComplete"
+                  @refresh-store="refreshStore"
+                  @next="next"
+                />
+              </v-stepper-window-item>
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -283,7 +305,7 @@
 <script>
 import {mapActions, mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/sdc/SdcSteps';
+import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL, SDC_STEPS_SUMMER_INDP_SCHOOL} from '../../../utils/sdc/SdcSteps';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
 import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
 import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
@@ -297,6 +319,7 @@ import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
+import ProvincialDuplicatesStep from './ProvincialDuplicatesStep.vue';
 
 export default {
   name: 'SDCCollectionView',
@@ -308,6 +331,7 @@ export default {
     StepOneUploadData,
     StepSixSchoolContacts,
     StepSevenSubmitData,
+    ProvincialDuplicatesStep
   },
   props: {
     schoolCollectionID: {
@@ -350,13 +374,6 @@ export default {
         return null;
       }
       return this.activeSchoolsMap.get(this.schoolID);
-    },
-    stepToShowSubmissionDueDate() {
-      if (this.schoolCollectionObject?.sdcDistrictCollectionID === null) {
-        //Step 7 for independent schools.
-        return 7;
-      }
-      return 5;
     }
   },
   watch: {
@@ -394,24 +411,10 @@ export default {
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate']),
     compiledSdcSteps() {
-      let stepMap = {};
-
       if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
-        return SDC_STEPS_SCHOOL.filter(obj => {
-          if (!stepMap[obj.step]) {
-            stepMap[obj.step] = true;
-            return true;
-          }
-          return false;
-        });
+        return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_SCHOOL : SDC_STEPS_SCHOOL;
       } else {
-        return SDC_STEPS_INDP_SCHOOL.filter(obj => {
-          if (!stepMap[obj.step]) {
-            stepMap[obj.step] = true;
-            return true;
-          }
-          return false;
-        });
+        return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_INDP_SCHOOL : SDC_STEPS_INDP_SCHOOL;
       }
     },
     next() {
