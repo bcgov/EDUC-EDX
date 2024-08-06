@@ -146,6 +146,7 @@
                 variant="underlined"
                 hide-details="auto"
                 :clearable="true"
+                :menu-props="{ maxWidth: 0 }"
                 @update:model-value="applyFundingWarningFilter"
               >
                 <template #prepend-inner>
@@ -162,7 +163,10 @@
                     :base-color="getIconColour(item.raw.severityTypeCode)"
                     title=""
                   >
-                    <v-list-item-title style="color: black !important;">
+                    <v-list-item-title
+                      class="text-wrap"
+                      style="color: black !important;"
+                    >
                       {{
                         item.title
                       }}
@@ -750,6 +754,5 @@ export default {
    .error-message {
     text-align: end;
    }
-
   </style>
 
