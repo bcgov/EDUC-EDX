@@ -51,7 +51,10 @@
         />
       </v-col>
     </v-row>
-    <v-row no-gutters v-else-if="isSdcDistrictCollectionActive">
+    <v-row
+      v-else-if="isSdcDistrictCollectionActive"
+      no-gutters
+    >
       <v-col>
         <v-stepper
           ref="stepper"
@@ -356,15 +359,15 @@ export default defineComponent({
       this.schoolsMap = this.activeSchoolsMap;
     });
     await sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
-      .then(() => {
+      .then(async () => {
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection?.districtID;
         this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+        await this.getActiveSdcDistrictCollection();
       })
       .finally(() => {
         this.isLoading = !this.isLoading;
       });
-    this.getActiveSdcDistrictCollection();
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate', 'setCurrentCollectionResolveDupDueDate', 'setCurrentCollectionSignOffDueDate']),
@@ -401,8 +404,8 @@ export default defineComponent({
     getStepOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.step;
     },
-    getActiveSdcDistrictCollection() {
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
+    async getActiveSdcDistrictCollection() {
+      await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
         .then(response => {
           this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
           this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
@@ -412,8 +415,10 @@ export default defineComponent({
           this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
           this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);
           this.signOffDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSignOffDueDate);
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert(error.response?.data?.message || error.message);
         });
-
     }
   }
 });
