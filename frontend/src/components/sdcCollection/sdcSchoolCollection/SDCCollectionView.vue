@@ -61,6 +61,7 @@
       </v-col>
     </v-row>
     <v-row
+      no-gutters
       v-else-if="isSdcSchoolCollectionActive"
       class="mt-0"
     >
