@@ -450,18 +450,10 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
-      } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
-      }
+      return this.compiledSdcSteps().find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
     },
     getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      if(this.schoolCollectionObject.sdcDistrictCollectionID != null) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
-      } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
-      }
+      return this.compiledSdcSteps().find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
     },
     getActiveSdcSchoolCollection() {
       this.isLoading = true;

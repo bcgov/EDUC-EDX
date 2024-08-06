@@ -230,6 +230,7 @@
                 <StepThreeVerifyData
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
+                  :is-collection-active="isSdcDistrictCollectionActive"
                   @next="next"
                 />
               </v-stepper-window-item>
@@ -399,10 +400,10 @@ export default defineComponent({
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
-      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.index;
+      return this.SDC_STEPS_DISTRICT().find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.index;
     },
     getStepOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
-      return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.step;
+      return this.SDC_STEPS_DISTRICT().find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.step;
     },
     async getActiveSdcDistrictCollection() {
       await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
