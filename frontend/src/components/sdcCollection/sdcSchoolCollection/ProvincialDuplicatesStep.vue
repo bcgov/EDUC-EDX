@@ -77,7 +77,7 @@
     <PrimaryButton
       id="step-4-next-button-district"
       class="mr-3 mb-3"
-      :disabled="disableNextButton() || apiError || !canMoveForward()"
+      :disabled="disableNextButton() || apiError"
       icon="mdi-check"
       text="Verify as Correct"
       :click-action="next"
@@ -136,7 +136,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['next'],
+  emits: ['next', 'refresh-store'],
   data() {
     return {
       apiError: false,
@@ -174,9 +174,6 @@ export default defineComponent({
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
-    canMoveForward(){
-      return this.isStepComplete || this.hasEditPermission;
-    },
     disableNextButton() {
       return this.nonAllowableDuplicates.length > 0 || this.nonAllowableProgramDuplicates.length > 0;
     },
@@ -203,7 +200,7 @@ export default defineComponent({
       };
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.$route.params.schoolCollectionID}`, updateCollection)
         .then(() => {
-          this.$emit('next');
+          this.$emit('refresh-store');
         })
         .catch(error => {
           console.error(error);
@@ -211,11 +208,7 @@ export default defineComponent({
         });
     },
     next() {
-      if(this.isStepComplete) {
-        this.$emit('next');
-      } else {
         this.markSchoolStepAsComplete();
-      }
     },
   }
 });

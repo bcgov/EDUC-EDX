@@ -158,9 +158,9 @@ import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
-import { capitalize } from 'lodash';
-import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../utils/sdc/SdcSteps';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
+import {capitalize} from 'lodash';
+import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_DISTRICT, SDC_STEPS_SUMMER_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL} from '../../utils/sdc/SdcSteps';
 import {getDateFormatter} from '../../utils/format';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
@@ -228,12 +228,12 @@ export default {
     totalStepsInCollection() {
       if(this.isSchoolCollection) {
         if(this.sdcDistrictCollectionID){
-          return new Set(SDC_STEPS_SCHOOL.map(step => step.step)).size;
+          return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_SCHOOL.length : SDC_STEPS_SCHOOL.length;
         } else {
-          return new Set(SDC_STEPS_INDP_SCHOOL.map(step => step.step)).size;
+          return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_INDP_SCHOOL.length : SDC_STEPS_INDP_SCHOOL.length;
         }
       } else {
-        return SDC_STEPS_DISTRICT.length;
+        return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_DISTRICT.length : SDC_STEPS_DISTRICT.length;
       }
     },
     historicCollectionUrl() {
