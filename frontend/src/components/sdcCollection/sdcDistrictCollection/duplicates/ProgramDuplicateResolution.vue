@@ -259,7 +259,7 @@ export default {
         let careerProg1Description = sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode) ? `
           ${sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode)?.enrolledProgramCode} - ${sdcCollectionStore().enrolledProgramCodesMap.get(stud1CareerProgramCode).description}` : this.sdcStudentOneDetailCopy.careerProgramCode;
         let careerProg2Description = sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode) ? `
-          ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode)?.enrolledProgramCode} - ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode).description}` : this.sdcStudentOneDetailCopy.careerProgramCode;
+          ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode)?.enrolledProgramCode} - ${sdcCollectionStore().enrolledProgramCodesMap.get(stud2CareerProgramCode).description}` : this.sdcStudentTwoDetailCopy.careerProgramCode;
 
         let description = careerProg1Description + ' & ' + careerProg2Description;
         programs.push({code: [stud1CareerProgramCode, stud2CareerProgramCode], description: description, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy})
