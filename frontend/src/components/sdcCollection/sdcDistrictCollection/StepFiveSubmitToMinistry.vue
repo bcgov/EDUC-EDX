@@ -41,6 +41,7 @@
         <StepThreeVerifyData
           :district-collection-object="districtCollectionObject"
           :is-final-sign-off="true"
+          :is-collection-active="isCollectionActive"
         />
       </div>
     </div>
@@ -94,6 +95,10 @@ export default {
       default: null
     },
     isStepComplete: {
+      type: Boolean,
+      required: true
+    },
+    isCollectionActive: {
       type: Boolean,
       required: true
     }
