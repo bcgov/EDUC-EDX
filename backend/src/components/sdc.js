@@ -843,9 +843,7 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
-      if(!isProvincialDuplicate) {
-        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
-      }
+      setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
       setCanMoveToCrossEnrollment(sdcDuplicate);
       result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
     }
