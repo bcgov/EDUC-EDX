@@ -118,7 +118,7 @@
                 />
               </template>
             </v-stepper-header>
-            <v-stepper-window v-if="SDC_STEPS_DISTRICT() === 'SDC_STEPS_DISTRICT'">
+            <v-stepper-window v-if="!isSummerCollection">
               <v-stepper-window-item
                 :value="1"
                 transition="false"
@@ -322,7 +322,8 @@ export default defineComponent({
       wsNotificationText: '',
       schoolsMap: null,
       submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
-      isSdcDistrictCollectionActive: false
+      isSdcDistrictCollectionActive: false,
+      isSummerCollection: false
     };
   },
   computed: {
@@ -364,6 +365,7 @@ export default defineComponent({
         this.districtCollectionObject = this.districtCollection;
         this.districtID = this.districtCollection?.districtID;
         this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+        this.isSummerCollection = this.districtCollectionObject?.collectionTypeCode === 'JULY';
         await this.getActiveSdcDistrictCollection();
       })
       .finally(() => {
@@ -373,7 +375,7 @@ export default defineComponent({
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate', 'setCurrentCollectionResolveDupDueDate', 'setCurrentCollectionSignOffDueDate']),
     SDC_STEPS_DISTRICT() {
-      return this.districtCollectionObject?.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_DISTRICT : SDC_STEPS_DISTRICT;
+      return this.isSummerCollection ? SDC_STEPS_SUMMER_DISTRICT : SDC_STEPS_DISTRICT;
     },
     next() {
       this.refreshStore(true);
