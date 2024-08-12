@@ -73,7 +73,7 @@
           v-if="tab==='Career Programs'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
-          :is-historic-view="isCollectionActive"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
       <v-window-item
