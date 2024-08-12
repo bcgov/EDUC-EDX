@@ -95,7 +95,7 @@
                       >
                         <template #append>
                           <v-btn
-                            id="saveRecord"
+                            id="getPenBtn"
                             color="#003366"
                             variant="elevated"
                             density="compact"

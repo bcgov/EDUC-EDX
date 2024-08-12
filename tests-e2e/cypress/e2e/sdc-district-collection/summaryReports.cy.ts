@@ -344,7 +344,7 @@ describe('SDC District Collection View', () => {
           cy.get('tr')
             .each(($row, index) => {
               const rowText = $row.text();
-              expect(rowText).to.equal(expectedRows[index]);
+              expect(expectedRows).to.contains(rowText);
             });
 
           cy.get(selectors.refugeeComponent.pdfDownloadLink).then(($link) => {

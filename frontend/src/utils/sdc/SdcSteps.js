@@ -155,7 +155,7 @@ export const SDC_STEPS_INDP_SCHOOL = Object.freeze([
     showSubmissionDate: true
   },
   {
-    id: 'step-6',
+    id: 'step-8',
     title: 'Resolve Province Duplicates',
     step: 8,
     sdcSchoolCollectionStatusCode: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
