@@ -483,6 +483,7 @@ export default {
     refresh() {
       this.openEditView = !this.openEditView;
       this.getSummaryCounts();
+      this.getStudentValidationIssueCodesInCollection();
       this.getSDCSchoolCollectionStudentPaginated();
       this.selectedStudents=[];
     },
