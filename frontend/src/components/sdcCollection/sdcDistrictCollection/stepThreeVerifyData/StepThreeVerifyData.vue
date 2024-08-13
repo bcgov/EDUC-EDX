@@ -89,12 +89,12 @@
         />
       </v-window-item>
       <v-window-item
-        value="Special Education"
+        value="Inclusive Education"
         transition="false"
         reverse-transition="false"
       >
         <SpecialEduComponent
-          v-if="tab==='Special Education'"
+          v-if="tab==='Inclusive Education'"
           :district="district"
           :is-final-sign-off="isFinalSignOff"
           :is-collection-active="isCollectionActive"

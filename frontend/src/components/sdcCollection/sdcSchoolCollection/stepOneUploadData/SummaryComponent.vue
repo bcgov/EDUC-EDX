@@ -77,7 +77,7 @@
           :table-i-d="currentTableID"
         />
       </v-window-item>
-      <v-window-item value="Special Education">
+      <v-window-item value="Inclusive Education">
         <HeadCountReportComponent
           data-cy="spedTab"
           :headcount-table-data="headcountTableData"
@@ -128,7 +128,7 @@ export default defineComponent({
         'French Programs',
         'Career Programs',
         'Indigenous Students & Support Programs',
-        'Special Education',
+        'Inclusive Education',
         'English Language Learning',
         'Refugee'
       ],
@@ -145,7 +145,7 @@ export default defineComponent({
         return FRENCH_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='Career Programs') {
         return CAREER_PR.summaryReport[0].endpoint;
-      } else if(this.selectedTab==='Special Education') {
+      } else if(this.selectedTab==='Inclusive Education') {
         return SPECIALED_PR.summaryReport[0].endpoint;
       } else if(this.selectedTab==='Indigenous Students & Support Programs') {
         return INDSUPPORT_PR.summaryReport[0].endpoint;
@@ -161,7 +161,7 @@ export default defineComponent({
         return FRENCH_PR.summaryReport[0].tableID;
       } else if(this.selectedTab==='Career Programs') {
         return CAREER_PR.summaryReport[0].tableID;
-      } else if(this.selectedTab==='Special Education') {
+      } else if(this.selectedTab==='Inclusive Education') {
         return SPECIALED_PR.summaryReport[0].tableID;
       } else if(this.selectedTab==='Indigenous Students & Support Programs') {
         return INDSUPPORT_PR.summaryReport[0].tableID;
