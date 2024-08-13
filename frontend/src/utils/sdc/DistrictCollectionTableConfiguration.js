@@ -45,7 +45,7 @@ export const FTE = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
     ],
     summaryReport: [
       { tableID: 'eligEnrolmentFTE', title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
@@ -118,7 +118,7 @@ export const FTE = Object.freeze(
         filterOptions: [
           ...SPED_FILTER.filterOptions,
           {
-            title: 'No Special Education Category',
+            title: 'No Inclusive Education Category',
             id: 'noSpedCategory',
             value: 'noSpedCode'
           }
@@ -236,7 +236,7 @@ export const INDSUPPORT_PR = Object.freeze(
 
 export const SPECIALED_PR = Object.freeze(
   {
-    defaultFilter: { label: 'SPECIALED_PR', description: 'Has Special Education Category' },
+    defaultFilter: { label: 'SPECIALED_PR', description: 'Has Inclusive Education Category' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
@@ -246,11 +246,11 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
-      { title: 'Special Education Category', key: 'mappedSpedCode' },
+      { title: 'Inclusive Education Category', key: 'mappedSpedCode' },
     ],
     summaryReport: [
-      { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Special Education Headcount', endpoint:'special-ed'},
-      { tableID: 'eligSpecialEdHeadcountPerSchool', title: 'Eligible Special Education Headcount per School', endpoint:'special-ed-per-school'}
+      { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Inclusive Education Headcount', endpoint:'special-ed'},
+      { tableID: 'eligSpecialEdHeadcountPerSchool', title: 'Eligible Inclusive Education Headcount per School', endpoint:'special-ed-per-school'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -397,7 +397,7 @@ export const DISTRICT_STUDENT_DIFFERENCES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
       { title: 'Other Courses', key: 'otherCourses' }
     ],
@@ -468,7 +468,7 @@ export const DISTRICT_STUDENT_DIFFERENCES = Object.freeze(
         filterOptions: [
           ...SPED_FILTER.filterOptions,
           {
-            title: 'No Special Education Category',
+            title: 'No Inclusive Education Category',
             id: 'noSpedCategory',
             value: 'noSpedCode'
           }
@@ -489,7 +489,7 @@ export const SCHOOL_STUDENT_DIFFERENCES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'Courses For Grad', key: 'mappedNoOfCourses', subHeader: { title: 'Support Blocks', key: 'supportBlocks' } },
       { title: 'Other Courses', key: 'otherCourses' }
     ],
@@ -560,7 +560,7 @@ export const SCHOOL_STUDENT_DIFFERENCES = Object.freeze(
         filterOptions: [
           ...SPED_FILTER.filterOptions,
           {
-            title: 'No Special Education Category',
+            title: 'No Inclusive Education Category',
             id: 'noSpedCategory',
             value: 'noSpedCode'
           }
@@ -582,7 +582,7 @@ export const IN_DISTRICT_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'Resolution', key: 'resolution' },
     ],
     allowableTableHeaders: [
@@ -595,7 +595,7 @@ export const IN_DISTRICT_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
     ],
     resolvedTableHeaders: [
       { title: 'School', key: 'schoolName' },
@@ -607,7 +607,7 @@ export const IN_DISTRICT_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'Resolution', key: 'resolution' },
     ],
     resolvedProgramDuplicateTableHeaders: [
@@ -620,7 +620,7 @@ export const IN_DISTRICT_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } }
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } }
     ],
   }
 );
@@ -638,7 +638,7 @@ export const DISTRICT_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' },
       { title: 'Resolution', key: 'resolution' },
     ],
@@ -653,7 +653,7 @@ export const DISTRICT_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' }
     ],
     resolvedTableHeaders: [
@@ -667,7 +667,7 @@ export const DISTRICT_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' },
       { title: 'Resolution', key: 'resolution' },
     ],
@@ -682,7 +682,7 @@ export const DISTRICT_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' }
     ],
   }
@@ -701,7 +701,7 @@ export const SCHOOL_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' },
       { title: 'Resolution', key: 'resolution' },
     ],
@@ -716,7 +716,7 @@ export const SCHOOL_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' }
     ],
     resolvedTableHeaders: [
@@ -730,7 +730,7 @@ export const SCHOOL_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' },
       { title: 'Resolution', key: 'resolution' },
     ],
@@ -745,7 +745,7 @@ export const SCHOOL_PROVINCIAL_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: 'FTE', key: 'fte' }
     ],
   }
