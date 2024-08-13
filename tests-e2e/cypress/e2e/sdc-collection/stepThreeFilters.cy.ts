@@ -64,7 +64,7 @@ describe('SDC School Collection View', () => {
       });
     });
 
-    it('verifies filters for special education tab', () => {
+    it('verifies filters for inclusive education tab', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
@@ -87,7 +87,7 @@ describe('SDC School Collection View', () => {
       });
     });
 
-    it('verifies special filters for special education tab', () => {
+    it('verifies special filters for inclusive education tab', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
