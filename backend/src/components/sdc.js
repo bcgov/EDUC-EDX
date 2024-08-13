@@ -630,6 +630,8 @@ function getFileDetails(reportType, mincode) {
     'ELL_HEADCOUNT': { filename: `ELLHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL': { filename: `RefugeeHeadcount_${mincode}_Dis.pdf`, contentType: 'application/pdf' },
     'SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL': { filename: `SpecialEdHeadcount_District_${mincode}_PerSchool.pdf`, contentType: 'application/pdf' },
     'INDIGENOUS_HEADCOUNT': { filename: `IndigenousHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'BAND_RESIDENCE_HEADCOUNT': { filename: `BandOfResidenceHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'CAREER_HEADCOUNT': { filename: `CareerProgramsHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },

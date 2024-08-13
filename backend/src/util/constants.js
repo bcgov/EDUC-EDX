@@ -184,6 +184,8 @@ const reportTypeValues = [
   ['ell', 'ELL_HEADCOUNT'],
   ['refugee-per-school_dis', 'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL'],
   ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
+  ['special-ed_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT'],
+  ['special-ed-per-school_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
