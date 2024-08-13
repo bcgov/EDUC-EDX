@@ -106,7 +106,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allSchoolFTETotal).should('contain.text', '9.1');
     });
 
-    it('can view Eligible Special Education Headcount', () => {
+    it('can view Eligible Inclusive Education Headcount', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
       cy.get(selectors.stepThreeTabSlider.specialEducationButton).should('exist').click();
@@ -141,7 +141,7 @@ describe('SDC District Collection View', () => {
         });
     });
 
-    it('can view Eligible Special Education Headcount per School', () => {
+    it('can view Eligible Inclusive Education Headcount per School', () => {
       cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=special-ed-per-school&compare=false').as('tableLoaded');
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
@@ -149,7 +149,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.specialEducationComponent.summaryButton).should('exist').click();
 
       cy.get('#reports').parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Eligible Special Education Headcount per School').click();
+      cy.get(selectors.dropdown.listItem).contains('Eligible Inclusive Education Headcount per School').click();
       cy.wait('@tableLoaded');
       cy.get(selectors.specialEducationComponent.headcountReportPerSchool).should('be.visible');
 

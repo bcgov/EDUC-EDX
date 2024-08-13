@@ -362,7 +362,7 @@ export default {
     ellTabButton: '[data-cy="English Language Learning"]',
     infoNote: 'p.text-medium-emphasis.font-italic',
     spedTab: '[data-cy="spedTab"]',
-    spedTabButton: '[data-cy="Special Education"]',
+    spedTabButton: '[data-cy="Inclusive Education"]',
   },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {
@@ -424,7 +424,7 @@ export default {
     englishLanguageLearningButton: 'button[value="English Language Learning"]',
     frenchProgramsButton: 'button[value="French Programs"]',
     indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
-    specialEducationButton: 'button[value="Special Education"]',
+    specialEducationButton: 'button[value="Inclusive Education"]',
     refugeeButton: 'button[value="Refugee"]'
   },
   studentLevelData: {
