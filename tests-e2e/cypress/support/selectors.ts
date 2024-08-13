@@ -195,6 +195,7 @@ export default {
     allowableTab: '#allowableButton',
   },
   filters: {
+    applyPenLocalIdNameFilterBtn: '#applyPenLocalIdNameFilter',
     clearFilter: '#clear-filter',
     studentType: '#studentType', 
     warnings: '#warnings',

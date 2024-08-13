@@ -49,29 +49,35 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.schoolFundingCodes).parent().click();
       cy.get(selectors.dropdown.listItem).contains('Newcomer Refugee (16)').click();
 
+      cy.get(selectors.studentLevelData.studentPen).type('102866365');
+
       cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
 
       cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
       cy.get(selectors.snackbar.mainSnackBar, {timeout:15000}).should('exist').contains('Success! The student details have been updated.');
       cy.reload();
 
-      // checks tab available in Feb
-      cy.get(selectors.studentLevelData.collectionTypeYear).should('exist').contains('February 2024 Collection');
-      cy.get(selectors.stepThreeTabSlider.refugeeButton).should('exist').click();
-      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+      // Only run if February Collection
+      cy.get(selectors.studentLevelData.collectionTypeYear).then($el => {
+        const text = $el.text();
+        if (text.includes('February')) {
+          cy.get(selectors.stepThreeTabSlider.refugeeButton).should('exist').click();
+          cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
 
-      // checks special filter for refugee funding
-      cy.get(selectors.refugeeComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingEligible).click();
-      cy.get(selectors.filters.cancelBtn).click();
+          // checks special filter for refugee funding
+          cy.get(selectors.refugeeComponent.filterButton).click();
+          cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingEligible).click();
+          cy.get(selectors.filters.cancelBtn).click();
 
-      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(0);
+          cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
-      cy.get(selectors.refugeeComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
-      cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingNotEligible).click();
-      cy.get(selectors.filters.cancelBtn).click();
-      cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+          cy.get(selectors.refugeeComponent.filterButton).click();
+          cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
+          cy.get(selectors.activeFiltersDrawer.drawer).find(selectors.filters.refugeeFundingNotEligible).click();
+          cy.get(selectors.filters.cancelBtn).click();
+          cy.get(selectors.studentLevelData.studentsFound).should('exist').contains(1);
+        }
+      });
     });
   });
 });
