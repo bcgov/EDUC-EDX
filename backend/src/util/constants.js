@@ -187,6 +187,8 @@ const reportTypeValues = [
   ['special-ed_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT'],
   ['special-ed-per-school_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
+  ['indigenous_dis', 'DIS_INDIGENOUS_HEADCOUNT'],
+  ['indigenous-per-school_dis', 'DIS_INDIGENOUS_HEADCOUNT_PER_SCHOOL'],
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
