@@ -73,7 +73,6 @@
     </v-window>
   </div>
 
-  <div v-if="schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'COMPLETED'">
     <v-row justify="end">
       <PrimaryButton
         id="step-4-next-button-district"
@@ -102,7 +101,6 @@
         duplicate(s) unresolved
       </p>
     </v-row>
-  </div>
 
 </template>
 <script>
