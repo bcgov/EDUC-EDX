@@ -73,34 +73,35 @@
     </v-window>
   </div>
 
-  <v-row justify="end">
-    <PrimaryButton
-      id="step-4-next-button-district"
-      class="mr-3 mb-3"
-      :disabled="disableNextButton() || apiError"
-      icon="mdi-check"
-      text="Verify as Correct"
-      :click-action="next"
-    />
-  </v-row>
-  <v-row
-    v-if="disableNextButton()"
-    justify="end"
-    class="my-0"
-  >
-    <p class="form-hint mr-3">
-      <span v-if="nonAllowableDuplicates.length > 0">
-        {{ nonAllowableDuplicates.length }} enrollment
-      </span>
-      <span v-if="nonAllowableDuplicates.length > 0 && nonAllowableProgramDuplicates.length > 0">
-        and
-      </span>
-      <span v-if="nonAllowableProgramDuplicates.length > 0">
-        {{ nonAllowableProgramDuplicates.length }} program
-      </span>
-      duplicate(s) unresolved
-    </p>
-  </v-row>
+    <v-row justify="end">
+      <PrimaryButton
+        id="step-4-next-button-district"
+        class="mr-3 mb-3"
+        :disabled="disableNextButton() || apiError || !hasEditPermission"
+        icon="mdi-check"
+        text="Verify as Correct"
+        :click-action="next"
+      />
+    </v-row>
+    <v-row
+      v-if="disableNextButton()"
+      justify="end"
+      class="my-0"
+    >
+      <p class="form-hint mr-3">
+        <span v-if="nonAllowableDuplicates.length > 0">
+          {{ nonAllowableDuplicates.length }} enrollment
+        </span>
+        <span v-if="nonAllowableDuplicates.length > 0 && nonAllowableProgramDuplicates.length > 0">
+          and
+        </span>
+        <span v-if="nonAllowableProgramDuplicates.length > 0">
+          {{ nonAllowableProgramDuplicates.length }} program
+        </span>
+        duplicate(s) unresolved
+      </p>
+    </v-row>
+
 </template>
 <script>
 import {defineComponent} from 'vue';
@@ -162,7 +163,7 @@ export default defineComponent({
     ...mapState(authStore, ['userInfo']),
     PROVINCIAL_DUPLICATES() {
       return SCHOOL_PROVINCIAL_DUPLICATES;
-    },
+    }
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {

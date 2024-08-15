@@ -49,7 +49,7 @@
 
   <v-row justify="end">
     <PrimaryButton
-      v-if="!displayNextBtn"
+      v-if="!displayNextBtn "
       id="step-5-submit-data-button"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -58,7 +58,7 @@
       :click-action="submit"
     />
     <PrimaryButton
-      v-else
+      v-else-if="districtCollectionObject?.collectionTypeCode !== 'JULY'"
       id="step-5-submit-data-button"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -133,15 +133,17 @@ export default {
       return this.isStepComplete || this.hasEditPermission;
     },
     submit() {
-      if(this.districtCollectionObject?.sdcDistrictCollectionStatusCode !== 'SUBMITTED') {
-        this.markStepAsComplete();
+      if(this.districtCollectionObject?.collectionTypeCode === 'JULY') {
+        this.markStepAsComplete('COMPLETED');
+      } else {
+        this.markStepAsComplete('SUBMITTED');
       }
     },
-    markStepAsComplete(){
+    markStepAsComplete(status){
       this.isLoading = true;
       let updateCollection = {
         districtCollection: this.districtCollectionObject,
-        status: 'SUBMITTED'
+        status: status
       };
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
         .then(() => {
