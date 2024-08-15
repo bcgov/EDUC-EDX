@@ -81,7 +81,7 @@
     justify="end"
   >
     <PrimaryButton
-      v-if="!displayNextBtn && !isSubmitted"
+      v-if="!displayNextBtn && !isSubmitted "
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -90,7 +90,7 @@
       :click-action="submit"
     />
     <PrimaryButton
-      v-else-if="!isSubmitted"
+      v-else-if="!isSubmitted && schoolCollectionObject.collectionTypeCode !== 'JULY'"
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -169,15 +169,17 @@ export default {
   },
   methods: {
     submit() {
-      if(this.schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED') {
-        this.markStepAsComplete();
+      if(this.schoolCollectionObject?.collectionTypeCode === 'JULY') {
+        this.markStepAsComplete('COMPLETED');
+      } else {
+        this.markStepAsComplete('SUBMITTED');
       }
     },
-    markStepAsComplete() {
+    markStepAsComplete(status) {
       this.isLoading = true;
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
-        status: 'SUBMITTED'
+        status: status
       };
       ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {
