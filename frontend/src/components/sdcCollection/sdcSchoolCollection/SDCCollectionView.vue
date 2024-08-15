@@ -61,8 +61,8 @@
       </v-col>
     </v-row>
     <v-row
-      no-gutters
       v-else-if="isSdcSchoolCollectionActive"
+      no-gutters
       class="mt-0"
     >
       <v-col class="pt-0">
@@ -98,175 +98,45 @@
                 />
               </template>
             </v-stepper-header>
-            <v-stepper-window v-if="schoolCollectionObject?.sdcDistrictCollectionID === null">
-              <v-stepper-window-item
-                :value="1"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepOneUploadData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                  @refresh-store="refreshStore"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="2"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepTwoViewDataIssues
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="3"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepThreeVerifyData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  :is-collection-active="isSdcSchoolCollectionActive"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="4"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFourDuplicatesProcessing
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="5"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFiveSchoolDetails
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="6"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSixSchoolContacts
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="7"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSevenSubmitData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  :is-collection-active="isSdcSchoolCollectionActive"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="8"
-                transition="false"
-                reverse-transition="false"
-              >
-                <ProvincialDuplicatesStep
-                  :school-collection-object="schoolCollectionObject"
-                  :is-step-complete="isStepComplete"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
+            <v-stepper-window v-if="schoolCollectionObject?.sdcDistrictCollectionID === null && schoolCollectionObject?.collectionTypeCode === 'JULY'">
+              <IndySummerSchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
+            </v-stepper-window>
+            <v-stepper-window v-else-if="schoolCollectionObject?.sdcDistrictCollectionID === null">
+              <IndySchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
+            </v-stepper-window>
+            <v-stepper-window
+              v-else-if="schoolCollectionObject?.collectionTypeCode === 'JULY'"
+            >
+              <SummerSchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
             </v-stepper-window>
             <v-stepper-window
               v-else
             >
-              <v-stepper-window-item
-                :value="1"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepOneUploadData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                  @refresh-store="refreshStore"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="2"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepTwoViewDataIssues
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="3"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepThreeVerifyData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  :is-collection-active="isSdcSchoolCollectionActive"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="4"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFourDuplicatesProcessing
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="5"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSevenSubmitData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  :is-collection-active="isSdcSchoolCollectionActive"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="6"
-                transition="false"
-                reverse-transition="false"
-              >
-                <ProvincialDuplicatesStep
-                  :school-collection-object="schoolCollectionObject"
-                  :is-step-complete="isStepComplete"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
+              <SchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
             </v-stepper-window>
           </template>
         </v-stepper>
@@ -308,31 +178,25 @@ import {mapActions, mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL, SDC_STEPS_SUMMER_INDP_SCHOOL} from '../../../utils/sdc/SdcSteps';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
-import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
-import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
-import StepFourDuplicatesProcessing from './StepFourDuplicatesProcessing.vue';
-import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
-import StepFiveSchoolDetails from './StepFiveSchoolDetails.vue';
-import StepSixSchoolContacts from './StepSixSchoolContacts.vue';
 import StepSevenSubmitData from './StepSevenSubmitData.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import ProvincialDuplicatesStep from './ProvincialDuplicatesStep.vue';
+import IndySchoolSteps from './steppers/IndySchoolSteps.vue';
+import IndySummerSchoolSteps from './steppers/IndySummerSchoolSteps.vue';
+import SummerSchoolSteps from './steppers/SummerSchoolSteps.vue';
+import SchoolSteps from './steppers/SchoolSteps.vue';
 
 export default {
   name: 'SDCCollectionView',
   components: {
-    StepFourDuplicatesProcessing,
-    StepFiveSchoolDetails,
-    StepThreeVerifyData,
-    StepTwoViewDataIssues,
-    StepOneUploadData,
-    StepSixSchoolContacts,
-    StepSevenSubmitData,
-    ProvincialDuplicatesStep
+    IndySchoolSteps,
+    IndySummerSchoolSteps,
+    SchoolSteps,
+    SummerSchoolSteps,
+    StepSevenSubmitData
   },
   props: {
     schoolCollectionID: {

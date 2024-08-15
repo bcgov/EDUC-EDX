@@ -48,10 +48,18 @@ export const SDC_STEPS_SCHOOL = Object.freeze([
     id: 'step-6',
     title: 'Resolve Province Duplicates',
     step: 6,
-    sdcSchoolCollectionStatusCode: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+    sdcSchoolCollectionStatusCode: ['P_DUP_POST'],
     index: 6,
     showSubmissionDate: false
   },
+  {
+    id: 'step-7',
+    title: 'Completed',
+    step: 7,
+    sdcSchoolCollectionStatusCode: ['COMPLETED'],
+    index: 7,
+    showSubmissionDate: false
+  }
 ]);
 
 export const SDC_STEPS_SUMMER_SCHOOL = Object.freeze([
@@ -91,7 +99,7 @@ export const SDC_STEPS_SUMMER_SCHOOL = Object.freeze([
     id: 'step-5',
     title: 'Submit Data',
     step: 5,
-    sdcSchoolCollectionStatusCode: ['DUP_VRFD','SUBMITTED'],
+    sdcSchoolCollectionStatusCode: ['SUBMITTED', 'COMPLETED'],
     index: 5,
     showSubmissionDate: true
   }
@@ -158,10 +166,18 @@ export const SDC_STEPS_INDP_SCHOOL = Object.freeze([
     id: 'step-8',
     title: 'Resolve Province Duplicates',
     step: 8,
-    sdcSchoolCollectionStatusCode: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+    sdcSchoolCollectionStatusCode: ['P_DUP_POST'],
     index: 8,
     showSubmissionDate: false
   },
+  {
+    id: 'step-9',
+    title: 'Completed',
+    step: 9,
+    sdcSchoolCollectionStatusCode: ['COMPLETED'],
+    index: 9,
+    showSubmissionDate: false
+  }
 ]);
 
 export const SDC_STEPS_SUMMER_INDP_SCHOOL = Object.freeze([

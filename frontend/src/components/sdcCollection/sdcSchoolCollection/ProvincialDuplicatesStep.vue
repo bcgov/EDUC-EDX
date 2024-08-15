@@ -196,9 +196,9 @@ export default defineComponent({
     markSchoolStepAsComplete(){
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
-        status: 'P_DUP_VRFD'
+        status: 'COMPLETED'
       };
-      ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION}/${this.$route.params.schoolCollectionID}`, updateCollection)
+      ApiService.apiAxios.put(`${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}`, updateCollection)
         .then(() => {
           this.$emit('refresh-store');
         })
@@ -208,7 +208,7 @@ export default defineComponent({
         });
     },
     next() {
-        this.markSchoolStepAsComplete();
+      this.markSchoolStepAsComplete();
     },
   }
 });
