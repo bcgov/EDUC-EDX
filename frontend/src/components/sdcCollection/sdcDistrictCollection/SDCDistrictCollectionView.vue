@@ -365,9 +365,9 @@ export default defineComponent({
     await sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID)
       .then(async () => {
         this.districtCollectionObject = this.districtCollection;
+        this.isSummerCollection = this.districtCollectionObject?.collectionTypeCode === 'JULY';
         this.districtID = this.districtCollection?.districtID;
         this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
-        this.isSummerCollection = this.districtCollectionObject?.collectionTypeCode === 'JULY';
         await this.getActiveSdcDistrictCollection();
       })
       .finally(() => {

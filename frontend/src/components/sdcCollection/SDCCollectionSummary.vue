@@ -227,13 +227,19 @@ export default {
     },
     totalStepsInCollection() {
       if(this.isSchoolCollection) {
-        if(this.sdcDistrictCollectionID){
-          return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_SCHOOL.length : SDC_STEPS_SCHOOL.length;
-        } else {
-          return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_INDP_SCHOOL.length : SDC_STEPS_INDP_SCHOOL.length;
-        }
+        return this.SDC_STEPS_SCHOOL_CALC.length
       } else {
-        return this.currentCollectionTypeCode === 'July' ? SDC_STEPS_SUMMER_DISTRICT.length : SDC_STEPS_DISTRICT.length;
+        return this.SDC_STEPS_DISTRICT_CALC.length;
+      }
+    },
+    SDC_STEPS_DISTRICT_CALC() {
+      return this.isSummerCollection ? SDC_STEPS_SUMMER_DISTRICT : SDC_STEPS_DISTRICT;
+    },
+    SDC_STEPS_SCHOOL_CALC() {
+      if(this.sdcDistrictCollectionID){
+        return this.isSummerCollection ? SDC_STEPS_SUMMER_SCHOOL : SDC_STEPS_SCHOOL;
+      } else {
+        return this.isSummerCollection ? SDC_STEPS_SUMMER_INDP_SCHOOL : SDC_STEPS_INDP_SCHOOL;
       }
     },
     historicCollectionUrl() {
@@ -300,6 +306,7 @@ export default {
       ApiService.apiAxios.get(url).then(response => {
         if(response.data) {
           this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
+          this.isSummerCollection = this.currentCollectionTypeCode === 'July';
           this.submissionDate = response.data.submissionDueDate;
 
           let instituteStatusCode;
@@ -324,24 +331,16 @@ export default {
     },
     getIndexOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        if (this.sdcDistrictCollectionID != null){
-          return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
-        } else {
-          return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
-        }
+        return this.SDC_STEPS_SCHOOL_CALC.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.index;
       } else {
-        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.index;
+        return this.SDC_STEPS_DISTRICT_CALC.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.index;
       }
     },
     getStepOfSDCCollectionByStatusCode(statusCode) {
       if(this.isSchoolCollection) {
-        if(this.sdcDistrictCollectionID != null){
-          return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
-        } else {
-          return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
-        }
+        return this.SDC_STEPS_SCHOOL_CALC.find(step => step.sdcSchoolCollectionStatusCode.includes(statusCode))?.step;
       } else {
-        return SDC_STEPS_DISTRICT.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.step;
+        return this.SDC_STEPS_DISTRICT_CALC.find(step => step.sdcDistrictCollectionStatusCode.includes(statusCode))?.step;
       }
     },
     loadItems({ page, itemsPerPage }) {
