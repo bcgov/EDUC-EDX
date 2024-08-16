@@ -152,8 +152,6 @@ export default {
         .catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while updating status. Please try again later.');
-        }).finally(() => {
-          this.$router.go(this.$router.currentRoute);
         });
     },
     next() {
