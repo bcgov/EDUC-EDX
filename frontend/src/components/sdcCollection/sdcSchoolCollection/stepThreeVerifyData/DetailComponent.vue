@@ -119,7 +119,7 @@
       :selected-student-ids="studentForEdit"
       :is-final-sign-off="isFinalSignOff"
       @reload-students="reloadStudentsFlag = true"
-      @close="closeAndLoadStudents"
+      @close="closeEditAndLoadStudents"
     />
   </v-bottom-sheet>
   <v-bottom-sheet
@@ -131,7 +131,7 @@
   >
     <AddStudentDetails
       @reload-students="reloadStudentsFlag = true"
-      @close="closeAndLoadStudents"
+      @close="closeAddAndLoadStudents"
       @open-edit="closeAddStudentWindow"
     />
   </v-bottom-sheet>
@@ -238,8 +238,15 @@ export default {
       this.studentForEdit.push(selectedStudent?.sdcSchoolCollectionStudentID);
       this.editStudentSheet = true;
     },
-    closeAndLoadStudents() {
+    closeEditAndLoadStudents() {
       this.editStudentSheet = !this.editStudentSheet;
+      if (this.reloadStudentsFlag === true) {
+        this.loadStudents();
+      }
+      this.reloadStudentsFlag = false;
+    },
+    closeAddAndLoadStudents() {
+      this.addStudentSheet = !this.addStudentSheet;
       if (this.reloadStudentsFlag === true) {
         this.loadStudents();
       }
