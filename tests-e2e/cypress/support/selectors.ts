@@ -100,7 +100,9 @@ export default {
     summaryButton: '#engLangSummaryButton',
     headcountCard: '.ell-headcount-card',
     headcountHeader: '.ell-headcount-header',
-    headcountColumnData: '.ell-headcount-column-data'
+    headcountColumnData: '.ell-headcount-column-data',
+    headcountReportDis: '#eligELLHeadcountForDistrict',
+    headcountReportPerSchool: '#eligELLHeadcountPerSchool',
   },
   frenchComponent: {
     tab: '#frenchTab',
