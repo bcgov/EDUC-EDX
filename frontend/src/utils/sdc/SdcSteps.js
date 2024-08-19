@@ -99,7 +99,7 @@ export const SDC_STEPS_SUMMER_SCHOOL = Object.freeze([
     id: 'step-5',
     title: 'Submit Data',
     step: 5,
-    sdcSchoolCollectionStatusCode: ['SUBMITTED', 'COMPLETED'],
+    sdcSchoolCollectionStatusCode: ['DUP_VRFD','SUBMITTED', 'COMPLETED'],
     index: 5,
     showSubmissionDate: true
   }
