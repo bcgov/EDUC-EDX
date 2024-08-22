@@ -98,7 +98,7 @@
           density="compact"
           type="info"
           variant="tonal"
-          text="There are no resolved enrollment duplicates."
+          text="There are no resolved enrolment duplicates."
         />
       </v-row>
     </template>
