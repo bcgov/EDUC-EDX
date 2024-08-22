@@ -37,6 +37,7 @@
       <SummaryComponent
         :headcount-type="config.summaryReport"
         :is-district-summary="true"
+        :is-collection-active="isCollectionActive"
       >
         <template #reports="{ data, reportType }">
           <IndigenousHeadcountsComponent
@@ -81,6 +82,10 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: [],

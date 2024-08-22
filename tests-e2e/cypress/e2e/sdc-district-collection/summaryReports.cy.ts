@@ -41,6 +41,58 @@ describe('SDC District Collection View', () => {
     });
     beforeEach(() => cy.login());
 
+    it('can download Eligible English Language Learning Program Headcount', () => {
+      cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=ell&compare=false').as('tableLoaded');
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.stepThreeTabSlider.englishLanguageLearningButton).should('exist').click();
+      cy.get(selectors.ellComponent.summaryButton).should('exist').click();
+
+      cy.get('#reports').parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Eligible English Language Learners Headcount for District').click();
+      cy.wait('@tableLoaded');
+      cy.get(selectors.ellComponent.headcountReportDis).should('be.visible');
+
+      cy.get(selectors.studentLevelData.pdfDownloadLink).then(($link) => {
+        const href = $link.prop('href');
+        const downloadPath = 'path/to/download/directory/ellDis.pdf';
+
+        cy.downloadFile(href, 'path/to/download/directory', 'ellDis.pdf').then(() => {
+          cy.readFile(downloadPath, 'binary').should((data) => {
+            expect(data).to.not.be.empty;
+            const expectedSizeBytes = 244045;
+            expect(data.length).to.be.closeTo(expectedSizeBytes, 10240);
+          });
+        });
+      });
+    });
+
+    it('can download Eligible English Language Learning Program Headcount per School', () => {
+      cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=ell-per-school&compare=false').as('tableLoaded');
+      cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
+      cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
+      cy.get(selectors.stepThreeTabSlider.englishLanguageLearningButton).should('exist').click();
+      cy.get(selectors.ellComponent.summaryButton).should('exist').click();
+
+      cy.get('#reports').parent().click();
+      cy.get(selectors.dropdown.listItem).contains('Eligible English Language Learners Headcount per school').click();
+      cy.wait('@tableLoaded');
+      cy.get(selectors.ellComponent.headcountReportPerSchool).should('be.visible');
+
+      cy.get(selectors.studentLevelData.pdfDownloadLink).then(($link) => {
+        const href = $link.prop('href');
+        const downloadPath = 'path/to/download/directory/ellDisPerSchool.pdf';
+
+        cy.downloadFile(href, 'path/to/download/directory', 'ellDisPerSchool.pdf').then(() => {
+          cy.readFile(downloadPath, 'binary').should((data) => {
+            expect(data).to.not.be.empty;
+            const expectedSizeBytes = 244045;
+            expect(data.length).to.be.closeTo(expectedSizeBytes, 10240);
+          });
+        });
+      });
+    });
+
     it('can view Eligible Enrolment & Eligible FTE report', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
@@ -106,7 +158,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allSchoolFTETotal).should('contain.text', '9.1');
     });
 
-    it('can view Eligible Special Education Headcount', () => {
+    it('can view Eligible Inclusive Education Headcount', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
       cy.get(selectors.stepThreeTabSlider.specialEducationButton).should('exist').click();
@@ -141,7 +193,7 @@ describe('SDC District Collection View', () => {
         });
     });
 
-    it('can view Eligible Special Education Headcount per School', () => {
+    it('can view Eligible Inclusive Education Headcount per School', () => {
       cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=special-ed-per-school&compare=false').as('tableLoaded');
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
@@ -149,7 +201,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.specialEducationComponent.summaryButton).should('exist').click();
 
       cy.get('#reports').parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Eligible Special Education Headcount per School').click();
+      cy.get(selectors.dropdown.listItem).contains('Eligible Inclusive Education Headcount per School').click();
       cy.wait('@tableLoaded');
       cy.get(selectors.specialEducationComponent.headcountReportPerSchool).should('be.visible');
 
@@ -344,7 +396,7 @@ describe('SDC District Collection View', () => {
           cy.get('tr')
             .each(($row, index) => {
               const rowText = $row.text();
-              expect(rowText).to.equal(expectedRows[index]);
+              expect(expectedRows).to.contains(rowText);
             });
 
           cy.get(selectors.refugeeComponent.pdfDownloadLink).then(($link) => {

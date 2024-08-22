@@ -8,7 +8,7 @@ export const SDC_VERIFY_TABS = Object.freeze(
     'French Programs',
     'Career Programs',
     'Indigenous Students & Support Programs',
-    'Special Education',
+    'Inclusive Education',
     'English Language Learning',
     'Refugee'
   ]

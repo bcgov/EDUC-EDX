@@ -368,7 +368,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.ellComponent.headcountCard).should('have.length', 1);
     });
 
-    it('verifies special education category for reported students', () => {
+    it('verifies inclusive education category for reported students', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('pagination');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();

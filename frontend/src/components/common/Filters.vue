@@ -316,6 +316,10 @@ export default {
       }
     },
     setSchoolNameNumberFilter(key, $event) {
+      if (this.penLocalIdNameFilter != null) {
+        if (this.penLocalIdNameFilter.length > 0) this.selected['penLocalIdNameFilter'] = [{title: 'PenOrLocalIdOrName', value: this.penLocalIdNameFilter}];
+        else delete this.selected['penLocalIdNameFilter'];
+      }
       if($event) {
         this.selected[key] = [{title: 'SchoolNameOrNumber', value: $event}];
         this.apply();
@@ -325,6 +329,10 @@ export default {
       }
     },
     setFilter(val, key) {
+      if (this.penLocalIdNameFilter != null) {
+        if (this.penLocalIdNameFilter.length > 0) this.selected['penLocalIdNameFilter'] = [{title: 'PenOrLocalIdOrName', value: this.penLocalIdNameFilter}];
+        else delete this.selected['penLocalIdNameFilter'];
+      }
       if(val && !isEmpty(val)) {
         this.selected[key] = (Array.isArray(val) ? val : [val]);
         this.apply();
@@ -334,6 +342,10 @@ export default {
       }
     },
     setBandCodeFilter(key, $event){
+      if (this.penLocalIdNameFilter != null) {
+        if (this.penLocalIdNameFilter.length > 0) this.selected['penLocalIdNameFilter'] = [{title: 'PenOrLocalIdOrName', value: this.penLocalIdNameFilter}];
+        else delete this.selected['penLocalIdNameFilter'];
+      }
       if($event) {
         this.selected[key] = [{title: this.sdcCollection.bandCodes.find(value => value.bandCode === $event).dropdownText, value: $event}];
         this.apply();
@@ -343,6 +355,10 @@ export default {
       }
     },
     setCourseRangeFilter(key, $event){
+      if (this.penLocalIdNameFilter != null) {
+        if (this.penLocalIdNameFilter.length > 0) this.selected['penLocalIdNameFilter'] = [{title: 'PenOrLocalIdOrName', value: this.penLocalIdNameFilter}];
+        else delete this.selected['penLocalIdNameFilter'];
+      }
       if($event) {
         let courseFilterTitle;
         if($event[0] === this.courseRangeDefault[0]){

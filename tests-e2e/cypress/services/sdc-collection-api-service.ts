@@ -1069,6 +1069,28 @@ export class SdcCollectionApiService {
         student.legalLastName = 'LEGALLAST';
       }));
       break;
+    case 'sdcDistrictCollectionProvincialDuplicatesSeedData':
+      sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'P_DUP_POST';
+
+      sdcSchoolCollections.forEach(x => x.students.map((student) =>  {
+        student.enrolledGradeCode = '09';
+        student.localID = '67890';
+        student.enrolledProgramCodes = '082917';
+        student.studentPen = '101932770';
+        student.nativeAncestryInd = 'Y';
+        student.bandCode = '0547';
+        student.numberOfCourses = '0700';
+        student.assignedStudentId = 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf';
+        student.isGraduated = 'false';
+        student.specialEducationCategoryCode = 'A';
+        student.localID = 'student1';
+        student.penMatchResult = 'DM';
+        student.fte = 1;
+        student.isSchoolAged = 'true';
+        student.isAdult = 'false';
+        student.legalLastName = 'LEGALLAST';
+      }));
+      break;
     case 'sdcDistrictCollectionCompleteCollectionSeedData':
       sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'P_DUP_VRFD';
 

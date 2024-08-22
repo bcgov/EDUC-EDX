@@ -42,7 +42,7 @@
       no-gutters
     >
       <v-col>
-        <v-divider class="divider" />
+        <v-divider class="divider mb-6" />
       </v-col>
     </v-row>
     <v-row
@@ -60,8 +60,12 @@
         />
       </v-col>
     </v-row>
-    <v-row v-else>
-      <v-col>
+    <v-row
+      v-else-if="isSdcSchoolCollectionActive"
+      no-gutters
+      class="mt-0"
+    >
+      <v-col class="pt-0">
         <v-stepper
           ref="stepper"
           hide-actions
@@ -81,7 +85,7 @@
                   :id="step.id"
                   :value="step.step"
                   :title="step.title"
-                  :subtitle="step.step === stepToShowSubmissionDueDate ? submissionDueDate : null"
+                  :subtitle="step.showSubmissionDate ? submissionDueDate : null"
                   :editable="step.step < currentStep && !submittedStatuses.includes(schoolCollection?.sdcSchoolCollectionStatusCode)"
                   :complete="step.index < stepInCollection"
                   :color="'rgba(56, 89, 138, 1)'"
@@ -94,154 +98,58 @@
                 />
               </template>
             </v-stepper-header>
+            <v-stepper-window v-if="schoolCollectionObject?.sdcDistrictCollectionID === null && schoolCollectionObject?.collectionTypeCode === 'JULY'">
+              <IndySummerSchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
+            </v-stepper-window>
+            <v-stepper-window v-else-if="schoolCollectionObject?.sdcDistrictCollectionID === null">
+              <IndySchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
+            </v-stepper-window>
             <v-stepper-window
-              v-if="schoolCollectionObject?.sdcDistrictCollectionID === null"
+              v-else-if="schoolCollectionObject?.collectionTypeCode === 'JULY'"
             >
-              <v-stepper-window-item
-                :value="1"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepOneUploadData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                  @refresh-store="refreshStore"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="2"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepTwoViewDataIssues
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="3"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepThreeVerifyData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="4"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFourDuplicatesProcessing
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="5"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFiveSchoolDetails
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="6"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSixSchoolContacts
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="7"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSevenSubmitData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
+              <SummerSchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
             </v-stepper-window>
             <v-stepper-window
               v-else
             >
-              <v-stepper-window-item
-                :value="1"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepOneUploadData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                  @refresh-store="refreshStore"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="2"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepTwoViewDataIssues
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="3"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepThreeVerifyData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="4"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepFourDuplicatesProcessing
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @next="next"
-                />
-              </v-stepper-window-item>
-              <v-stepper-window-item
-                :value="5"
-                transition="false"
-                reverse-transition="false"
-              >
-                <StepSevenSubmitData
-                  :is-step-complete="isStepComplete"
-                  :school-collection-object="schoolCollectionObject"
-                  @refresh-store="refreshStore"
-                  @next="next"
-                />
-              </v-stepper-window-item>
+              <SchoolSteps
+                :is-sdc-school-collection-active="isSdcSchoolCollectionActive"
+                :is-step-complete="isStepComplete"
+                :school-collection-object="schoolCollectionObject"
+                @next="next"
+                @refresh-store="refreshStore"
+              />
             </v-stepper-window>
           </template>
         </v-stepper>
       </v-col>
     </v-row>
+    <StepSevenSubmitData
+      v-else
+      :is-step-complete="true"
+      :school-collection-object="schoolCollectionObject"
+      :is-collection-active="isSdcSchoolCollectionActive"
+      @refresh-store="refreshStore"
+      @next="next"
+    />
     <div v-if="disableScreen">
       <v-overlay
         :model-value="disableScreen"
@@ -266,31 +174,29 @@
 </template>
 
 <script>
-import {mapState} from 'pinia';
+import {mapActions, mapState} from 'pinia';
 import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL} from '../../../utils/institute/SdcSteps';
+import {SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL, SDC_STEPS_SUMMER_INDP_SCHOOL} from '../../../utils/sdc/SdcSteps';
 import {wsNotifications} from '../../../store/modules/wsNotifications';
-import StepOneUploadData from './stepOneUploadData/StepOneUploadData.vue';
-import StepTwoViewDataIssues from './stepTwoValidateData/StepTwoViewDataIssues.vue';
-import StepFourDuplicatesProcessing from './StepFourDuplicatesProcessing.vue';
-import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
-import StepFiveSchoolDetails from './StepFiveSchoolDetails.vue';
-import StepSixSchoolContacts from './StepSixSchoolContacts.vue';
 import StepSevenSubmitData from './StepSevenSubmitData.vue';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {formatSubmissionDate} from '../../../utils/format';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
+import IndySchoolSteps from './steppers/IndySchoolSteps.vue';
+import IndySummerSchoolSteps from './steppers/IndySummerSchoolSteps.vue';
+import SummerSchoolSteps from './steppers/SummerSchoolSteps.vue';
+import SchoolSteps from './steppers/SchoolSteps.vue';
 
 export default {
   name: 'SDCCollectionView',
   components: {
-    StepFourDuplicatesProcessing,
-    StepFiveSchoolDetails,
-    StepThreeVerifyData,
-    StepTwoViewDataIssues,
-    StepOneUploadData,
-    StepSixSchoolContacts,
-    StepSevenSubmitData,
+    IndySchoolSteps,
+    IndySummerSchoolSteps,
+    SchoolSteps,
+    SummerSchoolSteps,
+    StepSevenSubmitData
   },
   props: {
     schoolCollectionID: {
@@ -313,6 +219,7 @@ export default {
       wsNotificationText: '',
       schoolsMap: null,
       submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+      isSdcSchoolCollectionActive: false
     };
   },
   computed: {
@@ -332,13 +239,6 @@ export default {
         return null;
       }
       return this.activeSchoolsMap.get(this.schoolID);
-    },
-    stepToShowSubmissionDueDate() {
-      if (this.schoolCollectionObject?.sdcDistrictCollectionID === null) {
-        //Step 7 for independent schools.
-        return 7;
-      }
-      return 5;
     }
   },
   watch: {
@@ -346,7 +246,7 @@ export default {
       if (notificationData) {
         try {
           let updateUser = notificationData.updateUser.split('/');
-          if (notificationData.sdcSchoolCollectionID === this.$route.params.schoolCollectionID && updateUser[1] !== this.userInfo.edxUserID) { 
+          if (notificationData.sdcSchoolCollectionID === this.$route.params.schoolCollectionID && updateUser[1] !== this.userInfo.edxUserID) {
             let school = this.schoolsMap.get(notificationData?.schoolID);
             this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
             this.disableScreen = true;
@@ -357,12 +257,12 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
     this.isLoading = !this.isLoading;
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
     });
-    sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID)
+    await sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID)
       .then(() => {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
@@ -370,34 +270,16 @@ export default {
       })
       .finally(() => {
         this.isLoading = !this.isLoading;
-      })
-      .then(() => {
-        return sdcCollectionStore().getCollectionBySchoolId(this.schoolID);
-      })
-      .then(() => {
-        this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
       });
+    this.getActiveSdcSchoolCollection();
   },
   methods: {
+    ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate']),
     compiledSdcSteps() {
-      let stepMap = {};
-
       if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
-        return SDC_STEPS_SCHOOL.filter(obj => {
-          if (!stepMap[obj.step]) {
-            stepMap[obj.step] = true;
-            return true;
-          }
-          return false;
-        });
+        return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_SCHOOL : SDC_STEPS_SCHOOL;
       } else {
-        return SDC_STEPS_INDP_SCHOOL.filter(obj => {
-          if (!stepMap[obj.step]) {
-            stepMap[obj.step] = true;
-            return true;
-          }
-          return false;
-        });
+        return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_INDP_SCHOOL : SDC_STEPS_INDP_SCHOOL;
       }
     },
     next() {
@@ -432,18 +314,25 @@ export default {
       this.currentStep = step;
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      if(this.schoolCollectionObject.sdcDistrictCollectionID != null){
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
-      } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
-      }
+      return this.compiledSdcSteps().find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
     },
     getStepOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
-      if(this.schoolCollectionObject.sdcDistrictCollectionID != null) {
-        return SDC_STEPS_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
-      } else {
-        return SDC_STEPS_INDP_SCHOOL.find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
-      }
+      return this.compiledSdcSteps().find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.step;
+    },
+    getActiveSdcSchoolCollection() {
+      this.isLoading = true;
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.schoolID}`).then(response => {
+        if(response.data) {
+          this.isSdcSchoolCollectionActive = response.data.sdcSchoolCollectionID === this.schoolCollectionObject?.sdcSchoolCollectionID;
+          this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
+          this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.isLoading = false;
+      });
     }
   }
 };

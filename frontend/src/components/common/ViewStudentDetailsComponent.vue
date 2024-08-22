@@ -187,7 +187,7 @@ export default {
 
       //sped row
       let spedRow = {};
-      spedRow.program = 'Special Education';
+      spedRow.program = 'Inclusive Education';
       spedRow.fundingEligible = this.studentForEdit?.specialEducationNonEligReasonCode !== null ? 'No': 'Yes';
       spedRow.nonEligibilityReason = this.getProgramEligibiltyTypeCodesDescription(this.studentForEdit?.specialEducationNonEligReasonCode);
 

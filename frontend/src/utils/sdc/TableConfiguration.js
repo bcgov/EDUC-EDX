@@ -536,7 +536,7 @@ export const BAND_FILTER = Object.freeze(
 
 export const SPED_FILTER = Object.freeze(
   {
-    heading: 'Special Education',
+    heading: 'Inclusive Education',
     id: 'sped',
     multiple: true,
     key: 'sped',
@@ -607,7 +607,7 @@ export const SPED_FILTER = Object.freeze(
 
 export const SPED_FUNDING_FILTER = Object.freeze(
   {
-    heading: 'Special Education Funding Eligibility',
+    heading: 'Inclusive Education Funding Eligibility',
     id: 'spedFunding',
     multiple: false,
     key: 'spedFunding',
@@ -715,7 +715,7 @@ export const FTE = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
     ],
     summaryReport: [
       { tableID: 'eligEnrolmentFTE', title: 'Grade Enrolment & Eligible FTE', endpoint:'enrollment'}
@@ -787,7 +787,7 @@ export const FTE = Object.freeze(
         filterOptions: [
           ...SPED_FILTER.filterOptions,
           {
-            title: 'No Special Education Category',
+            title: 'No Inclusive Education Category',
             id: 'noSpedCategory',
             value: 'noSpedCode'
           }
@@ -889,7 +889,7 @@ export const INDSUPPORT_PR = Object.freeze(
 
 export const SPECIALED_PR = Object.freeze(
   {
-    defaultFilter: { label: 'SPECIALED_PR', description: 'Has Special Education Category' },
+    defaultFilter: { label: 'SPECIALED_PR', description: 'Has Inclusive Education Category' },
     tableHeaders: [
       { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
@@ -898,10 +898,10 @@ export const SPECIALED_PR = Object.freeze(
       { title: 'Legal Surname, Given (Middle)', key: 'legalName', subHeader: { title: 'Usual Surname, Given (Middle)', key: 'usualName' } },
       { title: 'Adult', key: 'isAdult', subHeader: { title: 'Grad', key: 'isGraduated' } },
       { title: 'Grade', key: 'enrolledGradeCode', subHeader: { title: 'Funding Code', key: 'mappedSchoolFunding' } },
-      { title: 'Special Education Category', key: 'mappedSpedCode' },
+      { title: 'Inclusive Education Category', key: 'mappedSpedCode' },
     ],
     summaryReport: [
-      { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Special Education Headcount', endpoint:'special-ed'}
+      { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Inclusive Education Headcount', endpoint:'special-ed'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
@@ -980,7 +980,7 @@ export const SCH_DUPLICATES = Object.freeze(
       { title: 'Language Program', key: 'mappedLanguageEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
-      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Special Education Category', key: 'mappedSpedCode' } },
+      { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
       { title: ' ', key: 'action' },
     ],
   }

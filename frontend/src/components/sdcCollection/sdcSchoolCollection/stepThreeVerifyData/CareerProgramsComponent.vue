@@ -36,6 +36,7 @@
     <div v-if="reportView === 'summary'">
       <SummaryComponent
         :headcount-type="config.summaryReport"
+        :is-collection-active="isCollectionActive"
       />
     </div>
   </v-container>
@@ -63,6 +64,10 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: [],

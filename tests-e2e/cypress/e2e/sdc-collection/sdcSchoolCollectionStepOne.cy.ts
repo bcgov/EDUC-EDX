@@ -51,7 +51,7 @@ describe('SDC Step-One', () => {
     beforeEach(() => {
       cy.login();
     });
-    it('Re-upload button is disabled', () => {
+    it('Step one button is disabled', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
@@ -60,8 +60,7 @@ describe('SDC Step-One', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-      cy.get(selectors.studentLevelData.stepOne).should('exist').click();
-      cy.get(selectors.studentLevelData.documentReUploadButton).should('be.disabled');
+      cy.get(selectors.studentLevelData.stepOne).should('be.disabled');
     });
   });
 });

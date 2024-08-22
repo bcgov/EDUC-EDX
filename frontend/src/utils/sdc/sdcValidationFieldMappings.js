@@ -23,7 +23,7 @@ export const SDC_VALIDATION_FIELD_MAPPINGS = Object.freeze({
   USUAL_LAST_NAME: {label: 'Usual Surname', key: 'usualLastName', type: 'input', options: {maxlength: '255'}},
   DOB: {label: 'Birthdate', key: 'dob', type: 'datePicker', options: {rules: [formRules.required()]}},
   GENDER_CODE: {label: 'Gender', key: 'gender', type: 'select', options: {rules: [formRules.required()], items: 'genderCodes', itemValue: 'genderCode'}},
-  SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Special Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCodes', itemValue: 'specialEducationCategoryCode'}},
+  SPECIAL_EDUCATION_CATEGORY_CODE: {label: 'Inclusive Education Category', key: 'specialEducationCategoryCode', type: 'select', options: {items: 'specialEducationCodes', itemValue: 'specialEducationCategoryCode'}},
   SCHOOL_FUNDING_CODE: {label: 'Funding Code', key: 'schoolFundingCode', type: 'select', options: {items: 'schoolFundingCodes', itemValue: 'schoolFundingCode'}},
   NATIVE_ANCESTRY_IND: {label: 'Indigenous Ancestry', key: 'nativeAncestryInd', type: 'select', options: {rules: [formRules.required()], items: 'ancestryItems', itemValue:'code'}},
   HOME_LANGUAGE_SPOKEN_CODE: {label: 'Home Language Spoken Code', key: 'homeLanguageSpokenCode', type: 'select', options: {items: 'homeLanguageSpokenCodes', itemValue: 'homeLanguageSpokenCode'}},

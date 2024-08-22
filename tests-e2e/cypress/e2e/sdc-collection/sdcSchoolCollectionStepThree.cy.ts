@@ -125,6 +125,8 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
 
+      cy.get(selectors.studentLevelData.studentPen).type('101932770');
+
       cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
 
       cy.get(selectors.studentLevelData.saveEditStudentRecord).click();
@@ -149,6 +151,8 @@ describe('SDC School Collection View', () => {
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
+
+      cy.get(selectors.studentLevelData.studentPen).type('102866365');
 
       cy.get(selectors.studentLevelData.saveEditStudentRecord).should('be.enabled');
 
@@ -184,9 +188,9 @@ describe('SDC School Collection View', () => {
                 return obj;
               }, {});
             });
-
-            expect(records).to.have.length(6);
-            const expectedPENs = ['102866365', '101932770', '103169744', ''];
+            records.pop(); //last item is a null line
+            expect(records).to.have.length(5);
+            const expectedPENs = ['102866365', '101932770', '103169744'];
             const expectedCourses = ['0700', undefined];
             const expectedApprenticeStatus = ['N', undefined, ''];
 
@@ -225,9 +229,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-      cy.get(selectors.studentLevelData.stepThree).should('exist').click();
-      cy.get(selectors.studentLevelData.addStudent).should('be.disabled');
-      cy.get(selectors.studentLevelData.remove).should('be.disabled');
+      cy.get(selectors.studentLevelData.stepThree).should('be.disabled');
     });
   });
 });

@@ -12,6 +12,7 @@ const cacheService = require('./cache-service');
 const redisUtil = require('../util/redis/redis-utils');
 const broadcastUtil = require('../socket/broadcast-utils');
 const CONSTANTS = require('../util/constants');
+const {LocalDate} = require('@js-joda/core');
 
 async function getCollectionBySchoolId(req, res) {
   try {
@@ -202,7 +203,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       params: {
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize,
-        sort: req.query.sort,
+        sort: JSON.stringify(req.query.sort),
         searchCriteriaList: JSON.stringify(search),
       }
     };
@@ -627,9 +628,15 @@ function getFileDetails(reportType, mincode) {
     'ALL_STUDENT_DIS_CSV': { filename: `AllDistrictStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_SCHOOL_CSV': { filename: `AllSchoolStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ELL_HEADCOUNT': { filename: `ELLHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_ELL_HEADCOUNT': { filename: `ELLHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_ELL_HEADCOUNT_PER_SCHOOL': { filename: `ELLHeadcount_District_${mincode}_PerSchool.pdf`, contentType: 'application/pdf' },
     'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL': { filename: `RefugeeHeadcount_${mincode}_Dis.pdf`, contentType: 'application/pdf' },
     'SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_SPECIAL_EDUCATION_HEADCOUNT': { filename: `SpecialEdHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL': { filename: `SpecialEdHeadcount_District_${mincode}_PerSchool.pdf`, contentType: 'application/pdf' },
     'INDIGENOUS_HEADCOUNT': { filename: `IndigenousHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_INDIGENOUS_HEADCOUNT': { filename: `IndigenousHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_INDIGENOUS_HEADCOUNT_PER_SCHOOL': { filename: `IndigenousHeadcount_District_${mincode}_PerSchool.pdf`, contentType: 'application/pdf' },
     'BAND_RESIDENCE_HEADCOUNT': { filename: `BandOfResidenceHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'CAREER_HEADCOUNT': { filename: `CareerProgramsHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },
     'FRENCH_HEADCOUNT': { filename: `FrenchProgramsHeadcount_${mincode}_School.pdf`, contentType: 'application/pdf' },
@@ -842,9 +849,7 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
-      if(!isProvincialDuplicate) {
-        setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
-      }
+      setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
       setCanMoveToCrossEnrollment(sdcDuplicate);
       result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
     }
@@ -1134,6 +1139,93 @@ async function submitDistrictSignature(req, res) {
   }
 }
 
+async function getSdcSchoolCollectionPaginated(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const search = [];
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolID', value: res.locals.requestedInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+    });
+
+    addHistoricCollectionSearchCriteria(search, req);
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionURL')}/paginated`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting collection paginated list', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
+function addHistoricCollectionSearchCriteria(search, req) {
+  search.push({
+    condition: CONDITION.AND,
+    searchCriteriaList: [{ key: 'collectionEntity.collectionStatusCode', value: 'COMPLETED', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING }]
+  });
+
+  if(req.query.searchParams?.['collectionType']) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: [{ key: 'collectionEntity.collectionTypeCode', value: req.query.searchParams?.['collectionType'], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING }]
+    });
+  }
+
+  if(req.query.searchParams?.['year']) {
+    const yearStart = LocalDate.of(req.query.searchParams?.['year'], 1, 1);
+    const yearEnd = LocalDate.of(req.query.searchParams?.['year'], 12, 31);
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: [{ key: 'collectionEntity.submissionDueDate', value: `${yearStart},${yearEnd}`, operation: FILTER_OPERATION.BETWEEN, valueType: VALUE_TYPE.DATE }]
+    });
+  }
+}
+
+async function getSdcDistrictCollectionPaginated(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const search = [];
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'districtID', value: res.locals.requestedInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+    });
+
+    addHistoricCollectionSearchCriteria(search, req);
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+
+    let data = await getDataWithParams(token, `${config.get('sdc:districtCollectionURL')}/paginated`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      log.error('Error getting collection paginated list', e.stack);
+      return handleExceptionResponse(e, res);
+    }
+  }
+}
+
 module.exports = {
   getCollectionBySchoolId,
   uploadFile,
@@ -1166,5 +1258,7 @@ module.exports = {
   getProvincialDuplicatesForSchool,
   getStudentValidationIssueCodes,
   submitDistrictSignature,
-  getStudentDifferencesByInstituteCollectionId
+  getStudentDifferencesByInstituteCollectionId,
+  getSdcDistrictCollectionPaginated,
+  getSdcSchoolCollectionPaginated
 };

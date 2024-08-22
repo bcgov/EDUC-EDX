@@ -124,6 +124,7 @@
 
     <v-col>
       <v-switch
+        v-if="isCollectionActive"
         id="compare-switch"
         v-model="compareSwitch"
         color="primary"
@@ -183,6 +184,10 @@ export default {
     isDistrictSummary: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
     }
   },
   emits: [],

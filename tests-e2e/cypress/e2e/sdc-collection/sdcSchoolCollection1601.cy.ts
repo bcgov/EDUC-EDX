@@ -30,7 +30,7 @@ describe('SDC School Collection View', () => {
     it('can navigate to open school collection tile and see pie chart is different', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
-      cy.get(selectors.collectionSummary.stepsComplete).should('exist').contains('1 / 7 Steps Complete');
+      cy.get(selectors.collectionSummary.stepsComplete).should('exist').contains('2 / 9 Steps Complete');
     });
 
     it('can verify all stepper headers and their titles', () => {

@@ -1,7 +1,10 @@
 <template>
-  <div class="border">
+  <div :class="isCollectionActive ? 'border' : ''">
     <div>
-      <v-row class="mb-3">
+      <v-row
+        v-if="isCollectionActive"
+        class="mb-3"
+      >
         <v-col>
           <v-alert
             id="collection-submission"
@@ -12,10 +15,10 @@
           />
         </v-col>
       </v-row>
-
       <StepThreeVerifyData
         :district-collection-object="districtCollectionObject"
         :is-final-sign-off="true"
+        :is-collection-active="isCollectionActive"
       />
     </div>
   </div>
@@ -39,6 +42,10 @@ export default {
       default: null
     },
     isStepComplete: {
+      type: Boolean,
+      required: true
+    },
+    isCollectionActive: {
       type: Boolean,
       required: true
     }

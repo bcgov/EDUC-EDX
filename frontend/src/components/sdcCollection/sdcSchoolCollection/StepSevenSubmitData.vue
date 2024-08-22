@@ -16,7 +16,10 @@
     </div>
 
     <div v-else>
-      <v-row v-if="!isSubmitted">
+      <v-row
+        v-if="!isSubmitted && isCollectionActive"
+        class="mb-4"
+      >
         <v-col
           v-if="getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND'"
           cols="12"
@@ -43,18 +46,9 @@
             Please ensure your data is correct before completing the submission. Data can be reviewed on the “Edit/Verify Data Issues” step.
           </p>
         </v-col>
-
-        <br>
-        <v-alert
-          id="fte-info"
-          density="compact"
-          type="info"
-          variant="tonal"
-          text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
-        />
       </v-row>
 
-      <v-row v-else>
+      <v-row v-else-if="isCollectionActive">
         <v-col class="mb-1">
           <v-alert
             id="collection-submission"
@@ -69,13 +63,25 @@
         :school-collection-object="schoolCollectionObject"
         :is-step-complete="true"
         :is-final-sign-off="true"
+        :is-collection-active="isCollectionActive"
       />
     </div>
+    <v-alert
+      v-if="!isSubmitted"
+      id="fte-info"
+      density="compact"
+      type="info"
+      variant="tonal"
+      text="All FTE Values, Program Headcounts, and Program Eligibility are estimated results and still require a final review from the ministry staff."
+    />
   </div>
 
-  <v-row justify="end">
+  <v-row
+    v-if="isCollectionActive"
+    justify="end"
+  >
     <PrimaryButton
-      v-if="!displayNextBtn && !isSubmitted"
+      v-if="!displayNextBtn && !isSubmitted "
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -84,7 +90,7 @@
       :click-action="submit"
     />
     <PrimaryButton
-      v-else-if="!isSubmitted"
+      v-else-if="!isSubmitted && schoolCollectionObject.collectionTypeCode !== 'JULY'"
       id="step-4-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -122,7 +128,11 @@ export default {
     isStepComplete: {
       type: Boolean,
       required: true
-    }
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
+    },
   },
   emits: ['previous', 'next', 'refresh-store'],
   data() {
@@ -159,15 +169,17 @@ export default {
   },
   methods: {
     submit() {
-      if(this.schoolCollectionObject?.sdcSchoolCollectionStatusCode !== 'SUBMITTED') {
-        this.markStepAsComplete();
+      if(this.schoolCollectionObject?.collectionTypeCode === 'JULY') {
+        this.markStepAsComplete('COMPLETED');
+      } else {
+        this.markStepAsComplete('SUBMITTED');
       }
     },
-    markStepAsComplete() {
+    markStepAsComplete(status) {
       this.isLoading = true;
       let updateCollection = {
         schoolCollection: this.schoolCollectionObject,
-        status: 'SUBMITTED'
+        status: status
       };
       ApiService.apiAxios.put(ApiRoutes.sdc.BASE_URL + '/' + this.sdcSchoolCollectionID, updateCollection)
         .then(() => {

@@ -103,7 +103,9 @@ export default {
     summaryButton: '#engLangSummaryButton',
     headcountCard: '.ell-headcount-card',
     headcountHeader: '.ell-headcount-header',
-    headcountColumnData: '.ell-headcount-column-data'
+    headcountColumnData: '.ell-headcount-column-data',
+    headcountReportDis: '#eligELLHeadcountForDistrict',
+    headcountReportPerSchool: '#eligELLHeadcountPerSchool',
   },
   frenchComponent: {
     tab: '#frenchTab',
@@ -188,7 +190,17 @@ export default {
     headcountColumnData: '.indigenous-headcount-column-data',
     reportDropdown: '#reports'
   },
+  provincialDuplicatesComponent : {
+    enrollmentDuplicatesTab: 'button[value="Enrollment Duplicates"]',
+    programDuplicatesTab: 'button[value="Program Duplicates"]',
+    nonAllowableEnrollmentTab: '#nonAllowableenrollmentButton',
+    nonAllowableProgramTab: '#nonAllowableprogramButton',
+    resolvedEnrollmentTab: '#resolvedenrollmentButton',
+    resolvedProgramTab: '#resolvedprogramButton',
+    allowableTab: '#allowableButton',
+  },
   filters: {
+    applyPenLocalIdNameFilterBtn: '#applyPenLocalIdNameFilter',
     clearFilter: '#clear-filter',
     studentType: '#studentType', 
     warnings: '#warnings',
@@ -355,7 +367,7 @@ export default {
     ellTabButton: '[data-cy="English Language Learning"]',
     infoNote: 'p.text-medium-emphasis.font-italic',
     spedTab: '[data-cy="spedTab"]',
-    spedTabButton: '[data-cy="Special Education"]',
+    spedTabButton: '[data-cy="Inclusive Education"]',
   },
   sdcSchoolStudentCollection: {
     sdcCollectionStepTwo: {
@@ -417,7 +429,7 @@ export default {
     englishLanguageLearningButton: 'button[value="English Language Learning"]',
     frenchProgramsButton: 'button[value="French Programs"]',
     indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
-    specialEducationButton: 'button[value="Special Education"]',
+    specialEducationButton: 'button[value="Inclusive Education"]',
     refugeeButton: 'button[value="Refugee"]'
   },
   studentLevelData: {

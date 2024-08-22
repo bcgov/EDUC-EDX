@@ -109,7 +109,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
       });
     });
   });
-  context('Uploaded a file that has no errors or warnings and special ed students', () => {
+  context('Uploaded a file that has no errors or warnings and inclusive ed students', () => {
     before(() => {
       cy.logout();
       cy.task<AppSetupData>('dataLoad').then(res => {
@@ -126,7 +126,7 @@ describe('SDC School Collection - testing Upload School Level Data screen\'s sum
     beforeEach(() => {
       cy.login();
     });
-    it('there are the correct headcounts for the special ed tab', () => {
+    it('there are the correct headcounts for the inclusive ed tab', () => {
       const id = Cypress.env('schoolCollectionIdSped');
       navigateToUploadScreen(id);
       cy.intercept(Cypress.env('interceptors').headcounts).as('headcounts');

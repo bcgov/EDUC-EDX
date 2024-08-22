@@ -96,7 +96,7 @@ describe('SDC School Collection View', () => {
     beforeEach(() => {
       cy.login();
     });
-    it('New Contact should be disabled', () => {
+    it('Step 5 should be disabled', () => {
       cy.visit('/');
       cy.get(selectors.dashboard.title).contains('Dashboard | EDX Automation Testing School');
       cy.get(selectors.dashboard.dataCollectionsTileTitle).contains('Student Level Data Collection (1701)');
@@ -105,8 +105,7 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
 
       cy.get(selectors.studentLevelData.collectionSubmission).should('exist');
-      cy.get(selectors.studentLevelData.stepFive).should('exist').click();
-      cy.get(selectors.schoolContacts.newContactButton).should('not.exist');
+      cy.get(selectors.studentLevelData.stepFive).should('be.disabled');
     });
   });
 });

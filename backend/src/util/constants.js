@@ -182,9 +182,15 @@ const SDC_UPLOAD_TOPIC = 'SDC_UPLOAD_TOPIC';
 
 const reportTypeValues = [
   ['ell', 'ELL_HEADCOUNT'],
+  ['ell_dis', 'DIS_ELL_HEADCOUNT'],
+  ['ell-per-school_dis', 'DIS_ELL_HEADCOUNT_PER_SCHOOL'],
   ['refugee-per-school_dis', 'DIS_REFUGEE_HEADCOUNT_PER_SCHOOL'],
   ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
+  ['special-ed_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT'],
+  ['special-ed-per-school_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
+  ['indigenous_dis', 'DIS_INDIGENOUS_HEADCOUNT'],
+  ['indigenous-per-school_dis', 'DIS_INDIGENOUS_HEADCOUNT_PER_SCHOOL'],
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
