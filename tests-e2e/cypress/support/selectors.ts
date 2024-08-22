@@ -510,6 +510,15 @@ export default {
     collectionTypeYear: '#collectionTypeYear',
     signOffTab: '.sign-off-tab'
   },
+  signOffTab: {
+    _1701SignOffButton: '#DIS_SDC_EDIT-button',
+    superintendentSignOffButton: '#SUPERINT-button',
+    secretaryTreasurerSignOffButton: '#SECR_TRES-button',
+    confirmButton: '#resolveBtn',
+    _1701SignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(1) > :nth-child(2)',
+    superintendentSignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(2) > :nth-child(2)',
+    secretaryTreasurerSignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(3) > :nth-child(2)',
+  },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
     primaryTextActivationCodeInput: '#primaryEdxCodeTextField',

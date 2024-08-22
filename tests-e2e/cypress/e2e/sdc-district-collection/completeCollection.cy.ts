@@ -36,7 +36,7 @@ describe('SDC District Collection View', () => {
         }).then(response => {
           Cypress.env('sdcDistrictCollectionID', response?.sdcDistrictCollection?.sdcDistrictCollectionID);
         });
-        cy.task('setup-districtUser', { districtRoles: ['DISTRICT_SDC', 'SUPERINT', 'SECR_TRES', 'EDX_DISTRICT_ADMIN', 'DIS_SDC_RO'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['DISTRICT_SDC', 'SUPERINT', 'SECR_TRES', 'EDX_DISTRICT_ADMIN', 'DIS_SDC_RO', 'EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
@@ -46,6 +46,26 @@ describe('SDC District Collection View', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
       cy.get(selectors.studentLevelData.signOffTab).should('exist').click();
+
+      cy.get(selectors.signOffTab._1701SignOffDetails).should('exist');
+      cy.get(selectors.signOffTab._1701SignOffButton).should('exist').click();
+      cy.get(selectors.signOffTab.confirmButton).click();
+
+      cy.get(selectors.signOffTab.superintendentSignOffDetails).should('exist');
+      cy.get(selectors.signOffTab.superintendentSignOffButton).should('exist').click();
+      cy.get(selectors.signOffTab.confirmButton).click();
+
+      cy.get(selectors.signOffTab.secretaryTreasurerSignOffDetails).should('exist');
+      cy.get(selectors.signOffTab.secretaryTreasurerSignOffButton).should('exist').click();
+      cy.get(selectors.signOffTab.confirmButton).click();
+
+      cy.get(selectors.signOffTab._1701SignOffButton).should('be.disabled');
+      cy.get(selectors.signOffTab.superintendentSignOffButton).should('be.disabled');
+      cy.get(selectors.signOffTab.secretaryTreasurerSignOffButton).should('be.disabled');
+
+      cy.get(selectors.signOffTab._1701SignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
+      cy.get(selectors.signOffTab.superintendentSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
+      cy.get(selectors.signOffTab.secretaryTreasurerSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
     });
   });
 });
