@@ -60,7 +60,7 @@
           variant="text"
           @click="clickReportZeroEnrollment"
         >
-          Report Zero Enrollment
+          Report Zero Enrolment
         </v-btn>
         <div class="pl-4">
           More information on the
@@ -182,7 +182,7 @@
               </a>
             </span>
             <span v-if="hasEditPermission">
-              <br>To manually add all student enrollment data for this collection,
+              <br>To manually add all student enrolment data for this collection,
               <a
                 rel="noopener noreferrer"
                 style="color: rgb(56, 89, 138); text-decoration: underline"
@@ -203,14 +203,14 @@
           color="#003366"
           style="width: 18em"
           prepend-icon="mdi-numeric-0-circle"
-          text="Report Zero Enrollment"
+          text="Report Zero Enrolment"
           :disabled="!hasEditPermission"
           @click="clickReportZeroEnrollment"
         />
       </v-col>
       <v-col class="d-flex justify-start">
         <div class="mt-2">
-          This option should only be used for schools with no student<br> enrollment to report for this collection.
+          This option should only be used for schools with no student<br> enrolment to report for this collection.
         </div>
       </v-col>
     </v-row>
@@ -251,7 +251,7 @@
   </ConfirmationDialog>
   <ConfirmationDialog ref="confirmZeroEnrollment">
     <template #message>
-      <p>Please confirm if you would like to report zero enrollment for this collection.</p>
+      <p>Please confirm if you would like to report zero enrolment for this collection.</p>
       &nbsp;
       <p>Confirming below will <strong>finalize your 1701 submission</strong> and <strong>remove your ability to edit data for this collection.</strong></p>
     </template>
@@ -405,7 +405,7 @@ export default {
       await this.handleFileImport();
     },
     async clickReportZeroEnrollment(){
-      const confirmation = await this.$refs.confirmZeroEnrollment.open('Confirm Zero Enrollment', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
+      const confirmation = await this.$refs.confirmZeroEnrollment.open('Confirm Zero Enrolment', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
       if (!confirmation) {
         return;
       }
@@ -458,7 +458,7 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while triggering manual enrollment. Please try again later.');
+          this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while triggering manual enrolment. Please try again later.');
         });
     },
     async startPollingStatus() {
@@ -521,11 +521,11 @@ export default {
     },
     async reportZeroEnrollment(sdcSchoolCollectionId) {
       ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/reportZeroEnrollment`).then(() => {
-        this.setSuccessAlert('Your report of zero enrollment was recorded successfully.');
+        this.setSuccessAlert('Your report of zero enrolment was recorded successfully.');
         this.$emit('refresh-store');
       }).catch(e => {
         console.error(e);
-        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrollment: ' + e.message;
+        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrolment: ' + e.message;
       });
     },
     async getFileProgress() {

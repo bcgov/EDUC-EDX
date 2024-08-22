@@ -38,12 +38,12 @@
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item
-        value="Enrollment Duplicates"
+        value="Enrolment Duplicates"
         transition="false"
         reverse-transition="false"
       >
         <DuplicateTab
-          v-if="tab==='Enrollment Duplicates'"
+          v-if="tab==='Enrolment Duplicates'"
           duplicate-type="enrollment"
           duplicate-level="DISTRICT"
           :headers-config="IN_DISTRICT_DUPLICATES"
@@ -90,7 +90,7 @@
   >
     <p class="form-hint mr-3">
       <span v-if="nonAllowableDuplicates.length > 0">
-        {{ nonAllowableDuplicates.length }} enrollment
+        {{ nonAllowableDuplicates.length }} enrolment
       </span>
       <span v-if="nonAllowableDuplicates.length > 0 && nonAllowableProgramDuplicates.length > 0">
         and
@@ -154,7 +154,7 @@ export default defineComponent({
       sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
       tab: null,
       tabs: [
-        'Enrollment Duplicates',
+        'Enrolment Duplicates',
         'Program Duplicates'
       ],
     };

@@ -38,12 +38,12 @@
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item
-        value="Enrollment Duplicates"
+        value="Enrolment Duplicates"
         transition="false"
         reverse-transition="false"
       >
         <DuplicateTab
-          v-if="tab==='Enrollment Duplicates'"
+          v-if="tab==='Enrolment Duplicates'"
           duplicate-type="enrollment"
           duplicate-level="PROVINCIAL"
           :headers-config="PROVINCIAL_DUPLICATES"
@@ -73,35 +73,34 @@
     </v-window>
   </div>
 
-    <v-row justify="end">
-      <PrimaryButton
-        id="step-4-next-button-district"
-        class="mr-3 mb-3"
-        :disabled="disableNextButton() || apiError || !hasEditPermission"
-        icon="mdi-check"
-        text="Verify as Correct"
-        :click-action="next"
-      />
-    </v-row>
-    <v-row
-      v-if="disableNextButton()"
-      justify="end"
-      class="my-0"
-    >
-      <p class="form-hint mr-3">
-        <span v-if="nonAllowableDuplicates.length > 0">
-          {{ nonAllowableDuplicates.length }} enrollment
-        </span>
-        <span v-if="nonAllowableDuplicates.length > 0 && nonAllowableProgramDuplicates.length > 0">
-          and
-        </span>
-        <span v-if="nonAllowableProgramDuplicates.length > 0">
-          {{ nonAllowableProgramDuplicates.length }} program
-        </span>
-        duplicate(s) unresolved
-      </p>
-    </v-row>
-
+  <v-row justify="end">
+    <PrimaryButton
+      id="step-4-next-button-district"
+      class="mr-3 mb-3"
+      :disabled="disableNextButton() || apiError || !hasEditPermission"
+      icon="mdi-check"
+      text="Verify as Correct"
+      :click-action="next"
+    />
+  </v-row>
+  <v-row
+    v-if="disableNextButton()"
+    justify="end"
+    class="my-0"
+  >
+    <p class="form-hint mr-3">
+      <span v-if="nonAllowableDuplicates.length > 0">
+        {{ nonAllowableDuplicates.length }} enrolment
+      </span>
+      <span v-if="nonAllowableDuplicates.length > 0 && nonAllowableProgramDuplicates.length > 0">
+        and
+      </span>
+      <span v-if="nonAllowableProgramDuplicates.length > 0">
+        {{ nonAllowableProgramDuplicates.length }} program
+      </span>
+      duplicate(s) unresolved
+    </p>
+  </v-row>
 </template>
 <script>
 import {defineComponent} from 'vue';
@@ -154,7 +153,7 @@ export default defineComponent({
       duplicateResolutionCodesMap: null,
       tab: null,
       tabs: [
-        'Enrollment Duplicates',
+        'Enrolment Duplicates',
         'Program Duplicates'
       ],
     };

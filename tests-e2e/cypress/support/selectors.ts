@@ -188,7 +188,7 @@ export default {
     reportDropdown: '#reports'
   },
   provincialDuplicatesComponent : {
-    enrollmentDuplicatesTab: 'button[value="Enrollment Duplicates"]',
+    enrollmentDuplicatesTab: 'button[value="Enrolment Duplicates"]',
     programDuplicatesTab: 'button[value="Program Duplicates"]',
     nonAllowableEnrollmentTab: '#nonAllowableenrollmentButton',
     nonAllowableProgramTab: '#nonAllowableprogramButton',
