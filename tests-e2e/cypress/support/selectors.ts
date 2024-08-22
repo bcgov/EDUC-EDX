@@ -449,6 +449,7 @@ export default {
     stepSix:'#step-6',
     stepThree:'#step-3',
     stepTwo:'#step-2',
+    stepSeven: '#step-7',
     studentsFound: '#studentsFound',
     warningAndErrorSummary: '#warningAndErrorSummary',
     totalStudentsWithIssues: '#totalStudentsWithIssues',
@@ -503,7 +504,20 @@ export default {
     collectionSubmission: '#collection-submission',
     csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport',
-    collectionTypeYear: '#collectionTypeYear'
+    collectionTypeYear: '#collectionTypeYear',
+    signOffTab: '.sign-off-tab'
+  },
+  signOffTab: {
+    _1701SignOffButton: '#DIS_SDC_EDIT-button',
+    superintendentSignOffButton: '#SUPERINT-button',
+    secretaryTreasurerSignOffButton: '#SECR_TRES-button',
+    confirmButton: '#resolveBtn',
+    signOffDetails: '#signatureTab > div > div > table > tbody > tr > td:nth-child(2)',
+    slider: '.v-slide-group__content',
+    studentDifferencesButton: '[value="StudentDifferences"]',
+    studentsFound: '#studentsFound',
+    resolvedDuplicatesButton: '[value="resolvedDuplicates"]',
+    enrolledResolvedAlert: '#enrolledresolved-alert'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',
