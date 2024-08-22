@@ -47,15 +47,12 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
       cy.get(selectors.studentLevelData.signOffTab).should('exist').click();
 
-      cy.get(selectors.signOffTab._1701SignOffDetails).should('exist');
       cy.get(selectors.signOffTab._1701SignOffButton).should('exist').click();
       cy.get(selectors.signOffTab.confirmButton).click();
 
-      cy.get(selectors.signOffTab.superintendentSignOffDetails).should('exist');
       cy.get(selectors.signOffTab.superintendentSignOffButton).should('exist').click();
       cy.get(selectors.signOffTab.confirmButton).click();
 
-      cy.get(selectors.signOffTab.secretaryTreasurerSignOffDetails).should('exist');
       cy.get(selectors.signOffTab.secretaryTreasurerSignOffButton).should('exist').click();
       cy.get(selectors.signOffTab.confirmButton).click();
 
@@ -63,9 +60,9 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.signOffTab.superintendentSignOffButton).should('be.disabled');
       cy.get(selectors.signOffTab.secretaryTreasurerSignOffButton).should('be.disabled');
 
-      cy.get(selectors.signOffTab._1701SignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
-      cy.get(selectors.signOffTab.superintendentSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
-      cy.get(selectors.signOffTab.secretaryTreasurerSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
+      cy.get(selectors.signOffTab.signOffDetails).each(($cell) => {
+        cy.wrap($cell).children().first().should('have.class', 'mdi-check-circle-outline');
+      });
 
       cy.reload();
       cy.get(selectors.signOffTab.slider).children().should('have.length', 9);
