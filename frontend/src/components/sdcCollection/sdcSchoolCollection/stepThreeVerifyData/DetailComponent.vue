@@ -201,7 +201,7 @@ export default {
       selectedStudents: [],
       filterSearchParams: {
         tabFilter: this.config.defaultFilter,
-        sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED',
+        sdcSchoolCollectionStudentStatusCode: 'INFOWARN,FUNDWARN,VERIFIED,DEMOG_UPD,COMPLETED',
         moreFilters: {}
       },
       showFilters: null,
