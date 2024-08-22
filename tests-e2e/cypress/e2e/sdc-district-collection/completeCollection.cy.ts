@@ -42,7 +42,7 @@ describe('SDC District Collection View', () => {
     beforeEach(() => cy.login());
 
 
-    it('can view sign off tabs and sign off', () => {
+    it('can view sign off tab and sign off', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
       cy.get(selectors.studentLevelData.signOffTab).should('exist').click();
