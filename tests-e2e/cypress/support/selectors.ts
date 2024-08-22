@@ -507,7 +507,8 @@ export default {
     collectionSubmission: '#collection-submission',
     csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport',
-    collectionTypeYear: '#collectionTypeYear'
+    collectionTypeYear: '#collectionTypeYear',
+    signOffTab: '.sign-off-tab'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',

@@ -32,20 +32,20 @@ describe('SDC District Collection View', () => {
           schools: res.schools,
           district: res.district,
           loadWithStudentAndValidations: false,
-          seedData: 'sdcDistrictCollectionProvincialDuplicatesSeedData'
+          seedData: 'sdcDistrictCollectionCompleteCollectionSeedData'
         }).then(response => {
           Cypress.env('sdcDistrictCollectionID', response?.sdcDistrictCollection?.sdcDistrictCollectionID);
         });
-        cy.task('setup-districtUser', { districtRoles: ['DISTRICT_SDC'], districtCodes: ['998'] });
+        cy.task('setup-districtUser', { districtRoles: ['DISTRICT_SDC', 'SUPERINT', 'SECR_TRES', 'EDX_DISTRICT_ADMIN', 'DIS_SDC_RO'], districtCodes: ['998'] });
       });
     });
     beforeEach(() => cy.login());
 
 
-    it('can view resolve provincial duplicates tabs', () => {
+    it('can view sign off tabs and sign off', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
-
+      cy.get(selectors.studentLevelData.signOffTab).should('exist').click();
     });
   });
 });

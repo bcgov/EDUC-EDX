@@ -1069,7 +1069,7 @@ export class SdcCollectionApiService {
         student.legalLastName = 'LEGALLAST';
       }));
       break;
-    case 'sdcDistrictCollectionProvincialDuplicatesSeedData':
+    case 'sdcDistrictCollectionSignOffSeedData':
       sdcDistrictCollection.sdcDistrictCollectionStatusCode = 'P_DUP_POST';
 
       sdcSchoolCollections.forEach(x => x.students.map((student) =>  {
