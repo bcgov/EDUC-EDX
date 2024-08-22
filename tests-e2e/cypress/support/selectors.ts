@@ -518,6 +518,11 @@ export default {
     _1701SignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(1) > :nth-child(2)',
     superintendentSignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(2) > :nth-child(2)',
     secretaryTreasurerSignOffDetails: '#signatureTab > div > div > table > tbody > :nth-child(3) > :nth-child(2)',
+    slider: '.v-slide-group__content',
+    studentDifferencesButton: '[value="StudentDifferences"]',
+    studentsFound: '#studentsFound',
+    resolvedDuplicatesButton: '[value="resolvedDuplicates"]',
+    enrolledResolvedAlert: '#enrolledresolved-alert'
   },
   userActivationPage: {
     mincodeInput: '#instituteIdentifierTextField',

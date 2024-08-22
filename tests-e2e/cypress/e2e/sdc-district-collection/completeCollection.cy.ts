@@ -66,6 +66,13 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.signOffTab._1701SignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
       cy.get(selectors.signOffTab.superintendentSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
       cy.get(selectors.signOffTab.secretaryTreasurerSignOffDetails).children().first().should('exist').should('have.class', 'mdi-check-circle-outline');
+
+      cy.reload();
+      cy.get(selectors.signOffTab.slider).children().should('have.length', 9);
+      cy.get(selectors.signOffTab.studentDifferencesButton).should('exist').click();
+      cy.get(selectors.signOffTab.studentsFound).should('exist').contains('Students Found: 0');
+      cy.get(selectors.signOffTab.resolvedDuplicatesButton).should('exist').click();
+      cy.get(selectors.signOffTab.enrolledResolvedAlert).should('exist').contains('There are no resolved enrollment duplicates.');
     });
   });
 });
