@@ -14,15 +14,6 @@
         >
           Detail View
         </v-btn>
-        <v-btn
-          id="refugeeSummaryButton"
-          size="large"
-          class="summary-button"
-          :class="{ 'active-button': reportView === 'summary' }"
-          @click="showSummary"
-        >
-          Summary View
-        </v-btn>
       </v-btn-toggle>
     </v-row>
   
@@ -61,7 +52,7 @@ export default {
   emits: [],
   data() {
     return {
-      reportView: this.isFinalSignOff ? 'summary' : 'detail',
+      reportView: 'detail',
       config: REFUGEE
 
     };
