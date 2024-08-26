@@ -13,11 +13,13 @@ const {
   checkSdcSchoolCollectionAccess
 } = require('../components/permissionUtils');
 const {PERMISSION} = require('../util/Permission');
+const validate = require('../components/validator');
+const { validateStudentSchema } = require('../validations/penServices');
 
 /*
  * Get results of student demographics validation
  */
-router.post('/sdcSchoolCollection/:sdcSchoolCollectionID/demog-validation', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, validateStudentDemogData);
+router.post('/sdcSchoolCollection/:sdcSchoolCollectionID/demog-validation', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, validate(validateStudentSchema), validateStudentDemogData);
 router.get('/prbValidationTypeCodes', passport.authenticate('jwt', {session: false}, undefined), auth.isValidBackendToken(), getCachedPENServicesData(constants.CACHE_KEYS.PRB_VALIDATION_ISSUE_TYPE_CODES, 'penServices:prbValidationTypeCodesURL'));
 
 module.exports = router;
