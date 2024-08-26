@@ -49,6 +49,14 @@
       :items="schoolCollectionsInProgress"
       items-per-page="10"
     >
+      <template #item.schoolDisplayName="{ item }">
+        <router-link
+          :to="{ name: 'sdcCollection', params: { schoolCollectionID: item.sdcSchoolCollectionID }}"
+          target="_blank"
+        >
+          {{ item.schoolDisplayName }}
+        </router-link>
+      </template>
       <template #item.percentageStudentsProcessed="{ item }">
         <v-icon
           v-if="item.percentageStudentsProcessed === '100'"
@@ -110,8 +118,7 @@
               type="info"
               text="Please wait until all files have completed uploading before leaving the screen."
               variant="tonal"
-            >
-            </v-alert>
+            />
           </v-col>
         </v-row>
         <v-row
@@ -181,7 +188,7 @@
       <v-card-actions class="d-flex justify-end">
         <v-row>
           <v-col class="d-flex justify-end">
-            <span class="mr-2 mt-1">{{inputKey}} of {{ fileUploadList.length }} Complete</span>
+            <span class="mr-2 mt-1">{{ inputKey }} of {{ fileUploadList.length }} Complete</span>
             <v-btn
               id="closeOverlayBtn"
               color="#003366"
