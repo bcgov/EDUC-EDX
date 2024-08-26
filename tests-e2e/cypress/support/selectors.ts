@@ -505,6 +505,7 @@ export default {
     csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport',
     collectionTypeYear: '#collectionTypeYear',
+    collectionDate: '.containerSetup > div > div > h2',
     signOffTab: '.sign-off-tab'
   },
   signOffTab: {
