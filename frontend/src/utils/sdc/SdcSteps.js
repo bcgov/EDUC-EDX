@@ -318,7 +318,7 @@ export const SDC_STEPS_SUMMER_DISTRICT = Object.freeze([
     id: 'step-4',
     title: 'Submit to Ministry',
     step: 4,
-    sdcDistrictCollectionStatusCode: ['REVIEWED', 'SUBMITTED', 'COMPLETED'],
+    sdcDistrictCollectionStatusCode: ['VERIFIED', 'SUBMITTED', 'COMPLETED'],
     index: 4
   }
 
