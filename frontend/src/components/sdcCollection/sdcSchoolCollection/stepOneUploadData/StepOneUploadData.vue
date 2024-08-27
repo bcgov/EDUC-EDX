@@ -466,7 +466,6 @@ export default {
       await this.$refs.documentForm.validate();
     },
     handleFileImport() {
-      console.log('Marco');
       this.fileUploadErrorMessage = null;
       this.uploadFileValue = null;
       this.$refs.uploader.click();
