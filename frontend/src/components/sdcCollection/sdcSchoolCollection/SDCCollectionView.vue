@@ -68,6 +68,7 @@
       <v-col class="pt-0">
         <v-stepper
           ref="stepper"
+          class="customStepper"
           hide-actions
           non-linear
           :model-value="currentStep"
@@ -371,6 +372,27 @@ export default {
   color: red;
   margin-top: .1em;
   font-style: italic;
+}
+
+.customStepper .v-stepper-item .v-stepper-item__subtitle {
+  text-align: center !important;
+}
+
+.customStepper .v-stepper--alt-labels .v-stepper-item__avatar.v-avatar {
+  margin-bottom: 16px;
+  margin-inline-end: 0;
+}
+
+.customStepper .v-stepper-item__avatar.v-avatar {
+  margin-inline-end: 0px;
+  margin-bottom: 16px;
+}
+
+.customStepper .v-stepper-item {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex-basis: 175px;
 }
 </style>
 
