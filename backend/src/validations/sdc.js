@@ -139,7 +139,9 @@ const putSchoolCollectionSchema = object({
     })),
     status: string().nullable().optional() 
   }),
-  params: object().noUnknown(),
+  params: object({
+    sdcSchoolCollectionID: string()
+  }).noUnknown(),
   query: object().noUnknown(),
 }).noUnknown();
 
