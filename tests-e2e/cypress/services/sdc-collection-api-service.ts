@@ -373,8 +373,7 @@ export class SdcCollectionApiService {
         students[0].penMatchResult = 'DM';
         students[0].fte = 1;
         students[0].yearsInEll = '3';
-
-        students[1].enrolledGradeCode = '11';
+        students[1].enrolledGradeCode = '08';
         students[1].enrolledProgramCodes = '431733';
         students[1].careerProgramCode = 'XH';
         students[1].indigenousSupportProgramNonEligReasonCode = 'NOTELIG';
@@ -892,6 +891,7 @@ export class SdcCollectionApiService {
     const schoolCollectionResponse = await this.restUtils.postData<SdcSchoolCollection>(urlSdcSchoolCollection, sdcSchoolCollectionPayload);
 
     const responses: SdcCollections = {
+      collectionTypeCode: activeCollection?.collectionTypeCode,
       sdcSchoolCollections: [schoolCollectionResponse],
       sdcDistrictCollection: sdcDistrictCollectionResponse
     };

@@ -51,7 +51,7 @@ describe('SDC School Collection View', () => {
       cy.wait('@collectionStudent');
 
       // test submitted and assigned match
-      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('103169744').click();
+      cy.get(selectors.schoolList.schoolRow).contains('student2').click();
       cy.get(selectors.studentLevelData.studentPen).should('exist');
       cy.get(selectors.studentLevelData.studentPen).invoke('val').should('eq', '103169744');
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
@@ -120,7 +120,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 8 (08)').click();
+      cy.get(selectors.studentLevelData.numberofCourses).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('1.00').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
@@ -147,7 +149,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 8 (08)').click();
+      cy.get(selectors.studentLevelData.numberofCourses).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('1.00').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
