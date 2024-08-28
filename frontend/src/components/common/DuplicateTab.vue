@@ -85,7 +85,8 @@
                     <v-btn
                       :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
                       color="primary"
-                      icon="mdi-playlist-edit"
+                      prepend-icon="mdi-playlist-edit"
+                      text="Resolve"
                       variant="text"
                       v-bind="props"
                       :disabled="!canResolveDuplicates"
