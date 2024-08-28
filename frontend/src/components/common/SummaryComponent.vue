@@ -128,7 +128,7 @@
         id="compare-switch"
         v-model="compareSwitch"
         color="primary"
-        label="compare to previous September Collection"
+        :label="currentCollectionTypeCode === 'July' ? 'compare to previous July Collection' : 'compare to previous September Collection' "
         style="justify-items: right;"
         @update:model-value="compare()"
       />
@@ -169,6 +169,8 @@ import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import HeadCountReportComponent from './HeadCountReportComponent.vue';
 import {getComparisonIcon, getStatusColor} from '../../utils/common';
+import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../store/modules/sdcCollection';
  
 export default {
   name: 'SummaryComponent',
@@ -200,6 +202,9 @@ export default {
       reportType: null,
       tableID: null
     };
+  },
+  computed: {
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
   },
   watch: {
     headcountType: {
