@@ -8,7 +8,7 @@
         id="compare-switch"
         v-model="compareSwitch"
         color="primary"
-        label="compare to previous September Collection"
+        :label="currentCollectionTypeCode === 'July' ? 'compare to previous July Collection' : 'compare to previous September Collection' "
         style="justify-items: right;"
         @update:model-value="compare()"
       />
@@ -109,6 +109,8 @@ import {FTE, FRENCH_PR, CAREER_PR, SPECIALED_PR, INDSUPPORT_PR, ELL} from '../..
 import {isEmpty, omitBy} from 'lodash';
 import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
+import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 
 export default defineComponent({
   name: 'SummaryComponent',
@@ -138,6 +140,7 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
     config() {
       if(this.selectedTab==='Overall') {
         return FTE.summaryReport[0].endpoint;
