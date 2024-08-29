@@ -188,6 +188,7 @@ const reportTypeValues = [
   ['special-ed', 'SPECIAL_EDUCATION_HEADCOUNT'],
   ['special-ed_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT'],
   ['special-ed-per-school_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT_PER_SCHOOL'],
+  ['special-ed-cat-per-school_dis', 'DIS_SPECIAL_EDUCATION_HEADCOUNT_CATEGORY_PER_SCHOOL'],
   ['indigenous', 'INDIGENOUS_HEADCOUNT'],
   ['indigenous_dis', 'DIS_INDIGENOUS_HEADCOUNT'],
   ['indigenous-per-school_dis', 'DIS_INDIGENOUS_HEADCOUNT_PER_SCHOOL'],

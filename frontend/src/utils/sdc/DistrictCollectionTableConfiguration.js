@@ -250,7 +250,8 @@ export const SPECIALED_PR = Object.freeze(
     ],
     summaryReport: [
       { tableID: 'eligSpecialEdHeadcount', title: 'Eligible Inclusive Education Headcount', endpoint:'special-ed'},
-      { tableID: 'eligSpecialEdHeadcountPerSchool', title: 'Eligible Inclusive Education Headcount per School', endpoint:'special-ed-per-school'}
+      { tableID: 'eligSpecialEdHeadcountPerSchool', title: 'Eligible Inclusive Education Headcount per School', endpoint:'special-ed-per-school'},
+      { tableID: 'eligSpecialEdHeadcountCatPerSchool', title: 'Eligible Inclusive Education Category Headcount per School', endpoint:'special-ed-cat-per-school'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
