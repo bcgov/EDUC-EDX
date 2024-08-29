@@ -49,6 +49,14 @@
       :items="schoolCollectionsInProgress"
       items-per-page="10"
     >
+      <template #item.schoolDisplayName="{ item }">
+        <router-link
+          :to="{ name: 'sdcCollection', params: { schoolCollectionID: item.sdcSchoolCollectionID }}"
+          target="_blank"
+        >
+          {{ item.schoolDisplayName }}
+        </router-link>
+      </template>
       <template #item.percentageStudentsProcessed="{ item }">
         <v-icon
           v-if="item.percentageStudentsProcessed === '100'"
@@ -110,8 +118,7 @@
               type="info"
               text="Please wait until all files have completed uploading before leaving the screen."
               variant="tonal"
-            >
-            </v-alert>
+            />
           </v-col>
         </v-row>
         <v-row
@@ -181,7 +188,7 @@
       <v-card-actions class="d-flex justify-end">
         <v-row>
           <v-col class="d-flex justify-end">
-            <span class="mr-2 mt-1">{{inputKey}} of {{ fileUploadList.length }} Complete</span>
+            <span class="mr-2 mt-1">{{ inputKey }} of {{ fileUploadList.length }} Complete</span>
             <v-btn
               id="closeOverlayBtn"
               color="#003366"
@@ -445,15 +452,12 @@ export default {
     },
     addFileReportDateWarningIfRequired(fileDate, fileJSON) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
-      if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30)) || formattedFileDate.isAfter(this.collectionCloseDate().plusDays(30))){
+      if(formattedFileDate.isBefore(this.collectionOpenDate().minusDays(30))){
         fileJSON.warning = 'The date in this file is ' + formattedFileDate + '. Please ensure that you have uploaded the correct data for this collection before continuing.';
       }
     },
     collectionOpenDate() {
       return LocalDate.parse(this.districtCollectionObject.collectionOpenDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-    },
-    collectionCloseDate() {
-      return LocalDate.parse(this.districtCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
     },
     async getFileProgress() {
       try{

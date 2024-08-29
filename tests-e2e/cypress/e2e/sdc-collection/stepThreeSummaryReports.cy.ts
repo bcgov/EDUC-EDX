@@ -15,6 +15,8 @@ describe('SDC School Collection View', () => {
             school: res.schools[0],
             loadWithStudentAndValidations: true,
             seedData: 'stepThreeHeadcountSeedData'
+          }).then(collection => {
+            Cypress.env('collectionTypeCode', collection?.collectionTypeCode);
           });
         });
         cy.task<SchoolUserOptions, EdxUserEntity>('setup-schoolUser', { schoolCodes: ['99998'] });
@@ -33,6 +35,7 @@ describe('SDC School Collection View', () => {
     });
 
     it('verifies FTE for Reported Students', () => {
+      const isJulyCollection = Cypress.env('collectionTypeCode') === 'JULY';
       cy.intercept(Cypress.env('interceptors').collection_by_school_id).as('collection');
       cy.visit('/');
       cy.get(selectors.dashboard.dataCollectionsTile).click();
@@ -62,10 +65,10 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.headcountCard).eq(0).find(selectors.fteComponent.headcountColumnData).eq(3).children('div').children('span').should('contain.text', '3');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountHeader).should('contain.text', 'Grade Headcount');
       cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).should('have.length', 2);
-      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').should('contain.text', '09');
-      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').children('span').should('contain.text', '2');
-      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').should('contain.text', '11');
-      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').children('span').should('contain.text', '1');
+      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').should('contain.text', '08');
+      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(0).children('div').children('span').should('contain.text', '1');
+      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').should('contain.text', '09');
+      cy.get(selectors.fteComponent.headcountCard).eq(1).find(selectors.fteComponent.headcountColumnData).eq(1).children('div').children('span').should('contain.text', '2');
 
       //check summary table
       cy.get(selectors.fteComponent.table).should('exist').contains(1);
@@ -73,26 +76,29 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.fteComponent.tableWrapper).contains('School Aged');
       cy.get(selectors.fteComponent.tableWrapper).contains('Adult');
       cy.get(selectors.fteComponent.tableWrapper).contains('All Students');
+
+      const fteTotal = isJulyCollection ? '2.6500' : '2.7750';
+
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '2.6500');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', fteTotal);
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '0');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '3');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '3');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '2.6500');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', fteTotal);
 
       cy.get(selectors.studentLevelData.compareSwitch).click();
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedHeadcount).should('contain.text', '03');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedEligibleFTE).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '02.6500');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.schoolAgedTotal).should('contain.text', '0' + fteTotal);
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultHeadcount).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultEligibleFTE).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.adultTotal).should('contain.text', '00');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allHeadcount).should('contain.text', '03');
       cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allEligibleFTE).should('contain.text', '03');
-      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '02.6500');
+      cy.get(selectors.fteComponent.tableWrapper).find(selectors.fteComponent.allTotal).should('contain.text', '0' + fteTotal);
     });
 
     it('can download grade enrollment and FTE report', () => {
@@ -217,7 +223,7 @@ describe('SDC School Collection View', () => {
       checkCareerTableSection(1, 'Co-Operative Education', coopEdHeadcounts);
 
       const techOrYouthHeadcounts = [...emptyHeadcounts];
-      const techOrYouthHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
+      const techOrYouthHeadcountsInner = [1, 0, 0, 0, 0, 0, 1];
       techOrYouthHeadcounts.splice(0, 1, techOrYouthHeadcountsInner);
       techOrYouthHeadcounts.splice(8, 1, techOrYouthHeadcountsInner);
       checkCareerTableSection(2, 'Career Technical or Youth Train in Trades', techOrYouthHeadcounts);
@@ -225,9 +231,10 @@ describe('SDC School Collection View', () => {
       checkCareerTableSection(3, 'Youth Work in Trades Program', emptyHeadcounts);
 
       const allHeadcounts = [...emptyHeadcounts];
-      const totalHeadcountsInner = [0, 1, 0, 1, 0, 0, 2];
+      const totalHeadcountsInner = [1, 1, 0, 0, 0, 0, 2];
       const xaHeadcountsInner = [0, 1, 0, 0, 0, 0, 1];
-      const xhHeadcountsInner = [0, 0, 0, 1, 0, 0, 1];
+      const xhHeadcountsInner = [1, 0, 0, 0, 0, 0, 1];
+
       allHeadcounts.splice(0, 1, totalHeadcountsInner);
       allHeadcounts.splice(1, 1, xaHeadcountsInner);
       allHeadcounts.splice(8, 1, xhHeadcountsInner);

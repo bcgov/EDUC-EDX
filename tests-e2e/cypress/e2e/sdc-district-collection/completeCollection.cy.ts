@@ -35,6 +35,7 @@ describe('SDC District Collection View', () => {
           seedData: 'sdcDistrictCollectionCompleteCollectionSeedData'
         }).then(response => {
           Cypress.env('sdcDistrictCollectionID', response?.sdcDistrictCollection?.sdcDistrictCollectionID);
+          Cypress.env('collectionTypeCode', response?.sdcDistrictCollection?.collectionTypeCode);
         });
         cy.task('setup-districtUser', { districtRoles: ['DISTRICT_SDC', 'SUPERINT', 'SECR_TRES', 'EDX_DISTRICT_ADMIN', 'DIS_SDC_RO', 'EDX_EDIT_DISTRICT'], districtCodes: ['998'] });
       });
@@ -44,7 +45,13 @@ describe('SDC District Collection View', () => {
 
     it('can view sign off tab and sign off', () => {
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
-      cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
+      const isJulyCollection = Cypress.env('collectionTypeCode') === 'JULY';
+      if(isJulyCollection) {
+        cy.get(selectors.studentLevelData.stepFour).should('exist').should('have.class', 'v-stepper-item--selected');
+      } else {
+        cy.get(selectors.studentLevelData.stepSeven).should('exist').should('have.class', 'v-stepper-item--selected');
+      }
+
       cy.get(selectors.studentLevelData.signOffTab).should('exist').click();
 
       cy.get(selectors.signOffTab._1701SignOffButton).should('exist').click();
@@ -69,7 +76,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.signOffTab.studentDifferencesButton).should('exist').click();
       cy.get(selectors.signOffTab.studentsFound).should('exist').contains('Students Found: 0');
       cy.get(selectors.signOffTab.resolvedDuplicatesButton).should('exist').click();
-      cy.get(selectors.signOffTab.enrolledResolvedAlert).should('exist').contains('There are no resolved enrollment duplicates.');
+      cy.get(selectors.signOffTab.enrolledResolvedAlert).should('exist').contains('There are no resolved enrolment duplicates.');
     });
   });
 });

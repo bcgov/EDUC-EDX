@@ -158,7 +158,9 @@ export default {
     school2FTETotal: ':nth-child(6) > :nth-child(19) > div > span',
     allSchoolHeadcount: ':nth-child(8) > :nth-child(19) > div > span',
     allSchoolFTETotal: ':nth-child(9) > :nth-child(19) > div > span',
-    availableReports: '#reports'
+    availableReports: '#reports',
+    headcountReportDis: '#eligEnrolmentFTE',
+    headcountReportPerSchool: '#eligEnrolmentFTEPerSchool',
   },
   refugeeComponent: {
     filterButton: '#filters',
@@ -425,6 +427,7 @@ export default {
     careerProgramsButton: 'button[value="Career Programs"]',
     englishLanguageLearningButton: 'button[value="English Language Learning"]',
     frenchProgramsButton: 'button[value="French Programs"]',
+    gradeEnrollmentButton: 'button[value="All Students"]',
     indigenousStudentsButton: 'button[value="Indigenous Students & Support Programs"]',
     specialEducationButton: 'button[value="Inclusive Education"]',
     refugeeButton: 'button[value="Refugee"]'
@@ -505,6 +508,7 @@ export default {
     csvDownloadLink: '#studentsFound ~ a',
     pdfDownloadLink: '#downloadReport',
     collectionTypeYear: '#collectionTypeYear',
+    collectionDate: '.containerSetup > div > div > h2',
     signOffTab: '.sign-off-tab'
   },
   signOffTab: {

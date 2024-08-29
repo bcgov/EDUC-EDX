@@ -10,6 +10,7 @@ interface Collection extends BaseApiEntity {
 }
 
 interface SdcCollections {
+  collectionTypeCode: CollectionTypeCode
   sdcDistrictCollection?: SdcDistrictCollection;
   sdcSchoolCollections: SdcSchoolCollection[];
 }

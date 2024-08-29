@@ -89,12 +89,11 @@
                   <template #activator="{ props }">
                     <v-btn
                       id="editOptionsMenu"
-                      class="icon-button"
                       color="primary"
-                      variant="outlined"
+                      variant="text"
                       :disabled="!hasEditPermission"
-                      density="comfortable"
-                      icon="mdi-playlist-edit"
+                      prepend-icon="mdi-playlist-edit"
+                      text="Resolve"
                       v-bind="props"
                     />
                   </template>

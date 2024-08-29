@@ -330,9 +330,6 @@ export default {
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
-    collectionCloseDate() {
-      return LocalDate.parse(this.schoolCollectionObject.collectionCloseDate.substring(0,19), DateTimeFormatter.ofPattern('uuuu-MM-dd\'T\'HH:mm:ss'));
-    },
     fileReportDate() {
       try {
         return LocalDate.parse(this.sdcSchoolProgress?.uploadReportDate, DateTimeFormatter.ofPattern('uuuuMMdd').withResolverStyle(ResolverStyle.STRICT));
@@ -356,7 +353,7 @@ export default {
       if (!this.fileReportDate) {
         return true;
       }
-      return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30)) || this.fileReportDate.isAfter(this.collectionCloseDate.plusDays(30));
+      return this.fileReportDate.isBefore(this.collectionOpenDate.minusDays(30));
     },
     fileUploadDate() {
       try {
@@ -469,7 +466,6 @@ export default {
       await this.$refs.documentForm.validate();
     },
     handleFileImport() {
-      console.log('Marco');
       this.fileUploadErrorMessage = null;
       this.uploadFileValue = null;
       this.$refs.uploader.click();

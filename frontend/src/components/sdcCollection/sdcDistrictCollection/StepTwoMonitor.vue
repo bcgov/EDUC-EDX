@@ -396,7 +396,9 @@ export default defineComponent({
       this.filters = {};
     },
     disableNextButton() {
-      return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
+      if(this.districtCollectionObject.collectionTypeCode !== 'JULY') {
+        return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
+      }   
     },
     filterForErrorsOrWarnings(school) {
       const { issuesFilter = [] } = this.filters || {};

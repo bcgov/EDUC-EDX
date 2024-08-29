@@ -12,6 +12,7 @@ describe('SDC School Collection View', () => {
           seedData: 'stepThreeHeadcountSeedData'
         }).then(collection => {
           Cypress.env('schoolCollectionId', collection?.sdcSchoolCollections[0]?.sdcSchoolCollectionID);
+          Cypress.env('collectionTypeCode', collection?.collectionTypeCode);
           const studentWithEllYears = collection?.sdcSchoolCollections[0]?.students
             .filter(s => s.assignedStudentId === 'ce4bec97-b986-4815-a9f8-6bdfe8578dcf')
             .map(s => ({
@@ -51,7 +52,7 @@ describe('SDC School Collection View', () => {
       cy.wait('@collectionStudent');
 
       // test submitted and assigned match
-      cy.get(selectors.studentLevelData.editStudentRowByPen).contains('103169744').click();
+      cy.get(selectors.schoolList.schoolRow).contains('student2').click();
       cy.get(selectors.studentLevelData.studentPen).should('exist');
       cy.get(selectors.studentLevelData.studentPen).invoke('val').should('eq', '103169744');
       cy.get(selectors.studentLevelData.assignedPen).should('exist');
@@ -73,12 +74,14 @@ describe('SDC School Collection View', () => {
 
     it('can edit student', () => {
       const id = Cypress.env('schoolCollectionId');
+      const isJulyCollection = Cypress.env('collectionTypeCode') === 'JULY';
       navigateToStep3Screen(id);
 
       cy.get(selectors.schoolList.schoolRow).contains('student2').click();
 
       cy.get(selectors.studentLevelData.fteBanner).should('exist');
-      cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: 0.875');
+      const fte = isJulyCollection ? '0.875' : '1';
+      cy.get(selectors.studentLevelData.fteBanner).contains('Eligible FTE: ' + fte);
       cy.get(selectors.studentLevelData.graduatedFlag).should('exist');
       cy.get(selectors.studentLevelData.adultFlag).should('exist');
 
@@ -120,7 +123,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 8 (08)').click();
+      cy.get(selectors.studentLevelData.numberofCourses).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('1.00').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
@@ -147,7 +152,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dropdown.listItem).contains('Female (F)').click();
 
       cy.get(selectors.studentLevelData.enrolledGradeCode).parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Grade 6 (06)').click();
+      cy.get(selectors.dropdown.listItem).contains('Grade 8 (08)').click();
+      cy.get(selectors.studentLevelData.numberofCourses).parent().click();
+      cy.get(selectors.dropdown.listItem).contains('1.00').click();
 
       cy.get(selectors.studentLevelData.nativeAncestryInd).parent().click();
       cy.get(selectors.dropdown.listItem).contains('N').click();
