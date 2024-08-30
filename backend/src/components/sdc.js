@@ -1049,6 +1049,21 @@ async function unsubmitSdcSchoolCollection(req, res) {
   }
 }
 
+async function startFromPriorSeptCollection(req, res) {
+  try {
+    const payload = {
+      'updateUser': getCreateOrUpdateUserValue(req),
+      'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
+    };
+    const token = getAccessToken(req);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/priorCollection`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('startFromPriorSeptCollection Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function reportZeroEnrollment(req, res) {
   try {
     const payload = {
@@ -1263,5 +1278,6 @@ module.exports = {
   submitDistrictSignature,
   getStudentDifferencesByInstituteCollectionId,
   getSdcDistrictCollectionPaginated,
-  getSdcSchoolCollectionPaginated
+  getSdcSchoolCollectionPaginated,
+  startFromPriorSeptCollection
 };
