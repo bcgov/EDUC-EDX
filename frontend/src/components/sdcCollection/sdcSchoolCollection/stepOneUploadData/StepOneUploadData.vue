@@ -158,7 +158,7 @@
         <v-btn
           id="uploadButton"
           prepend-icon="mdi-file-upload"
-          style="width: 18em"
+          style="width: 20em"
           variant="elevated"
           color="#003366"
           text="Upload 1701 Submission"
@@ -201,7 +201,7 @@
           id="reportZeroEnrollment"
           variant="outlined"
           color="#003366"
-          style="width: 18em"
+          style="width: 20em"
           prepend-icon="mdi-numeric-0-circle"
           text="Report Zero Enrolment"
           :disabled="!hasEditPermission"
@@ -211,6 +211,25 @@
       <v-col class="d-flex justify-start">
         <div class="mt-2">
           This option should only be used for schools with no student<br> enrolment to report for this collection.
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex justify-end mt-2">
+        <v-btn
+          id="startFromPriorSeptCollection"
+          variant="outlined"
+          color="#003366"
+          style="width: 20em"
+          prepend-icon="mdi-account-arrow-left"
+          text="Start from Prior September Submission"
+          :disabled="!hasEditPermission"
+          @click="clickStartFromPriorSeptCollection"
+        />
+      </v-col>
+      <v-col class="d-flex justify-start">
+        <div class="mt-2">
+          This option will start your collection from the student data posted in the prior September collection. Only use this option if you cannot retrieve a current student file.
         </div>
       </v-col>
     </v-row>
@@ -254,6 +273,11 @@
       <p>Please confirm if you would like to report zero enrolment for this collection.</p>
       &nbsp;
       <p>Confirming below will <strong>finalize your 1701 submission</strong> and <strong>remove your ability to edit data for this collection.</strong></p>
+    </template>
+  </ConfirmationDialog>
+  <ConfirmationDialog ref="startPriorSeptCollection">
+    <template #message>
+      <p>Please confirm if you would like to start this collection with data from your prior September collection.</p>
     </template>
   </ConfirmationDialog>
 </template>
@@ -408,6 +432,13 @@ export default {
       }
       await this.handleReportZeroEnrollment();
     },
+    async clickStartFromPriorSeptCollection(){
+      const confirmation = await this.$refs.startPriorSeptCollection.open('Start from Prior September Collection', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Confirm', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      await this.handleStartFromSeptCollection();
+    },
     getFileRules() {
       this.fileRules = [
         value => {
@@ -475,6 +506,11 @@ export default {
       this.uploadFileValue = null;
       this.reportZeroEnrollment(this.sdcSchoolCollectionID);
     },
+    handleStartFromSeptCollection() {
+      this.fileUploadErrorMessage = null;
+      this.uploadFileValue = null;
+      this.startFromSeptCollection(this.sdcSchoolCollectionID);
+    },
     async importFile() {
       if(this.uploadFileValue) {
         this.isDisabled = true;
@@ -521,8 +557,22 @@ export default {
         this.$emit('refresh-store');
       }).catch(e => {
         console.error(e);
-        this.fileUploadErrorMessage = 'An error has occurred when reporting zero enrolment: ' + e.message;
+        this.setFailureAlert('An error has occurred when reporting zero enrolment');
       });
+    },
+    async startFromSeptCollection(sdcSchoolCollectionId) {
+      try {
+        this.isReadingFile = true;
+        await ApiService.apiAxios.post(`${ApiRoutes.sdc.BASE_URL}/${sdcSchoolCollectionId}/startFromPriorCollection`);
+        this.setSuccessAlert('Thank you - we are now processing your file from the prior September collection.');
+        await this.fireFileProgress();
+        this.$emit('refresh-store');
+      } catch(e){
+        console.error(e);
+        this.setFailureAlert('An error has occurred when starting from the prior September collection');
+      } finally {
+        this.isReadingFile = false;
+      }
     },
     async getFileProgress() {
       try{
@@ -589,5 +639,13 @@ export default {
 
  :deep(.mdi-information){
    color: #003366;
+ }
+
+ :deep(.v-btn__content){
+   white-space: break-spaces;
+ }
+
+ :deep(#startFromPriorSeptCollection > span.v-btn__prepend){
+   margin: 0;
  }
 </style>
