@@ -14,7 +14,7 @@ const postNewStudentSchema = object({
     usualMiddleNames: string().max(25).nullable().optional(),
     usualLastName: string().max(25).nullable().optional(),
     email: string().max(80).nullable().optional(),
-    emailVerified: string().matches(/(Y|N)/).nullable().optional(),
+    emailVerified: string().oneOf(['Y','N']).nullable().optional(),
     deceasedDate: string().nullable().optional(),
     postalCode: string().max(7).nullable().optional(),
     mincode: string().max(8).nullable().optional(),

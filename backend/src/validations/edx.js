@@ -101,8 +101,8 @@ const getExchangePaginatedSchema = object({
     pageNumber: number().required().moreThan(-1).integer(),
     pageSize: number().required().positive().integer(),
     sort: object({
-      createDate: string().matches(/(ASC|DESC)/),
-      updateDate: string().matches(/(ASC|DESC)/),
+      createDate: string().oneOf(['ASC','DESC']),
+      updateDate: string().oneOf(['ASC','DESC'])
     }),
     searchParams: object({
       ministryOwnershipTeamID: string().nullable().optional(),

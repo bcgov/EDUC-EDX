@@ -117,8 +117,8 @@ const getSchoolPaginatedSchema = object({
     pageNumber: number().required().moreThan(-1).integer(),
     pageSize: number().required().positive().integer(),
     sort: object({
-      schoolNumber: string().matches(/(ASC|DESC)/),
-      updateDate: string().matches(/(ASC|DESC)/)
+      schoolNumber: string().oneOf(['ASC','DESC']),
+      updateDate: string().oneOf(['ASC','DESC'])
     }).noUnknown(),
     searchParams: object({
       status: string(),
