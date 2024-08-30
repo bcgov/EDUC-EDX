@@ -16,5 +16,5 @@ const {newStudentSchema} = require('../validations/student');
  * Get student details based on PEN Number
  */
 router.get('/', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SECURE_EXCHANGE), getStudentByPEN);
-router.post('/sdcSchoolCollection/:sdcSchoolCollectionID/createStudent', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, validate(newStudentSchema), createNewStudent);
+router.post('/sdcSchoolCollection/:sdcSchoolCollectionID/createStudent', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(newStudentSchema), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, createNewStudent);
 module.exports = router;
