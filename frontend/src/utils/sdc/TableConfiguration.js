@@ -929,7 +929,7 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
     ],
     summaryReport: [
-      { tableID: 'eligELLHeadcount', title: 'Eligible English Language Learning Headcount', endpoint:'ell'}
+      { tableID: 'eligELLHeadcount', title: 'English Language Learning Headcount', endpoint:'ell'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,

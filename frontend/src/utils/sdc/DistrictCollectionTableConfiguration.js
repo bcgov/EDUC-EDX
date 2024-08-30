@@ -280,8 +280,8 @@ export const ELL = Object.freeze(
       { title: 'Language Program', key: 'mappedEllEnrolledProgram', subHeader: { title: 'Years in ELL', key: 'yearsInEll' } },
     ],
     summaryReport: [
-      { tableID: 'eligELLHeadcountForDistrict', title: 'Eligible English Language Learners Headcount for District', endpoint:'ell'},
-      { tableID: 'eligELLHeadcountPerSchool', title: 'Eligible English Language Learners Headcount per school', endpoint:'ell-per-school'}
+      { tableID: 'eligELLHeadcountForDistrict', title: 'English Language Learners Headcount for District', endpoint:'ell'},
+      { tableID: 'eligELLHeadcountPerSchool', title: 'English Language Learners Headcount per school', endpoint:'ell-per-school'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,

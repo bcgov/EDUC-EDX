@@ -385,6 +385,17 @@ const postMarKDiffSchema = object({
   query: object(),
 }).unknown();
 
+const postStartFromPriorCollectionSchema = object({
+  body: baseSdcSchoolStudent.shape({
+    updateUser: string(), 
+    sdcSchoolCollectionID: string().nonNullable(),
+  }).concat(baseRequestSchema),
+  params: object({
+    sdcSchoolCollectionID: string().nonNullable()
+  }),
+  query: object(),
+}).unknown();
+
 
 module.exports = {
   putSdcStudentSchema,
@@ -410,5 +421,6 @@ module.exports = {
   districtFileCollectionSchema: postDistrictFileCollectionSchema,
   schoolFileCollectionSchema: postSchoolFileCollectionSchema,
   resolveDuplicateSchema: postResolveDuplicateSchema,
-  markDiffSchema: postMarKDiffSchema
+  markDiffSchema: postMarKDiffSchema,
+  startFromPriorCollectionSchema: postStartFromPriorCollectionSchema
 };
