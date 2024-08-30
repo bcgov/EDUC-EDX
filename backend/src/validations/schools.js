@@ -1,6 +1,7 @@
-const { object, string, number, date, array} = require('yup');
+const { object, string, number, date, array, boolean } = require('yup');
+const { baseAddressSchema, baseContactSchema, baseRequestSchema } = require('./base');
 
-const getSchoolSchema = object({
+const getBySchoolIdSchema = object({
   body: object().noUnknown(),
   params: object({
     schoolID: string()
@@ -9,31 +10,12 @@ const getSchoolSchema = object({
 }).noUnknown();
 
 const schoolContactSchema = object({
-  alternatePhoneExtension: string().nullable(),
-  alternatePhoneNumber: string().nullable(),
-  createDate: date().nullable(),
-  createUser: string().nullable(),
-  effectiveDate: date(),
-  email: string().email().nullable(),
-  expiryDate: date().nullable(),
-  firstName: string().nullable(),
-  jobTitle: string().nullable(),
-  lastName: string(),
-  phoneExtension: string().nullable(),
-  phoneNumber: string().nullable(),
-  schoolContactId: string().nullable(),
-  schoolContactTypeCode: string(),
+  schoolContactTypeCode: string().max(10),
   schoolId: string(),
-  updateDate: date().nullable(),
-  updateUser: string().nullable(),
-}).noUnknown();
+  schoolContactId: string().nullable()
+}).concat(baseContactSchema).concat(baseRequestSchema).noUnknown();
 
-const fundingGroupSchema = object({
-  schoolFundingGroupCode: string().nullable(),
-  label: string().nullable(),
-  description: string().nullable(),
-  displayOrder: string().nullable()
-}).noUnknown();
+const schoolAddressSchema = baseAddressSchema.concat(baseRequestSchema).noUnknown();
 
 const postSchoolContactSchema = object({
   body: schoolContactSchema,
@@ -43,108 +25,116 @@ const postSchoolContactSchema = object({
   query: object().noUnknown()
 }).noUnknown();
 
+const putSchoolContactSchema = object({
+  body: schoolContactSchema.shape({
+    schoolID: string()
+  }),
+  query: object().noUnknown(),
+  params: object().noUnknown()
+}).noUnknown();
+
+const deleteSchoolContactSchema = object({
+  body:  object().noUnknown(),
+  params: object({
+    schoolID: string(),
+    contactID: string()
+  }).noUnknown(),
+  query: object().noUnknown()
+}).noUnknown();
+
 const putSchoolSchema = object({
   body: object({
-    addresses: array().of(object({
-      addressLine1: string(),
-      addressLine2: string().nullable(),
-      addressTypeCode: string(),
-      city: string(),
-      countryCode: string(),
-      createDate: date().nullable(),
-      createUser: string().nullable(),
-      postal: string(),
-      provinceCode: string(),
-      schoolAddressId: string().nullable(),
-      schoolId: string().nullable(),
-      updateDate: date().nullable(),
-      updateUser: string().nullable(),
-    }).noUnknown()),
-    canIssueCertificates: string().nullable(),
-    canIssueTranscripts: string().nullable(),
-    closedDate: date().nullable(),
-    contacts: array().of(schoolContactSchema),
-    createDate: date(),
-    createUser: string(),
-    displayName: string(),
-    displayNameNoSpecialChars: string().nullable(),
+    schoolId: string(),
     districtId: string(),
-    email: string().email().nullable(),
-    facilityType: string(),
-    facilityTypeCode: string(),
-    faxNumber: string().nullable(),
-    grades: array().of(object({
-      description: string(),
-      displayOrder: number().positive().integer(),
-      effectiveDate: date(),
-      expiryDate: date(),
-      label: string(),
-      schoolGradeCode: string(),
-    }).noUnknown()),
-    independentAuthorityId: string().nullable(),
     mincode: string(),
+    independentAuthorityId: string().nullable(),
+    schoolNumber: number().positive().integer(),
+    faxNumber: string().max(10).nullable(),
+    phoneNumber: string().max(10).nullable(),
+    email: string().email().max(255).nullable(),
+    website: string().url().nullable().max(255),
+    schoolReportingRequirementCode: string().max(10).nonNullable(),
+    displayName: string().max(255).nonNullable(),
+    displayNameNoSpecialChars: string().max(255).nullable(),
+    schoolOrganizationCode: string().max(10).nonNullable(),
+    schoolCategoryCode: string().max(10).nonNullable(),
+    facilityTypeCode: string().max(10).nonNullable(),
+    openedDate: date(),
+    closedDate: date().nullable(),
+    canIssueCertificates: boolean().nullable(),
+    canIssueTranscripts: boolean().nullable(),
+    contacts: array().of(schoolContactSchema),
+    addresses: array().of(schoolAddressSchema.shape({
+      schoolAddressId: string(),
+      schoolId: string()
+    }).noUnknown()),
+    notes: string().nullable(),
+    grades: array().of(
+      object({
+        schoolGradeId: String(),
+        schoolId: string(),
+        schoolGradeCode: string().max(10).nonNullable(),
+        label: string(),
+        description: string(),
+        displayOrder: number().positive().integer(),
+        effectiveDate: date(),
+        expiryDate: date()
+      }).concat(baseRequestSchema).noUnknown()),
+    schoolFundingGroups: array().of(object({
+      schoolFundingGroupCode: string().nullable(),
+      label: string().nullable(),
+      description: string().nullable(),
+      displayOrder: string().nullable()
+    }).noUnknown()),
     neighborhoodLearning: array().of(object({
       description: string(),
       displayOrder: number().positive().integer(),
       effectiveDate: date(),
       expiryDate: date(),
       label: string(),
-      neighborhoodLearningTypeCode: string(),
+      neighborhoodLearningTypeCode: string().max(10).nonNullable()
     }).noUnknown()),
-    notes: string().nullable(),
-    openedDate: date(),
-    phoneNumber: string().nullable(),
-    schoolCategory: string(),
-    schoolCategoryCode: string(),
-    schoolFundingGroups: array().of(fundingGroupSchema),
-    schoolId: string(),
     schoolMove: array().of(object({
-      createDate: date(),
-      createUser: string(),
-      fromSchoolId: string(),
-      moveDate: date(),
+      fromSchoolId: string().nonNullable(),
+      moveDate: date().nonNullable(),
       schoolMoveId: string(),
-      toSchoolId: string(),
-      updateDate: date(),
-      updateUser: string(),
-    }).noUnknown()),
-    schoolNumber: number().positive().integer(),
-    schoolOrganizationCode: string(),
-    schoolReportingRequirementCode: string(),
-    status: string(),
-    updateDate: date(),
-    updateUser: string(),
-    website: string().url().nullable()
-  }).noUnknown(),
+      toSchoolId: string().nonNullable()
+    }).concat(baseRequestSchema).noUnknown()),
+    facilityType: string(),
+    schoolCategory: string(),
+    status: string()
+  }).concat(baseRequestSchema).noUnknown(),
   params: object({
     schoolID: string()
   }).noUnknown(),
   query: object().noUnknown()
 }).noUnknown();
 
-const schoolPaginatedSchema = object({
+const getSchoolPaginatedSchema = object({
   body: object().noUnknown(),
   params: object().noUnknown(),
   query: object({
     pageNumber: number().required().moreThan(-1).integer(),
     pageSize: number().required().positive().integer(),
     sort: object({
-      schoolNumber: string().matches(/(ASC|DESC)/),
-      updateDate: string().matches(/(ASC|DESC)/)
+      schoolNumber: string().oneOf(['ASC','DESC']),
+      updateDate: string().oneOf(['ASC','DESC'])
     }).noUnknown(),
     searchParams: object({
       status: string(),
       pubEarlyLearning: string(),
       schoolID: string(),
       districtID: string(),
-      type: string()
+      type: string(),
     }).noUnknown()
   }).noUnknown()
 }).noUnknown();
 
 module.exports = {
-  getSchoolSchema,
+  getBySchoolIdSchema,
   putSchoolSchema,
   schoolContactSchema: postSchoolContactSchema,
-  schoolPaginatedSchema,
+  putSchoolContactSchema,
+  deleteSchoolContactSchema,
+  getSchoolPaginatedSchema,
 };
