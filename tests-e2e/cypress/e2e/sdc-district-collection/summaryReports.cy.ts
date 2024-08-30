@@ -41,7 +41,7 @@ describe('SDC District Collection View', () => {
     });
     beforeEach(() => cy.login());
 
-    it('can download Eligible English Language Learning Program Headcount', () => {
+    it('can download English Language Learning Program Headcount', () => {
       cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=ell&compare=false').as('tableLoaded');
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
@@ -49,7 +49,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.ellComponent.summaryButton).should('exist').click();
 
       cy.get('#reports').parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Eligible English Language Learners Headcount for District').click();
+      cy.get(selectors.dropdown.listItem).contains('English Language Learners Headcount for District').click();
       cy.wait('@tableLoaded');
       cy.get(selectors.ellComponent.headcountReportDis).should('be.visible');
 
@@ -67,7 +67,7 @@ describe('SDC District Collection View', () => {
       });
     });
 
-    it('can download Eligible English Language Learning Program Headcount per School', () => {
+    it('can download English Language Learning Program Headcount per School', () => {
       cy.intercept('/api/sdc/sdcSchoolCollectionStudent/getDistrictHeadcounts/*?type=ell-per-school&compare=false').as('tableLoaded');
       cy.visit('/open-district-collection-details/' + Cypress.env('sdcDistrictCollectionID'));
       cy.get(selectors.studentLevelData.stepThree).should('exist').should('have.class', 'v-stepper-item--selected');
@@ -75,7 +75,7 @@ describe('SDC District Collection View', () => {
       cy.get(selectors.ellComponent.summaryButton).should('exist').click();
 
       cy.get('#reports').parent().click();
-      cy.get(selectors.dropdown.listItem).contains('Eligible English Language Learners Headcount per school').click();
+      cy.get(selectors.dropdown.listItem).contains('English Language Learners Headcount per school').click();
       cy.wait('@tableLoaded');
       cy.get(selectors.ellComponent.headcountReportPerSchool).should('be.visible');
 
