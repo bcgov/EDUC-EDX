@@ -11,7 +11,9 @@
         class="divider"
         :value="name"
       >
-        {{ name }}
+        <div style="white-space:pre-wrap">
+          {{ getTabLabel(name) }}
+        </div>
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection"
@@ -19,7 +21,7 @@
         value="StudentDifferences"
         class="divider"
       >
-        Student Differences
+        Student <br> Differences
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection"
@@ -27,7 +29,7 @@
         value="resolvedDuplicates"
         class="divider"
       >
-        Resolved Duplicates
+        Resolved <br> Duplicates
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection"
@@ -186,7 +188,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
-import { SDC_VERIFY_TABS } from '../../../../utils/sdc/SdcVerifyTabs';
+import { SDC_VERIFY_TABS, getSdcVerifyTabLabel } from '../../../../utils/sdc/SdcVerifyTabs';
 import AllStudentsComponent from './AllStudentsComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
@@ -305,7 +307,9 @@ export default {
         this.markStepAsComplete();
       }
     },
-  }
+    getTabLabel: getSdcVerifyTabLabel
+  },
+  
 };
 </script>
 

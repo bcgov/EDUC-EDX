@@ -108,7 +108,7 @@ export default {
         },
         {
           role: 'SUPERINT',
-          buttonText: 'Superinendent Sign Off',
+          buttonText: 'Superintendent Sign Off',
           signOffDetails: '',
           isDisabled: true
         },
@@ -201,7 +201,7 @@ export default {
       case 'DIS_SDC_EDIT':
         return '1701 Contact Sign Off';
       case 'SUPERINT':
-        return 'Superinendent Sign Off';
+        return 'Superintendent Sign Off';
       case 'SECR_TRES':
         return 'Secretary-Treasurer Sign Off';
       default:

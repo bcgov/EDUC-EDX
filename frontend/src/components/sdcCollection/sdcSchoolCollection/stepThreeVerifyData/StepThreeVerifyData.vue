@@ -11,7 +11,9 @@
         class="divider"
         :value="name"
       >
-        {{ name }}
+        <div style="white-space:pre-wrap">
+          {{ getTabLabel(name) }}
+        </div>
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection"
@@ -19,7 +21,7 @@
         value="StudentDifferences"
         class="divider"
       >
-        Student Differences
+        Student <br> Differences
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection"
@@ -27,7 +29,7 @@
         value="resolvedDuplicates"
         class="divider"
       >
-        Resolved Duplicates
+        Resolved <br> Duplicates
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
@@ -169,7 +171,7 @@ import PrimaryButton from '../../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
 import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
 import { appStore } from '../../../../store/modules/app';
-import { SDC_VERIFY_TABS } from '../../../../utils/sdc/SdcVerifyTabs';
+import { SDC_VERIFY_TABS, getSdcVerifyTabLabel } from '../../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
@@ -291,7 +293,8 @@ export default {
           console.error(error);
           this.setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while verifying data. Please try again later.');
         });
-    }
+    },
+    getTabLabel: getSdcVerifyTabLabel
   }
 };
 </script>
