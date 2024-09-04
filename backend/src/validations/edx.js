@@ -188,9 +188,10 @@ const getUserActivationSchema = object({
 
 const postUserActivationSchema = object({
   body: object({
-    mincode: string().nonNullable(),
+    mincode: string().nullable().optional(),
+    districtNumber: string().nullable().optional(),
     primaryEdxCode: string().nonNullable(),
-    personalActivationCode: string().nonNullable
+    personalActivationCode: string().nonNullable()
   }),
   params: object().noUnknown(),
   query: object().noUnknown()
