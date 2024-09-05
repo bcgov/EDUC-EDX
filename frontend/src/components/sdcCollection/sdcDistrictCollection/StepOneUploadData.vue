@@ -63,8 +63,7 @@
           icon="mdi-check-circle-outline"
           color="success"
         />
-        <span v-if="item.positionInQueue > '1'">#{{ item.positionInQueue }} in queue</span>
-        <span v-else-if="item.percentageStudentsProcessed === '0'"> - </span>
+        <span v-if="item.percentageStudentsProcessed === '0'"> - </span>
         <template v-if="item.percentageStudentsProcessed !== '0' && item.percentageStudentsProcessed !== '100'">
           <v-progress-circular
             :size="15"
@@ -361,7 +360,7 @@ export default {
         });
     },
     async startPollingStatus() {
-      this.interval = setInterval(this.getFileProgress, 10000);  // polling the api every 10 seconds
+      this.interval = setInterval(this.getFileProgress, 30000);  // polling the api every 30 seconds
     },
     async validateForm() {
       await this.$nextTick();
@@ -443,7 +442,6 @@ export default {
           });
         this.successfulUploadCount += 1;
         fileJSON.status = this.fileUploadSuccess;
-        await this.fireFileProgress();
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
