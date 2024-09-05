@@ -109,7 +109,8 @@
     :persistent="true"
   >
     <v-card width="30em">
-      <v-card-text style="overflow-y: scroll; max-height:30em">
+      <v-card-title>Uploading Files</v-card-title>
+      <v-card-text>
         <v-row>
           <v-col>
             <v-alert
@@ -120,65 +121,69 @@
             />
           </v-col>
         </v-row>
-        <v-row
-          v-for="(file, index) in fileUploadList"
-          :key="index"
-          height="20em"
-          style="overflow: hidden; overflow-y: auto;"
-        >
+        <v-row style="overflow-y: auto; max-height:30em">
           <v-col>
             <v-row
-              v-if="file.status === fileUploadPending"
-              class="mt-1 mx-1 fileUploadWarning"
+              v-for="(file, index) in fileUploadList"
+              :key="index"
+              height="20em"
+              style="overflow: hidden; overflow-y: auto;"
             >
-              <v-col cols="1">
-                <v-progress-circular
-                  color="#003366"
-                  size="15"
-                  indeterminate
-                />
-              </v-col>
-              <v-col cols="11">
-                <span>{{ file.name + ' - ' + fileUploadPending }}</span>
-              </v-col>
-            </v-row>
-            <v-row
-              v-else-if="file.status === fileUploadSuccess && file.warning === null && file.error === null"
-              class="mt-1 mx-1 fileUploadSuccess"
-            >
-              <v-col cols="1">
-                <v-icon
-                  icon="mdi-file-document"
-                />
-              </v-col>
               <v-col>
-                <span><b>{{ file.name }}</b> - {{ fileUploadSuccess }}</span>
-              </v-col>
-            </v-row>
-            <v-row
-              v-else-if="file.warning !== null"
-              class="mt-1 mx-1 fileUploadWarning"
-            >
-              <v-col cols="1">
-                <v-icon
-                  icon="mdi-file-document"
-                />
-              </v-col>
-              <v-col cols="11">
-                <span><b>{{ file.name }}</b> - {{ file.warning }}</span>
-              </v-col>
-            </v-row>
-            <v-row
-              v-else-if="file.error !== null"
-              class="mt-1 mx-1 fileUploadError"
-            >
-              <v-col cols="1">
-                <v-icon
-                  icon="mdi-file-document"
-                />
-              </v-col>
-              <v-col cols="11">
-                <span><b>{{ file.name }}</b> - {{ file.error }}</span>
+                <v-row
+                  v-if="file.status === fileUploadPending"
+                  class="mt-1 mx-1 fileUploadWarning"
+                >
+                  <v-col cols="1">
+                    <v-progress-circular
+                      color="#003366"
+                      size="15"
+                      indeterminate
+                    />
+                  </v-col>
+                  <v-col cols="11">
+                    <span>{{ file.name + ' - ' + fileUploadPending }}</span>
+                  </v-col>
+                </v-row>
+                <v-row
+                  v-else-if="file.status === fileUploadSuccess && file.warning === null && file.error === null"
+                  class="mt-1 mx-1 fileUploadSuccess"
+                >
+                  <v-col cols="1">
+                    <v-icon
+                      icon="mdi-file-document"
+                    />
+                  </v-col>
+                  <v-col>
+                    <span><b>{{ file.name }}</b> - {{ fileUploadSuccess }}</span>
+                  </v-col>
+                </v-row>
+                <v-row
+                  v-else-if="file.warning !== null"
+                  class="mt-1 mx-1 fileUploadWarning"
+                >
+                  <v-col cols="1">
+                    <v-icon
+                      icon="mdi-file-document"
+                    />
+                  </v-col>
+                  <v-col cols="11">
+                    <span><b>{{ file.name }}</b> - {{ file.warning }}</span>
+                  </v-col>
+                </v-row>
+                <v-row
+                  v-else-if="file.error !== null"
+                  class="mt-1 mx-1 fileUploadError"
+                >
+                  <v-col cols="1">
+                    <v-icon
+                      icon="mdi-file-document"
+                    />
+                  </v-col>
+                  <v-col cols="11">
+                    <span><b>{{ file.name }}</b> - {{ file.error }}</span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>
@@ -424,8 +429,8 @@ export default {
               this.inputKey++;
             }
           }
-          await this.getFileProgress();
           this.uploadFileValue = null;
+          await this.getFileProgress();
         }
       }
     },
