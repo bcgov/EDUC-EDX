@@ -651,6 +651,7 @@ function getFileDetails(reportType, mincode) {
     'DIS_GRADE_ENROLLMENT_HEADCOUNT_PER_SCHOOL': { filename: `GradeEnrollmentHeadcount_${mincode}_DisPerSchool.pdf`, contentType: 'application/pdf' },
     'DIS_CAREER_HEADCOUNT': { filename: `CareerProgramsHeadcount_${mincode}_Dis.pdf`, contentType: 'application/pdf' },
     'DIS_CAREER_HEADCOUNT_PER_SCHOOL': { filename: `CareerProgramsHeadcount_${mincode}_DisPerSchool.pdf`, contentType: 'application/pdf' },
+    'DIS_ZERO_FTE_SUMMARY': { filename: `Non-FundedStudentsHeadcount_${mincode}_DisPerSchool.pdf`, contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];
