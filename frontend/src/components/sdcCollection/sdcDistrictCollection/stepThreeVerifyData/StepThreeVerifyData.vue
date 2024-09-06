@@ -35,7 +35,7 @@
         v-if="isFinalSignOff && !isMigratedCollection"
         key="SignOff"
         value="SignOff"
-        class="sign-off-tab"
+        class="divider"
       >
         Signatures
       </v-tab>      
