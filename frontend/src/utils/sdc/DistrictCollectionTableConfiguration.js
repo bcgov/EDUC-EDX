@@ -49,7 +49,8 @@ export const FTE = Object.freeze(
     ],
     summaryReport: [
       { tableID: 'eligEnrolmentFTE', title: 'Eligible Enrolment & Eligible FTE', endpoint:'enrollment'},
-      { tableID: 'eligEnrolmentFTEPerSchool', title: 'Grade Enrolment & FTE per School', endpoint:'grade-enrollment'}
+      { tableID: 'eligEnrolmentFTEPerSchool', title: 'Grade Enrolment & FTE per School', endpoint:'grade-enrollment'},
+      { tableID: 'ineligibleFTE', title: 'Students Not Eligible For Funding', endpoint:'zero-fte-summary'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
