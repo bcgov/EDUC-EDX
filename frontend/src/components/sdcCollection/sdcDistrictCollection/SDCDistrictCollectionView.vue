@@ -413,7 +413,7 @@ export default defineComponent({
     async getActiveSdcDistrictCollection() {
       await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
         .then(response => {
-          var isMigratedCollection = response.data.createDate ? LocalDateTime.parse(response.data.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE)) : false;
+          const isMigratedCollection = response.data.createDate ? LocalDateTime.parse(response.data.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE)) : false;
           this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
           this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
           this.setCurrentCollectionSignOffDueDate(response.data.signOffDueDate);
