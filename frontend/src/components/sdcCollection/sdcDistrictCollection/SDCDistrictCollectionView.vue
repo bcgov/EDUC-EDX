@@ -299,6 +299,7 @@ import {authStore} from '../../../store/modules/auth';
 import StepSevenFinalSubmission from './StepSevenFinalSubmission.vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export default defineComponent({
   name: 'SDCDistrictCollectionView',
@@ -331,7 +332,7 @@ export default defineComponent({
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'districtCollection','currentCollectionYear']),
     ...mapState(wsNotifications, ['notification']),
-    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap', 'config']),
     ...mapState(authStore, ['userInfo']),
     stepInCollection() {
       return this.getIndexOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
@@ -412,10 +413,11 @@ export default defineComponent({
     async getActiveSdcDistrictCollection() {
       await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + '/' + this.districtID)
         .then(response => {
+          const isMigratedCollection = response.data.createDate ? LocalDateTime.parse(response.data.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE)) : false;
           this.setCurrentCollectionSubmissionDueDate(response.data.submissionDueDate);
           this.setCurrentCollectionResolveDupDueDate(response.data.duplicationResolutionDueDate);
           this.setCurrentCollectionSignOffDueDate(response.data.signOffDueDate);
-          this.isSdcDistrictCollectionActive = response.data.sdcDistrictCollectionID === this.districtCollectionObject?.sdcDistrictCollectionID;
+          this.isSdcDistrictCollectionActive = response.data.sdcDistrictCollectionID === this.districtCollectionObject?.sdcDistrictCollectionID && !isMigratedCollection;
 
           this.submissionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionSubmissionDueDate);
           this.duplicationResolutionDueDate = 'Due: ' + formatSubmissionDate(sdcCollectionStore().currentCollectionResolveDupDueDate);

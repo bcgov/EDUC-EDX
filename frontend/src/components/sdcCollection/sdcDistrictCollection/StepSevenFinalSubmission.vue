@@ -11,7 +11,7 @@
             class="justify-start"
             type="info"
             variant="tonal"
-            text="Thank you for completing the 1701 collection process for your district. It is now ready for your final review and sign-off. Please use the button below to provide your sign-off for all programs. "
+            text="Thank you for completing the 1701 collection process for your district. It is now ready for your final review and sign-off. Please use the Signatures tab for signing off."
           />
         </v-col>
       </v-row>

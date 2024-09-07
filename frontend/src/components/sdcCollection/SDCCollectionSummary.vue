@@ -227,7 +227,7 @@ export default {
     },
     totalStepsInCollection() {
       if(this.isSchoolCollection) {
-        return this.SDC_STEPS_SCHOOL_CALC.length
+        return this.SDC_STEPS_SCHOOL_CALC.length;
       } else {
         return this.SDC_STEPS_DISTRICT_CALC.length;
       }
