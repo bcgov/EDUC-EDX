@@ -110,13 +110,13 @@ then
   bannerEnvironment="DEV"
   bannerColor="#dba424"
   disableSdcFunctionality=false
-  sldMigrationDate="2024-07-30"
+  sldMigrationDate="2021-07-30"
 elif [ "$envValue" = "test" ]
 then
   bannerEnvironment="TEST"
   bannerColor="#8d28d7"
   disableSdcFunctionality=false
-  sldMigrationDate="2024-07-30"
+  sldMigrationDate="2021-07-30"
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=true
