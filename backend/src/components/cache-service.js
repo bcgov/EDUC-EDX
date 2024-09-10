@@ -321,7 +321,7 @@ const cacheService = {
       return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
     });
     specialEducationCodesMap = new Map();
-    specialEducationCodes.unshift({'specialEducationCategoryCode': '', 'dropdownText': 'No Special Ed Category Code'});
+    specialEducationCodes.unshift({'specialEducationCategoryCode': '', 'dropdownText': 'No Inclusive Ed Category Code'});
     specialEducationCodes.forEach(specialEducationCategoryCode => {
       specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
     });

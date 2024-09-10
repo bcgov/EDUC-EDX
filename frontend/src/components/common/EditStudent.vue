@@ -297,7 +297,7 @@
                       <v-select
                         id="specialEducationCategoryCode"
                         v-model="sdcSchoolCollectionStudentDetailCopy.specialEducationCategoryCode"
-                        label="Special Ed. Category"
+                        label="Inclusive Ed. Category"
                         variant="underlined"
                         :items="sdcCollection.specialEducationCodes"
                         item-value="specialEducationCategoryCode"
