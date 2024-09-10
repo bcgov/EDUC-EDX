@@ -605,16 +605,16 @@ async function downloadSdcReport(req, res) {
     const token = getAccessToken(req);
 
     let mincode;
-    let collectionId;
+    let url;
     if(req.params.sdcDistrictCollectionID){
       mincode = cacheService.getDistrictByDistrictID(res.locals.requestedSdcDistrictCollection.districtID).districtNumber;
-      collectionId = req.params.sdcDistrictCollectionID;
+      url = `${config.get('sdc:rootURL')}/reportGeneration/sdcDistrictCollection/${req.params.sdcDistrictCollectionID}/${reportType}`;
     }else{
       mincode = cacheService.getSchoolBySchoolID(res.locals.requestedSdcSchoolCollection.schoolID).mincode;
-      collectionId = req.params.sdcSchoolCollectionID;
+      url = `${config.get('sdc:rootURL')}/reportGeneration/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/${reportType}`;
     }
 
-    const resData = await getData(token, `${config.get('sdc:rootURL')}/reportGeneration/${collectionId}/${reportType}`);
+    const resData = await getData(token, url);
     const fileDetails = getFileDetails(reportType, mincode);
 
     setResponseHeaders(res, fileDetails);
