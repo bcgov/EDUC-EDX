@@ -159,7 +159,7 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         return {...item, dropdownText: `${item.description} (${item.specialEducationCategoryCode})`};
       });
       this.specialEducationCodesMap = new Map();
-      this.specialEducationCodes.unshift({'specialEducationCategoryCode': null, 'dropdownText': 'No Special Ed Category Code'});
+      this.specialEducationCodes.unshift({'specialEducationCategoryCode': null, 'dropdownText': 'No Inclusive Ed Category Code'});
       specialEducationCodes.forEach(specialEducationCategoryCode => {
         this.specialEducationCodesMap.set(specialEducationCategoryCode.specialEducationCategoryCode, specialEducationCategoryCode);
       });
