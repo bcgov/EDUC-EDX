@@ -131,7 +131,7 @@
     </v-col>
 
     <v-col cols="3">
-      <span class="label">Special Ed Category:</span>
+      <span class="label">Inclusive Ed Category:</span>
     </v-col>
     <v-col cols="3">
       {{ student?.mappedSpedCode }}

@@ -156,6 +156,7 @@
         <SignOffSignatures
           :district="district"
           :district-collection-object="districtCollectionObject"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
     </v-window> 

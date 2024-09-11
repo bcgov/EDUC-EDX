@@ -23,7 +23,7 @@
             id="header"
             :key="column.key"
           >
-            <div v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'">
+            <div v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED' && !disableSelect">
               <v-checkbox
                 v-model="masterCheckbox"
                 :indeterminate="selected.length > 0 && !isAllSelected()"
@@ -67,7 +67,7 @@
             class="td-data"
           >
             <v-checkbox
-              v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED'"
+              v-if="column.title === 'select' && schoolCollection?.sdcSchoolCollectionStatusCode !== 'SUBMITTED' && !disableSelect"
               :model-value="isSelected(props.item) !== undefined"
               hide-details="true"
               @click.prevent.stop="onClick(props)"
@@ -226,6 +226,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    disableSelect: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['reload', 'editSelectedRow', 'selections'],

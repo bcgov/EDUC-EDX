@@ -41,7 +41,7 @@
               width="90%"
               :text="data.buttonText"
               class="mt-3 mb-3"
-              :disabled="data.isDisabled"
+              :disabled="data.isDisabled || !isCollectionActive"
               @click="submit(data)"
             />
           </td>
@@ -93,6 +93,10 @@ export default {
       required: true,
       default: null
     },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
+    }
   },
   emits: [],
   data() {

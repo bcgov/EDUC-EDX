@@ -54,6 +54,7 @@
             :total-elements="totalElements"
             :is-loading="isLoading"
             :reset="resetFlag"
+            :disable-select="!isCollectionActive"
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
@@ -161,6 +162,11 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
   emits: [],

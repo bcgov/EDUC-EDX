@@ -22,6 +22,7 @@
         :config="config"
         :school="school"
         :is-final-sign-off="isFinalSignOff"
+        :is-collection-active="isCollectionActive"
       />
     </div>
   </v-container>

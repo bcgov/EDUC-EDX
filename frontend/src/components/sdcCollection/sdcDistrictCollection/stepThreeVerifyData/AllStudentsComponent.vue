@@ -32,6 +32,7 @@
         :district="district"
         :show-export-btn="true"
         :is-final-sign-off="isFinalSignOff"
+        :is-collection-active="isCollectionActive"
       />
     </div>
     <div v-if="reportView === 'summary'">
