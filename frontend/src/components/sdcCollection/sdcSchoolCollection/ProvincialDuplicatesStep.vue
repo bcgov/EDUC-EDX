@@ -179,7 +179,7 @@ export default defineComponent({
     },
     getProvincialDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DUPLICATE+ '/'+ this.$route.params.schoolCollectionID + '/provincial-duplicates').then(response => {
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DUPLICATE+ '/sdcSchoolCollection/'+ this.$route.params.schoolCollectionID + '/provincial-duplicates').then(response => {
         this.nonAllowableDuplicates = response.data?.enrollmentDuplicates?.NON_ALLOW;
         this.allowableDuplicates = response.data?.enrollmentDuplicates?.ALLOWABLE;
         this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;

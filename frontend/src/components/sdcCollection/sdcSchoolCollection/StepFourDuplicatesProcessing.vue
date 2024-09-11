@@ -301,7 +301,7 @@ export default {
     },
     getSchoolDuplicates(){
       this.isLoading = true;
-      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DUPLICATE + '/'+ this.sdcSchoolCollectionID + '/duplicates')
+      ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DUPLICATE + '/sdcSchoolCollection/'+ this.sdcSchoolCollectionID + '/duplicates')
         .then(response => {
           this.duplicateStudents = response.data;
         }).catch(error => {

@@ -385,7 +385,7 @@ async function removeSDCSchoolCollectionStudents(req, res) {
 async function getSchoolStudentDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
-    let studentDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
+    let studentDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
 
     let dupsMap = new Map();
     studentDuplicates.forEach((dup) => {
@@ -412,7 +412,7 @@ async function getSchoolStudentDuplicates(req, res) {
 async function getSchoolSdcDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
 
     res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, false, false));
   } catch (e) {
@@ -946,7 +946,7 @@ async function getProvincialDuplicates(req, res) {
 async function getProvincialDuplicatesForSchool(req, res) {
   try {
     const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(token, `${config.get('sdc::sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
     await getUserWithSdcRole(req, sdcDuplicates);
     let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, true);
     res.status(HttpStatus.OK).json(responseDupe);
