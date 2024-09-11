@@ -295,7 +295,7 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     }
 
     const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/mark-for-review`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/mark-for-review`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);
@@ -385,7 +385,7 @@ async function removeSDCSchoolCollectionStudents(req, res) {
 async function getSchoolStudentDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
-    let studentDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
+    let studentDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
 
     let dupsMap = new Map();
     studentDuplicates.forEach((dup) => {
@@ -412,7 +412,7 @@ async function getSchoolStudentDuplicates(req, res) {
 async function getSchoolSdcDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
 
     res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, false, false));
   } catch (e) {
