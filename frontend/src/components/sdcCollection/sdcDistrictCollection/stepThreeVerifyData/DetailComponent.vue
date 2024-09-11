@@ -11,26 +11,20 @@
             class="bold"
           >Students Found:  {{ totalElements }}
           </span>
-          <router-link
-            v-if="showExportBtn"
-            class="ml-2"
-            :to="{ path: downloadReportURL() }"
-            target="_blank"
-          >
-            <v-icon
-              small
-              class="ml-1"
-              color="#003366"
-            >
-              mdi-tray-arrow-down
-            </v-icon>
-            <span class="export">Export All Student Records</span>
-          </router-link>
         </v-col>
         <v-col
           cols="8"
           class="d-flex justify-end"
         >
+          <v-btn
+            id="export"
+            color="#003366"
+            text="Export"
+            class="mr-2 mb-1"
+            prepend-icon="mdi-tray-arrow-down"
+            variant="elevated"
+            @click="showExportDialog = true"
+          />
           <v-btn
             id="filters"
             color="#003366"
@@ -101,6 +95,32 @@
       @close="closeAndLoadStudents"
     />
   </v-bottom-sheet>
+  <v-dialog
+    v-model="showExportDialog"
+    :max-width="443"
+  >
+    <v-card>
+      <v-card-title>
+        Export Student Records
+      </v-card-title>
+      <v-card-actions>
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Students Only"
+          @click="downloadStudentReport"
+        />
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Students with Errors & Warnings"
+          @click="downloadStudentWithErrorsReport"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -149,6 +169,7 @@ export default {
       chip: true,
       pageNumber: 1,
       pageSize: 15,
+      showExportDialog: false,
       studentList: [],
       isLoading: false,
       totalElements: 0,
@@ -185,8 +206,21 @@ export default {
       }
       this.reloadStudentsFlag = false;
     },
-    downloadReportURL() {
+    downloadStudentReport(){
+      const routeData = this.$router.resolve({path: this.downloadStudentOnlyReportURL()});
+      window.open(routeData.href, '_blank');
+      this.showExportDialog = false;
+    },
+    downloadStudentWithErrorsReport(){
+      const routeData = this.$router.resolve({path: this.downloadStudentErrorsReportURL()});
+      window.open(routeData.href, '_blank');
+      this.showExportDialog = false;
+    },
+    downloadStudentOnlyReportURL() {
       return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
+    },
+    downloadStudentErrorsReportURL() {
+      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis_errors_warns/download`;
     },
     editStudent($event) {
       const selectedStudent = cloneDeep($event);
