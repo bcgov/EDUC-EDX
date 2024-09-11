@@ -978,7 +978,7 @@ export const SCH_DUPLICATES = Object.freeze(
       { title: 'Career Program', key: 'mappedCareerProgram', subHeader: { title: 'Career Code', key: 'mappedCareerProgramCode' } },
       { title: 'Indigenous Ancestry', key: 'mappedAncestryIndicator', subHeader: { title: 'Band Code', key: 'mappedBandCode' } },
       { title: 'Indigenous Support Program', key: 'mappedIndigenousEnrolledProgram', subHeader: { title: 'Inclusive Education Category', key: 'mappedSpedCode' } },
-      { title: ' ', key: 'action' },
+      { title: 'Resolution', key: 'action' },
     ],
   }
 );
