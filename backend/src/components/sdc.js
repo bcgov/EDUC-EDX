@@ -628,6 +628,8 @@ async function downloadSdcReport(req, res) {
 
 function getFileDetails(reportType, mincode) {
   const mappings = {
+    'ALL_STUDENT_ERRORS_WARNS_SCHOOL_CSV': { filename: `AllSchoolStudentsWithErrorsWarns_${mincode}.csv`, contentType: 'text/csv' },
+    'ALL_STUDENT_ERRORS_WARNS_DIS_CSV': { filename: `AllDistrictStudentsWithErrorsWarns_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_DIS_CSV': { filename: `AllDistrictStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_SCHOOL_CSV': { filename: `AllSchoolStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ELL_HEADCOUNT': { filename: `ELLHeadcount_${mincode}.pdf`, contentType: 'application/pdf' },

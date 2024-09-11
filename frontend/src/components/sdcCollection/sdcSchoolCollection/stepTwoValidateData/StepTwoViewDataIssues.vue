@@ -202,6 +202,22 @@
         <v-row
           class="pt-3 pb-3"
         >
+          <v-col class="mt-4">
+            <router-link
+              class="ml-2"
+              :to="{ path: downloadReportURL() }"
+              target="_blank"
+            >
+              <v-icon
+                small
+                class="ml-1"
+                color="#003366"
+              >
+                mdi-tray-arrow-down
+              </v-icon>
+              <span class="export ml-1">Export Student Records With Errors/Warnings</span>
+            </router-link>
+          </v-col>
           <v-col
             v-if="studentListData?.length > 0"
             class="text-right"
@@ -452,6 +468,9 @@ export default {
   methods: {
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
+    },
+    downloadReportURL() {
+      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/csv_school_errors_warns/download`;
     },
     applyFilters($event) {
       this.filterSearchParams.moreFilters = cloneDeep($event);

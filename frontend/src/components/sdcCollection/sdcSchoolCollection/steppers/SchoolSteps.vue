@@ -95,7 +95,7 @@ import StepTwoViewDataIssues from '../stepTwoValidateData/StepTwoViewDataIssues.
 import StepThreeVerifyData from '../stepThreeVerifyData/StepThreeVerifyData.vue';
 
 export default defineComponent({
-  name: 'IndySchoolSteps',
+  name: 'SchoolSteps',
   components: {
     StepThreeVerifyData,
     StepTwoViewDataIssues,
