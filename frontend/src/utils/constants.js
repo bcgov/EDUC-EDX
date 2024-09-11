@@ -73,7 +73,6 @@ export const ApiRoutes = Object.freeze({
     SDC_VALIDATION_ISSUE_TYPE_CODES: sdcRoot + '/validation-issue-type-codes',
     SDC_PROGRAM_ELIGIBILITY_TYPE_CODES: sdcRoot + '/program-eligibility-issue-codes',
     SDC_ZERO_FTE_REASON_CODES: sdcRoot + '/zero-fte-reason-codes',
-    SDC_DUPLICATE: sdcRoot + '/sdc-duplicate',
     SDC_DUPLICATE_RESOLUTION_CODES: sdcRoot + '/duplicate-resolution-codes',
     SDC_DUPLICATE_RESOLVE: sdcRoot + '/resolve-duplicates',
   },
