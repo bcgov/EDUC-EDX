@@ -32,6 +32,7 @@
           class="d-flex justify-end"
         >
           <v-btn
+            v-if="isCollectionActive"
             id="add"
             color="#003366"
             text="Add Student"
@@ -42,6 +43,7 @@
             @click="addStudent"
           />
           <v-btn
+            v-if="isCollectionActive"
             id="remove"
             color="#003366"
             class="mr-1 mb-1"
@@ -80,7 +82,8 @@
             :total-elements="totalElements"
             :is-loading="isLoading"
             :reset="resetFlag"
-            :school-collection="schoolCollection"
+            :school-collection="schoolCollection" 
+            :disable-select="!isCollectionActive"           
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
@@ -187,6 +190,11 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
   emits: [],
