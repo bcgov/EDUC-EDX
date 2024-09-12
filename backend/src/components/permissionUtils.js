@@ -456,7 +456,7 @@ async function checkSdcDuplicateAccess(req, res, next) {
       message: 'Token is unavailable.'
     });
   }
-  res.locals.sdcDuplicate = await getData(token, `${config.get('sdc:schoolCollectionURL')}/duplicate/${req.body.duplicate.sdcDuplicateID}`, req.session?.correlationID);
+  res.locals.sdcDuplicate = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.body.duplicate.sdcDuplicateID}`, req.session?.correlationID);
   if(req.body.duplicate?.updateDate !== res.locals.sdcDuplicate?.updateDate){
     return res.status(HttpStatus.CONFLICT).json({
       status: HttpStatus.CONFLICT,
