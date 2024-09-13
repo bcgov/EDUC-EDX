@@ -396,6 +396,20 @@ const postStartFromPriorCollectionSchema = object({
   query: object(),
 }).unknown();
 
+const getSdcDistrictUsersSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    sdcDistrictCollectionID: string().nonNullable()
+  }),
+  query: object({
+    digitalId: string().nullable().optional(),
+    schoolID: string().nullable().optional(),
+    firstName: string().nullable().optional(),
+    lastName: string().nullable().optional(),
+    districtID: string().nullable().optional()
+  }).noUnknown(),
+}).noUnknown();
+
 
 module.exports = {
   putSdcStudentSchema,
@@ -422,5 +436,6 @@ module.exports = {
   schoolFileCollectionSchema: postSchoolFileCollectionSchema,
   resolveDuplicateSchema: postResolveDuplicateSchema,
   markDiffSchema: postMarKDiffSchema,
-  startFromPriorCollectionSchema: postStartFromPriorCollectionSchema
+  startFromPriorCollectionSchema: postStartFromPriorCollectionSchema,
+  getSdcDistrictUsersSchema
 };

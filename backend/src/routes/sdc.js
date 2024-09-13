@@ -15,13 +15,15 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
 const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess,
   checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSInstituteTypeCollectionID_body,
-  loadInstituteCollection, checkStudentBelongsInCollection, findSdcSchoolCollectionStudentID_body, checkSdcDuplicateAccess, checkUserAccessToDuplicateSdcSchoolCollections, findSdcSchoolCollectionsInDuplicate} = require('../components/permissionUtils');
+  loadInstituteCollection, checkStudentBelongsInCollection, findSdcSchoolCollectionStudentID_body, checkSdcDuplicateAccess, checkUserAccessToDuplicateSdcSchoolCollections, findSdcSchoolCollectionsInDuplicate, checkDistrictBelongsInSdcDistrictCollection, findDistrictID_query } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const {getPenMatch} = require('../components/penMatch');
 const validate = require('../components/validator');
 const { putSdcStudentSchema, putDistrictCollectionSchema, putSchoolCollectionSchema, getActiveDataSchema, getByDistrictIdSchema, getBySchoolIdSchema, getBySdcDistrictCollectionSchema, getBySdcSchoolCollectionSchema, getBySdcSchoolCollectionStudentSchema, 
   getBySdcDistrictCollectionPaginatedSchema, getBySdcSchoolCollectionPaginatedSchema, getPenMatchSchema, getSchoolHistoricPaginatedSchema, getDistrictHistoricPaginatedSchema, getSchoolReportDownloadSchema, getDistrictReportDownloadSchema,
-  unsubmitCollectionSchema, zeroEnrollmentSchema, removeStudentFromSchoolCollectionSchema, districtSignoffSchema, districtFileCollectionSchema, schoolFileCollectionSchema, resolveDuplicateSchema, markDiffSchema, startFromPriorCollectionSchema } = require('../validations/sdc');
+  unsubmitCollectionSchema, zeroEnrollmentSchema, removeStudentFromSchoolCollectionSchema, districtSignoffSchema, districtFileCollectionSchema, schoolFileCollectionSchema, resolveDuplicateSchema, markDiffSchema, startFromPriorCollectionSchema, getSdcDistrictUsersSchema
+} = require('../validations/sdc');
+const { getEdxUsers } = require('../components/secureExchange');
 
 //cached code table calls
 router.get('/band-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validate(getActiveDataSchema), getCachedSDCData(constants.CACHE_KEYS.SDC_BAND_CODES, 'sdc:bandCodesURL'));
@@ -92,6 +94,7 @@ router.get('/sdcSchoolCollectionStudent/getDistrictHeadcounts/:sdcDistrictCollec
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/in-district-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), validate(getBySdcDistrictCollectionSchema), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getInDistrictDuplicates);
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/sdcSchoolCollections', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), validate(getBySdcDistrictCollectionSchema), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getSdcSchoolCollections);
 router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/provincial-duplicates', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), validate(getBySdcDistrictCollectionSchema), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, getProvincialDuplicates);
+router.get('/sdcDistrictCollection/:sdcDistrictCollectionID/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_VIEW), validate(getSdcDistrictUsersSchema), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, findDistrictID_query, checkDistrictBelongsInSdcDistrictCollection, getEdxUsers);
 
 router.post('/sdcDistrictCollection/:sdcDistrictCollectionID/sign-off', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.DISTRICT_SDC_EDIT), validate(districtSignoffSchema), findSdcDistrictCollectionID_params, loadSdcDistrictCollection, checkSdcDistrictCollectionAccess, submitDistrictSignature);
 module.exports = router;

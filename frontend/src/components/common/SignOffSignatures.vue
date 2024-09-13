@@ -179,7 +179,7 @@ export default {
 
     async getUsersData() {
       const payload = {params: {districtID: this.districtCollection.districtID}};
-      await ApiService.apiAxios.get(ApiRoutes.edx.USERS_URL, payload)
+      await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/' + this.districtCollection.sdcDistrictCollectionID + '/users', payload)
         .then(response => {
           this.users = response.data;
           let signatures = this.districtCollection.submissionSignatures;
@@ -198,6 +198,10 @@ export default {
               });
             } 
           }
+        })
+        .catch(error => {
+          console.error(error);
+          setFailureAlert('An error occurred while attempting to load sign-off details. Please try again later.');
         });
     },
     mapRoletext(role) {
