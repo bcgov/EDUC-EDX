@@ -81,7 +81,7 @@
               density="compact"
               type="info"
               variant="tonal"
-              text="Contacts of this type are only available to the ministry and not available to public."
+              text="This contact type will not be published publicly. These contacts will only be shared with the ministry."
             />
           </v-col>
         </v-row>
