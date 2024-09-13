@@ -511,6 +511,25 @@ async function checkUserAccessToDuplicateSdcSchoolCollections(req, res, next) {
   return next();
 }
 
+async function checkDistrictBelongsInSdcDistrictCollection(req, res, next) {
+  if (!res.locals.requestedSdcDistrictCollection) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'SdcDistrictCollectionID is required.'
+    });
+  }
+  if (!res.locals.requestedInstituteIdentifier) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'DistrictID is required.'
+    });
+  }
+  if(res.locals.requestedSdcDistrictCollection.districtID !== res.locals.requestedInstituteIdentifier) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'District does not belong to this sdc district collection.'
+    });
+  }
+  return next();
+}
+
 const permUtils = {
   checkEDXUserAccessToRequestedInstitute,
   checkEdxUserPermission,
@@ -557,7 +576,8 @@ const permUtils = {
   findSchoolContactId_params,
   findSdcSchoolCollectionsInDuplicate,
   checkSdcDuplicateAccess,
-  checkUserAccessToDuplicateSdcSchoolCollections
+  checkUserAccessToDuplicateSdcSchoolCollections,
+  checkDistrictBelongsInSdcDistrictCollection
 };
 
 module.exports = permUtils;
