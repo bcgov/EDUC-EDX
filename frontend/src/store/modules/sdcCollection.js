@@ -74,9 +74,15 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       this.schoolCollection = schoolCollection;
     },
     setBandCodes(bandCodes) {
-      this.bandCodes = bandCodes.map(item => {
+      this.bandCodes = bandCodes.sort((a,b) => {
+        if (a.bandCode<b.bandCode) return -1;
+        if (a.bandCode>b.bandCode) return 1;
+        return 0;
+
+      }).map(item => {
         return {...item, dropdownText: `${item.description} (${item.bandCode})`};
       });
+
       this.bandCodesMap = new Map();
       this.bandCodes.unshift({'bandCode': null, 'dropdownText': 'No Band Code'});
       bandCodes.forEach(bandCode => {
