@@ -169,6 +169,15 @@
     no-gutters
   >
     <v-btn
+      id="export"
+      color="#003366"
+      text="Export"
+      class="mr-2 mb-1"
+      prepend-icon="mdi-tray-arrow-down"
+      variant="elevated"
+      @click="showExportDialog = true"
+    />
+    <v-btn
       id="filters"
       color="#003366"
       text="Filter"
@@ -261,6 +270,32 @@
   <ConfirmationDialog ref="confirmRemovalOfCollection">
     <template #message />
   </ConfirmationDialog>
+  <v-dialog
+    v-model="showExportDialog"
+    :max-width="443"
+  >
+    <v-card>
+      <v-card-title>
+        Export Student Records
+      </v-card-title>
+      <v-card-actions>
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Students Only"
+          @click="downloadStudentReport"
+        />
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Students with Errors & Warnings"
+          @click="downloadStudentWithErrorsReport"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>  
 </template>
 <script>
 import {defineComponent} from 'vue';
@@ -386,6 +421,16 @@ export default defineComponent({
 
   },
   methods: {
+    downloadStudentReport(){
+      const routeData = this.$router.resolve({path: this.downloadStudentOnlyReportURL()});
+      window.open(routeData.href, '_blank');
+      this.showExportDialog = false;
+    },
+    downloadStudentWithErrorsReport(){
+      const routeData = this.$router.resolve({path: this.downloadStudentErrorsReportURL()});
+      window.open(routeData.href, '_blank');
+      this.showExportDialog = false;
+    },
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
     },
