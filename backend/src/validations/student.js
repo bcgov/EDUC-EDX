@@ -1,13 +1,10 @@
-const { object, string, array } = require('yup');
+const { object, string } = require('yup');
 const { baseRequestSchema } = require('./base');
 const { baseSdcSchoolStudent } = require('./sdc');
 
 const postNewStudentSchema = object({
   body: object({
-    student: baseSdcSchoolStudent.shape({
-      enrolledProgramCodes: array().of(string()).nullable().optional(),
-      filteredEnrolledProgramCodes: array().of(string()).nullable().optional()
-    }).concat(baseRequestSchema)
+    student: baseSdcSchoolStudent.concat(baseRequestSchema)
   }).concat(baseRequestSchema).noUnknown(),
   params: object({
     sdcSchoolCollectionID: string()

@@ -33,6 +33,7 @@ const baseStudentSchema = object({
 
 const baseSdcSchoolStudent = baseStudentSchema.shape({  
   enrolledProgramCodes: string().max(16).nullable().optional(),
+  filteredEnrolledProgramCodes: array().of(string()).nullable().optional(),
   numberOfCoursesDec: number().nullable().optional(),
   schoolID: string().nullable().optional(),
   bandCode:string().max(4).nullable().optional(),
