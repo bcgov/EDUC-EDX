@@ -30,8 +30,7 @@ const baseStudentSchema = object({
   supportBlocks: string().max(1).nullable().optional(),
   numberOfCourses: string().nullable().optional()
 });
-
-const baseSdcSchoolStudent = baseStudentSchema.shape({  
+const baseSdcSchoolStudent = baseStudentSchema.shape({   
   enrolledProgramCodes: string().max(16).nullable().optional(),
   filteredEnrolledProgramCodes: array().of(string()).nullable().optional(),
   numberOfCoursesDec: number().nullable().optional(),
@@ -138,8 +137,7 @@ const putSchoolCollectionSchema = object({
     collectionOpenDate: string().nullable().optional(),
     collectionCloseDate: string().nullable().optional(),
     students: array().of(baseStudentSchema.shape({    
-      enrolledProgramCodes: array().of(string()),
-      filteredEnrolledProgramCodes: array().of(string())
+      enrolledProgramCodes: array().of(string())
     })),
     status: string().nullable().optional() 
   }),
@@ -159,8 +157,7 @@ const postSdcDistrictSignoffSchema = object({
 
 const putSdcStudentSchema =  object({
   body: baseStudentSchema.shape({    
-    enrolledProgramCodes: array().of(string()),
-    filteredEnrolledProgramCodes: array().of(string())
+    enrolledProgramCodes: array().of(string())
   }),
   params: object({
     districtID: string()
