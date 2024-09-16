@@ -333,6 +333,7 @@ export default defineComponent({
   data() {
     return {
       allowedFilters: MONITORING.allowedFilters,
+      showExportDialog: false,
       filters: {},
       sortBy: [{ key: 'schoolTitle', order:'asc'}],
       headers: [
