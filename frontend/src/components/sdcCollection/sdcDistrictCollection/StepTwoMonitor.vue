@@ -432,6 +432,12 @@ export default defineComponent({
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
     },
+    downloadStudentOnlyReportURL() {
+      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
+    },
+    downloadStudentErrorsReportURL() {
+      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis_errors_warns/download`;
+    },
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
     },
