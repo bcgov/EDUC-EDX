@@ -301,6 +301,7 @@
 import {defineComponent} from 'vue';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
+import {downloadStudentOnlyReportURL,downloadStudentErrorsReportURL} from '../../../utils/common';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import Filters from '../../common/Filters.vue';
@@ -423,20 +424,14 @@ export default defineComponent({
   },
   methods: {
     downloadStudentReport(){
-      const routeData = this.$router.resolve({path: this.downloadStudentOnlyReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentOnlyReportURL()});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
     },
     downloadStudentWithErrorsReport(){
-      const routeData = this.$router.resolve({path: this.downloadStudentErrorsReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentErrorsReportURL()});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
-    },
-    downloadStudentOnlyReportURL() {
-      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
-    },
-    downloadStudentErrorsReportURL() {
-      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis_errors_warns/download`;
     },
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
