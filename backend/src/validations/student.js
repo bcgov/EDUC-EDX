@@ -7,8 +7,8 @@ const postNewStudentSchema = object({
     student: baseSdcSchoolStudent.shape({
       enrolledProgramCodes: array().of(string()).nullable().optional(),
       filteredEnrolledProgramCodes: array().of(string()).nullable().optional()
-    }).concat(baseRequestSchema).unknown()
-  }).concat(baseRequestSchema).unknown(),
+    }).concat(baseRequestSchema)
+  }).concat(baseRequestSchema).noUnknown(),
   params: object({
     sdcSchoolCollectionID: string()
   }).noUnknown(),

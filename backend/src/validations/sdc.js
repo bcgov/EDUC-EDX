@@ -387,13 +387,13 @@ const postMarKDiffSchema = object({
     districtName:  string().nullable().optional(),
     schoolNameNoLink:string().nullable().optional(),
     contactInfo:string().nullable().optional(),
-  }).concat(baseRequestSchema).unknown(),
+  }).concat(baseRequestSchema).noUnknown(),
   params: object({
     sdcDuplicateID: string().nonNullable(),
     type: string().nonNullable()
   }),
   query: object(),
-}).unknown();
+}).noUnknown();
 
 const postStartFromPriorCollectionSchema = object({
   body: baseSdcSchoolStudent.shape({

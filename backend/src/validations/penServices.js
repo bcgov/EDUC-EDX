@@ -10,12 +10,12 @@ const postValidateStudentSchema = object({
       enrolledProgramCodes: array().of(string()).nullable().optional(),
       filteredEnrolledProgramCodes: array().of(string()).nullable().optional()
     }).concat(baseRequestSchema)
-  }).concat(baseRequestSchema),
+  }).concat(baseRequestSchema).noUnknown(),
   params: object({
     sdcSchoolCollectionID: string()
   }).noUnknown(),
   query: object()
-});
+}).noUnknown();
 
 module.exports = {
   validateStudentSchema: postValidateStudentSchema
