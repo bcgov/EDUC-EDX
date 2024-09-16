@@ -13,10 +13,10 @@ const baseStudentSchema = object({
   localID: string().max(12).nullable().optional(),
   studentPen: string().max(9).nullable().optional(),
   legalFirstName: string().max(255).nullable().optional(),
-  legalMiddleName: string().max(255).nullable().optional(),
+  legalMiddleNames: string().max(255).nullable().optional(),
   legalLastName: string().max(255).nonNullable(),
   usualFirstName: string().max(255).nullable().optional(),
-  usualMiddleName: string().max(255).nullable().optional(),
+  usualMiddleNames: string().max(255).nullable().optional(),
   usualLastName: string().max(255).nullable().optional(),
   dob: string().max(8).nonNullable(),
   gender: string().max(1).nonNullable(),
@@ -73,12 +73,15 @@ const baseSdcSchoolStudent = baseStudentSchema.shape({
   sdcSchoolCollectionStudentValidationIssues: array().of(object({
     sdcSchoolCollectionStudentValidationIssueID:string().nullable().optional(),
     sdcSchoolCollectionStudentID:string().nullable().optional(),
-  })).nullable().optional(),
+    validationIssueSeverityCode:string().nullable().optional(),
+    validationIssueCode:string().nullable().optional(),
+    validationIssueFieldCode:string().nullable().optional()
+  }).concat(baseRequestSchema)).nullable().optional(),
   sdcSchoolCollectionStudentEnrolledPrograms: array().of(object({
     sdcSchoolCollectionStudentEnrolledProgramID:string().nullable().optional(),
     sdcSchoolCollectionStudentID:string().nullable().optional(),
     enrolledProgramCode: string().nullable().optional(),
-  })).nullable().optional(),
+  }).concat(baseRequestSchema)).nullable().optional(),
   schoolName: string().nullable().optional()
 });
 
@@ -376,8 +379,15 @@ const postResolveDuplicateSchema = object({
 const postMarKDiffSchema = object({
   body: baseSdcSchoolStudent.shape({
     legalMiddleNames: string().max(25).nullable().optional(), 
-    usualMiddleNames: string().max(25).nullable().optional()
-  }).concat(baseRequestSchema),
+    usualMiddleNames: string().max(25).nullable().optional(),
+    resolution:  string().nullable().optional(),
+    canMoveToCrossEnrollment: boolean().nullable().optional(),
+    canChangeGrade: boolean().nullable().optional(),
+    schoolName:  string().nullable().optional(),
+    districtName:  string().nullable().optional(),
+    schoolNameNoLink:string().nullable().optional(),
+    contactInfo:string().nullable().optional(),
+  }).concat(baseRequestSchema).unknown(),
   params: object({
     sdcDuplicateID: string().nonNullable(),
     type: string().nonNullable()
@@ -437,5 +447,6 @@ module.exports = {
   resolveDuplicateSchema: postResolveDuplicateSchema,
   markDiffSchema: postMarKDiffSchema,
   startFromPriorCollectionSchema: postStartFromPriorCollectionSchema,
-  getSdcDistrictUsersSchema
+  getSdcDistrictUsersSchema,
+  baseSdcSchoolStudent
 };
