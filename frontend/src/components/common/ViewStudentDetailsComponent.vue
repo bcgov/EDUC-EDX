@@ -31,6 +31,7 @@
         :save-event="saveStudent"
         :show-funding-eligibility-detail="showFundingEligibilitySection()"
         :is-final-sign-off="isFinalSignOff"
+        :is-historical="true"
         @form-validity="isValid"
         @show-issues="cancel"
         @reset-parent="reset()"
