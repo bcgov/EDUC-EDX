@@ -193,6 +193,7 @@ const reportTypeValues = [
   ['indigenous_dis', 'DIS_INDIGENOUS_HEADCOUNT'],
   ['indigenous-per-school_dis', 'DIS_INDIGENOUS_HEADCOUNT_PER_SCHOOL'],
   ['band-codes', 'BAND_RESIDENCE_HEADCOUNT'],
+  ['band-codes_dis', 'DIS_BAND_RESIDENCE_HEADCOUNT'],
   ['career', 'CAREER_HEADCOUNT'],
   ['french', 'FRENCH_HEADCOUNT'],
   ['french_dis', 'DIS_FRENCH_HEADCOUNT'],
