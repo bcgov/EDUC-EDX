@@ -214,12 +214,12 @@ export default {
       this.reloadStudentsFlag = false;
     },
     downloadStudentReport(){
-      const routeData = this.$router.resolve({path: downloadStudentOnlyReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentOnlyReportURL(this.$route)});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
     },
     downloadStudentWithErrorsReport(){
-      const routeData = this.$router.resolve({path: downloadStudentErrorsReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentErrorsReportURL(this.$route)});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
     },
