@@ -226,7 +226,7 @@
         density="compact"
         type="success"
         variant="tonal"
-        text="Congratulations! There are no non-allowable duplicates."
+        text="Congratulations! There are no related duplicates and no action required from you on this tab"
       />
     </v-row>
   </template>
