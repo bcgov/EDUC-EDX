@@ -91,7 +91,7 @@
                         :rules="[rules.required(),rules.validPEN()]"
                         density="compact"
                         class="mb-0"
-                        :disabled="isSchoolCollectionSubmitted()||isHistorical"
+                        :disabled="isSchoolCollectionSubmitted()|| isFinalSignOff"
                       >
                         <template #append>
                           <v-btn
@@ -648,11 +648,6 @@ export default {
     isFinalSignOff: {
       type: Boolean,
       required: false
-    },
-    isHistorical: {
-      type: Boolean,
-      required: false,
-      default: false
     }
   },
   emits: ['next', 'show-issues', 'form-validity', 'reset-parent', 'student-object', 'close-success', 'reset-pagination'],
