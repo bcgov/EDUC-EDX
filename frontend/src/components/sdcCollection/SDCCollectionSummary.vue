@@ -276,7 +276,7 @@ export default {
       return this.instituteCollectionID !== null;
     },
     calculateStep() {
-      this.noOfStepsCompleted = this.currentStepIndex;
+      this.noOfStepsCompleted = this.currentStepIndex ?? 0;
       this.incomingChartData = [this.noOfStepsCompleted, (this.totalStepsInCollection - this.noOfStepsCompleted)];
     },
     getHistoricCollections() {

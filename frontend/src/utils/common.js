@@ -72,6 +72,13 @@ export function getDemogValidationResults(student, sdcSchoolCollectionID) {
       });
   });
 }
+export function downloadStudentOnlyReportURL(route) {
+  return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
+}
+
+export function  downloadStudentErrorsReportURL(route) {
+  return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${route.params.sdcDistrictCollectionID}/report/csv_dis_errors_warns/download`;
+}
 
 export function     getCollectionLink(currentCollectionTypeCode) {
   let collectionLink = '';

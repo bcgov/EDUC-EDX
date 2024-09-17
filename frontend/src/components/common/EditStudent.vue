@@ -101,7 +101,7 @@
                             density="compact"
                             class="mx-0 px-2"
                             text="Get PEN"
-                            :disabled="sdcSchoolCollectionStudentDetailCopy.studentPen !== null && sdcSchoolCollectionStudentDetailCopy.studentPen !== '' && sdcSchoolCollectionStudentDetailCopy.studentPen !== undefined"
+                            :disabled="(sdcSchoolCollectionStudentDetailCopy.studentPen !== null && sdcSchoolCollectionStudentDetailCopy.studentPen !== '' && sdcSchoolCollectionStudentDetailCopy.studentPen !== undefined) || isFinalSignOff"
                             @click="togglePENRequestDialog"
                           >
                             <template #prepend>

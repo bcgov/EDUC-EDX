@@ -100,7 +100,7 @@
     v-model="showExportDialog"
     :max-width="443"
   >
-    <v-card>
+    <v-card class="ma-auto">
       <v-card-title>
         Export Student Records
       </v-card-title>
@@ -116,7 +116,7 @@
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students with Errors & Warnings"
+          text="Students with Warnings"
           @click="downloadStudentWithErrorsReport"
         />
       </v-card-actions>
@@ -127,6 +127,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import CustomTable from '../../../common/CustomTable.vue';
+import {downloadStudentOnlyReportURL,downloadStudentErrorsReportURL} from '../../../../utils/common';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
@@ -213,20 +214,14 @@ export default {
       this.reloadStudentsFlag = false;
     },
     downloadStudentReport(){
-      const routeData = this.$router.resolve({path: this.downloadStudentOnlyReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentOnlyReportURL(this.$route)});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
     },
     downloadStudentWithErrorsReport(){
-      const routeData = this.$router.resolve({path: this.downloadStudentErrorsReportURL()});
+      const routeData = this.$router.resolve({path: downloadStudentErrorsReportURL(this.$route)});
       window.open(routeData.href, '_blank');
       this.showExportDialog = false;
-    },
-    downloadStudentOnlyReportURL() {
-      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
-    },
-    downloadStudentErrorsReportURL() {
-      return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/report/csv_dis_errors_warns/download`;
     },
     editStudent($event) {
       const selectedStudent = cloneDeep($event);
