@@ -100,7 +100,7 @@
     v-model="showExportDialog"
     :max-width="443"
   >
-    <v-card>
+    <v-card class="ma-auto">
       <v-card-title>
         Export Student Records
       </v-card-title>
@@ -116,7 +116,7 @@
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students with Errors & Warnings"
+          text="Students with Warnings"
           @click="downloadStudentWithErrorsReport"
         />
       </v-card-actions>
