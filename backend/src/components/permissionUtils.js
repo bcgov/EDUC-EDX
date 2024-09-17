@@ -177,6 +177,19 @@ function checkSdcDistrictCollectionAccess(req, res, next) {
   return next();
 }
 
+function checkAnyEdxUserSignoffPermission(permissions) {
+  return function(req, res, next) {
+    const hasPermission = permissions.some(permission => req.session.activeInstitutePermissions.includes(permission));
+    if (!hasPermission) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'User doesn\'t have permission.'
+      });
+    }
+    log.info('proceed to next');
+    return next();
+  };
+}
+
 //Find Institute IDs
 function findInstituteInformation_query(req, res, next) {
   res.locals.requestedInstituteType = req.query.schoolID ? 'SCHOOL' : 'DISTRICT';
@@ -577,7 +590,8 @@ const permUtils = {
   findSdcSchoolCollectionsInDuplicate,
   checkSdcDuplicateAccess,
   checkUserAccessToDuplicateSdcSchoolCollections,
-  checkDistrictBelongsInSdcDistrictCollection
+  checkDistrictBelongsInSdcDistrictCollection,
+  checkAnyEdxUserSignoffPermission
 };
 
 module.exports = permUtils;
