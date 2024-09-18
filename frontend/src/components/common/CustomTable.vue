@@ -90,7 +90,7 @@
               </div>
             </v-tooltip>
             <div v-else>
-              <span v-if="column.key === 'studentPen'">
+              <span v-if="column.key === 'assignedPen'">
                 {{ getAssignedPen(props.item['assignedPen']) }}
               </span>
 
