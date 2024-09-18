@@ -31,9 +31,9 @@
                 @change="toggle()"
               />
             </div>
-            <div v-else-if="column.title === 'PEN'">
+            <div v-else-if="column.title === 'Assigned PEN'">
               <div class="header-text">
-                Assigned PEN
+                {{ column.title }}
               </div>
               <div
                 v-if="column.hasOwnProperty('subHeader')"
