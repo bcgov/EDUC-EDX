@@ -1,5 +1,6 @@
 const { object, string, boolean, number, array } = require('yup');
 const {baseRequestSchema} = require('./base');
+const { PERMISSION } = require('../util/Permission');
 
 const baseQuerySchema = object({
   type: string().optional(),
@@ -108,7 +109,7 @@ const baseDistrictCollectionSchema = object({
 }).concat(baseRequestSchema);
 
 const baseSignature = object({
-  districtSignatoryRole: string().nonNullable(),
+  districtSignatoryRole: string().nonNullable().oneOf([PERMISSION.SUPERINT, PERMISSION.SECR_TRES, PERMISSION.DISTRICT_SDC_EDIT]),
   districtSignatoryUserID: string().nullable().optional(),
 }).noUnknown();
 
