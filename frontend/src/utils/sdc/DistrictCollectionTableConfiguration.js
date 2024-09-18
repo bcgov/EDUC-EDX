@@ -33,7 +33,6 @@ import {
 export const FTE = Object.freeze(
   {
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start' },
@@ -133,7 +132,6 @@ export const FRENCH_PR = Object.freeze(
   {
     defaultFilter: { label: 'FRENCH_PR', description: 'Has French Program' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'frenchProgramEligible' } },
@@ -173,7 +171,6 @@ export const CAREER_PR = Object.freeze(
   {
     defaultFilter: { label: 'CAREER_PR', description: 'Has Career Program' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'careerProgramEligible' } },
@@ -204,7 +201,6 @@ export const INDSUPPORT_PR = Object.freeze(
   {
     defaultFilter: { label: 'INDSUPPORT_PR', description: 'Has Indigenous Support Program' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'indProgramEligible' } },
@@ -239,7 +235,6 @@ export const SPECIALED_PR = Object.freeze(
   {
     defaultFilter: { label: 'SPECIALED_PR', description: 'Has Inclusive Education Category' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'spedProgramEligible' } },
@@ -270,7 +265,6 @@ export const ELL = Object.freeze(
   {
     defaultFilter: { label: 'ELL_PR', description: 'English Language Learner' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Program Eligible', key: 'ellProgramEligible' } },
@@ -300,7 +294,6 @@ export const REFUGEE = Object.freeze(
   {
     defaultFilter: { label: 'REFUGEE', description: '16-Newcomer Refugee' },
     tableHeaders: [
-      { title: 'select', key: 'select' },
       { key: 'sdcSchoolCollectionStudentStatusCode' },
       { title: 'School', key: 'schoolName' },
       { title: 'FTE', key: 'fte', align: 'start', subHeader: { title: 'Funding Eligible', key: 'fundingEligibleRefugee' } },
