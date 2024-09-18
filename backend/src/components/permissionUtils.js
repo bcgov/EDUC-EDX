@@ -185,9 +185,17 @@ function checkAnyEdxUserSignoffPermission(permissions) {
         message: 'User doesn\'t have permission.'
       });
     }
-    log.info('proceed to next');
     return next();
   };
+}
+
+function checkPermissionForSignOff(req, res, next) {
+  if (!req.session.activeInstitutePermissions.includes(req.body.districtSignatoryRole)) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'User doesn\'t have permission.'
+    });
+  }
+  return next();
 }
 
 //Find Institute IDs
@@ -591,7 +599,8 @@ const permUtils = {
   checkSdcDuplicateAccess,
   checkUserAccessToDuplicateSdcSchoolCollections,
   checkDistrictBelongsInSdcDistrictCollection,
-  checkAnyEdxUserSignoffPermission
+  checkAnyEdxUserSignoffPermission,
+  checkPermissionForSignOff
 };
 
 module.exports = permUtils;
