@@ -290,7 +290,7 @@
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students with Warnings"
+          text="Students with Errors/Warnings"
           @click="downloadStudentWithErrorsReport"
         />
       </v-card-actions>
