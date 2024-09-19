@@ -76,7 +76,9 @@
           @update:model-value="updateCurrentStep"
         >
           <template #default>
-            <v-stepper-header>
+            <v-stepper-header 
+              v-show="!isStepperHidden"
+            >
               <template
                 v-for="step in compiledSdcSteps()"
                 :key="step.step"
@@ -209,6 +211,7 @@ export default {
     return {
       currentStep: 0,
       steps: [],
+      isStepperHidden:false,
       registerNextEvent: false,
       schoolCollectionObject: {},
       submissionDueDate: null,
@@ -267,6 +270,8 @@ export default {
         this.schoolCollectionObject = this.schoolCollection;
         this.schoolID = this.schoolCollection.schoolID;
         this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
+        this.hideStepperWhenComplete();
+    
       })
       .finally(() => {
         this.isLoading = !this.isLoading;
@@ -280,6 +285,11 @@ export default {
         return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_SCHOOL : SDC_STEPS_SCHOOL;
       } else {
         return this.schoolCollectionObject.collectionTypeCode === 'JULY' ? SDC_STEPS_SUMMER_INDP_SCHOOL : SDC_STEPS_INDP_SCHOOL;
+      }
+    },
+    hideStepperWhenComplete(){
+      if (this.schoolCollection) {
+        this.isStepperHidden = this.schoolCollection.sdcSchoolCollectionStatusCode === 'COMPLETED';
       }
     },
     next() {
@@ -300,6 +310,7 @@ export default {
         this.schoolID = this.schoolCollection.schoolID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
           this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.schoolCollection?.sdcSchoolCollectionStatusCode);
+          this.hideStepperWhenComplete();
         }
         this.isLoading = !this.isLoading;
       });
@@ -312,6 +323,7 @@ export default {
         this.refreshStore(true);
       }
       this.currentStep = step;
+      this.hideStepperWhenComplete();
     },
     getIndexOfSDCCollectionByStatusCode(sdcSchoolCollectionStatusCode) {
       return this.compiledSdcSteps().find(step => step.sdcSchoolCollectionStatusCode?.includes(sdcSchoolCollectionStatusCode))?.index;
