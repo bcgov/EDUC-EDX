@@ -66,7 +66,9 @@
           @update:model-value="updateCurrentStep"
         >
           <template #default>
-            <v-stepper-header>
+            <v-stepper-header
+              v-show="!isStepperHidden"
+            >
               <template
                 v-for="step in SDC_STEPS_DISTRICT()"
                 :key="step.step"
@@ -315,6 +317,7 @@ export default defineComponent({
     return {
       currentStep: 0,
       districtID: null,
+      isStepperHidden: false,
       submissionDueDate: null,
       duplicationResolutionDueDate: null,
       signOffDueDate: null,
@@ -367,7 +370,8 @@ export default defineComponent({
         this.districtCollectionObject = this.districtCollection;
         this.isSummerCollection = this.districtCollectionObject?.collectionTypeCode === 'JULY';
         this.districtID = this.districtCollection?.districtID;
-        this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+        this.currentStep =  this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+        this.hideStepperWhenComplete();
         await this.getActiveSdcDistrictCollection();
       })
       .finally(() => {
@@ -378,6 +382,11 @@ export default defineComponent({
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionSubmissionDueDate', 'setCurrentCollectionResolveDupDueDate', 'setCurrentCollectionSignOffDueDate']),
     SDC_STEPS_DISTRICT() {
       return this.isSummerCollection ? SDC_STEPS_SUMMER_DISTRICT : SDC_STEPS_DISTRICT;
+    },
+    hideStepperWhenComplete(){
+      if (this.districtCollection) {
+        this.isStepperHidden = this.districtCollection.sdcDistrictCollectionStatusCode === 'COMPLETED';
+      }
     },
     next() {
       this.refreshStore(true);
@@ -393,6 +402,7 @@ export default defineComponent({
         this.districtID = this.districtCollection.districtID;
         if (!skipGetIndexOfSDCCollectionByStatusCode) {
           this.currentStep = this.getStepOfSDCCollectionByStatusCode(this.districtCollection?.sdcDistrictCollectionStatusCode);
+          this.hideStepperWhenComplete();
         }
         this.isLoading = !this.isLoading;
       });
@@ -402,6 +412,7 @@ export default defineComponent({
         this.refreshStore(true);
       }
       this.currentStep = step;
+      this.hideStepperWhenComplete();
     },
     getIndexOfSDCCollectionByStatusCode(sdcDistrictCollectionStatusCode) {
       return this.SDC_STEPS_DISTRICT().find(step => step.sdcDistrictCollectionStatusCode.includes(sdcDistrictCollectionStatusCode))?.index;
