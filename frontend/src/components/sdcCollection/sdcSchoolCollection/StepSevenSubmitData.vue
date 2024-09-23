@@ -67,7 +67,7 @@
       />
     </div>
     <v-alert
-      v-if="!isSubmitted"
+      v-if="!isSubmitted && hasLoaded"
       id="fte-info"
       density="compact"
       type="info"
@@ -141,6 +141,7 @@ export default {
       school: {},
       isSubmitted: false,
       isLoading: true,
+      hasLoaded: false,
       submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
       afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
     };
@@ -160,6 +161,7 @@ export default {
     sdcCollectionStore().getSchoolCollection(this.$route.params.schoolCollectionID).finally(() => {
       this.isSubmitted = this.submittedStatuses.includes(this.schoolCollection.sdcSchoolCollectionStatusCode);
       this.isLoading = !this.isLoading;
+      this.hasLoaded = true;
     });
   },
   created() {
