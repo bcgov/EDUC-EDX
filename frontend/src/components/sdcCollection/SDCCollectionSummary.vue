@@ -114,9 +114,9 @@
             hide-details
             clearable
             :items="collectionTypeCodes"
-            item-value="key"
-            item-text="value"
-            item-title="value"
+            item-value="collectionTypeCode"
+            item-text="label"
+            item-title="label"
             @update:model-value="getHistoricCollections"
           />
         </v-col>
@@ -163,7 +163,6 @@ import {capitalize} from 'lodash';
 import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_DISTRICT, SDC_STEPS_SUMMER_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL} from '../../utils/sdc/SdcSteps';
 import {getDateFormatter} from '../../utils/format';
 import VueDatePicker from '@vuepic/vue-datepicker';
-import {COLLECTIONCODETYPE} from '../../utils/constants/CollectionCodeType';
 
 export default {
   name: 'SdcCollectionSummary',
@@ -218,7 +217,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'currentStepInCollectionProcess','currentCollectionYear']),
+    ...mapState(sdcCollectionStore, ['currentCollectionTypeCode', 'currentStepInCollectionProcess','currentCollectionYear','collectionTypeCodes','collectionTypeCodesMap']),
     maxDate() {
       return LocalDate.now().year();
     },
@@ -248,17 +247,15 @@ export default {
       } else {
         return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.districtID}/historic-paginated`;
       }
-    },
-    collectionTypeCodes() {
-      return Object.entries(COLLECTIONCODETYPE).map(([key, value]) => ({ key, value }));
     }
   },
-  created() {
+  async created() {
     if(this.isSchoolCollection) {
       this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.$route.params.schoolID}`);
     } else {
       this.getSDCCollectionByInstituteId(ApiRoutes.sdc.SDC_COLLECTION_BY_DISTRICT_ID + `/${this.$route.params.districtID}`);
     }
+    await sdcCollectionStore().getCollectionTypeCodesMap();
   },
   methods: {
     ...mapActions(sdcCollectionStore, ['setCurrentCollectionTypeCode', 'setCollectionMetaData', 'setCurrentCollectionYear']),
@@ -293,7 +290,7 @@ export default {
       })
         .then(response => {
           this.collections = response?.data?.content.map(collection => {
-            return { ...collection, collectionTypeCode: COLLECTIONCODETYPE[collection.collectionTypeCode]};
+            return { ...collection, collectionTypeCode: this.collectionTypeCodes.find(value => value.collectionTypeCode === collection.collectionTypeCode)?.label};
           });
           this.totalElements = response?.data?.totalElements;
         })
