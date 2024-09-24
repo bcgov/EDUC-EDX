@@ -180,7 +180,8 @@ export default {
   getAllActiveEnrolledGradeCodes:getCodes(`${ApiRoutes.sdc.SDC_ENROLLED_GRADE_CODES}?active=true`),
   getAllActiveHomeLanguageSpokenCodes:getCodes(`${ApiRoutes.sdc.SDC_HOME_LANGUAGE_SPOKEN_CODES}?active=true`),
   getAllActiveSchoolFundingCodes:getCodes(`${ApiRoutes.sdc.SDC_SCHOOL_FUNDING_CODES}?active=true`),
-  getAllActiveSpecialEdCodes:getCodes(`${ApiRoutes.sdc.SDC_SPECIAL_ED_CODES}?active=true`)
+  getAllActiveSpecialEdCodes:getCodes(`${ApiRoutes.sdc.SDC_SPECIAL_ED_CODES}?active=true`),
+  getAllCollectionTypeCodes: getCodes(`${ApiRoutes.sdc.COLLECTION_TYPE_CODES_URL}`),
 };
 function getCodes(url) {
   return async function getCodesHandler(query) {

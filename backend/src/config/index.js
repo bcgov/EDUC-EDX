@@ -135,7 +135,8 @@ nconf.defaults({
     duplicateResolutionCodesURL: process.env.SDC_API_ENDPOINT + '/duplicate-resolution-codes',
     programDuplicateTypeCodesURL: process.env.SDC_API_ENDPOINT + '/program-duplicate-type-codes',
     schoolCollectionStatusCodesURL: process.env.SDC_API_ENDPOINT + '/school-collection-status-codes',
-    sdcDuplicateURL: process.env.SDC_API_ENDPOINT + '/sdc-duplicate'
+    sdcDuplicateURL: process.env.SDC_API_ENDPOINT + '/sdc-duplicate',
+    collectionTypeCodesURL: process.env.SDC_API_ENDPOINT + '/collection-type-codes',
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,

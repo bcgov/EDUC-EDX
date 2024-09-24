@@ -8,6 +8,8 @@ import {getDateFormatter} from '../../utils/format';
 export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
   state: () => ({
+    collectionTypeCodes: [],
+    collectionTypeCodesMap: new Map(),
     currentStepInCollectionProcess: null,
     currentCollectionTypeCode: null,
     currentCollectionYear: null,
@@ -186,6 +188,13 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         this.zeroFteReasonCodesMap.set(issue.fteZeroReasonCode, issue);
       });
     },
+    async setCollectionTypeCodes(collectionTypes) {
+      this.collectionTypeCodes = collectionTypes;
+      this.collectionTypeCodesMap = new Map();
+      collectionTypes.forEach(element => {
+        this.collectionTypeCodesMap.set(element.collectionTypeCode, element);
+      });
+    },
     async getSchoolCollectionStatusCodeMap(){
       if(this.schoolCollectionStatusCodesMap.size === 0) {
         await ApiService.getAllSchoolCollectionStatusCodes().then((res) => {
@@ -211,6 +220,12 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       this.setDistrictCollection(response.data);
       this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
       this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
+    },
+    async getCollectionTypeCodesMap() {
+      if(this.collectionTypeCodesMap.size === 0) {
+        ApiService.getAllCollectionTypeCodes().then((res) => this.setCollectionTypeCodes(res.data));
+      }
+      return this.collectionTypeCodesMap;
     },
     async getCodes() {
       if(localStorage.getItem('jwtToken')) { // DONT Call api if there is no token.
