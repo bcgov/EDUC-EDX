@@ -32,7 +32,7 @@
           class="d-flex justify-end"
         >
           <v-btn
-            v-if="isCollectionActive"
+            v-if="isCollectionActive && !isSubmitted"
             id="add"
             color="#003366"
             text="Add Student"
@@ -43,7 +43,7 @@
             @click="addStudent"
           />
           <v-btn
-            v-if="isCollectionActive"
+            v-if="isCollectionActive && !isSubmitted"
             id="remove"
             color="#003366"
             class="mr-1 mb-1"
@@ -83,7 +83,7 @@
             :is-loading="isLoading"
             :reset="resetFlag"
             :school-collection="schoolCollection" 
-            :disable-select="!isCollectionActive"           
+            :disable-select="!isCollectionActive || isSubmitted"           
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
@@ -217,7 +217,8 @@ export default {
       editStudentSheet: false,
       addStudentSheet: false,
       resetFlag: false,
-      reloadStudentsFlag: false
+      reloadStudentsFlag: false,
+      afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
     };
   },
   computed: {
@@ -228,6 +229,9 @@ export default {
     },
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
+    },
+    isSubmitted(){
+      return this.afterSubmittedStatuses.includes(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     }
   },
   created() {
