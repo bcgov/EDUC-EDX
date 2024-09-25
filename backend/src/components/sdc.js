@@ -809,6 +809,11 @@ async function getStudentDifferencesByInstituteCollectionId(req, res) {
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('sdc:rootURL')}/reportGeneration/differences`, params, req.session?.correlationID);
 
+    data = data?.map(pair => ({
+      currentStudent: toTableRow(pair.currentStudent),
+      originalStudent: toTableRow(pair.originalStudent)
+    }));
+
     data.forEach(difference => {
       difference.currentStudent.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(difference.currentStudent.schoolID));
       difference.originalStudent.type = 'Original';
