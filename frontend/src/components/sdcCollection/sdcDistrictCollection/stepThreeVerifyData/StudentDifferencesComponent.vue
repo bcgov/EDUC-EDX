@@ -153,6 +153,7 @@ export default defineComponent({
       pageNumber: 1,
       filterSearchParams: {
         tabFilter: null,
+        notSdcSchoolCollectionStudentStatusCode: 'DELETED',
         moreFilters: {}
       },
       headers: this.tableConfig.tableHeaders,
