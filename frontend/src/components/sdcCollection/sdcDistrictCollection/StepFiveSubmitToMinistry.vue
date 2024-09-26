@@ -40,7 +40,7 @@
 
         <StepThreeVerifyData
           :district-collection-object="districtCollectionObject"
-          :is-final-sign-off="false"
+          :is-final-sign-off="true"
           :is-collection-active="isCollectionActive"
         />
       </div>

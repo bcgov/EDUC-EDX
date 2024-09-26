@@ -32,7 +32,7 @@
         Resolved <br> Duplicates
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showSignatures"
         key="SignOff"
         value="SignOff"
         class="divider"
@@ -244,6 +244,11 @@ export default {
     isCollectionActive: {
       type: Boolean,
       required: true
+    },
+    showSignatures: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['next', 'previous'],
