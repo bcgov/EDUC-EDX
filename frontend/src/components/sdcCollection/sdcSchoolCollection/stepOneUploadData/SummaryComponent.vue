@@ -34,7 +34,7 @@
       show-arrows
     >
       <v-tab
-        v-for="name in tabs"
+        v-for="name in visibleTabs"
         :key="name"
         class="tab-divider"
         :value="name"
@@ -120,22 +120,21 @@ export default defineComponent({
     EnrollmentHeadcountsComponent,
     HeadCountReportComponent},
   data() {
-    const summaryTabs = [
-      'Overall',
-      'French Programs',
-      'Career Programs',
-      'Indigenous Students & Support Programs',
-      'Inclusive Education',
-      'English Language Learning'       
-    ];
-    this.currentCollectionTypeCode === COLLECTIONCODETYPE.FEBRUARY ? summaryTabs.push( 'Refugee') : null;
     return {
       isLoading: false,
       headcountHeaders: [],
       headcountTableData: {},
       compareSwitch: false,
       currentTableID: null,
-      tabs: summaryTabs,      
+      tabs: [
+        'Overall',
+        'French Programs',
+        'Career Programs',
+        'Indigenous Students & Support Programs',
+        'Inclusive Education',
+        'English Language Learning',
+        'Refugee'
+      ],      
       selectedTab: null,
       studentsInError: null,
       headerSearchParams: {}
@@ -174,6 +173,9 @@ export default defineComponent({
         return ELL.summaryReport[0].tableID;
       }
       return null;
+    },
+    visibleTabs() {
+      return this.currentCollectionTypeCode === COLLECTIONCODETYPE.FEBRUARY ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee') ;
     }
   },
   watch: {
