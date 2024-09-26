@@ -50,7 +50,7 @@
           :non-allowable-duplicates="nonAllowableDuplicates"
           :allowable-duplicates="allowableDuplicates"
           :resolved-duplicates="resolvedDuplicates"
-          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST'"
+          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST' && hasEditPermission()"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
@@ -77,7 +77,7 @@
     <PrimaryButton
       id="step-4-next-button-district"
       class="mr-3 mb-3"
-      :disabled="disableNextButton() || apiError || !hasEditPermission"
+      :disabled="disableNextButton() || apiError || !hasEditPermission()"
       icon="mdi-check"
       text="Verify as Correct"
       :click-action="next"

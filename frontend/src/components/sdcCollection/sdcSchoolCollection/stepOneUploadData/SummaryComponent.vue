@@ -111,6 +111,7 @@ import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {COLLECTIONCODETYPE} from '../../../../utils/constants/CollectionCodeType';
 
 export default defineComponent({
   name: 'SummaryComponent',
@@ -119,21 +120,22 @@ export default defineComponent({
     EnrollmentHeadcountsComponent,
     HeadCountReportComponent},
   data() {
+    const summaryTabs = [
+      'Overall',
+      'French Programs',
+      'Career Programs',
+      'Indigenous Students & Support Programs',
+      'Inclusive Education',
+      'English Language Learning'       
+    ];
+    this.currentCollectionTypeCode === COLLECTIONCODETYPE.FEBRUARY ? summaryTabs.push( 'Refugee') : null;
     return {
       isLoading: false,
       headcountHeaders: [],
       headcountTableData: {},
       compareSwitch: false,
       currentTableID: null,
-      tabs: [
-        'Overall',
-        'French Programs',
-        'Career Programs',
-        'Indigenous Students & Support Programs',
-        'Inclusive Education',
-        'English Language Learning',
-        'Refugee'
-      ],
+      tabs: summaryTabs,      
       selectedTab: null,
       studentsInError: null,
       headerSearchParams: {}
