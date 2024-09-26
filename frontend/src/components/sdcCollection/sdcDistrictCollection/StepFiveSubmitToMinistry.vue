@@ -40,7 +40,7 @@
 
         <StepThreeVerifyData
           :district-collection-object="districtCollectionObject"
-          :is-final-sign-off="districtCollectionObject?.collectionTypeCode === 'SEPTEMBER' ? false : true"
+          :is-final-sign-off="false"
           :is-collection-active="isCollectionActive"
         />
       </div>
