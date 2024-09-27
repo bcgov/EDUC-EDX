@@ -34,7 +34,7 @@
       show-arrows
     >
       <v-tab
-        v-for="name in tabs"
+        v-for="name in visibleTabs"
         :key="name"
         class="tab-divider"
         :value="name"
@@ -111,6 +111,7 @@ import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {COLLECTIONCODETYPE} from '../../../../utils/constants/CollectionCodeType';
 
 export default defineComponent({
   name: 'SummaryComponent',
@@ -133,7 +134,7 @@ export default defineComponent({
         'Inclusive Education',
         'English Language Learning',
         'Refugee'
-      ],
+      ],      
       selectedTab: null,
       studentsInError: null,
       headerSearchParams: {}
@@ -172,6 +173,9 @@ export default defineComponent({
         return ELL.summaryReport[0].tableID;
       }
       return null;
+    },
+    visibleTabs() {
+      return this.currentCollectionTypeCode === COLLECTIONCODETYPE.FEBRUARY ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee') ;
     }
   },
   watch: {
