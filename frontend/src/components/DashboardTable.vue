@@ -378,6 +378,43 @@
           </v-row>
         </v-card>
       </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="25em"
+          outlined
+          rounded
+          @click="openSchoolGraduationCard()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-account-school-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRADUATION }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -437,7 +474,8 @@ export default {
         secureExchangeStatusCode: ''
       },
       PAGE_TITLES: PAGE_TITLES,
-      disableSdcFunctionality: null
+      disableSdcFunctionality: null,
+      disableGradFunctionality: null
     };
   },
   computed: {
@@ -461,6 +499,7 @@ export default {
   },
   created() {
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
+    this.disableGradFunctionality = this.config.DISABLE_GRAD_FUNCTIONALITY;
     if (this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
@@ -578,6 +617,9 @@ export default {
     },
     openSDCDistrictCollection() {
       router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}});
+    },
+    openSchoolGraduationCard() {
+      router.push({name: 'graduation', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {

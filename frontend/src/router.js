@@ -32,6 +32,7 @@ import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDe
 import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 import {PERMISSION} from './utils/constants/Permission';
+import GraduationTableComponent from './components/graduation/GraduationTableComponent.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -315,6 +316,17 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.SDC,
             requiresAuth: true,
             permission: PERMISSION.DISTRICT_SDC_VIEW
+          },
+        },
+        {
+          path: 'graduation/:schoolID',
+          name: 'graduation',
+          component: GraduationTableComponent,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRADUATION,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_SCH_EDIT
           },
         }
       ]

@@ -11,6 +11,7 @@ async function getConfig(req, res) {
     BANNER_ENVIRONMENT: frontendConfig.bannerEnvironment,
     BANNER_COLOR: frontendConfig.bannerColor,
     DISABLE_SDC_FUNCTIONALITY: frontendConfig.disableSdcFunctionality,
+    DISABLE_GRAD_FUNCTIONALITY: frontendConfig.disableGradFunctionality,
     TERMS_OF_USE_URL: frontendConfig.termsOfUseURL,
     HELP_URL: frontendConfig.helpURL,
     WEB_SOCKET_URL: frontendConfig.webSocketURL,
