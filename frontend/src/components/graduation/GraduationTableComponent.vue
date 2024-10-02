@@ -15,7 +15,7 @@
           width="25em"
           outlined
           rounded
-          @click=""
+          @click="uploadFiles()"
         >
           <v-row class="pl-4">
             <v-col cols="4">
@@ -84,6 +84,9 @@ export default {
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
+    uploadFiles() {
+      
+    }
   }
 };
 </script>
