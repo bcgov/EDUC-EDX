@@ -142,6 +142,7 @@ nconf.defaults({
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,
     disableSdcFunctionality: process.env.DISABLE_SDC_FUNCTIONALITY === 'true',
+    disableGradFunctionality: process.env.DISABLE_GRAD_FUNCTIONALITY === 'true',
     termsOfUseURL: process.env.TERMS_OF_USE,
     helpURL: process.env.HELP,
     webSocketURL: process.env.WEB_SOCKET_URL,
