@@ -106,7 +106,6 @@ import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import {COLLECTIONCODETYPE} from '../../../../utils/constants/CollectionCodeType';
 
 export default defineComponent({
   name: 'SummaryComponent',
