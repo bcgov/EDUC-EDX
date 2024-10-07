@@ -34,7 +34,7 @@
       show-arrows
     >
       <v-tab
-        v-for="name in visibleTabs"
+        v-for="name in tabs"
         :key="name"
         class="tab-divider"
         :value="name"
@@ -91,16 +91,11 @@
           :table-i-d="currentTableID"
         />
       </v-window-item>
-      <v-window-item value="Refugee">
-        <HeadCountReportComponent
-          :headcount-table-data="headcountTableData"
-          :table-i-d="currentTableID"
-        />
-      </v-window-item>
     </v-window>
   </v-row>
 </template>
 <script>
+import alertMixin from '../../../../mixins/alertMixin';
 import {defineComponent} from 'vue';
 import HeadCountReportComponent from '../../../common/HeadCountReportComponent.vue';
 import ApiService from '../../../../common/apiService';
@@ -111,14 +106,15 @@ import EnrollmentHeadcountsComponent from './EnrollmentHeadcountsComponent.vue';
 import IndigenousHeadcountsComponent from './IndigenousHeadcountsComponent.vue';
 import {mapState} from 'pinia';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
-import {COLLECTIONCODETYPE} from '../../../../utils/constants/CollectionCodeType';
 
 export default defineComponent({
   name: 'SummaryComponent',
   components: {
     IndigenousHeadcountsComponent,
     EnrollmentHeadcountsComponent,
-    HeadCountReportComponent},
+    HeadCountReportComponent
+  },
+  mixins: [alertMixin],
   data() {
     return {
       isLoading: false,
@@ -132,8 +128,7 @@ export default defineComponent({
         'Career Programs',
         'Indigenous Students & Support Programs',
         'Inclusive Education',
-        'English Language Learning',
-        'Refugee'
+        'English Language Learning'
       ],      
       selectedTab: null,
       studentsInError: null,
@@ -173,9 +168,6 @@ export default defineComponent({
         return ELL.summaryReport[0].tableID;
       }
       return null;
-    },
-    visibleTabs() {
-      return this.currentCollectionTypeCode === COLLECTIONCODETYPE.FEBRUARY ? this.tabs : this.tabs.filter((tab) => tab !== 'Refugee') ;
     }
   },
   watch: {

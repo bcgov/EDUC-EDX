@@ -74,7 +74,7 @@
               cols="4"
               class="steps"
             >
-              <span>{{ noOfStepsCompleted }} / {{ totalStepsInCollection }} Steps Complete</span>
+              <span>Current Step: {{ noOfStepsCompleted }} of {{ totalStepsInCollection }}</span>
             </v-col>
             <v-col
               cols="8"
