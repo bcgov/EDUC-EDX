@@ -64,6 +64,7 @@
         :is-step-complete="true"
         :is-final-sign-off="true"
         :is-collection-active="isCollectionActive"
+        :show-final-submission-tabs="showFinalSubmissionTabs"
       />
     </div>
     <v-alert
@@ -133,6 +134,10 @@ export default {
       type: Boolean,
       required: true
     },
+    showFinalSubmissionTabs: {
+      type: Boolean,
+      default: false
+    }
   },
   emits: ['previous', 'next', 'refresh-store'],
   data() {

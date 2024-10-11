@@ -101,6 +101,7 @@
       :school-collection-object="schoolCollectionObject"
       :is-collection-active="isSdcSchoolCollectionActive"
       :is-step-complete="true"
+      :show-final-submission-tabs="true"
       @refresh-store="refreshStore"
       @next="next"
     />

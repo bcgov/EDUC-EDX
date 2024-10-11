@@ -76,19 +76,7 @@
       :is-step-complete="isStepComplete"
       :school-collection-object="schoolCollectionObject"
       :is-collection-active="isSdcSchoolCollectionActive"
-      @refresh-store="refreshStore"
-      @next="next"
-    />
-  </v-stepper-window-item>
-  <v-stepper-window-item
-    :value="9"
-    transition="false"
-    reverse-transition="false"
-  >
-    <StepSevenSubmitData
-      :school-collection-object="schoolCollectionObject"
-      :is-collection-active="isSdcSchoolCollectionActive"
-      :is-step-complete="true"
+      :show-final-submission-tabs="true"
       @refresh-store="refreshStore"
       @next="next"
     />
