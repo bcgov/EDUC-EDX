@@ -54,6 +54,7 @@
       :is-step-complete="isStepComplete"
       :school-collection-object="schoolCollectionObject"
       :is-collection-active="isSdcSchoolCollectionActive"
+      :show-final-submission-tabs="true"
       @refresh-store="refreshStore"
       @next="next"
     />

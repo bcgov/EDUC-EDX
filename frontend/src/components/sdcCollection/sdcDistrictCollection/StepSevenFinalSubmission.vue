@@ -19,7 +19,7 @@
         :district-collection-object="districtCollectionObject"
         :is-final-sign-off="true"
         :is-collection-active="isCollectionActive"
-        :show-signatures="true"
+        :show-final-submission-tabs="true"
       />
     </div>
   </div>

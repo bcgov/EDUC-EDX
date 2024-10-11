@@ -16,7 +16,7 @@
         </div>
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="StudentDifferences"
         value="StudentDifferences"
         class="divider"
@@ -24,7 +24,7 @@
         Student <br> Differences
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="resolvedDuplicates"
         value="resolvedDuplicates"
         class="divider"
@@ -32,7 +32,7 @@
         Resolved <br> Duplicates
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection && showSignatures"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="SignOff"
         value="SignOff"
         class="divider"
@@ -127,7 +127,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="StudentDifferences"
         transition="false"
         reverse-transition="false"
@@ -138,7 +138,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="resolvedDuplicates"
         transition="false"
         reverse-transition="false"
@@ -148,7 +148,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="SignOff"
         transition="false"
         reverse-transition="false"
@@ -245,7 +245,7 @@ export default {
       type: Boolean,
       required: true
     },
-    showSignatures: {
+    showFinalSubmissionTabs: {
       type: Boolean,
       required: false,
       default: false

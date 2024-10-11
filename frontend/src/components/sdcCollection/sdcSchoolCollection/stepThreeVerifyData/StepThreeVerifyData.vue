@@ -16,7 +16,7 @@
         </div>
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="StudentDifferences"
         value="StudentDifferences"
         class="divider"
@@ -24,7 +24,7 @@
         Student <br> Differences
       </v-tab>
       <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="resolvedDuplicates"
         value="resolvedDuplicates"
         class="divider"
@@ -118,7 +118,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="StudentDifferences"
         transition="false"
         reverse-transition="false"
@@ -129,7 +129,7 @@
         />
       </v-window-item>
       <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection"
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="resolvedDuplicates"
         transition="false"
         reverse-transition="false"
@@ -221,6 +221,10 @@ export default {
     isCollectionActive: {
       type: Boolean,
       required: true
+    },
+    showFinalSubmissionTabs: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['next', 'previous'],
