@@ -835,7 +835,10 @@ export default {
       }
       this.loadingCount += 1;
       this.hasError = false;
-      ApiService.apiAxios.delete(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.selectedSdcStudentID}`, this.sdcSchoolCollectionStudentDetailCopy)
+      let studentToRemove = [];
+      studentToRemove.push(this.selectedSdcStudentID);
+
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcSchoolCollectionStudentDetailCopy.sdcSchoolCollectionID}/students/remove`, studentToRemove)
         .then(() => {
           this.removeIndex = this.selectedStudents.findIndex(value => value === this.selectedSdcStudentID);
           this.selectedStudents.splice(this.removeIndex, 1);

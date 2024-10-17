@@ -488,7 +488,7 @@ export default defineComponent({
     resolveEnrollmentDuplicateViaRemove(duplicate, sdcSchoolCollectionStudent) {
       this.selectedDuplicate = duplicate;
       this.selectedSdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
-      this.$refs.resolveEnrollmentDuplicateViaRemoveStudent.removeAndResolveStudent(duplicate, sdcSchoolCollectionStudent);
+      this.$refs.resolveEnrollmentDuplicateViaRemoveStudent.removeAndResolveStudent(sdcSchoolCollectionStudent);
     },
     closeAndRefreshDuplicates() {
       this.openProgramResolutionView = false;

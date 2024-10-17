@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
   getCreateOrUpdateUserValue} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
@@ -363,23 +363,15 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
 }
 
-async function deleteSDCSchoolCollectionStudent(req, res) {
-  try {
-    log.info('User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC student :: ' + req.params.sdcSchoolCollectionStudentID);
-    const token = getAccessToken(req);
-    let deletedSdcSchoolCollectionStudentData = await deleteData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${req.params.sdcSchoolCollectionStudentID}`, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
-  } catch (e) {
-    log.error('Error deleting SDC School Collection Student.', e.stack);
-    return handleExceptionResponse(e, res);
-  }
-}
-
 async function removeSDCSchoolCollectionStudents(req, res) {
   try {
-    log.info('EDX User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC students :: ' + JSON.stringify(req.body));
     const token = getAccessToken(req);
-    let deletedSdcSchoolCollectionStudentData = await postData(token, req.body, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
+    let payload = {
+      softDeleteStudentIDs: req.body,
+      updateUser: getCreateOrUpdateUserValue(req)
+    }
+    log.info('EDX User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC students :: ' + JSON.stringify(payload));
+    let deletedSdcSchoolCollectionStudentData = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error deleting SDC School Collection Students.', e.stack);
@@ -1121,7 +1113,7 @@ async function resolveDuplicates(req, res) {
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
 
-    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/${req.params.sdcDuplicateID}/type/${req.params.type}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/type/${req.params.type}`, req.session?.correlationID);
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -1279,7 +1271,6 @@ module.exports = {
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,
   updateAndValidateSdcSchoolCollectionStudent,
-  deleteSDCSchoolCollectionStudent,
   markSdcSchoolCollectionStudentAsDifferent,
   getStudentHeadcounts,
   getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId,

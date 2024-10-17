@@ -25,17 +25,16 @@ export default {
   },
   methods: {
     displayName,
-    async removeAndResolveStudent(duplicate, sdcSchoolCollectionStudent) {
+    async removeAndResolveStudent(sdcSchoolCollectionStudent) {
       this.sdcSchoolCollectionStudent = sdcSchoolCollectionStudent;
+      let studentToRemove = [];
+      studentToRemove.push(this.sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID);
+
       const confirmation = await this.$refs.confirmResolveEnrollmentDuplicateViaRemoveStudent.open('Remove Student', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
       if (!confirmation) {
         return;
       }
-      let payload = {
-        students: [this.sdcSchoolCollectionStudent],
-        duplicate: duplicate
-      };
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ duplicate?.sdcDuplicateID + '/DELETE_ENROLLMENT_DUPLICATE', payload)
+      ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_SCHOOL_COLLECTION_STUDENT}/${this.sdcSchoolCollectionStudent.sdcSchoolCollectionID}/students/remove`, studentToRemove)
         .then(() => {
           setSuccessAlert('Success! The student has been removed.');
         }).catch(error => {
