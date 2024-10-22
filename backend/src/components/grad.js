@@ -1,11 +1,8 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, deleteData, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
-  getCreateOrUpdateUserValue} = require('./utils');
+const { getAccessToken, handleExceptionResponse, getData, postData, getCreateOrUpdateUserValue} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
-const broadcastUtil = require('../socket/broadcast-utils');
-const CONSTANTS = require('../util/constants');
 
 async function uploadFile(req, res) {
     try {

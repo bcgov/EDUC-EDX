@@ -91,7 +91,6 @@
         ref="uploader"
         :key="inputKey"
         v-model="uploadFileValue"
-        :rules="fileRules"
         style="display: none"
         :accept="acceptableFileExtensions.join(',')"
         multiple
@@ -212,7 +211,6 @@
   
   <script>
   import alertMixin from '../../../mixins/alertMixin';
-  import PrimaryButton from '../../util/PrimaryButton.vue';
   import ApiService from '../../../common/apiService';
   import {ApiRoutes} from '../../../utils/constants';
   import {getFileNameWithMaxNameLength} from '../../../utils/file';
@@ -227,8 +225,7 @@
     name: 'GradUploadDataComponent',
     components: {
       ConfirmationDialog,
-      Spinner,
-      PrimaryButton 
+      Spinner
     },
     mixins: [alertMixin],
     props: {
@@ -243,7 +240,6 @@
       return {
         acceptableFileExtensions: ['.stdxam', '.stddem', '.stdcrs'],
         requiredRules: [v => !!v || 'Required'],
-        fileRules: [],
         uploadFileValue: null,
         hasFileAttached: false,
         fileLoaded: false,
@@ -309,19 +305,15 @@
       this.uploadFileValue = null;
       this.inputKey=0;
     },
-      validateFileExtension(fileJSON) {
-        this.fileRules = [
-          value => {
-            const extension = `.${fileJSON.name.split('.').slice(-1)}`;
-            const failMessage = 'File extension is invalid. Extension must be ".stddem" or ".stdxam" or ".stdcrs".';
+     validateFileExtension(fileJSON) {
+        const extension = `.${fileJSON.name.split('.').slice(-1)}`;
+        const failMessage = 'File extension is invalid. Extension must be ".stddem" or ".stdxam" or ".stdcrs".';
   
-            if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
-              return true;
-            }
-            fileJSON.status = this.fileUploadError;
-            fileJSON.error = failMessage;
-          }
-        ];
+        if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+          return true;
+        }
+        fileJSON.status = this.fileUploadError;
+        fileJSON.error = failMessage;
       },
       async startPollingStatus() {
         this.interval = setInterval(this.getFileProgress, 30000);  // polling the api every 30 seconds
@@ -400,9 +392,7 @@
             fileType: this.uploadFileValue[index].name.split('.')[1]
           };
           await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file', document)
-            .then((response) => {
-              // this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
-            });
+            .then(() => {});
           this.successfulUploadCount += 1;
           fileJSON.status = this.fileUploadSuccess;
         } catch (e) {
