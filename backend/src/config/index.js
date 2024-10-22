@@ -138,6 +138,9 @@ nconf.defaults({
     sdcDuplicateURL: process.env.SDC_API_ENDPOINT + '/sdc-duplicate',
     collectionTypeCodesURL: process.env.SDC_API_ENDPOINT + '/collection-type-codes',
   },
+  grad: {
+    rootURL: process.env.GRAD_API_ENDPOINT,
+  },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,

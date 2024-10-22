@@ -1,5 +1,18 @@
 <template>
-<v-container>
+<v-container class="containerSetup"
+fluid>
+  <v-row class="mt-1 mb-1">
+      <v-icon
+        small
+        color="#1976d2"
+      >
+        mdi-arrow-left
+      </v-icon>
+      <a
+        class="ml-1"
+        @click="backButtonClick"
+      >Return to Dashboard</a>
+    </v-row>
     <v-row
       justify="start"
       align="center"
@@ -85,7 +98,10 @@ export default {
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     uploadFiles() {
-      
+      this.$router.push({name: 'grad-upload', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
+    backButtonClick() {
+        this.$router.push({name: 'home'});
     }
   }
 };
@@ -96,7 +112,22 @@ export default {
   word-break: break-word;
   font-size: 20px;
 }
-.v-container {
-  max-width: 51.5em !important;
-}
+.containerSetup{
+    padding-right: 24em !important;
+    padding-left: 24em !important;
+  }
+
+  @media screen and (max-width: 1950px) {
+    .containerSetup{
+      padding-right: 20em !important;
+      padding-left: 20em !important;
+    }
+  }
+
+  @media screen and (max-width: 1800px) {
+    .containerSetup{
+      padding-right: 10em !important;
+      padding-left: 10em !important;
+    }
+  }
 </style>

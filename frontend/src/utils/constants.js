@@ -8,6 +8,7 @@ const studentRequestRoot = baseRoot + '/student';
 const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
 const sdcRoot = baseRoot + '/sdc';
+const gdcRoot = baseRoot + '/grad';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
 
@@ -53,6 +54,9 @@ export const ApiRoutes = Object.freeze({
     ROOT_ENDPOINT: penServicesRoot,
     VALIDATE_DEMOGRAPHICS: penServicesRoot + '/sdcSchoolCollection',
     PRB_VALIDATION_ISSUE_TYPE_CODE_URL: penServicesRoot + '/prbValidationTypeCodes',
+  },
+  gdc: {
+    BASE_URL: gdcRoot,
   },
   sdc: {
     BASE_URL: sdcRoot,
