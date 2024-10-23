@@ -33,6 +33,7 @@ import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 import {PERMISSION} from './utils/constants/Permission';
 import GraduationTableComponent from './components/graduation/GraduationTableComponent.vue';
+import GradUploadDataComponent from './components/graduation/grad-data-collection/GradUploadDataComponent.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -325,6 +326,17 @@ const router = createRouter({
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.GRADUATION,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_SCH_EDIT
+          },
+        },
+        {
+          path: 'graduation/:schoolID/upload',
+          name: 'grad-upload',
+          component: GradUploadDataComponent,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_EDIT
           },
