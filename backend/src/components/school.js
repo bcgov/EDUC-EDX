@@ -267,7 +267,7 @@ function createSchoolSearchCriteria(searchParams){
       }
     }
     if(key === 'pubEarlyLearning'){
-      searchCriteriaList.push({key: 'schoolCategoryCode', operation: FILTER_OPERATION.IN, value: 'EAR_LEARN,PUBLIC', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+      searchCriteriaList.push({key: 'schoolCategoryCode', operation: FILTER_OPERATION.IN, value: 'EAR_LEARN,PUBLIC,YUKON', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
     }
     if(key === 'schoolID'){
       searchCriteriaList.push({key: 'schoolId', operation: FILTER_OPERATION.EQUAL, value: pValue, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND});
