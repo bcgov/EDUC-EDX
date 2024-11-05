@@ -111,11 +111,11 @@
                           id="dobPicker"
                           v-model="sdcStudent.dob"
                           label="Birthdate"
-                          style="z-index: 20000"
                           :rules="[rules.required()]"
                           model-type="yyyyMMdd"
                           :error-message="err.birthDateError"
                           density="compact"
+                          :readonly="isReadOnly"
                           @update:model-value="formUpdated"
                         />
                       </v-col>
@@ -288,6 +288,11 @@ export default {
     sdcStudent: {
       type: Object,
       required: true
+    },
+    isReadOnly: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   emits: ['cancel', 'useFoundPEN', 'requestStaffPENCheck'],
