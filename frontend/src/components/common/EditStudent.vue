@@ -586,6 +586,7 @@
   >
     <SDCPenMatch
       :sdc-student="sdcSchoolCollectionStudentDetailCopy"
+      :is-read-only="isReadOnly"
       @cancel="togglePENRequestDialog"
       @use-found-p-e-n="useFoundPEN"
       @request-staff-p-e-n-check="requestStaffPENCheck"
