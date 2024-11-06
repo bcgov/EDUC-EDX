@@ -15,23 +15,22 @@ fluid>
     </v-row>
     <v-row
       justify="start"
-      align="center"
+      class="card-container"
     >
       <v-col
         v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
         cols="12"
-        md="6"
       >
         <v-card
           id="graduationCard"
           class="mx-auto"
-          width="25em"
+          width="29em"
           outlined
           rounded
           @click="uploadFiles()"
         >
           <v-row class="pl-4">
-            <v-col cols="4">
+            <v-col cols="3">
               <div>
                 <v-icon
                   icon="mdi-file-upload-outline"
@@ -51,7 +50,7 @@ fluid>
               </v-row>
               <v-row no-gutters>
                 <v-col>
-                  <span>Upload Graduation Data Files (DEM, XAM and CRS)</span>
+                  <span>(Upload Graduation Data Files (DEM, XAM and CRS))</span>
                 </v-col>
               </v-row>
             </v-col>
@@ -108,13 +107,17 @@ export default {
 </script>
 
 <style scoped>
-.dashboard-title {
-  word-break: break-word;
-  font-size: 20px;
-}
-.containerSetup{
+  .dashboard-title {
+    word-break: break-word;
+    font-size: 20px;
+  }
+  .containerSetup{
     padding-right: 24em !important;
     padding-left: 24em !important;
+  }
+
+  .card-container {
+    justify-self: flex-start;
   }
 
   @media screen and (max-width: 1950px) {
