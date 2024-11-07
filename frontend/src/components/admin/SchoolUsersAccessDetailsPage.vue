@@ -270,7 +270,7 @@
             <v-divider />
             <v-card-text>
               <InviteUserPage
-                :user-roles="filteredSchoolRoles"
+                :user-roles="schoolRoles"
                 :institute-code="schoolID"
                 institute-type-code="SCHOOL"
                 institute-type-label="School"
@@ -333,7 +333,6 @@ export default {
       primaryEdxActivationCode: null,
       instituteCode: '',
       instituteTypeLabel: 'School',
-      schoolSDCRoles: [ROLES.SCHOOL_SDC, ROLES.SCH_SDC_RO],
       doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
       showTooltip: false
     };
@@ -346,9 +345,6 @@ export default {
       return this.users.filter(user => {
         return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
       })?.length > 0;
-    },
-    filteredSchoolRoles() {
-      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => !this.schoolSDCRoles.includes(role.edxRoleCode)) : this.schoolRoles;
     }
   },
   async beforeMount() {
