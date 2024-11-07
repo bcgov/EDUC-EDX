@@ -14,7 +14,7 @@ const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
 const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess,
-  checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSInstituteTypeCollectionID_body,
+  checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, findSInstituteTypeCollectionID_body,
   loadInstituteCollection, checkStudentBelongsInCollection, findSdcSchoolCollectionStudentID_body, checkSdcDuplicateAccess, checkUserAccessToDuplicateSdcSchoolCollections, findSdcSchoolCollectionsInDuplicate, checkDistrictBelongsInSdcDistrictCollection, findDistrictID_query, checkAnyEdxUserSignoffPermission, checkPermissionForSignOff } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const {getPenMatch} = require('../components/penMatch');
@@ -68,7 +68,7 @@ router.get('/sdcSchoolCollectionStudent/:sdcSchoolCollectionStudentID', passport
 //update student
 router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session: false}, undefined),
   isValidBackendToken, validateAccessToken, validate(putSdcStudentSchema), findSInstituteTypeCollectionID_body, checkPermissionForRequestedInstitute(PERMISSION.DISTRICT_SDC_EDIT, PERMISSION.SCHOOL_SDC_EDIT),
-  loadInstituteCollection, checkInstituteCollectionAccess, checkIfCreateorUpdateSDCStudentIsAllowed, findSdcSchoolCollectionStudentID_body,
+  loadInstituteCollection, checkInstituteCollectionAccess, findSdcSchoolCollectionStudentID_body,
   loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
 router.post('/resolve-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(resolveDuplicateSchema), checkSdcDuplicateAccess, findSdcSchoolCollectionsInDuplicate, checkUserAccessToDuplicateSdcSchoolCollections, resolveDuplicates);
