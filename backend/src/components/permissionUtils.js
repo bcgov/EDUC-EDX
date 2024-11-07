@@ -154,15 +154,6 @@ function checkInstituteCollectionAccess(req, res, next) {
   }
 }
 
-function checkIfCreateorUpdateSDCStudentIsAllowed(req, res, next) {
-  if (res.locals.requestedInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      message: 'User doesn\'t have permission.'
-    });
-  }
-  return next();
-}
-
 function checkSdcDistrictCollectionAccess(req, res, next) {
   if (!res.locals.requestedSdcDistrictCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -586,7 +577,6 @@ const permUtils = {
   findSdcSchoolCollectionStudentID_params,
   loadSdcSchoolCollectionStudent,
   checkInstituteCollectionAccess,
-  checkIfCreateorUpdateSDCStudentIsAllowed,
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
   findSchoolContactId_body,
