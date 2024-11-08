@@ -33,7 +33,7 @@
         class="divider"
         :value="name"
       >
-        {{ name }} {{ name === 'Enrollment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length + ')' }}
+        {{ name }} {{ name === 'Enrolment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length + ')' }}
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
@@ -48,8 +48,6 @@
           duplicate-level="DISTRICT"
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
-          :allowable-duplicates="allowableDuplicates"
-          :resolved-duplicates="resolvedDuplicates"
           :can-resolve-duplicates="hasEditPermission"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
@@ -65,7 +63,6 @@
           duplicate-level="DISTRICT"
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
-          :resolved-duplicates="resolvedProgramDuplicates"
           :can-resolve-duplicates="hasEditPermission"
           @refresh-duplicates="getInDistrictDuplicates()"
         />
@@ -142,15 +139,12 @@ export default defineComponent({
       apiError: false,
       editOptionsOpen: [],
       nonAllowableDuplicates: [],
-      allowableDuplicates: [],
-      resolvedDuplicates: [],
       nonAllowableProgramDuplicates: [],
       resolvedProgramDuplicates: [],
       isLoading: true,
       panel: [0],
       duplicateView: 'nonAllowable',
       programDuplicateView: 'nonAllowableProgram',
-      duplicateResolutionCodesMap: null,
       sdcDistrictCollectionID: this.$route.params.sdcDistrictCollectionID,
       tab: null,
       tabs: [
@@ -170,7 +164,6 @@ export default defineComponent({
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {
-      this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
       this.getInDistrictDuplicates();
     });
   },
@@ -185,10 +178,7 @@ export default defineComponent({
       this.isLoading = true;
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.sdcDistrictCollectionID + '/in-district-duplicates').then(response => {
         this.nonAllowableDuplicates = response.data?.enrollmentDuplicates?.NON_ALLOW;
-        this.allowableDuplicates = response.data?.enrollmentDuplicates?.ALLOWABLE;
-        this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
         this.nonAllowableProgramDuplicates = response.data?.programDuplicates?.NON_ALLOW;
-        this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert(error.response?.data?.message || error.message);

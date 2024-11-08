@@ -838,12 +838,9 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
   const result = {
     enrollmentDuplicates: {
       NON_ALLOW: [],
-      ALLOWABLE: [],
-      RESOLVED: []
     },
     programDuplicates: {
       NON_ALLOW: [],
-      RESOLVED: []
     }
   };
   sdcDuplicates?.forEach(sdcDuplicate => {
@@ -855,18 +852,12 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
 
-    if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT && sdcDuplicate.duplicateResolutionCode) {
-      setStudentResolvedMessage(sdcDuplicate);
-      result.enrollmentDuplicates.RESOLVED.push(sdcDuplicate);
-    }
-    else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
+    if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
       setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
       setCanMoveToCrossEnrollment(sdcDuplicate);
-      result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
-    }
-    else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM && sdcDuplicate.duplicateResolutionCode) {
-      setProgramDuplicateTypeMessage(sdcDuplicate);
-      result.programDuplicates.RESOLVED.push(sdcDuplicate);
+      if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW') {
+        result.enrollmentDuplicates[sdcDuplicate.duplicateSeverityCode].push(sdcDuplicate);
+      }
     }
     else if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.PROGRAM) {
       setProgramDuplicateTypeMessage(sdcDuplicate);
@@ -996,29 +987,6 @@ function getSchoolName(school) {
   return school.mincode + ' - ' + school.schoolName;
 }
 
-function setStudentResolvedMessage(sdcDuplicate) {
-  if(!sdcDuplicate.duplicateResolutionCode) {
-    return;
-  }
-  const resolutionCodes = cacheService.getAllDuplicateResolutionCodesMap();
-  const resolutionMessage = resolutionCodes.get(sdcDuplicate.duplicateResolutionCode)?.message;
-  const retainedId = sdcDuplicate.retainedSdcSchoolCollectionStudentEntity?.sdcSchoolCollectionStudentID;
-  if (sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionStudentID === retainedId) {
-    if(sdcDuplicate.duplicateResolutionCode === 'GRADE_CHNG'){
-      sdcDuplicate.sdcSchoolCollectionStudent1Entity.resolution = resolutionMessage;
-    } else {
-      sdcDuplicate.sdcSchoolCollectionStudent2Entity.resolution = resolutionMessage;
-    }
-  }
-  else if (sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionStudentID === retainedId) {
-    if(sdcDuplicate.duplicateResolutionCode === 'GRADE_CHNG'){
-      sdcDuplicate.sdcSchoolCollectionStudent2Entity.resolution = resolutionMessage;
-    } else {
-      sdcDuplicate.sdcSchoolCollectionStudent1Entity.resolution = resolutionMessage;
-    }
-  }
-}
-
 function setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2) {
   if(['DIST_LEARN', 'DISTONLINE'].includes(school1.facilityTypeCode) && ['08', '09'].includes(sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledGradeCode)) {
     sdcDuplicate.sdcSchoolCollectionStudent1Entity.canChangeGrade = true;
@@ -1091,8 +1059,7 @@ async function resolveDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
 
-
-    let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(res.locals.sdcDuplicate.sdcDuplicateID);
+    let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(res.locals.sdcSchoolCollectionStudentsToUpdate.sdcSchoolCollectionStudentID);
     const payload = req.body.students;
     payload.forEach(student => {
       student.createDate = null;

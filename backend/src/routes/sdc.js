@@ -13,7 +13,8 @@ const constants = require('../util/constants');
 const { scanFilePayload } = require('../components/fileUtils');
 const isValidBackendToken = auth.isValidBackendToken();
 const { getCodes } = require('../components/utils');
-const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess,
+const { validateAccessToken, checkEdxUserPermission, checkPermissionForRequestedInstitute, findSchoolID_params, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, findSdcSchoolCollectionID_params, findSdcDistrictCollectionID_params, findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent, 
+  loadSdcSchoolCollection, loadSdcDistrictCollection, findSdcSchoolCollectionStudentID_params, loadSdcSchoolCollectionStudent, checkSdcSchoolCollectionAccess,
   checkSdcDistrictCollectionAccess, checkInstituteCollectionAccess, findSInstituteTypeCollectionID_body,
   loadInstituteCollection, checkStudentBelongsInCollection, findSdcSchoolCollectionStudentID_body, checkSdcDuplicateAccess, checkUserAccessToDuplicateSdcSchoolCollections, findSdcSchoolCollectionsInDuplicate, checkDistrictBelongsInSdcDistrictCollection, findDistrictID_query, checkAnyEdxUserSignoffPermission, checkPermissionForSignOff } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
@@ -37,7 +38,6 @@ router.get('/specialEducation-codes', passport.authenticate('jwt', {session: fal
 router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCachedSDCData(constants.CACHE_KEYS.SDC_VALIDATION_ISSUE_TYPE_CODES, 'sdc:validationIssueTypeCodesURL'));
 router.get('/program-eligibility-issue-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:programEligibilityTypeCodesURL', constants.CACHE_KEYS.SDC_PROGRAM_ELIGIBILITY_TYPE_CODES, null, true));
 router.get('/zero-fte-reason-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:zeroFteReasonCodesURL', constants.CACHE_KEYS.SDC_ZERO_FTE_REASON_CODES, null, true));
-router.get('/duplicate-resolution-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:duplicateResolutionCodesURL', constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES, null, true));
 router.get('/school-collection-status-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:schoolCollectionStatusCodesURL', constants.CACHE_KEYS.SDC_SCHOOL_COLLECTION_STATUS_CODES, null, true));
 router.get('/collection-type-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getCodes('sdc:collectionTypeCodesURL', constants.CACHE_KEYS.COLLECTION_TYPE_CODES, null, true));
 //end cached code table calls
@@ -71,12 +71,17 @@ router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session
   loadInstituteCollection, checkInstituteCollectionAccess, findSdcSchoolCollectionStudentID_body,
   loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
-router.post('/resolve-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(resolveDuplicateSchema), checkSdcDuplicateAccess, findSdcSchoolCollectionsInDuplicate, checkUserAccessToDuplicateSdcSchoolCollections, resolveDuplicates);
+router.post('/resolve-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), 
+isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(resolveDuplicateSchema),
+checkSdcDuplicateAccess, findSdcSchoolCollectionsInDuplicate, checkUserAccessToDuplicateSdcSchoolCollections, resolveDuplicates);
 
 router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/markDiff', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(markDiffSchema), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, markSdcSchoolCollectionStudentAsDifferent);
 
 
-router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(removeStudentFromSchoolCollectionSchema), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, removeSDCSchoolCollectionStudents);
+router.post('/sdcSchoolCollectionStudent/:sdcSchoolCollectionID/students/remove', passport.authenticate('jwt', {session: false}, undefined), 
+isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), 
+validate(removeStudentFromSchoolCollectionSchema), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, 
+checkSdcSchoolCollectionAccess, removeSDCSchoolCollectionStudents);
 
 router.get('/sdcSchoolCollectionStudent/getStudentHeadcounts/:sdcSchoolCollectionID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_VIEW), validate(getBySdcSchoolCollectionSchema), findSdcSchoolCollectionID_params, loadSdcSchoolCollection, checkSdcSchoolCollectionAccess, getStudentHeadcounts);
 // special case this does not use frontend axios, so need to refresh here to handle expired jwt.

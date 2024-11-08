@@ -286,7 +286,9 @@ export default {
     },
   },
   created() {
-    this.getSchoolDuplicates();
+    sdcCollectionStore().getCodes().then(() => {
+      this.getSchoolDuplicates();
+    });
   },
   methods: {
     next() {
