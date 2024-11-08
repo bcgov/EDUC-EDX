@@ -128,7 +128,7 @@ export default {
       instituteCode: '',
       instituteTypeLabel: 'School',
       doShowGenerateNewPrimaryEdxActivationCodeDialog: false,
-      allowedSchoolCategories: ['PUBLIC', 'EAR_LEARN']
+      allowedSchoolCategories: ['PUBLIC', 'EAR_LEARN', 'YUKON']
     };
   },
   computed: {
