@@ -207,12 +207,8 @@ export default {
       };
       ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/' +this.type, payload)
         .then((res) => {
-          if (res.data.duplicateResolutionCode !== 'RESOLVED') {
-            setWarningAlert('Warning! This update has created an error on the student record. Duplicate resolution will not be saved until all errors are resolved.');
-          } else {
-            setSuccessAlert('Success! The student details have been updated.');
-            this.cancel();
-          }
+          setSuccessAlert('Success! The student details have been updated.');
+          this.cancel();
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
@@ -252,7 +248,7 @@ export default {
 
         // Dupe is in the career program code
         if(mappedPrograms.length === 0){
-          mappedPrograms.push({code: this.sdcStudentOneDetailCopy.careerProgramCode, description: `${this.sdcStudentOneDetailCopy.careerProgramCode} - ${sdcCollectionStore().careerProgramCodesMap.get(this.sdcStudentOneDetailCopy.careerProgramCode).description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
+          mappedPrograms.push({code: this.sdcStudentOneDetailCopy.careerProgramCode, description: `${this.sdcStudentOneDetailCopy.careerProgramCode} - ${sdcCollectionStore().careerProgramCodesMap.get(this.sdcStudentOneDetailCopy.careerProgramCode)?.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
         }
 
         for(let progs of mappedPrograms){
