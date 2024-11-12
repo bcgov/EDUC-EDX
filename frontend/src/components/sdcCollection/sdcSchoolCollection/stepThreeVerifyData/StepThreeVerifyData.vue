@@ -23,14 +23,6 @@
       >
         Student <br> Differences
       </v-tab>
-      <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
-        key="resolvedDuplicates"
-        value="resolvedDuplicates"
-        class="divider"
-      >
-        Resolved <br> Duplicates
-      </v-tab>
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item
@@ -128,16 +120,6 @@
           :table-config="SCHOOL_STUDENT_DIFFERENCES"
         />
       </v-window-item>
-      <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
-        value="resolvedDuplicates"
-        transition="false"
-        reverse-transition="false"
-      >
-        <ResolvedDuplicates 
-          :is-school-collection="true"
-        />
-      </v-window-item>
     </v-window>
   </div>
 
@@ -183,7 +165,6 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
-import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
 import StudentDifferencesComponent
   from '../../sdcDistrictCollection/stepThreeVerifyData/StudentDifferencesComponent.vue';
 import {SCHOOL_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
@@ -193,7 +174,6 @@ export default {
   name: 'StepThreeVerifyData',
   components: {
     StudentDifferencesComponent,
-    ResolvedDuplicates,
     PrimaryButton,
     FTEComponent,
     CareerProgramsComponent,
