@@ -26,8 +26,8 @@
     >
       <template #default="{ items }">
         <v-row
-          v-for="duplicate in items"
-          :key="duplicate?.raw?.sdcDuplicateID"
+          v-for="(duplicate, index) in items"
+          :key="index"
           class="pt-4"
           no-gutters
         >
@@ -59,14 +59,14 @@
               <template #resolution="{ sdcSchoolCollectionStudent }">
                 <v-menu
                   v-if="sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID"
-                  v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
+                  v-model="editOptionsOpen[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index]"
                   transition="fab-transition"
                   location="end"
                   offset="10"
                 >
                   <template #activator="{ props }">
                     <v-btn
-                      :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
+                      :id="'resolve' + duplicateType +'MenuBtn' + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index"
                       color="primary"
                       prepend-icon="mdi-playlist-edit"
                       text="Resolve"
@@ -132,14 +132,14 @@
                 </v-menu>
                 <div v-if="sdcSchoolCollectionStudent.showContact">
                   <v-menu
-                    v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID]"
+                    v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index]"
                     :close-on-content-click="false"
                     transition="fab-transition"
                     location="end"
                   >
                     <template #activator="{ props }">
                       <v-btn
-                        :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + duplicate?.raw?.sdcDuplicateID"
+                        :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index"
                         color="primary"
                         icon="mdi-phone-outline"
                         variant="text"

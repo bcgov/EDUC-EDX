@@ -71,7 +71,7 @@ router.post('/sdcSchoolCollectionStudent', passport.authenticate('jwt', {session
   loadInstituteCollection, checkInstituteCollectionAccess, findSdcSchoolCollectionStudentID_body,
   loadSdcSchoolCollectionStudent, checkStudentBelongsInCollection, updateAndValidateSdcSchoolCollectionStudent);
 
-router.post('/resolve-duplicates/:sdcDuplicateID/:type', passport.authenticate('jwt', {session: false}, undefined), 
+router.post('/resolve-duplicates/:type', passport.authenticate('jwt', {session: false}, undefined), 
 isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.SCHOOL_SDC_EDIT), validate(resolveDuplicateSchema),
 checkSdcDuplicateAccess, findSdcSchoolCollectionsInDuplicate, checkUserAccessToDuplicateSdcSchoolCollections, resolveDuplicates);
 

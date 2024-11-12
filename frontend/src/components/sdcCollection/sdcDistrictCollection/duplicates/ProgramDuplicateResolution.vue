@@ -205,9 +205,9 @@ export default {
         students: this.duplicateStudents,
         duplicate: this.selectedProgramDuplicate
       };
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, payload)
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/' +this.type, payload)
         .then((res) => {
-          if (res.data.sdcDuplicateID === this.selectedProgramDuplicate?.sdcDuplicateID && res.data.duplicateResolutionCode !== 'RESOLVED') {
+          if (res.data.duplicateResolutionCode !== 'RESOLVED') {
             setWarningAlert('Warning! This update has created an error on the student record. Duplicate resolution will not be saved until all errors are resolved.');
           } else {
             setSuccessAlert('Success! The student details have been updated.');
