@@ -127,7 +127,7 @@
 import StudentDetail from '../../../common/StudentDetail.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
-import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert} from '../../../composable/alertComposable';
 import {cloneDeep} from 'lodash';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
@@ -206,7 +206,7 @@ export default {
         duplicate: this.selectedProgramDuplicate
       };
       ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/' +this.type, payload)
-        .then((res) => {
+        .then(() => {
           setSuccessAlert('Success! The student details have been updated.');
           this.cancel();
         }).catch(error => {
