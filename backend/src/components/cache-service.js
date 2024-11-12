@@ -25,7 +25,6 @@ let authoritiesMap = new Map();
 let bandCodesMap = new Map();
 let enrolledProgramCodesMap = new Map();
 let careerProgramCodesMap = new Map();
-let duplicateResolutionCodesMap = new Map();
 let programDuplicateTypeCodesMap = new Map();
 let schoolFundingCodesMap = new Map();
 let schoolCollectionStatusCodesMap = new Map();
@@ -279,13 +278,6 @@ const cacheService = {
       homeLanguageSpokenCodesMap.set(homeLanguageSpokenCode.homeLanguageSpokenCode, homeLanguageSpokenCode);
     });
     return homeLanguageSpokenCodesMap;
-  },
-  getAllDuplicateResolutionCodesMap() {
-    let duplicateResolutionCodes = cachedData[constants.CACHE_KEYS.SDC_DUPLICATE_RESOLUTION_CODES].records;
-    duplicateResolutionCodes.forEach(duplicateResolutionCode => {
-      duplicateResolutionCodesMap.set(duplicateResolutionCode.duplicateResolutionCode, duplicateResolutionCode);
-    });
-    return duplicateResolutionCodesMap;
   },
   getAllProgramDuplicateTypeCodesMap() {
     let programDuplicateTypeCodes = cachedData[constants.CACHE_KEYS.SDC_PROGRAM_DUPLICATE_TYPE_CODES].records;

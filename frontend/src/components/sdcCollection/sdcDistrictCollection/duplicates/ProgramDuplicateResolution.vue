@@ -127,7 +127,7 @@
 import StudentDetail from '../../../common/StudentDetail.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
-import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert} from '../../../composable/alertComposable';
 import {cloneDeep} from 'lodash';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
@@ -205,14 +205,10 @@ export default {
         students: this.duplicateStudents,
         duplicate: this.selectedProgramDuplicate
       };
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, payload)
-        .then((res) => {
-          if (res.data.sdcDuplicateID === this.selectedProgramDuplicate?.sdcDuplicateID && res.data.duplicateResolutionCode !== 'RESOLVED') {
-            setWarningAlert('Warning! This update has created an error on the student record. Duplicate resolution will not be saved until all errors are resolved.');
-          } else {
-            setSuccessAlert('Success! The student details have been updated.');
-            this.cancel();
-          }
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/' +this.type, payload)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+          this.cancel();
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');
@@ -252,7 +248,7 @@ export default {
 
         // Dupe is in the career program code
         if(mappedPrograms.length === 0){
-          mappedPrograms.push({code: this.sdcStudentOneDetailCopy.careerProgramCode, description: `${this.sdcStudentOneDetailCopy.careerProgramCode} - ${sdcCollectionStore().careerProgramCodesMap.get(this.sdcStudentOneDetailCopy.careerProgramCode).description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
+          mappedPrograms.push({code: this.sdcStudentOneDetailCopy.careerProgramCode, description: `${this.sdcStudentOneDetailCopy.careerProgramCode} - ${sdcCollectionStore().careerProgramCodesMap.get(this.sdcStudentOneDetailCopy.careerProgramCode)?.description}`, studentOne: this.sdcStudentOneDetailCopy, studentTwo: this.sdcStudentTwoDetailCopy});
         }
 
         for(let progs of mappedPrograms){
