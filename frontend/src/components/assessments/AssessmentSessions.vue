@@ -143,7 +143,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(authStore, [,'userInfo']),    
+    ...mapState(authStore, ['userInfo']),    
     activeSessions() {
       const orderedSessions = [];
       const allsessions = this.allsessions

@@ -12,7 +12,7 @@ async function getAssessmentSessions(req, res) {
     const token = getAccessToken(req);
     const data = await getData(token, url);
     data.forEach(session => {
-      session.isOpen =  new Date(session.activeFromDate) <= new Date() && new Date(session.activeUntilDate) >= new Date() ? true: false;      
+      session.isOpen =  new Date(session.activeFromDate) <= new Date() && new Date(session.activeUntilDate) >= new Date();      
     });
     return res.status(200).json(data);
   } catch (e) {
