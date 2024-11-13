@@ -151,7 +151,9 @@ export const PAGE_TITLES = Object.freeze({
   SDC:'Student Level Data (1701)',
   DATA_COLLECTION: 'Student Level Data Collection (1701)',
   GRADUATION: 'Graduation',
-  GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection'
+  GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection',
+  GRAD_PROJECTIONS: 'Graduation Projections and TVRs',
+  GRAD_REPORTS: 'Graduation Reports and Transcripts'
 });
 
 
