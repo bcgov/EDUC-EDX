@@ -118,8 +118,8 @@ export default {
   props: {
     institutionID: {
       type: String,
-      required: false,
-      default: false,
+      required: true,
+      default: '',
     },
   },
   data() {
