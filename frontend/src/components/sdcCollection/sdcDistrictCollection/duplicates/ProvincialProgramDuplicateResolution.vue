@@ -107,7 +107,7 @@
 import StudentDetail from '../../../common/StudentDetail.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
-import {setSuccessAlert, setFailureAlert, setWarningAlert} from '../../../composable/alertComposable';
+import {setSuccessAlert, setFailureAlert} from '../../../composable/alertComposable';
 import {cloneDeep} from 'lodash';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 
@@ -177,14 +177,10 @@ export default {
         students: [this.currentUsersStudent],
         duplicate: this.selectedProgramDuplicate
       };
-      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+ this.selectedProgramDuplicate?.sdcDuplicateID +'/' +this.type, payload)
-        .then((res) => {
-          if (res.data.sdcDuplicateID === this.selectedProgramDuplicate?.sdcDuplicateID && res.data.duplicateResolutionCode !== 'RESOLVED') {
-            setWarningAlert('Warning! This update has created an error on the student record. Duplicate resolution will not be saved until all errors are resolved.');
-          } else {
-            setSuccessAlert('Success! The student details have been updated.');
-            this.cancel();
-          }
+      ApiService.apiAxios.post(ApiRoutes.sdc.SDC_DUPLICATE_RESOLVE + '/'+this.type, payload)
+        .then(() => {
+          setSuccessAlert('Success! The student details have been updated.');
+          this.cancel();
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to update student details. Please try again later.');

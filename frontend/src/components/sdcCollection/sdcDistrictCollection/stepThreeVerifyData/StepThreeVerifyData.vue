@@ -25,14 +25,6 @@
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
-        key="resolvedDuplicates"
-        value="resolvedDuplicates"
-        class="divider"
-      >
-        Resolved <br> Duplicates
-      </v-tab>
-      <v-tab
-        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         key="SignOff"
         value="SignOff"
         class="divider"
@@ -139,16 +131,6 @@
       </v-window-item>
       <v-window-item
         v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
-        value="resolvedDuplicates"
-        transition="false"
-        reverse-transition="false"
-      >
-        <ResolvedDuplicates
-          :is-school-collection="false"
-        />
-      </v-window-item>
-      <v-window-item
-        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="SignOff"
         transition="false"
         reverse-transition="false"
@@ -207,14 +189,12 @@ import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
 import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
-import ResolvedDuplicates from '../../../common/ResolvedDuplicates.vue';
 import {DISTRICT_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
-    ResolvedDuplicates,
     PrimaryButton,
     AllStudentsComponent,
     CareerProgramsComponent,

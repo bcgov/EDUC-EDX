@@ -48,8 +48,6 @@
           duplicate-level="PROVINCIAL"
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
-          :allowable-duplicates="allowableDuplicates"
-          :resolved-duplicates="resolvedDuplicates"
           :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST' && hasEditPermission()"
           @refresh-duplicates="getProvincialDuplicates()"
         />
@@ -65,7 +63,6 @@
           duplicate-level="PROVINCIAL"
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
-          :resolved-duplicates="resolvedProgramDuplicates"
           :can-resolve-duplicates="false"
           @refresh-duplicates="getProvincialDuplicates()"
         />
@@ -142,10 +139,7 @@ export default defineComponent({
       apiError: false,
       editOptionsOpen: [],
       nonAllowableDuplicates: [],
-      allowableDuplicates: [],
-      resolvedDuplicates: [],
       nonAllowableProgramDuplicates: [],
-      resolvedProgramDuplicates: [],
       isLoading: true,
       panel: [0],
       duplicateView: 'nonAllowable',
@@ -166,7 +160,6 @@ export default defineComponent({
   },
   async created() {
     sdcCollectionStore().getCodes().then(() => {
-      this.duplicateResolutionCodesMap = sdcCollectionStore().getDuplicateResolutionCodesMap();
       this.getProvincialDuplicates();
     });
   },
@@ -181,10 +174,7 @@ export default defineComponent({
       this.isLoading = true;
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/'+ this.$route.params.schoolCollectionID + '/provincial-duplicates').then(response => {
         this.nonAllowableDuplicates = response.data?.enrollmentDuplicates?.NON_ALLOW;
-        this.allowableDuplicates = response.data?.enrollmentDuplicates?.ALLOWABLE;
-        this.resolvedDuplicates = response.data?.enrollmentDuplicates?.RESOLVED;
         this.nonAllowableProgramDuplicates = response.data?.programDuplicates?.NON_ALLOW;
-        this.resolvedProgramDuplicates = response.data?.programDuplicates?.RESOLVED;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert(error.response?.data?.message || error.message);
