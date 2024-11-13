@@ -11,6 +11,7 @@ const sdcRoot = baseRoot + '/sdc';
 const gdcRoot = baseRoot + '/grad';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
+const easRoot = baseRoot + '/eas';
 
 let object;
 
@@ -128,6 +129,12 @@ export const ApiRoutes = Object.freeze({
     ROOT_ENDPOINT: studentRequestRoot,
     SEARCH_URL: studentRequestRoot + '/',
   },
+  eas: {
+    BASE_URL: easRoot,
+    GET_ASSESSMENT_SESSIONS: easRoot + '/assessment-sessions',
+    GET_ASSESSMENT_TYPES: easRoot + '/assessment-types',
+    GET_ASSESSMENT_STUDENTS_PAGINATED: easRoot + '/assessment-registrations/paginated',
+  }
 });
 
 export const PAGE_TITLES = Object.freeze({
@@ -152,7 +159,9 @@ export const PAGE_TITLES = Object.freeze({
   SDC:'Student Level Data (1701)',
   DATA_COLLECTION: 'Student Level Data Collection (1701)',
   GRADUATION: 'Graduation',
-  GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection'
+  GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection',
+  ASSESSMENT: 'Assessments',
+  ASSESSMENT_SESSIONS: 'Assessment Sessions'
 });
 
 

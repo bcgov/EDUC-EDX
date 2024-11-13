@@ -34,6 +34,7 @@ import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCol
 import {PERMISSION} from './utils/constants/Permission';
 import GraduationTableComponent from './components/graduation/GraduationTableComponent.vue';
 import GradUploadDataComponent from './components/graduation/grad-data-collection/GradUploadDataComponent.vue';
+import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -339,6 +340,28 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_EDIT
+          },
+        },
+        {
+          path: '/assessment-sessions/:institutionID',
+          name: 'district-assessment-sessions',
+          component: AssessmentSessions,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
+            requiresAuth: true,
+            permission: PERMISSION.EAS_DIS_EDIT
+          },
+        },
+        {
+          path: '/assessment-sessions/:institutionID',
+          name: 'school-assessment-sessions',
+          component: AssessmentSessions,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
+            requiresAuth: true,
+            permission: PERMISSION.EAS_SCH_EDIT
           },
         }
       ]
