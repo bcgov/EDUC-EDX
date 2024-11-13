@@ -1,7 +1,6 @@
 <template>
-<v-container class="containerSetup"
-fluid>
-  <v-row class="mt-1 mb-1">
+  <v-container fluid>
+    <v-row class="mt-1 mb-1">
       <v-icon
         small
         color="#1976d2"
@@ -15,11 +14,11 @@ fluid>
     </v-row>
     <v-row
       justify="start"
-      class="card-container"
     >
       <v-col
         v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
         cols="12"
+        md="6"
       >
         <v-card
           id="graduationCard"
@@ -57,6 +56,82 @@ fluid>
           </v-row>
         </v-card>
       </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click="openProjections()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-finance"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_PROJECTIONS }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click="openReports()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-certificate-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_REPORTS }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -80,7 +155,7 @@ export default {
     return {
       PAGE_TITLES: PAGE_TITLES,
       disableGradFunctionality: null
-    }
+    };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
@@ -100,7 +175,13 @@ export default {
       this.$router.push({name: 'grad-upload', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     backButtonClick() {
-        this.$router.push({name: 'home'});
+      this.$router.push({name: 'home'});
+    },
+    openProjections() {
+      this.$router.push({name: 'grad-projections', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
+    openReports() {
+      this.$router.push({name: 'grad-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     }
   }
 };
@@ -111,26 +192,8 @@ export default {
     word-break: break-word;
     font-size: 20px;
   }
-  .containerSetup{
-    padding-right: 24em !important;
-    padding-left: 24em !important;
-  }
 
-  .card-container {
-    justify-self: flex-start;
-  }
-
-  @media screen and (max-width: 1950px) {
-    .containerSetup{
-      padding-right: 20em !important;
-      padding-left: 20em !important;
-    }
-  }
-
-  @media screen and (max-width: 1800px) {
-    .containerSetup{
-      padding-right: 10em !important;
-      padding-left: 10em !important;
-    }
-  }
+  .v-container {
+  max-width: 60em !important;
+}
 </style>
