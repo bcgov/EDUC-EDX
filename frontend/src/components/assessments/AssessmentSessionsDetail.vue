@@ -74,7 +74,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(authStore, [,'userInfo']),    
+    ...mapState(authStore, ['userInfo']),    
   },
   created() {    
     this.loading = true;
