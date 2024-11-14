@@ -415,6 +415,50 @@
           </v-row>
         </v-card>
       </v-col>
+
+      <v-col
+        v-if="((hasRequiredPermission('EAS_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('EAS_DIS_EDIT') && isLoggedInDistrictUser)) && !disableEASFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="assessmentCard"
+          class="mx-auto"
+          width="25em"
+          outlined
+          rounded
+          @click="redirectToAssessment()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-checkbox-marked-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.ASSESSMENT }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  School Year: {{ schoolYear }}
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+
     </v-row>
   </v-container>
 </template>
@@ -475,7 +519,9 @@ export default {
       },
       PAGE_TITLES: PAGE_TITLES,
       disableSdcFunctionality: null,
-      disableGradFunctionality: null
+      disableGradFunctionality: null,
+      disableEASFunctionality: null,
+      schoolYear: ''
     };
   },
   computed: {
@@ -500,6 +546,7 @@ export default {
   created() {
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
     this.disableGradFunctionality = this.config.DISABLE_GRAD_FUNCTIONALITY;
+    this.disableEASFunctionality = this.config.DISABLE_EAS_FUNCTIONALITY;
     if (this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
@@ -525,6 +572,9 @@ export default {
         this.getDistrictSchoolsLastUpdateDate();
       }
       this.isDistrictActive();
+    }
+    if (!this.disableEASFunctionality && (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT))) {
+      this.getActiveSessionsForSchoolYear();
     }
   },
   methods: {
@@ -709,6 +759,25 @@ export default {
     },
     redirectToDistrictContacts(){
       router.push({name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}});
+    },
+    redirectToAssessment() {
+      if(this.isLoggedInDistrictUser) {
+        router.push({name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});    
+      } else if (this.isLoggedInSchoolUser) {
+        router.push({name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});    
+      } 
+    },
+    getActiveSessionsForSchoolYear() {
+      ApiService.apiAxios.get(ApiRoutes.eas.GET_ASSESSMENT_SESSIONS+'/active/'+this.userInfo.activeInstituteType).then(response => {
+        if(response.data?.length >0) {
+          this.schoolYear = response.data[0].schoolYear;     
+        }
+      }).catch(error => {
+        console.error(error);
+        this.setFailureAlert(error.response?.data?.message || error.message);
+      }).finally(() => {
+        this.loadingTable = false;
+      });  
     },
     isSchoolActive(){
       appStore().getInstitutesData().finally(() => {

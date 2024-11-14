@@ -22,7 +22,12 @@ export const PERMISSION = Object.freeze(
 
     EDX_DISTRICT_EDIT: 'EDX_DISTRICT_EDIT',
 
-    GRAD_SCH_EDIT: 'GRAD_SCH_EDIT'
+    GRAD_SCH_EDIT: 'GRAD_SCH_EDIT',
+
+    EAS_DIS_EDIT: 'EAS_DIS_EDIT',
+
+    EAS_SCH_EDIT: 'EAS_SCH_EDIT',
+
   }
 );
 
