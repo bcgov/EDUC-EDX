@@ -18,7 +18,6 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
     currentCollectionSignOffDueDate: null,
     schoolCollection: null,
     districtCollection: null,
-    duplicateResolutionCodesMap: new Map(),
     bandCodesMap: new Map(),
     bandCodes: [],
     careerProgramCodesMap: new Map(),
@@ -99,11 +98,6 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       this.careerProgramCodes.unshift({'careerProgramCode': null, 'dropdownText': 'No Career Code'});
       careerProgramCodes.forEach(careerProgramCode => {
         this.careerProgramCodesMap.set(careerProgramCode.careerProgramCode, careerProgramCode);
-      });
-    },
-    setDuplicateResolutionCodes(duplicateResolutionCodes) {
-      duplicateResolutionCodes.forEach(issue => {
-        this.duplicateResolutionCodesMap.set(issue.duplicateResolutionCode, issue);
       });
     },
     setEnrolledProgramCodes(enrolledProgramCodes) {
@@ -202,12 +196,6 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
         });
       }
       return this.schoolCollectionStatusCodesMap;
-    },
-    async getDuplicateResolutionCodesMap() {
-      if(this.duplicateResolutionCodesMap.size === 0) {
-        ApiService.getAllDuplicateResolutionCodes().then((res) => this.setDuplicateResolutionCodes(res.data));
-      }
-      return this.duplicateResolutionCodesMap;
     },
     async getSchoolCollection(schoolCollectionId) {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/' + schoolCollectionId);

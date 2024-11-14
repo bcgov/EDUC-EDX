@@ -123,7 +123,7 @@ export default {
   },
   created() {
     this.selectedStudent.splice(0);
-    this.selectedStudent.push(this.selectedStudentIds);
+    this.selectedStudent = Array.from(this.selectedStudentIds);
   },
   computed: {
     ...mapState(sdcCollectionStore, ['schoolCollection', 'districtCollection']),

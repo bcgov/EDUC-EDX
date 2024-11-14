@@ -369,7 +369,6 @@ const postResolveDuplicateSchema = object({
     duplicate: object() //Marked as object to support dynamic naming
   }).concat(baseRequestSchema),
   params: object({
-    sdcDuplicateID: string().nonNullable(),
     type: string().nonNullable()
   }),
   query: object(),

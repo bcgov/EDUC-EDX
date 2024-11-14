@@ -154,15 +154,6 @@ function checkInstituteCollectionAccess(req, res, next) {
   }
 }
 
-function checkIfCreateorUpdateSDCStudentIsAllowed(req, res, next) {
-  if (res.locals.requestedInstituteType === 'DISTRICT' && req.body.sdcSchoolCollectionStudentID === null) {
-    return res.status(HttpStatus.FORBIDDEN).json({
-      message: 'User doesn\'t have permission.'
-    });
-  }
-  return next();
-}
-
 function checkSdcDistrictCollectionAccess(req, res, next) {
   if (!res.locals.requestedSdcDistrictCollection) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -477,14 +468,8 @@ async function checkSdcDuplicateAccess(req, res, next) {
       message: 'Token is unavailable.'
     });
   }
-  res.locals.sdcDuplicate = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/${req.body.duplicate.sdcDuplicateID}`, req.session?.correlationID);
-  if(req.body.duplicate?.updateDate !== res.locals.sdcDuplicate?.updateDate){
-    return res.status(HttpStatus.CONFLICT).json({
-      status: HttpStatus.CONFLICT,
-      message: 'The duplicate you are attempting to update is already being saved by another user. Please refresh your screen and try again.'
-    });
-  }
-  let sdcDupStudents = [res.locals.sdcDuplicate?.sdcSchoolCollectionStudent1Entity, res.locals.sdcDuplicate?.sdcSchoolCollectionStudent2Entity];
+
+  let sdcDupStudents = [req?.body?.duplicate?.sdcSchoolCollectionStudent1Entity, req?.body?.duplicate?.sdcSchoolCollectionStudent2Entity];
   res.locals.sdcSchoolCollectionStudentsToUpdate = sdcDupStudents?.filter(dupStudent => req.body.students?.map(student => student.sdcSchoolCollectionStudentID)?.includes(dupStudent.sdcSchoolCollectionStudentID));
   if(res.locals.sdcSchoolCollectionStudentsToUpdate?.length !== req.body.students?.length) {
     return res.status(HttpStatus.FORBIDDEN).json({
@@ -586,7 +571,6 @@ const permUtils = {
   findSdcSchoolCollectionStudentID_params,
   loadSdcSchoolCollectionStudent,
   checkInstituteCollectionAccess,
-  checkIfCreateorUpdateSDCStudentIsAllowed,
   findSInstituteTypeCollectionID_body,
   loadInstituteCollection,
   findSchoolContactId_body,
