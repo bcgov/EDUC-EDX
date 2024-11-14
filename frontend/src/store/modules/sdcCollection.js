@@ -183,6 +183,9 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     async setCollectionTypeCodes(collectionTypes) {
+      collectionTypes.sort(function(a, b) {
+        return new Date(Date.parse(a.label + " 1, 2000")) - new Date(Date.parse(b.label + " 1, 2000"));
+      });
       this.collectionTypeCodes = collectionTypes;
       this.collectionTypeCodesMap = new Map();
       collectionTypes.forEach(element => {
