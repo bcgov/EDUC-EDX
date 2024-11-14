@@ -10,6 +10,8 @@ env:
   OPENSHIFT_NAMESPACE: ${{ secrets.EDX_NAMESPACE_NO_ENV }}-prod
   PEN_NAMESPACE: ${{ secrets.PEN_NAMESPACE_NO_ENV }}-prod
   GRAD_DATA_COLLECTION_NAMESPACE: ${{ secrets.GRAD_DATA_COLLECTION_NAMESPACE_NO_ENV }}-prod
+  EAS_NAMESPACE: ${{ secrets.EAS_NAMESPACE_NO_ENV }}-prod
+
   SPLUNK_TOKEN: ${{ secrets.SPLUNK_TOKEN }}
 
   CA_CERT: ${{ secrets.CA_CERT }}
@@ -133,7 +135,7 @@ jobs:
         oc process -f tools/openshift/frontend-static.dc.yaml -p APP_NAME=${{ env.APP_NAME }} -p REPO_NAME=${{ env.REPO_NAME }} -p BRANCH=${{ env.BRANCH }} -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} -p TAG=${{ steps.get-latest-tag.outputs.tag }} -p MIN_REPLICAS=${{ env.MIN_REPLICAS }} -p MAX_REPLICAS=${{ env.MAX_REPLICAS }} -p MIN_CPU=${{ env.MIN_CPU }} -p MAX_CPU=${{ env.MAX_CPU }} -p MIN_MEM=${{ env.MIN_MEM }} -p MAX_MEM=${{ env.MAX_MEM }} -p HOST_ROUTE=${{ env.HOST_ROUTE }} -p CA_CERT="${{ env.CA_CERT }}" -p CERTIFICATE="${{ env.CERTIFICATE }}" -p PRIVATE_KEY="${{ env.PRIVATE_KEY }}"\
         | oc apply -f -
         
-        curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/${{ steps.get-latest-tag.outputs.tag }}/tools/config/update-configmap.sh | bash /dev/stdin ${{ env.TARGET_ENV }} ${{ env.APP_NAME }} ${{ env.NAMESPACE }} ${{ env.COMMON_NAMESPACE }} ${{ env.PEN_NAMESPACE }} ${{ env.GRAD_DATA_COLLECTION_NAMESPACE }} ${{ env.SPLUNK_TOKEN }}
+        curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/${{ steps.get-latest-tag.outputs.tag }}/tools/config/update-configmap.sh | bash /dev/stdin ${{ env.TARGET_ENV }} ${{ env.APP_NAME }} ${{ env.NAMESPACE }} ${{ env.COMMON_NAMESPACE }} ${{ env.PEN_NAMESPACE }} ${{ env.GRAD_DATA_COLLECTION_NAMESPACE }} ${{ env.EAS_NAMESPACE }} ${{ env.SPLUNK_TOKEN }}
         
         # Start rollout (if necessary) and follow it
         oc rollout latest dc/${{ env.IMAGE_NAME }} 2> /dev/null \

@@ -70,7 +70,7 @@ async function getAssessmentStudentsPaginated(req, res) {
       }
     };
 
-    let data = await getData(`${config.get('server:eas:assessmentStudentsURL')}/paginated`, params);
+    let data = await getData(`${config.get('eas:assessmentStudentsURL')}/paginated`, params);
 
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);

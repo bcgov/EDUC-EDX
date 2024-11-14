@@ -155,5 +155,12 @@ nconf.defaults({
     host: process.env.CLAMAV_HOST,
     port: process.env.CLAMAV_PORT,
   },
+  eas:{
+    rootURL: process.env.EAS_API_ENDPOINT,
+    assessmentSessionsURL: process.env.EAS_API_ENDPOINT+ '/sessions',
+    assessmentTypeCodeURL: process.env.EAS_API_ENDPOINT+ '/assessment-types',
+    assessmentSpecialCaseTypeCodeURL: process.env.EAS_API_ENDPOINT+ '/assessment-specialcase-types',
+    assessmentStudentsURL: process.env.EAS_API_ENDPOINT+ '/student',
+  }
 });
 module.exports = nconf;
