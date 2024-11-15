@@ -132,14 +132,14 @@
                 </v-menu>
                 <div v-if="sdcSchoolCollectionStudent.showContact">
                   <v-menu
-                    v-model="contactMenu[sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index]"
+                    v-model="contactMenu[index]"
                     :close-on-content-click="false"
                     transition="fab-transition"
                     location="end"
                   >
                     <template #activator="{ props }">
                       <v-btn
-                        :id="'Contact' + duplicateType + sdcSchoolCollectionStudent.sdcSchoolCollectionStudentID + index"
+                        :id="'Contact' + duplicateType + index"
                         color="primary"
                         icon="mdi-phone-outline"
                         variant="text"
