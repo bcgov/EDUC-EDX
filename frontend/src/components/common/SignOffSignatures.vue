@@ -131,7 +131,9 @@ export default {
   },
   mounted() {
     sdcCollectionStore().getDistrictCollection(this.$route.params.sdcDistrictCollectionID).finally(async () => {
-      this.setButtons();
+      if(this.userInfo?.identityTypeLabel !== 'IDIR') {
+        this.setButtons();
+      }
       await this.getUsersData();
       this.isLoading = !this.isLoading;
     });
