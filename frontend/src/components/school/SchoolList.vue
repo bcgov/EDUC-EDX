@@ -38,6 +38,7 @@
             variant="underlined"
             item-value="schoolID"
             item-title="schoolCodeName"
+            autocomplete="off"
             :items="schoolSearchNames"
             :clearable="true"
             @update:model-value="searchButtonClick"
