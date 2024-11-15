@@ -877,10 +877,9 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
   const token = getAccessToken(req);
 
   for(let sdcDuplicate of sdcDuplicates) {
-    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT' && sdcDuplicate.duplicateResolutionCode === null) {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
-
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
         let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
         let sdcUser1 = responseEntity1?.find(user => {
@@ -912,6 +911,7 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
       }
     }
   }
+  return sdcDuplicates;
 }
 
 async function getInDistrictDuplicates(req, res) {
@@ -929,8 +929,8 @@ async function getProvincialDuplicates(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
-    await getUserWithSdcRole(req, sdcDuplicates);
-    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, false);
+    let updatedDupes = await getUserWithSdcRole(req, sdcDuplicates);
+    let responseDupe = setDuplicateResponsePayload(req, updatedDupes, true, false);
     res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
@@ -942,8 +942,8 @@ async function getProvincialDuplicatesForSchool(req, res) {
   try {
     const token = getAccessToken(req);
     let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
-    await getUserWithSdcRole(req, sdcDuplicates);
-    let responseDupe = setDuplicateResponsePayload(req, sdcDuplicates, true, true);
+    let updatedDupes = await getUserWithSdcRole(req, sdcDuplicates);
+    let responseDupe = setDuplicateResponsePayload(req, updatedDupes, true, true);
     res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
