@@ -144,7 +144,6 @@ export default defineComponent({
       panel: [0],
       duplicateView: 'nonAllowable',
       programDuplicateView: 'nonAllowableProgram',
-      duplicateResolutionCodesMap: null,
       tab: null,
       tabs: [
         'Enrolment Duplicates',
