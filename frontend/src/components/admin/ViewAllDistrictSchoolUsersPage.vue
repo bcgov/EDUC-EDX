@@ -177,7 +177,7 @@
             select-strategy="classic"
           >
             <div
-              v-for="newrole in filteredSchoolRoles"
+              v-for="newrole in schoolRoles"
               :key="newrole.edxRoleCode"
               :value="newrole.edxRoleCode"
             >
@@ -296,10 +296,7 @@ export default {
   computed: {
     ...mapState(appStore, ['schoolsMap', 'config', 'notClosedSchoolsMap']),
     ...mapState(authStore, ['userInfo']),
-    ...mapState(edxStore, ['schoolRoles']),
-    filteredSchoolRoles() {
-      return this.config.DISABLE_SDC_FUNCTIONALITY ? this.schoolRoles.filter(role => !this.schoolSDCRoles.includes(role.edxRoleCode)) : this.schoolRoles;
-    }
+    ...mapState(edxStore, ['schoolRoles'])
   },
   watch: {
     search() {
@@ -368,7 +365,7 @@ export default {
     setUserRolesAsSelected(user) {
       let mySelection = [];
       //look through all our roles. If user has this role, then mark the index
-      this.filteredSchoolRoles.forEach((role) => {
+      this.schoolRoles.forEach((role) => {
         let result = user.roleCodesList.find((userRole) =>
           userRole === role.edxRoleCode
         );
