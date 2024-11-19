@@ -208,15 +208,23 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       }
     };
 
-    const token = getAccessToken(req);
+    let token = getAccessToken(req);    
+    
+    let collectionData = null;
+    if(req.params.sdcDistrictCollectionID) {
+      collectionData = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+    } else if(req.params.sdcSchoolCollectionID) {
+      collectionData = await getSdcSchoolCollection(req.params.sdcSchoolCollectionID, res, token, req.session?.correlationID);
+    }
+    token = getAccessToken(req);        
     let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionStudentURL')}/paginated`, params, req.session?.correlationID);
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
       return res.status(HttpStatus.OK).json(result);
     }
 
-    if(req?.query?.tableFormat){
-      data.content = data?.content.map(toTableRow);
+    if(req?.query?.tableFormat) {
+      data.content = data?.content.map(student => toTableRow(student, collectionData?.collectionTypeCode));
     }
 
     if(req?.params?.sdcDistrictCollectionID){
@@ -418,7 +426,8 @@ async function getSchoolSdcDuplicates(req, res) {
   }
 }
 
-function toTableRow(student) {
+function toTableRow(student, collectionType = null) {
+  
   let bandCodesMap = cacheService.getAllActiveBandCodesMap();
   let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
   let schoolFundingCodesMap = cacheService.getActiveSchoolFundingCodesMap();
@@ -436,15 +445,26 @@ function toTableRow(student) {
   student.mappedBandCode = student.bandCode !== '' && bandCodesMap.get(student.bandCode) !== undefined ? `${bandCodesMap.get(student.bandCode)?.description} (${bandCodesMap.get(student.bandCode)?.bandCode})` : null;
   student.mappedCareerProgramCode = student.careerProgramCode !== '' && careerProgramCodesMap.get(student.careerProgramCode) !== undefined ? `${careerProgramCodesMap.get(student.careerProgramCode)?.description} (${careerProgramCodesMap.get(student.careerProgramCode)?.careerProgramCode})` : null;
   student.mappedSchoolFunding = student.schoolFundingCode !== '' && schoolFundingCodesMap.get(student.schoolFundingCode) !== undefined ? `${schoolFundingCodesMap.get(student.schoolFundingCode)?.description} (${schoolFundingCodesMap.get(student.schoolFundingCode)?.schoolFundingCode})` : null;
-  student.indProgramEligible = student.indigenousSupportProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.frenchProgramEligible = student.frenchProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.ellProgramEligible = student.ellNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.careerProgramEligible = student.careerProgramNonEligReasonCode !== null ? 'No' : 'Yes';
-  student.spedProgramEligible = student.specialEducationNonEligReasonCode !== null ? 'No' : 'Yes';
+  student.indProgramEligible = getProgramEligibleValue('IND', student.indigenousSupportProgramNonEligReasonCode, collectionType, student.schoolID);
+  student.frenchProgramEligible = getProgramEligibleValue('FRENCH', student.frenchProgramNonEligReasonCode, collectionType, student.schoolID);
+  student.ellProgramEligible = getProgramEligibleValue('ELL', student.ellNonEligReasonCode, collectionType, student.schoolID);
+  student.careerProgramEligible = getProgramEligibleValue('CAREER', student.careerProgramNonEligReasonCode, collectionType, student.schoolID);
+  student.spedProgramEligible = getProgramEligibleValue('SPED',student.specialEducationNonEligReasonCode, collectionType, student.schoolID);
   student.mappedNoOfCourses = student.numberOfCoursesDec ? student.numberOfCoursesDec.toFixed(2) : '0';
   student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
   
   return student;
+}
+
+function getProgramEligibleValue(type, reasonCode, collectionType, schoolID) {
+  if('JULY' === collectionType) {
+    let school = cacheService.getSchoolBySchoolID(schoolID);
+    if('SUMMER' === school.facilityTypeCode && !['FRENCH','CAREER'].includes(type)) {
+      return reasonCode !== null ? 'No' : 'Yes';
+    }
+    return 'No';
+  }
+  return reasonCode !== null ? 'No' : 'Yes';
 }
 
 function fundingEligibleRefugee(student) {
