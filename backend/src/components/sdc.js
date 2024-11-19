@@ -457,9 +457,12 @@ function toTableRow(student, collectionType = null) {
 }
 
 function getProgramEligibleValue(type, reasonCode, collectionType, schoolID) {
-  let school = cacheService.getSchoolBySchoolID(schoolID); 
-  if('JULY' === collectionType) {    
-    return 'SUMMER' === school.facilityTypeCode ? ['FRENCH','CAREER'].includes(type) ? 'No' :  reasonCode !== null ? 'No' : 'Yes' : 'No';
+  if('JULY' === collectionType) {
+    let school = cacheService.getSchoolBySchoolID(schoolID);
+    if('SUMMER' === school.facilityTypeCode && !['FRENCH','CAREER'].includes(type)) {
+      return reasonCode !== null ? 'No' : 'Yes';
+    }
+    return 'No';
   }
   return reasonCode !== null ? 'No' : 'Yes';
 }
