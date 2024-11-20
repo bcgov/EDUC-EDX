@@ -89,12 +89,12 @@
         style="top:0; height: 100%;"
         rounded="true"
       >
-      <!-- <Filters
-        :filters="config.allowedFilters"
+      <Filters
+        :filters="[]"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
         @close="showFilters= !showFilters"
-      /> -->
+      />
       </v-navigation-drawer>
     </div>
   </v-container>
@@ -104,13 +104,15 @@
 import alertMixin from '../../../mixins/alertMixin';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
-import {isEmpty, omitBy} from 'lodash';
+import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
+import Filters from '../../common/Filters.vue';
       
 export default {
   name: 'GradErrorsView',
   components: {
-    GradErrorTable
+    GradErrorTable,
+    Filters
   },
   mixins: [alertMixin],
   props: {
@@ -202,7 +204,14 @@ export default {
       }
       this.getErrorFilesetStudentPaginated();
     },
-     
+    applyFilters($event) {
+      this.filterSearchParams.moreFilters = cloneDeep($event);
+      this.getErrorFilesetStudentPaginated();
+    },
+    clearFilters() {
+      this.filterSearchParams.moreFilters = {};
+      this.getErrorFilesetStudentPaginated();
+    },
   }
 };
 </script>
