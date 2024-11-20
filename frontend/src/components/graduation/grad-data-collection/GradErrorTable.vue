@@ -43,12 +43,13 @@
     </template>
     <template #item="props">
       <tr
+        class="mt-2"
         @click="rowclicked(props.item)"
       >
         <td
           v-for="column in headers"
           :key="column.key"
-          class="row-text"
+          class="pt-2 row-text"
         >
           <span v-if="column.key === 'details' && column.hasOwnProperty('subHeader')">
             <span v-for="(error, index) in props.item['errorFilesetStudentValidationIssues']" :key="index">
@@ -60,7 +61,12 @@
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
                   cols="3"
-                >{{ formatText(error?.validationIssueSeverityCode) }}</v-col>
+                  
+                >
+                <v-chip class="status-chip" :color="getStatusColor(error?.validationIssueSeverityCode)">
+                  {{ formatText(error?.validationIssueSeverityCode) }}
+                </v-chip>
+              </v-col>
                 <v-col v-if="column.subHeader[2].key === 'desc'">{{ error?.validationIssueCodeDesc }}</v-col> 
               </v-row>
             </span>
@@ -139,7 +145,31 @@ export default {
     },
     formatText(text) {
       return capitalize(text);
-    }
+    },
+    getStatusColor(status) {
+      if (status === 'WARNING') {
+        return '#ff9800';
+      }
+      else if (status === 'ERROR') {
+        return '#d90606';
+      }
+    },
+    getStatusTextColor(status) {
+      if (status === 'WARNING') {
+        return 'warning-text';
+      }
+      else if (status === 'ERROR') {
+        return 'error-text';
+      }
+    },
+    getIssueIcon(status) {
+      if (status === 'WARNING') {
+        return 'mdi-alert-outline';
+      }
+      else if (status === 'ERROR') {
+        return 'mdi-alert-circle-outline';
+      }
+    },
      
   }
 };
@@ -161,6 +191,11 @@ export default {
  .row-text {
   vertical-align: text-top;
  }
+
+.status-chip {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
       </style>
       
   

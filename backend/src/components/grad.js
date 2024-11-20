@@ -28,7 +28,6 @@ async function uploadFile(req, res) {
     return handleExceptionResponse(e, res);
   }
 }
-  
 async function getFileProgress(req, res) {
   try {
     const token = getAccessToken(req);
@@ -36,6 +35,33 @@ async function getFileProgress(req, res) {
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('getSdcFileProgress Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getFilesetsPaginated(req, res) {
+  try {
+    const search = [];
+    if(req.params.schoolID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'schoolID', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    } 
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+    const token = getAccessToken(req);
+    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting error fileset student paginated list', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -66,7 +92,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
       }
     };
     const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
+    let data = await getDataWithParams(token, `${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
 
     data.content = data?.content.map(error => toTableRow(error));
     return res.status(HttpStatus.OK).json(data);
@@ -162,5 +188,6 @@ function createMultiFieldNameSearchCriteria(nameString) {
 module.exports = {
   uploadFile,
   getFileProgress,
-  getErrorFilesetStudentPaginated
+  getErrorFilesetStudentPaginated,
+  getFilesetsPaginated
 };
