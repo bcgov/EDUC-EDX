@@ -28,16 +28,6 @@ async function uploadFile(req, res) {
     return handleExceptionResponse(e, res);
   }
 }
-async function getFileProgress(req, res) {
-  try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
-    log.error('getSdcFileProgress Error', e.stack);
-    return handleExceptionResponse(e, res);
-  }
-}
 
 async function getFilesetsPaginated(req, res) {
   try {
@@ -187,7 +177,6 @@ function createMultiFieldNameSearchCriteria(nameString) {
 
 module.exports = {
   uploadFile,
-  getFileProgress,
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated
 };

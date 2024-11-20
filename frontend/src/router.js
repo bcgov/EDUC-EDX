@@ -407,7 +407,7 @@ const router = createRouter({
           component: GradProjectionsTVR,
           props: true,
           meta: {
-            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
+            pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_EDIT
           },
@@ -418,7 +418,7 @@ const router = createRouter({
           component: GradReportsAndTranscripts,
           props: true,
           meta: {
-            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
+            pageTitle: PAGE_TITLES.GRAD_REPORTS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_EDIT
           },
