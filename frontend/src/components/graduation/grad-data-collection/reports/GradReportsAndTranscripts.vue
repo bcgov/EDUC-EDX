@@ -17,12 +17,6 @@
     <div
       class="border"
     >
-      <v-row>
-        <v-col class="mb-3 d-flex justify-center">
-          <h1>Graduation Reports and Transcripts</h1>
-        </v-col>
-      </v-row>
-
       <v-tabs
         v-model="tab"
         color="#38598a"

@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, getCreateOrUpdateUserValue, getDataWithParams} = require('./utils');
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -25,16 +25,6 @@ async function uploadFile(req, res) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
     log.error('uploadFile Error', e.stack);
-    return handleExceptionResponse(e, res);
-  }
-}
-async function getFileProgress(req, res) {
-  try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
-    log.error('getSdcFileProgress Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -187,7 +177,6 @@ function createMultiFieldNameSearchCriteria(nameString) {
 
 module.exports = {
   uploadFile,
-  getFileProgress,
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated
 };
