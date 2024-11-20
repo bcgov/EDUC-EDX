@@ -24,6 +24,7 @@ const NATS = require('./messaging/message-pub-sub');
 if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to stop GitHub Actions test from hanging.
   const cacheService = require('./components/cache-service');
   const sdcDisabled = config.get('frontendConfig').disableSdcFunctionality;
+  const easDisabled = config.get('frontendConfig').disableEASFunctionality;
   cacheService.loadAllSchoolsToMap().then(() => {
     log.info('Loaded school data to memory');
   }).catch((e) => {
@@ -106,6 +107,20 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     log.error('Error loading DISTRICT_CONTACT_TYPES data during boot .', e);
     require('./schedulers/cache-service-scheduler');
   });
+
+  if(!easDisabled) {
+    cacheService.loadAllAssessmentTypeCodesToMap().then(() => {
+      log.info('Loaded AssessmentTypeCodes data to memory');
+    }).catch((e) => {
+      log.error('Error loading AssessmentTypeCodes during boot .', e);
+    });
+    cacheService.loadAllSpecialCaseTypeCodesToMap().then(() => {
+      log.info('Loaded SpecialCaseTypeCodes data to memory');
+    }).catch((e) => {
+      log.error('Error loading SpecialCaseTypeCodes during boot .', e);
+    });
+  }
+
   if(!sdcDisabled) {
     cacheService.loadDataToCache(constants.CACHE_KEYS.SDC_BAND_CODES, 'sdc:bandCodesURL').then(() => {
       log.info('Loaded SDC_BAND_CODES data to memory');

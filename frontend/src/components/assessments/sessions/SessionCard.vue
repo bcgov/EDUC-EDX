@@ -48,7 +48,9 @@
     <v-spacer />
     <v-card-actions class="justify-end pt-0">
       <v-hover v-slot="{ hover }">
-        <v-btn variant="text">
+        <v-btn
+            variant="text"
+            @click="goToSessionRegistrations()">
           <span class="ml-1 pr-2" style="color: #003366">Continue</span>
           <v-icon
             color="#003366"
@@ -65,6 +67,8 @@
 
 <script>
 import moment from 'moment';
+import {mapState} from "pinia";
+import {authStore} from "../../../store/modules/auth";
 
 export default {
   name: 'SessionCard',
@@ -72,32 +76,33 @@ export default {
     session: {
       type: Object,
       required: true,
+    },
+    schoolYear: {
+      type: String,
+      required: true,
     }
+  },
+  computed: {
+    ...mapState(authStore, ['userInfo']),
   },
   methods: {
     formattoDate(date) {
       return moment(JSON.stringify(date), 'YYYY-MM-DDTHH:mm:ss').format('YYYY/MM/DD');
     },
     goToSessionRegistrations() {
-      this.$router.push({name: 'assessment-session-detail', params: {schoolYear:  this.session.schoolYear.replace(/\//g, '-'), sessionID: this.session.sessionID}});
-    }
+      if(this.userInfo.activeInstituteType === 'DISTRICT'){
+        this.$router.push({name: 'district-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: this.session.sessionID}});
+      } else {
+        this.$router.push({name: 'school-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: this.session.sessionID}});
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-.dateSubText {
-  font-style: italic;
-  font-size: 0.95em;
-}
 
 .sessionName {
   font-size: 1em;
-}
-
-.edit-session-small {
-  font-size: 25px;
-  margin-top: -5px;
-  float: right;
 }
 </style>

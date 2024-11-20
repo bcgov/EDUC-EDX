@@ -35,6 +35,7 @@ import {PERMISSION} from './utils/constants/Permission';
 import GraduationTableComponent from './components/graduation/GraduationTableComponent.vue';
 import GradUploadDataComponent from './components/graduation/grad-data-collection/GradUploadDataComponent.vue';
 import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
+import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
 import GradProjectionsTVR from './components/graduation/grad-data-collection/projections/GradProjectionsTVR.vue';
 import GradReportsAndTranscripts from './components/graduation/grad-data-collection/reports/GradReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/grad-data-collection/GradErrorsView.vue';
@@ -374,6 +375,28 @@ const router = createRouter({
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
+            requiresAuth: true,
+            permission: PERMISSION.EAS_SCH_EDIT
+          },
+        },
+        {
+          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          name: 'district-assessment-session-detail',
+          component: AssessmentSessionDetail,
+          props:  true,
+          meta: {
+            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
+            requiresAuth: true,
+            permission: PERMISSION.EAS_DIS_EDIT
+          },
+        },
+        {
+          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          name: 'school-assessment-session-detail',
+          component: AssessmentSessionDetail,
+          props:  true,
+          meta: {
+            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
             requiresAuth: true,
             permission: PERMISSION.EAS_SCH_EDIT
           },

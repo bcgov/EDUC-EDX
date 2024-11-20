@@ -18,7 +18,7 @@
       </template>
       <template #headers>
         <tr class="header-row">
-          <th v-for="column in headers" id="header" :key="column.key">            
+          <th v-for="column in headers" id="header" :key="column.key">
             <div v-if="column.title !== 'select'">
               <div class="header-text">
                 {{ column.title }}
@@ -34,50 +34,16 @@
         </tr>
       </template>
       <template #item="props">
-        <tr
-          class="hoverTable"          
-          @click="rowClicked(props.item.raw)"
-        >
-          <td v-for="column in headers" :key="column.key" class="td-data">
-            <div>              
-              <div v-if="column.key === 'schoolName'">
-                <span v-if="readOnly">
-                  {{ props.item.raw["schoolName"] }}
-                </span>
-                <span v-else>
-                  <a
-                    href="#"
-                    target="_link"
-                    :class="{ 'disabled-link': !props.item.raw.schoolID }"
-                    @click="$event.stopPropagation()"
-                  >
-                    {{ props.item.raw["schoolName"] }}
-                  </a>
-                </span>
+          <tr
+            class="hoverTable"
+            @click="rowClicked(props.item)"
+          >
+            <td v-for="column in headers" :key="column.key" class="td-data">
+              <div>
+                <span v-if="props.item[column.key]">{{props.item[column.key] }}</span>
               </div>
-              <div v-else-if="column.key === 'districtName'">
-                <span v-if="!props.item.raw.districtID">-</span>
-                <span v-else-if="readOnly">
-                  {{ props.item.raw["districtName"] }}
-                </span>
-                <span v-else>
-                  <a
-                    href="#"
-                    target="_link"
-                    :class="{ 'disabled-link': !props.item.raw.districtID }"
-                    @click="$event.stopPropagation()"
-                  >
-                    {{ props.item.raw["districtName"] }}
-                  </a>
-                </span>
-              </div>           
-              <span v-else-if="props.item.raw[column.key]">{{
-                props.item.raw[column.key]
-              }}</span>
-              <span v-else-if="column.title !== 'select'">-</span>              
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
       </template>
       <template #bottom>
         <div class="pagination-controls">
@@ -102,11 +68,11 @@
 </template>
 
 <script>
-import { displayName } from '@/utils/format';
-import { appStore } from '@/store/modules/app';
+
 import { mapState } from 'pinia';
-import { authStore } from '@/store/modules/auth';
-import { sanitizeUrl } from '@braintree/sanitize-url';
+import {authStore} from "../../../store/modules/auth";
+import {appStore} from "../../../store/modules/app";
+import {displayName} from "../../../utils/format";
 
 export default {
   name: 'StudentRegistrationsCustomTable',
@@ -207,20 +173,6 @@ export default {
       });
   },
   methods: {
-    districtSafeURL(districtID) {
-      return sanitizeUrl(
-        `${
-          this.edxURL
-        }/api/auth/silent_sdc_idir_login?districtID=${districtID}&idir_guid=${this.user?.userGuid?.toLowerCase()}`
-      );
-    },
-    schoolSafeURL(schoolID) {
-      return sanitizeUrl(
-        `${
-          this.edxURL
-        }/api/auth/silent_sdc_idir_login?schoolID=${schoolID}&idir_guid=${this.user?.userGuid?.toLowerCase()}`
-      );
-    },
     rowClicked(props) {
       this.$emit('editSelectedRow', props);
     },
@@ -251,20 +203,6 @@ export default {
 tr:hover td {
   background-color: #e8e8e8 !important;
   cursor: pointer;
-}
-
-.school-router {
-  color: #003366;
-}
-
-.school-router:hover {
-  text-decoration: underline;
-}
-
-.disabled-link {
-  color: grey;
-  cursor: not-allowed;
-  text-decoration: none;
 }
 
 .pagination-controls {

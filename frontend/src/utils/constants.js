@@ -162,6 +162,7 @@ export const PAGE_TITLES = Object.freeze({
   GRAD_UPLOAD_ERRORS: 'Graduation Errors and Warnings',
   ASSESSMENT: 'Assessments',
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
+  ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
   GRAD_PROJECTIONS: 'Graduation Projections and TVRs',
   GRAD_REPORTS: 'Graduation Reports and Transcripts'
 });
