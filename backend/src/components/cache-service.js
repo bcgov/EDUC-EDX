@@ -381,6 +381,9 @@ const cacheService = {
   getAllStudentValidationIssueCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_VALIDATION_ISSUE_TYPE_CODES].records;
   },
+  getGradDataCollectionValidationIssueCodes() {
+    return cachedData[constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES].records;
+  },
   getAssessmentTypeLabelByCode(assessmentTypeCode) {
     return assessmentTypeCodesMap.get(assessmentTypeCode);
   },

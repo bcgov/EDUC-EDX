@@ -159,6 +159,7 @@ export const PAGE_TITLES = Object.freeze({
   DATA_COLLECTION: 'Student Level Data Collection (1701)',
   GRADUATION: 'Graduation',
   GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection',
+  GRAD_UPLOAD_ERRORS: 'Graduation Errors and Warnings',
   ASSESSMENT: 'Assessments',
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
   ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',

@@ -24,6 +24,7 @@ const NATS = require('./messaging/message-pub-sub');
 if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to stop GitHub Actions test from hanging.
   const cacheService = require('./components/cache-service');
   const sdcDisabled = config.get('frontendConfig').disableSdcFunctionality;
+  const gradDisabled = config.get('frontendConfig').disableGradFunctionality;
   const easDisabled = config.get('frontendConfig').disableEASFunctionality;
   cacheService.loadAllSchoolsToMap().then(() => {
     log.info('Loaded school data to memory');
@@ -118,6 +119,14 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
       log.info('Loaded SpecialCaseTypeCodes data to memory');
     }).catch((e) => {
       log.error('Error loading SpecialCaseTypeCodes during boot .', e);
+    });
+  }
+
+  if(!gradDisabled) {
+    cacheService.loadDataToCache(constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES, 'grad:validationIssueTypeCodesURL').then(() => {
+      log.info('Loaded GDC_VALIDATION_ISSUE_TYPE_CODES data to memory');
+    }).catch((e) => {
+      log.error('Error loading GDC_VALIDATION_ISSUE_TYPE_CODES data during boot.', e);
     });
   }
 

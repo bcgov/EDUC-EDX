@@ -14,13 +14,6 @@
         @click="backButtonClick"
       >Return to GRAD Dashboard</a>
     </div>
-    <div v-if="initialLoad">
-      <v-row>
-        <v-col>
-          <Spinner />
-        </v-col>
-      </v-row>
-    </div>
     <div
       class="border"
     >
@@ -42,44 +35,57 @@
           />
         </v-col>
       </v-row>
-      <v-row class="schools-in-progress-header">
-        Summary of Uploaded Data
+      <v-row>
+        <v-col cols="12">
+          <p class="schools-in-progress-header">Summary of Uploaded Data</p>
+        </v-col>
       </v-row>
-
-      <v-data-table
+      <v-data-table-server
+        v-model:page.sync="pageNumber"
+        v-model:items-per-page.sync="pageSize"
+        :items-length="totalElements"
+        :items="filesetList"
         :headers="headers"
-        :items="progressCounts"
-        items-per-page="10"
+        mobile-breakpoint="0"
       >
-        <template #item.percentageStudentsProcessed="{ item }">
+      <template #top>
+        <v-progress-linear
+          v-show="isLoading"
+          :indeterminate="true"
+          color="primary"
+        />
+      </template>
+      <template #item="props">
+        <tr>
+        <td
+          v-for="column in headers"
+          :key="column.key"
+        >
+        <span v-if="column.key === 'errorLink'">
+          <a
+            class="ml-1"
+            @click="navigateToErrors"
+          >View Errors/Warnings</a>
+        </span>
+        <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
+          {{ props.item[column.key] ? props.item[column.key].substring(0,10).replaceAll('-', '/') : '-'  }}
+        </span>
+        <span v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
           <v-icon
-            v-if="item.percentageStudentsProcessed === '100'"
+            v-if="props.item[column.key] === 'LOADED'"
             icon="mdi-check-circle-outline"
-            color="success"
+            color="warning"
           />
-          <span v-if="item.percentageStudentsProcessed === '0'"> 0% </span>
-          <template v-if="item.percentageStudentsProcessed !== '0' && item.percentageStudentsProcessed !== '100'">
-            <v-progress-circular
-              :size="15"
-              :width="3"
-              color="primary"
-              indeterminate
-            />
-            <span class="ml-2">{{ item.percentageStudentsProcessed }} %</span>
-          </template>
-        </template>
-      </v-data-table>
+        </span>
+        <span v-else-if="props.item[column.key]">
+          {{ props.item[column.key] }}
+        </span>
+        <span v-else>-</span>
+      </td>
+      </tr>
+      </template>
+      </v-data-table-server>
     </div>
-    <v-row justify="space-between">
-      <!-- <PrimaryButton
-        id="step-1-next-button-school"
-        class="mr-3 ml-3 mb-3"
-        icon="mdi-check"
-        text="Next"
-        :disabled="isDisabled || !canMoveForward()"
-        :click-action="next"
-      /> -->
-    </v-row>
     <v-form
       ref="documentForm"
       v-model="validForm"
@@ -212,18 +218,16 @@ import alertMixin from '../../../mixins/alertMixin';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../../utils/file';
-import { mapState, mapActions } from 'pinia';
-import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
-import Spinner from '../../common/Spinner.vue';
+import { mapState } from 'pinia';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {authStore} from '../../../store/modules/auth';
 import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
+import {isEmpty, omitBy} from 'lodash';
   
 export default {
   name: 'GradUploadDataComponent',
   components: {
-    ConfirmationDialog,
-    Spinner
+    ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
@@ -254,25 +258,25 @@ export default {
       successfulUploadCount: 0,
       fileUploadList: [],
       progressCounts: [],
+      filesetList: [],
+      totalElements: 0,
+      pageNumber: 1,
+      pageSize: 15,
+      isLoading: false,
+      filterSearchParams: {
+        moreFilters: {}
+      },
       headers: [
-        {
-          title: 'File Name',
-          align: 'start',
-          key: 'fileName',
-          value: item => item.fileName ? item.fileName : '-'
-        },
-        {
-          title: 'Date Uploaded',
-          align: 'center',
-          key: 'uploadDate',
-          value: item => item.uploadDate ? item.uploadDate.substring(0,10).replaceAll('-', '/') : '-'
-        },
-        {
-          title: 'Processed',
-          align: 'center',
-          key: 'percentageStudentsProcessed',
-          value: item => item.percentageStudentsProcessed
-        },
+        {title: 'DEM File Name', key: 'demFileName'},
+        {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
+        {title: 'DEM File Status', key: 'demFileStatusCode'},
+        {title: 'XAM File Name', key: 'xamFileName'},
+        {title: 'XAM File Upload Date', key: 'xamFileUploadDate'},
+        {title: 'XAM File Status', key: 'xamFileStatusCode'},
+        {title: 'CRS File Name', key: 'crsFileName'},
+        {title: 'CRS File Upload Date', key: 'crsFileUploadDate'},
+        {title: 'CRS File Status', key: 'crsFileStatusCode'},
+        {title: 'Errors/Warnings', key: 'errorLink'},
       ]
     };
   },
@@ -287,16 +291,12 @@ export default {
     },
   },
   async created() {
-    await this.fireFileProgress();
+    await this.getFilesetPaginated();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
-    ...mapActions(sdcCollectionStore, ['setSchoolCollection']),
-    async fireFileProgress(){
-      await this.getFileProgress();
-    },
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
@@ -314,7 +314,7 @@ export default {
       fileJSON.error = failMessage;
     },
     async startPollingStatus() {
-      this.interval = setInterval(this.getFileProgress, 30000);  // polling the api every 30 seconds
+      this.interval = setInterval(this.getFilesetPaginated, 30000);  // polling the api every 30 seconds
     },
     async validateForm() {
       await this.$nextTick();
@@ -377,7 +377,7 @@ export default {
             }
           }
           this.uploadFileValue = null;
-          await this.getFileProgress();
+          await this.getFilesetPaginated();
         }
       }
     },
@@ -399,56 +399,66 @@ export default {
         fileJSON.status = this.fileUploadError;
       } 
     },
-
-
-    async getFileProgress() {
-      try{
-        await ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/file-progress').then(response => {
-          if(response?.data?.counts) {
-            this.progressCounts = response?.data?.counts;
-            clearInterval(this.interval);
-            this.startPollingStatus();
-          }
-            
-        });
-      } catch (e) {
+    async getFilesetPaginated() {
+      this.isLoading= true;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
+        params: {
+          pageNumber: this.pageNumber - 1,
+          pageSize: this.pageSize,
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
+          sort: {
+            updateDate: 'DESC'
+          },
+        }
+      }).then(response => {
+        this.filesetList = response.data.content;
+        this.totalElements = response.data.totalElements;
         clearInterval(this.interval);
-        console.error(e);
-      } finally {
-        this.initialLoad = false;
-      }
+        this.startPollingStatus();
+      }).catch(error => {
+        clearInterval(this.interval);
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
     },
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {schoolID: this.schoolID}});
+    },
+    navigateToErrors() {
+      this.$router.push({name: 'error', params: {schoolID: this.schoolID}});
     }
+
   }
 };
 </script>
   
-  <style scoped>
-  
-    .border {
-      border: 2px solid grey;
-      border-radius: 5px;
-      padding: 35px;
-      margin: 2em;
-    }
+<style scoped>
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin: 2em;
+}
+.schools-in-progress-header {
+  margin-top: 12px;
+  margin-bottom: 1em;
+  font-weight: bold;
+  text-align: start;
+  line-height: 1.5;
+  font-size: 1rem;
+}
 
-    .schools-in-progress-header {
-      margin-top: 2em;
-      margin-bottom: 2em;
-      font-weight: bold;
-      text-align: center;
-      line-height: 1.5;
-      font-size: 1rem;
-    }
+:deep(.v-btn__content){
+  white-space: break-spaces;
+}
 
-  
-   :deep(.v-btn__content){
-     white-space: break-spaces;
-   }
+:deep(.v-data-table__thead) {
+  color: #7f7f7f;
+}
 
-  .fileUploadError{
+.fileUploadError{
   background-color: #d5304a;
   color: white;
   border-radius: 5px;
@@ -474,5 +484,9 @@ export default {
 ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
   color: white !important;
 }
+
+:deep(.v-data-table-footer__items-per-page) {
+       display: none;
+ }
   </style>
   
