@@ -173,6 +173,7 @@ cacheKeys = {
   SDC_PROGRAM_DUPLICATE_TYPE_CODES: 'sdc_program_duplicate_type_codes',
   PRB_VALIDATION_ISSUE_TYPE_CODES: 'prb_validation_issue_type_codes',
   COLLECTION_TYPE_CODES: 'collection_type_codes',
+  GDC_VALIDATION_ISSUE_TYPE_CODES: 'gdc_validation_issue_type_codes'
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';
