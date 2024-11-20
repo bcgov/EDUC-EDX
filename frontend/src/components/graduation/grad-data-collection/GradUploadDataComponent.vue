@@ -219,7 +219,6 @@ import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../../utils/file';
 import { mapState } from 'pinia';
-import Spinner from '../../common/Spinner.vue';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {authStore} from '../../../store/modules/auth';
 import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
@@ -228,8 +227,7 @@ import {isEmpty, omitBy} from 'lodash';
 export default {
   name: 'GradUploadDataComponent',
   components: {
-    ConfirmationDialog,
-    Spinner
+    ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
