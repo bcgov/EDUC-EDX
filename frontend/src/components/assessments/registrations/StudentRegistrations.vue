@@ -20,9 +20,8 @@
             >
               <template #append>
                 <v-badge
-                    v-if="filterCount > 1"
                   color="error"
-                  :content="filterCount - 1"
+                  :content="filterCount"
                   floating
                   offset-y="-10"
                 />
@@ -146,15 +145,6 @@ export default {
           { title: moment(activeSession.courseMonth, 'MM').format('MMMM') , id: activeSession.sessionID, value: activeSession.sessionID },
         ];
       }
-      if (this.userInfo.activeInstituteType === 'DISTRICT'){
-        this.filterSearchParams.moreFilters.districtID = [
-          {title: 'districtID', id: 'districtID', value: this.userInfo.activeInstituteIdentifier}
-        ]
-      } else {
-        this.filterSearchParams.moreFilters.schoolID = [
-          {title: 'schoolNameNumber', id: 'schoolID', value: this.userInfo.activeInstituteIdentifier}
-        ]
-      }
     },
     getAssessmentStudents() {
       this.loading = true;
@@ -164,6 +154,15 @@ export default {
         assessmentSearchParams.moreFilters.schoolYear = [
           { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
         ];
+      }
+      if (this.userInfo.activeInstituteType === 'DISTRICT'){
+        assessmentSearchParams.moreFilters.districtID = [
+          {title: 'districtID', id: 'districtID', value: this.userInfo.activeInstituteIdentifier}
+        ]
+      } else {
+        assessmentSearchParams.moreFilters.schoolID = [
+          {title: 'schoolNameNumber', id: 'schoolID', value: this.userInfo.activeInstituteIdentifier}
+        ]
       }
       ApiService.apiAxios
         .get(`${ApiRoutes.eas.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {
