@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, getCreateOrUpdateUserValue, getDataWithParams} = require('./utils');
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
