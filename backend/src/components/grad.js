@@ -3,7 +3,7 @@ const { getAccessToken, handleExceptionResponse, getData, postData, getCreateOrU
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
-const { FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
+const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const cacheService = require('./cache-service');
 
 async function uploadFile(req, res) {
@@ -49,11 +49,14 @@ async function getErrorFilesetStudentPaginated(req, res) {
         searchCriteriaList: [{ key: 'incomingFileset.schoolID', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
     } 
-    // search.push({
-    //   condition: CONDITION.AND,
-    //   searchCriteriaList: createSearchCriteria(req.query.searchParams)
-    // });
-  
+
+    if (req.query.searchParams?.['moreFilters']) {
+      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      criteriaArray.forEach(criteria => {
+        search.push(criteria);
+      });
+    }
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -82,6 +85,78 @@ function toTableRow(validationIssues) {
   }
   validationIssues.errorFilesetStudentValidationIssues = updatedValidationIssues;
   return validationIssues;
+}
+
+function createMoreFiltersSearchCriteria(searchFilter = []) {
+  let penLocalIdNameFilter = [];
+  for (const [key, filter] of Object.entries(searchFilter)) {
+    let pValue = filter ? filter.map(filter => filter.value) : null;
+    if (key === 'penLocalIdName' && pValue) {
+      if (/^\d+$/.test(pValue)) {
+        // pValue consists only of numbers
+        let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
+        penLocalIdNameFilter.push(...penCriteria);
+      } else if (/^[a-z\-.'\s]+$/i.test(pValue)) {
+        // pValue consists only of alphabetical characters and allowed name characters
+        let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
+        penLocalIdNameFilter.push(...nameCriteria);
+      } else {
+        // pValue contains both numbers and alphabetical characters or unknown characters
+        let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
+        let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
+        penLocalIdNameFilter.push(...nameCriteria, ...penCriteria);
+      }
+    }
+  }
+  const search = [];
+  if (penLocalIdNameFilter.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: penLocalIdNameFilter
+    });
+  }
+  return search;
+}
+
+function createLocalIdPenSearchCriteria(value) {
+  let searchCriteriaList = [];
+  searchCriteriaList.push({
+    key: 'pen',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+  searchCriteriaList.push({
+    key: 'localID',
+    operation: FILTER_OPERATION.EQUAL,
+    value: value,
+    valueType: VALUE_TYPE.STRING,
+    condition: CONDITION.OR
+  });
+  return searchCriteriaList;
+}
+
+function createMultiFieldNameSearchCriteria(nameString) {
+  const nameParts = nameString.split(/\s+/);
+  const fieldNames = [
+    'lastName',
+    'firstName'
+  ];
+
+  const searchCriteriaList = [];
+  for (const part of nameParts) {
+    for (const fieldName of fieldNames) {
+      searchCriteriaList.push({
+        key: fieldName,
+        operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE,
+        value: `%${part}%`,
+        valueType: VALUE_TYPE.STRING,
+        condition: CONDITION.OR
+      });
+    }
+  }
+  return searchCriteriaList;
 }
 
 module.exports = {
