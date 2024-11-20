@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, getAccessToken, getData, errorResponse, handleExceptionResponse } = require('../utils');
+const { logApiError, getAccessToken, getData, getDataWithParams, errorResponse, handleExceptionResponse } = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
@@ -36,7 +36,8 @@ async function getActiveAssessmentSessions(req, res) {
 async function getAssessmentSessionsBySchoolYear(req, res) {
   try {
     const url = `${config.get('eas:assessmentSessionsURL')}/school-year/${req.params.schoolYear}`;
-    let data = await getData(url);
+    const token = getAccessToken(req);
+    let data = await getData(token, url);
     data.forEach(session => {
       session.assessments.forEach(assessment => {
         assessment.assessmentTypeName = cacheService.getAssessmentTypeLabelByCode(assessment.assessmentTypeCode)+' ('+assessment.assessmentTypeCode+')';
@@ -48,7 +49,6 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
     return handleExceptionResponse(e, res);
   }
 }
-
 
 async function getAssessmentStudentsPaginated(req, res) {
   try {
@@ -70,7 +70,8 @@ async function getAssessmentStudentsPaginated(req, res) {
       }
     };
 
-    let data = await getData(`${config.get('eas:assessmentStudentsURL')}/paginated`, params);
+    const token = getAccessToken(req);
+    let data = await getDataWithParams(token,`${config.get('eas:assessmentStudentsURL')}/paginated`, params);
 
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
@@ -79,7 +80,7 @@ async function getAssessmentStudentsPaginated(req, res) {
     data?.content.forEach(value => {
       let school = cacheService.getSchoolBySchoolID(value.schoolID);
       let assessmentCenter = cacheService.getSchoolBySchoolID(value.assessmentCenterID);
-      let district = cacheService.getDistrictJSONByDistrictId(school.districtID);
+      let district = cacheService.getDistrictJSONByDistrictID(school.districtID);
 
       value.schoolNumber = school.mincode;
       value.schoolName = getSchoolName(school);
@@ -90,7 +91,7 @@ async function getAssessmentStudentsPaginated(req, res) {
       value.assessmentCenterName = getSchoolName(assessmentCenter);
 
       value.assessmentTypeName = cacheService.getAssessmentTypeLabelByCode(value.assessmentTypeCode)+' ('+value.assessmentTypeCode+')';
-      value.provincialSpecialCaseName = cacheService.getSpecialCaseTypeLabelByCode(value.provincialSpecialCaseCode);
+      value.provincialSpecialCaseName = value.provincialSpecialCaseName ? cacheService.getSpecialCaseTypeLabelByCode(value.provincialSpecialCaseCode) : '-';
       value.sessionName = moment(value.courseMonth, 'MM').format('MMMM') +' '+value.courseYear;
 
     });

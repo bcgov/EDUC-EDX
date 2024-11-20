@@ -26,7 +26,7 @@
             large-icon
             icon="mdi-filter-off-outline"
             text="Clear All"
-            @click-action="clear"
+            :click-action="clear"
           />
         </v-col>
         <v-col class="d-flex justify-end">
@@ -35,7 +35,7 @@
             large-icon
             icon="mdi-magnify"
             text="Search Name and ID"
-            @click-action="setPenLocalIdNameFilter($event, 'click')"
+            :click-action="setPenLocalIdNameFilter"
           />
         </v-col>
       </v-row>
@@ -65,9 +65,20 @@
         <v-row>
           <v-col class="py-0" cols="12">
             <v-text-field
+                id="searchInput"
+                v-model="givenName"
+                label="Given Name"
+                color="primary"
+                variant="underlined"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="py-0" cols="12">
+            <v-text-field
               id="searchInput"
               v-model="surName"
-              label="Sur Name"
+              label="Surname"
               color="primary"
               variant="underlined"
             />
@@ -113,27 +124,7 @@
             </v-row>            
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="12" class="pt-0">
-            <slot name="text-search">   
-              <v-autocomplete
-                id="selectDistrict"
-                v-model="districtNameNumberFilter"
-                variant="underlined"
-                :items="districtSearchNames"
-                color="#003366"
-                label="District Name or Number"
-                single-line
-                :clearable="true"
-                item-title="districtCodeName"
-                item-value="districtCodeValue"
-                autocomplete="off"
-                @update:model-value="setDistrictNameNumberFilter('districtNameNumber', $event)"
-              />
-            </slot>
-          </v-col>
-        </v-row>
-        <v-row>
+        <v-row v-if="userInfo.activeInstituteType === 'DISTRICT'">
           <v-col cols="12" class="pt-0">
             <slot name="text-search">              
               <v-autocomplete
@@ -249,11 +240,11 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
-import { isEmpty, sortBy, cloneDeep } from 'lodash';
-import { appStore } from '@/store/modules/app';
-import { authStore } from '@/store/modules/auth';
+import { isEmpty, sortBy} from 'lodash';
 import { mapState } from 'pinia';
 import moment from 'moment';
+import {appStore} from "../../../store/modules/app";
+import {authStore} from "../../../store/modules/auth";
 
 export default {
   name: 'StudentRegistrationsFilter',
@@ -284,29 +275,28 @@ export default {
       selected: {},
       scoreRangeDefault: [0, 4],
       scoreRange: [0, 4],
+      givenName: null,
       surName: null,
       pen: null,
       localID: null,
-      districtSearchNames: [],
       schoolSearchNames: [],
       assessmentCenterSearchNames: [],
       sessionSearchNames: [],
       assessmentTypeSearchNames: [],      
       specialCaseCodes: [],
-      districtNameNumberFilter: null,    
       schoolNameNumberFilter: null,
       assessmentCenterNameNumberFilter: null,
     };
   },
   computed: {
-    ...mapState(appStore, ['districtMap', 'schoolMap', 'config']),
+    ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap', 'config']),
     ...mapState(authStore, ['userInfo']),    
   },
   watch: {},
   async beforeMount() {
     this.selected = {...this.initialFilterSelection};
-    if (this.schoolMap.size === 0) {
-      await appStore().getInstituteCodes();
+    if (this.activeSchoolsMap.size === 0) {
+      await appStore().getInstitutesData();
     }    
   },
   created() {
@@ -314,10 +304,11 @@ export default {
       .getUserInfo()
       .then(() => {
         appStore()
-          .getInstituteCodes()
+          .getInstitutesData()
           .then(() => {
-            this.setupSchoolList();
-            this.setupDistrictList();
+            if(this.userInfo.activeInstituteType === 'DISTRICT'){
+              this.setupSchoolLists();
+            }
             this.loading = false;
           });
       });
@@ -343,42 +334,23 @@ export default {
         });
       });
     },
-    setupSchoolList() {
+    setupSchoolLists() {
       this.schoolSearchNames = [];
-      this.schoolMap?.forEach((school) => {
-        this.schoolSearchNames.push({
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
-          schoolCodeValue: school.schoolID
-        });
-      });
-      this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
-      this.assessmentCenterSearchNames = cloneDeep(this.schoolSearchNames);
-    },
-    setupDistrictList(){
-      this.districtSearchNames = [];
-      this.districtMap?.forEach((district) => {
-        this.districtSearchNames.push({
-          districtCodeName: district.name + ' - ' + district.districtNumber,
-          districtCodeValue: district.districtId,
-        });
-      });
-      this.districtSearchNames = sortBy(this.districtSearchNames, ['districtCodeName']);
-    }, 
-    setupSchoolListByDistrict(districtID) {
-      this.schoolSearchNames = [];
-      this.schoolNameNumberFilter = null;
-      this.schoolMap?.forEach((school) => {
-        if(school.districtID === districtID) {
-          this.schoolSearchNames.push({
-            schoolCodeName: school.schoolName + ' - ' + school.mincode,
-            schoolCodeValue: school.schoolID
-          });
+      this.assessmentCenterSearchNames = [];
+      this.activeSchoolsMap?.forEach((school) => {
+        let schoolCodeName = school.schoolName + ' - ' + school.mincode;
+
+        this.assessmentCenterSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
+
+        if(school.districtID === this.userInfo.activeInstituteIdentifier) {
+          this.schoolSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
         }
       });
       this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
-    }, 
-    setPenLocalIdNameFilter($event, val) {
-      const keys = ['surName', 'pen', 'localID'];
+      this.assessmentCenterSearchNames = sortBy(this.assessmentCenterSearchNames, ['schoolCodeName']);
+    },
+    setPenLocalIdNameFilter() {
+      const keys = ['givenName', 'surName', 'pen', 'localID'];
       keys.forEach((key) => {
         if (this[key] != null) {
           if (this[key].length > 0) {
@@ -388,20 +360,8 @@ export default {
           }
         }
       });
-      if ($event && val === 'click') {
-        this.apply();
-      }
-    },
-    setDistrictNameNumberFilter(key, $event) {
-      this.setPenLocalIdNameFilter($event, null);
-      this.setupSchoolListByDistrict($event);
-      if ($event) {
-        this.selected[key] = [{ title: 'DistrictNameOrNumber', value: $event }];
-        this.apply();
-      } else {
-        delete this.selected[key];
-        this.apply();
-      }
+      this.apply();
+
     },
     setSchoolNameNumberFilter(key, $event) {
       this.setPenLocalIdNameFilter($event, null);
@@ -433,30 +393,12 @@ export default {
         this.apply();
       }
     },
-    setScoreRangeFilter(key, $event){
-      this.setPenLocalIdNameFilter($event, null);
-      if($event) {
-        let scoreFilterTitle;
-        if($event[0] === this.scoreRangeDefault[0]){
-          scoreFilterTitle = + $event[1] + ' courses or less';
-        } else if ($event[1] === this.scoreRangeDefault[1]) {
-          scoreFilterTitle = $event[0] + ' courses or more';
-        } else {
-          scoreFilterTitle = 'Between ' + $event[0] + ' and ' + $event[1] + ' courses';
-        }
-        this.selected[key] = [{title: scoreFilterTitle, value: $event}];
-        this.apply();
-      } else {
-        delete this.selected[key];
-        this.apply();
-      }
-    },
     clear() {
       this.selected = {};
       this.penLocalIdNameFilter = null;
-      this.districtNameNumberFilter = null;
       this.schoolNameNumberFilter = null;
       this.assessmentCenterNameNumberFilter = null;
+      this.givenName = null;
       this.surName = null;
       this.pen = null;
       this.localID = null;

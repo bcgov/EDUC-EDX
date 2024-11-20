@@ -4,7 +4,6 @@ const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants
 function createMoreFiltersSearchCriteria(searchFilter = []) {
   let searchCriteriaList = [];
 
-  let districtNameNumberFilter = [];
   let schoolNameNumberFilter = [];
   let assessmentCenterNameNumberFilter = [];
 
@@ -21,6 +20,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       searchCriteriaList.push({ key: 'surName', value: pValue.toString(), operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
 
+    if (key === 'givenName' && pValue) {
+      searchCriteriaList.push({ key: 'givenName', value: pValue.toString(), operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
+
     if (key === 'pen' && pValue) {
       searchCriteriaList.push({ key: 'pen', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
@@ -29,9 +32,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       searchCriteriaList.push({ key: 'localID', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
 
-    if (key === 'districtNameNumber' && pValue) {
-      let districtNameNumberCriteria = createDistrictNameNumberSearchCriteria(pValue.toString());
-      districtNameNumberFilter = [...districtNameNumberCriteria];
+    if (key === 'districtID' && pValue) {
+      searchCriteriaList.push({key: 'districtID', value: pValue[0], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND})
+    }
+
+    if (key === 'schoolID' && pValue) {
+      searchCriteriaList.push({key: 'schoolID', value: pValue[0], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND})
     }
 
     if (key === 'schoolNameNumber' && pValue) {
@@ -69,13 +75,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
 
   }
-  const search = [];  
-  if (districtNameNumberFilter.length > 0) {
-    search.push({
-      condition: CONDITION.AND,
-      searchCriteriaList: districtNameNumberFilter
-    });
-  }
+  const search = [];
   if (schoolNameNumberFilter.length > 0) {
     search.push({
       condition: CONDITION.AND,
@@ -95,20 +95,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     });
   }
   return search;
-}
-
-function createDistrictNameNumberSearchCriteria(value) {
-  const searchDistrictCriteriaList = [];
-
-  searchDistrictCriteriaList.push({
-    key: 'districtID',
-    operation: FILTER_OPERATION.EQUAL,
-    value: value,
-    valueType: VALUE_TYPE.UUID,
-    condition: CONDITION.AND
-  });
-
-  return searchDistrictCriteriaList;
 }
 
 function createSchoolNameNumberSearchCriteria(value) {

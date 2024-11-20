@@ -161,6 +161,7 @@ export const PAGE_TITLES = Object.freeze({
   GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection',
   ASSESSMENT: 'Assessments',
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
+  ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
   GRAD_PROJECTIONS: 'Graduation Projections and TVRs',
   GRAD_REPORTS: 'Graduation Reports and Transcripts'
 });
