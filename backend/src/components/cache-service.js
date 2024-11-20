@@ -32,6 +32,8 @@ let specialEducationCodesMap = new Map();
 let homeLanguageSpokenCodesMap = new Map();
 let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
+let assessmentTypeCodesMap = new Map();
+let assessmentSpecialCaseTypeCodesMap = new Map();
 let documentTypeCodes = [];
 const cachedData = {};
 
@@ -101,6 +103,38 @@ const cacheService = {
       retries: 50
     });
 
+  },
+  async loadAllAssessmentTypeCodesToMap() {
+    log.debug('Loading all assessment Type Codes during start up');
+    await retry(async () => {
+      const data = await getApiCredentials();
+      const assessmentTypeCodesResponse = await getData(data.accessToken, `${config.get('eas:assessmentTypeCodeURL')}`);
+      if (assessmentTypeCodesResponse && assessmentTypeCodesResponse.length > 0) {
+        assessmentTypeCodesMap.clear();
+        assessmentTypeCodesResponse.forEach(entry => {
+          assessmentTypeCodesMap.set(entry.assessmentTypeCode, entry.label);
+        });
+      }
+      log.info(`Loaded ${assessmentTypeCodesMap.size} assessmentTypeCodes.`);
+    }, {
+      retries: 50
+    });
+  },
+  async loadAllSpecialCaseTypeCodesToMap() {
+    log.debug('Loading all specialcase Type Codes during start up');
+    await retry(async () => {
+      const data = await getApiCredentials();
+      const provincialSpecialCaseTypeCodesResponse = await getData(data.accessToken, `${config.get('eas:assessmentSpecialCaseTypeCodeURL')}`);
+      if (provincialSpecialCaseTypeCodesResponse && provincialSpecialCaseTypeCodesResponse.length > 0) {
+        assessmentSpecialCaseTypeCodesMap.clear();
+        provincialSpecialCaseTypeCodesResponse.forEach(entry => {
+          assessmentSpecialCaseTypeCodesMap.set(entry.provincialSpecialCaseCode, entry.label);
+        });
+      }
+      log.info(`Loaded ${assessmentSpecialCaseTypeCodesMap.size} assessmentSpecialCaseTypeCodes.`);
+    }, {
+      retries: 50
+    });
   },
   getAllActiveAuthoritiesJSON(){
     return activeAuthorities;
@@ -346,7 +380,13 @@ const cacheService = {
   },
   getAllStudentValidationIssueCodes() {
     return cachedData[constants.CACHE_KEYS.SDC_VALIDATION_ISSUE_TYPE_CODES].records;
-  }
+  },
+  getAssessmentTypeLabelByCode(assessmentTypeCode) {
+    return assessmentTypeCodesMap.get(assessmentTypeCode);
+  },
+  getSpecialCaseTypeLabelByCode(specialCaseTypeCode) {
+    return assessmentSpecialCaseTypeCodesMap.get(specialCaseTypeCode);
+  },
 };
 
 module.exports = cacheService;

@@ -41,11 +41,11 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import StudentRegistrations from './registrations/StudentRegistrations.vue';
-import Spinner from '@/components/common/Spinner.vue';
 import ApiService from '../../common/apiService';
-import { Routes } from '../../utils/constants';
-import { authStore } from '../store/modules/auth';
+import { ApiRoutes } from '../../utils/constants';
 import { mapState } from 'pinia';
+import Spinner from "../common/Spinner.vue";
+import {authStore} from "../../store/modules/auth";
 
 export default {
   name: 'AssessmentSessionDetail',
@@ -85,8 +85,7 @@ export default {
       this.loading = true;
       ApiService.apiAxios
         .get(
-          `${Routes.eas.GET_ASSESSMENT_SESSIONS}/school-year/` +
-            this.schoolYear,
+          `${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}/school-year/` + this.schoolYear + '/' + this.userInfo.activeInstituteType,
           {}
         )
         .then((response) => {
@@ -100,7 +99,11 @@ export default {
         });
     },    
     backToAssesmentSessions() {
-      this.$router.push({ name: 'assessment-sessions' });
+      if(this.userInfo.activeInstituteType === 'DISTRICT'){
+        this.$router.push({name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});
+      } else {
+        this.$router.push({name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});
+      }
     },
   },
 };

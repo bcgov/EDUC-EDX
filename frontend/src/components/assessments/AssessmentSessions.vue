@@ -6,6 +6,7 @@
           <h2>School Year: {{ schoolYear }}</h2>
           <v-btn
             variant="text"
+            @click="goToSchoolYearRegistrations()"
           >
             <span
               class="ml-1 pr-2"
@@ -48,6 +49,7 @@
       >
         <SessionCard
           :session="session"
+          :school-year = "schoolYear"
         />
       </v-col>
     </v-row>
@@ -58,6 +60,7 @@
     </v-row>
     <v-row>
       <v-data-table
+          v-if="!loading"
         id="session-history-dataTable"
         v-model:items-per-page="itemsPerPage"
         :page="pageNumber"
@@ -74,7 +77,8 @@
         ]"
         :hover="true"
         class="fill-height"
-        style="border-radius: 0"        
+        style="border-radius: 0"
+        @click:row="goToHistoricalSessionRegistrations"
       >
         <template #top>
           <v-text-field
@@ -107,7 +111,6 @@ import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
-
 import moment from 'moment';
 
 export default {
@@ -128,7 +131,7 @@ export default {
       search: null,      
       itemsPerPage: 5,
       pageNumber: 1,
-      allsessions: [],
+      allSessions: [],
       headers: [
         { title: 'School Year', key: 'schoolYear' },
         { title: 'Course Month', key: 'courseMonth' },
@@ -140,13 +143,14 @@ export default {
       editSession: null,
       headerSearchParams: {},
       headerSortParams: {},
+      loading: true
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),    
     activeSessions() {
       const orderedSessions = [];
-      const allsessions = this.allsessions
+      const allSessions = this.allSessions
         .filter(session => session.isOpen)
         .map((session) => {
           return {
@@ -154,14 +158,14 @@ export default {
             courseMonth: this.formatMonth(session.courseMonth)
           };
         });   
-      allsessions.sort((a, b) => new Date(a.activeUntilDate) - new Date(b.activeUntilDate));   
-      for (let i = 0; i < allsessions.length; i += 2) {
-        orderedSessions.push(allsessions.slice(i, i + 2));
+      allSessions.sort((a, b) => new Date(a.activeUntilDate) - new Date(b.activeUntilDate));   
+      for (let i = 0; i < allSessions.length; i += 2) {
+        orderedSessions.push(allSessions.slice(i, i + 2));
       }
       return orderedSessions;
     },
     historicalSessions() {
-      const allsessions = this.allsessions
+      const allSessions = this.allSessions
         .filter(session => !session.isOpen)
         .map((entry) => {
           return {
@@ -171,11 +175,8 @@ export default {
             courseMonth: this.formatMonth(entry.courseMonth),
           };
         });
-      return allsessions;
+      return allSessions;
     },
-    sessionHeaderSlotName() {
-      return `column.${this.sessionid}`;
-    } 
   },
   created() {
     this.getAllAssessmentSessions();
@@ -186,9 +187,9 @@ export default {
       ApiService.apiAxios
         .get(`${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType, {})
         .then((response) => {
-          this.allsessions = response.data.sort((a, b) => new Date(b.activeUntilDate) - new Date(a.activeUntilDate));
-          if(this.allsessions.length >0) {
-            this.schoolYear = this.allsessions[0].schoolYear;
+          this.allSessions = response.data.sort((a, b) => new Date(b.activeUntilDate) - new Date(a.activeUntilDate));
+          if(this.allSessions.length >0) {
+            this.schoolYear = this.allSessions[0].schoolYear;
           }
         })
         .catch((error) => {
@@ -205,10 +206,18 @@ export default {
       return moment(month, 'MM').format('MMMM');
     },
     goToSchoolYearRegistrations() {
-      this.$router.push({name: 'assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null}});
+      if(this.userInfo.activeInstituteType === 'DISTRICT'){
+        this.$router.push({name: 'district-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null, sessionMonth: null}});
+      } else {
+        this.$router.push({name: 'school-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null, sessionMonth: null}});
+      }
     },
-    goToSessionRegistrations(e, { item }) {
-      this.$router.push({name: 'assessment-session-detail', params: {schoolYear:  item?.raw?.schoolYear?.replace(/\//g, '-'), sessionID: item?.raw?.sessionID}});
+    goToHistoricalSessionRegistrations(e, { item }) {
+      if(this.userInfo.activeInstituteType === 'DISTRICT'){
+        this.$router.push({name: 'district-assessment-session-detail', params: {schoolYear:  item?.schoolYear?.replace(/\//g, '-'), sessionID: item?.sessionID}});
+      } else {
+        this.$router.push({name: 'school-assessment-session-detail', params: {schoolYear:  item?.schoolYear?.replace(/\//g, '-'), sessionID: item?.sessionID}});
+      }
     },
     backButtonClick() {
       this.$router.push({name: 'home'});

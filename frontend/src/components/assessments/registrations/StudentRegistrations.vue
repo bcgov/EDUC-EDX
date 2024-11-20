@@ -20,8 +20,9 @@
             >
               <template #append>
                 <v-badge
+                    v-if="filterCount > 1"
                   color="error"
-                  :content="filterCount"
+                  :content="filterCount - 1"
                   floating
                   offset-y="-10"
                 />
@@ -72,12 +73,14 @@
 
 <script>
 import StudentRegistrationsCustomTable from './StudentRegistrationsCustomTable.vue';
-import { SCHOOL_YEAR_REGISTRATIONS_VIEW, SESSION_REGISTRATIONS_VIEW } from '@/utils/eas/StudentRegistrationTableConfiguration.js';
-import ApiService from '@/common/apiService';
-import { Routes } from '@/utils/constants';
 import { cloneDeep, isEmpty, omitBy } from 'lodash';
 import StudentRegistrationsFilter from './StudentRegistrationsFilter.vue';
 import moment from 'moment';
+import {SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT, SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL, SESSION_REGISTRATIONS_VIEW_DISTRICT, SESSION_REGISTRATIONS_VIEW_SCHOOL} from "../../../utils/eas/StudentRegistrationTableConfiguration";
+import ApiService from "../../../common/apiService";
+import {ApiRoutes} from "../../../utils/constants";
+import {authStore} from "../../../store/modules/auth";
+import {mapState} from "pinia";
 
 export default {
   name: 'StudentRegistrations',
@@ -98,12 +101,12 @@ export default {
     schoolYearSessions: {
       type: Object,
       required: true,
-    }    
+    }
   },
   emits: [],
   data() {
     return {
-      config: this.sessionID ? SESSION_REGISTRATIONS_VIEW :  SCHOOL_YEAR_REGISTRATIONS_VIEW ,
+      config: null,
       assessmentStudents: [],
       filterSearchParams: {
         moreFilters: {},
@@ -119,16 +122,22 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter ).reduce((total, filter) => total.concat(filter), []).length;
     },
   },
   created() {
-    this.applydefaultFilers();
+    this.applyDefaultFilters();
     this.getAssessmentStudents();
+    this.selectTableConfig();
   },
   methods: {
-    applydefaultFilers() {
+    selectTableConfig() {
+      this.config = this.sessionID ? (this.userInfo.activeInstituteType === 'DISTRICT' ? SESSION_REGISTRATIONS_VIEW_DISTRICT : SESSION_REGISTRATIONS_VIEW_SCHOOL) :
+          (this.userInfo.activeInstituteType === 'DISTRICT' ? SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT : SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL);
+    },
+    applyDefaultFilters() {
       if (this.sessionID) {
         const activeSession = this.schoolYearSessions.find(
           (session) => session.sessionID === this.sessionID
@@ -136,13 +145,20 @@ export default {
         this.filterSearchParams.moreFilters.session = [
           { title: moment(activeSession.courseMonth, 'MM').format('MMMM') , id: activeSession.sessionID, value: activeSession.sessionID },
         ];
-      }      
+      }
+      if (this.userInfo.activeInstituteType === 'DISTRICT'){
+        this.filterSearchParams.moreFilters.districtID = [
+          {title: 'districtID', id: 'districtID', value: this.userInfo.activeInstituteIdentifier}
+        ]
+      } else {
+        this.filterSearchParams.moreFilters.schoolID = [
+          {title: 'schoolNameNumber', id: 'schoolID', value: this.userInfo.activeInstituteIdentifier}
+        ]
+      }
     },
     getAssessmentStudents() {
       this.loading = true;
-      let sort = {
-        assessmentStudentID: 'ASC',
-      };
+      let sort = {assessmentStudentID: 'ASC',};
       let assessmentSearchParams = cloneDeep(this.filterSearchParams);
       if (! this.sessionID) {        
         assessmentSearchParams.moreFilters.schoolYear = [
@@ -150,7 +166,7 @@ export default {
         ];
       }
       ApiService.apiAxios
-        .get(`${Routes.eas.GET_ASSESSMENT_STUDENTS_PAGINATED}`, {
+        .get(`${ApiRoutes.eas.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {
           params: {
             pageNumber: this.pageNumber - 1,
             pageSize: this.pageSize,
@@ -168,7 +184,7 @@ export default {
           console.error(error);
         })
         .finally(() => {
-          this.loading = false;
+          this.isLoading = false;
         });
     },
     applyFilters($event) {
@@ -201,26 +217,10 @@ export default {
 </script>
 
 <style scoped>
-.search-box {
-  background: rgb(235, 237, 239);
-  border-radius: 8px;
-  padding: 10px;
-}
-
-.filter-col {
-  color: #7f7f7f;
-}
-
 .bold {
   font-weight: bold;
 }
-
 .found-align {
   align-self: flex-end;
-}
-
-.export {
-  margin-left: 1px;
-  color: #003366;
 }
 </style>
