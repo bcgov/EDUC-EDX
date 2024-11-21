@@ -167,7 +167,7 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return '';
+      return `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.schoolID}/errorReportDownload`;
     },
     toggleFilters() {
       this.showFilters= !this.showFilters;
