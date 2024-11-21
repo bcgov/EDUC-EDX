@@ -5,7 +5,7 @@ const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission} = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
-const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated} = require('../components/grad');
+const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport} = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
 const {getCachedGradCollectionData} = require('../components/gdc-cache');
@@ -26,5 +26,8 @@ router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session
   checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
   getFilesetsPaginated);
 
+router.get('/filesetErrors/:schoolID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
+  downloadErrorReport);
 
 module.exports = router;

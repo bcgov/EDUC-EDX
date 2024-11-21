@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams} = require('./utils');
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -25,6 +25,23 @@ async function uploadFile(req, res) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
     log.error('uploadFile Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function downloadErrorReport(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('grad:rootURL')}/reportGeneration/errorReport/${req.params.schoolID}`;
+
+    const resData = await getData(token, url);
+
+    res.setHeader('Content-Disposition', 'attachment; filename=StudentErrorReport.csv');
+    res.setHeader('Content-Type', 'text/csv');
+    const buffer = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(buffer);
+  } catch (e) {
+    log.error('downloadErrorReport Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -178,5 +195,6 @@ function createMultiFieldNameSearchCriteria(nameString) {
 module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
-  getFilesetsPaginated
+  getFilesetsPaginated,
+  downloadErrorReport
 };
