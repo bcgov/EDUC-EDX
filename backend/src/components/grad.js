@@ -123,6 +123,7 @@ function toTableRow(validationIssues) {
 
 function createMoreFiltersSearchCriteria(searchFilter = []) {
   let penLocalIdFilter = [];
+  let nameFilter = [];
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
     if (key === 'pen' && pValue) {
@@ -147,6 +148,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: penLocalIdFilter
+    });
+  }
+  if (nameFilter.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: nameFilter
     });
   }
   return search;
