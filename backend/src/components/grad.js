@@ -89,7 +89,6 @@ async function getErrorFilesetStudentPaginated(req, res) {
         search.push(criteria);
       });
     }
-    console.log(JSON.stringify(search))
 
     const params = {
       params: {
