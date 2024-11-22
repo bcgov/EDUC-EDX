@@ -347,7 +347,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'graduation/:schoolID/errorReport',
+          path: 'graduation/:schoolID/errorReport/:activeIncomingFilesetID',
           name: 'error',
           component: GradErrorsView,
           props: true,

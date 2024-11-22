@@ -121,6 +121,11 @@ export default {
       required: false,
       default: null
     },
+    activeIncomingFilesetID: {
+      type: String,
+      required: false,
+      default: null
+    },
   },
   emits: [],
   data() {
@@ -167,7 +172,7 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.schoolID}/errorReportDownload`;
+      return `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/errorReportDownload`;
     },
     toggleFilters() {
       this.showFilters= !this.showFilters;
@@ -177,7 +182,7 @@ export default {
     },
     getErrorFilesetStudentPaginated() {
       this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.schoolID}/paginated`, {
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
