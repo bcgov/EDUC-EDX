@@ -71,7 +71,7 @@
               <span v-if="column.key === 'errorLink'">
                 <a
                   class="ml-1"
-                  @click="navigateToErrors"
+                  @click="navigateToErrors(props.item)"
                 >View Errors/Warnings</a>
               </span>
               <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
@@ -439,8 +439,8 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {schoolID: this.schoolID}});
     },
-    navigateToErrors() {
-      this.$router.push({name: 'error', params: {schoolID: this.schoolID}});
+    navigateToErrors(row) {
+      this.$router.push({name: 'error', params: {schoolID: this.schoolID, activeIncomingFilesetID: row.incomingFilesetID}});
     }
 
   }
