@@ -72,7 +72,7 @@
                 <a
                   class="ml-1"
                   @click="navigateToErrors"
-                >View Errors/Warnings</a>
+                >View Report</a>
               </span>
               <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
                 {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
