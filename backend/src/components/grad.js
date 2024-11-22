@@ -32,7 +32,7 @@ async function uploadFile(req, res) {
 async function downloadErrorReport(req, res) {
   try {
     const token = getAccessToken(req);
-    const url = `${config.get('grad:rootURL')}/reportGeneration/errorReport/${req.params.schoolID}`;
+    const url = `${config.get('grad:rootURL')}/reportGeneration/errorReport/${req.params.activeIncomingFilesetID}`;
 
     const resData = await getData(token, url);
 
@@ -76,10 +76,10 @@ async function getFilesetsPaginated(req, res) {
 async function getErrorFilesetStudentPaginated(req, res) {
   try {
     const search = [];
-    if(req.params.schoolID) {
+    if(req.params.activeIncomingFilesetID) {
       search.push({
         condition: null,
-        searchCriteriaList: [{ key: 'incomingFileset.schoolID', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+        searchCriteriaList: [{ key: 'incomingFileset.incomingFilesetID', value: req.params.activeIncomingFilesetID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
     } 
 

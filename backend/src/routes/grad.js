@@ -18,7 +18,7 @@ router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session
 router.post('/school/:schoolID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
   checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradFileUploadSchema), scanFilePayload, uploadFile);
 
-router.get('/filesetErrors/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
   getErrorFilesetStudentPaginated);
 
@@ -26,7 +26,7 @@ router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session
   checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
   getFilesetsPaginated);
 
-router.get('/filesetErrors/:schoolID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
+router.get('/filesetErrors/:activeIncomingFilesetID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
   downloadErrorReport);
 

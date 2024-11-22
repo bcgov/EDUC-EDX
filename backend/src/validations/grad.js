@@ -24,7 +24,7 @@ const gradFileBySchoolIDSchema =  object({
 const gradErrorFilesetStudentPaginatedSchema = object({
   body: object().noUnknown(),
   params: object({
-    schoolID: string()
+    activeIncomingFilesetID: string()
   }),
   query: object({
     pageNumber: number().moreThan(-1).integer().optional(),
