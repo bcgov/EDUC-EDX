@@ -55,13 +55,6 @@
         :headers="headers"
         mobile-breakpoint="0"
       >
-        <template #top>
-          <v-progress-linear
-            v-show="isLoading"
-            :indeterminate="true"
-            color="primary"
-          />
-        </template>
         <template #item="props">
           <tr>
             <td
@@ -70,6 +63,7 @@
             >
               <span v-if="column.key === 'errorLink'">
                 <a
+                  v-if="isFilesetComplete(props.item)"
                   class="ml-1"
                   @click="navigateToErrors"
                 >View Errors/Warnings</a>
@@ -77,19 +71,40 @@
               <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
                 {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
               </span>
-              <span v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
-                <v-icon
-                  v-if="props.item[column.key] === 'LOADED'"
-                  icon="mdi-clock-alert-outline"
-                  color="warning"
-                />
-                <v-icon
-                  v-if="props.item[column.key] === 'NOTLOADED'"
-                  icon="mdi-alert-circle-outline"
-                  color="error"
-                />
-                {{ props.item[column.key] === 'NOTLOADED' ? 'Not Loaded' : 'Awaiting Other Files' }}
-              </span>
+              <div v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
+                <div v-if="props.item[column.key] === 'LOADED'">
+                  <span v-if="isFilesetInProgress(props.item)">
+                    <v-progress-circular
+                      :size="20"
+                      :width="4"
+                      color="primary"
+                      indeterminate
+                    />
+                    Processing
+                  </span>
+                  <span v-else>
+                    <v-icon
+                      icon="mdi-clock-alert-outline"
+                      color="warning"
+                    />
+                    Awaiting Other Files
+                  </span>
+                </div>
+                <span v-if="props.item[column.key] === 'NOTLOADED'">
+                  <v-icon
+                    icon="mdi-alert-circle-outline"
+                    color="error"
+                  />
+                  Not Loaded
+                </span>
+                <span v-if="props.item[column.key] === 'COMPLETED'">
+                  <v-icon
+                    icon="mdi-check-circle-outline"
+                    color="success"
+                  />
+                  Processed
+                </span>
+              </div>
               <span v-else-if="props.item[column.key]">
                 {{ props.item[column.key] }}
               </span>
@@ -337,6 +352,12 @@ export default {
       this.populatedSuccessMessage = null;
       this.successfulUploadCount = 0;
       this.$refs.uploader.click();
+    },
+    isFilesetInProgress(fileset){
+      return fileset.demFileStatusCode === 'LOADED' && fileset.crsFileStatusCode === 'LOADED' && fileset.xamFileStatusCode === 'LOADED';
+    },
+    isFilesetComplete(fileset){
+      return fileset.demFileStatusCode === 'COMPLETED' && fileset.crsFileStatusCode === 'COMPLETED' && fileset.xamFileStatusCode === 'COMPLETED';
     },
     async importFile() {
       if(this.uploadFileValue.length > 0) {
