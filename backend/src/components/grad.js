@@ -135,11 +135,11 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       penLocalIdFilter = [...penLocalIdFilter, ...penLocalIdCriteria];
     }
     if (key === 'lastName' && pValue) {
-      let nameCriteria = createNameCriteria(key, pValue.toString());
+      let nameCriteria = createNameCriteria(pValue.toString());
       nameFilter = [...nameFilter, ...nameCriteria];
     }
     if (key === 'firstName' && pValue) {
-      let nameCriteria = createNameCriteria(key, pValue.toString());
+      let nameCriteria = createNameCriteria(pValue.toString());
       nameFilter = [...nameFilter, ...nameCriteria];
     }
   }
