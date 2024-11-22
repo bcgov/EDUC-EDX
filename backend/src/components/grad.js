@@ -121,56 +121,56 @@ function toTableRow(validationIssues) {
 }
 
 function createMoreFiltersSearchCriteria(searchFilter = []) {
-  let penLocalIdNameFilter = [];
+  let penLocalIdFilter = [];
+  let nameFilter = [];
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
-    if (key === 'penLocalIdName' && pValue) {
-      if (/^\d+$/.test(pValue)) {
-        // pValue consists only of numbers
-        let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
-        penLocalIdNameFilter.push(...penCriteria);
-      } else if (/^[a-z\-.'\s]+$/i.test(pValue)) {
-        // pValue consists only of alphabetical characters and allowed name characters
-        let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
-        penLocalIdNameFilter.push(...nameCriteria);
-      } else {
-        // pValue contains both numbers and alphabetical characters or unknown characters
-        let nameCriteria = createMultiFieldNameSearchCriteria(pValue.toString());
-        let penCriteria = createLocalIdPenSearchCriteria(pValue.toString());
-        penLocalIdNameFilter.push(...nameCriteria, ...penCriteria);
-      }
+    if (key === 'pen' && pValue) {
+      let penLocalIdCriteria = createPenLocalIdCriteria(key, pValue.toString());
+      penLocalIdFilter = [...penLocalIdFilter, ...penLocalIdCriteria];
+    }
+    if (key === 'localID' && pValue) {
+      let penLocalIdCriteria = createPenLocalIdCriteria(key, pValue.toString());
+      penLocalIdFilter = [...penLocalIdFilter, ...penLocalIdCriteria];
+    }
+    if (key === 'lastName' && pValue) {
+      let nameCriteria = createNameCriteria(pValue.toString());
+      nameFilter = [...nameFilter, ...nameCriteria];
+    }
+    if (key === 'firstName' && pValue) {
+      let nameCriteria = createNameCriteria(pValue.toString());
+      nameFilter = [...nameFilter, ...nameCriteria];
     }
   }
   const search = [];
-  if (penLocalIdNameFilter.length > 0) {
+  if (penLocalIdFilter.length > 0) {
     search.push({
       condition: CONDITION.AND,
-      searchCriteriaList: penLocalIdNameFilter
+      searchCriteriaList: penLocalIdFilter
+    });
+  }
+  if (nameFilter.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: nameFilter
     });
   }
   return search;
 }
 
-function createLocalIdPenSearchCriteria(value) {
-  let searchCriteriaList = [];
+function createPenLocalIdCriteria(key, idString) {
+  const searchCriteriaList = [];
   searchCriteriaList.push({
-    key: 'pen',
+    key: key,
     operation: FILTER_OPERATION.EQUAL,
-    value: value,
+    value: idString,
     valueType: VALUE_TYPE.STRING,
-    condition: CONDITION.OR
-  });
-  searchCriteriaList.push({
-    key: 'localID',
-    operation: FILTER_OPERATION.EQUAL,
-    value: value,
-    valueType: VALUE_TYPE.STRING,
-    condition: CONDITION.OR
+    condition: CONDITION.AND
   });
   return searchCriteriaList;
 }
 
-function createMultiFieldNameSearchCriteria(nameString) {
+function createNameCriteria(nameString) {
   const nameParts = nameString.split(/\s+/);
   const fieldNames = [
     'lastName',
