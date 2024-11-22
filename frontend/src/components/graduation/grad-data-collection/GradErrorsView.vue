@@ -89,7 +89,7 @@
         style="top:0; height: 100%;"
         rounded="true"
       >
-      <Filters
+      <GradErrorFilters
         :filters="[]"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
@@ -106,13 +106,13 @@ import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
-import Filters from '../../common/Filters.vue';
+import GradErrorFilters from './GradErrorFilters.vue';
       
 export default {
   name: 'GradErrorsView',
   components: {
     GradErrorTable,
-    Filters
+    GradErrorFilters
   },
   mixins: [alertMixin],
   props: {

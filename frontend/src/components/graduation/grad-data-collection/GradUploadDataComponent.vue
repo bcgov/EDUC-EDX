@@ -18,12 +18,17 @@
       class="border"
     >
       <v-row>
-        <v-col class="mb-3 d-flex justify-center">
+        <v-col class="d-flex justify-center">
           <h1>Upload Graduation Data Files</h1>
         </v-col>
       </v-row>
+      <v-row class="centered">
+        <span class="mr-1">Please click on the link below to select your three GRAD data files (DEM, XAM and CRS) to upload to GRAD for processing.</span>
+        <span class="mr-1">All three files must be present in order for the files to be validated and loaded to GRAD.</span>
+        <span class="mr-1">Note the status of your files in the Summary of Uploaded Data table below.</span>
+      </v-row>
       <v-row>
-        <v-col class="d-flex justify-space-evenly mt-1">
+        <v-col class="d-flex justify-space-evenly mt-n5">
           <v-btn
             id="uploadButton"
             prepend-icon="mdi-file-upload"
@@ -75,6 +80,11 @@
             v-if="props.item[column.key] === 'LOADED'"
             icon="mdi-check-circle-outline"
             color="warning"
+          />
+          <v-icon
+            v-if="props.item[column.key] === 'NOTLOADED'"
+            icon="mdi-alert-circle-outline"
+            color="error"
           />
         </span>
         <span v-else-if="props.item[column.key]">
@@ -240,7 +250,7 @@ export default {
   emits: [],
   data() {
     return {
-      acceptableFileExtensions: ['.stdxam', '.stddem', '.stdcrs'],
+      acceptableFileExtensions: ['.xam', '.dem', '.crs'],
       requiredRules: [v => !!v || 'Required'],
       uploadFileValue: null,
       hasFileAttached: false,
@@ -305,7 +315,7 @@ export default {
     },
     validateFileExtension(fileJSON) {
       const extension = `.${fileJSON.name.split('.').slice(-1)}`;
-      const failMessage = 'File extension is invalid. Extension must be ".stddem" or ".stdxam" or ".stdcrs".';
+      const failMessage = 'File extension is invalid. Extension must be ".dem" or ".xam" or ".crs".';
   
       if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
         return true;

@@ -57,7 +57,7 @@
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
                   cols="3"
-                > {{ formatText(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
+                > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
                   cols="3"
@@ -145,6 +145,15 @@ export default {
     },
     formatText(text) {
       return capitalize(text);
+    },
+    formatFileType(text) {
+      if(text === 'ASSESSMENT') {
+        return capitalize(text) + ' (.XAM)'
+      } else if(text === 'COURSE') {
+        return capitalize(text) + ' (.CRS)'
+      } else if(text === 'DEMOGRAPHICS') {
+        return capitalize(text) + ' (.DEM)'
+      }
     },
     getStatusColor(status) {
       if (status === 'WARNING') {
