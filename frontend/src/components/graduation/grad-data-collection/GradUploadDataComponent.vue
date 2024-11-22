@@ -42,7 +42,9 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <p class="schools-in-progress-header">Summary of Uploaded Data</p>
+          <p class="schools-in-progress-header">
+            Summary of Uploaded Data
+          </p>
         </v-col>
       </v-row>
       <v-data-table-server
@@ -53,47 +55,48 @@
         :headers="headers"
         mobile-breakpoint="0"
       >
-      <template #top>
-        <v-progress-linear
-          v-show="isLoading"
-          :indeterminate="true"
-          color="primary"
-        />
-      </template>
-      <template #item="props">
-        <tr>
-        <td
-          v-for="column in headers"
-          :key="column.key"
-        >
-        <span v-if="column.key === 'errorLink'">
-          <a
-            class="ml-1"
-            @click="navigateToErrors"
-          >View Errors/Warnings</a>
-        </span>
-        <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
-          {{ props.item[column.key] ? props.item[column.key].substring(0,10).replaceAll('-', '/') : '-'  }}
-        </span>
-        <span v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
-          <v-icon
-            v-if="props.item[column.key] === 'LOADED'"
-            icon="mdi-check-circle-outline"
-            color="warning"
+        <template #top>
+          <v-progress-linear
+            v-show="isLoading"
+            :indeterminate="true"
+            color="primary"
           />
-          <v-icon
-            v-if="props.item[column.key] === 'NOTLOADED'"
-            icon="mdi-alert-circle-outline"
-            color="error"
-          />
-        </span>
-        <span v-else-if="props.item[column.key]">
-          {{ props.item[column.key] }}
-        </span>
-        <span v-else>-</span>
-      </td>
-      </tr>
-      </template>
+        </template>
+        <template #item="props">
+          <tr>
+            <td
+              v-for="column in headers"
+              :key="column.key"
+            >
+              <span v-if="column.key === 'errorLink'">
+                <a
+                  class="ml-1"
+                  @click="navigateToErrors"
+                >View Errors/Warnings</a>
+              </span>
+              <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
+                {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
+              </span>
+              <span v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
+                <v-icon
+                  v-if="props.item[column.key] === 'LOADED'"
+                  icon="mdi-clock-alert-outline"
+                  color="warning"
+                />
+                <v-icon
+                  v-if="props.item[column.key] === 'NOTLOADED'"
+                  icon="mdi-alert-circle-outline"
+                  color="error"
+                />
+                {{ props.item[column.key] === 'NOTLOADED' ? 'Not Loaded' : 'Awaiting Other Files' }}
+              </span>
+              <span v-else-if="props.item[column.key]">
+                {{ props.item[column.key] }}
+              </span>
+              <span v-else>-</span>
+            </td>
+          </tr>
+        </template>
       </v-data-table-server>
     </div>
     <v-form
