@@ -49,7 +49,7 @@
               </v-row>
               <v-row no-gutters>
                 <v-col>
-                  <span>(Upload Graduation Data Files (DEM, XAM and CRS))</span>
+                  <span>Upload Graduation Data Files (DEM, XAM and CRS)</span>
                 </v-col>
               </v-row>
             </v-col>

@@ -163,7 +163,7 @@ export const PAGE_TITLES = Object.freeze({
   ASSESSMENT: 'Assessments',
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
   ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
-  GRAD_PROJECTIONS: 'Graduation Projections and TVRs',
+  GRAD_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',
   GRAD_REPORTS: 'Graduation Reports and Transcripts'
 });
 
