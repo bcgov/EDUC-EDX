@@ -112,7 +112,7 @@ const cacheService = {
       if (assessmentTypeCodesResponse && assessmentTypeCodesResponse.length > 0) {
         assessmentTypeCodesMap.clear();
         assessmentTypeCodesResponse.forEach(entry => {
-          assessmentTypeCodesMap.set(entry.assessmentTypeCode, entry.label);
+          assessmentTypeCodesMap.set(entry.assessmentTypeCode, {'label': entry.label, 'displayOrder': entry.displayOrder });   
         });
       }
       log.info(`Loaded ${assessmentTypeCodesMap.size} assessmentTypeCodes.`);
@@ -384,11 +384,14 @@ const cacheService = {
   getGradDataCollectionValidationIssueCodes() {
     return cachedData[constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES].records;
   },
-  getAssessmentTypeLabelByCode(assessmentTypeCode) {
+  getAssessmentTypeByCode(assessmentTypeCode) {
     return assessmentTypeCodesMap.get(assessmentTypeCode);
   },
   getSpecialCaseTypeLabelByCode(specialCaseTypeCode) {
     return assessmentSpecialCaseTypeCodesMap.get(specialCaseTypeCode);
+  },
+  getAllAssessmentSpecialCases(){         
+    return assessmentSpecialCaseTypeCodesMap;
   },
 };
 

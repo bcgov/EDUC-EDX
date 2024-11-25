@@ -40,6 +40,8 @@
               :reset="resetFlag"
               :can-load-next="canLoadNext"
               :can-load-previous="canLoadPrevious"
+              @reload-registrations="reload"
+              @editSelectedRow="editRegistration"
               @loadNext="loadNext"
               @loadPrevious="loadPrevious"
             />
@@ -67,6 +69,21 @@
         />
       </v-navigation-drawer>
     </v-row>
+    <v-dialog
+      v-model="editStudentRegistrationSheet"
+      :inset="true"
+      :no-click-animation="true"
+      :scrollable="true"
+      :persistent="true"
+      width="40%"
+    >
+      <StudentRegistrationDetail        
+        :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
+        :school-year-sessions="schoolYearSessions"
+        @reload-student-registrations="reloadStudentRegistrationsFlag = true"
+        @close-student-registration="closeEditAndLoadStudentRegistrations"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -75,17 +92,19 @@ import StudentRegistrationsCustomTable from './StudentRegistrationsCustomTable.v
 import { cloneDeep, isEmpty, omitBy } from 'lodash';
 import StudentRegistrationsFilter from './StudentRegistrationsFilter.vue';
 import moment from 'moment';
-import {SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT, SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL, SESSION_REGISTRATIONS_VIEW_DISTRICT, SESSION_REGISTRATIONS_VIEW_SCHOOL} from "../../../utils/eas/StudentRegistrationTableConfiguration";
-import ApiService from "../../../common/apiService";
-import {ApiRoutes} from "../../../utils/constants";
-import {authStore} from "../../../store/modules/auth";
-import {mapState} from "pinia";
+import {SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT, SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL} from '../../../utils/eas/StudentRegistrationTableConfiguration';
+import ApiService from '../../../common/apiService';
+import {ApiRoutes} from '../../../utils/constants';
+import {authStore} from '../../../store/modules/auth';
+import {mapState} from 'pinia';
+import StudentRegistrationDetail from './StudentRegistrationDetail.vue';
 
 export default {
   name: 'StudentRegistrations',
   components: {
     StudentRegistrationsCustomTable,
     StudentRegistrationsFilter,
+    StudentRegistrationDetail
   },
   props: {
     schoolYear: {
@@ -118,6 +137,9 @@ export default {
       canLoadNext: false,
       canLoadPrevious: false,
       resetFlag: false,
+      studentRegistrationForEdit: null,
+      reloadStudentRegistrationsFlag: false,
+      editStudentRegistrationSheet: false,
     };
   },
   computed: {
@@ -132,9 +154,19 @@ export default {
     this.selectTableConfig();
   },
   methods: {
+    editRegistration($event) {
+      this.studentRegistrationForEdit = cloneDeep($event);
+      this.editStudentRegistrationSheet = true;
+    },
+    closeEditAndLoadStudentRegistrations() {
+      this.editStudentRegistrationSheet = !this.editStudentRegistrationSheet;
+      if (this.reloadStudentRegistrationsFlag === true) {
+        this.getAssessmentStudents();
+      }
+      this.reloadStudentRegistrationsFlag = false;
+    },
     selectTableConfig() {
-      this.config = this.sessionID ? (this.userInfo.activeInstituteType === 'DISTRICT' ? SESSION_REGISTRATIONS_VIEW_DISTRICT : SESSION_REGISTRATIONS_VIEW_SCHOOL) :
-          (this.userInfo.activeInstituteType === 'DISTRICT' ? SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT : SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL);
+      this.config = this.userInfo.activeInstituteType === 'DISTRICT' ? SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT : SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL;
     },
     applyDefaultFilters() {
       if (this.sessionID) {
@@ -210,6 +242,14 @@ export default {
         this.pageNumber -= 1;
         this.getAssessmentStudents();
       }
+    },
+    reload(value) {
+      if(value?.pageSize) {
+        this.pageSize = value?.pageSize;
+      } else if(value?.pageNumber) {
+        this.pageNumber = value?.pageNumber;
+      }
+      this.getAssessmentStudents();
     }
   },
 };
