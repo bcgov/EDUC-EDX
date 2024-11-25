@@ -27,21 +27,6 @@ export const SPECIAL_CASE_FILTER = Object.freeze(
     multiple: true,
     key: 'specialCaseCode',
     filterOptions: [
-      {
-        title: 'Aegrotat',
-        id: 'aegrotat',
-        value: 'A'
-      },
-      {
-        title: 'Exemption',
-        id: 'exemption',
-        value: 'E'
-      },
-      {
-        title: 'Disqualified',
-        id: 'disqualified',
-        value: 'D'
-      }
     ]
   }
 );
@@ -101,15 +86,15 @@ export const PROFICIENCY_SCORE_RANGE_FILTER = Object.freeze(
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
     tableHeaders: [
-      { title: 'Session', key: 'sessionName'},
-      { title: 'School', key: 'schoolName' },
-      { title: 'Assessment Center', key: 'assessmentCenterName' },
+      { title: 'Session', key: 'sessionName_desc'},
+      { title: 'School', key: 'schoolName_desc' },
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname', key: 'surName' },
       { title: 'Given Name', key: 'givenName' },
-      { title: 'Course Name (Code)', key: 'assessmentTypeName' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName' },
+      { title: 'Course Name (Code)', key: 'assessmentTypeName_desc' },
+      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
       { title: 'Proficiency Score', key: 'proficiencyScore' },
     ],
     allowedFilters: {
@@ -122,39 +107,16 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   });
 
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
-    {
-        tableHeaders: [
-            { title: 'Session', key: 'sessionName'},
-            { title: 'Assessment Center', key: 'assessmentCenterName' },
-            { title: 'PEN', key: 'pen' },
-            { title: 'Local ID', key: 'localID' },
-            { title: 'Surname', key: 'surName' },
-            { title: 'Given Name', key: 'givenName' },
-            { title: 'Course Name (Code)', key: 'assessmentTypeName' },
-            { title: 'Special Case', key: 'provincialSpecialCaseName' },
-            { title: 'Proficiency Score', key: 'proficiencyScore' },
-        ],
-        allowedFilters: {
-            session: SESSION_CODE_FILTER,
-            assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-            specialCaseCode: SPECIAL_CASE_FILTER,
-            proficiencyScore: PROFICIENCY_SCORE_FILTER,
-            proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER
-        }
-    });
-
-export const SESSION_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
     tableHeaders: [
-      { title: 'Session', key: 'sessionName'},
-      { title: 'School', key: 'schoolName' },
-      { title: 'Assessment Center', key: 'assessmentCenterName' },
+      { title: 'Session', key: 'sessionName_desc'},
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname', key: 'surName' },
       { title: 'Given Name', key: 'givenName' },
-      { title: 'Course Name (Code)', key: 'assessmentTypeName' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName' },
+      { title: 'Course Name (Code)', key: 'assessmentTypeName_desc' },
+      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
       { title: 'Proficiency Score', key: 'proficiencyScore' },
     ],
     allowedFilters: {
@@ -162,28 +124,7 @@ export const SESSION_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
       specialCaseCode: SPECIAL_CASE_FILTER,
       proficiencyScore: PROFICIENCY_SCORE_FILTER,
-      proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER      
+      proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER
     }
   });
 
-export const SESSION_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
-    {
-        tableHeaders: [
-            { title: 'Session', key: 'sessionName'},
-            { title: 'Assessment Center', key: 'assessmentCenterName' },
-            { title: 'PEN', key: 'pen' },
-            { title: 'Local ID', key: 'localID' },
-            { title: 'Surname', key: 'surName' },
-            { title: 'Given Name', key: 'givenName' },
-            { title: 'Course Name (Code)', key: 'assessmentTypeName' },
-            { title: 'Special Case', key: 'provincialSpecialCaseName' },
-            { title: 'Proficiency Score', key: 'proficiencyScore' },
-        ],
-        allowedFilters: {
-            session: SESSION_CODE_FILTER,
-            assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-            specialCaseCode: SPECIAL_CASE_FILTER,
-            proficiencyScore: PROFICIENCY_SCORE_FILTER,
-            proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER
-        }
-    });

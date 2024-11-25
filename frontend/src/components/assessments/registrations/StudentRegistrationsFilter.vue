@@ -35,7 +35,7 @@
             large-icon
             icon="mdi-magnify"
             text="Search Name and ID"
-            :click-action="setPenLocalIdNameFilter"
+            :click-action="($event) => setPenLocalIdNameFilter($event, 'click')"
           />
         </v-col>
       </v-row>
@@ -65,18 +65,18 @@
         <v-row>
           <v-col class="py-0" cols="12">
             <v-text-field
-                id="searchInput"
-                v-model="givenName"
-                label="Given Name"
-                color="primary"
-                variant="underlined"
+              id="givenName"
+              v-model="givenName"
+              label="Given Name"
+              color="primary"
+              variant="underlined"
             />
           </v-col>
         </v-row>
         <v-row>
           <v-col class="py-0" cols="12">
             <v-text-field
-              id="searchInput"
+              id="surName"
               v-model="surName"
               label="Surname"
               color="primary"
@@ -87,7 +87,7 @@
         <v-row>
           <v-col class="py-0" cols="6">
             <v-text-field
-              id="searchInput"
+              id="pen"
               v-model="pen"
               label="PEN"
               color="primary"
@@ -96,7 +96,7 @@
           </v-col>
           <v-col class="py-0" cols="6">
             <v-text-field
-              id="searchInput"
+              id="localID"
               v-model="localID"
               label="Local ID"
               color="primary"
@@ -214,7 +214,22 @@
                   {{ option?.title }}
                 </v-btn>
               </span>
-            </div>            
+            </div>     
+            <div v-else-if="filter?.id === 'specialCaseCode'">
+              <span 
+                v-for="(option, i) in specialCaseSearchNames"
+                :key="option.value"
+              >
+                <v-btn
+                  :id="option?.id"
+                  :value="option"
+                  class="filter-button"
+                  rounded="lg"
+                >
+                  {{ option?.title }}
+                </v-btn>
+              </span>
+            </div>        
             <div v-else>
               <span 
                 v-for="(option, i) in filter?.filterOptions" 
@@ -243,8 +258,9 @@ import PrimaryButton from '../../util/PrimaryButton.vue';
 import { isEmpty, sortBy} from 'lodash';
 import { mapState } from 'pinia';
 import moment from 'moment';
-import {appStore} from "../../../store/modules/app";
-import {authStore} from "../../../store/modules/auth";
+import {appStore} from '../../../store/modules/app';
+import {authStore} from '../../../store/modules/auth';
+import {easStore} from '../../../store/modules/eas';
 
 export default {
   name: 'StudentRegistrationsFilter',
@@ -283,19 +299,20 @@ export default {
       assessmentCenterSearchNames: [],
       sessionSearchNames: [],
       assessmentTypeSearchNames: [],      
-      specialCaseCodes: [],
+      specialCaseSearchNames: [],
       schoolNameNumberFilter: null,
       assessmentCenterNameNumberFilter: null,
     };
   },
   computed: {
-    ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap', 'config']),
-    ...mapState(authStore, ['userInfo']),    
+    ...mapState(appStore, ['schoolsMap', 'config']),
+    ...mapState(authStore, ['userInfo']),   
+    ...mapState(easStore, ['specialCaseCodes']) 
   },
   watch: {},
   async beforeMount() {
     this.selected = {...this.initialFilterSelection};
-    if (this.activeSchoolsMap.size === 0) {
+    if (this.schoolsMap.size === 0) {
       await appStore().getInstitutesData();
     }    
   },
@@ -311,13 +328,19 @@ export default {
             }
             this.loading = false;
           });
+        easStore()
+          .getSpecialCaseCodes()
+          .then(() => {            
+            this.setupSpecialCaseCodes();     
+            this.loading = false;
+          });
       });
     Object.keys(this.filters).forEach((key) => {
       this.selected[key] = [];
     });   
     this.setupAssessmentSessions(); 
   },
-  methods: {
+  methods: {  
     close() {
       this.$emit('close-assessment-filter');
     },
@@ -325,19 +348,34 @@ export default {
       this.sessionSearchNames = [];
       this.assessmentTypeSearchNames = [];
       this.schoolYearSessions.forEach(session => {
-        this.sessionSearchNames.push({title: this.formatMonth(session.courseMonth), id: session.sessionID, value: session.sessionID});
+        this.sessionSearchNames.push({
+          id: session.sessionID,
+          courseMonth: parseInt(session.courseMonth),
+          courseYear: parseInt(session.courseYear),
+          title: this.formatMonth(session.courseMonth),
+          value: session.sessionID
+        });
         session.assessments.forEach(assessment => {
           let existingItem = this.assessmentTypeSearchNames.find(item => item.id === assessment.assessmentTypeCode);
           if (!existingItem) {
-            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeName, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode});
+            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeName, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode, displayOrder: assessment.displayOrder});
           }
         });
       });
+      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['courseYear','courseMonth']); 
+      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']); 
+    },
+    setupSpecialCaseCodes() {
+      this.specialCaseSearchNames = [];
+      Object.keys(this.specialCaseCodes).forEach(key => {
+        this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
+      });
+      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['title']); 
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
       this.assessmentCenterSearchNames = [];
-      this.activeSchoolsMap?.forEach((school) => {
+      this.schoolsMap?.forEach((school) => {
         let schoolCodeName = school.schoolName + ' - ' + school.mincode;
 
         this.assessmentCenterSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
@@ -349,7 +387,7 @@ export default {
       this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
       this.assessmentCenterSearchNames = sortBy(this.assessmentCenterSearchNames, ['schoolCodeName']);
     },
-    setPenLocalIdNameFilter() {
+    setPenLocalIdNameFilter($event, val) {
       const keys = ['givenName', 'surName', 'pen', 'localID'];
       keys.forEach((key) => {
         if (this[key] != null) {
@@ -360,9 +398,10 @@ export default {
           }
         }
       });
-      this.apply();
-
-    },
+      if ($event && val === 'click') {
+        this.apply();
+      }
+    },    
     setSchoolNameNumberFilter(key, $event) {
       this.setPenLocalIdNameFilter($event, null);
       if ($event) {

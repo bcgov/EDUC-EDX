@@ -44,8 +44,8 @@ import StudentRegistrations from './registrations/StudentRegistrations.vue';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import { mapState } from 'pinia';
-import Spinner from "../common/Spinner.vue";
-import {authStore} from "../../store/modules/auth";
+import Spinner from '../common/Spinner.vue';
+import {authStore} from '../../store/modules/auth';
 
 export default {
   name: 'AssessmentSessionDetail',
@@ -87,8 +87,7 @@ export default {
         .get(
           `${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}/school-year/` + this.schoolYear + '/' + this.userInfo.activeInstituteType,
           {}
-        )
-        .then((response) => {
+        ).then((response) => {
           this.schoolYearSessions = response.data;          
         })
         .catch((error) => {

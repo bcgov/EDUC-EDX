@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, getAccessToken, getData, getDataWithParams, errorResponse, handleExceptionResponse } = require('../utils');
+const { logApiError, getAccessToken, getData, putData, getCreateOrUpdateUserValue,  getDataWithParams, errorResponse, handleExceptionResponse } = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
@@ -39,8 +39,12 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
     const token = getAccessToken(req);
     let data = await getData(token, url);
     data.forEach(session => {
+      session.isOpen =  new Date(session.activeFromDate) <= new Date() && new Date(session.activeUntilDate) >= new Date(); 
       session.assessments.forEach(assessment => {
-        assessment.assessmentTypeName = cacheService.getAssessmentTypeLabelByCode(assessment.assessmentTypeCode)+' ('+assessment.assessmentTypeCode+')';
+        let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
+        assessment.assessmentTypeName = assessmentType.label+' ('+assessment.assessmentTypeCode+')';
+        assessment.displayOrder = assessmentType.displayOrder;
+
       });
     });
     return res.status(200).json(data);
@@ -78,22 +82,7 @@ async function getAssessmentStudentsPaginated(req, res) {
       return res.status(HttpStatus.OK).json(result);
     }
     data?.content.forEach(value => {
-      let school = cacheService.getSchoolBySchoolID(value.schoolID);
-      let assessmentCenter = cacheService.getSchoolBySchoolID(value.assessmentCenterID);
-      let district = cacheService.getDistrictJSONByDistrictID(school.districtID);
-
-      value.schoolNumber = school.mincode;
-      value.schoolName = getSchoolName(school);
-      value.districtID = school.districtID;
-      value.districtNumber = district.districtNumber;
-      value.districtName = getDistrictName(district);    
-      value.assessmentCenterNumber = assessmentCenter.mincode;
-      value.assessmentCenterName = getSchoolName(assessmentCenter);
-
-      value.assessmentTypeName = cacheService.getAssessmentTypeLabelByCode(value.assessmentTypeCode)+' ('+value.assessmentTypeCode+')';
-      value.provincialSpecialCaseName = value.provincialSpecialCaseName ? cacheService.getSpecialCaseTypeLabelByCode(value.provincialSpecialCaseCode) : '-';
-      value.sessionName = moment(value.courseMonth, 'MM').format('MMMM') +' '+value.courseYear;
-
+      includeAssessmentStudentProps(value);
     });
     return res.status(200).json(data);
   } catch (e) {
@@ -106,6 +95,64 @@ async function getAssessmentStudentsPaginated(req, res) {
   }
 }
 
+async function getAssessmentStudentByID(req, res) {
+  try {  
+    const token = getAccessToken(req);
+    let data = await getData(token, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
+    return res.status(200).json(includeAssessmentStudentProps(data));
+  } catch (e) {
+    if (e?.status === 404) {
+      res.status(HttpStatus.OK).json(null);
+    } else {
+      await logApiError(e, 'Error getting eas assessment student');
+      return errorResponse(res);
+    }
+  }
+}
+
+function includeAssessmentStudentProps(assessmentStudent) {
+  if(assessmentStudent) {
+    let school = cacheService.getSchoolBySchoolID(assessmentStudent.schoolID);
+    let assessmentCenter = cacheService.getSchoolBySchoolID(assessmentStudent.assessmentCenterID);
+    let district = cacheService.getDistrictJSONByDistrictID(school.districtID);
+
+    if(school && district) {
+      assessmentStudent.schoolName_desc = getSchoolName(school);
+      assessmentStudent.districtID = school.districtID;
+      assessmentStudent.districtName_desc = getDistrictName(district);
+    }
+    
+    if(school && district) {
+      assessmentStudent.assessmentCenterName_desc = getSchoolName(assessmentCenter);
+    }    
+
+    assessmentStudent.assessmentTypeName_desc = cacheService.getAssessmentTypeByCode(assessmentStudent.assessmentTypeCode).label+' ('+assessmentStudent.assessmentTypeCode+')';
+    assessmentStudent.provincialSpecialCaseName_desc = cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode);
+    assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') +' '+assessmentStudent.courseYear;
+  }
+  return assessmentStudent;
+}
+
+async function updateAssessmentStudentByID(req, res) {
+  if (req.params.assessmentStudentID !== req.body.assessmentStudentID) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'The assessmentStudentID in the URL didn\'t match the assessmentStudentID in the request body.'
+    });
+  }
+  try {
+    const token = getAccessToken(req);
+    const payload = req.body;
+    payload.updateUser =  getCreateOrUpdateUserValue(req);
+    payload.updateDate = null;
+    payload.createDate = null;
+    const result = await putData(token, payload, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    logApiError(e, 'updateAssessmentStudent', 'Error occurred while attempting to save the changes to the assessment student registration.');
+    return errorResponse(res);
+  }
+}
+
 function getSchoolName(school) {
   return school.mincode + ' - ' + school.schoolName;
 }
@@ -114,9 +161,22 @@ function getDistrictName(district) {
   return district.districtNumber + ' - ' + district.name;
 }
 
+function getAssessmentSpecialCases(req, res) {  
+  try {
+    const codes = cacheService.getAllAssessmentSpecialCases();
+    return res.status(HttpStatus.OK).json(Object.fromEntries(codes));
+  } catch (e) {
+    logApiError(e, 'getAssessmentSpecialCases', 'Error occurred while attempting to get specialcase types.');
+    return errorResponse(res);
+  }
+}
+
 module.exports = {
   getAssessmentSessions,
   getActiveAssessmentSessions,
   getAssessmentSessionsBySchoolYear,
-  getAssessmentStudentsPaginated
+  getAssessmentStudentsPaginated,
+  getAssessmentStudentByID,
+  updateAssessmentStudentByID,
+  getAssessmentSpecialCases
 };
