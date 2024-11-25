@@ -118,7 +118,7 @@ export default {
       default: false,
     },
   },
-  emits: [ 'reload', 'openStudentDetails', 'selections', 'editSelectedRow', 'loadPrevious', 'loadNext'],
+  emits: [ 'reload-registrations', 'openStudentDetails', 'editSelectedRow', 'loadPrevious', 'loadNext'],
   data() {
     return {
       masterCheckbox: false,
@@ -139,26 +139,9 @@ export default {
       if (val) {
         this.masterCheckbox = false;
         this.selected = [];
-        this.$emit('reload', { pageNumber: val });
+        this.$emit('reload-registrations', { pageNumber: val });
       }
-    },
-    selected: {
-      handler(val) {
-        if (val) {
-          this.$emit('selections', this.selected);
-        }
-      },
-      deep: true,
-    },
-    reset: {
-      handler(val) {
-        if (val) {
-          this.masterCheckbox = false;
-          this.selected.splice(0);
-        }
-      },
-      immediate: true,
-    },
+    }
   },
   created() {
     appStore()
