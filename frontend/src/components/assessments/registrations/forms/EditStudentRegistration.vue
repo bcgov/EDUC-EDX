@@ -24,38 +24,40 @@
             <v-row>
               <v-col cols="12">
                 <v-row class="mt-n4">
-                  <v-col>                    
+                  <v-col>        
                     <v-autocomplete
                       id="Session"
                       v-model="assessmentStudentDetail.sessionID"
-                      variant="underlined"                      
+                      variant="underlined"                     
                       :items="sessionSearchNames"
-                      color="#003366"
                       label="Session"
-                      :clearable="true"
                       item-title="sessionCodeName"
                       item-value="sessionCodeValue"
                       autocomplete="off"
+                      :color="getFieldColor()"
+                      :readonly="!isActive"
+                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
                       :rules="[rules.required()]"      
                       @update:model-value="refreshAssessmentTypes($event)"                
                     />
                   </v-col>               
                 
-                  <v-col cols="6">                    
+                  <v-col cols="6">   
                     <v-autocomplete
                       id="AssessmentCourse"
                       v-model="assessmentStudentDetail.assessmentTypeName_desc"
                       variant="underlined"                      
                       :items="assessmentTypeSearchNames"
-                      color="#003366"
                       label="Assessment Course"
-                      :clearable="true"
                       item-title="assessmentCodeName"
                       item-value="assessmentCodeValue"
                       autocomplete="off"
-                      :rules="[rules.required()]"    
-                      @update:model-value="syncAssessmentValue($event)"                    
-                    />
+                      :color="getFieldColor()"
+                      :readonly="!isActive"
+                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
+                      :rules="[rules.required()]"      
+                      @update:model-value="syncAssessmentValue($event)"                
+                    /> 
                   </v-col>                  
                 </v-row>
                 <v-row class="mt-n4">
@@ -85,37 +87,35 @@
                   </v-col>                  
                 </v-row>
                 <v-row class="mt-n4">
-                  <v-col  cols="6">                    
+                  <v-col cols="6">                    
                     <v-autocomplete
                       id="AssessmentCenter"
                       v-model="assessmentStudentDetail.assessmentCenterID"
                       variant="underlined"                      
                       :items="assessmentCenterSearchNames"
-                      color="#003366"
                       label="Assessment Center Name or Number"
                       :clearable="true"
                       item-title="schoolCodeName"
                       item-value="schoolCodeValue"
                       autocomplete="off"
                       density="compact"
+                      :color="getFieldColor()"
+                      :readonly="!isActive"
+                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
                       :rules="[rules.required()]"   
                     />
                   </v-col>   
-                  <v-col>                    
-                    <v-autocomplete
+                  <v-col>     
+                    <v-text-field
                       id="SpecialCase"
-                      v-model="assessmentStudentDetail.provincialSpecialCaseCode"
-                      variant="underlined"                      
-                      :items="specialCaseSearchNames"
-                      color="#003366"
+                      v-model="assessmentStudentDetail.provincialSpecialCaseName_desc"
                       label="Special Case"
-                      :clearable="true"
-                      item-title="specialCaseCodeName"
-                      item-value="specialCaseCodeValue"
-                      autocomplete="off"
+                      variant="underlined"
+                      :maxlength="25"
                       density="compact"
-                      :rules="[rules.required()]"   
-                    />
+                      :readonly="true"
+                      :class="['readonly-text']"
+                    />               
                   </v-col>               
                 </v-row>
                 <v-row class="mt-n4">
@@ -200,7 +200,11 @@
           </v-form>
         </v-col>
       </div>
-      <v-row :class="functionType !== 'add' ? 'footer' : ''" no-gutters v-if="isActiveSession()">
+      <v-row 
+        v-if="isActive"
+        :class="functionType !== 'add' ? 'footer' : ''" 
+        no-gutters 
+      >
         <v-col class="d-flex justify-end mr-3 mt-3">
           <v-btn
             v-if="functionType !== 'add'"
@@ -296,6 +300,7 @@ export default {
       studentRegistrationDetailsFormValid: false,
       assessmentStudentDetail: {},
       loadingCount: 0,
+      isActive: false
     };
   },
   computed: {
@@ -430,6 +435,7 @@ export default {
         .then(response => {
           this.assessmentStudentDetail = response.data;
           this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);
+          this.setupActiveFlag();
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student registration details. Please try again later.');
@@ -439,6 +445,9 @@ export default {
             this.$nextTick().then(this.validateForm);
           }
         });
+    },
+    setupActiveFlag() {
+      this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen && !parseInt(this.assessmentStudentDetail.proficiencyScore) > 0;
     },
     saveStudentRegistration() {
       this.loadingCount += 1;
@@ -473,15 +482,15 @@ export default {
         return;
       }
     },
-    isActiveSession() {
-      return this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen;
-    },
     validateForm() {
       this.$refs?.registrationDetailsForm?.validate();
     },
     formatMonth(month) {
       return moment(month, 'MM').format('MMMM');
     },
+    getFieldColor() {
+      return !this.isActive ? '#7f7f7f' : '#003366';
+    }
   },
 };
 </script>
@@ -489,5 +498,4 @@ export default {
 .readonly-text {
   color: #7f7f7f;
 }
-
 </style>
