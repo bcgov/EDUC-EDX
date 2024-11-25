@@ -447,7 +447,7 @@ export default {
         });
     },
     setupActiveFlag() {
-      this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen && !(this.assessmentStudentDetail.proficiencyScore && parseInt(this.assessmentStudentDetail.proficiencyScore) >= 0);
+      this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen && !this.assessmentStudentDetail.provincialSpecialCaseCode && !(this.assessmentStudentDetail.proficiencyScore && parseInt(this.assessmentStudentDetail.proficiencyScore) >= 0);
     },
     saveStudentRegistration() {
       this.loadingCount += 1;
