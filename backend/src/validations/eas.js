@@ -16,7 +16,7 @@ const putStudentAssessmentSchema = object({
     givenName: string().max(25).nonNullable(),
     surName: string().max(25).nonNullable(),
     isElectronicExam: boolean().nonNullable(),
-    proficiencyScore: number().nonNullable(),
+    proficiencyScore: number().nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
     courseStatusCode: string().max(1).nullable().optional(),
     numberOfAttempts: number().nullable(),
