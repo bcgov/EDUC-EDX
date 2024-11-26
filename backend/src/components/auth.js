@@ -124,7 +124,7 @@ const auth = {
           client_id: config.get('oidc:clientId'),
           client_secret: config.get('oidc:clientSecret'),
           grant_type: 'client_credentials',
-          scope: discovery.scopes_supported
+          scope: 'openid profile'
         }), {
           headers: {
             Accept: 'application/json',

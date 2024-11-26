@@ -183,25 +183,25 @@ router.get('/logout', async (req, res, next) => {
     req.session.destroy();
     let retUrl;
     if (req.query && req.query.sessionExpired) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginError) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/login-error');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/login-error' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceid) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntra) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginIDIR) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_idir');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_idir' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceidActivateUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_user');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid_activate_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceidActivateDistrictUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_bceid_activate_district_user');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntraActivateUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra_activate_user');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra_activate_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntraActivateDistrictUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/api/auth/login_entra_activate_district_user');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
     } else {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/logout');
+      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/logout' + '&client_id=' + config.get('oidc:clientId'));
     }
     res.redirect(config.get('siteMinder_logout_endpoint') + retUrl);
   });
