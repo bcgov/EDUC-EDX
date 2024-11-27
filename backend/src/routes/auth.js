@@ -176,35 +176,63 @@ addBaseRouterGet('oidcEntraActivateDistrictUser', '/login_entra_activate_distric
 
 //removes tokens and destroys session
 router.get('/logout', async (req, res, next) => {
-  req.logout(function(err) {
-    if (err) {
-      return next(err);
-    }
-    req.session.destroy();
+  let primaryURL = config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend');
+  let idToken = req?.session?.passport?.user?.idToken;
+  if (idToken) {
+    req.logout(function(err) {
+      if (err) {
+        return next(err);
+      }
+      req.session.destroy();
+      let retUrl;
+      if (req.query && req.query.sessionExpired) {
+        retUrl = encodeURIComponent(primaryURL + '/session-expired' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginError) {
+        retUrl = encodeURIComponent(primaryURL + '/login-error' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginBceid) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginEntra) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginIDIR) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_idir' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginBceidActivateUser) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid_activate_user' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginBceidActivateDistrictUser) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid_activate_district_user' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginEntraActivateUser) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra_activate_user' + '&id_token_hint=' + idToken);
+      } else if (req.query && req.query.loginEntraActivateDistrictUser) {
+        retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra_activate_district_user' + '&id_token_hint=' + idToken);
+      } else {
+        retUrl = encodeURIComponent(primaryURL + '/logout' + '&id_token_hint=' + idToken);
+      }
+      res.redirect(config.get('siteMinder_logout_endpoint') + retUrl);
+    });
+  }else {
     let retUrl;
     if (req.query && req.query.sessionExpired) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend') + '/session-expired' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/session-expired' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginError) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/login-error' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/login-error' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceid) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntra) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginIDIR) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_idir' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_idir' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceidActivateUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid_activate_user' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid_activate_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginBceidActivateDistrictUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_bceid_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_bceid_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntraActivateUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra_activate_user' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra_activate_user' + '&client_id=' + config.get('oidc:clientId'));
     } else if (req.query && req.query.loginEntraActivateDistrictUser) {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/api/auth/login_entra_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/api/auth/login_entra_activate_district_user' + '&client_id=' + config.get('oidc:clientId'));
     } else {
-      retUrl = encodeURIComponent(config.get('logoutEndpoint') + '?post_logout_redirect_uri=' + config.get('server:frontend')+ '/logout' + '&client_id=' + config.get('oidc:clientId'));
+      retUrl = encodeURIComponent(primaryURL + '/logout' + '&client_id=' + config.get('oidc:clientId'));
     }
     res.redirect(config.get('siteMinder_logout_endpoint') + retUrl);
-  });
+  }
 });
 
 const UnauthorizedRsp = {
