@@ -63,7 +63,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="py-0" cols="12">
+          <v-col class="py-0" cols="6">
             <v-text-field
               id="givenName"
               v-model="givenName"
@@ -72,9 +72,7 @@
               variant="underlined"
             />
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="py-0" cols="12">
+          <v-col class="py-0" cols="6">
             <v-text-field
               id="surName"
               v-model="surName"
@@ -193,7 +191,7 @@
                 <v-btn
                   :id="option?.id"
                   :value="option"
-                  class="filter-button"
+                  :class="selected['session']?.find(entry => entry.id === option.id) ? 'filter-button-active' : 'filter-button'"
                   rounded="lg"
                 >
                   {{ option?.title }}
@@ -473,6 +471,14 @@ export default {
   padding: 5px;
   margin: 0 8px 8px 8px;
   border: 1px solid #003366;
+}
+
+.filter-button-active {
+padding: 5px;
+margin: 0 8px 8px 8px; 
+background-color: rgb(0, 51, 102); 
+color: rgb(255, 255, 255); 
+caret-color: rgb(255, 255, 255);
 }
 
 .filter-toggle {

@@ -207,9 +207,9 @@ export default {
     },
     goToSchoolYearRegistrations() {
       if(this.userInfo.activeInstituteType === 'DISTRICT'){
-        this.$router.push({name: 'district-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null, sessionMonth: null}});
+        this.$router.push({name: 'district-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null}});
       } else {
-        this.$router.push({name: 'school-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null, sessionMonth: null}});
+        this.$router.push({name: 'school-assessment-session-detail', params: {schoolYear:  this.schoolYear?.replace(/\//g, '-'), sessionID: null}});
       }
     },
     goToHistoricalSessionRegistrations(e, { item }) {
