@@ -35,8 +35,9 @@
                       item-value="sessionCodeValue"
                       autocomplete="off"
                       :color="getFieldColor()"
-                      :readonly="!isActive"
-                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
+                      :clearable="isSessionEditable"
+                      :readonly="!isSessionEditable"
+                      :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
                       :rules="[rules.required()]"      
                       @update:model-value="refreshAssessmentTypes($event)"                
                     />
@@ -53,8 +54,9 @@
                       item-value="assessmentCodeValue"
                       autocomplete="off"
                       :color="getFieldColor()"
-                      :readonly="!isActive"
-                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
+                      :clearable="isSessionEditable"
+                      :readonly="!isSessionEditable"
+                      :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
                       :rules="[rules.required()]"      
                       @update:model-value="syncAssessmentValue($event)"                
                     /> 
@@ -94,15 +96,14 @@
                       variant="underlined"                      
                       :items="assessmentCenterSearchNames"
                       label="Assessment Center Name or Number"
-                      :clearable="true"
+                      :clearable="isSessionEditable"
                       item-title="schoolCodeName"
                       item-value="schoolCodeValue"
                       autocomplete="off"
                       density="compact"
                       :color="getFieldColor()"
-                      :readonly="!isActive"
-                      :class="!isActive ? 'readonly-text' : 'fieldtext'"
-                      :rules="[rules.required()]"   
+                      :readonly="!isSessionEditable"
+                      :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
                     />
                   </v-col>   
                   <v-col>     
@@ -200,8 +201,8 @@
           </v-form>
         </v-col>
       </div>
-      <v-row 
-        v-if="isActive"
+      <v-row  
+        v-if="isSessionEditable"
         :class="functionType !== 'add' ? 'footer' : ''" 
         no-gutters 
       >
@@ -300,7 +301,8 @@ export default {
       studentRegistrationDetailsFormValid: false,
       assessmentStudentDetail: {},
       loadingCount: 0,
-      isActive: false
+      isActive: false,
+      isSessionEditable: false
     };
   },
   computed: {
@@ -312,7 +314,7 @@ export default {
     selectedAssessmentStudentId: {
       handler(value) {
         this.setupAssessmentSessions();  
-        this.getAssessmentStudentDetail(value);        
+        this.getAssessmentStudentDetail(value);       
       },
       immediate: true
     },
@@ -338,7 +340,7 @@ export default {
   },  
   async beforeMount() {
     this.selected = {...this.initialFilterSelection};
-    if (this.activeSchoolsMap.size === 0) {
+    if (this.activeSchoolsMap.size === 0 || this.schoolsMap.size === 0) {
       await appStore().getInstitutesData();
     }    
   },
@@ -348,8 +350,7 @@ export default {
       .then(() => {
         appStore()
           .getInstitutesData()
-          .then(() => {
-            this.setupSchoolList();
+          .then(() => {            
             this.loading = false;
           });
         easStore()
@@ -366,7 +367,8 @@ export default {
     },
     setupSchoolList() {
       this.schoolSearchNames = [];
-      this.activeSchoolsMap?.forEach((school) => {
+      let schoolCollection = this.isActive ? this.activeSchoolsMap : this.schoolsMap;
+      schoolCollection?.forEach((school) => {
         this.schoolSearchNames.push({
           schoolCodeName: school.schoolName + ' - ' + school.mincode,
           schoolCodeValue: school.schoolID
@@ -376,56 +378,57 @@ export default {
     },
     setupAssessmentSessions() {
       this.sessionSearchNames = [];
-      let sessions = [];
       this.schoolYearSessions?.forEach((session) => {
-        sessions.push({
+        this.sessionSearchNames.push({
           sessionCourseMonth: parseInt(session.courseMonth),
           sessionCourseYear: parseInt(session.courseYear),
           sessionCodeName: this.formatMonth(session.courseMonth) + ' ' + session.courseYear,
           sessionCodeValue: session.sessionID
         });
       });
-      this.sessionSearchNames = sortBy(sessions, ['sessionCourseYear','sessionCourseMonth']); 
+      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['sessionCourseYear','sessionCourseMonth']); 
     },
     setupSpecialCaseCodes() {
       this.specialCaseSearchNames = [];
-      let specialCases = [];
       Object.keys(this.specialCaseCodes).forEach(key => {
-        specialCases.push({
+        this.specialCaseSearchNames.push({
           specialCaseCodeName: this.specialCaseCodes[key],
           specialCaseCodeValue: key
         });
       });
-      this.specialCaseSearchNames = sortBy(specialCases, ['specialCaseCodeName']); 
+      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['specialCaseCodeName']); 
     },
     refreshAssessmentTypes($event) {
       let session = this.schoolYearSessions.find(session => session.sessionID === $event);
       this.assessmentTypeSearchNames = [];
-      let assessmentTypes = [];
       let assessmentID = null;
       session?.assessments.forEach((assessment) => {
         if(assessment.assessmentTypeName === this.assessmentStudentDetail.assessmentTypeName_desc) {
           assessmentID = assessment.assessmentID;
         }
-        assessmentTypes.push({
+        this.assessmentTypeSearchNames.push({
           assessmentCodeName: assessment.assessmentTypeName,
           assessmentCodeValue: assessment.assessmentTypeName,
           displayOrder: assessment.displayOrder
         });
       });            
-      this.assessmentTypeSearchNames = sortBy(assessmentTypes, ['displayOrder']); 
-      if(assessmentID) {
-        this.assessmentStudentDetail.assessmentID = assessmentID;        
+      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']); 
+      if(assessmentID && this.assessmentStudentDetail.sessionID) {
+        this.assessmentStudentDetail.assessmentID = assessmentID;         
       } else {
         this.assessmentStudentDetail.assessmentID = null;
-        this.assessmentStudentDetail.assessmentTypeName_desc = null;
+        this.assessmentStudentDetail.assessmentTypeName_desc = null;        
       }
+      this.validateForm();
     },
     syncAssessmentValue($event) {
       let session = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID);
       let assessment = session?.assessments.find(assessment => assessment.assessmentTypeName === $event);
-      if(assessment) {
-        this.assessmentStudentDetail.assessmentID = assessment.assessmentID; 
+      if(assessment && this.assessmentStudentDetail.sessionID) {
+        this.assessmentStudentDetail.assessmentID =  assessment.assessmentID;
+      } else {        
+        this.assessmentStudentDetail.assessmentID = null;
+        this.assessmentStudentDetail.assessmentTypeName_desc = null;
       }
     },        
     getAssessmentStudentDetail(assessmentStudentID) {
@@ -434,8 +437,9 @@ export default {
       ApiService.apiAxios.get(`${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/${assessmentStudentID}`)
         .then(response => {
           this.assessmentStudentDetail = response.data;
-          this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);
+          this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);          
           this.setupActiveFlag();
+          this.setupSchoolList();
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student registration details. Please try again later.');
@@ -446,8 +450,9 @@ export default {
           }
         });
     },
-    setupActiveFlag() {
-      this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen && !this.assessmentStudentDetail.provincialSpecialCaseCode && !(this.assessmentStudentDetail.proficiencyScore && parseInt(this.assessmentStudentDetail.proficiencyScore) >= 0);
+    setupActiveFlag() {      
+      this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen;
+      this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore;
     },
     saveStudentRegistration() {
       this.loadingCount += 1;
@@ -478,9 +483,26 @@ export default {
     },
     deleteStudentRegistration() {
       const confirmation = this.$refs.confirmRemoveStudentRegistration.open('Confirm Removal of Student Registration', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
-      if (!confirmation) {
-        return;
-      }
+      confirmation.then((result) => {
+        if (result) {
+          this.loadingCount += 1;
+          ApiService.apiAxios.delete(`${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID)
+            .then(() => {
+              setSuccessAlert('Success! The student registration details have been deleted.');   
+              this.$emit('reset-student-registration-pagination');
+            }).catch((error) => {
+              console.error(error);
+              setFailureAlert(
+                error?.response?.data?.message
+                  ? error?.response?.data?.message
+                  : 'An error occurred while trying to delete student registration details. Please try again later.'
+              );
+            }).finally(() => {
+              this.loadingCount -= 1;
+              this.$emit('reset-student-registration-parent');
+            });
+        } 
+      });
     },
     validateForm() {
       this.$refs?.registrationDetailsForm?.validate();
@@ -489,7 +511,7 @@ export default {
       return moment(month, 'MM').format('MMMM');
     },
     getFieldColor() {
-      return !this.isActive ? '#7f7f7f' : '#003366';
+      return !this.isSessionEditable ? '#7f7f7f' : '#003366';
     }
   },
 };

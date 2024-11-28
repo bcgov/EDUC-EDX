@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, getAccessToken, getData, putData, getCreateOrUpdateUserValue,  getDataWithParams, errorResponse, handleExceptionResponse } = require('../utils');
+const { logApiError, getAccessToken, getData, putData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse } = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
@@ -90,7 +90,7 @@ async function getAssessmentStudentsPaginated(req, res) {
       res.status(HttpStatus.OK).json(null);
     } else {
       await logApiError(e, 'Error getting eas assessment student paginated list');
-      return errorResponse(res);
+      return handleExceptionResponse(e, res);
     }
   }
 }
@@ -105,8 +105,19 @@ async function getAssessmentStudentByID(req, res) {
       res.status(HttpStatus.OK).json(null);
     } else {
       await logApiError(e, 'Error getting eas assessment student');
-      return errorResponse(res);
+      return handleExceptionResponse(e, res);
     }
+  }
+}
+
+async function deleteAssessmentStudentByID(req, res) {  
+  try {
+    const token = getAccessToken(req);
+    const result = await deleteData(token, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    logApiError(e, 'deleteAssessmentStudentByID', 'Error occurred while attempting to delete the assessment student registration.');
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -122,12 +133,12 @@ function includeAssessmentStudentProps(assessmentStudent) {
       assessmentStudent.districtName_desc = getDistrictName(district);
     }
     
-    if(school && district) {
+    if(assessmentCenter) {
       assessmentStudent.assessmentCenterName_desc = getSchoolName(assessmentCenter);
     }    
 
     assessmentStudent.assessmentTypeName_desc = cacheService.getAssessmentTypeByCode(assessmentStudent.assessmentTypeCode).label+' ('+assessmentStudent.assessmentTypeCode+')';
-    assessmentStudent.provincialSpecialCaseName_desc = cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode);
+    assessmentStudent.provincialSpecialCaseName_desc = assessmentStudent.provincialSpecialCaseCode ? cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode) : null;
     assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') +' '+assessmentStudent.courseYear;
   }
   return assessmentStudent;
@@ -149,7 +160,7 @@ async function updateAssessmentStudentByID(req, res) {
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'updateAssessmentStudent', 'Error occurred while attempting to save the changes to the assessment student registration.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -167,7 +178,7 @@ function getAssessmentSpecialCases(req, res) {
     return res.status(HttpStatus.OK).json(Object.fromEntries(codes));
   } catch (e) {
     logApiError(e, 'getAssessmentSpecialCases', 'Error occurred while attempting to get specialcase types.');
-    return errorResponse(res);
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -178,5 +189,6 @@ module.exports = {
   getAssessmentStudentsPaginated,
   getAssessmentStudentByID,
   updateAssessmentStudentByID,
+  deleteAssessmentStudentByID,
   getAssessmentSpecialCases
 };

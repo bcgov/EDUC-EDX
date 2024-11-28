@@ -7,7 +7,7 @@ const putStudentAssessmentSchema = object({
     sessionID:string().nonNullable(),
     districtID: string().nonNullable(),
     schoolID: string().nonNullable(),
-    assessmentCenterID: string().nonNullable(),
+    assessmentCenterID: string().nullable().optional(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
     studentID: string().nonNullable(),
