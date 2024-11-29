@@ -869,6 +869,9 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
 
     sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolName = getSchoolName(school1);
     sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolName = getSchoolName(school2);
+
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolContactDisplayName = getSchoolName(school1);
+    sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolContactDisplayName = getSchoolName(school2);
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
 
@@ -895,7 +898,6 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
 
 async function getUserWithSdcRole(req, sdcDuplicates) {
   const token = getAccessToken(req);
-
   for(let sdcDuplicate of sdcDuplicates) {
     if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
@@ -909,7 +911,7 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
         if(sdcUser1 !== undefined) {
           let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
-        } else {
+        } else if(sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcDistrictCollectionID !== null) {
           let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school1.districtID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
         }
@@ -922,9 +924,9 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
         });
 
         if(sdcUser2 !== undefined) {
-          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
+          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
-        } else {
+        } else if(sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcDistrictCollectionID !== null) {
           let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school2.districtID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
         }
@@ -972,10 +974,15 @@ async function getProvincialDuplicatesForSchool(req, res) {
 }
 
 function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) {
-  const district1 = cacheService.getDistrictByDistrictID(school1.districtID);
-  const district2 = cacheService.getDistrictByDistrictID(school2.districtID);
-  sdcDuplicate.sdcSchoolCollectionStudent1Entity.districtName = getDistrictName(district1);
-  sdcDuplicate.sdcSchoolCollectionStudent2Entity.districtName = getDistrictName(district2);
+  if(sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcDistrictCollectionID !== null) {
+    const district1 = cacheService.getDistrictByDistrictID(school1.districtID);
+    sdcDuplicate.sdcSchoolCollectionStudent1Entity.districtName = getDistrictName(district1);
+  }
+
+  if(sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcDistrictCollectionID !== null) {
+    const district2 = cacheService.getDistrictByDistrictID(school2.districtID);
+    sdcDuplicate.sdcSchoolCollectionStudent2Entity.districtName = getDistrictName(district2);
+  }
 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
     delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionStudentID;
