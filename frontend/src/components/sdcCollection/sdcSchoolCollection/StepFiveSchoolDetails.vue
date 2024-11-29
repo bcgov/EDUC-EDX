@@ -31,14 +31,14 @@
   >
     <v-col class="error-message">
       <p class="form-hint">
-        Address, phone, and/or email must be added
+        Address, phone, and email must be added
       </p>
     </v-col>
   </v-row>
 
   <v-row justify="end">
     <PrimaryButton
-      v-if="!isStepComplete"
+      v-if="!isStepComplete && !isEditing"
       id="step-5-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -47,7 +47,7 @@
       :click-action="next"
     />
     <PrimaryButton
-      v-else
+      v-else-if="isStepComplete && !isEditing"
       id="step-5-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
@@ -92,6 +92,7 @@ export default {
     return {
       type: 'SDC',
       isDisabled: false,
+      isEditing: false,
       sdcSchoolCollectionID: this.$route.params.schoolCollectionID,
       displayBanner: true,
       isOffshoreSchool: false,
@@ -137,6 +138,7 @@ export default {
     },
     toggleBanner(value) {
       this.displayBanner = !value;
+      this.isEditing = value;
     },
     handleIsOffshoreSchool(isOffshore) {
       this.isOffshoreSchool = isOffshore;
