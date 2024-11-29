@@ -149,7 +149,7 @@
                     <v-card min-width="300">
                       <v-list>
                         <v-list-item
-                          :title="sdcSchoolCollectionStudent?.contactInfo?.isSchoolContact ? sdcSchoolCollectionStudent?.schoolName : sdcSchoolCollectionStudent?.districtName"
+                          :title="sdcSchoolCollectionStudent?.contactInfo?.isSchoolContact ? sdcSchoolCollectionStudent?.schoolContactDisplayName : sdcSchoolCollectionStudent?.districtName"
                         />
                       </v-list>
                       <v-divider />
