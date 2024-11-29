@@ -727,7 +727,7 @@
               </v-row>
             </v-col>
             <v-col
-              v-if="!isOffshoreSchool"
+              v-if="!isOffshoreSchool()"
               cols="3"
             >
               <v-row>
@@ -1250,6 +1250,7 @@ export default {
     isOffshoreSchool(){
       const isOffshore = this.school.schoolCategoryCode === SCHOOL_CATEGORY_CODES.OFFSHORE;
       this.$emit('update-is-offshore', isOffshore);
+      console.log('Marco: ' + isOffshore);
       return isOffshore;
     },
     async toggleEdit() {
