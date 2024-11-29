@@ -63,7 +63,7 @@
           duplicate-level="PROVINCIAL"
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
-          :can-resolve-duplicates="false"
+          :can-resolve-duplicates="schoolCollectionObject.sdcSchoolCollectionStatusCode === 'P_DUP_POST' && hasEditPermission()"
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
