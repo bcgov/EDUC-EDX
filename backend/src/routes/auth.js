@@ -34,7 +34,8 @@ router.get('/', (_req, res) => {
 function addOIDCRouterActivateWithTenant(strategyName, callbackURI, redirectURL) {
   router.get(callbackURI,
     passport.authenticate(strategyName, {
-      failureRedirect: 'error'
+      failureRedirect: 'error',
+      scope: 'openid profile'
     }),
     (req, res) => {
       const userInfo = getSessionUser(req);
@@ -51,7 +52,8 @@ function addOIDCRouterActivateWithTenant(strategyName, callbackURI, redirectURL)
 function addOIDCRouterActivate(strategyName, callbackURI, redirectURL) {
   router.get(callbackURI,
     passport.authenticate(strategyName, {
-      failureRedirect: 'error'
+      failureRedirect: 'error',
+      scope: 'openid profile'
     }),
     (_req, res) => {
       res.redirect(redirectURL);
@@ -66,7 +68,8 @@ addOIDCRouterActivateWithTenant('oidcEntraActivateDistrictUser', '/callback_acti
 
 router.get('/callback_bceid',
   passport.authenticate('oidcBceid', {
-    failureRedirect: 'error'
+    failureRedirect: 'error',
+    scope: 'openid profile'
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
@@ -79,7 +82,8 @@ router.get('/callback_bceid',
 
 router.get('/callback_entra',
   passport.authenticate('oidcEntra', {
-    failureRedirect: 'error'
+    failureRedirect: 'error',
+    scope: 'openid profile'
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
@@ -110,14 +114,14 @@ router.get('/silent_sdc_idir_login', async function (req, res, next) {
     res.status(401).json(UnauthorizedRsp);
   }
 
-  const authenticator = passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' });
+  const authenticator = passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error', scope: 'openid profile' });
   authenticator(req, res, next);
 });
 
 
 router.get(
   '/callback_idir_silent_sdc',
-  passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error' }),
+  passport.authenticate('oidcIDIRSilent', { failureRedirect: 'error', scope: 'openid profile' }),
   async (req, res) => {
     if(!req.session.passport.user._json.idir_guid){
       await res.redirect(config.get('server:frontend') + '/unauthorized');
@@ -143,7 +147,8 @@ router.get(
 
 router.get('/callback_idir',
   passport.authenticate('oidcIDIR', {
-    failureRedirect: 'error'
+    failureRedirect: 'error',
+    scope: 'openid profile'
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
@@ -161,7 +166,7 @@ router.get('/error', (_req, res) => {
 
 function addBaseRouterGet(strategyName, callbackURI) {
   router.get(callbackURI, passport.authenticate(strategyName, {
-    scope: ['openid', 'profile'],
+    scope: 'openid profile',
     failureRedirect: 'error'
   }));
 }
