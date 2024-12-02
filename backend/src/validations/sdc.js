@@ -86,6 +86,61 @@ const baseSdcSchoolStudent = baseStudentSchema.shape({
   schoolName: string().nullable().optional()
 });
 
+const baseStudentWithEnrolledProgram = baseStudentSchema.shape({   
+  enrolledProgramCodes: array().of(string()).optional(),
+  filteredEnrolledProgramCodes: array().of(string()).nullable().optional(),
+  numberOfCoursesDec: number().nullable().optional(),
+  schoolID: string().nullable().optional(),
+  bandCode:string().max(4).nullable().optional(),
+  isAdult: string().nullable().optional(),
+  isSchoolAged: string().nullable().optional(),
+  fte: number().nullable().optional(),
+  fteZeroReasonCode: string().max(10).nullable().optional(),
+  frenchProgramNonEligReasonCode:string().max(10).nullable().optional(),
+  ellNonEligReasonCode:string().max(10).nullable().optional(),
+  indigenousSupportProgramNonEligReasonCode:string().max(10).nullable().optional(),
+  careerProgramNonEligReasonCode:string().max(10).nullable().optional(),
+  specialEducationNonEligReasonCode: string().max(10).nullable().optional(),
+  specialEducationCategoryCode: string().max(10).nullable().optional(),
+  homeLanguageSpokenCode: string().max(10).nullable().optional(),
+  isGraduated: string().nullable().optional(),
+  assignedStudentId: string().nullable().optional(),
+  assignedPen: string().max(10).nullable().optional(),
+  penMatchResult: string().nullable().optional(),
+  yearsInEll: string().nullable().optional(),
+  mappedSpedCode: string().nullable().optional(),
+  mappedAncestryIndicator: string().nullable().optional(),
+  mappedFrenchEnrolledProgram: string().nullable().optional(),
+  mappedEllEnrolledProgram: string().nullable().optional(),
+  mappedLanguageEnrolledProgram: string().nullable().optional(),
+  mappedCareerProgram: string().nullable().optional(),
+  mappedIndigenousEnrolledProgram: string().nullable().optional(),
+  fundingEligibleRefugee: string().nullable().optional(),
+  mappedBandCode: string().nullable().optional(),
+  mappedCareerProgramCode: string().nullable().optional(),
+  mappedSchoolFunding: string().nullable().optional(),
+  indProgramEligible: string().nullable().optional(),
+  frenchProgramEligible: string().nullable().optional(),
+  ellProgramEligible: string().nullable().optional(),
+  careerProgramEligible: string().nullable().optional(),
+  spedProgramEligible: string().nullable().optional(),
+  mappedNoOfCourses: string().nullable().optional(),
+  mappedHomelanguageCode: string().nullable().optional(),  
+  sdcSchoolCollectionStudentValidationIssues: array().of(object({
+    sdcSchoolCollectionStudentValidationIssueID:string().nullable().optional(),
+    sdcSchoolCollectionStudentID:string().nullable().optional(),
+    validationIssueSeverityCode:string().nullable().optional(),
+    validationIssueCode:string().nullable().optional(),
+    validationIssueFieldCode:string().nullable().optional()
+  }).concat(baseRequestSchema)).nullable().optional(),
+  sdcSchoolCollectionStudentEnrolledPrograms: array().of(object({
+    sdcSchoolCollectionStudentEnrolledProgramID:string().nullable().optional(),
+    sdcSchoolCollectionStudentID:string().nullable().optional(),
+    enrolledProgramCode: string().nullable().optional(),
+  }).concat(baseRequestSchema)).nullable().optional(),
+  schoolName: string().nullable().optional()
+});
+
 const baseSubmissionSignatureSchema = object({
   sdcDistrictSubmissionSignatureID: string().nullable().optional(),
   sdcDistrictCollectionID: string().nullable().optional(),
@@ -375,7 +430,7 @@ const postResolveDuplicateSchema = object({
 }).unknown();
 
 const postMarKDiffSchema = object({
-  body: baseSdcSchoolStudent.shape({
+  body: baseStudentWithEnrolledProgram.shape({
     legalMiddleNames: string().max(25).nullable().optional(), 
     usualMiddleNames: string().max(25).nullable().optional(),
     resolution:  string().nullable().optional(),

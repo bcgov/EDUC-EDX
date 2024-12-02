@@ -302,6 +302,10 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
       payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
     }
 
+    if (payload?.enrolledProgramCodes) {
+      payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
+    }
+
     const token = getAccessToken(req);
     const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/mark-for-review`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
