@@ -1,7 +1,7 @@
 <template>
   <ConfirmationDialog ref="confirmResolveEnrollmentDuplicateViaRemoveStudent">
     <template #message>
-      <p>Are you sure you want to remove {{ displayName(sdcSchoolCollectionStudent.legalFirstName, sdcSchoolCollectionStudent.legalMiddleNames, sdcSchoolCollectionStudent.legalLastName) }} from {{ sdcSchoolCollectionStudent.schoolName }}?</p>
+      <p>Are you sure that you would like to remove the selected student from the 1701 submission?</p>
     </template>
   </ConfirmationDialog>
 </template>
