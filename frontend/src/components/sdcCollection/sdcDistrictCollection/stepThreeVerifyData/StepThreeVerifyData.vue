@@ -253,6 +253,7 @@ export default {
     },
     showRefugeeTab() {
       return (
+        !this.isMigratedCollection &&
         this.currentCollectionTypeCode === 'February'
       );
     },

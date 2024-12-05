@@ -236,6 +236,7 @@ export default {
         'LONG_PRP',
       ];
       return (
+        !this.isMigratedCollection &&
         this.currentCollectionTypeCode === 'February' &&
         this.school.schoolCategoryCode === 'PUBLIC' &&
         validPublicTypes.includes(this.school.facilityTypeCode)
