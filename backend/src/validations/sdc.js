@@ -83,7 +83,8 @@ const baseSdcSchoolStudent = baseStudentSchema.shape({
     sdcSchoolCollectionStudentID:string().nullable().optional(),
     enrolledProgramCode: string().nullable().optional(),
   }).concat(baseRequestSchema)).nullable().optional(),
-  schoolName: string().nullable().optional()
+  schoolName: string().nullable().optional(),
+  schoolContactDisplayName:string().nullable().optional()
 });
 
 const baseStudentWithEnrolledProgram = baseStudentSchema.shape({   
@@ -138,7 +139,8 @@ const baseStudentWithEnrolledProgram = baseStudentSchema.shape({
     sdcSchoolCollectionStudentID:string().nullable().optional(),
     enrolledProgramCode: string().nullable().optional(),
   }).concat(baseRequestSchema)).nullable().optional(),
-  schoolName: string().nullable().optional()
+  schoolName: string().nullable().optional(),
+  schoolContactDisplayName:string().nullable().optional()
 });
 
 const baseSubmissionSignatureSchema = object({
@@ -440,6 +442,7 @@ const postMarKDiffSchema = object({
     districtName:  string().nullable().optional(),
     schoolNameNoLink:string().nullable().optional(),
     contactInfo:string().nullable().optional(),
+    schoolContactDisplayName:string().nullable().optional()
   }).concat(baseRequestSchema).noUnknown(),
   params: object({
     sdcDuplicateID: string().nonNullable(),
