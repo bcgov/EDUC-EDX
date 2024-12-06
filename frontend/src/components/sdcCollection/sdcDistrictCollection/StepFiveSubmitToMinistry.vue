@@ -103,7 +103,7 @@ export default {
       required: true
     }
   },
-  emits: ['previous', 'next'],
+  emits: ['previous', 'next', 'refresh'],
   data() {
     return {
       afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
@@ -147,7 +147,7 @@ export default {
       };
       ApiService.apiAxios.put(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}`, updateCollection)
         .then(() => {
-          this.isSubmitted = true;
+          this.isSubmitted = true;          
         })
         .catch(error => {
           console.error(error);
@@ -155,6 +155,7 @@ export default {
         })
         .finally(() => {
           this.isLoading = false;
+          this.$emit('refresh');
         });
     },
     next() {
