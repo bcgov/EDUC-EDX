@@ -991,13 +991,17 @@ function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
     delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionStudentID;
     delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionID;
-    sdcDuplicate.sdcSchoolCollectionStudent1Entity.showContact = true;
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
+      sdcDuplicate.sdcSchoolCollectionStudent1Entity.showContact = true;
+    }
   }
 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
     delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionStudentID;
     delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionID;
-    sdcDuplicate.sdcSchoolCollectionStudent2Entity.showContact = true;
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
+      sdcDuplicate.sdcSchoolCollectionStudent2Entity.showContact = true;
+    }
   }
   delete sdcDuplicate.retainedSdcSchoolCollectionStudentEntity;
 }
