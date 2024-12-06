@@ -21,7 +21,7 @@
         class="mb-4"
       >
         <v-col
-          v-if="getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND'"
+          v-if="getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND' || getSchoolCategory() === 'FED_BAND'"
           cols="12"
         >
           <p>
@@ -55,7 +55,7 @@
             density="compact"
             type="success"
             variant="tonal"
-            :text=" getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND' ? 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through the Ministry.' : 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through your district.'"
+            :text=" getSchoolCategory() === 'INDP_FNS' || getSchoolCategory() === 'INDEPEND' || getSchoolCategory() === 'FED_BAND' ? 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through the Ministry.' : 'Congratulations! The 1701 data has been submitted. Any additional changes to 1701 must be coordinated through your district.'"
           />
         </v-col>
       </v-row>
@@ -204,7 +204,7 @@ export default {
       return this.school.schoolCategoryCode;
     },
     getButtonText() {
-      if(this.getSchoolCategory() === 'INDP_FNS' || this.getSchoolCategory() === 'INDEPEND') {
+      if(this.getSchoolCategory() === 'INDP_FNS' || this.getSchoolCategory() === 'INDEPEND' || this.getSchoolCategory() === 'FED_BAND') {
         return 'Submit 1701 Data to Ministry';
       } else {
         return 'Submit 1701 Data to District';
