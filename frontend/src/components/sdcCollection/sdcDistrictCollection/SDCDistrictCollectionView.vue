@@ -176,6 +176,7 @@
                   :is-step-complete="isStepComplete"
                   :is-collection-active="isSdcDistrictCollectionActive"
                   @next="next"
+                  @refresh="refresh"
                 />
               </v-stepper-window-item>
               <v-stepper-window-item
@@ -247,6 +248,7 @@
                   :is-step-complete="isStepComplete"
                   :is-collection-active="isSdcDistrictCollectionActive"
                   @next="next"
+                  @refresh="refresh"
                 />
               </v-stepper-window-item>
             </v-stepper-window>
@@ -391,6 +393,9 @@ export default defineComponent({
     next() {
       this.refreshStore(true);
       this.$refs.stepper.next();
+    },
+    refresh() {
+      this.refreshStore(true);
     },
     backToCollectionDashboard() {
       this.$router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.districtID}});

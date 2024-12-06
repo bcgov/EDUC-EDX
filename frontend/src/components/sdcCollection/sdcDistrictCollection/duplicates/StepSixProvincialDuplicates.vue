@@ -76,7 +76,7 @@
       class="mr-3 mb-3"
       :disabled="disableNextButton() || apiError || !canMoveForward()"
       icon="mdi-check"
-      text="Next"
+      text="Verify as Correct"
       :click-action="next"
     />
   </v-row>
