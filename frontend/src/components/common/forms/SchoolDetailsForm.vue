@@ -1294,7 +1294,7 @@ export default {
       return this.school.addresses.filter(address => address.addressTypeCode === 'MAILING').length > 0;
     },
     hasRequiredFieldValues() {
-      return this.school.phoneNumber!== null && this.school.email!==null && this.hasMailingAddress();
+      return this.school.phoneNumber && this.school.email && this.hasMailingAddress();
     },
     hasPhysicalAddress(){
       return this.school.addresses.filter(address => address.addressTypeCode === 'PHYSICAL').length > 0;
