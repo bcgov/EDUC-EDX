@@ -1105,6 +1105,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.school.SCHOOL_DETAILS_BY_ID + '/' + searchSchoolID)
         .then(response => {
           this.school = response.data;
+          this.setHasSamePhysicalFlag();
           this.populateExtraSchoolFields(this.school);
           this.getDistrictDetails(this.school.districtId);
           if(this.school.independentAuthorityId){
@@ -1274,7 +1275,7 @@ export default {
         return;
       }
       this.loading = true;
-      if (this.sameAsMailingCheckbox) {
+      if (this.sameAsMailingCheckbox && this.canEditPhysicalAddress) {
         this.schoolDetailsCopy.addresses = this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
       }
       ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolId, this.schoolDetailsCopy)
