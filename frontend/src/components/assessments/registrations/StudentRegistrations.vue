@@ -69,13 +69,13 @@
         />
       </v-navigation-drawer>
     </v-row>
-    <v-dialog
+    <v-bottom-sheet 
       v-model="editStudentRegistrationSheet"
       :inset="true"
       :no-click-animation="true"
       :scrollable="true"
       :persistent="true"
-      width="40%"
+      class="custom-width-bottom-sheet"
     >
       <StudentRegistrationDetail        
         :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
@@ -83,7 +83,7 @@
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
         @close-student-registration="closeEditAndLoadStudentRegistrations"
       />
-    </v-dialog>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -261,5 +261,11 @@ export default {
 }
 .found-align {
   align-self: flex-end;
+}
+</style>
+<style>
+.custom-width-bottom-sheet {
+  margin-left: 25%  !important;
+  margin-right: 25% !important;
 }
 </style>
