@@ -467,7 +467,7 @@
                     class="ministryLine"
                     variant="underlined"
                     required
-                    :rules="[rules.email()]"
+                    :rules="[rules.email(), rules.required()]"
                     :maxlength="255"
                   />
                 </v-col>
