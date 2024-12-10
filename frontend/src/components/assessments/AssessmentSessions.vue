@@ -151,7 +151,7 @@ export default {
     activeSessions() {
       const orderedSessions = [];
       const allSessions = this.allSessions
-        .filter(session => session.isOpen)
+        .filter(session => session.schoolYear === this.schoolYear)
         .map((session) => {
           return {
             ...session,
@@ -166,7 +166,7 @@ export default {
     },
     historicalSessions() {
       const allSessions = this.allSessions
-        .filter(session => !session.isOpen)
+        .filter(session => session.schoolYear !== this.schoolYear)
         .map((entry) => {
           return {
             ...entry,
