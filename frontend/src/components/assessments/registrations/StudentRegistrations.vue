@@ -75,7 +75,6 @@
       :no-click-animation="true"
       :scrollable="true"
       :persistent="true"
-      class="custom-width-bottom-sheet"
     >
       <StudentRegistrationDetail        
         :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
@@ -261,11 +260,5 @@ export default {
 }
 .found-align {
   align-self: flex-end;
-}
-</style>
-<style>
-.custom-width-bottom-sheet {
-  margin-left: 25%  !important;
-  margin-right: 25% !important;
 }
 </style>
