@@ -88,7 +88,7 @@ const baseSdcSchoolStudent = baseStudentSchema.shape({
 });
 
 const baseStudentWithEnrolledProgram = baseStudentSchema.shape({   
-  enrolledProgramCodes: array().of(string()).optional(),
+  enrolledProgramCodes: array().of(string()).nullable().optional(),
   filteredEnrolledProgramCodes: array().of(string()).nullable().optional(),
   numberOfCoursesDec: number().nullable().optional(),
   schoolID: string().nullable().optional(),
