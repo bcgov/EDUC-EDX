@@ -37,7 +37,7 @@
     </div>
     <div v-if="reportView === 'summary'">
       <SummaryComponent
-        :headcount-type="config.summaryReport"
+        :headcount-type="visibleSummaryReports(config.summaryReport)"
         :is-district-summary="true"
         :is-collection-active="isCollectionActive"
       />
@@ -50,7 +50,7 @@ import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
 import { FTE } from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
-  
+
 export default {
   name: 'AllStudentsComponent',
   components: {
@@ -71,6 +71,10 @@ export default {
     isCollectionActive: {
       type: Boolean,
       required: true
+    },
+    isMigratedCollection: {
+      type: Boolean,
+      required: false
     }
   },
   emits: [],
@@ -93,8 +97,10 @@ export default {
     },
     showSummary() {
       this.reportView = 'summary';
+    },
+    visibleSummaryReports(reports) {
+      return this.isMigratedCollection ? reports.filter((report) => report.tableID !== 'ineligibleFTE') : reports;
     }
-  
   }
 };
 </script>
