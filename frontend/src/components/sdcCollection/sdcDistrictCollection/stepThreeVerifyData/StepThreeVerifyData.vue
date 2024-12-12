@@ -44,6 +44,7 @@
           :district="district"
           :is-final-sign-off="isFinalSignOff"
           :is-collection-active="isCollectionActive"
+          :is-migrated-collection="isMigratedCollection"
         />
       </v-window-item>
       <v-window-item
