@@ -879,6 +879,22 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent1Entity);
     toTableRow(sdcDuplicate.sdcSchoolCollectionStudent2Entity);
 
+    if (sdcDuplicate.sdcSchoolCollectionStudent2Entity?.enrolledProgramCodes) {
+      sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledProgramCodes = sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
+
+    if (sdcDuplicate.sdcSchoolCollectionStudent2Entity?.numberOfCourses) {
+      sdcDuplicate.sdcSchoolCollectionStudent2Entity.numberOfCourses = formatNumberOfCourses(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.numberOfCourses);
+    }
+
+    if (sdcDuplicate.sdcSchoolCollectionStudent1Entity?.enrolledProgramCodes) {
+      sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledProgramCodes = sdcDuplicate.sdcSchoolCollectionStudent1Entity?.enrolledProgramCodes.match(/.{1,2}/g);
+    }
+
+    if (sdcDuplicate.sdcSchoolCollectionStudent1Entity?.numberOfCourses) {
+      sdcDuplicate.sdcSchoolCollectionStudent1Entity.numberOfCourses = formatNumberOfCourses(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.numberOfCourses);
+    }
+
     if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
       setIfOnlineStudentAndCanChangeGrade(sdcDuplicate, school1, school2);
       setCanMoveToCrossEnrollment(sdcDuplicate);
