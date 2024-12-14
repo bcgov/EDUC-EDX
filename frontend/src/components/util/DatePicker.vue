@@ -53,7 +53,7 @@ export default defineComponent({
     },
     readonly: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   emits: ['update:model-value', 'clearDate'],
