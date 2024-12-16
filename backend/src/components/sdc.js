@@ -399,9 +399,9 @@ async function getSchoolStudentDuplicates(req, res) {
     let dupsMap = new Map();
     studentDuplicates.forEach((dup) => {
       if(dupsMap.has(dup.assignedPen)){
-        dupsMap.get(dup.assignedPen).push(toTableRow(dup));
-      }else{
-        dupsMap.set(dup.assignedPen, [toTableRow(dup)]);
+        dupsMap.get(dup.assignedPen).push(setStudentMetaData(dup));
+      } else{
+        dupsMap.set(dup.assignedPen, [setStudentMetaData(dup)]);
       }
     });
 
@@ -417,6 +417,19 @@ async function getSchoolStudentDuplicates(req, res) {
     return handleExceptionResponse(e, res);
   }
 }
+
+ function setStudentMetaData(student) {
+  toTableRow(student);
+
+  if (student?.enrolledProgramCodes) {
+    student.enrolledProgramCodes = student?.enrolledProgramCodes.match(/.{1,2}/g);
+  }
+
+  if (student?.numberOfCourses) {
+    student.numberOfCourses = formatNumberOfCourses(student?.numberOfCourses);
+  }
+  return student;
+ }
 
 async function getSchoolSdcDuplicates(req, res) {
   try {
