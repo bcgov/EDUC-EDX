@@ -158,7 +158,7 @@ import DoughnutChart from '../common/DoughnutChart.vue';
 import { mapState, mapActions } from 'pinia';
 import { sdcCollectionStore } from '../../store/modules/sdcCollection';
 import router from '../../router';
-import {LocalDate, LocalDateTime} from '@js-joda/core';
+import {LocalDate} from '@js-joda/core';
 import {capitalize} from 'lodash';
 import {SDC_STEPS_DISTRICT, SDC_STEPS_SCHOOL, SDC_STEPS_INDP_SCHOOL, SDC_STEPS_SUMMER_DISTRICT, SDC_STEPS_SUMMER_INDP_SCHOOL, SDC_STEPS_SUMMER_SCHOOL} from '../../utils/sdc/SdcSteps';
 import {getDateFormatter} from '../../utils/format';
