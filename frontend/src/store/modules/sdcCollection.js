@@ -2,8 +2,7 @@ import { defineStore } from 'pinia';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
-import {LocalDateTime} from '@js-joda/core';
-import {getDateFormatter} from '../../utils/format';
+import {LocalDate} from '@js-joda/core';
 
 export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
@@ -204,13 +203,13 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_SCHOOL_COLLECTION + '/' + schoolCollectionId);
       this.setSchoolCollection(response.data);
       this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-      this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
+      this.setCurrentCollectionYear(LocalDate.parse(response.data.submissionDueDate)?.year());
     },
     async getDistrictCollection(districtCollectionId) {
       const response = await ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/' + districtCollectionId);
       this.setDistrictCollection(response.data);
       this.setCurrentCollectionTypeCode(capitalize(response.data.collectionTypeCode));
-      this.setCurrentCollectionYear(LocalDateTime.parse(response.data.collectionOpenDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
+      this.setCurrentCollectionYear(LocalDate.parse(response.data.submissionDueDate)?.year());
     },
     async getCollectionTypeCodesMap() {
       if(this.collectionTypeCodesMap.size === 0) {
