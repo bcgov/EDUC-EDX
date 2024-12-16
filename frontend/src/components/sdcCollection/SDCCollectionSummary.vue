@@ -316,7 +316,7 @@ export default {
             instituteStatusCode = response.data.sdcDistrictCollectionStatusCode;
           }
           this.currentStepIndex = this.getIndexOfSDCCollectionByStatusCode(instituteStatusCode);
-          this.setCurrentCollectionYear(LocalDateTime.parse(response.data.submissionDueDate, getDateFormatter('uuuu-MM-dd\'T\'HH:mm:ss')).year());
+          this.setCurrentCollectionYear(LocalDate.parse(response.data.submissionDueDate)?.year());
           this.calculateStep();
         }
       }).catch(error => {
