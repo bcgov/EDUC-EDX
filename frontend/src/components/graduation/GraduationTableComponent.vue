@@ -189,7 +189,6 @@
           height="100%"
           outlined
           rounded
-          @click=""
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -227,7 +226,6 @@
           height="100%"
           outlined
           rounded
-          @click=""
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -265,7 +263,6 @@
           height="100%"
           outlined
           rounded
-          @click=""
         >
           <v-row class="pl-4">
             <v-col cols="3">
