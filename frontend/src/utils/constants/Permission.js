@@ -24,6 +24,8 @@ export const PERMISSION = Object.freeze(
 
     GRAD_SCH_EDIT: 'GRAD_SCH_EDIT',
 
+    GRAD_DIS_EDIT: 'GRAD_DIS_EDIT',
+
     EAS_DIS_EDIT: 'EAS_DIS_EDIT',
 
     EAS_SCH_EDIT: 'EAS_SCH_EDIT',

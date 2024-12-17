@@ -242,14 +242,14 @@
 </template>
   
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
-import {getFileNameWithMaxNameLength} from '../../../utils/file';
+import alertMixin from '../../../../mixins/alertMixin';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
+import {getFileNameWithMaxNameLength} from '../../../../utils/file';
 import { mapState } from 'pinia';
-import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
-import {authStore} from '../../../store/modules/auth';
-import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
+import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+import {authStore} from '../../../../store/modules/auth';
+import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
   
 export default {
@@ -458,7 +458,7 @@ export default {
       });
     },
     backButtonClick() {
-      this.$router.push({name: 'graduation', params: {schoolID: this.schoolID}});
+      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
     navigateToErrors(row) {
       this.$router.push({name: 'error', params: {schoolID: this.schoolID, activeIncomingFilesetID: row.incomingFilesetID}});

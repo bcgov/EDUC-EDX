@@ -82,7 +82,7 @@
 </template>
       
 <script>
-import alertMixin from '../../../mixins/alertMixin';
+import alertMixin from '../../../../mixins/alertMixin';
 import {capitalize} from 'lodash';
       
 export default {

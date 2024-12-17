@@ -185,7 +185,7 @@ export default {
   },
   methods: {
     backButtonClick() {
-      this.$router.push({name: 'graduation', params: {schoolID: this.schoolID}});
+      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
     getTranscripts() {
       this.transcriptFlag = true;
