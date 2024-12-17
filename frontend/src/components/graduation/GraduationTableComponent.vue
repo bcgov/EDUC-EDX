@@ -26,7 +26,7 @@
           width="29em"
           outlined
           rounded
-          @click="uploadFiles()"
+          @click="uploadSchoolFiles()"
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -132,6 +132,165 @@
           </v-row>
         </v-card>
       </v-col>
+
+      <!--DISTRICT-->
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          outlined
+          rounded
+          @click="uploadDistrictFiles()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-file-upload-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_DATA_COLLECTION }}
+                  </h4>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Upload Graduation Data Files (DEM, XAM and CRS)</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click=""
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-chart-box-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_DISTRICT_REPORTS }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click=""
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-finance"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_DISTRICT_PROJECTIONS }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click=""
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-certificate-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_TRANSCRIPT_PREVIEW }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
     </v-row>
   </v-container>
 </template>
@@ -162,7 +321,10 @@ export default {
     ...mapState(appStore, ['config']),
     isLoggedInSchoolUser(){
       return this.userInfo.activeInstituteType === 'SCHOOL';
-    }
+    },
+    isLoggedInDistrictUser(){
+      return this.userInfo.activeInstituteType === 'DISTRICT';
+    },
   },
   created() {
     this.disableGradFunctionality = this.config.DISABLE_GRAD_FUNCTIONALITY;
@@ -171,7 +333,10 @@ export default {
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
-    uploadFiles() {
+    uploadDistrictFiles() {
+
+    },
+    uploadSchoolFiles() {
       this.$router.push({name: 'grad-upload', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     backButtonClick() {

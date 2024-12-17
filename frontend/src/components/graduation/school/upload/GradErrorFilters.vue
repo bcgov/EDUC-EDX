@@ -163,8 +163,8 @@
   </template>
     
   <script>
-  import alertMixin from '../../../mixins/alertMixin';
-  import PrimaryButton from '../../util/PrimaryButton.vue';
+  import alertMixin from '../../../../mixins/alertMixin';
+  import PrimaryButton from '../../../util/PrimaryButton.vue';
   import {isEmpty} from 'lodash';
     
   export default {

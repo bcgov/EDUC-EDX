@@ -390,7 +390,44 @@
           width="25em"
           outlined
           rounded
-          @click="openSchoolGraduationCard()"
+          @click="openGraduationCard()"
+        >
+          <v-row class="pl-4">
+            <v-col cols="4">
+              <div>
+                <v-icon
+                  icon="mdi-account-school-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRADUATION }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="graduationCard"
+          class="mx-auto"
+          width="25em"
+          outlined
+          rounded
+          @click="openGraduationCard()"
         >
           <v-row class="pl-4">
             <v-col cols="4">
@@ -668,8 +705,8 @@ export default {
     openSDCDistrictCollection() {
       router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
-    openSchoolGraduationCard() {
-      router.push({name: 'graduation', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    openGraduationCard() {
+      router.push({name: 'graduation', params: {instituteIdentifierID: this.userInfo.activeInstituteIdentifier}});
     },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {

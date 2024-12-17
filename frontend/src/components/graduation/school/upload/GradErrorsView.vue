@@ -101,9 +101,9 @@
 </template>
       
 <script>
-import alertMixin from '../../../mixins/alertMixin';
-import ApiService from '../../../common/apiService';
-import {ApiRoutes} from '../../../utils/constants';
+import alertMixin from '../../../../mixins/alertMixin';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
 import GradErrorFilters from './GradErrorFilters.vue';
