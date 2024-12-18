@@ -249,23 +249,9 @@
       class="mr-3 mt-4 mb-3"
       icon="mdi-check"
       text="Next"
-      :disabled="disableNextButton() || !canMoveForward()"
+      :disabled="!canMoveForward()"
       :click-action="next"
     />
-  </v-row>
-  <v-row
-    v-if="disableNextButton()"
-    justify="end"
-    class="my-0"
-  >
-    <p
-      id="schoolNotSubmittedWarning"
-      class="form-hint mr-3"
-    >
-      {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
-      school(s) not
-      submitted
-    </p>
   </v-row>
   <ConfirmationDialog ref="confirmRemovalOfCollection">
     <template #message />
@@ -441,11 +427,6 @@ export default defineComponent({
     },
     clearFilters() {
       this.filters = {};
-    },
-    disableNextButton() {
-      if(this.districtCollectionObject.collectionTypeCode !== 'JULY') {
-        return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
-      }   
     },
     filterForErrorsOrWarnings(school) {
       const { issuesFilter = [] } = this.filters || {};
