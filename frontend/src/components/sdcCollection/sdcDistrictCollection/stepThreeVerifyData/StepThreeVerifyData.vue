@@ -1,5 +1,10 @@
 <template>
-  <div class="border">
+  <v-row v-if="isLoading">
+    <v-col>
+      <Spinner />
+    </v-col>
+  </v-row>
+  <div v-else class="border">
     <v-tabs
       v-model="tab"
       color="#38598a"
@@ -154,7 +159,7 @@
       id="step-3-next-button-school"
       class="mr-3 mb-3"
       icon="mdi-check"
-      :disabled="!canMoveForward()"
+      :disabled="disableNextButton() || !canMoveForward()"
       text="Verify all program tabs as correct"
       :click-action="next"
     />
@@ -166,6 +171,20 @@
       text="Next"
       :click-action="next"
     />
+  </v-row>
+  <v-row
+    v-if="disableNextButton()"
+    justify="end"
+    class="my-0"
+  >
+    <p
+      id="schoolNotSubmittedWarning"
+      class="form-hint mr-3"
+    >
+      {{ monitorSdcSchoolCollectionsResponse?.totalSchools - monitorSdcSchoolCollectionsResponse?.schoolsSubmitted }}
+      school(s) not
+      submitted
+    </p>
   </v-row>
 </template>
 
@@ -192,10 +211,12 @@ import SignOffSignatures from '../../../common/SignOffSignatures.vue';
 import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
 import {DISTRICT_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
+import Spinner from '../../../common/Spinner.vue';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
+    Spinner,
     PrimaryButton,
     AllStudentsComponent,
     CareerProgramsComponent,
@@ -236,6 +257,8 @@ export default {
   data() {
     return {
       tab: null,
+      isLoading: true,
+      monitorSdcSchoolCollectionsResponse: [],
       tabs: SDC_VERIFY_TABS,
       type: 'SDC',
       sdcDistrictCollectionID: this.$route.params.districtCollectionID,
@@ -269,10 +292,28 @@ export default {
     appStore().getInstitutesData().finally(() => {
       this.district = this.activeDistrictsMap.get(this.districtCollectionObject.districtID);
     });
+    this.getSdcSchoolCollections();
   },
   methods: {
     canMoveForward(){
       return this.isStepComplete || this.hasEditPermission;
+    },
+    async getSdcSchoolCollections(){
+      this.isLoading = true;
+      await ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sdcSchoolCollectionMonitoring`, {
+      }).then(response => {
+        this.monitorSdcSchoolCollectionsResponse = response?.data;
+      }).catch(error => {
+        console.error(error);
+        setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get sdc school collections. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+    disableNextButton() {
+      if(this.districtCollectionObject.collectionTypeCode !== 'JULY') {
+        return this.monitorSdcSchoolCollectionsResponse?.totalSchools - this.monitorSdcSchoolCollectionsResponse?.schoolsSubmitted !== 0;
+      }
     },
     markStepAsComplete(){
       let updateCollection = {
