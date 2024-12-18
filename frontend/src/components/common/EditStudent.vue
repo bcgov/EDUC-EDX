@@ -260,7 +260,7 @@
                     <v-col>
                       <v-autocomplete
                         id="numberOfCourses"
-                        v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCourses"
+                        v-model="sdcSchoolCollectionStudentDetailCopy.numberOfCoursesDec"
                         :items="courseOptions"
                         label="Number of Courses"
                         variant="underlined"
@@ -471,7 +471,7 @@
                             <v-autocomplete
                               v-else-if="sdcFieldMappings[field]?.key === 'numberOfCourses'"
                               :id="`${sdcFieldMappings[field].key}ValidationDropdown`"
-                              v-model="sdcSchoolCollectionStudentDetailCopy[sdcFieldMappings[field].key]"
+                              v-model="sdcSchoolCollectionStudentDetailCopy['numberOfCoursesDec']"
                               :rules="sdcFieldMappings[field].options.rules"
                               :items="courseOptions"
                               item-title="dropdownText"

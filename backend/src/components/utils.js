@@ -308,30 +308,6 @@ function getCreateOrUpdateUserValue(req){
     return 'EDX/' + req.session.edxUserData.edxUserID;
   }
 }
-
-function formatNumberOfCourses(value) {
-  if (!value) return '00.00';
-
-  let formatted = '';
-  switch (value.length) {
-  case 1:
-    formatted = `0${value}.00`;
-    break;
-  case 2:
-    formatted = `${value}.00`;
-    break;
-  case 3:
-    formatted = `0${value.slice(0, 1)}.${value.slice(1)}`;
-    break;
-  case 4:
-    formatted = `${value.slice(0, 2)}.${value.slice(2)}`;
-    break;
-  default:
-    formatted = '00.00';
-  }
-  return formatted;
-}
-
 function formatDate(date) {
   if (date && (date.length === 8)) {
     const year = date.substring(0, 4);
@@ -371,7 +347,6 @@ const utils = {
   logApiError,
   isPdf,
   isImage,
-  formatNumberOfCourses,
   stripNumberFormattingNumberOfCourses
 };
 
