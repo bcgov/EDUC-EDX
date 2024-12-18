@@ -43,13 +43,13 @@
           cols="6"
         >
           <StudentDetail
-            :student="currentUsersStudent"
+            :student="currentStudent"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
           />
         </v-col>           
         <v-col class="border ml-1">
           <StudentDetail
-            :student="otherSchoolsStudent"
+            :student="otherStudent"
             :duplicate-type-code="selectedProgramDuplicate?.programDuplicateTypeCode"
           />
         </v-col>
@@ -110,6 +110,7 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {setSuccessAlert, setFailureAlert} from '../../../composable/alertComposable';
 import {cloneDeep} from 'lodash';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
+import {enrolledProgram}  from '../../../../utils/sdc/enrolledProgram';
 
 export default {
   name: 'ProvincialProgramDuplicateResolution',
@@ -130,6 +131,8 @@ export default {
       selected:[],
       currentUsersStudent: {},
       otherSchoolsStudent: {},
+      currentStudent: {},
+      otherStudent: {},
       type: 'PROGRAM',
       duplicateStudents: []
     };
@@ -146,9 +149,13 @@ export default {
     if(!this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity?.sdcSchoolCollectionStudentID) {
       this.currentUsersStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
       this.otherSchoolsStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
+      this.currentStudent = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity;
+      this.otherStudent = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity;
     } else {
       this.currentUsersStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
       this.otherSchoolsStudent = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
+      this.currentStudent = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity;
+      this.otherStudent = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity;
     }
   },
   methods: {
@@ -194,12 +201,13 @@ export default {
     updateStudentObject(valueToBeRemoved) {
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
         this.currentUsersStudent.specialEducationCategoryCode = null;
+        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent.enrolledProgramCodes.join('');
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
         this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
         this.currentUsersStudent.careerProgramCode = null;
       } else {
-        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
         this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
       } 
     },
@@ -214,9 +222,15 @@ export default {
         }
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
         let mappedPrograms = this.currentUsersStudent.mappedCareerProgram.split(',').filter(value => this.otherSchoolsStudent.mappedCareerProgram.split(',').includes(value));
-        for(let progs of mappedPrograms) {
-          programs.push({code: progs.match(/(?<=\()\d+(?=\))/)?.[0], description: progs});
+
+        if(mappedPrograms.length === 0){
+          programs.push({code: this.currentUsersStudent.careerProgramCode, description: this.currentUsersStudent.mappedCareerProgramCode});
+        } else {
+          for(let progs of mappedPrograms) {
+            programs.push({code: progs.match(/(?<=\()\d+(?=\))/)?.[0], description: progs});
+          }
         }
+        
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'LANGUAGE') {
 
         let mappedPrograms = this.currentUsersStudent.mappedLanguageEnrolledProgram.split(',').filter(value => this.otherSchoolsStudent.mappedLanguageEnrolledProgram.split(',').includes(value));

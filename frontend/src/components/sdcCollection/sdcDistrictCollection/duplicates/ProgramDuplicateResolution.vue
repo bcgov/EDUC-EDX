@@ -226,10 +226,10 @@ export default {
         studentToBeUpdated.specialEducationCategoryCode = null;
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER'){
         studentToBeUpdated.careerProgramCode = null;
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
+        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
         studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
       } else {
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.match(/.{1,2}/g).filter(value => !value.includes(valueToBeRemoved));
+        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
         studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
       }
     },
@@ -265,7 +265,6 @@ export default {
     },
     mapEnrolledProgram(enrolledProgramFilter) {
       return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
-        .match(/.{1,2}/g)
         .filter(programCode => enrolledProgramFilter.includes(programCode) &&
             this.sdcStudentTwoDetailCopy?.enrolledProgramCodes.includes(programCode))
         .map(programCode => {
