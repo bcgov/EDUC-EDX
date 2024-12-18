@@ -224,6 +224,7 @@ export default {
 
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED'){
         studentToBeUpdated.specialEducationCategoryCode = null;
+        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated.enrolledProgramCodes.join('');
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER'){
         studentToBeUpdated.careerProgramCode = null;
         let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
