@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
   getCreateOrUpdateUserValue} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
