@@ -1116,6 +1116,12 @@ async function resolveDuplicates(req, res) {
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
+    if (e.status === 400 && e.data.message === 'SdcSchoolCollectionStudent was not saved to the database because it would create provincial duplicate.') {
+      return res.status(HttpStatus.CONFLICT).json({
+        status: HttpStatus.CONFLICT,
+        message: 'Student was not saved because it would create provincial duplicate.'
+      });
+    }
     log.error('Error resolving district duplicates.', e.stack);
     return handleExceptionResponse(e, res);
   }

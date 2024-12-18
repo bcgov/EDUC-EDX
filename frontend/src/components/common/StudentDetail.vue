@@ -234,8 +234,7 @@ export default {
     },
     mapEnrolledProgram(student, enrolledProgramFilter) {
       return student.enrolledProgramCodes
-        ?.match(/.{1,2}/g)
-        .filter(programCode => enrolledProgramFilter.includes(programCode))
+        ?.filter(programCode => enrolledProgramFilter.includes(programCode))
         .map(programCode => {
           const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
           return {code: programCode, description: `${enrolledProgram.description} (${programCode})`};
