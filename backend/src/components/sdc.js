@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams, formatNumberOfCourses, stripNumberFormattingNumberOfCourses,
+const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
   getCreateOrUpdateUserValue} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
@@ -275,10 +275,6 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
 
-    if (sdcSchoolCollectionStudentData?.numberOfCourses) {
-      sdcSchoolCollectionStudentData.numberOfCourses = formatNumberOfCourses(sdcSchoolCollectionStudentData?.numberOfCourses);
-    }
-
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
@@ -297,10 +293,6 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     payload.assignedPen = null;
     payload.assignedStudentId = null;
     payload.penMatchResult = null;
-
-    if (payload?.numberOfCourses) {
-      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
-    }
 
     if (payload?.enrolledProgramCodes) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
@@ -338,10 +330,6 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
     }
 
-    if (payload?.numberOfCourses) {
-      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
-    }
-
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
@@ -351,10 +339,6 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     }
     if (data?.enrolledProgramCodes) {
       data.enrolledProgramCodes = data?.enrolledProgramCodes.match(/.{1,2}/g);
-    }
-
-    if (data?.numberOfCourses) {
-      data.numberOfCourses = formatNumberOfCourses(data?.numberOfCourses);
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -424,10 +408,6 @@ async function getSchoolStudentDuplicates(req, res) {
   if (student?.enrolledProgramCodes) {
     student.enrolledProgramCodes = student?.enrolledProgramCodes.match(/.{1,2}/g);
   }
-
-  if (student?.numberOfCourses) {
-    student.numberOfCourses = formatNumberOfCourses(student?.numberOfCourses);
-  }
   return student;
  }
 
@@ -467,7 +447,7 @@ function toTableRow(student, collectionType = null) {
   student.ellProgramEligible = getProgramEligibleValue('ELL', student.ellNonEligReasonCode, collectionType, student.schoolID);
   student.careerProgramEligible = getProgramEligibleValue('CAREER', student.careerProgramNonEligReasonCode, collectionType, student.schoolID);
   student.spedProgramEligible = getProgramEligibleValue('SPED',student.specialEducationNonEligReasonCode, collectionType, student.schoolID);
-  student.mappedNoOfCourses = student.numberOfCoursesDec ? student.numberOfCoursesDec.toFixed(2) : '0';
+  student.mappedNoOfCourses = student.numberOfCoursesDec;
   student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
   
   return student;
@@ -896,16 +876,8 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
       sdcDuplicate.sdcSchoolCollectionStudent2Entity.enrolledProgramCodes = sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.enrolledProgramCodes.match(/.{1,2}/g);
     }
 
-    if (sdcDuplicate.sdcSchoolCollectionStudent2Entity?.numberOfCourses) {
-      sdcDuplicate.sdcSchoolCollectionStudent2Entity.numberOfCourses = formatNumberOfCourses(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.numberOfCourses);
-    }
-
     if (sdcDuplicate.sdcSchoolCollectionStudent1Entity?.enrolledProgramCodes) {
       sdcDuplicate.sdcSchoolCollectionStudent1Entity.enrolledProgramCodes = sdcDuplicate.sdcSchoolCollectionStudent1Entity?.enrolledProgramCodes.match(/.{1,2}/g);
-    }
-
-    if (sdcDuplicate.sdcSchoolCollectionStudent1Entity?.numberOfCourses) {
-      sdcDuplicate.sdcSchoolCollectionStudent1Entity.numberOfCourses = formatNumberOfCourses(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.numberOfCourses);
     }
 
     if (sdcDuplicate?.duplicateTypeCode === DUPLICATE_TYPE_CODES.ENROLLMENT) {
@@ -1134,10 +1106,6 @@ async function resolveDuplicates(req, res) {
 
       if (student?.enrolledProgramCodes && Array.isArray(student?.enrolledProgramCodes)) {
         student.enrolledProgramCodes = student.enrolledProgramCodes.join('');
-      }
-
-      if (student?.numberOfCourses) {
-        student.numberOfCourses = stripNumberFormattingNumberOfCourses(student.numberOfCourses);
       }
 
       student.sdcSchoolCollectionStudentValidationIssues = null;
