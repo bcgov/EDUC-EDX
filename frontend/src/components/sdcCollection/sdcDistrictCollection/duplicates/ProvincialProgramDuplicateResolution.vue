@@ -201,7 +201,7 @@ export default {
     updateStudentObject(valueToBeRemoved) {
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
         this.currentUsersStudent.specialEducationCategoryCode = null;
-        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent.enrolledProgramCodes.join('');
+        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent?.enrolledProgramCodes?.join('');
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
         let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
         this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
