@@ -164,9 +164,11 @@ export default {
     selectedProgramDuplicate: {
       handler(value) {
         if(value) {
-          this.sdcStudentOneDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
-          this.sdcStudentTwoDetailCopy = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
-          this.duplicateStudents = [this.sdcStudentOneDetailCopy, this.sdcStudentTwoDetailCopy];
+          this.sdcStudentOneDetailCopy = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity;
+          this.sdcStudentTwoDetailCopy = this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity;
+          this.sdcStudentOne = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent1Entity);
+          this.sdcStudentTwo = cloneDeep(this.selectedProgramDuplicate?.sdcSchoolCollectionStudent2Entity);
+          this.duplicateStudents = [this.sdcStudentOne, this.sdcStudentTwo];
         }
       },
       immediate: true
@@ -221,10 +223,12 @@ export default {
     },
     updateStudentObject(valueToBeRemoved, studentId) {
       let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
+      let otherStudent = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID !== studentId);
+      otherStudent.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes?.join('');
 
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED'){
         studentToBeUpdated.specialEducationCategoryCode = null;
-        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated.enrolledProgramCodes.join('');
+        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes?.join('');
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER'){
         studentToBeUpdated.careerProgramCode = null;
         let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
@@ -265,8 +269,9 @@ export default {
       return programs;
     },
     mapEnrolledProgram(enrolledProgramFilter) {
+      console.log(this.sdcStudentOneDetailCopy)
       return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
-        .filter(programCode => enrolledProgramFilter.includes(programCode) &&
+        ?.filter(programCode => enrolledProgramFilter.includes(programCode) &&
             this.sdcStudentTwoDetailCopy?.enrolledProgramCodes.includes(programCode))
         .map(programCode => {
           const enrolledProgram = sdcCollectionStore().enrolledProgramCodesMap.get(programCode);
