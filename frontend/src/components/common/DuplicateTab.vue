@@ -117,7 +117,7 @@
                     </v-list-item>
                     <v-list-item
                       id="markStudAsDiff"
-                      @click="markStudentAsDifferent(duplicateType === 'enrollment' ? sdcSchoolCollectionStudent : duplicate?.raw)"
+                      @click="markStudentAsDifferent(sdcSchoolCollectionStudent)"
                     >
                       <v-icon
                         color="#003366"
