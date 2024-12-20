@@ -335,7 +335,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
 
-    const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL'), req.session?.correlationID);
+    const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL') + '/false', req.session?.correlationID);
     if(studentLock) {
       await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);
     }
@@ -1114,7 +1114,7 @@ async function resolveDuplicates(req, res) {
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
 
-    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/type/${req.params.type}`, req.session?.correlationID);
+    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/type/${req.params.type}/false`, req.session?.correlationID);
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
