@@ -1,6 +1,6 @@
 'use strict';
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
-  getCreateOrUpdateUserValue} = require('./utils');
+  getCreateOrUpdateUserValue, formatNumberOfCourses} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -274,7 +274,9 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
     if (sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
-
+    if(sdcSchoolCollectionStudentData) {
+      sdcSchoolCollectionStudentData.numberOfCoursesDec = formatNumberOfCourses(sdcSchoolCollectionStudentData.numberOfCoursesDec);
+    }    
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
@@ -424,7 +426,7 @@ async function getSchoolSdcDuplicates(req, res) {
 }
 
 function toTableRow(student, collectionType = null) {
-  
+
   let bandCodesMap = cacheService.getAllActiveBandCodesMap();
   let careerProgramCodesMap = cacheService.getActiveCareerProgramCodesMap();
   let schoolFundingCodesMap = cacheService.getActiveSchoolFundingCodesMap();

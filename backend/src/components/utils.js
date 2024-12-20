@@ -326,6 +326,13 @@ function stripNumberFormattingNumberOfCourses(value) {
   return value.replace('.', '');
 }
 
+function formatNumberOfCourses(value) {
+  if(value) {
+    return parseFloat(value.toString()).toFixed(2);
+  }
+  return value;
+}
+
 const utils = {
   getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
@@ -347,7 +354,8 @@ const utils = {
   logApiError,
   isPdf,
   isImage,
-  stripNumberFormattingNumberOfCourses
+  stripNumberFormattingNumberOfCourses,
+  formatNumberOfCourses
 };
 
 module.exports = utils;
