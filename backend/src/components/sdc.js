@@ -1,6 +1,6 @@
 'use strict';
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
-  getCreateOrUpdateUserValue, formatNumberOfCourses} = require('./utils');
+  getCreateOrUpdateUserValue, formatNumberOfCourses, stripNumberFormattingNumberOfCourses} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -275,7 +275,7 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
     if(sdcSchoolCollectionStudentData) {
-      sdcSchoolCollectionStudentData.numberOfCoursesDec = formatNumberOfCourses(sdcSchoolCollectionStudentData.numberOfCoursesDec);
+      sdcSchoolCollectionStudentData.numberOfCoursesDec =  sdcSchoolCollectionStudentData?.numberOfCoursesDec.toString().indexOf('.') > 0  ?  sdcSchoolCollectionStudentData.numberOfCoursesDec : formatNumberOfCourses(sdcSchoolCollectionStudentData.numberOfCourses);
     }    
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
@@ -334,7 +334,9 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
-
+    if (payload?.numberOfCoursesDec) {
+      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCoursesDec);
+    }
     const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL') + '/false', req.session?.correlationID);
     if(studentLock) {
       await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);

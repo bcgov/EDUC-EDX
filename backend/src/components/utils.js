@@ -328,7 +328,12 @@ function stripNumberFormattingNumberOfCourses(value) {
 
 function formatNumberOfCourses(value) {
   if(value) {
-    return parseFloat(value.toString()).toFixed(2);
+    const result = parseInt(value);
+    if (isNaN(result)) { 
+      return value;   
+    } else {         
+      return (result / 100).toFixed(2);
+    }    
   }
   return value;
 }
