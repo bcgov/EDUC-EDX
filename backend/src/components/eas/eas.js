@@ -1,7 +1,5 @@
 'use strict';
-const { logApiError, getAccessToken, getData, putData, postData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse,
-  getUser
-} = require('../utils');
+const { logApiError, getAccessToken, getData, putData, postData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse} = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
