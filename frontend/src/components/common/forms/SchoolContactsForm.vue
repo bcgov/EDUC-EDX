@@ -173,10 +173,13 @@ import {instituteStore} from '../../../store/modules/institute';
 import {SCHOOL_CONTACT_TYPES} from '../../../utils/constants/SchoolContactTypes';
 import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
 import {MINISTRY_CONTACTS} from '../../../utils/constants/MinistryContactsInfo';
+import {LocalDateTime} from "@js-joda/core";
 
 // checks the expiry of a contact
 function isExpired(contact) {
-  return (contact.expiryDate) ? new Date(contact.expiryDate) < new Date() : false;
+  return contact.expiryDate
+      ? LocalDateTime.parse(contact.expiryDate).isBefore(LocalDateTime.now())
+      : false;
 }
 
 export default {
