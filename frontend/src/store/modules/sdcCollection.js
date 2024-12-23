@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
 import {capitalize} from 'lodash';
-import {LocalDate} from '@js-joda/core';
+import {LocalDate, LocalDateTime} from '@js-joda/core';
 
 export const sdcCollectionStore = defineStore('sdcCollection', {
   id: 'sdcCollection',
@@ -182,9 +182,17 @@ export const sdcCollectionStore = defineStore('sdcCollection', {
       });
     },
     async setCollectionTypeCodes(collectionTypes) {
-      collectionTypes.sort(function(a, b) {
-        return new Date(Date.parse(a.label + " 1, 2000")) - new Date(Date.parse(b.label + " 1, 2000"));
-      });
+      try {
+        collectionTypes.sort((a, b) => {
+          const dateA = LocalDateTime.parse(a.effectiveDate);
+          const dateB = LocalDateTime.parse(b.effectiveDate);
+
+          return dateA.compareTo(dateB);
+        });
+      } catch (error) {
+        console.error("Error parsing date in setCollectionTypeCodes:", error);
+      }
+
       this.collectionTypeCodes = collectionTypes;
       this.collectionTypeCodesMap = new Map();
       collectionTypes.forEach(element => {

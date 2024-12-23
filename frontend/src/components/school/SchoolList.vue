@@ -272,6 +272,7 @@ import alertMixin from '../../mixins/alertMixin';
 import {formatPhoneNumber, formatContactName} from '../../utils/format';
 import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '../../utils/institute/status';
 import {edxStore} from '../../store/modules/edx';
+import {LocalDateTime} from "@js-joda/core";
 
 export default {
   name: 'SchoolListPage',
@@ -449,21 +450,19 @@ export default {
     getPrincipalsName(contacts) {
       let oldestPrincipal = null;
       for (const contact of contacts) {
-        if (contact.schoolContactTypeCode !== 'PRINCIPAL') {
+        if (contact.schoolContactTypeCode !== 'PRINCIPAL' || !isContactCurrent(contact)) {
           continue;
         }
-        if (!isContactCurrent(contact)) {
-          continue;
-        }
-        if ((oldestPrincipal !== null) && (new Date(oldestPrincipal.effectiveDate) < new Date(contact.effectiveDate))) {
+
+        if (oldestPrincipal !== null &&
+            LocalDateTime.parse(oldestPrincipal.effectiveDate)
+                .isBefore(LocalDateTime.parse(contact.effectiveDate))) {
           continue;
         }
         oldestPrincipal = contact;
       }
-      if (oldestPrincipal == null) {
-        return '';
-      }
-      return formatContactName(oldestPrincipal);
+
+      return oldestPrincipal ? formatContactName(oldestPrincipal) : '';
     },
     getStatusColorAuthorityOrSchool,
     openSchool(schoolId){

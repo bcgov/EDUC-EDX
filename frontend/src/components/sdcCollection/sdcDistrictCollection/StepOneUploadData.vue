@@ -480,15 +480,16 @@ export default {
         this.initialLoad = false;
       }
     },
-    sortSchoolsInProgress(){
+    sortSchoolsInProgress() {
       this.schoolCollectionsInProgress.sort((a, b) => {
-        const dateA = new Date(a.uploadDate);
-        const dateB = new Date(b.uploadDate);
+        const dateA = a.uploadDate ? LocalDate.parse(a.uploadDate) : null;
+        const dateB = b.uploadDate ? LocalDate.parse(b.uploadDate) : null;
+
         if (!dateA && !dateB) return 0;
         if (!dateA) return 1;
         if (!dateB) return -1;
 
-        return dateB - dateA;
+        return dateB.compareTo(dateA);
       });
     }
   }
