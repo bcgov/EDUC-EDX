@@ -145,6 +145,7 @@
           :district="district"
           :district-collection-object="districtCollectionObject"
           :is-collection-active="isCollectionActive"
+          @refresh-collection-store="refreshStore"
         />
       </v-window-item>
     </v-window> 
@@ -253,7 +254,7 @@ export default {
       default: false
     }
   },
-  emits: ['next', 'previous'],
+  emits: ['next', 'previous', 'refresh-collection-store'],
   data() {
     return {
       tab: null,
@@ -335,6 +336,9 @@ export default {
       } else {
         this.markStepAsComplete();
       }
+    },
+    refreshStore() {
+      this.$emit('refresh-collection-store');
     },
     getTabLabel: getSdcVerifyTabLabel
   },

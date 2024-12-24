@@ -1,12 +1,35 @@
 <template>
   <div :class="isCollectionActive ? 'border' : ''">
-    <div>
+    <div v-if="isLoading">
+      <v-row>
+        <v-col class="d-flex justify-center">
+          <v-progress-circular
+            class="mt-16"
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+            :active="isLoading"
+          />
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else>
       <v-row
         v-if="isCollectionActive"
         class="mb-3"
       >
-        <v-col>
+        <v-col v-if="isCollectionSignedOff">
           <v-alert
+            id="collection-submission"
+            class="justify-start"
+            type="success"
+            variant="tonal"
+            text="Thank you for completing the 1701 collection process for your district."
+          />
+        </v-col>
+        <v-col v-else>
+          <v-alert            
             id="collection-submission"
             class="justify-start"
             type="info"
@@ -14,12 +37,13 @@
             text="Thank you for completing the 1701 collection process for your district. It is now ready for your final review and sign-off. Please use the Signatures tab for signing off."
           />
         </v-col>
-      </v-row>
+      </v-row>      
       <StepThreeVerifyData
         :district-collection-object="districtCollectionObject"
         :is-final-sign-off="true"
         :is-collection-active="isCollectionActive"
         :show-final-submission-tabs="true"
+        @refresh-collection-store="refreshStore"
       />
     </div>
   </div>
@@ -29,6 +53,8 @@
 
 import alertMixin from '../../../mixins/alertMixin';
 import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
+import {mapState} from 'pinia';
 
 export default {
   name: 'StepSevenFinalSubmission',
@@ -54,19 +80,36 @@ export default {
   emits: [],
   data() {
     return {
-      
+      isCollectionSignedOff: false,
+      signOffStatus: 'COMPLETED',
+      isLoading: false,
     };
   },
   computed: {
-  },
-  async mounted() {
+    ...mapState(sdcCollectionStore, ['districtCollection']),
 
-     
+  },
+  mounted() {
+    this.isCollectionSignedOff = this.signOffStatus === this.districtCollectionObject.sdcDistrictCollectionStatusCode;   
   },
   created() {
     
   },
-  methods: {
+  methods: {    
+    refreshStore() {
+      this.refreshDistrictCollection();
+    },
+    async refreshDistrictCollection() {
+      this.isLoading = !this.isLoading;
+      await sdcCollectionStore().getDistrictCollection(this.districtCollectionObject.sdcDistrictCollectionID).then(async () => {
+        this.isCollectionSignedOff = this.signOffStatus === this.districtCollection.sdcDistrictCollectionStatusCode;
+        this.isLoading = !this.isLoading;
+      }).catch(e => {
+        console.error(e);
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    }
   }
 };
 </script>
