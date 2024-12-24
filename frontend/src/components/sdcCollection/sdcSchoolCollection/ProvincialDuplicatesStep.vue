@@ -69,14 +69,13 @@
       </v-window-item>
     </v-window>
   </div>
-
   <v-row justify="end">
     <PrimaryButton
       id="step-4-next-button-district"
       class="mr-3 mb-3"
       :disabled="disableNextButton() || apiError || !hasEditPermission()"
       icon="mdi-check"
-      text="Next"
+      :text=" isIndependentSchool() ? 'Next': 'Verify as Correct' "
       :click-action="next"
     />
   </v-row>
@@ -113,6 +112,8 @@ import DuplicateTab from '../../common/DuplicateTab.vue';
 import {PERMISSION} from '../../../utils/constants/Permission';
 import {mapState} from 'pinia';
 import {authStore} from '../../../store/modules/auth';
+import { appStore } from '../../../store/modules/app';
+import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
 
 export default defineComponent({
   name: 'ProvincialDuplicatesStep',
@@ -136,6 +137,8 @@ export default defineComponent({
   emits: ['next', 'refresh-store'],
   data() {
     return {
+      independentArray: [SCHOOL_CATEGORY_CODES.INDEPEND, SCHOOL_CATEGORY_CODES.INDP_FNS],
+      school: {},
       apiError: false,
       editOptionsOpen: [],
       nonAllowableDuplicates: [],
@@ -153,11 +156,15 @@ export default defineComponent({
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
+    ...mapState(appStore, ['activeSchoolsMap']),
     PROVINCIAL_DUPLICATES() {
       return SCHOOL_PROVINCIAL_DUPLICATES;
     }
   },
   async created() {
+    appStore().getInstitutesData().finally(() => {
+      this.school = this.activeSchoolsMap.get(this.schoolCollectionObject.schoolID);
+    });
     sdcCollectionStore().getCodes().then(() => {
       this.getProvincialDuplicates();
     });
@@ -199,6 +206,12 @@ export default defineComponent({
     next() {
       this.markSchoolStepAsComplete();
     },
+    isIndependentSchool() {
+      if(this.independentArray.includes(this.school.schoolCategoryCode)) {
+        return true;
+      } 
+      return false;
+    }    
   }
 });
 </script>
