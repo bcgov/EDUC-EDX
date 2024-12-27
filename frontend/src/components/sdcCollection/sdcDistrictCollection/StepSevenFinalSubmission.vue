@@ -81,7 +81,6 @@ export default {
   data() {
     return {
       isCollectionSignedOff: false,
-      signOffStatus: 'COMPLETED',
       isLoading: false,
     };
   },
@@ -90,7 +89,7 @@ export default {
 
   },
   mounted() {
-    this.isCollectionSignedOff = this.signOffStatus === this.districtCollectionObject.sdcDistrictCollectionStatusCode;   
+    this.isCollectionSignedOff = this.isSignedByAllParties(this.districtCollection?.submissionSignatures);   
   },
   created() {
     
@@ -102,13 +101,16 @@ export default {
     async refreshDistrictCollection() {
       this.isLoading = !this.isLoading;
       await sdcCollectionStore().getDistrictCollection(this.districtCollectionObject.sdcDistrictCollectionID).then(async () => {
-        this.isCollectionSignedOff = this.signOffStatus === this.districtCollection.sdcDistrictCollectionStatusCode;
+        this.isCollectionSignedOff = this.isSignedByAllParties(this.districtCollection?.submissionSignatures);
         this.isLoading = !this.isLoading;
       }).catch(e => {
         console.error(e);
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    isSignedByAllParties(submissionSignatures) {
+      return submissionSignatures ? submissionSignatures.length === 3 : false;
     }
   }
 };

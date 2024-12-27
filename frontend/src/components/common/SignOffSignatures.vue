@@ -169,7 +169,7 @@ export default {
       const payload = {districtSignatoryRole: selectedAction?.role};
       ApiService.apiAxios.post(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/sign-off`, payload)
         .then(() => {
-          setSuccessAlert('Success! The student details have been updated.');
+          setSuccessAlert('Success! The signature has been saved.');
         })
         .catch(error => {
           console.error(error);
