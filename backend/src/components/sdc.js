@@ -908,7 +908,7 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
 async function getUserWithSdcRole(req, sdcDuplicates) {
   const token = getAccessToken(req);
   for(let sdcDuplicate of sdcDuplicates) {
-    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW') {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
@@ -977,7 +977,7 @@ async function getProvincialDuplicatesForSchool(req, res) {
     let responseDupe = setDuplicateResponsePayload(req, updatedDupes, true, true);
     res.status(HttpStatus.OK).json(responseDupe);
   } catch (e) {
-    log.error('Error retrieving the in district duplicates', e.stack);
+    log.error('Error retrieving the provincial duplicates', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -996,7 +996,7 @@ function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
     delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionStudentID;
     delete sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcSchoolCollectionID;
-    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW') {
       sdcDuplicate.sdcSchoolCollectionStudent1Entity.showContact = true;
     }
   }
@@ -1004,7 +1004,7 @@ function updateProvincialDuplicateResponse(req, sdcDuplicate, school1, school2) 
   if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
     delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionStudentID;
     delete sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcSchoolCollectionID;
-    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW' && sdcDuplicate.duplicateTypeCode === 'ENROLLMENT') {
+    if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW') {
       sdcDuplicate.sdcSchoolCollectionStudent2Entity.showContact = true;
     }
   }
