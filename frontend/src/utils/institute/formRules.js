@@ -106,6 +106,46 @@ const website = (message = 'Website must be valid and secure (i.e., https)') => 
   return v => !v || /^https:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(v) || message;
 };
 
+const penIsValid = (message = 'PEN is invalid') => {
+  return v => {
+    if (!v) return true; // Allow empty values
+
+    if (v.length !== 9 || !/^-?\d+(?:\.\d+)?$/.test(v)) {
+      return message;
+    }
+
+    const odds = [];
+    const evens = [];
+    for (let i = 0; i < v.length - 1; i++) {
+      const number = parseInt(v[i], 10);
+      if (i % 2 === 0) {
+        odds.push(number);
+      } else {
+        evens.push(number);
+      }
+    }
+
+    const sumOdds = odds.reduce((acc, val) => acc + val, 0);
+
+    let fullEvenString = "";
+    evens.forEach(num => fullEvenString += num);
+
+    const doubledEvens = [];
+    const doubledEvenString = (parseInt(fullEvenString, 10) * 2).toString();
+    for (const digit of doubledEvenString) {
+      doubledEvens.push(parseInt(digit, 10));
+    }
+
+    const sumEvens = doubledEvens.reduce((acc, val) => acc + val, 0);
+
+    const finalSum = sumEvens + sumOdds;
+    const checkDigit = v[8];
+
+    return ((finalSum % 10 === 0 && checkDigit === "0") ||
+        (10 - finalSum % 10 === parseInt(checkDigit, 10))) || message;
+  };
+};
+
 export {
   email,
   endDateRule,
@@ -117,5 +157,6 @@ export {
   postalCode,
   required,
   website,
-  validPEN
+  validPEN,
+  penIsValid
 };

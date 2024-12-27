@@ -112,6 +112,7 @@ import { ApiRoutes } from '../../utils/constants';
 import { authStore } from '../../store/modules/auth';
 import { mapState } from 'pinia';
 import moment from 'moment';
+import { LocalDateTime } from "@js-joda/core";
 
 export default {
   name: 'AssessmentSessions',
@@ -147,18 +148,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(authStore, ['userInfo']),    
+    ...mapState(authStore, ['userInfo']),
     activeSessions() {
       const orderedSessions = [];
       const allSessions = this.allSessions
-        .filter(session => session.schoolYear === this.schoolYear)
-        .map((session) => {
-          return {
+          .filter(session => session.schoolYear === this.schoolYear)
+          .map(session => ({
             ...session,
             courseMonth: this.formatMonth(session.courseMonth)
-          };
-        });   
-      allSessions.sort((a, b) => new Date(a.activeUntilDate) - new Date(b.activeUntilDate));   
+          }))
+          .sort((a, b) =>
+              LocalDateTime.parse(a.activeUntilDate).compareTo(LocalDateTime.parse(b.activeUntilDate))
+          );
+
       for (let i = 0; i < allSessions.length; i += 2) {
         orderedSessions.push(allSessions.slice(i, i + 2));
       }
@@ -185,20 +187,22 @@ export default {
     getAllAssessmentSessions() {
       this.loading = true;
       ApiService.apiAxios
-        .get(`${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType, {})
-        .then((response) => {
-          this.allSessions = response.data.sort((a, b) => new Date(b.activeUntilDate) - new Date(a.activeUntilDate));
-          if(this.allSessions.length >0) {
-            this.schoolYear = this.allSessions[0].schoolYear;
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },   
+          .get(`${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType, {})
+          .then((response) => {
+            this.allSessions = response.data.sort((a, b) =>
+                LocalDateTime.parse(b.activeUntilDate).compareTo(LocalDateTime.parse(a.activeUntilDate))
+            );
+            if (this.allSessions.length > 0) {
+              this.schoolYear = this.allSessions[0].schoolYear;
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+    },
     formattoDate(date) {
       return moment(JSON.stringify(date), 'YYYY-MM-DDTHH:mm:ss').format('YYYY/MM/DD');
     },

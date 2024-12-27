@@ -1,19 +1,26 @@
 'use strict';
-const { logApiError, getAccessToken, getData, putData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse } = require('../utils');
+const { logApiError, getAccessToken, getData, putData, postData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse} = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
 const { createMoreFiltersSearchCriteria } = require('./studentFilters');
 const moment = require('moment');
+const {DateTimeFormatter, LocalDate, LocalDateTime} = require("@js-joda/core");
 
 async function getAssessmentSessions(req, res) {
   try {
     const url = `${config.get('eas:assessmentSessionsURL')}`;
     const token = getAccessToken(req);
     const data = await getData(token, url);
+    const today = LocalDate.now();
+    const formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
     data.forEach(session => {
-      session.isOpen =  new Date(session.activeFromDate) <= new Date() && new Date(session.activeUntilDate) >= new Date();      
+      const activeFromDate = LocalDate.parse(session.activeFromDate, formatter);
+      const activeUntilDate = LocalDate.parse(session.activeUntilDate, formatter);
+      session.isOpen = activeFromDate.isBefore(today) && activeUntilDate.isAfter(today);
     });
+
     return res.status(200).json(data);
   } catch (e) {
     logApiError(e, 'getAssessmentSessions', 'Error occurred while attempting to GET assessment sessions.');
@@ -38,15 +45,21 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
     const url = `${config.get('eas:assessmentSessionsURL')}/school-year/${req.params.schoolYear}`;
     const token = getAccessToken(req);
     let data = await getData(token, url);
+
+    const now = LocalDateTime.now();
+
     data.forEach(session => {
-      session.isOpen =  new Date(session.activeFromDate) <= new Date() && new Date(session.activeUntilDate) >= new Date(); 
+      const activeFrom = LocalDateTime.parse(session.activeFromDate);
+      const activeUntil = LocalDateTime.parse(session.activeUntilDate);
+      session.isOpen = activeFrom.isBefore(now) && activeUntil.isAfter(now);
+
       session.assessments.forEach(assessment => {
         let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
-        assessment.assessmentTypeName = assessmentType.label+' ('+assessment.assessmentTypeCode+')';
+        assessment.assessmentTypeName = assessmentType.label + ' (' + assessment.assessmentTypeCode + ')';
         assessment.displayOrder = assessmentType.displayOrder;
-
       });
     });
+
     return res.status(200).json(data);
   } catch (e) {
     logApiError(e, 'getSessions', 'Error occurred while attempting to GET sessions by school year.');
@@ -92,6 +105,24 @@ async function getAssessmentStudentsPaginated(req, res) {
       await logApiError(e, 'Error getting eas assessment student paginated list');
       return handleExceptionResponse(e, res);
     }
+  }
+}
+
+async function postAssessmentStudent(req, res){
+  try {
+    req.body.districtID = cacheService.getSchoolBySchoolID(req.body.schoolID).districtID;
+    const payload = {
+      ...req.body,
+      updateUser: getCreateOrUpdateUserValue(req),
+      updateDate: null,
+      createDate: null
+    };
+    const token = getAccessToken(req);
+    const result = await postData(token, payload, `${config.get('eas:assessmentStudentsURL')}`, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    await logApiError(e, 'postAssessmentStudent', 'Error occurred while attempting to create the assessment student registration.');
+    return handleExceptionResponse(e, res);
   }
 }
 
@@ -190,5 +221,6 @@ module.exports = {
   getAssessmentStudentByID,
   updateAssessmentStudentByID,
   deleteAssessmentStudentByID,
-  getAssessmentSpecialCases
+  getAssessmentSpecialCases,
+  postAssessmentStudent
 };
