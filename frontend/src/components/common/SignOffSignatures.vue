@@ -98,7 +98,7 @@ export default {
       required: true
     }
   },
-  emits: [],
+  emits: ['refresh-collection-store'],
   data() {
     return {
       isLoading: true,
@@ -176,6 +176,7 @@ export default {
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while submitting signature for sign-off. Please try again later.');
         }).finally(async () => {
           await this.refreshDistrictCollection();
+          this.$emit('refresh-collection-store');
         });
     },
 
