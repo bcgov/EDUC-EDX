@@ -110,7 +110,7 @@ export default {
       });
     },
     isSignedByAllParties(submissionSignatures) {
-      return submissionSignatures ? submissionSignatures.length === 3 : false;
+      return submissionSignatures ? submissionSignatures.filter(signer => signer.districtSignatoryUserID && signer.districtSignatoryUserID !== '').length === 3 : false;
     }
   }
 };
