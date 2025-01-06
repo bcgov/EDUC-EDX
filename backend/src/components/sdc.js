@@ -334,8 +334,8 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
     payload.sdcSchoolCollectionStudentValidationIssues = null;
     payload.sdcSchoolCollectionStudentEnrolledPrograms = null;
-    if (payload?.numberOfCoursesDec) {
-      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCoursesDec);
+    if (payload?.numberOfCourses) {
+      payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCourses);
     }
     const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL') + '/false', req.session?.correlationID);
     if(studentLock) {
