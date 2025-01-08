@@ -22,6 +22,7 @@ if [ "$envValue" != "prod" ]
 then
   siteMinderLogoutUrl="https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
 else
+  WEB_SERVER_FRONTEND="educationdataexchange.gov.bc.ca"
   SERVER_FRONTEND="https://educationdataexchange.gov.bc.ca"
   siteMinderLogoutUrl="https://logon7.gov.bc.ca/clp-cgi/logoff.cgi?retnow=1&returl="
 fi
@@ -128,7 +129,7 @@ then
   disableSdcFunctionality=true
   disableGradFunctionality=true
   disableEASFunctionality=true
-  sldMigrationDate="2025-02-01"
+  sldMigrationDate="2025-01-17"
 fi
 
 IS_RATE_LIMIT_ENABLED=true
