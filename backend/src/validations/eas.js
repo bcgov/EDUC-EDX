@@ -3,11 +3,11 @@ const { baseRequestSchema } = require('./base');
 
 const putStudentAssessmentSchema = object({
   body: object({
-    assessmentStudentID: string().nullable().optional,
+    assessmentStudentID: string().nonNullable(),
     sessionID:string().nonNullable(),
-    districtID: string().nonNullable(),
+    districtID: string().nullable().optional(),
     schoolID: string().nonNullable(),
-    assessmentCenterID: string().nullable().optional(),
+    assessmentCenterID: string().nonNullable(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
     studentID: string().nonNullable(),
@@ -15,17 +15,19 @@ const putStudentAssessmentSchema = object({
     localID: string().max(12).nonNullable(),
     givenName: string().max(25).nonNullable(),
     surName: string().max(25).nonNullable(),
-    isElectronicExam: boolean().nonNullable(),
+    isElectronicExam: boolean().nullable().optional(),
     proficiencyScore: number().nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
     courseStatusCode: string().max(1).nullable().optional(),
-    numberOfAttempts: number().nullable(),
+    numberOfAttempts: number().nullable().optional(),
     courseMonth: number().optional(),
     courseYear: number().optional(),
     assessmentStudentValidationIssues: array().of(object({
+      assessmentStudentValidationIssueID:string().nullable().optional(),
       assessmentStudentID:string().nullable().optional(),
       validationIssueSeverityCode:string().nullable().optional(),
       validationIssueCode:string().nullable().optional(),
+      validationIssueFieldCode:string().nullable().optional(),
       validationLabel:string().nullable().optional(),
       validationMessage:string().nullable().optional(),
     }).concat(baseRequestSchema)).nullable().optional()
