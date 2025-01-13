@@ -323,7 +323,7 @@ function formatDate(date) {
 
 function stripNumberFormattingNumberOfCourses(value) {
   if (!value) return '0000';
-  return value.replace('.', '');
+  return String(value).replace('.', '');
 }
 
 function formatNumberOfCourses(value) {
