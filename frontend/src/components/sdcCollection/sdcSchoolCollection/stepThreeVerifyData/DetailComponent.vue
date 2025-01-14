@@ -218,7 +218,7 @@ export default {
       addStudentSheet: false,
       resetFlag: false,
       reloadStudentsFlag: false,
-      afterSubmittedStatuses: ['P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED']
     };
   },
   computed: {
@@ -231,7 +231,7 @@ export default {
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
     isSubmitted(){
-      return this.afterSubmittedStatuses.includes(this.schoolCollection?.sdcSchoolCollectionStatusCode);
+      return this.submittedStatuses.includes(this.schoolCollection?.sdcSchoolCollectionStatusCode);
     }
   },
   created() {
