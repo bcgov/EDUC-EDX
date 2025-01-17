@@ -218,7 +218,7 @@ import {ApiRoutes} from '../../../utils/constants';
 import ApiService from '../../../common/apiService';
 import alertMixin from '../../../mixins/alertMixin';
 import {mapActions, mapState} from 'pinia';
-import {DateTimeFormatter, LocalDate} from '@js-joda/core';
+import {DateTimeFormatter, LocalDate, LocalDateTime} from '@js-joda/core';
 import {setFailureAlert} from '../../composable/alertComposable';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
@@ -482,8 +482,8 @@ export default {
     },
     sortSchoolsInProgress() {
       this.schoolCollectionsInProgress.sort((a, b) => {
-        const dateA = a.uploadDate ? LocalDate.parse(a.uploadDate) : null;
-        const dateB = b.uploadDate ? LocalDate.parse(b.uploadDate) : null;
+        const dateA = a.uploadDate ? LocalDateTime.parse(a.uploadDate) : null;
+        const dateB = b.uploadDate ? LocalDateTime.parse(b.uploadDate) : null;
 
         if (!dateA && !dateB) return 0;
         if (!dateA) return 1;
