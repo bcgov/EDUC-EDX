@@ -126,7 +126,7 @@ then
   sldMigrationDate="2021-07-30"
 elif [ "$envValue" = "prod" ]
 then
-  disableSdcFunctionality=true
+  disableSdcFunctionality=false
   disableGradFunctionality=true
   disableEASFunctionality=true
   sldMigrationDate="2025-01-17"
