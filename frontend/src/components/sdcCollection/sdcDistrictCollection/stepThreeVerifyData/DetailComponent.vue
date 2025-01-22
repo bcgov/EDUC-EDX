@@ -17,6 +17,7 @@
           class="d-flex justify-end"
         >
           <v-btn
+            v-if="showExportBtn"
             id="export"
             color="#003366"
             text="Export"
@@ -203,7 +204,7 @@ export default {
     sdcCollectionStore().getCodes().then(() => {
       this.loadStudents();
     });
-
+    console.log("this.showExportBtn", this.showExportBtn)
   },
   methods: {
     closeAndLoadStudents() {
