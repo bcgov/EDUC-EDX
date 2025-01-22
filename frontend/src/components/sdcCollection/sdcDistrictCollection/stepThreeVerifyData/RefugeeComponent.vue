@@ -39,6 +39,7 @@
         :headcount-type="config.summaryReport"
         :is-district-summary="true"
         :is-collection-active="isCollectionActive"
+        :show-compare="false"
       />
     </div>
   </v-container>
