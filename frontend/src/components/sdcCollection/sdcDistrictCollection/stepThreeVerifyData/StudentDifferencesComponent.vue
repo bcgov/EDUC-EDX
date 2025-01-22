@@ -165,7 +165,8 @@ export default defineComponent({
   computed: {
     ...mapState(appStore, ['activeDistrictsMap']),
     filterCount() {
-      return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
+      let filters = Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []);
+      return new Set(filters.map(filter => filter.title)).size;
     },
   },
   async created() {
