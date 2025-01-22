@@ -124,7 +124,7 @@
 
     <v-col>
       <v-switch
-        v-if="isCollectionActive"
+        v-if="isCollectionActive && showCompare"
         id="compare-switch"
         v-model="compareSwitch"
         color="primary"
@@ -190,6 +190,11 @@ export default {
     isCollectionActive: {
       type: Boolean,
       required: true
+    },
+    showCompare: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   emits: [],
