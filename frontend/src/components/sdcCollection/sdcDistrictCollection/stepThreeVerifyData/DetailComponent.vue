@@ -17,6 +17,7 @@
           class="d-flex justify-end"
         >
           <v-btn
+            v-if="showExportBtn"
             id="export"
             color="#003366"
             text="Export"
