@@ -124,8 +124,8 @@
         <v-row style="overflow-y: auto; max-height:30em">
           <v-col>
             <v-row
-              v-for="(file, index) in fileUploadList"
-              :key="index"
+              v-for="file in fileUploadList"
+              :key="file.name"
               height="20em"
               style="overflow: hidden; overflow-y: auto;"
             >
@@ -394,7 +394,6 @@ export default {
               reader.onload = () => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileValue.index,
                   fileContents: reader.result,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
@@ -407,7 +406,6 @@ export default {
               reader.onerror = (error) => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileValue.index,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
                   error: error,
