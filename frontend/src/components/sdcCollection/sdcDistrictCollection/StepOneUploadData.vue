@@ -124,8 +124,8 @@
         <v-row style="overflow-y: auto; max-height:30em">
           <v-col>
             <v-row
-              v-for="(file, index) in fileUploadList"
-              :key="index"
+              v-for="file in fileUploadList"
+              :key="file.name"
               height="20em"
               style="overflow: hidden; overflow-y: auto;"
             >
@@ -213,7 +213,6 @@ import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {getCollectionLink} from '../../../utils/common';
-import {getFileNameWithMaxNameLength} from '../../../utils/file';
 import {ApiRoutes} from '../../../utils/constants';
 import ApiService from '../../../common/apiService';
 import alertMixin from '../../../mixins/alertMixin';
@@ -223,6 +222,7 @@ import {setFailureAlert} from '../../composable/alertComposable';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
 import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
+import {getFileNameWithMaxNameLength} from "../../../utils/file";
 
 export default {
   name: 'StepOneUploadData',
@@ -387,7 +387,6 @@ export default {
           this.inputKey++;
           this.isLoadingFiles = false;
         } else {
-          let fileIndex = 0;
           this.filePromises = this.uploadFileValue.map((fileValue) => {
             return new Promise((resolve, reject) => {
               let reader = new FileReader();
@@ -395,7 +394,6 @@ export default {
               reader.onload = () => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: reader.result,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
@@ -408,7 +406,6 @@ export default {
               reader.onerror = (error) => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
                   error: error,
@@ -425,7 +422,7 @@ export default {
           for await (const fileJSON of this.fileUploadList) {
             if(fileJSON.error === null){
               await new Promise(resolve => setTimeout(resolve, 3000));
-              await this.uploadFile(fileJSON, fileJSON.index);
+              await this.uploadFile(fileJSON);
               this.inputKey++;
             }
           }
@@ -434,24 +431,24 @@ export default {
         }
       }
     },
-    async uploadFile(fileJSON, index) {
+    async uploadFile(fileJSON) {
       let document;
       try{
         document = {
-          fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
-          .then((response) => {
-            this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
-          });
+            .then((response) => {
+              this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
+            });
         this.successfulUploadCount += 1;
         fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
         fileJSON.status = this.fileUploadError;
-      } 
+      }
     },
     addFileReportDateWarningIfRequired(fileDate, fileJSON) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
