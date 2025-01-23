@@ -222,6 +222,7 @@ import {setFailureAlert} from '../../composable/alertComposable';
 import {authStore} from '../../../store/modules/auth';
 import {PERMISSION} from '../../../utils/constants/Permission';
 import {FILE_UPLOAD_STATUS} from '../../../utils/constants/FileUploadStatus';
+import {getFileNameWithMaxNameLength} from "../../../utils/file";
 
 export default {
   name: 'StepOneUploadData',
@@ -385,85 +386,71 @@ export default {
         if (!this.uploadFileValue[0] || !this.validForm) {
           this.inputKey++;
           this.isLoadingFiles = false;
-          return
-        }
-
-        await Promise.all(
-            Array.from(this.uploadFileValue).map(async (fileValue, index) => {
-              try {
-                const fileContents = await new Promise((resolve, reject) => {
-                  const reader = new FileReader();
-                  reader.readAsText(fileValue);
-                  reader.onload = () => resolve(reader.result);
-                  reader.onerror = (error) => reject(error);
-                });
-
-                const statusJson = {
+        } else {
+          this.filePromises = this.uploadFileValue.map((fileValue) => {
+            return new Promise((resolve, reject) => {
+              let reader = new FileReader();
+              reader.readAsText(fileValue);
+              reader.onload = () => {
+                let statusJson = {
                   name: fileValue.name,
-                  index: index,
-                  fileContents: fileContents,
+                  index: fileValue.index,
+                  fileContents: reader.result,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
-                  warning: null,
+                  warning: null
                 };
-
-                const isValid = await this.validateFileExtension(statusJson);
-                if (!isValid) {
-                  this.fileUploadList.push(statusJson);
-                  return;
-                }
-
+                this.validateFileExtension(statusJson);
                 this.fileUploadList.push(statusJson);
-                await this.uploadFile(statusJson);
-
-              } catch (error) {
-                console.error("Error processing file:", fileValue.name, error);
-                this.fileUploadList.push({
+                resolve(statusJson);
+              };
+              reader.onerror = (error) => {
+                let statusJson = {
                   name: fileValue.name,
-                  index: index,
+                  index: fileValue.index,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
-                  error: error.message || "An error occurred",
-                  warning: null,
-                });
-              }
-            })
-        );
+                  error: error,
+                  warning: null
+                };
+                this.fileUploadList.push(statusJson);
+                reject(statusJson);
+              };
+            });
+          });
 
-        this.uploadFileValue = null;
-        this.inputKey++;
-        await this.getFileProgress();
+          await Promise.all(this.filePromises);
+
+          for await (const fileJSON of this.fileUploadList) {
+            if(fileJSON.error === null){
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              await this.uploadFile(fileJSON);
+              this.inputKey++;
+            }
+          }
+          this.uploadFileValue = null;
+          await this.getFileProgress();
+        }
       }
     },
     async uploadFile(fileJSON) {
       let document;
       try{
-        //TODO - add check to reject filename under certain conditions? Removed reference to getFileNameWithMaxNameLength in file.js
         document = {
-          fileName: fileJSON.name,
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
-          .then((response) => {
-            this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
-          });
-
+            .then((response) => {
+              this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
+            });
         this.successfulUploadCount += 1;
-
-        const index = this.fileUploadList.findIndex(f => f.index === fileJSON.index);
-
-        if (index !== -1) {
-          this.fileUploadList[index] = {
-            ...fileJSON,
-            status: this.fileUploadSuccess,
-          };
-        }
-
+        fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
         fileJSON.status = this.fileUploadError;
-      } 
+      }
     },
     addFileReportDateWarningIfRequired(fileDate, fileJSON) {
       let formattedFileDate = LocalDate.parse(fileDate.substring(0,19), DateTimeFormatter.ofPattern('uuuuMMdd'));
