@@ -213,7 +213,6 @@ import Spinner from '../../common/Spinner.vue';
 import PrimaryButton from '../../util/PrimaryButton.vue';
 import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 import {getCollectionLink} from '../../../utils/common';
-import {getFileNameWithMaxNameLength} from '../../../utils/file';
 import {ApiRoutes} from '../../../utils/constants';
 import ApiService from '../../../common/apiService';
 import alertMixin from '../../../mixins/alertMixin';
@@ -386,67 +385,80 @@ export default {
         if (!this.uploadFileValue[0] || !this.validForm) {
           this.inputKey++;
           this.isLoadingFiles = false;
-        } else {
-          let fileIndex = 0;
-          this.filePromises = this.uploadFileValue.map((fileValue) => {
-            return new Promise((resolve, reject) => {
-              let reader = new FileReader();
-              reader.readAsText(fileValue);
-              reader.onload = () => {
-                let statusJson = {
+          return
+        }
+
+        await Promise.all(
+            Array.from(this.uploadFileValue).map(async (fileValue, index) => {
+              try {
+                const fileContents = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.readAsText(fileValue);
+                  reader.onload = () => resolve(reader.result);
+                  reader.onerror = (error) => reject(error);
+                });
+
+                const statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
-                  fileContents: reader.result,
+                  index: index,
+                  fileContents: fileContents,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
-                  warning: null
+                  warning: null,
                 };
-                this.validateFileExtension(statusJson);
+
+                const isValid = await this.validateFileExtension(statusJson);
+                if (!isValid) {
+                  this.fileUploadList.push(statusJson);
+                  return;
+                }
+
                 this.fileUploadList.push(statusJson);
-                resolve(statusJson);
-              };
-              reader.onerror = (error) => {
-                let statusJson = {
+                await this.uploadFile(statusJson);
+
+              } catch (error) {
+                console.error("Error processing file:", fileValue.name, error);
+                this.fileUploadList.push({
                   name: fileValue.name,
-                  index: fileIndex++,
+                  index: index,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
-                  error: error,
-                  warning: null
-                };
-                this.fileUploadList.push(statusJson);
-                reject(statusJson);
-              };
-            });
-          });
+                  error: error.message || "An error occurred",
+                  warning: null,
+                });
+              }
+            })
+        );
 
-          await Promise.all(this.filePromises);
-
-          for await (const fileJSON of this.fileUploadList) {
-            if(fileJSON.error === null){
-              await new Promise(resolve => setTimeout(resolve, 3000));
-              await this.uploadFile(fileJSON, fileJSON.index);
-              this.inputKey++;
-            }
-          }
-          this.uploadFileValue = null;
-          await this.getFileProgress();
-        }
+        this.uploadFileValue = null;
+        this.inputKey++;
+        await this.getFileProgress();
       }
     },
-    async uploadFile(fileJSON, index) {
+    async uploadFile(fileJSON) {
       let document;
       try{
+        //TODO - add check to reject filename under certain conditions? Removed reference to getFileNameWithMaxNameLength in file.js
         document = {
-          fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
+          fileName: fileJSON.name,
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents)))
         };
         await ApiService.apiAxios.post(ApiRoutes.sdc.BASE_URL + '/district/' + this.sdcDistrictCollectionID + '/file', document)
           .then((response) => {
             this.addFileReportDateWarningIfRequired(response.data.uploadReportDate, fileJSON);
           });
+
         this.successfulUploadCount += 1;
-        fileJSON.status = this.fileUploadSuccess;
+
+        const index = this.fileUploadList.findIndex(f => f.index === fileJSON.index);
+
+        if (index !== -1) {
+          this.fileUploadList[index] = {
+            ...fileJSON,
+            status: this.fileUploadSuccess,
+          };
+        }
+
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
