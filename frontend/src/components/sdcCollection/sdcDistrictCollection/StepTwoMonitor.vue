@@ -269,14 +269,14 @@
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students Only"
+          text="All Students with no Errors"
           @click="downloadStudentReport"
         />
         <v-btn
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students with Errors/Warnings"
+          text="All Students with Data Issues"
           @click="downloadStudentWithErrorsReport"
         />
       </v-card-actions>

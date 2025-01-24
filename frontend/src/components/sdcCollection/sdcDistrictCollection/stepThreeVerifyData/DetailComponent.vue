@@ -17,6 +17,7 @@
           class="d-flex justify-end"
         >
           <v-btn
+            v-if="showExportBtn"
             id="export"
             color="#003366"
             text="Export"
@@ -109,14 +110,14 @@
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students Only"
+          text="All Students with no Errors"
           @click="downloadStudentReport"
         />
         <v-btn
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
-          text="Students with Warnings"
+          text="All Students with Data Issues"
           @click="downloadStudentWithErrorsReport"
         />
       </v-card-actions>
