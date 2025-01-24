@@ -437,6 +437,7 @@ export default {
     async uploadFile(fileJSON, index) {
       let document;
       try{
+        //This is the primary document
         document = {
           fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents)))
