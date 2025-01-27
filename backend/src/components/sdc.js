@@ -179,6 +179,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       });
     }
 
+    const requestParams = req.params;
     if (req.query.searchParams?.['multiFieldName']) {
       search.push({
         condition: CONDITION.AND,
@@ -193,7 +194,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     }
 
     if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      let criteriaArray = createMoreFiltersSearchCriteria(requestParams, req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
       });

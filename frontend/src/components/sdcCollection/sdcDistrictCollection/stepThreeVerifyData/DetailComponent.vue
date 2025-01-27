@@ -244,10 +244,7 @@ export default {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
-          sort: {
-            legalLastName: 'ASC'
-          },
+          searchParams: omitBy(this.filterSearchParams, isEmpty)
         }
       }).then(response => {
         this.studentList = response.data.content;
