@@ -68,7 +68,8 @@ const FILTER_OPERATION = Object.freeze(
      * Ends with filter operation.
      */
     ENDS_WITH: 'ends_with',
-    IN_LEFT_JOIN: 'in_left_join'
+    IN_LEFT_JOIN: 'in_left_join',
+    NONE_IN_DISTRICT: 'none_in_district',
   }
 );
 const CONDITION = Object.freeze(
