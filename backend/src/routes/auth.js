@@ -103,13 +103,13 @@ router.get('/silent_sdc_idir_login', async function (req, res, next) {
   }
   let idir_guid = req.query.idir_guid;
   if(req.query.schoolID && req.query.sdcSchoolCollectionID){
-    await client.set(idir_guid + '::staffLinkInstituteID', req.query.schoolID);
-    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID);
-    await client.set(idir_guid + '::staffLinkInstituteType', 'SCHOOL');
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.schoolID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcSchoolCollectionID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'SCHOOL', 'EX', 1800);
   }else if(req.query.districtID && req.query.sdcDistrictCollectionID){
-    await client.set(idir_guid + '::staffLinkInstituteID', req.query.districtID);
-    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID);
-    await client.set(idir_guid + '::staffLinkInstituteType', 'DISTRICT');
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.districtID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'DISTRICT', 'EX', 1800);
   }else{
     res.status(401).json(UnauthorizedRsp);
   }
