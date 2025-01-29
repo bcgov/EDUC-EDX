@@ -100,24 +100,11 @@ async function getErrorFilesetStudentPaginated(req, res) {
     };
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
-
-    data.content = data?.content.map(error => toTableRow(error));
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset student paginated list', e.stack);
     return handleExceptionResponse(e, res);
   }
-}
-
-function toTableRow(validationIssues) {
-  let validationCodes = cacheService.getGradDataCollectionValidationIssueCodes();
-  let updatedValidationIssues = [];
-  for(let errorRow of validationIssues?.errorFilesetStudentValidationIssues) {
-    errorRow.validationIssueCodeDesc = validationCodes.find(error => error?.validationIssueTypeCode === errorRow?.validationIssueCode)?.message;
-    updatedValidationIssues.push(errorRow);
-  }
-  validationIssues.errorFilesetStudentValidationIssues = updatedValidationIssues;
-  return validationIssues;
 }
 
 function createMoreFiltersSearchCriteria(searchFilter = []) {
