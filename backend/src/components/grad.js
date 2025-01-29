@@ -4,7 +4,6 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
-const cacheService = require('./cache-service');
 
 async function uploadFile(req, res) {
   try {
