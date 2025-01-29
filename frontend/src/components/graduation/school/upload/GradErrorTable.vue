@@ -67,7 +67,7 @@
                   {{ formatText(error?.validationIssueSeverityCode) }}
                 </v-chip>
               </v-col>
-                <v-col v-if="column.subHeader[2].key === 'desc'">{{ error?.validationIssueCodeDesc }}</v-col> 
+                <v-col v-if="column.subHeader[2].key === 'desc'">{{ error?.validationIssueDescription }}</v-col>
               </v-row>
             </span>
           </span>
