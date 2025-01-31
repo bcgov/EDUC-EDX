@@ -289,7 +289,7 @@ export default {
       filesetList: [],
       totalElements: 0,
       pageNumber: 1,
-      pageSize: 15,
+      pageSize: 20,
       isLoading: false,
       filterSearchParams: {
         moreFilters: {}

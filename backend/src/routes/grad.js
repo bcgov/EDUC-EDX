@@ -25,7 +25,7 @@ router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authent
   getErrorFilesetStudentPaginated);
 
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradErrorFilesetStudentPaginatedSchema),
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetPaginatedSchema),
   getFilesetsPaginated);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
