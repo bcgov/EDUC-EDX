@@ -342,7 +342,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
             requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_EDIT
+            permission: PERMISSION.GRAD_SCH_UPLOAD
           },
         },
         {
@@ -353,7 +353,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.GRAD_UPLOAD_ERRORS,
             requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_EDIT
+            permission: PERMISSION.GRAD_ERR_RPT_VIEW
           },
         },
         {
@@ -408,7 +408,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
             requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_EDIT
+            permission: PERMISSION.GRAD_SCH_TVR_VIEW
           },
         },
         {
@@ -419,7 +419,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.GRAD_REPORTS,
             requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_EDIT
+            permission: PERMISSION.GRAD_SCH_RPT_VIEW
           },
         }
       ]
