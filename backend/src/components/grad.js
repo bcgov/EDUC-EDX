@@ -4,6 +4,7 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
+const cacheService = require('./cache-service');
 
 async function uploadFile(req, res) {
   try {
@@ -16,7 +17,12 @@ async function uploadFile(req, res) {
       updateUser: createUpdateUser
     };
     const token = getAccessToken(req);
-    let data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);  
+    let data;
+    if (req.params.schoolID){
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
+    } else {
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
+    }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     console.log(JSON.stringify(e));
@@ -53,7 +59,12 @@ async function getFilesetsPaginated(req, res) {
         condition: null,
         searchCriteriaList: [{ key: 'schoolID', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
-    } 
+    } else if(req.params.districtID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'districtID', value: req.params.districtID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    }
 
     const params = {
       params: {
@@ -65,6 +76,21 @@ async function getFilesetsPaginated(req, res) {
     };
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
+
+    if(req?.params?.districtID){
+      data?.content.forEach(value => {
+        value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
+      });
+      data?.content.sort((a,b) =>  {
+        if (a.schoolName > b.schoolName) {
+          return 1;
+        } else if (a.schoolName < b.schoolName) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset student paginated list', e.stack);
@@ -142,6 +168,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     });
   }
   return search;
+}
+
+function getSchoolName(school) {
+  return school.mincode + ' - ' + school.schoolName;
 }
 
 function createPenLocalIdCriteria(key, idString) {

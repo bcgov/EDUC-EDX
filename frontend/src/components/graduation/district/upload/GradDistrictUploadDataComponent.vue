@@ -149,8 +149,8 @@
           <v-row style="overflow-y: auto; max-height:30em">
             <v-col>
               <v-row
-                v-for="(file, index) in fileUploadList"
-                :key="index"
+                v-for="file in fileUploadList"
+                :key="file.name"
                 height="20em"
                 style="overflow: hidden; overflow-y: auto;"
               >
@@ -253,13 +253,13 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
   
 export default {
-  name: 'GradUploadDataComponent',
+  name: 'GradDistrictUploadDataComponent',
   components: {
     ConfirmationDialog
   },
   mixins: [alertMixin],
   props: {
-    schoolID: {
+    districtID: {
       type: String,
       required: false,
       default: null
@@ -295,6 +295,7 @@ export default {
         moreFilters: {}
       },
       headers: [
+        {title: 'School Name', key: 'schoolName'},
         {title: 'DEM File Name', key: 'demFileName'},
         {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
         {title: 'DEM File Status', key: 'demFileStatusCode'},
@@ -368,7 +369,6 @@ export default {
           this.inputKey++;
           this.isLoadingFiles = false;
         } else {
-          let fileIndex = 0;
           this.filePromises = this.uploadFileValue.map((fileValue) => {
             return new Promise((resolve, reject) => {
               let reader = new FileReader();
@@ -376,7 +376,6 @@ export default {
               reader.onload = () => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: reader.result,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
@@ -389,7 +388,6 @@ export default {
               reader.onerror = (error) => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
                   error: error,
@@ -406,7 +404,7 @@ export default {
           for await (const fileJSON of this.fileUploadList) {
             if(fileJSON.error === null){
               await new Promise(resolve => setTimeout(resolve, 3000));
-              await this.uploadFile(fileJSON, fileJSON.index);
+              await this.uploadFile(fileJSON);
               this.inputKey++;
             }
           }
@@ -415,15 +413,15 @@ export default {
         }
       }
     },
-    async uploadFile(fileJSON, index) {
+    async uploadFile(fileJSON) {
       let document;
       try{
         document = {
-          fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents))),
-          fileType: this.uploadFileValue[index].name.split('.')[1]
+          fileType: fileJSON.name.split('.')[1]
         };
-        await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file', document)
+        await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file', document)
           .then(() => {});
         this.successfulUploadCount += 1;
         fileJSON.status = this.fileUploadSuccess;
@@ -435,7 +433,7 @@ export default {
     },
     async getFilesetPaginated() {
       this.isLoading= true;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
@@ -458,10 +456,10 @@ export default {
       });
     },
     backButtonClick() {
-      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
+      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.districtID}});
     },
     navigateToErrors(row) {
-      this.$router.push({name: 'error', params: {instituteIdentifierID: this.schoolID, activeIncomingFilesetID: row.incomingFilesetID}});
+      this.$router.push({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
     }
 
   }
