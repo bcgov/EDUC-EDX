@@ -16,7 +16,7 @@
       justify="start"
     >
       <v-col
-        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_SCH_UPLOAD') && isLoggedInSchoolUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -58,7 +58,7 @@
       </v-col>
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_SCH_TVR_VIEW') && isLoggedInSchoolUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -96,7 +96,7 @@
       </v-col>
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_SCH_EDIT') && isLoggedInSchoolUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_SCH_RPT_VIEW') && isLoggedInSchoolUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -136,7 +136,7 @@
       <!--DISTRICT-->
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_DIS_UPLOAD') && isLoggedInDistrictUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -178,7 +178,7 @@
       </v-col>
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_DIS_RPT_VIEW') && isLoggedInDistrictUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -215,7 +215,7 @@
       </v-col>
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_DIS_TVR_VIEW') && isLoggedInDistrictUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >
@@ -252,7 +252,7 @@
       </v-col>
 
       <v-col
-        v-if="hasRequiredPermission('GRAD_DIS_EDIT') && isLoggedInDistrictUser && !disableGradFunctionality"
+        v-if="hasRequiredPermission('GRAD_DIS_RPT_VIEW') && isLoggedInDistrictUser && !disableGradFunctionality"
         cols="12"
         md="6"
       >

@@ -16,18 +16,18 @@ router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session
   validateAccessToken, getCachedGradCollectionData(constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES, 'grad:validationIssueTypeCodesURL'));
 
 router.post('/school/:schoolID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradFileUploadSchema), scanFilePayload, uploadFile);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradFileUploadSchema), scanFilePayload, uploadFile);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
+  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema),
   getErrorFilesetStudentPaginated);
 
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradErrorFilesetStudentPaginatedSchema),
   getFilesetsPaginated);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_EDIT), validate(gradErrorFilesetStudentPaginatedSchema),
+  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema),
   downloadErrorReport);
 
 module.exports = router;
