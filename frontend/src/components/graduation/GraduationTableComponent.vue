@@ -331,10 +331,10 @@ export default {
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     uploadDistrictFiles() {
-
+      this.$router.push({name: 'grad-district-upload', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     uploadSchoolFiles() {
-      this.$router.push({name: 'grad-upload', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+      this.$router.push({name: 'grad-school-upload', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     backButtonClick() {
       this.$router.push({name: 'home'});

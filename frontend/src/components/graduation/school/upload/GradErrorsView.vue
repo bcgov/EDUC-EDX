@@ -104,6 +104,8 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
+import { authStore } from '../../../../store/modules/auth';
+import { mapState } from 'pinia';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
 import GradErrorFilters from './GradErrorFilters.vue';
@@ -116,7 +118,7 @@ export default {
   },
   mixins: [alertMixin],
   props: {
-    schoolID: {
+    instituteIdentifierID: {
       type: String,
       required: false,
       default: null
@@ -125,7 +127,7 @@ export default {
       type: String,
       required: false,
       default: null
-    },
+    }
   },
   emits: [],
   data() {
@@ -157,6 +159,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(authStore, ['userInfo']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
     },
@@ -178,7 +181,11 @@ export default {
       this.showFilters= !this.showFilters;
     },
     backButtonClick() {
-      this.$router.push({name: 'grad-upload', params: {schoolID: this.schoolID}});
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        this.$router.push({name: 'grad-school-upload', params: {schoolID: this.instituteIdentifierID}});
+      } else {
+        this.$router.push({name: 'grad-district-upload', params: {districtID: this.instituteIdentifierID}});
+      }
     },
     getErrorFilesetStudentPaginated() {
       this.isLoading= true;
@@ -187,9 +194,6 @@ export default {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty),
-          // sort: {
-          //     legalLastName: 'ASC'
-          // },
         }
       }).then(response => {
         this.errorList = response.data.content;

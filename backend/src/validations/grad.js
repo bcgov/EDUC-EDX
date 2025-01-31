@@ -13,10 +13,14 @@ const gradFileUploadSchema =  object({
   query: object().noUnknown(),
 }).noUnknown();
 
-const gradFileBySchoolIDSchema =  object({
-  body: object().noUnknown(),
+const gradDistrictFileUploadSchema =  object({
+  body:object({
+    fileName: string().nonNullable(),
+    fileContents: string().nonNullable(),
+    fileType: string().nonNullable()
+  }).concat(baseRequestSchema).noUnknown(),
   params: object({
-    schoolID: string().nonNullable()
+    districtID: string().nonNullable()
   }).noUnknown(),
   query: object().noUnknown(),
 }).noUnknown();
@@ -34,8 +38,36 @@ const gradErrorFilesetStudentPaginatedSchema = object({
   })
 }).noUnknown();
 
+const gradSchoolFilesetPaginatedSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    schoolID: string()
+  }),
+  query: object({
+    pageNumber: number().moreThan(-1).integer().optional(),
+    pageSize: number().positive().integer().optional(),
+    sort: object().optional(),
+    searchParams: object().optional()
+  })
+}).noUnknown();
+
+const gradDistrictFilesetPaginatedSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    districtID: string()
+  }),
+  query: object({
+    pageNumber: number().moreThan(-1).integer().optional(),
+    pageSize: number().positive().integer().optional(),
+    sort: object().optional(),
+    searchParams: object().optional()
+  })
+}).noUnknown();
+
 module.exports = {
   gradFileUploadSchema,
-  gradFileBySchoolIDSchema,
-  gradErrorFilesetStudentPaginatedSchema
+  gradDistrictFilesetPaginatedSchema,
+  gradErrorFilesetStudentPaginatedSchema,
+  gradSchoolFilesetPaginatedSchema,
+  gradDistrictFileUploadSchema
 };
