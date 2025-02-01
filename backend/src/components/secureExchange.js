@@ -961,13 +961,17 @@ async function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-async function setInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID) {
+async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad) {
   log.info('Set InstituteTypeIdentifierAndRedirectToSchool And Redirect called');
 
   if(sdcSchoolCollectionID && schoolID){
     log.info('Staff user logged in, redirecting to selected school');
-    setSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+    setSDCStaffSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/open-school-collection-summary/' + schoolID);
+  }else if(directToGrad && schoolID){
+    log.info('Staff user logged in, redirecting to selected school');
+    setGradStaffSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+    res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
   }else {
     log.info('User has no associated schools or districts redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
@@ -987,9 +991,9 @@ async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, distric
   }
 }
 
-function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, schoolID, sdcSchoolCollectionID) {
+function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, schoolID, sdcSchoolCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
-  if(roles.includes('EDX_ADMIN')){
+  if(roles.includes('STUDENT_DATA_COLLECTION') && sdcSchoolCollectionID){
     Promise.all([
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
@@ -1008,7 +1012,20 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
           res.redirect(config.get('server:frontend') + '/unauthorizedNoEDXUser');
           return;
         }
-        await setInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID);
+        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad);
+      });
+  }else if(roles.includes('GRAD_DATA_COLLECTION_ADMIN') && directToGrad){
+    Promise.all([
+      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID)
+    ])
+      .then(async ([userSchools]) => {
+        req.session.userSchoolIDs = userSchools?.filter((el) => {
+          if(el.schoolID === schoolID){
+            return cacheService.getSchoolBySchoolID(el);
+          }
+        });
+
+        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad);
       });
   }else{
     log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
@@ -1095,6 +1112,36 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
   }
 }
 
+function setGradStaffSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+  req.session.activeInstituteIdentifier = activeInstituteIdentifier;
+  req.session.activeInstituteType = activeInstituteType;
+  let permissionsArray = [];
+
+  if(req.session.passport.user._json.idir_guid){
+    permissionsArray = cacheService.getGradStaffSchoolPermissions();
+  }
+
+  req.session.activeInstitutePermissions = permissionsArray;
+}
+
+function setSDCStaffSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+  req.session.activeInstituteIdentifier = activeInstituteIdentifier;
+  req.session.activeInstituteType = activeInstituteType;
+  let permissionsArray = [];
+
+  if(activeInstituteType === 'SCHOOL'){
+    if(req.session.passport.user._json.idir_guid){
+      if(activeInstituteType === 'SCHOOL') {
+        permissionsArray = cacheService.getSDCStaffSchoolPermissions();
+      }else{
+        permissionsArray = cacheService.getSDCStaffDistrictPermissions();
+      }
+    }
+  }
+
+  req.session.activeInstitutePermissions = permissionsArray;
+}
+
 function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
@@ -1102,7 +1149,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
 
   if(activeInstituteType === 'SCHOOL'){
     if(req.session.passport.user._json.idir_guid){
-      permissionsArray = cacheService.getAllStaffSchoolPermissions();
+      permissionsArray = cacheService.getSDCStaffSchoolPermissions();
     }else{
       let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
       selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
@@ -1111,7 +1158,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
     }
   }else{
     if(req.session.passport.user._json.idir_guid){
-      permissionsArray = cacheService.getAllStaffDistrictPermissions();
+      permissionsArray = cacheService.getSDCStaffDistrictPermissions();
     }else {
       let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
       selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
@@ -1201,5 +1248,7 @@ module.exports = {
   removeSecureExchangeStudent,
   generateOrRegeneratePrimaryEdxActivationCode,
   getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
-  getAndSetupStaffUserAndRedirectWithDistrictCollectionLink
+  getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
+  setGradSessionInstituteIdentifiers: setGradStaffSessionInstituteIdentifiers,
+  setSDCStaffSessionInstituteIdentifiers
 };
