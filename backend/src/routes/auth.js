@@ -110,6 +110,10 @@ router.get('/silent_sdc_idir_login', async function (req, res, next) {
     await client.set(idir_guid + '::staffLinkInstituteID', req.query.districtID, 'EX', 1800);
     await client.set(idir_guid + '::staffLinkInstituteCollectionID', req.query.sdcDistrictCollectionID, 'EX', 1800);
     await client.set(idir_guid + '::staffLinkInstituteType', 'DISTRICT', 'EX', 1800);
+  }else if(req.query.schoolID && req.query.gradDashboard){
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.schoolID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkGradDashboard', 'true', 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'SCHOOL', 'EX', 1800);
   }else{
     res.status(401).json(UnauthorizedRsp);
   }
@@ -132,15 +136,23 @@ router.get(
     let instituteID = await client.get(idir_guid + '::staffLinkInstituteID');
     let instituteCollectionID = await client.get(idir_guid + '::staffLinkInstituteCollectionID');
     let instituteType = await client.get(idir_guid + '::staffLinkInstituteType');
+    let staffLinkDashboard = await client.get(idir_guid + '::staffLinkGradDashboard');
+
     await client.del(idir_guid + '::staffLinkInstituteID');
     await client.del(idir_guid + '::staffLinkInstituteCollectionID');
     await client.del(idir_guid + '::staffLinkInstituteType');
+    await client.del(idir_guid + '::staffLinkGradDashboard');
+
     const userInfo = getSessionUser(req);
     const accessToken = userInfo.jwt;
-    if(instituteType === 'SCHOOL'){
-      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
-    }else{
+    if(instituteType === 'SCHOOL' && instituteCollectionID){
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
+    }else if(instituteType === 'SCHOOL' && staffLinkDashboard){
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), null, true);
+    }else if(instituteID && instituteCollectionID){
       getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }else{
+      await res.redirect(config.get('server:frontend') + '/unauthorized');
     }
   },
 );

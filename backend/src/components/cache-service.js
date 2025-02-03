@@ -9,8 +9,9 @@ const {generateDistrictObject, isDistrictActive,generateAuthorityObject,isAuthor
 const {LocalDate, DateTimeFormatter} = require('@js-joda/core');
 const constants = require('../util/constants');
 
-let staffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_SDC_EDIT', 'DIS_SDC_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
-let staffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
+let sdcStaffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_SDC_EDIT', 'DIS_SDC_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
+let sdcStaffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
+let gradStaffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW'];
 let schoolMap = new Map();
 let schools = [];
 let districts = [];
@@ -142,11 +143,14 @@ const cacheService = {
   getAllAuthoritiesJSON() {
     return authorities;
   },
-  getAllStaffSchoolPermissions() {
-    return staffSchoolPermissions;
+  getGradStaffSchoolPermissions() {
+    return gradStaffSchoolPermissions;
   },
-  getAllStaffDistrictPermissions() {
-    return staffDistrictPermissions;
+  getSDCStaffSchoolPermissions() {
+    return sdcStaffSchoolPermissions;
+  },
+  getSDCStaffDistrictPermissions() {
+    return sdcStaffDistrictPermissions;
   },
   getPermissionsForRole(role) {
     return rolePermissionsMap.get(role);
