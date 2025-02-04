@@ -25,6 +25,9 @@
       <v-row class="centered">
         <span class="mr-1">Please click on the link below to select your three GRAD data files (DEM, XAM and CRS) to upload to GRAD for processing.</span>
         <span class="mr-1">All three files must be present in order for the files to be validated and loaded to GRAD.</span>
+        <span class="mr-1">If three files are not present for loading, unprocessed files will be deleted from our server after 3 hours.</span>
+      </v-row>
+      <v-row class="centered mt-n8">
         <span class="mr-1">Note the status of your files in the Summary of Uploaded Data table below.</span>
       </v-row>
       <v-row>
@@ -56,7 +59,7 @@
         mobile-breakpoint="0"
       >
         <template #item="props">
-          <tr>
+          <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
             <td
               v-for="column in headers"
               :key="column.key"
@@ -67,6 +70,18 @@
                   class="ml-1"
                   @click="navigateToErrors(props.item)"
                 >View Report</a>
+              </span>
+              <span v-else-if="column.key ==='alert'">
+                <v-tooltip text="Please upload the missing file(s) to allow processing to begin.">
+                  <template v-slot:activator="{ props: tooltipProps }">
+                    <v-icon
+                      v-bind="tooltipProps"
+                      icon="mdi-alert-circle-outline"
+                      color="error"
+                      v-if="!isFilesetComplete(props.item)"
+                    />
+                  </template>
+                </v-tooltip>
               </span>
               <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
                 {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
@@ -295,6 +310,7 @@ export default {
         moreFilters: {}
       },
       headers: [
+        {key: 'alert'},
         {title: 'School Name', key: 'schoolName'},
         {title: 'DEM File Name', key: 'demFileName'},
         {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
