@@ -125,6 +125,11 @@ async function getErrorFilesetStudentPaginated(req, res) {
     };
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
+
+    data.content.forEach(item => {
+      item.birthdate = formatDate(item.birthdate);
+    })
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset student paginated list', e.stack);
@@ -206,6 +211,13 @@ function createNameCriteria(nameString) {
     }
   }
   return searchCriteriaList;
+}
+
+function formatDate(dateString){
+  const year = dateString.slice(0, 4);
+  const month = dateString.slice(4, 6);
+  const day = dateString.slice(6, 8);
+  return `${month}/${day}/${year}`;
 }
 
 module.exports = {
