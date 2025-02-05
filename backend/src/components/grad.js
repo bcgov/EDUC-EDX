@@ -5,6 +5,7 @@ const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const cacheService = require('./cache-service');
+const {DateTimeFormatterBuilder, ResolverStyle, LocalDateTime, LocalDate} = require("@js-joda/core");
 
 async function uploadFile(req, res) {
   try {
@@ -125,6 +126,11 @@ async function getErrorFilesetStudentPaginated(req, res) {
     };
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
+
+    data.content.forEach(item => {
+      item.birthdate = formatDateTime(item.birthdate);
+    })
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset student paginated list', e.stack);
@@ -206,6 +212,27 @@ function createNameCriteria(nameString) {
     }
   }
   return searchCriteriaList;
+}
+
+function getDateFormatter(pattern) {
+  return (new DateTimeFormatterBuilder)
+      .appendPattern(pattern)
+      .toFormatter(ResolverStyle.STRICT);
+}
+function formatDateTime(datetime, from='uuuuMMdd', to='MM/dd/uuuu', hasTimePart=false) {
+  const fromFormatter = getDateFormatter(from);
+  const toFormatter = getDateFormatter(to);
+  let result = datetime;
+  const localDateTime = hasTimePart ? LocalDateTime : LocalDate;
+  if (datetime && datetime.length > 0) {
+    try {
+      const date = localDateTime.parse(datetime, fromFormatter);
+      result = date.format(toFormatter);
+    } catch (err) {
+      console.info(`could not parse date ${datetime}: ${from} to ${to} as date provided is invalid`);
+    }
+  }
+  return result;
 }
 
 module.exports = {
