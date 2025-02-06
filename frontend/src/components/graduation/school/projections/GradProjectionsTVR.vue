@@ -113,8 +113,6 @@ export default {
   emits: [],
   data() {
     return {
-      startMonth: 'October',
-      endMonth: 'September',
       currentStartMoYr: '',
       currentEndMoYr: '',
       histStartMoYr: '',
