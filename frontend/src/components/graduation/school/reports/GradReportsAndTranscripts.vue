@@ -17,112 +17,68 @@
     <div
       class="border"
     >
-      <v-tabs
-        v-model="tab"
-        color="#38598a"
-        show-arrows
-      >
-        <v-tab
-          v-for="name in tabs"
-          :key="name"
-          class="divider"
-          :value="name"
-        >
-          {{ name }}
-        </v-tab>    
-      </v-tabs>
+      <h3>
+        Student Transcripts
+      </h3>
+      <ul>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            Student Transcript Preview(s)
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
 
-      <v-window v-model="tab">
-        <v-window-item
-          value="Student Transcripts"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="reportType"
-                :items="transcripts"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getTranscripts()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="transcriptFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
-
-        <v-window-item
-          value="Graduation Summary Reports"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-alert
-            text="Daily cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school."
-            type="info"
-            variant="tonal"
-            class="mt-5"
-          />
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="summaryReportType"
-                :items="summary"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getSummaryReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="summaryFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
-
-        <v-window-item
-          value="Historical Graduation Summary Reports"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-alert
-            text="Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle."
-            type="info"
-            variant="tonal"
-            class="mt-5"
-          />
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="historyReportType"
-                :items="historical"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getHistoricalReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="historyFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
-      </v-window>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            XML Preview(s)
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <h3>Graduation Summary Reports ({{currentStartMoYr}} to {{currentEndMoYr}})</h3>
+      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
+      <ul>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            Graduated Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            Not-Yet Graduated Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <h3> Historical Graduation Summary Reports ({{histStartMoYr}} to {{histEndMoYr}})</h3>
+      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
+      <ul>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            Graduated Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="" class="d-flex align-items-center">
+            Not-Yet Graduated Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
     </div>
   </v-container>
 </template>
@@ -145,30 +101,12 @@ export default {
   emits: [],
   data() {
     return {
-      transcriptFlag: false,
-      summaryFlag: false,
-      historyFlag: false,
-      tab: null,
-      reportType: null,
-      summaryReportType: null,
-      historyReportType: null,
-      tabs: [
-        'Student Transcripts',
-        'Graduation Summary Reports',
-        'Historical Graduation Summary Reports'
-      ],
-      transcripts: [
-        { name: 'transcripts', title: 'Students Transcripts', endpoint:'a'},
-        { name: 'xml', title: 'XML Previews', endpoint:'b'},
-      ],
-      summary: [
-        { name: 'GradSummary', title: 'Graduated Students', endpoint:'a'},
-        { name: 'nonGradSummary', title: 'Not-Yet Graduated Students', endpoint:'b'},
-      ],
-      historical: [
-        { name: 'histGrad', title: 'Graduated Students', endpoint:'a'},
-        { name: 'histNotGrad', title: 'Not-Yet Graduated Students', endpoint:'b'},
-      ],
+      startMonth: 'October',
+      endMonth: 'September',
+      currentStartMoYr: '',
+      currentEndMoYr: '',
+      histStartMoYr: '',
+      histEndMoYr: ''
     };
   },
   computed: {
@@ -178,7 +116,7 @@ export default {
 
   },
   async created() {
-
+    this.populateDateRanges();
   },
   beforeUnmount() {
         
@@ -187,14 +125,21 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
-    getTranscripts() {
-      this.transcriptFlag = true;
-    },
-    getSummaryReport() {
-      this.summaryFlag = true;
-    },
-    getHistoricalReport() {
-      this.historyFlag = true;
+    populateDateRanges(){
+      let currentYr = new Date().getFullYear();
+      let currentMo = new Date().getMonth();
+
+      if (currentMo < 9){
+        this.currentStartMoYr = this.startMonth +  ' ' + (currentYr - 1).toString();
+        this.currentEndMoYr = this.endMonth + ' ' + (currentYr).toString();
+        this.histStartMoYr = this.startMonth + ' ' + (currentYr - 2).toString();
+        this.histEndMoYr = this.endMonth + ' ' + (currentYr - 1).toString();
+      } else {
+        this.currentStartMoYr = this.startMonth + ' ' + (currentYr).toString();
+        this.currentEndMoYr = this.endMonth + ' ' + (currentYr + 1).toString();
+        this.histStartMoYr = this.startMonth + ' ' + (currentYr - 1).toString();
+        this.histEndMoYr = this.endMonth + ' ' + (currentYr - 2).toString();
+      }
     }
   }
 };
@@ -212,6 +157,30 @@ export default {
      :deep(.v-btn__content){
        white-space: break-spaces;
      }
+
+     h3 {
+       color: #38598a;
+     }
+
+     ul {
+       list-style-type: none;
+       padding-top: 1em;
+       padding-bottom: 2em;
+     }
+
+     li {
+       padding-top: 1em;
+     }
+
+     p {
+       padding-top: 1em;
+       font-style: italic;
+     }
+
+     i {
+       font-size: 1.25em;
+     }
+
   
   ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
     color: white !important;
