@@ -22,7 +22,7 @@
       </h3>
       <ul>
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             Student Transcript Preview(s)
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -31,7 +31,7 @@
         </li>
 
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             XML Preview(s)
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -43,7 +43,7 @@
       <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
       <ul>
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             Graduated Students
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -51,7 +51,7 @@
           </a>
         </li>
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             Not-Yet Graduated Students
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -63,7 +63,7 @@
       <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
       <ul>
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             Graduated Students
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -71,7 +71,7 @@
           </a>
         </li>
         <li>
-          <a href="" class="d-flex align-items-center">
+          <a href="" class="link-style">
             Not-Yet Graduated Students
             <span class="icon-container ml-1">
               <i class="mdi mdi-tray-arrow-down"></i>
@@ -85,6 +85,7 @@
     
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
+import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
     
 export default {
   name: 'GradReportsAndTranscripts',
@@ -101,8 +102,6 @@ export default {
   emits: [],
   data() {
     return {
-      startMonth: 'October',
-      endMonth: 'September',
       currentStartMoYr: '',
       currentEndMoYr: '',
       histStartMoYr: '',
@@ -126,64 +125,59 @@ export default {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
     populateDateRanges(){
-      let currentYr = new Date().getFullYear();
-      let currentMo = new Date().getMonth();
-
-      if (currentMo < 9){
-        this.currentStartMoYr = this.startMonth +  ' ' + (currentYr - 1).toString();
-        this.currentEndMoYr = this.endMonth + ' ' + (currentYr).toString();
-        this.histStartMoYr = this.startMonth + ' ' + (currentYr - 2).toString();
-        this.histEndMoYr = this.endMonth + ' ' + (currentYr - 1).toString();
-      } else {
-        this.currentStartMoYr = this.startMonth + ' ' + (currentYr).toString();
-        this.currentEndMoYr = this.endMonth + ' ' + (currentYr + 1).toString();
-        this.histStartMoYr = this.startMonth + ' ' + (currentYr - 1).toString();
-        this.histEndMoYr = this.endMonth + ' ' + (currentYr - 2).toString();
-      }
+      let datesList = generateGradStartAndEndDateStrings();
+      this.currentStartMoYr = datesList.shift();
+      this.currentEndMoYr = datesList.shift();
+      this.histStartMoYr = datesList.shift();
+      this.histEndMoYr = datesList.shift();
     }
   }
 };
 </script>
     
-    <style scoped>
-    
-      .border {
-        border: 2px solid grey;
-        border-radius: 5px;
-        padding: 35px;
-        margin: 2em;
-      }
+<style scoped>
 
-     :deep(.v-btn__content){
-       white-space: break-spaces;
-     }
+  .border {
+    border: 2px solid grey;
+    border-radius: 5px;
+    padding: 35px;
+    margin: 2em;
+  }
 
-     h3 {
-       color: #38598a;
-     }
+  :deep(.v-btn__content){
+    white-space: break-spaces;
+  }
 
-     ul {
-       list-style-type: none;
-       padding-top: 1em;
-       padding-bottom: 2em;
-     }
+  h3 {
+    color: #38598a;
+  }
 
-     li {
-       padding-top: 1em;
-     }
+  ul {
+    list-style-type: none;
+    padding-top: 1em;
+    padding-bottom: 2em;
+  }
 
-     p {
-       padding-top: 1em;
-       font-style: italic;
-     }
+  li {
+    padding-top: 1em;
+  }
 
-     i {
-       font-size: 1.25em;
-     }
+  p {
+    padding-top: 1em;
+    font-style: italic;
+  }
 
-  
+  i {
+    font-size: 1.25em;
+  }
+
+  .link-style {
+    display: inline-flex;
+    align-items: center;
+  }
+
   ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
     color: white !important;
   }
-    </style>
+</style>
     
