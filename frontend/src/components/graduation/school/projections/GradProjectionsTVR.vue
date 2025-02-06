@@ -17,112 +17,86 @@
     <div
       class="border"
     >
-      <v-tabs
-        v-model="tab"
-        color="#38598a"
-        show-arrows
-      >
-        <v-tab
-          v-for="name in tabs"
-          :key="name"
-          class="divider"
-          :value="name"
-        >
-          {{ name }}
-        </v-tab>    
-      </v-tabs>
+      <h3>Transcript Verification Reports (TVRs)</h3>
+      <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>
+      <ul>
+        <li>
+          <a href="" class="link-style">
+            TVRs for Projected Non-Graduating Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
 
-      <v-window v-model="tab">
-        <v-window-item
-          value="Transcript verification Reports (TVRs)"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-alert
-            text="For current students reported in final year of a graduation program (Grade 12 or AD)"
-            type="info"
-            variant="tonal"
-            class="mt-5"
-          />
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="reportType"
-                :items="tvr"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getTvrReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="tvrFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
+        <li>
+          <a href="" class="link-style">
+            TVRs for Projected Graduating Students
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
 
-        <v-window-item
-          value="Graduation Projections Summary Reports"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="summaryReportType"
-                :items="summary"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getSummaryReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="summaryFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
+        <li>
+          <a href="" class="link-style">
+            Individual TVRs available by PEN
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
 
-        <v-window-item
-          value="Historical Graduation Projected Summary Reports"
-          transition="false"
-          reverse-transition="false"
-        >
-          <v-row class="pt-5">
-            <v-col cols="5">
-              <v-select
-                id="reports"
-                v-model="historyReportType"
-                :items="historical"
-                item-value="endpoint"
-                item-title="title"
-                label="Reports"
-                variant="underlined"
-                @update:model-value="getHistoricalReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-row v-if="historyFlag">
-            <v-col>
-              <p>Report not available</p>
-            </v-col>
-          </v-row>
-        </v-window-item>
-      </v-window>
+      <h3>Graduation Projections Summary Reports ({{this.currentStartMoYr}} to {{this.currentEndMoYr}})</h3>
+      <ul>
+        <li>
+          <a href="" class="link-style">
+            Projected Non-Graduates - Summary Report
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+
+        <li>
+          <a href="" class="link-style">
+            Projected Graduates - Summary Report
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+
+      <h3>Historical Graduation Projected Summary Reports ({{this.histStartMoYr}} to {{this.histEndMoYr}})</h3>
+      <ul>
+        <li>
+          <a href="" class="link-style">
+            Projected Non-Graduates - Summary Report
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+
+        <li>
+          <a href="" class="link-style">
+            Projected Graduates - Summary Report
+            <span class="icon-container ml-1">
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+
     </div>
   </v-container>
 </template>
     
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
+import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
     
 export default {
   name: 'GradProjectionsTVR',
@@ -139,30 +113,10 @@ export default {
   emits: [],
   data() {
     return {
-      tvrFlag: false,
-      summaryFlag: false,
-      historyFlag: false,
-      tab: null,
-      reportType: null,
-      summaryReportType: null,
-      historyReportType: null,
-      tabs: [
-        'Transcript verification Reports (TVRs)',
-        'Graduation Projections Summary Reports',
-        'Historical Graduation Projected Summary Reports'
-      ],
-      tvr: [
-        { name: 'tvrNonGrad', title: 'TVRs for Projected Non-Graduating Students', endpoint:'a'},
-        { name: 'tvrGrad', title: 'TVRs for Projected Graduating Students', endpoint:'b'},
-        { name: 'tvrByPEN', title: 'Individual TVRs available by PEN', endpoint:'c'}
-      ],
-      summary: [
-        { name: 'nonGradSummary', title: 'Projected Non-Graduates Summary Report', endpoint:'a'},
-        { name: 'gradSummary', title: 'Projected Graduates Summary Report', endpoint:'b'},
-      ],
-      historical: [
-        { name: 'histSummary', title: 'Archived Projected Non-Graduates Summary Report', endpoint:'a'},
-      ],
+      currentStartMoYr: '',
+      currentEndMoYr: '',
+      histStartMoYr: '',
+      histEndMoYr: ''
     };
   },
   computed: {
@@ -172,7 +126,7 @@ export default {
 
   },
   async created() {
-
+    this.populateDateRanges();
   },
   beforeUnmount() {
         
@@ -181,43 +135,60 @@ export default {
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
-    getTvrReport() {
-      this.tvrFlag = true;
-    },
-    getSummaryReport() {
-      this.summaryFlag = true;
-    },
-    getHistoricalReport() {
-      this.historyFlag = true;
+    populateDateRanges(){
+      let datesList = generateGradStartAndEndDateStrings();
+      this.currentStartMoYr = datesList.shift();
+      this.currentEndMoYr = datesList.shift();
+      this.histStartMoYr = datesList.shift();
+      this.histEndMoYr = datesList.shift();
     }
   }
 };
 </script>
     
-    <style scoped>
+<style scoped>
     
-      .border {
-        border: 2px solid grey;
-        border-radius: 5px;
-        padding: 35px;
-        margin: 2em;
-      }
+    .border {
+      border: 2px solid grey;
+      border-radius: 5px;
+      padding: 35px;
+      margin: 2em;
+    }
 
-     :deep(.v-btn__content){
-       white-space: break-spaces;
-     }
+   :deep(.v-btn__content){
+     white-space: break-spaces;
+   }
+
+    h3 {
+      color: #38598a;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-top: 1em;
+      padding-bottom: 2em;
+    }
+
+    li {
+      padding-top: 1em;
+    }
+
+    p {
+      padding-top: 1em;
+      font-style: italic;
+    }
+
+    i {
+      font-size: 1.25em;
+    }
+
+    .link-style {
+      display: inline-flex;
+      align-items: center;
+    }
   
   ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
     color: white !important;
   }
-
-  .divider {
-  border-right: 1px solid lightgray;
-  border-radius: 0px;
-}
-
-.divider:last-child  {
-  border-right: 0
-}
-    </style>
+</style>
     
