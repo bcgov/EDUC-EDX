@@ -30,6 +30,12 @@ async function getSchoolBySchoolID(req, res) {
 
 async function updateSchool(req, res){
   try{
+    const token = getAccessToken(req);
+    let returnSchool = await getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
+    if (!returnSchool) {
+      log.error('School not found');
+      return errorResponse(res);
+    }
     const payload = req.body;
 
     payload.addresses.forEach(function(addy) {
@@ -92,8 +98,13 @@ async function updateSchool(req, res){
     payload.neighborhoodLearning = nlcObjectsArray;
     payload.grades = gradesObjectArray;
     payload.updateUser = createUpdateUser;
+    payload.schoolFundingGroups = returnSchool.schoolFundingGroups;
 
-    const token = getAccessToken(req);
+    payload.schoolFundingGroups.forEach(function(contact) {
+      contact.updateDate = null;
+      contact.createDate = null;
+    });
+
     const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
