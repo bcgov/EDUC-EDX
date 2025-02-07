@@ -1275,7 +1275,7 @@ export default {
         return;
       }
       this.loading = true;
-      if (this.sameAsMailingCheckbox && this.canEditPhysicalAddress) {
+      if (this.sameAsMailingCheckbox) {
         this.schoolDetailsCopy.addresses = this.schoolDetailsCopy.addresses.filter(address => address.addressTypeCode === 'MAILING');
       }
       ApiService.apiAxios.put(`${ApiRoutes.school.BASE_URL}` + '/' + this.schoolDetailsCopy.schoolId, this.schoolDetailsCopy)
