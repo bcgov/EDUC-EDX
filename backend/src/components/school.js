@@ -100,9 +100,9 @@ async function updateSchool(req, res){
     payload.updateUser = createUpdateUser;
     payload.schoolFundingGroups = returnSchool.schoolFundingGroups;
 
-    payload.schoolFundingGroups.forEach(function(contact) {
-      contact.updateDate = null;
-      contact.createDate = null;
+    payload.schoolFundingGroups.forEach(function(schoolFundingGroup) {
+      schoolFundingGroup.updateDate = null;
+      schoolFundingGroup.createDate = null;
     });
 
     const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
