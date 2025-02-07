@@ -59,8 +59,8 @@ const putDistrictSchema = object({
       districtId: string()
     })),
     addresses: array().of(districtAddressSchema.shape({
-      districtAddressId: string(),
-      districtId: string()
+      districtAddressId: string().nullable(),
+      districtId: string().nullable()
     })),
     notes: string().nullable(),
   }),
