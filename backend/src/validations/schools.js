@@ -65,8 +65,8 @@ const putSchoolSchema = object({
     canIssueTranscripts: boolean().nullable(),
     contacts: array().of(schoolContactSchema),
     addresses: array().of(schoolAddressSchema.shape({
-      schoolAddressId: string(),
-      schoolId: string()
+      schoolAddressId: string().nullable(),
+      schoolId: string().nullable()
     }).noUnknown()),
     notes: string().nullable(),
     grades: array().of(
