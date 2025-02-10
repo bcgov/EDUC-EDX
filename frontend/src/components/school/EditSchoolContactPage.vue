@@ -245,6 +245,7 @@ export default {
       this.processing = true;
       this.validateForm();
       this.editContact.schoolID = this.schoolID;
+      this.editContact.expiryDate = this.editContact.expiryDate === '' ? null : this.editContact.expiryDate;
 
       ApiService.apiAxios.post(`${ApiRoutes.school.UPDATE_SCHOOL_CONTACT_URL}`, this.editContact)
         .then(() => {

@@ -233,6 +233,7 @@ export default {
       this.processing = true;
       await this.validateForm();
       this.editContact.districtId = this.districtID;
+      this.editContact.expiryDate = this.editContact.expiryDate === '' ? null : this.editContact.expiryDate;
 
       ApiService.apiAxios.put(ApiRoutes.district.UPDATE_DISTRICT_CONTACT_URL, this.editContact)
         .then(() => {

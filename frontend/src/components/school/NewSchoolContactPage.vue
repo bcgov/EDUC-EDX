@@ -247,6 +247,7 @@ export default {
     },
     addNewSchoolContact() {
       this.processing = true;
+      this.newContact.expiryDate = this.newContact.expiryDate === '' ? null : this.newContact.expiryDate;
 
       ApiService.apiAxios
         .post(`${ApiRoutes['school'].BASE_URL}/${this.schoolID}/contact`, this.newContact)
