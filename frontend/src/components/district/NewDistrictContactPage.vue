@@ -247,6 +247,7 @@ export default {
     },
     addNewDistrictContact() {
       this.processing = true;
+      this.newContact.expiryDate = this.newContact.expiryDate === '' ? null : this.newContact.expiryDate;
 
       ApiService.apiAxios.post(`${ApiRoutes.district.BASE_URL}/${this.districtID}/contact`, this.newContact)
         .then(() => {
