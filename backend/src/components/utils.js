@@ -323,7 +323,15 @@ function formatDate(date) {
 
 function stripNumberFormattingNumberOfCourses(value) {
   if (!value) return '0000';
-  return String(value).replace('.', '');
+  return String(formatNumberOfCoursesDec(value)).replace('.', '');
+}
+
+function formatNumberOfCoursesDec(value) {
+  if (value) {
+    const num = parseFloat(value);
+    return isNaN(num) ? value : num.toFixed(2);
+  }
+  return '0000';
 }
 
 function formatNumberOfCourses(value) {
