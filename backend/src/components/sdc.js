@@ -275,9 +275,11 @@ async function getSDCSchoolCollectionStudentDetail(req, res) {
     if (sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
-    if(sdcSchoolCollectionStudentData?.numberOfCoursesDec) {
-      sdcSchoolCollectionStudentData.numberOfCoursesDec =  sdcSchoolCollectionStudentData.numberOfCoursesDec.toString().indexOf('.') > 0  ?  sdcSchoolCollectionStudentData.numberOfCoursesDec : formatNumberOfCourses(sdcSchoolCollectionStudentData.numberOfCourses);
-    }    
+
+    if (sdcSchoolCollectionStudentData?.numberOfCoursesDec) {
+      const num = parseFloat(sdcSchoolCollectionStudentData.numberOfCoursesDec);
+      sdcSchoolCollectionStudentData.numberOfCoursesDec = isNaN(num) ? sdcSchoolCollectionStudentData.numberOfCoursesDec : num.toFixed(2);
+    }
     return res.status(HttpStatus.OK).json(sdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error getting sdc school collection student detail', e.stack);
