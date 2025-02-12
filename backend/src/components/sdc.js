@@ -1,6 +1,6 @@
 'use strict';
 const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
-  getCreateOrUpdateUserValue, formatNumberOfCourses, stripNumberFormattingNumberOfCourses} = require('./utils');
+  getCreateOrUpdateUserValue, stripNumberFormattingNumberOfCourses} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -372,7 +372,7 @@ async function removeSDCSchoolCollectionStudents(req, res) {
     let payload = {
       softDeleteStudentIDs: req.body,
       updateUser: getCreateOrUpdateUserValue(req)
-    }
+    };
     log.info('EDX User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC students :: ' + JSON.stringify(payload));
     let deletedSdcSchoolCollectionStudentData = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
@@ -409,14 +409,14 @@ async function getSchoolStudentDuplicates(req, res) {
   }
 }
 
- function setStudentMetaData(student) {
+function setStudentMetaData(student) {
   toTableRow(student);
 
   if (student?.enrolledProgramCodes) {
     student.enrolledProgramCodes = student?.enrolledProgramCodes.match(/.{1,2}/g);
   }
   return student;
- }
+}
 
 async function getSchoolSdcDuplicates(req, res) {
   try {
