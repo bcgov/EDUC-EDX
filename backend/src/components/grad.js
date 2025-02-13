@@ -141,6 +141,9 @@ async function getErrorFilesetStudentPaginated(req, res) {
 function createMoreFiltersSearchCriteria(searchFilter = []) {
   let penLocalIdFilter = [];
   let nameFilter = [];
+  let fileTypeList = [];
+  let warningList = [];
+  let fieldCodeList = [];
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
     if (key === 'pen' && pValue) {
@@ -159,6 +162,34 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       let nameCriteria = createNameCriteria(pValue.toString());
       nameFilter = [...nameFilter, ...nameCriteria];
     }
+    if (key === 'fileType' && pValue) {
+      let filterValue = pValue.toString();
+      if(filterValue === 'DEM-ERROR') {
+        fileTypeList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities', value: 'DEM-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if(filterValue === 'CRS-ERROR') {
+        fileTypeList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities', value: 'CRS-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if(filterValue === 'XAM-ERROR') {
+        fileTypeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities', value: 'XAM-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+      if(warningList.length > 0) {
+        warningList = createSeverityFilter(filterValue);
+      }
+    }
+    if (key === 'warnings' && pValue) {
+      if(fileTypeList.length > 0) {
+        let fileTypeValue = fileTypeList[0].value;
+        warningList = createSeverityFilter(fileTypeValue);
+      } else {
+        warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        warningList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        warningList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      }
+    }
+    if(key === 'fieldCode' && pValue) {
+      fieldCodeList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      fieldCodeList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      fieldCodeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+    }
   }
   const search = [];
   if (penLocalIdFilter.length > 0) {
@@ -171,6 +202,24 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: nameFilter
+    });
+  }
+  if(warningList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: warningList
+    });
+  }
+  if(fileTypeList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: fileTypeList
+    });
+  }
+  if(fieldCodeList.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: fieldCodeList
     });
   }
   return search;
@@ -233,6 +282,18 @@ function formatDateTime(datetime, from='uuuuMMdd', to='MM/dd/uuuu', hasTimePart=
     }
   }
   return result;
+}
+
+function createSeverityFilter(fileType) {
+  let warningList = [];
+  if(fileType === 'DEM-ERROR') {
+    warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  } else if(fileType === 'CRS-ERROR') {
+    warningList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+  } else if(fileType === 'XAM-ERROR') {
+    warningList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR }); 
+  }
+  return warningList;
 }
 
 module.exports = {
