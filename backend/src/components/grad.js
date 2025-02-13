@@ -172,13 +172,14 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         fileTypeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities', value: 'XAM-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
       if(warningList.length > 0) {
-        warningList = createSeverityFilter(filterValue);
+        let warningValue = warningList[0].value;
+        warningList = createSeverityFilter(warningValue);
       }
     }
     if (key === 'warnings' && pValue) {
       if(fileTypeList.length > 0) {
         let fileTypeValue = fileTypeList[0].value;
-        warningList = createSeverityFilter(fileTypeValue);
+        warningList = createSeverityFilter(fileTypeValue, pValue);
       } else {
         warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
         warningList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
@@ -284,7 +285,7 @@ function formatDateTime(datetime, from='uuuuMMdd', to='MM/dd/uuuu', hasTimePart=
   return result;
 }
 
-function createSeverityFilter(fileType) {
+function createSeverityFilter(fileType, pValue) {
   let warningList = [];
   if(fileType === 'DEM-ERROR') {
     warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
