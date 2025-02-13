@@ -142,7 +142,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
 function toTableRow(validationIssues) {
   let fieldCodes = cacheService.getGradDataCollectionValidationFieldCodes();
   let updatedFieldCodes = [];
-  for(let errorRow of validationIssues?.errorFilesetStudentValidationIssues) {
+  for(let errorRow of validationIssues.errorFilesetStudentValidationIssues) {
     errorRow.validationIssueFieldCodeDescription = fieldCodes.find(field => field?.code === errorRow.validationIssueFieldCode).description;
     updatedFieldCodes.push(errorRow);
   }
