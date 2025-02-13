@@ -128,6 +128,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading GDC_VALIDATION_ISSUE_TYPE_CODES data during boot.', e);
     });
+    cacheService.loadDataToCache(constants.CACHE_KEYS.GDC_VALIDATION_FIELD_CODES, 'grad:validationFieldCodesURL').then(() => {
+      log.info('Loaded GDC_VALIDATION_FIELD_CODES data to memory');
+    }).catch((e) => {
+      log.error('Error loading GDC_VALIDATION_FIELD_CODES data during boot.', e);
+    });
   }
 
   if(!sdcDisabled) {

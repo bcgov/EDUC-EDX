@@ -16,6 +16,8 @@ const { gradFileUploadSchema, gradErrorFilesetStudentPaginatedSchema, gradDistri
 
 router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, 
   validateAccessToken, getCachedGradCollectionData(constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES, 'grad:validationIssueTypeCodesURL'));
+router.get('/validation-field-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, 
+  validateAccessToken, getCachedGradCollectionData(constants.CACHE_KEYS.GDC_VALIDATION_FIELD_CODES, 'grad:validationFieldCodesURL'));
 
 router.post('/school/:schoolID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
   checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradFileUploadSchema), scanFilePayload, uploadFile);

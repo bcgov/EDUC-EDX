@@ -28,7 +28,7 @@
             <v-col
               v-for="(sub, index) in column.subHeader"
               :key="index"
-              cols="3"
+              :cols="sub.cols"
             >
               {{ sub.title }}
             </v-col>
@@ -56,18 +56,19 @@
               <v-row>
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
-                  cols="3"
+                  cols="2"
                 > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
-                  cols="3"
+                  cols="2"
                   
                 >
                 <v-chip class="status-chip" :color="getStatusColor(error?.validationIssueSeverityCode)">
                   {{ formatText(error?.validationIssueSeverityCode) }}
                 </v-chip>
               </v-col>
-                <v-col v-if="column.subHeader[2].key === 'desc'">{{ error?.validationIssueDescription }}</v-col>
+                <v-col v-if="column.subHeader[2].key === 'field'" cols="3">{{ error?.validationIssueFieldCode }}</v-col>
+                <v-col v-if="column.subHeader[3].key === 'desc'">{{ error?.validationIssueDescription }}</v-col>
               </v-row>
             </span>
           </span>

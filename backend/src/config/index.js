@@ -141,6 +141,7 @@ nconf.defaults({
     rootURL: process.env.GRAD_API_ENDPOINT,
     errorFilesetURL: process.env.GRAD_API_ENDPOINT + '/error-fileset',
     validationIssueTypeCodesURL: process.env.GRAD_API_ENDPOINT + '/validation-issue-type-codes',
+    validationFieldCodesURL: process.env.GRAD_API_ENDPOINT + '/validation-field-codes',
     filesetURL: process.env.GRAD_API_ENDPOINT + '/fileset',
   },
   frontendConfig: {

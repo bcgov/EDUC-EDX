@@ -65,7 +65,7 @@
           </v-btn>
         </v-col>
       </v-row>
-      
+
       <v-row>
         <v-col cols="12">
           <GradErrorTable
@@ -90,7 +90,7 @@
         rounded="true"
       >
       <GradErrorFilters
-        :filters="[]"
+        :filters="config.allowedFilters"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
         @close="showFilters= !showFilters"
@@ -109,6 +109,8 @@ import { mapState } from 'pinia';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
 import GradErrorFilters from './GradErrorFilters.vue';
+import { ERROR_REPORT_FILTERS } from '../../../../utils/gdc/Filters';
+import { gdcStore } from '../../../../store/modules/gdc';
       
 export default {
   name: 'GradErrorsView',
@@ -149,13 +151,15 @@ export default {
         { title: 'Details', key: 'details', 
           subHeader: 
       [
-        {title: 'File Type', key: 'fileType', cols: '3'},
-        {title: 'Error/Warning', key: 'errors', cols: '3'},
-        {title: 'Description', key: 'desc', cols:'6'}
+        {title: 'File Type', key: 'fileType', cols: '2'},
+        {title: 'Error/Warning', key: 'errors', cols: '2'},
+        {title: 'Error Field', key: 'field', cols: '3'},
+        {title: 'Description', key: 'desc', cols:'3'}
       ]
         },
       ],
-      showFilters: false
+      showFilters: false,
+      config: ERROR_REPORT_FILTERS
     };
   },
   computed: {
@@ -169,6 +173,7 @@ export default {
   },
   async created() {
     this.getErrorFilesetStudentPaginated();
+    gdcStore().getValidationFieldCodes();
   },
   beforeUnmount() {
           
