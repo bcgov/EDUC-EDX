@@ -254,6 +254,26 @@
         <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
       </template>
     </ConfirmationDialog>
+    <div v-if="disableScreen">
+      <v-overlay
+        :model-value="disableScreen"
+        activator="parent"
+        class="align-center justify-center"
+        :persistent="true"
+      >
+        <v-row>
+          <v-col>
+            <v-alert
+              density="compact"
+              type="warning"
+              title="File Re-uploaded!"
+              :text="wsNotificationText"
+              class="pb-5 pt-5"
+            />
+          </v-col>
+        </v-row>
+      </v-overlay>
+    </div>
   </v-container>
 </template>
   
@@ -267,6 +287,8 @@ import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {authStore} from '../../../../store/modules/auth';
 import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
+import {wsNotifications} from '../../../../store/modules/wsNotifications';
+import {appStore} from '../../../../store/modules/app';
   
 export default {
   name: 'GradUploadDataComponent',
@@ -322,11 +344,16 @@ export default {
         {title: 'CRS File Upload Date', key: 'crsFileUploadDate'},
         {title: 'CRS File Status', key: 'crsFileStatusCode'},
         {title: 'Errors/Warnings', key: 'errorLink'},
-      ]
+      ],
+      schoolsMap: null,
+      disableScreen: false,
+      wsNotificationText: '',
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
+    ...mapState(appStore, ['activeSchoolsMap']),
+    ...mapState(wsNotifications, ['notification']), 
   },
   watch: {
     uploadFileValue() {
@@ -334,9 +361,26 @@ export default {
         this.importFile();
       }
     },
+    notification(notificationData) {
+      if (notificationData) {
+        try {
+          let updateUser = notificationData.updateUser.split('/');
+          if (notificationData.eventType === 'GDC_FILE_UPLOAD_EVENT' && notificationData.schoolID === this.$route.params.schoolID && updateUser[1] !== this.userInfo.edxUserID) {
+            let school = this.schoolsMap.get(notificationData?.schoolID);
+            this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
+            this.disableScreen = true;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    },
   },
   async created() {
     await this.getFilesetPaginated();
+    appStore().getInstitutesData().finally(() => {
+      this.schoolsMap = this.activeSchoolsMap;
+    });
   },
   beforeUnmount() {
     clearInterval(this.interval);

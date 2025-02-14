@@ -6,6 +6,8 @@ const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const cacheService = require('./cache-service');
 const {DateTimeFormatterBuilder, ResolverStyle, LocalDateTime, LocalDate} = require("@js-joda/core");
+const CONSTANTS = require('../util/constants');
+const broadcastUtil = require('../socket/broadcast-utils');
 
 async function uploadFile(req, res) {
   try {
@@ -24,6 +26,8 @@ async function uploadFile(req, res) {
     } else {
       data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
     }
+    data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
+    broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     console.log(JSON.stringify(e));

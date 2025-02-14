@@ -43,6 +43,7 @@ messagePubSub.init().then(() => {
   require('./messaging/handlers/edx-jetstream-subscriber').subscribe();
   require('./messaging/handlers/edx-event-handler').subscribe();
   require('./messaging/handlers/sdc-event-handler').subscribe();
+  require('./messaging/handlers/gdc-event-handler').subscribe();
 }).catch((e) => log.error(e));
 //initialize app
 const app = express();
