@@ -388,6 +388,9 @@ const cacheService = {
   getGradDataCollectionValidationIssueCodes() {
     return cachedData[constants.CACHE_KEYS.GDC_VALIDATION_ISSUE_TYPE_CODES].records;
   },
+  getGradDataCollectionValidationFieldCodes() {
+    return cachedData[constants.CACHE_KEYS.GDC_VALIDATION_FIELD_CODES].records;
+  },
   getAssessmentTypeByCode(assessmentTypeCode) {
     return assessmentTypeCodesMap.get(assessmentTypeCode);
   },

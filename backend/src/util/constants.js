@@ -70,6 +70,7 @@ const FILTER_OPERATION = Object.freeze(
     ENDS_WITH: 'ends_with',
     IN_LEFT_JOIN: 'in_left_join',
     NONE_IN_DISTRICT: 'none_in_district',
+    CUSTOM_CHILD_JOIN: 'custom_child_join'
   }
 );
 const CONDITION = Object.freeze(
@@ -174,7 +175,8 @@ cacheKeys = {
   SDC_PROGRAM_DUPLICATE_TYPE_CODES: 'sdc_program_duplicate_type_codes',
   PRB_VALIDATION_ISSUE_TYPE_CODES: 'prb_validation_issue_type_codes',
   COLLECTION_TYPE_CODES: 'collection_type_codes',
-  GDC_VALIDATION_ISSUE_TYPE_CODES: 'gdc_validation_issue_type_codes'
+  GDC_VALIDATION_ISSUE_TYPE_CODES: 'gdc_validation_issue_type_codes',
+  GDC_VALIDATION_FIELD_CODES: 'gdc_validation_field_codes',
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);
 const EVENT_WS_TOPIC = 'EVENT_WS_TOPIC';

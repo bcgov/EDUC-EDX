@@ -158,6 +158,28 @@
             </v-btn-toggle>
           </v-row>
         </div>
+        <div>
+          <v-row>
+            <v-col class="filter-heading">Error Field</v-col>
+          </v-row>
+          
+          <v-row>
+            <v-col cols="6">
+              <v-autocomplete
+              id="errorField"
+              v-model="errorFieldValue"
+              label="Error Field"
+              variant="underlined"
+              :items="gdcStore.validationFieldCode"
+              item-value="code"
+              item-title="description"
+              class="mt-n7 mb-n8"
+              clearable
+              @update:model-value="setFieldCodeFilter('fieldCode', $event)"
+            />
+            </v-col>
+          </v-row>
+        </div>
       </v-card-text>
     </v-card>
   </template>
@@ -165,6 +187,7 @@
   <script>
   import alertMixin from '../../../../mixins/alertMixin';
   import PrimaryButton from '../../../util/PrimaryButton.vue';
+  import { gdcStore } from '../../../../store/modules/gdc';
   import {isEmpty} from 'lodash';
     
   export default {
@@ -189,6 +212,8 @@
         firstName: null,
         lastName: null,
         penLocalIdNameFilter: null,
+        errorFieldValue: null,
+        gdcStore: gdcStore(),
       };
     },
     computed: {
@@ -226,6 +251,15 @@
           this.apply();
         }
       },
+      setFieldCodeFilter(key, $event){
+      if($event) {
+        this.selected[key] = [{title: this.gdcStore.validationFieldCode.find(value => value.code === $event).description, value: $event}];
+        this.apply();
+      } else {
+        delete this.selected[key];
+        this.apply();
+      }
+    },
       clear() {
         this.selected = {};
         this.pen = null;
@@ -233,6 +267,7 @@
         this.firstName = null;
         this.lastName = null;
         this.penLocalIdNameFilter = null;
+        this.errorFieldValue = null;
         this.$emit('clearFilters');
       },
       apply() {

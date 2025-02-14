@@ -181,7 +181,7 @@ export default {
   getAllActiveSchoolFundingCodes:getCodes(`${ApiRoutes.sdc.SDC_SCHOOL_FUNDING_CODES}?active=true`),
   getAllActiveSpecialEdCodes:getCodes(`${ApiRoutes.sdc.SDC_SPECIAL_ED_CODES}?active=true`),
   getAllCollectionTypeCodes: getCodes(`${ApiRoutes.sdc.COLLECTION_TYPE_CODES_URL}`),
-
+  getGdcValidationFieldCodes: getCodes(`${ApiRoutes.gdc.VALIDATION_FIELD_CODES}`),
   getAllEASSpecialCaseCodes:getCodes(`${ApiRoutes.eas.GET_ASSESSMENT_SPECIALCASE_TYPES}`),
 
 
