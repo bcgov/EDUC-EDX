@@ -88,38 +88,24 @@
                 {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
               </span>
               <div v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
-                <div v-if="props.item[column.key] === 'LOADED'">
-                  <span v-if="isFilesetInProgress(props.item)">
-                    <v-progress-circular
-                      :size="20"
-                      :width="4"
-                      color="primary"
-                      indeterminate
-                    />
+                <template v-if="(column.key === 'demFileStatusCode' && props.item.demFileName) ||(column.key === 'xamFileStatusCode' && props.item.xamFileName) || (column.key === 'crsFileStatusCode' && props.item.crsFileName)">
+                  <template v-if="props.item.filesetStatusCode === 'COMPLETED'">
+                    <v-icon icon="mdi-check-circle-outline" color="success" />
+                    Processed
+                  </template>
+                  <template v-else-if="isFilesetInProgress(props.item)">
+                    <v-progress-circular :size="20" :width="4" color="primary" indeterminate />
                     Processing
-                  </span>
-                  <span v-else>
-                    <v-icon
-                      icon="mdi-clock-alert-outline"
-                      color="warning"
-                    />
+                  </template>
+                  <template v-else>
+                    <v-icon icon="mdi-clock-alert-outline" color="warning" />
                     Awaiting Other Files
-                  </span>
-                </div>
-                <span v-if="props.item[column.key] === 'NOTLOADED'">
-                  <v-icon
-                    icon="mdi-alert-circle-outline"
-                    color="error"
-                  />
+                  </template>
+                </template>
+                <template v-else>
+                  <v-icon icon="mdi-alert-circle-outline" color="error" />
                   Not Loaded
-                </span>
-                <span v-if="props.item[column.key] === 'COMPLETED'">
-                  <v-icon
-                    icon="mdi-check-circle-outline"
-                    color="success"
-                  />
-                  Processed
-                </span>
+                </template>
               </div>
               <span v-else-if="props.item[column.key]">
                 {{ props.item[column.key] }}
@@ -371,7 +357,7 @@ export default {
       this.$refs.uploader.click();
     },
     isFilesetInProgress(fileset){
-      return fileset.filesetStatusCode === 'LOADED';
+      return fileset.demFileName != null && fileset.crsFileName != null && fileset.xamFileName != null;
     },
     isFilesetComplete(fileset){
       return fileset.filesetStatusCode === 'COMPLETED';
