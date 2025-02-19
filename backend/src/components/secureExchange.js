@@ -22,7 +22,6 @@ const {CACHE_KEYS} = require('../util/constants');
 const {getApiCredentials} = require('./auth');
 const cacheService = require('./cache-service');
 const user = require('../components/user');
-const {isSchoolActive} = require('./schoolUtils');
 const {isDistrictActive} = require('./districtUtils');
 
 async function uploadFile(req, res) {
