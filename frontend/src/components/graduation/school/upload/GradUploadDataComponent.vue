@@ -371,10 +371,10 @@ export default {
       this.$refs.uploader.click();
     },
     isFilesetInProgress(fileset){
-      return fileset.demFileStatusCode === 'LOADED' && fileset.crsFileStatusCode === 'LOADED' && fileset.xamFileStatusCode === 'LOADED';
+      return fileset.filesetStatusCode === 'LOADED';
     },
     isFilesetComplete(fileset){
-      return fileset.demFileStatusCode === 'COMPLETED' && fileset.crsFileStatusCode === 'COMPLETED' && fileset.xamFileStatusCode === 'COMPLETED';
+      return fileset.filesetStatusCode === 'COMPLETED';
     },
     async importFile() {
       if(this.uploadFileValue.length > 0) {
