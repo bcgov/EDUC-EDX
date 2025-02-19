@@ -123,22 +123,23 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap']),
+    ...mapState(appStore, ['activeSchoolsMap','activeDistrictsMap', 'schoolsMap']),
     ...mapState(authStore, ['userInfo']),
   },
   created() {
     this.isTableLoading = true;
     appStore().getInstitutesData().finally(() => {
       this.isTableLoading = false;
-      const schoolsMap = this.activeSchoolsMap;
+      const schools = this.schoolsMap;
       this.activeUserSchools = this.userInfo?.userSchoolIDs?.map(function (value) {
         return {
-          'mincode': schoolsMap.get(value)?.mincode,
+          'mincode': schools.get(value)?.mincode,
           'schoolID': value,
-          'displayName': schoolsMap.get(value)?.schoolName,
-          'searchName': schoolsMap.get(value)?.schoolName + ' ' + schoolsMap.get(value)?.mincode
+          'displayName': schools.get(value)?.schoolName,
+          'searchName': schools.get(value)?.schoolName + ' ' + schools.get(value)?.mincode
         };
       });
+      console.log(this.userInfo?.userSchoolIDs)
       this.activeUserSchools.sort((a,b) =>  {
         if (a.displayName > b.displayName) {
           return 1;
