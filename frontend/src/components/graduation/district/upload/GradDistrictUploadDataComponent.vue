@@ -78,7 +78,7 @@
                       v-bind="tooltipProps"
                       icon="mdi-alert-circle-outline"
                       color="error"
-                      v-if="!isFilesetComplete(props.item)"
+                      v-if="!isFilesetInProgress(props.item)"
                     />
                   </template>
                 </v-tooltip>
