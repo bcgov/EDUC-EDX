@@ -139,7 +139,7 @@ export default {
           'searchName': schools.get(value)?.schoolName + ' ' + schools.get(value)?.mincode
         };
       });
-      console.log(this.userInfo?.userSchoolIDs)
+
       this.activeUserSchools.sort((a,b) =>  {
         if (a.displayName > b.displayName) {
           return 1;
