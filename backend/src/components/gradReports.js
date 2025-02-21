@@ -74,7 +74,7 @@ function isValidPEN(pen) {
 function checkDigit(pen) {
     const penDigits = [];
 
-    for (let i = 0; i < 9; i++) { // Use 9, not pen.length
+    for (let i = 0; i < 9; i++) {
         penDigits[i] = parseInt(pen.charAt(i), 10);
     }
     const S1 = penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 0;}).reduce((a,b) => a+b,0);
