@@ -1,4 +1,4 @@
-const { object, string, number } = require('yup');
+const { object, string } = require('yup');
 
 const gradReportDownloadSchema = object({
     body: object().noUnknown(),

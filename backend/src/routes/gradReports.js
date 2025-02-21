@@ -7,7 +7,6 @@ const { validateAccessToken, checkEdxUserPermission} = require('../components/pe
 const {downloadStudentGradReport} = require('../components/gradReports');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
-const constants = require('../util/constants');
 const {gradReportDownloadSchema} = require('../validations/gradReports');
 
 // Student reports by PEN
