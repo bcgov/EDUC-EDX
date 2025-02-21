@@ -15,6 +15,10 @@ async function downloadStudentGradReport(req, res, docType) {
         const formattedDate = getFormattedDate();
         const pen = req.query.pen;
 
+        if(!isValidPEN(pen)){
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid PEN format.' });
+        }
+
         if (docType === 'transcript') {
             url = config.get('gradReports:rootURL') + '/studentcredential/' + pen + '/type/TRAN';
             fileName = `${pen}_Transcript_${formattedDate}.pdf`;
@@ -55,6 +59,30 @@ function getFormattedDate() {
     return month + day + year;
 }
 
+function isValidPEN(pen) {
+    return !!(pen && pen.length === 9 && checkDigit(pen));
+}
+
+function checkDigit(pen) {
+    const parsedPen = parseInt(pen);
+    if(parsedPen === 0 || isNaN(parsedPen)){
+        return false;
+    }
+    const penDigits = [];
+
+    for(let i = 0; i < pen.length; i++) {
+        penDigits[i] = parseInt(pen.charAt(i), 10);
+    }
+    const S1 = penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 0;}).reduce((a,b) => a+b,0);
+    const A = parseInt(penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 1;}).join(''), 10);
+    const B = 2 * A;
+    let S2 = B.toString().split('').map(Number).reduce(function (a, b) {return a + b;}, 0);
+    const S3 = S1 + S2;
+    if((S3 % 10) === 0) {
+        return penDigits.pop() === 0;
+    }
+    return penDigits.pop() === (10 - (S3%10));
+}
 
 module.exports = {
     downloadStudentGradReport

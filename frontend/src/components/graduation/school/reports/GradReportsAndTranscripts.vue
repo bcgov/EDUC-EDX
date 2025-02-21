@@ -117,7 +117,7 @@ import PrimaryButton from "../../../util/PrimaryButton.vue";
 import PENSearchDialog from "../../PENSearchDialog.vue";
 import ApiService from "../../../../common/apiService";
 import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
-import { appStore } from "../../../../store/modules/app"; // Import your store
+import { appStore } from "../../../../store/modules/app";
 import { mapState, mapActions } from "pinia";
 
 export default {
@@ -126,7 +126,7 @@ export default {
     PrimaryButton,
     PENSearchDialog
   },
-  mixins: [alertMixin],  // Keep the mixin for the helper methods
+  mixins: [alertMixin],
   props: {
     schoolID: {
       type: String,
@@ -153,21 +153,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification']), // Map the alert state
+    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification']),
   },
   methods: {
-    ...mapActions(appStore, ['addAlertNotification']), // Use mapActions
+    ...mapActions(appStore, ['addAlertNotification']),
 
-    clearAlert() {
-      // Remove the *first* element from the queue (FIFO)
-      if (this.alertNotificationQueue.length > 0) {
-        this.alertNotificationQueue.shift();
-      }
-      // If the queue is now empty, set alertNotification to false
-      if (this.alertNotificationQueue.length === 0) {
-        this.setAlertNotification(false); // Correctly calling the action
-      }
-    },
     backButtonClick() {
       this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.schoolID } });
     },
@@ -195,7 +185,6 @@ export default {
           })
           .catch(error => {
             if (error?.response?.data?.message) {
-              // Use the mixin method, which now correctly calls the Pinia action
               this.setFailureAlert(error.response.data.message);
             } else {
               this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
