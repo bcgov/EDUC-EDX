@@ -60,17 +60,21 @@ function getFormattedDate() {
 }
 
 function isValidPEN(pen) {
-    return !!(pen && pen.length === 9 && checkDigit(pen));
+    if (typeof pen !== 'string' || pen.length !== 9) {
+        return false;
+    }
+
+    if (!/^\d{9}$/.test(pen)) {
+        return false;
+    }
+
+    return checkDigit(pen);
 }
 
 function checkDigit(pen) {
-    const parsedPen = parseInt(pen);
-    if(parsedPen === 0 || isNaN(parsedPen)){
-        return false;
-    }
     const penDigits = [];
 
-    for(let i = 0; i < pen.length; i++) {
+    for (let i = 0; i < 9; i++) { // Use 9, not pen.length
         penDigits[i] = parseInt(pen.charAt(i), 10);
     }
     const S1 = penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 0;}).reduce((a,b) => a+b,0);
