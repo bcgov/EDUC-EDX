@@ -143,6 +143,9 @@ nconf.defaults({
     validationIssueTypeCodesURL: process.env.GRAD_API_ENDPOINT + '/validation-issue-type-codes',
     filesetURL: process.env.GRAD_API_ENDPOINT + '/fileset',
   },
+  gradReports: {
+    rootURL: process.env.GRAD_REPORTS_API_ENDPOINT
+  },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,
