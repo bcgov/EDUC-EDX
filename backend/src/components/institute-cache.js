@@ -77,7 +77,7 @@ function doesSchoolBelongToDistrict(schoolID, districtID) {
     log.warn('A school wasn\'t found with the specified schoolID when doesSchoolBelongToDistrict was called.');
     return false;
   }
-  return school.districtID === districtID;
+  return school.districtID === districtID && !['OFFSHORE', 'INDEPEND', 'INDP_FNS'].includes(school.schoolCategoryCode);
 }
 
 function isSchoolAnOffshoreSchool(schoolID) {
