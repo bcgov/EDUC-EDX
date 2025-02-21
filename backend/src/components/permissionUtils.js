@@ -2,7 +2,8 @@
 
 const HttpStatus = require('http-status-codes');
 const {doesSchoolBelongToDistrict} = require('./institute-cache');
-const {getAccessToken, getData, SecureExchangeStatuses} = require('./utils');
+const {getAccessToken, getData, SecureExchangeStatuses, getDataWithParams} = require('./utils');
+const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config');
 const log = require('./logger');
 
@@ -536,7 +537,51 @@ async function checkDistrictBelongsInSdcDistrictCollection(req, res, next) {
   return next();
 }
 
+function checkActiveInstituteIdentifier(req, res, next) {
+  if (!req.session.activeInstituteIdentifier) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Institute does not exist in session.'
+    });
+  }
+  return next();
+}
+
+async function checkIfRoleIsAllowedForSchool(req, res, next) {
+  let isRoleAllowed = await checkValidRoles(req, req.body.params.selectedRoles);
+  if(!isRoleAllowed) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Role is not allowed.'
+    });
+  }
+  return next();
+}
+
+
+async function checkUserRoleForNewUser(req, res, next) {
+  let isRoleAllowed = await checkValidRoles(req, req.body.edxActivationRoleCodes);
+  if(!isRoleAllowed) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'Role is not allowed.'
+    });
+  }
+  return next();
+}
+
+async function checkValidRoles(req, incomingRoles) {
+  const token = getAccessToken(req);
+  const params = {
+    params: req.query
+  };
+  let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
+  let allowedRoles = filterSchoolRoles(req, data);
+  return incomingRoles.every(role => {
+    return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0
+  });
+}
+
 const permUtils = {
+  checkIfRoleIsAllowedForSchool,
+  checkUserRoleForNewUser,
   checkEDXUserAccessToRequestedInstitute,
   checkEdxUserPermission,
   checkPermissionForRequestedInstitute,
@@ -584,7 +629,8 @@ const permUtils = {
   checkUserAccessToDuplicateSdcSchoolCollections,
   checkDistrictBelongsInSdcDistrictCollection,
   checkAnyEdxUserSignoffPermission,
-  checkPermissionForSignOff
+  checkPermissionForSignOff,
+  checkActiveInstituteIdentifier
 };
 
 module.exports = permUtils;

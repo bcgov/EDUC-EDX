@@ -13,6 +13,7 @@ const {
   isPdf,
   isImage, getCreateOrUpdateUserValue
 } = require('./utils');
+const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config/index');
 const log = require('./logger');
 const HttpStatus = require('http-status-codes');
@@ -532,6 +533,7 @@ async function updateEdxUserSchoolRoles(req, res) {
   try {
     const token = getAccessToken(req);
     let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolID);
     if (!selectedUserSchools[0]) {
       return errorResponse(res, 'A user school entry was not found for the selected user.', HttpStatus.NOT_FOUND);
@@ -1219,6 +1221,20 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
   }
 }
 
+async function getRolesByInstituteType(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const params = {
+      params: req.query
+    };
+    let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(filterSchoolRoles(req, data));
+  } catch (e) {
+    log.error('Error getting roles', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getSecureExchange(secureExchangeID, res, token, correlationID) {
   if (res.locals.requestedSecureExchange && res.locals.requestedSecureExchange.secureExchangeID === secureExchangeID) {
     return res.locals.requestedSecureExchange;
@@ -1257,5 +1273,6 @@ module.exports = {
   getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
   getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
   setGradSessionInstituteIdentifiers: setGradStaffSessionInstituteIdentifiers,
-  setSDCStaffSessionInstituteIdentifiers
+  setSDCStaffSessionInstituteIdentifiers,
+  getRolesByInstituteType
 };
