@@ -13,6 +13,7 @@ const {
   isPdf,
   isImage, getCreateOrUpdateUserValue
 } = require('./utils');
+const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config/index');
 const log = require('./logger');
 const HttpStatus = require('http-status-codes');
@@ -23,6 +24,7 @@ const {getApiCredentials} = require('./auth');
 const cacheService = require('./cache-service');
 const user = require('../components/user');
 const {isDistrictActive} = require('./districtUtils');
+const {isSchoolActive} = require('./schoolUtils');
 
 async function uploadFile(req, res) {
   try {
@@ -532,6 +534,7 @@ async function updateEdxUserSchoolRoles(req, res) {
   try {
     const token = getAccessToken(req);
     let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolID);
     if (!selectedUserSchools[0]) {
       return errorResponse(res, 'A user school entry was not found for the selected user.', HttpStatus.NOT_FOUND);
@@ -999,9 +1002,7 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
     ])
       .then(async ([userSchools, userDistricts]) => {
         req.session.userSchoolIDs = userSchools?.filter((el) => {
-          if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
-            return cacheService.getSchoolBySchoolID(el);
-          }
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
         });//this is list of active schoolIDs associated to the user
 
         req.session.userDistrictIDs = userDistricts?.filter((el) => {
@@ -1043,9 +1044,7 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
     ])
       .then(async ([userSchools, userDistricts]) => {
         req.session.userSchoolIDs = userSchools?.filter((el) => {
-          if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
-            return cacheService.getSchoolBySchoolID(el);
-          }
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
         });//this is list of active schoolIDs associated to the user
 
         req.session.userDistrictIDs = userDistricts?.filter((el) => {
@@ -1073,9 +1072,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
     user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
       if (edxUserData) {
         req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
-          if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
-            return cacheService.getSchoolBySchoolID(el.schoolID);
-          }
+          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
         }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
         req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
           return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
@@ -1101,9 +1098,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
       ])
         .then(async ([userSchools, userDistricts]) => {
           req.session.userSchoolIDs = userSchools?.filter((el) => {
-            if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
-              return cacheService.getSchoolBySchoolID(el);
-            }
+            return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
           });//this is list of active schoolIDs associated to the user
 
           req.session.userDistrictIDs = userDistricts?.filter((el) => {
@@ -1219,6 +1214,20 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
   }
 }
 
+async function getRolesByInstituteType(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const params = {
+      params: req.query
+    };
+    let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
+    return res.status(HttpStatus.OK).json(filterSchoolRoles(req, data));
+  } catch (e) {
+    log.error('Error getting roles', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getSecureExchange(secureExchangeID, res, token, correlationID) {
   if (res.locals.requestedSecureExchange && res.locals.requestedSecureExchange.secureExchangeID === secureExchangeID) {
     return res.locals.requestedSecureExchange;
@@ -1257,5 +1266,6 @@ module.exports = {
   getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
   getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
   setGradSessionInstituteIdentifiers: setGradStaffSessionInstituteIdentifiers,
-  setSDCStaffSessionInstituteIdentifiers
+  setSDCStaffSessionInstituteIdentifiers,
+  getRolesByInstituteType
 };

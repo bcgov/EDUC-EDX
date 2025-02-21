@@ -4,7 +4,7 @@ const passport = require('passport');
 const express = require('express');
 const { deleteDocument, downloadFile, uploadFile, getExchanges, createExchange, getExchange, markAs, activateEdxUser,verifyActivateUserLink,instituteSelection,districtUserActivationInvite,schoolUserActivationInvite,getEdxUsers,getAllDistrictSchoolEdxUsers, updateEdxUserSchoolRoles, updateEdxUserDistrictRoles,
   createSecureExchangeComment,clearActiveSession,getExchangesCount, relinkUserAccess, createSecureExchangeStudent, findPrimaryEdxActivationCode, generateOrRegeneratePrimaryEdxActivationCode, removeSecureExchangeStudent,
-  removeUserSchoolOrDistrictAccess, updateEdxUserSchool
+  removeUserSchoolOrDistrictAccess, updateEdxUserSchool, getRolesByInstituteType
 } = require('../components/secureExchange');
 const { forwardGetReq, getCodes } = require('../components/utils');
 const { scanFilePayload, scanSecureExchangeDocumentPayload } = require('../components/fileUtils');
@@ -13,7 +13,7 @@ const auth = require('../components/auth');
 const {CACHE_KEYS} = require('../util/constants');
 const isValidBackendToken = auth.isValidBackendToken();
 const router = express.Router();
-const { findSecureExchange_id_params, loadSecureExchange, checkSecureExchangeAccess , conflictActionOnClosedSecureExchange, checkEdxUserPermission, checkPermissionForRequestedInstitute, validateAccessToken, findInstituteInformation_query, findInstituteInformation_body_params, findInstituteType_params, findInstituteIdentifier_params, findSchoolID_body, findSchoolID_body_params, findDistrictID_query, findDistrictID_body, findDistrictID_body_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
+const { findSecureExchange_id_params, loadSecureExchange, checkSecureExchangeAccess , checkIfRoleIsAllowedForSchool, checkUserRoleForNewUser, conflictActionOnClosedSecureExchange, checkEdxUserPermission, checkPermissionForRequestedInstitute, validateAccessToken, findInstituteInformation_query, findInstituteInformation_body_params, findInstituteType_params, findInstituteIdentifier_params, findSchoolID_body, findSchoolID_body_params, findDistrictID_query, findDistrictID_body, findDistrictID_body_params, checkEDXUserAccessToRequestedInstitute, checkActiveInstituteIdentifier } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
 const { exchangeSchema, exchangeDocumentSchema, exchangeStudentSchema, exchangeCommentSchema, getExchangeDocumentSchema, getDownloadExchangeDocumentSchema, deleteExchangeDocumentSchema, deleteExchangeStudentSchema, putExchangeMarkAsSchema, getByExchangeIdSchema, getExchangePaginatedSchema, getExchangeCountSchema,   
@@ -62,15 +62,15 @@ router.post('/users/activation-code/primary/:instituteType/:instituteIdentifier'
 
 router.post('/user-activation', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, validate(userActivationSchema), activateEdxUser);
 router.get('/activate-user-verification', verifyActivateUserLink);
-router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, validate(getUserRoleSchema), (req, res) => forwardGetReq(req, res,`${config.get('edx:rootURL')}/users/roles`));
+router.get('/users/roles', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkActiveInstituteIdentifier, validate(getUserRoleSchema), getRolesByInstituteType);
 router.post('/users/user-school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), validate(userSchoolSchema), findSchoolID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserSchool);
-router.post('/users/roles/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN), validate(userSchoolSchema), findSchoolID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserSchoolRoles);
+router.post('/users/roles/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN), checkIfRoleIsAllowedForSchool, validate(userSchoolSchema), findSchoolID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserSchoolRoles);
 router.post('/users/roles/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), validate(districtSchoolSchema), findDistrictID_body_params, checkEDXUserAccessToRequestedInstitute, updateEdxUserDistrictRoles);
 router.get('/users/clearActiveUserSession', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, clearActiveSession) ;
 router.post('/institute-selection', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validate(instituteSelectionSchema), instituteSelection);
 router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, validate(getUserSchema), findInstituteInformation_query, checkPermissionForRequestedInstitute(PERMISSION.EDX_USER_DISTRICT_ADMIN, PERMISSION.EDX_USER_SCHOOL_ADMIN), checkEDXUserAccessToRequestedInstitute, getEdxUsers);
 router.get('/all-district-school-users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), validate(getDistrictUsersSchema), findDistrictID_query, checkEDXUserAccessToRequestedInstitute, getAllDistrictSchoolEdxUsers);
-router.post('/school-user-activation-invite', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN), validate(schoolUserInviteSchema), findSchoolID_body, checkEDXUserAccessToRequestedInstitute, schoolUserActivationInvite);
+router.post('/school-user-activation-invite', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN), validate(schoolUserInviteSchema), findSchoolID_body, checkEDXUserAccessToRequestedInstitute, checkUserRoleForNewUser,schoolUserActivationInvite);
 router.post('/district-user-activation-invite', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EDX_USER_DISTRICT_ADMIN), validate(districtUserInviteSchema), findDistrictID_body, checkEDXUserAccessToRequestedInstitute, districtUserActivationInvite);
 
 module.exports = router;
