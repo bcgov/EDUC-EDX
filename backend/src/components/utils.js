@@ -121,6 +121,30 @@ async function getDataWithParams(token, url, params, correlationID) {
   }
 }
 
+async function getBinaryData(token, url, correlationID) {
+  try {
+    const getDataConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        correlationID: correlationID || uuidv4()
+      },
+      responseType: 'arraybuffer'
+    };
+
+    log.info('get Data Url', url);
+    const response = await axios.get(url, getDataConfig);
+    log.info(`get Data Status for url ${url} :: is :: `, response.status);
+    log.info(`get Data StatusText for url ${url}  :: is :: `, response.statusText);
+    log.info('Response Headers:', response.headers);
+
+    return response;
+
+  } catch (e) {
+    log.error('getData Error', e.response ? e.response.status : e.message);
+    const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+    throw new ApiError(status, {message: 'API Get error'}, e.response);
+  }
+}
 async function postData(token, data, url, correlationID) {
   try {
     const postDataConfig = {
@@ -346,6 +370,7 @@ const utils = {
   deleteData,
   forwardGetReq,
   getDataWithParams,
+  getBinaryData,
   getCreateOrUpdateUserValue,
   getData,
   postData,

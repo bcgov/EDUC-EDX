@@ -1,95 +1,130 @@
 <template>
-  <v-container 
-    fluid
-  >
+  <v-container fluid>
     <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to GRAD Dashboard</a>
+      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+      <a class="ml-1" @click="backButtonClick">Return to GRAD Dashboard</a>
     </div>
-    <div
-      class="border"
-    >
-      <h3>
-        Student Transcripts
-      </h3>
-      <ul>
-        <li>
-          <a href="" class="link-style">
-            Student Transcript Preview(s)
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
 
-        <li>
-          <a href="" class="link-style">
-            XML Preview(s)
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
-      <h3>Graduation Summary Reports ({{currentStartMoYr}} to {{currentEndMoYr}})</h3>
+    <div class="border">
+      <h3>Student Transcripts</h3>
+      <div class="sub-category-group mt-2">
+        <h4 class="mt-8">Individual Student Transcript Preview by PEN</h4>
+        <p>Preview a student's transcript. For school use only. Official transcripts must be ordered by students through the StudentTranscripts Service.</p>
+        <v-form class="d-flex" id="transcriptForm" v-model="studentPENTranscriptIsValid">
+          <v-col cols="2">
+            <v-text-field
+                id="studentPENTranscriptField"
+                v-model="studentPENTranscript"
+                placeholder="Enter PEN"
+                :rules="penRules"
+                variant="underlined"
+                ref="transcriptField"
+            />
+          </v-col>
+          <v-col cols="2" class="pt-6">
+            <PrimaryButton
+                id="searchPENTranscriptBtn"
+                text="Search"
+                :disabled="!studentPENTranscriptIsValid"
+                :click-action="() => searchStudentForGivenPEN(true)"
+            />
+          </v-col>
+        </v-form>
+        <h4 class="mt-8">Individual Student XML Previews by PEN</h4>
+        <p>A user-friendly preview of what is currently available to a Post-Secondary institution that has been authorized by a student to receive transcript updates via XML data transfer.</p>
+        <v-form class="d-flex" v-model="studentPENXMLIsValid">
+          <v-col cols="2">
+            <v-text-field
+                id="studentPENXMLField"
+                v-model="studentPENXML"
+                placeholder="Enter PEN"
+                :rules="penRules"
+                variant="underlined"
+                ref="xmlField"
+            />
+          </v-col>
+          <v-col cols="2" class="pt-6">
+            <PrimaryButton
+                id="searchPENXMLBtn"
+                text="Search"
+                :disabled="!studentPENXMLIsValid"
+                :click-action="() => searchStudentForGivenPEN(false)"
+            />
+          </v-col>
+        </v-form>
+      </div>
+
+      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
       <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
-      <ul>
-        <li>
-          <a href="" class="link-style">
-            Graduated Students
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="" class="link-style">
-            Not-Yet Graduated Students
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
-      <h3> Historical Graduation Summary Reports ({{histStartMoYr}} to {{histEndMoYr}})</h3>
+      <div class="sub-category-group">
+        <ul>
+          <li>
+            <a href="" class="link-style">
+              Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="" class="link-style">
+              Not Yet Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
       <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
-      <ul>
-        <li>
-          <a href="" class="link-style">
-            Graduated Students
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="" class="link-style">
-            Not-Yet Graduated Students
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
+      <div class="sub-category-group">
+        <ul>
+          <li>
+            <a href="" class="link-style">
+              Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="" class="link-style">
+              Not Yet Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+    <PENSearchDialog
+        v-model="showPENSearchDialog"
+        :student="studentForSearch"
+        :download-type="downloadType"
+        @close="close"
+    />
   </v-container>
 </template>
-    
+
 <script>
-import alertMixin from '../../../../mixins/alertMixin';
 import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
-    
+import {isValidPEN} from "../../../../utils/validation";
+import alertMixin from "../../../../mixins/alertMixin";
+import PrimaryButton from "../../../util/PrimaryButton.vue";
+import PENSearchDialog from "../../PENSearchDialog.vue";
+import ApiService from "../../../../common/apiService";
+import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
+import { appStore } from "../../../../store/modules/app";
+import { mapState, mapActions } from "pinia";
+
 export default {
   name: 'GradReportsAndTranscripts',
   components: {
+    PrimaryButton,
+    PENSearchDialog
   },
   mixins: [alertMixin],
   props: {
@@ -105,79 +140,140 @@ export default {
       currentStartMoYr: '',
       currentEndMoYr: '',
       histStartMoYr: '',
-      histEndMoYr: ''
+      histEndMoYr: '',
+      showPENSearchDialog: false,
+      studentForSearch: {},
+      downloadType: '',
+      studentPENTranscript: null,
+      studentPENTranscriptIsValid: false,
+      studentPENXML: null,
+      studentPENXMLIsValid: false,
+      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
+      isSearchingStudent: false,
     };
   },
   computed: {
-
-  },
-  watch: {
-
-  },
-  async created() {
-    this.populateDateRanges();
-  },
-  beforeUnmount() {
-        
+    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification']),
   },
   methods: {
+    ...mapActions(appStore, ['addAlertNotification']),
+
     backButtonClick() {
-      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
+      this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.schoolID } });
     },
-    populateDateRanges(){
+    populateDateRanges() {
       let datesList = generateGradStartAndEndDateStrings();
       this.currentStartMoYr = datesList.shift();
       this.currentEndMoYr = datesList.shift();
       this.histStartMoYr = datesList.shift();
       this.histEndMoYr = datesList.shift();
-    }
-  }
+    },
+    searchStudentForGivenPEN(isTranscriptRequest) {
+      this.isSearchingStudent = true;
+      this.studentForSearch = {};
+      this.downloadType = '';
+
+      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + "search-grad-pen", {
+        params: {
+          pen: isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML
+        }
+      })
+          .then(response => {
+            this.downloadType = isTranscriptRequest ? "Transcript" : "XML";
+            this.studentForSearch = this.populateStudentInfo(response.data);
+            this.showPENSearchDialog = true;
+          })
+          .catch(error => {
+            if (error?.response?.data?.message) {
+              this.setFailureAlert(error.response.data.message);
+            } else {
+              this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
+            }
+          }).finally(() => {
+        this.isSearchingStudent = false;
+      });
+    },
+    populateStudentInfo(data) {
+      let student = {};
+      student['pen'] = data.pen;
+      student['studentID'] = data.studentID;
+      student['fullName'] = data.firstName + ' ' + (data.middleName ?? '') + ' ' + data.lastName;
+      student['localID'] = data.localID;
+      student['gender'] = data.gender;
+      student['dob'] = data.doB;
+      return student;
+    },
+    close() {
+      this.showPENSearchDialog = false;
+      this.studentForSearch = {};
+      this.studentPENXML = null;
+      this.studentPENTranscript = null;
+
+      this.$refs.transcriptField.reset();
+      this.$refs.xmlField.reset();
+    },
+  },
+  async created() {
+    this.populateDateRanges();
+  },
 };
 </script>
-    
+
 <style scoped>
 
-  .border {
-    border: 2px solid grey;
-    border-radius: 5px;
-    padding: 35px;
-    margin: 2em;
-  }
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin: 2em;
+}
 
-  :deep(.v-btn__content){
-    white-space: break-spaces;
-  }
+:deep(.v-btn__content){
+  white-space: break-spaces;
+}
 
-  h3 {
-    color: #38598a;
-  }
+h3 {
+  color: #38598a;
+}
 
-  ul {
-    list-style-type: none;
-    padding-top: 1em;
-    padding-bottom: 2em;
-  }
+.sub-category-group {
+  padding-left: 2em;
+}
 
-  li {
-    padding-top: 1em;
-  }
+v-text-field{
+  width: 4em;
+}
 
-  p {
-    padding-top: 1em;
-    font-style: italic;
-  }
+v-card{
+  padding: 1.1rem;
+  width: 40rem;
+}
 
-  i {
-    font-size: 1.25em;
-  }
+ul {
+  list-style-type: none;
+  padding-top: 1em;
+  padding-bottom: 2em;
+}
 
-  .link-style {
-    display: inline-flex;
-    align-items: center;
-  }
+li {
+  padding-top: 1em;
+}
 
-  ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-    color: white !important;
-  }
+p {
+  padding-top: 1em;
+  font-style: italic;
+}
+
+i {
+  font-size: 1.25em;
+}
+
+.link-style {
+  display: inline-flex;
+  align-items: center;
+}
+
+::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
+  color: white !important;
+}
 </style>
-    

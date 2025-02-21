@@ -6,7 +6,7 @@ const log = require('./logger');
 const cacheService = require('./cache-service');
 const {v4: uuidv4} = require('uuid');
 
-async function getStudentByPEN(req, res) {
+async function getStudentByPEN(req, res, bypassInstituteHasStudent = false) {
   try {
     const accessToken = getAccessToken(req);
     const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
@@ -21,7 +21,7 @@ async function getStudentByPEN(req, res) {
         instituteHasStudent = school.mincode === studentMincode;
       }
 
-      if (instituteHasStudent) {
+      if (instituteHasStudent || bypassInstituteHasStudent) {
         const body = {
           studentID: result[0].studentID,
           pen:result[0].pen,
@@ -45,6 +45,10 @@ async function getStudentByPEN(req, res) {
     log.error(e, 'getStudentByPEN', 'Error occurred while attempting to GET Student details.');
     return errorResponse(res);
   }
+}
+
+async function getStudentByPENForGrad(req, res){
+  await getStudentByPEN(req, res, true);
 }
 
 /**
@@ -95,5 +99,6 @@ async function createNewStudent(req, res) {
 }
 module.exports = {
   getStudentByPEN,
+  getStudentByPENForGrad,
   createNewStudent
 };

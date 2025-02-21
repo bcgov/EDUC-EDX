@@ -47,6 +47,28 @@
           </a>
         </li>
       </ul>
+      <div class="sub-category-group mt-2">
+        <h4 class="mt-8">Individual TVRs by PEN</h4>
+        <p>Schools can now search for any TVR that exists in GRAD by PEN (not just current grade 12 or AD students). To View / Print an individual student's TVR report enter PEN below.</p>
+        <v-form class="d-flex" v-model="studentPENIsValid" >
+          <v-col cols="2">
+            <v-text-field
+                ref="studentPENField"
+                v-model="studentPEN"
+                placeholder="Enter PEN"
+                :rules="penRules"
+                variant="underlined"
+            />
+          </v-col>
+          <v-col cols="2" class="pt-6">
+            <PrimaryButton
+                id="searchPENBtn"
+                text="Search"
+                :disabled="!studentPENIsValid"
+                :click-action="searchStudentForGivenPEN"
+            />
+          </v-col>
+        </v-form>
 
       <h3>Graduation Projections Summary Reports ({{this.currentStartMoYr}} to {{this.currentEndMoYr}})</h3>
       <ul>
@@ -91,16 +113,31 @@
       </ul>
 
     </div>
+    </div>
+    <PENSearchDialog
+        v-model="showPENSearchDialog"
+        :student="student"
+        download-type="TVR"
+        @close="close"
+    />
   </v-container>
 </template>
     
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
+import PrimaryButton from "../../../util/PrimaryButton.vue";
+import {penIsValid} from "../../../../utils/institute/formRules";
+import ApiService from "../../../../common/apiService";
+import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
+import {isValidPEN} from "../../../../utils/validation";
+import PENSearchDialog from "../../PENSearchDialog.vue";
     
 export default {
   name: 'GradProjectionsTVR',
   components: {
+    PENSearchDialog,
+    PrimaryButton
   },
   mixins: [alertMixin],
   props: {
@@ -116,7 +153,13 @@ export default {
       currentStartMoYr: '',
       currentEndMoYr: '',
       histStartMoYr: '',
-      histEndMoYr: ''
+      histEndMoYr: '',
+      penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
+      studentPEN: null,
+      studentPENIsValid: false,
+      studentExists: false,
+      student: {},
+      showPENSearchDialog: false,
     };
   },
   computed: {
@@ -132,6 +175,7 @@ export default {
         
   },
   methods: {
+    penIsValid,
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
     },
@@ -141,7 +185,43 @@ export default {
       this.currentEndMoYr = datesList.shift();
       this.histStartMoYr = datesList.shift();
       this.histEndMoYr = datesList.shift();
-    }
+    },
+    searchStudentForGivenPEN() {
+      this.student = {};
+
+      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + "search-grad-pen", {
+        params: {
+          pen: this.studentPEN
+        }
+      })
+      .then(res => {
+        this.alert = false;
+        this.student = {};
+        this.student['pen'] = res.data.pen;
+        this.student['studentID'] = res.data.studentID;
+        this.student['fullName'] = res.data.firstName + ' ' + (res.data.middleName ?? '') + ' ' + res.data.lastName;
+        this.student['localID'] = res.data.localID;
+        this.student['gender'] = res.data.gender;
+        this.student['dob'] = res.data.doB;
+
+      })
+      .catch(error => {
+        if (error?.response?.data?.message) {
+          this.setFailureAlert(error?.response?.data?.message);
+        } else {
+          this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
+        }
+      }).finally(() => {
+        this.showPENSearchDialog = true;
+      });
+    },
+    close() {
+      this.showPENSearchDialog = false;
+      this.student = {};
+      this.studentPEN = null;
+
+      this.$refs.studentPENField.reset();
+    },
   }
 };
 </script>
