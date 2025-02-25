@@ -1072,7 +1072,9 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
     user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
       if (edxUserData) {
         req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
-          return !!isSchoolActive(cacheService.getSchoolBySchoolID(el.schoolID));
+          if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
+            return cacheService.getSchoolBySchoolID(el.schoolID);
+          }
         }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
         req.session.userDistrictIDs = edxUserData.edxUserDistricts?.filter((el) => {
           return !!isDistrictActive(cacheService.getDistrictJSONByDistrictID(el.districtID));
@@ -1098,7 +1100,9 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
       ])
         .then(async ([userSchools, userDistricts]) => {
           req.session.userSchoolIDs = userSchools?.filter((el) => {
-            return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
+            if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
+              return cacheService.getSchoolBySchoolID(el);
+            }
           });//this is list of active schoolIDs associated to the user
 
           req.session.userDistrictIDs = userDistricts?.filter((el) => {
