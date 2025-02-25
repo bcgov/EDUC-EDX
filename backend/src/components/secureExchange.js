@@ -1100,9 +1100,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
       ])
         .then(async ([userSchools, userDistricts]) => {
           req.session.userSchoolIDs = userSchools?.filter((el) => {
-            if(el?.expiryDate === null || LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME))) {
-              return cacheService.getSchoolBySchoolID(el);
-            }
+            return !!isSchoolActive(cacheService.getSchoolBySchoolID(el));
           });//this is list of active schoolIDs associated to the user
 
           req.session.userDistrictIDs = userDistricts?.filter((el) => {
