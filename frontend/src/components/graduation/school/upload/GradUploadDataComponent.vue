@@ -320,7 +320,6 @@ export default {
       },
       headers: [
         {key: 'alert'},
-        {title: 'Upload User', key: 'updateUser'},
         {title: 'DEM File Name', key: 'demFileName'},
         {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
         {title: 'DEM File Status', key: 'demFileStatusCode'},
@@ -330,6 +329,7 @@ export default {
         {title: 'CRS File Name', key: 'crsFileName'},
         {title: 'CRS File Upload Date', key: 'crsFileUploadDate'},
         {title: 'CRS File Status', key: 'crsFileStatusCode'},
+        {title: 'Upload User', key: 'updateUser'},
         {title: 'Errors/Warnings', key: 'errorLink'},
       ],
       schoolsMap: null,
