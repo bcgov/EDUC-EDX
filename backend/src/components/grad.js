@@ -203,9 +203,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       }
     }
     if(key === 'fieldCode' && pValue) {
-      fieldCodeList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-      fieldCodeList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-      fieldCodeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      fieldCodeList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      fieldCodeList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+      fieldCodeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueFieldCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
     }
   }
   const search = [];
