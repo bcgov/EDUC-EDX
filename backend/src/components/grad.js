@@ -187,19 +187,15 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       } else if(filterValue === 'XAM-ERROR') {
         fileTypeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities', value: 'XAM-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
-      if(warningList.length > 0) {
-        let warningValue = warningList[0].value;
-        warningList = createSeverityFilter(warningValue);
-      }
     }
     if (key === 'warnings' && pValue) {
       if(fileTypeList.length > 0) {
         let fileTypeValue = fileTypeList[0].value;
         warningList = createSeverityFilter(fileTypeValue, pValue);
       } else {
-        warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        warningList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
-        warningList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        warningList.push({ key: 'demographicStudentEntities.demographicStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        warningList.push({ key: 'courseStudentEntities.courseStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
+        warningList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities.validationIssueSeverityCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL_WITH_LEFT_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.OR });
       }
     }
     if(key === 'fieldCode' && pValue) {
