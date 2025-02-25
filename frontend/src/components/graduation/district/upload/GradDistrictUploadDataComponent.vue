@@ -319,6 +319,7 @@ export default {
       },
       headers: [
         {key: 'alert'},
+        {title: 'Upload User', key: 'updateUser'},
         {title: 'School Name', key: 'schoolName'},
         {title: 'DEM File Name', key: 'demFileName'},
         {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
