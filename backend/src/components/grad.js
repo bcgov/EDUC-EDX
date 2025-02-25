@@ -187,6 +187,10 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       } else if(filterValue === 'XAM-ERROR') {
         fileTypeList.push({ key: 'assessmentStudentEntities.assessmentStudentValidationIssueEntities', value: 'XAM-ERROR', operation: FILTER_OPERATION.CUSTOM_CHILD_JOIN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       }
+      if(warningList.length > 0) {
+        let warningValue = warningList[0].value;
+        warningList = createSeverityFilter(warningValue);
+      }
     }
     if (key === 'warnings' && pValue) {
       if(fileTypeList.length > 0) {
