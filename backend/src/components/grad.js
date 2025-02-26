@@ -71,6 +71,23 @@ async function getFilesetsPaginated(req, res) {
       });
     }
 
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const month = now.getMonth() + 1; // getMonth() is 0-indexed
+
+    const startCurrentCollectionYear = month >= 10 ? new Date(currentYear, 9, 1) : new Date(currentYear - 1, 9, 1);
+    const startPreviousCollectionYear = new Date(startCurrentCollectionYear.getFullYear() - 1, 9, 1);
+
+    search.push({
+      condition: 'AND',
+      searchCriteriaList: [{
+        key: 'createDate',
+        value: startPreviousCollectionYear.toISOString().substring(0,10),
+        operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO,
+        valueType: VALUE_TYPE.DATE
+      }]
+    });
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
