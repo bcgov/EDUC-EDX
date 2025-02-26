@@ -73,12 +73,12 @@
               </span>
               <span v-else-if="column.key ==='alert'">
                 <v-tooltip text="Please upload the missing file(s) to allow processing to begin.">
-                  <template v-slot:activator="{ props: tooltipProps }">
+                  <template #activator="{ props: tooltipProps }">
                     <v-icon
+                      v-if="!isFilesetInProgress(props.item)"
                       v-bind="tooltipProps"
                       icon="mdi-alert-circle-outline"
                       color="error"
-                      v-if="!isFilesetInProgress(props.item)"
                     />
                   </template>
                 </v-tooltip>
@@ -89,20 +89,34 @@
               <div v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
                 <div v-if="(column.key === 'demFileStatusCode' && props.item.demFileName) ||(column.key === 'xamFileStatusCode' && props.item.xamFileName) || (column.key === 'crsFileStatusCode' && props.item.crsFileName)">
                   <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
-                    <v-icon icon="mdi-check-circle-outline" color="success" />
+                    <v-icon
+                      icon="mdi-check-circle-outline"
+                      color="success"
+                    />
                     Processed
                   </span>
                   <span v-else-if="isFilesetInProgress(props.item)">
-                    <v-progress-circular :size="20" :width="4" color="primary" indeterminate />
+                    <v-progress-circular 
+                      :size="20" 
+                      :width="4" 
+                      color="primary" 
+                      indeterminate
+                    />
                     Processing
                   </span>
                   <span v-else>
-                    <v-icon icon="mdi-clock-alert-outline" color="warning" />
+                    <v-icon
+                      icon="mdi-clock-alert-outline"
+                      color="warning"
+                    />
                     Awaiting Other Files
                   </span>
                 </div>
                 <span v-else>
-                  <v-icon icon="mdi-alert-circle-outline" color="error" />
+                  <v-icon
+                    icon="mdi-alert-circle-outline"
+                    color="error"
+                  />
                   Not Loaded
                 </span>
               </div>
@@ -329,6 +343,7 @@ export default {
         {title: 'CRS File Name', key: 'crsFileName'},
         {title: 'CRS File Upload Date', key: 'crsFileUploadDate'},
         {title: 'CRS File Status', key: 'crsFileStatusCode'},
+        {title: 'Upload User', key: 'updateUser'},
         {title: 'Errors/Warnings', key: 'errorLink'},
       ],
       schoolsMap: null,
