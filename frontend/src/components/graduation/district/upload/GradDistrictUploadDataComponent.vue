@@ -349,7 +349,6 @@ export default {
       schoolsMap: null,
       disableScreen: false,
       wsNotificationText: '',
-      users: []
     };
   },
   computed: {
@@ -379,7 +378,6 @@ export default {
     },
   },
   async created() {
-    await Promise.all([this.getUsersData()]);
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
@@ -389,30 +387,6 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
-    async getUsersData() {
-      this.loadingUsers = true;
-      const payload = { params: { districtID: this.districtID } };
-      try {
-        const response = await ApiService.apiAxios.get(ApiRoutes.gdc.USERS_URL, payload);
-        this.users = response.data;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.loadingUsers = false;
-      }
-    },
-    updateUserColumn() {
-      this.filesetList = this.filesetList.map(fileset => {
-        if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
-          const userId = fileset.updateUser.slice(4);
-          const user = this.users.find(u => u.edxUserID === userId);
-          if (user) {
-            fileset.updateUser = `${user.firstName} ${user.lastName}`;
-          }
-        }
-        return fileset;
-      });
-    },
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
@@ -496,7 +470,6 @@ export default {
             }
           }
           this.uploadFileValue = null;
-          await this.getUsersData();
           await this.getFilesetPaginated();
         }
       }
@@ -520,31 +493,28 @@ export default {
       } 
     },
     async getFilesetPaginated() {
-      this.isLoading = true;
-      try {
-        const response = await ApiService.apiAxios.get(
-          `${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.$route.params.districtID}/paginated`,
-          {
-            params: {
-              pageNumber: this.pageNumber - 1,
-              pageSize: this.pageSize,
-              searchParams: omitBy(this.filterSearchParams, isEmpty),
-              sort: { updateDate: 'DESC' },
-            },
-          }
-        );
+      this.isLoading= true;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
+        params: {
+          pageNumber: this.pageNumber - 1,
+          pageSize: this.pageSize,
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
+          sort: {
+            updateDate: 'DESC'
+          },
+        }
+      }).then(response => {
         this.filesetList = response.data.content;
         this.totalElements = response.data.totalElements;
         clearInterval(this.interval);
-        await this.startPollingStatus();
-      } catch (error) {
+        this.startPollingStatus();
+      }).catch(error => {
         clearInterval(this.interval);
         console.error(error);
         this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
-      } finally {
-        this.updateUserColumn();
+      }).finally(() => {
         this.isLoading = false;
-      }
+      });
     },
     backButtonClick() {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.districtID}});

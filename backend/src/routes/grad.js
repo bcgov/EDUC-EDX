@@ -3,15 +3,9 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
-const { validateAccessToken, checkEdxUserPermission,
-  findInstituteInformation_query,
-  checkPermissionForRequestedInstitute,
-  checkEDXUserAccessToRequestedInstitute
-} = require('../components/permissionUtils');
+const { validateAccessToken, checkEdxUserPermission } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport} = require('../components/grad');
-const { getEdxUsers } = require('../components/secureExchange');
-const {getUserSchema} = require('../validations/edx');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
 const {getCachedGradCollectionData} = require('../components/gdc-cache');
@@ -46,7 +40,5 @@ router.post('/district/:districtID/upload-file', passport.authenticate('jwt', {s
 router.get('/fileset/district/:districtID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetPaginatedSchema),
   getFilesetsPaginated);
-
-router.get('/users', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, validate(getUserSchema), findInstituteInformation_query, checkPermissionForRequestedInstitute(PERMISSION.GRAD_DIS_UPLOAD, PERMISSION.GRAD_SCH_UPLOAD), checkEDXUserAccessToRequestedInstitute, getEdxUsers);
 
 module.exports = router;

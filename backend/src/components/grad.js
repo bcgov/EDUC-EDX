@@ -5,7 +5,7 @@ const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 const cacheService = require('./cache-service');
-const {DateTimeFormatterBuilder, ResolverStyle, LocalDateTime, LocalDate} = require("@js-joda/core");
+const {DateTimeFormatterBuilder, ResolverStyle, LocalDateTime, LocalDate} = require('@js-joda/core');
 const CONSTANTS = require('../util/constants');
 const broadcastUtil = require('../socket/broadcast-utils');
 
@@ -96,6 +96,27 @@ async function getFilesetsPaginated(req, res) {
       });
     }
 
+    if (data.content && data.content.length > 0) {
+      let users;
+      if (req.params.schoolID) {
+        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: req.params.schoolID}}, req.session.correlationID);
+      }
+      else if (req.params.districtID) {
+        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {districtID: req.params.districtID}}, req.session.correlationID);
+      }
+
+      data.content = data.content.map(fileset => {
+        if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
+          const userId = fileset.updateUser.slice(4);
+          const user = users.find(u => u.edxUserID === userId);
+          if (user) {
+            fileset.updateUser = `${user.firstName} ${user.lastName}`;
+          }
+        }
+        return fileset;
+      });
+    }
+
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset student paginated list', e.stack);
@@ -134,7 +155,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
     data.content = data?.content.map(error => toTableRow(error));
     data.content.forEach(item => {
       item.birthdate = formatDateTime(item.birthdate);
-    })
+    });
 
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -282,8 +303,8 @@ function createNameCriteria(nameString) {
 
 function getDateFormatter(pattern) {
   return (new DateTimeFormatterBuilder)
-      .appendPattern(pattern)
-      .toFormatter(ResolverStyle.STRICT);
+    .appendPattern(pattern)
+    .toFormatter(ResolverStyle.STRICT);
 }
 function formatDateTime(datetime, from='uuuuMMdd', to='MM/dd/uuuu', hasTimePart=false) {
   const fromFormatter = getDateFormatter(from);
