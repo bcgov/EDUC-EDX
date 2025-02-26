@@ -9,7 +9,7 @@ const districtRequestRoot = baseRoot + '/institute/districts';
 const schoolRequestRoot = baseRoot + '/institute/schools';
 const sdcRoot = baseRoot + '/sdc';
 const gdcRoot = baseRoot + '/grad';
-const gradReportsRoot = baseRoot + '/gradReports'
+const gradReportsRoot = baseRoot + '/gradReports';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
 const easRoot = baseRoot + '/eas';
@@ -60,6 +60,7 @@ export const ApiRoutes = Object.freeze({
   gdc: {
     BASE_URL: gdcRoot,
     VALIDATION_FIELD_CODES: gdcRoot + '/validation-field-codes',
+    USERS_URL: gdcRoot + '/users',
   },
   gradReports: {
     BASE_URL: gradReportsRoot,
