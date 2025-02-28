@@ -188,14 +188,12 @@ import StudentDifferencesComponent
   from '../../sdcDistrictCollection/stepThreeVerifyData/StudentDifferencesComponent.vue';
 import {SCHOOL_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
-import DeletedStudentsComponent from '../../sdcDistrictCollection/stepThreeVerifyData/DeletedStudentsComponent.vue';
 import DeleteSchoolStudentsComponent from './DeletedSchoolStudentsComponent.vue';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
     DeleteSchoolStudentsComponent,
-    DeletedStudentsComponent,
     StudentDifferencesComponent,
     PrimaryButton,
     FTEComponent,
