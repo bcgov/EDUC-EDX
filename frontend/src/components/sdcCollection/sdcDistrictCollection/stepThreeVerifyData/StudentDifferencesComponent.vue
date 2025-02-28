@@ -44,7 +44,6 @@
       </v-col>
     </v-row>
     <v-data-iterator
-      v-model:page.sync="pageNumber"
       :items="studentDifferences"
       :items-per-page="10"
     >
@@ -79,11 +78,12 @@
       </template>
     </v-data-iterator>
     <v-pagination
-      v-if="studentDifferences?.length > 0"
+      v-if="totalElements > 0"
       v-model="pageNumber"
-      :length="Math.ceil(studentDifferences?.length/10)"
+      :length="Math.ceil(totalElements/10)"
       total-visible="5"
       rounded="circle"
+      @update:model-value="getStudentDifferences"
     />
   </div>
   <v-navigation-drawer
@@ -199,8 +199,9 @@ export default defineComponent({
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty)
         }}).then(response => {
-        this.studentDifferences = response.data;
-        this.totalElements = response.data.length;
+        this.studentDifferences = response.data.content;
+        this.totalElements = response.data.totalElements;
+        this.pageNumber = response.data.pageable.pageNumber + 1;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert(error.response?.data?.message || error.message);

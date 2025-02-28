@@ -23,6 +23,14 @@
       >
         Student <br> Differences
       </v-tab>
+      <v-tab
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
+        key="DeletedStudents"
+        value="DeletedStudents"
+        class="divider"
+      >
+        Deleted <br> Students
+      </v-tab>
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item
@@ -120,6 +128,17 @@
           :table-config="SCHOOL_STUDENT_DIFFERENCES"
         />
       </v-window-item>
+      <v-window-item
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
+        value="DeletedStudents"
+      >
+        <DeleteSchoolStudentsComponent
+          :school="school"
+          :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
+          :is-migrated-collection="isMigratedCollection"
+        />
+      </v-window-item>
     </v-window>
   </div>
 
@@ -169,10 +188,12 @@ import StudentDifferencesComponent
   from '../../sdcDistrictCollection/stepThreeVerifyData/StudentDifferencesComponent.vue';
 import {SCHOOL_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
+import DeleteSchoolStudentsComponent from './DeletedSchoolStudentsComponent.vue';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
+    DeleteSchoolStudentsComponent,
     StudentDifferencesComponent,
     PrimaryButton,
     FTEComponent,
