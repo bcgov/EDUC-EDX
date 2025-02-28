@@ -4,7 +4,10 @@
       <Spinner />
     </v-col>
   </v-row>
-  <div v-else class="border">
+  <div
+    v-else
+    class="border"
+  >
     <v-tabs
       v-model="tab"
       color="#38598a"
@@ -27,6 +30,14 @@
         class="divider"
       >
         Student <br> Differences
+      </v-tab>
+      <v-tab
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
+        key="DeletedStudents"
+        value="DeletedStudents"
+        class="divider"
+      >
+        Deleted <br> Students
       </v-tab>
       <v-tab
         v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
@@ -137,6 +148,16 @@
       </v-window-item>
       <v-window-item
         v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
+        value="DeletedStudents"
+      >
+        <DeletedStudentsComponent
+          :district="district"
+          :is-final-sign-off="isFinalSignOff"
+          :is-collection-active="isCollectionActive"
+        />
+      </v-window-item>
+      <v-window-item
+        v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="SignOff"
         transition="false"
         reverse-transition="false"
@@ -213,10 +234,12 @@ import StudentDifferencesComponent from './StudentDifferencesComponent.vue';
 import {DISTRICT_STUDENT_DIFFERENCES} from '../../../../utils/sdc/DistrictCollectionTableConfiguration';
 import {LocalDate, LocalDateTime} from '@js-joda/core';
 import Spinner from '../../../common/Spinner.vue';
+import DeletedStudentsComponent from './DeletedStudentsComponent.vue';
 
 export default {
   name: 'StepThreeVerifyData',
   components: {
+    DeletedStudentsComponent,
     Spinner,
     PrimaryButton,
     AllStudentsComponent,

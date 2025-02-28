@@ -169,6 +169,11 @@ export default {
       type: Boolean,
       required: true,
       default: false
+    },
+    deletedStudentsOnly: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: [],
@@ -182,7 +187,11 @@ export default {
       isLoading: false,
       totalElements: 0,
       selectedStudents: [],
-      filterSearchParams: {
+      filterSearchParams: this.deletedStudentsOnly === true ? {
+        tabFilter: this.config.defaultFilter,
+        sdcSchoolCollectionStudentStatusCode: 'DELETED',
+        moreFilters: {}
+      } : {
         tabFilter: this.config.defaultFilter,
         notSdcSchoolCollectionStudentStatusCode: 'ERROR,DELETED',
         moreFilters: {}
