@@ -454,7 +454,7 @@ function toTableRow(student, collectionType = null) {
   student.ellProgramEligible = getProgramEligibleValue('ELL', student.ellNonEligReasonCode, collectionType, student.schoolID);
   student.careerProgramEligible = getProgramEligibleValue('CAREER', student.careerProgramNonEligReasonCode, collectionType, student.schoolID);
   student.spedProgramEligible = getProgramEligibleValue('SPED',student.specialEducationNonEligReasonCode, collectionType, student.schoolID);
-  student.mappedNoOfCourses = student.numberOfCourses && isNumeric(student.numberOfCourses) ? parseFloat(student.numberOfCourses) / 100 : '-';
+  student.mappedNoOfCourses = getNumberOfCourses(student.numberOfCourses);
   student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
   
   return student;
@@ -464,6 +464,19 @@ function isNumeric(str) {
   if (typeof str != 'string')
     return false;
   return !isNaN(str) && !isNaN(parseFloat(str));
+}
+
+function getNumberOfCourses(numCourses){
+  if(!numCourses){
+    return '-';
+  }
+  let isValidNumber = isNumeric(numCourses);
+
+  if(!isValidNumber){
+    return numCourses;
+  }
+
+  return parseFloat(numCourses) / 100;
 }
 
 function getProgramEligibleValue(type, reasonCode, collectionType, schoolID) {
