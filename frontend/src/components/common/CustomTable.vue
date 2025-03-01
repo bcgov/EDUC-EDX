@@ -283,7 +283,7 @@ export default {
       }
 
       fieldNames.forEach(fieldName => {
-        if(this.data[0][fieldName] !== this.data[1][fieldName]){
+        if(fieldName != 'yearsInEll' && this.data[0][fieldName] !== this.data[1][fieldName]){
           returnClass = 'valueIsDiff';
         }
       });
