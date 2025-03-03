@@ -422,7 +422,7 @@ const postSchoolFileCollectionSchema =  object({
 
 const postResolveDuplicateSchema = object({
   body: object({
-    students: array().of(baseSdcSchoolStudent),
+    students: array().of(baseStudentWithEnrolledProgram),
     duplicate: object() //Marked as object to support dynamic naming
   }).concat(baseRequestSchema),
   params: object({
