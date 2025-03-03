@@ -826,7 +826,7 @@ async function getStudentDifferencesByInstituteCollectionId(req, res) {
     }
 
     if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      let criteriaArray = createMoreFiltersSearchCriteria(null, req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
       });
