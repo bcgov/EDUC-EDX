@@ -1074,8 +1074,7 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
         req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
           var school = cacheService.getSchoolBySchoolID(el.schoolID);
           var hasGradRole = el.edxUserSchoolRoles.find(role => role.edxRoleCode === 'GRAD_SCH_ADMIN');
-          if(school.closedDate === null || (school.closedDate !== null && hasGradRole 
-          && LocalDateTime.now().isBefore(LocalDateTime.parse(el?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME).plusMonths(3)))) {
+          if(school?.expiryDate === null || (school?.expiryDate !== null && hasGradRole && LocalDateTime.now().isBefore(LocalDateTime.parse(school?.expiryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME).plusMonths(3)))) {
             return school;
           }
         }).flatMap(el => el.schoolID);//this is list of active schoolIDs associated to the user
