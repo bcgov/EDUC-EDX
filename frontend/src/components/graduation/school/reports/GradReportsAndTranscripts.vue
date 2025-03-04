@@ -54,51 +54,51 @@
         </v-form>
       </div>
 
-      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
-      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
-      <div class="sub-category-group">
-        <ul>
-          <li>
-            <a href="" class="link-style">
-              Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="" class="link-style">
-              Not Yet Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
+<!--      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>-->
+<!--      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>-->
+<!--      <div class="sub-category-group">-->
+<!--        <ul>-->
+<!--          <li>-->
+<!--            <a href="" class="link-style">-->
+<!--              Graduated Students-->
+<!--              <span class="icon-container ml-1">-->
+<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
+<!--              </span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <a href="" class="link-style">-->
+<!--              Not Yet Graduated Students-->
+<!--              <span class="icon-container ml-1">-->
+<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
+<!--              </span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </div>-->
 
-      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
-      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
-      <div class="sub-category-group">
-        <ul>
-          <li>
-            <a href="" class="link-style">
-              Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="" class="link-style">
-              Not Yet Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
+<!--      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>-->
+<!--      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>-->
+<!--      <div class="sub-category-group">-->
+<!--        <ul>-->
+<!--          <li>-->
+<!--            <a href="" class="link-style">-->
+<!--              Graduated Students-->
+<!--              <span class="icon-container ml-1">-->
+<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
+<!--              </span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <a href="" class="link-style">-->
+<!--              Not Yet Graduated Students-->
+<!--              <span class="icon-container ml-1">-->
+<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
+<!--              </span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </div>-->
     </div>
     <PENSearchDialog
         v-model="showPENSearchDialog"
