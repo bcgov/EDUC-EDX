@@ -289,7 +289,7 @@
       </v-col>
 
       <v-col
-        v-if="(hasRequiredPermission('GRAD_SCH_UPLOAD') || hasRequiredPermission('GRAD_DIS_UPLOAD')) && (isLoggedInSchoolUser || isLoggedInDistrictUser) && !disableGradFunctionality"
+        v-if="(isLoggedInSchoolUser || isLoggedInDistrictUser) && !disableGradFunctionality"
         cols="12"
         md="6"
       >
