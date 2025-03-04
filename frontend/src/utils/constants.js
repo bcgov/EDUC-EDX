@@ -175,6 +175,7 @@ export const PAGE_TITLES = Object.freeze({
   GRAD_TRANSCRIPT_PREVIEW: 'Student Transcript Preview(s)',
   GRAD_DISTRICT_PROJECTIONS: 'Graduation Projections Summary Reports',
   GRAD_DISTRICT_REPORTS: 'Graduation Summary Reports',
+  GRAD_CHANGE_FORM: 'GRAD Change Form - Correct Historical Records',
 });
 
 

@@ -288,6 +288,43 @@
         </v-card>
       </v-col>
 
+      <v-col
+        v-if="(hasRequiredPermission('GRAD_SCH_UPLOAD') || hasRequiredPermission('GRAD_DIS_UPLOAD')) && (isLoggedInSchoolUser || isLoggedInDistrictUser) && !disableGradFunctionality"
+        cols="12"
+        md="6"
+      >
+        <v-card
+          id="gradChangeForm"
+          class="mx-auto"
+          width="29em"
+          height="100%"
+          outlined
+          rounded
+          @click="openGradChangeForm"
+        >
+          <v-row class="pl-4">
+            <v-col cols="3">
+              <div>
+                <v-icon
+                  icon="mdi-account-edit-outline"
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  size="100"
+                />
+              </div>
+            </v-col>
+            <v-col class="mt-2">
+              <v-row no-gutters>
+                <v-col>
+                  <h4 class="dashboard-title">
+                    {{ PAGE_TITLES.GRAD_CHANGE_FORM }}
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -344,6 +381,9 @@ export default {
     },
     openReports() {
       this.$router.push({name: 'grad-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
+    openGradChangeForm() {
+      window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank');
     }
   }
 };
