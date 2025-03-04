@@ -383,7 +383,7 @@ export default {
       this.$router.push({name: 'grad-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
     openGradChangeForm() {
-      window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank');
+      window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank', 'noopener');
     }
   }
 };
