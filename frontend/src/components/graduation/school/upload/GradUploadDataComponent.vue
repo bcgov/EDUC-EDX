@@ -247,11 +247,11 @@
         </v-card-actions>
       </v-card>
     </v-overlay>
-    <ConfirmationDialog ref="confirmReplacementFile">
+    <ConfirmationDialog ref="confirmIncorrectDatesFile">
       <template #message>
-        <p>Uploading a replacement file will remove all data associated with the existing file you have uploaded.</p>
-            &nbsp;
-        <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
+        <p>Check that you are submitting the correct file. All reported course session dates are from a previous reporting period.</p>
+        &nbsp;
+        <p>Would you like to continue with this submission?</p>
       </template>
     </ConfirmationDialog>
     <div v-if="disableScreen">
@@ -490,9 +490,28 @@ export default {
         this.successfulUploadCount += 1;
         fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
-        console.error(e);
-        fileJSON.error = e.response.data;
-        fileJSON.status = this.fileUploadError;
+        if(e?.message.includes('428')){
+          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + this.uploadFileValue[index].name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+          if (!confirmation) {
+            fileJSON.error = 'Abandoned';
+            fileJSON.status = this.fileUploadError;
+            return;
+          }
+          try {
+            await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file?fileOverride=true', document)
+              .then(() => {});
+            this.successfulUploadCount += 1;
+            fileJSON.status = this.fileUploadSuccess;
+          }catch (e2) {
+            console.error(e);
+            fileJSON.error = 'Error occurred during upload, please try again later.';
+            fileJSON.status = this.fileUploadError;
+          }
+        }else{
+          console.error(e);
+          fileJSON.error = e.response.data;
+          fileJSON.status = this.fileUploadError;
+        }
       } 
     },
     async getFilesetPaginated() {

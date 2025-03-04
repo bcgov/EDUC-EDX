@@ -19,6 +19,11 @@ async function uploadFile(req, res) {
       createUser: createUpdateUser,
       updateUser: createUpdateUser
     };
+
+    if (req.query.fileOverride){
+      payload.courseSessionOverride = true;
+    }
+
     const token = getAccessToken(req);
     let data;
     if (req.params.schoolID){
@@ -30,9 +35,10 @@ async function uploadFile(req, res) {
     broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    console.log(JSON.stringify(e));
     if (e.status === 400) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
+    }else if (e.status === 428) {
+      return res.status(HttpStatus.PRECONDITION_REQUIRED).json('NT');
     }
     log.error('uploadFile Error', e.stack);
     return handleExceptionResponse(e, res);

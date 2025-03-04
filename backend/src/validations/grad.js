@@ -1,4 +1,4 @@
-const { object, string, number } = require('yup');
+const { object, string, number, boolean} = require('yup');
 const {baseRequestSchema} = require('./base');
 
 const gradFileUploadSchema =  object({
@@ -10,7 +10,9 @@ const gradFileUploadSchema =  object({
   params: object({
     schoolID: string().nonNullable()
   }).noUnknown(),
-  query: object().noUnknown(),
+  query: object({
+    fileOverride: boolean().optional()
+  })
 }).noUnknown();
 
 const gradDistrictFileUploadSchema =  object({
