@@ -55,6 +55,7 @@
         v-model:items-per-page.sync="pageSize"
         :items-length="totalElements"
         :items="filesetList"
+        @update:page="getFilesetPaginated"
         :headers="headers"
         mobile-breakpoint="0"
       >

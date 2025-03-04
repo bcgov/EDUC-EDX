@@ -56,6 +56,7 @@
         :items-length="totalElements"
         :items="filesetList"
         :headers="headers"
+        @update:page="getFilesetPaginated"
         mobile-breakpoint="0"
       >
         <template #item="props">
