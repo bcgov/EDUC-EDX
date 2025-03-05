@@ -44,10 +44,59 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
+        <v-col
+          cols="12"
+          class="pb-0"
+        >
           <p class="schools-in-progress-header">
             Summary of Uploaded Data
           </p>
+        </v-col>
+      </v-row>
+      <v-row
+        class="align-center searchBox"
+      >
+        <v-col
+          cols="12"
+          md="4"
+          lg="4"
+          class="d-flex justify-start pt-0"
+        >
+          <v-autocomplete
+            id="name-text-field"
+            v-model="schoolCodeNameFilter"
+            label="School Code & Name"
+            variant="underlined"
+            item-value="schoolID"
+            item-title="schoolCodeName"
+            autocomplete="off"
+            :items="schoolSearchNames"
+            :clearable="true"
+            @update:model-value="searchButtonClick"
+          >
+            <template #prepend-inner>
+              <v-icon
+                v-if="schoolCodeNameFilter"
+                :color="getStatusColorAuthorityOrSchool(schoolSearchNames.find(item=>item.schoolID===schoolCodeNameFilter)?.status)"
+              >
+                mdi-circle-medium
+              </v-icon>
+            </template>
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                prepend-icon="mdi-circle-medium"
+                :base-color="getStatusColorAuthorityOrSchool(item.raw.status)"
+                title=""
+              >
+                <v-list-item-title style="color: black !important;">
+                  {{
+                    item.title
+                  }}
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
         </v-col>
       </v-row>
       <v-data-table-server
@@ -56,8 +105,8 @@
         :items-length="totalElements"
         :items="filesetList"
         :headers="headers"
-        @update:page="getFilesetPaginated"
         mobile-breakpoint="0"
+        @update:page="getFilesetPaginated"
       >
         <template #item="props">
           <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
@@ -289,7 +338,8 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
-  
+import {getStatusAuthorityOrSchool, getStatusColorAuthorityOrSchool} from '../../../../utils/institute/status';
+
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
@@ -350,6 +400,14 @@ export default {
       schoolsMap: null,
       disableScreen: false,
       wsNotificationText: '',
+      schoolCodeNameFilter: null,
+      schoolSearchNames: [],
+      headerSearchParams: {
+        schoolNumber: '',
+        status: '',
+        category: '',
+        type: ''
+      },
     };
   },
   computed: {
@@ -379,6 +437,7 @@ export default {
     },
   },
   async created() {
+    this.getSchoolDropDownItems();
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
@@ -388,6 +447,7 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
+    getStatusColorAuthorityOrSchool,
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
@@ -522,8 +582,44 @@ export default {
     },
     navigateToErrors(row) {
       this.$router.push({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
-    }
-
+    },
+    getSchoolDropDownItems(){
+      this.headerSearchParams.status = 'NotClosed';
+      this.headerSearchParams.districtID = this.districtID;
+      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
+        params: {
+          pageNumber: 0,
+          pageSize: 5000,
+          sort: {
+            schoolNumber: 'ASC'
+          },
+          searchParams: omitBy(this.headerSearchParams, isEmpty),
+        }
+      }).then(response => {
+        let schoolList = response.data.content;
+        for(const school of schoolList){
+          if (school.canIssueTranscripts === true) {
+            let schoolItem = {
+              schoolCodeName: school.mincode +' - '+school.displayName,
+              schoolID: school.schoolId,
+              status: getStatusAuthorityOrSchool(school)
+            };
+            this.schoolSearchNames.push(schoolItem);
+          }
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+    },
+    searchButtonClick() {
+      if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
+        this.headerSearchParams.schoolID = this.schoolCodeNameFilter;
+      }else{
+        this.headerSearchParams.schoolID = '';
+      }
+      this.filterSearchParams.schoolID = this.headerSearchParams.schoolID;
+      this.getFilesetPaginated();
+    },
   }
 };
 </script>

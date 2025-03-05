@@ -75,6 +75,12 @@ async function getFilesetsPaginated(req, res) {
         condition: null,
         searchCriteriaList: [{ key: 'districtID', value: req.params.districtID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
+      if (req.query?.searchParams?.schoolID) {
+        search.push({
+          condition: 'AND',
+          searchCriteriaList: [{ key: 'schoolID', value: req.query.searchParams.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+        });
+      }
     }
 
     const now = new Date();
