@@ -48,7 +48,7 @@
           cols="12"
           class="pb-0"
         >
-          <p class="schools-in-progress-header">
+          <p class="schools-in-progress-header mb-0">
             Summary of Uploaded Data
           </p>
         </v-col>
