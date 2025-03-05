@@ -44,10 +44,49 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
-          <p class="schools-in-progress-header">
+        <v-col
+          cols="12"
+          class="pb-0"
+        >
+          <p class="schools-in-progress-header mb-0">
             Summary of Uploaded Data
           </p>
+        </v-col>
+      </v-row>
+      <v-row
+        class="align-center searchBox"
+      >
+        <v-col
+          cols="12"
+          md="4"
+          lg="4"
+          class="d-flex justify-start pt-0"
+        >
+          <v-autocomplete
+            id="name-text-field"
+            v-model="schoolCodeNameFilter"
+            label="School Code & Name"
+            variant="underlined"
+            item-value="schoolID"
+            item-title="schoolCodeName"
+            autocomplete="off"
+            :items="schoolSearchNames"
+            :clearable="true"
+            @update:model-value="searchButtonClick"
+          >
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                title=""
+              >
+                <v-list-item-title style="color: black !important;">
+                  {{
+                    item.title
+                  }}
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
         </v-col>
       </v-row>
       <v-data-table-server
@@ -56,8 +95,8 @@
         :items-length="totalElements"
         :items="filesetList"
         :headers="headers"
-        @update:page="getFilesetPaginated"
         mobile-breakpoint="0"
+        @update:page="getFilesetPaginated"
       >
         <template #item="props">
           <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
@@ -289,7 +328,7 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
-  
+
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
@@ -350,6 +389,14 @@ export default {
       schoolsMap: null,
       disableScreen: false,
       wsNotificationText: '',
+      schoolCodeNameFilter: null,
+      schoolSearchNames: [],
+      headerSearchParams: {
+        schoolNumber: '',
+        status: '',
+        category: '',
+        type: ''
+      },
     };
   },
   computed: {
@@ -382,6 +429,7 @@ export default {
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
+      this.getSchoolDropDownItems();
     });
   },
   beforeUnmount() {
@@ -522,8 +570,28 @@ export default {
     },
     navigateToErrors(row) {
       this.$router.push({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
-    }
-
+    },
+    getSchoolDropDownItems() {
+      this.schoolSearchNames = [];
+      this.schoolsMap.forEach(school => {
+        if (school.districtID === this.districtID && school.canIssueTranscripts === true) {
+          let schoolItem = {
+            schoolCodeName: school.mincode + ' - ' + school.schoolName,
+            schoolID: school.schoolID,
+          };
+          this.schoolSearchNames.push(schoolItem);
+        }
+      });
+    },
+    searchButtonClick() {
+      if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
+        this.headerSearchParams.schoolID = this.schoolCodeNameFilter;
+      }else{
+        this.headerSearchParams.schoolID = '';
+      }
+      this.filterSearchParams.schoolID = this.headerSearchParams.schoolID;
+      this.getFilesetPaginated();
+    },
   }
 };
 </script>

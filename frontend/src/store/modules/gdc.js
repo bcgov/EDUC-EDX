@@ -9,9 +9,9 @@ export const gdcStore = defineStore('gdcStore', {
   }),
   actions: {
     async setValidationFieldCodes(validationFieldCodes) {
-     this.validationFieldCode = validationFieldCodes.map(item => {
+      this.validationFieldCode = validationFieldCodes.map(item => {
         return {...item};
-     });
+      });
 
       this.validationFieldCodesMap = new Map();
       validationFieldCodes.forEach(validationCode => {
