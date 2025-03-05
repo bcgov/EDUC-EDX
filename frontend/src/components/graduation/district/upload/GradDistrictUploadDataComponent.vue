@@ -74,19 +74,9 @@
             :clearable="true"
             @update:model-value="searchButtonClick"
           >
-            <template #prepend-inner>
-              <v-icon
-                v-if="schoolCodeNameFilter"
-                :color="getStatusColorAuthorityOrSchool(schoolSearchNames.find(item=>item.schoolID===schoolCodeNameFilter)?.status)"
-              >
-                mdi-circle-medium
-              </v-icon>
-            </template>
             <template #item="{ props, item }">
               <v-list-item
                 v-bind="props"
-                prepend-icon="mdi-circle-medium"
-                :base-color="getStatusColorAuthorityOrSchool(item.raw.status)"
                 title=""
               >
                 <v-list-item-title style="color: black !important;">
@@ -437,10 +427,10 @@ export default {
     },
   },
   async created() {
-    this.getSchoolDropDownItems();
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
+      this.getSchoolDropDownItems();
     });
   },
   beforeUnmount() {
@@ -583,32 +573,16 @@ export default {
     navigateToErrors(row) {
       this.$router.push({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
     },
-    getSchoolDropDownItems(){
-      this.headerSearchParams.status = 'NotClosed';
-      this.headerSearchParams.districtID = this.districtID;
-      ApiService.apiAxios.get(ApiRoutes.school.ALL_SCHOOLS_BY_CRIT, {
-        params: {
-          pageNumber: 0,
-          pageSize: 5000,
-          sort: {
-            schoolNumber: 'ASC'
-          },
-          searchParams: omitBy(this.headerSearchParams, isEmpty),
+    getSchoolDropDownItems() {
+      this.schoolSearchNames = [];
+      this.schoolsMap.forEach(school => {
+        if (school.districtID === this.districtID && school.canIssueTranscripts === true) {
+          let schoolItem = {
+            schoolCodeName: school.mincode + ' - ' + school.schoolName,
+            schoolID: school.schoolID,
+          };
+          this.schoolSearchNames.push(schoolItem);
         }
-      }).then(response => {
-        let schoolList = response.data.content;
-        for(const school of schoolList){
-          if (school.canIssueTranscripts === true) {
-            let schoolItem = {
-              schoolCodeName: school.mincode +' - '+school.displayName,
-              schoolID: school.schoolId,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      }).catch(error => {
-        console.error(error);
       });
     },
     searchButtonClick() {
