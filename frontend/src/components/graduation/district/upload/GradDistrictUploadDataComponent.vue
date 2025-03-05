@@ -328,7 +328,6 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
-import {getStatusAuthorityOrSchool, getStatusColorAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
@@ -437,7 +436,6 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
-    getStatusColorAuthorityOrSchool,
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
