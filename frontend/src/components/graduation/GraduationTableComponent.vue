@@ -321,6 +321,11 @@
                   </h4>
                 </v-col>
               </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <span>Correct Historical Records</span>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-card>
