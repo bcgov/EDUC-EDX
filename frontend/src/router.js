@@ -40,6 +40,7 @@ import GradProjectionsTVR from './components/graduation/school/projections/GradP
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
+import GradDistrictProjectionsTVR from './components/graduation/district/projections/GradDistrictProjectionsTVR.vue';
 
 // a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
@@ -421,6 +422,17 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_TVR_VIEW
+          },
+        },
+        {
+          path: 'graduation/district/:districtID/projections',
+          name: 'grad-district-projections',
+          component: GradDistrictProjectionsTVR,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRAD_DISTRICT_PROJECTIONS,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_DIS_TVR_VIEW
           },
         },
         {
