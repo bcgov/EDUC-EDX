@@ -20,7 +20,7 @@
       <h4 class="mt-8">
         Individual TVRs by PEN
       </h4>
-      <p>Schools can now search for any TVR that exists in GRAD by PEN (not just current grade 12 or AD students). To View / Print an individual student's TVR report enter PEN below.</p>
+      <p>Districts can now search for any TVR that exists in GRAD by PEN (not just current grade 12 or AD students). To View / Print an individual student's TVR report enter PEN below.</p>
       <v-form
         v-model="studentPENIsValid"
         class="d-flex"
