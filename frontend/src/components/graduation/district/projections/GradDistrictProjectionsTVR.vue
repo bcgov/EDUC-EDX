@@ -86,99 +86,104 @@
             </v-autocomplete>
           </v-col>
         </v-row>
-        <div class="ps-8">
-          <h3>Transcript Verification Reports (TVRs)</h3>
-          <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>
-          <ul>
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                TVRs for Projected Non-Graduating Students
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
+        <div
+          id="districtGradReports"
+          :class="{ 'disabled-section': !schoolCodeNameFilter }"
+        >
+          <div class="ps-8">
+            <h3>Transcript Verification Reports (TVRs)</h3>
+            <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>
+            <ul>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  TVRs for Projected Non-Graduating Students
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
 
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                TVRs for Projected Graduating Students
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  TVRs for Projected Graduating Students
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
 
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                Individual TVRs available by PEN
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
-          </ul>
-          <h3>Graduation Projections Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
-          <ul>
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                Projected Non-Graduates - Summary Report
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  Individual TVRs available by PEN
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <h3>Graduation Projections Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
+            <ul>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  Projected Non-Graduates - Summary Report
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
 
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                Projected Graduates - Summary Report
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
-          </ul>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  Projected Graduates - Summary Report
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
+            </ul>
 
-          <h3>Historical Graduation Projected Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
-          <ul>
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                Projected Non-Graduates - Summary Report
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
+            <h3>Historical Graduation Projected Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
+            <ul>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  Projected Non-Graduates - Summary Report
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
 
-            <li>
-              <a
-                href=""
-                class="link-style"
-              >
-                Projected Graduates - Summary Report
-                <span class="icon-container ml-1">
-                  <i class="mdi mdi-tray-arrow-down" />
-                </span>
-              </a>
-            </li>
-          </ul>
+              <li>
+                <a
+                  href=""
+                  class="link-style"
+                >
+                  Projected Graduates - Summary Report
+                  <span class="icon-container ml-1">
+                    <i class="mdi mdi-tray-arrow-down" />
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -391,6 +396,11 @@ i {
 
 ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
   color: white !important;
+}
+
+.disabled-section {
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>
 
