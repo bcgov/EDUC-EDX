@@ -1,50 +1,28 @@
 <template>
-  <v-container 
-    fluid
-  >
+  <v-container fluid>
     <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to GRAD Dashboard</a>
+      <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
+      <button type="button" class="link-style ml-1" @click="backButtonClick">Return to GRAD Dashboard</button>
     </div>
-    <div
-      class="border"
-    >
+    <div class="border">
       <h3>Transcript Verification Reports (TVRs)</h3>
       <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>
       <ul>
         <li>
-          <a href="" class="link-style">
+          <button type="button" class="link-style" @click="downloadSummaryReport('nonGraduating')">
             TVRs for Projected Non-Graduating Students
             <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+          </button>
         </li>
-
         <li>
-          <a href="" class="link-style">
+          <button type="button" class="link-style" @click="downloadSummaryReport('graduating')">
             TVRs for Projected Graduating Students
             <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-
-        <li>
-          <a href="" class="link-style">
-            Individual TVRs available by PEN
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+          </button>
         </li>
       </ul>
       <div class="sub-category-group mt-2">
@@ -69,70 +47,30 @@
             />
           </v-col>
         </v-form>
-
-      <h3>Graduation Projections Summary Reports ({{this.currentStartMoYr}} to {{this.currentEndMoYr}})</h3>
-      <ul>
-        <li>
-          <a href="" class="link-style">
-            Projected Non-Graduates - Summary Report
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-
-        <li>
-          <a href="" class="link-style">
-            Projected Graduates - Summary Report
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
-
-      <h3>Historical Graduation Projected Summary Reports ({{this.histStartMoYr}} to {{this.histEndMoYr}})</h3>
-      <ul>
-        <li>
-          <a href="" class="link-style">
-            Projected Non-Graduates - Summary Report
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-
-        <li>
-          <a href="" class="link-style">
-            Projected Graduates - Summary Report
-            <span class="icon-container ml-1">
-              <i class="mdi mdi-tray-arrow-down"></i>
-            </span>
-          </a>
-        </li>
-      </ul>
-
-    </div>
+      </div>
     </div>
     <PENSearchDialog
         v-model="showPENSearchDialog"
         :student="student"
-        download-type="TVR"
+        download-type="tvr"
         @close="close"
     />
   </v-container>
 </template>
-    
+
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
+import {generateGradStartAndEndDateStrings, getFormattedDate} from "../../../../utils/common";
 import PrimaryButton from "../../../util/PrimaryButton.vue";
 import {penIsValid} from "../../../../utils/institute/formRules";
 import ApiService from "../../../../common/apiService";
 import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
 import {isValidPEN} from "../../../../utils/validation";
 import PENSearchDialog from "../../PENSearchDialog.vue";
-    
+import {mapState} from "pinia";
+import {appStore} from "../../../../store/modules/app";
+import {authStore} from "../../../../store/modules/auth";
+
 export default {
   name: 'GradProjectionsTVR',
   components: {
@@ -160,10 +98,25 @@ export default {
       studentExists: false,
       student: {},
       showPENSearchDialog: false,
+      summaryDownloadType: '',
     };
   },
   computed: {
-
+    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification', 'activeSchoolsMap']),
+    ...mapState(authStore, ['userInfo']),
+    docTypeFilename() {
+      switch(this.summaryDownloadType){
+        case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
+        case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
+      }
+    },
+    docTypeName() {
+      switch (this.summaryDownloadType) {
+        case 'graduating': return 'TVRs for graduating students';
+        case 'nonGraduating': return 'TVRs for non-graduating students';
+        default: return '';
+      }
+    },
   },
   watch: {
 
@@ -172,7 +125,7 @@ export default {
     this.populateDateRanges();
   },
   beforeUnmount() {
-        
+
   },
   methods: {
     penIsValid,
@@ -194,26 +147,81 @@ export default {
           pen: this.studentPEN
         }
       })
-      .then(res => {
-        this.alert = false;
-        this.student = {};
-        this.student['pen'] = res.data.pen;
-        this.student['studentID'] = res.data.studentID;
-        this.student['fullName'] = res.data.firstName + ' ' + (res.data.middleName ?? '') + ' ' + res.data.lastName;
-        this.student['localID'] = res.data.localID;
-        this.student['gender'] = res.data.gender;
-        this.student['dob'] = res.data.doB;
+          .then(res => {
+            this.alert = false;
+            this.student = {};
+            this.student['pen'] = res.data.pen;
+            this.student['studentID'] = res.data.studentID;
+            this.student['fullName'] = res.data.firstName + ' ' + (res.data.middleName ?? '') + ' ' + res.data.lastName;
+            this.student['localID'] = res.data.localID;
+            this.student['gender'] = res.data.gender;
+            this.student['dob'] = res.data.doB;
 
-      })
-      .catch(error => {
-        if (error?.response?.data?.message) {
-          this.setFailureAlert(error?.response?.data?.message);
-        } else {
-          this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
-        }
-      }).finally(() => {
+          })
+          .catch(error => {
+            if (error?.response?.data?.message) {
+              this.setFailureAlert(error?.response?.data?.message);
+            } else {
+              this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
+            }
+          }).finally(() => {
         this.showPENSearchDialog = true;
       });
+    },
+    async downloadSummaryReport(reportType){
+      this.isLoading = true;
+      this.summaryDownloadType = reportType;
+      const schoolID = this.userInfo.activeInstituteIdentifier;
+      const url = `${ApiRoutes.gradReports.BASE_URL}/school/${schoolID}/tvr`;
+      try {
+        const response = await ApiService.apiAxios.get(url, {
+          params: {
+            docType: this.summaryDownloadType
+          },
+          responseType: 'blob'
+        })
+
+        const contentDisposition = response.headers['content-disposition'];
+        const schoolMincode = this.activeSchoolsMap.get(schoolID)?.mincode
+        let filename = `${schoolMincode}_${this.docTypeFilename}_${getFormattedDate()}`;
+        if (contentDisposition) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(contentDisposition);
+          if (matches != null && matches[1]) {
+            filename = matches[1].replace(/['"]/g, '');
+          }
+        }
+        filename = filename.replace(/\s/g, '');
+
+        const blob = response.data;
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(link.href);
+
+        let successMsg = `${this.docTypeName} downloaded for school`;
+        this.setSuccessAlert(successMsg)
+
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        let errorMsg;
+
+        if(error.code === "ERR_BAD_REQUEST"){
+          errorMsg = `${this.docTypeName} TVR not found for school`;
+        } else {
+          errorMsg = "Error encountered while attempting to retrieve document"
+        }
+
+        this.setFailureAlert(errorMsg);
+
+      } finally {
+        this.summaryDownloadType = '';
+        this.isLoading = false;
+      }
+
     },
     close() {
       this.showPENSearchDialog = false;
@@ -225,50 +233,53 @@ export default {
   }
 };
 </script>
-    
+
 <style scoped>
-    
-    .border {
-      border: 2px solid grey;
-      border-radius: 5px;
-      padding: 35px;
-      margin: 2em;
-    }
 
-   :deep(.v-btn__content){
-     white-space: break-spaces;
-   }
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin: 2em;
+}
 
-    h3 {
-      color: #38598a;
-    }
+:deep(.v-btn__content){
+  white-space: break-spaces;
+}
 
-    ul {
-      list-style-type: none;
-      padding-top: 1em;
-      padding-bottom: 2em;
-    }
+h3 {
+  color: #38598a;
+}
 
-    li {
-      padding-top: 1em;
-    }
+button {
+  color: #1976d2;
+}
 
-    p {
-      padding-top: 1em;
-      font-style: italic;
-    }
+ul {
+  list-style-type: none;
+  padding-top: 1em;
+  padding-bottom: 2em;
+}
 
-    i {
-      font-size: 1.25em;
-    }
+li {
+  padding-top: 1em;
+}
 
-    .link-style {
-      display: inline-flex;
-      align-items: center;
-    }
-  
-  ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-    color: white !important;
-  }
+p {
+  padding-top: 1em;
+  font-style: italic;
+}
+
+i {
+  font-size: 1.25em;
+}
+
+.link-style {
+  display: inline-flex;
+  align-items: center;
+}
+
+::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
+  color: white !important;
+}
 </style>
-    

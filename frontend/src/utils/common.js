@@ -134,3 +134,12 @@ export function generateGradStartAndEndDateStrings(){
 
   return dates;
 }
+
+export function getFormattedDate() {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-indexed
+  const day = String(today.getDate()).padStart(2, '0');
+  const year = today.getFullYear();
+
+  return month + day + year;
+}

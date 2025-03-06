@@ -55,6 +55,7 @@ import PrimaryButton from "../util/PrimaryButton.vue";
 import ApiService from "../../common/apiService";
 import {ApiRoutes} from "../../utils/constants";
 import alertMixin from "../../mixins/alertMixin";
+import {getFormattedDate} from "../../utils/common";
 
 export default {
   name: 'PENSearchDialog',
@@ -94,7 +95,15 @@ export default {
   }),
   computed: {
     downloadMessage() {
-      return "Download " + this.downloadType;
+      return "Download " + this.docTypeFilename;
+    },
+    docTypeFilename() {
+      switch (this.downloadType) {
+        case 'transcript': return 'Transcript';
+        case 'xml': return 'XML';
+        case 'tvr': return 'TVR';
+        default: return '';
+      }
     }
   },
   methods: {
@@ -110,26 +119,19 @@ export default {
     },
     async downloadDocument() {
       this.isLoading = true;
-      let url = `${ApiRoutes.gradReports.BASE_URL}`;
-
-      if(this.downloadType === "Transcript"){
-        url += `/transcript`;
-      } else if(this.downloadType === "XML"){
-        url += `/xml`;
-      } else if(this.downloadType === "TVR"){
-        url += `/tvr`;
-      }
+      const url = `${ApiRoutes.gradReports.BASE_URL}/student/report`;
 
       try {
         const response = await ApiService.apiAxios.get(url, {
           params: {
-            pen: this.student['pen']
+            pen: this.student['pen'],
+            docType: this.downloadType,
           },
           responseType: 'blob'
-        })
+        });
 
         const contentDisposition = response.headers['content-disposition'];
-        let filename = this.student['pen'] + '_' + this.downloadType + '_' + this.getFormattedDate();
+        let filename = this.student['pen'] + '_' + this.docTypeFilename + '_' + getFormattedDate();
         if (contentDisposition) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(contentDisposition);
@@ -137,6 +139,7 @@ export default {
             filename = matches[1].replace(/['"]/g, '');
           }
         }
+        filename = filename.replace(/\s/g, '');
 
         const blob = response.data;
         const link = document.createElement('a');
@@ -147,12 +150,15 @@ export default {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(link.href);
 
+        let successMsg = `${this.docTypeFilename} downloaded for student`;
+        this.setSuccessAlert(successMsg)
+
       } catch (error) {
         console.error("Error downloading file:", error);
         let errorMsg;
 
         if(error.code === "ERR_BAD_REQUEST"){
-          errorMsg = `${this.downloadType} not found for student`;
+          errorMsg = `${this.docTypeFilename} not found for student`;
         } else {
           errorMsg = "Error encountered while attempting to retrieve document"
         }
@@ -167,14 +173,6 @@ export default {
     cancel() {
       this.$emit('close');
     },
-    getFormattedDate() {
-      const today = new Date();
-      const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-indexed
-      const day = String(today.getDate()).padStart(2, '0');
-      const year = today.getFullYear();
-
-      return month + day + year;
-    }
   }
 };
 </script>
