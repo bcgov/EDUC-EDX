@@ -386,7 +386,8 @@ export default {
         {title: 'Upload User', key: 'updateUser'},
         {title: 'Errors/Warnings', key: 'errorLink'},
       ],
-      schoolsMap: null,
+      activeSchoolsCacheMap: null,
+      schoolsCacheMap: null,
       disableScreen: false,
       wsNotificationText: '',
       schoolCodeNameFilter: null,
@@ -401,7 +402,7 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    ...mapState(appStore, ['activeSchoolsMap']),
+    ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap']),
     ...mapState(wsNotifications, ['notification']),
   },
   watch: {
@@ -415,7 +416,7 @@ export default {
         try {
           let updateUser = notificationData.updateUser.split('/');
           if (notificationData.eventType === 'GDC_FILE_UPLOAD_EVENT' && notificationData.districtID === this.$route.params.districtID && updateUser[1] !== this.userInfo.edxUserID) {
-            let school = this.schoolsMap.get(notificationData?.schoolID);
+            let school = this.activeSchoolsCacheMap.get(notificationData?.schoolID);
             this.wsNotificationText = `Another user triggered file upload for school: ${school?.mincode} - ${school?.schoolName}. Please refresh your screen and try again.`;
             this.disableScreen = true;
           }
@@ -428,7 +429,8 @@ export default {
   async created() {
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
-      this.schoolsMap = this.activeSchoolsMap;
+      this.schoolsCacheMap = this.schoolsMap;
+      this.activeSchoolsCacheMap = this.activeSchoolsMap;
       this.getSchoolDropDownItems();
     });
   },
@@ -573,13 +575,47 @@ export default {
     },
     getSchoolDropDownItems() {
       this.schoolSearchNames = [];
-      this.schoolsMap.forEach(school => {
-        if (school.districtID === this.districtID && school.canIssueTranscripts === true) {
-          let schoolItem = {
-            schoolCodeName: school.mincode + ' - ' + school.schoolName,
-            schoolID: school.schoolID,
-          };
-          this.schoolSearchNames.push(schoolItem);
+      let now = new Date();
+      let currentSchoolYearStart, currentSchoolYearEnd;
+
+      if (now.getMonth() >= 8) {
+        currentSchoolYearStart = new Date(now.getFullYear(), 8, 1); // September 1 of this year
+        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
+      } else {
+        // If it's before September, then the current school year started last September.
+        currentSchoolYearStart = new Date(now.getFullYear() - 1, 8, 1); // September 1 of last year
+        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
+      }
+
+      let schoolYearIntervals = [];
+
+      for (let i = 0; i < 3; i++) {
+        let start = new Date(currentSchoolYearStart.getFullYear() - i, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
+        let end = new Date(currentSchoolYearEnd.getFullYear() - i, currentSchoolYearEnd.getMonth(), currentSchoolYearEnd.getDate());
+        schoolYearIntervals.push({ start, end });
+      }
+
+      this.schoolsCacheMap.forEach(school => {
+        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
+          if (!school.effectiveDate) {
+            return;
+          }
+
+          let schoolOpened = new Date(school.effectiveDate);
+          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
+
+          let isOpenInInterval = schoolYearIntervals.some(interval => {
+            // the school was open at some point in the last three school years (last three intervals)
+            return schoolOpened <= interval.end && (!schoolClosed || schoolClosed >= interval.start);
+          });
+
+          if (isOpenInInterval) {
+            let schoolItem = {
+              schoolCodeName: school.mincode + ' - ' + school.schoolName,
+              schoolID: school.schoolID,
+            };
+            this.schoolSearchNames.push(schoolItem);
+          }
         }
       });
     },
