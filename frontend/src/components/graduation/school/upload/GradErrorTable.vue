@@ -68,7 +68,9 @@
                 </v-chip>
               </v-col>
                 <v-col v-if="column.subHeader[2].key === 'field'" cols="3">{{ error?.validationIssueFieldCodeDescription }}</v-col>
-                <v-col v-if="column.subHeader[3].key === 'desc'">{{ error?.validationIssueDescription }}</v-col>
+                <v-col v-if="column.subHeader[3].key === 'desc'">
+                  <div v-html="error?.validationIssueDescription"></div> 
+                </v-col>
               </v-row>
             </span>
           </span>
@@ -118,7 +120,7 @@ export default {
     return {
       errorList: [],
       pageNumber: 1,
-      pageSize: 15,
+      pageSize: 15
     };
   },
   computed: {
