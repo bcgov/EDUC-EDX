@@ -118,18 +118,6 @@
                     </span>
                   </a>
                 </li>
-
-                <li>
-                  <a
-                    href=""
-                    class="link-style"
-                  >
-                    Individual TVRs available by PEN
-                    <span class="icon-container ml-1">
-                      <i class="mdi mdi-tray-arrow-down" />
-                    </span>
-                  </a>
-                </li>
               </ul>
               <h3>Graduation Projections Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
               <ul>
@@ -165,19 +153,7 @@
                     href=""
                     class="link-style"
                   >
-                    Projected Non-Graduates - Summary Report
-                    <span class="icon-container ml-1">
-                      <i class="mdi mdi-tray-arrow-down" />
-                    </span>
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href=""
-                    class="link-style"
-                  >
-                    Projected Graduates - Summary Report
+                    Archived Projected Non-Graduates Report
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
