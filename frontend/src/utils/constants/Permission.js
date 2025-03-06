@@ -32,6 +32,8 @@ export const PERMISSION = Object.freeze(
 
     GRAD_DIS_UPLOAD: 'GRAD_DIS_UPLOAD',
 
+    GRAD_DIS_TVR_VIEW: 'GRAD_DIS_TVR_VIEW',
+
     EAS_DIS_EDIT: 'EAS_DIS_EDIT',
 
     EAS_SCH_EDIT: 'EAS_SCH_EDIT',

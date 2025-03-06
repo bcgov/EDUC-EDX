@@ -18,7 +18,7 @@
       class="border"
     >
       <h3>Transcript Verification Reports (TVRs)</h3>
-      <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>
+      <p>For current students reported in final year of a graduation program (Grade 12 or AD).</p>
       <ul>
         <li>
           <a href="" class="link-style">
