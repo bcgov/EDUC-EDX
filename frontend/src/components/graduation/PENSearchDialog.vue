@@ -14,21 +14,21 @@
         <div>
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Name:</v-col>
-            <v-col cols="9">{{ student['fullName'] }}</v-col>
+            <v-col cols="9">{{ student.fullName }}</v-col>
           </v-row>
 
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Local ID:</v-col>
-            <v-col cols="9">{{ student['localID']}}</v-col>
+            <v-col cols="9">{{ student.localID}}</v-col>
           </v-row>
 
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">DOB:</v-col>
-            <v-col cols="9">{{ student['dob'] }}</v-col>
+            <v-col cols="9">{{ student.dob }}</v-col>
           </v-row>
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Gender:</v-col>
-            <v-col cols="9">{{ student['gender'] }}</v-col>
+            <v-col cols="9">{{ student.gender }}</v-col>
           </v-row>
         </div>
       </v-card-text>
@@ -55,6 +55,7 @@ import PrimaryButton from "../util/PrimaryButton.vue";
 import ApiService from "../../common/apiService";
 import {ApiRoutes} from "../../utils/constants";
 import alertMixin from "../../mixins/alertMixin";
+import {getTodayFormattedDate} from "../../utils/gdc/gradReports";
 
 export default {
   name: 'PENSearchDialog',
@@ -72,11 +73,14 @@ export default {
       type: String,
       required: true,
       default: ''
+    },
+    modelValue: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['close'],
+  emits: ['close', 'update:modelValue'],
   data: () => ({
-    dialog: false,
     resolve: null,
     reject: null,
     isLoading: false,
@@ -93,43 +97,42 @@ export default {
     },
   }),
   computed: {
+    dialog: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+      }
+    },
     downloadMessage() {
-      return "Download " + this.downloadType;
+      return "Download " + this.docTypeFilename;
+    },
+    docTypeFilename() {
+      switch (this.downloadType) {
+        case 'transcript': return 'Transcript';
+        case 'xml': return 'XML';
+        case 'tvr': return 'TVR';
+        default: return '';
+      }
     }
   },
   methods: {
-    open(title, message, options) {
-      this.dialog = true;
-      this.title = title;
-      this.message = message;
-      this.options = Object.assign(this.options, options);
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-      });
-    },
     async downloadDocument() {
       this.isLoading = true;
-      let url = `${ApiRoutes.gradReports.BASE_URL}`;
-
-      if(this.downloadType === "Transcript"){
-        url += `/transcript`;
-      } else if(this.downloadType === "XML"){
-        url += `/xml`;
-      } else if(this.downloadType === "TVR"){
-        url += `/tvr`;
-      }
+      const url = `${ApiRoutes.gradReports.BASE_URL}/student/report`;
 
       try {
         const response = await ApiService.apiAxios.get(url, {
           params: {
-            pen: this.student['pen']
+            pen: this.student['pen'],
+            docType: this.downloadType,
           },
           responseType: 'blob'
-        })
+        });
 
         const contentDisposition = response.headers['content-disposition'];
-        let filename = this.student['pen'] + '_' + this.downloadType + '_' + this.getFormattedDate();
+        let filename = this.student.pen + '_' + this.docTypeFilename + '_' + getTodayFormattedDate();
         if (contentDisposition) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(contentDisposition);
@@ -137,6 +140,7 @@ export default {
             filename = matches[1].replace(/['"]/g, '');
           }
         }
+        filename = filename.replace(/\s/g, '');
 
         const blob = response.data;
         const link = document.createElement('a');
@@ -147,12 +151,15 @@ export default {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(link.href);
 
+        let successMsg = `${this.docTypeFilename} downloaded for student`;
+        this.setSuccessAlert(successMsg)
+
       } catch (error) {
         console.error("Error downloading file:", error);
         let errorMsg;
 
         if(error.code === "ERR_BAD_REQUEST"){
-          errorMsg = `${this.downloadType} not found for student`;
+          errorMsg = `${this.docTypeFilename} not found for student`;
         } else {
           errorMsg = "Error encountered while attempting to retrieve document"
         }
@@ -166,15 +173,8 @@ export default {
     },
     cancel() {
       this.$emit('close');
+      this.$emit('update:modelValue', false);
     },
-    getFormattedDate() {
-      const today = new Date();
-      const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-indexed
-      const day = String(today.getDate()).padStart(2, '0');
-      const year = today.getFullYear();
-
-      return month + day + year;
-    }
   }
 };
 </script>

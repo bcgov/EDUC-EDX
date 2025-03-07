@@ -2,7 +2,7 @@
   <v-container fluid>
     <div class="mt-1 mb-1">
       <v-icon small color="#1976d2">mdi-arrow-left</v-icon>
-      <a class="ml-1" @click="backButtonClick">Return to GRAD Dashboard</a>
+      <button type="button" class="link-style ml-1" @click="backButtonClick">Return to GRAD Dashboard</button>
     </div>
 
     <div class="border">
@@ -54,71 +54,74 @@
         </v-form>
       </div>
 
-<!--      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>-->
-<!--      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>-->
-<!--      <div class="sub-category-group">-->
-<!--        <ul>-->
-<!--          <li>-->
-<!--            <a href="" class="link-style">-->
-<!--              Graduated Students-->
-<!--              <span class="icon-container ml-1">-->
-<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
-<!--              </span>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li>-->
-<!--            <a href="" class="link-style">-->
-<!--              Not Yet Graduated Students-->
-<!--              <span class="icon-container ml-1">-->
-<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
-<!--              </span>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
+      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
+      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
+      <div class="sub-category-group">
+        <ul>
+          <li>
+            <button type="button" class="link-style" @click="downloadSummaryReport('graduated')">
+              Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="link-style" @click="downloadSummaryReport('nonGraduated')">
+              Not Yet Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
 
-<!--      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>-->
-<!--      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>-->
-<!--      <div class="sub-category-group">-->
-<!--        <ul>-->
-<!--          <li>-->
-<!--            <a href="" class="link-style">-->
-<!--              Graduated Students-->
-<!--              <span class="icon-container ml-1">-->
-<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
-<!--              </span>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li>-->
-<!--            <a href="" class="link-style">-->
-<!--              Not Yet Graduated Students-->
-<!--              <span class="icon-container ml-1">-->
-<!--                <i class="mdi mdi-tray-arrow-down"></i>-->
-<!--              </span>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
+      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
+      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
+      <div class="sub-category-group">
+        <ul>
+          <li>
+            <button type="button" class="link-style" @click="downloadSummaryReport('historicalGraduated')">
+              Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="link-style" @click="downloadSummaryReport('historicalNongraduated')">
+              Not Yet Graduated Students
+              <span class="icon-container ml-1">
+                <i class="mdi mdi-tray-arrow-down"></i>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
     <PENSearchDialog
         v-model="showPENSearchDialog"
         :student="studentForSearch"
-        :download-type="downloadType"
+        :download-type="studentDownloadType"
         @close="close"
     />
   </v-container>
 </template>
 
 <script>
-import {generateGradStartAndEndDateStrings} from "../../../../utils/common";
 import {isValidPEN} from "../../../../utils/validation";
 import alertMixin from "../../../../mixins/alertMixin";
 import PrimaryButton from "../../../util/PrimaryButton.vue";
 import PENSearchDialog from "../../PENSearchDialog.vue";
-import ApiService from "../../../../common/apiService";
-import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
-import { appStore } from "../../../../store/modules/app";
-import { mapState, mapActions } from "pinia";
+import {ApiRoutes} from "../../../../utils/constants";
+import { mapState} from "pinia";
+import {authStore} from "../../../../store/modules/auth";
+import {
+  fetchAndDownloadGradReport,
+  generateGradStartAndEndDateStrings,
+  searchStudentByPen
+} from "../../../../utils/gdc/gradReports";
 
 export default {
   name: 'GradReportsAndTranscripts',
@@ -137,27 +140,45 @@ export default {
   emits: [],
   data() {
     return {
+      isLoading: false,
       currentStartMoYr: '',
       currentEndMoYr: '',
       histStartMoYr: '',
       histEndMoYr: '',
       showPENSearchDialog: false,
       studentForSearch: {},
-      downloadType: '',
+      studentDownloadType: '',
       studentPENTranscript: null,
       studentPENTranscriptIsValid: false,
       studentPENXML: null,
       studentPENXMLIsValid: false,
+      summaryDownloadType:'',
       penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
-      isSearchingStudent: false,
+      isSearchingStudent: false
     };
   },
   computed: {
-    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification']),
+    ...mapState(authStore, ['userInfo']),
+    docTypeFilename() {
+      switch (this.summaryDownloadType) {
+        case 'graduated': return 'GraduatedSummary';
+        case 'nonGraduated': return 'NotGraduatedSummary';
+        case 'historicalGraduated': return 'HistoricalGraduatedSummary';
+        case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary'
+        default: return '';
+      }
+    },
+    docTypeName(){
+      switch (this.summaryDownloadType) {
+        case 'graduated': return 'Graduated Students Summary';
+        case 'nonGraduated': return 'Not Yet Graduated Students Summary';
+        case 'historicalGraduated': return 'Historical Graduated Students Summary';
+        case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary'
+        default: return '';
+      }
+    }
   },
   methods: {
-    ...mapActions(appStore, ['addAlertNotification']),
-
     backButtonClick() {
       this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.schoolID } });
     },
@@ -170,38 +191,20 @@ export default {
     },
     searchStudentForGivenPEN(isTranscriptRequest) {
       this.isSearchingStudent = true;
-      this.studentForSearch = {};
-      this.downloadType = '';
+      const pen = isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML;
+      this.studentDownloadType = isTranscriptRequest ? "transcript" : "xml";
 
-      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + "search-grad-pen", {
-        params: {
-          pen: isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML
-        }
-      })
-          .then(response => {
-            this.downloadType = isTranscriptRequest ? "Transcript" : "XML";
-            this.studentForSearch = this.populateStudentInfo(response.data);
-            this.showPENSearchDialog = true;
-          })
-          .catch(error => {
-            if (error?.response?.data?.message) {
-              this.setFailureAlert(error.response.data.message);
-            } else {
-              this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
-            }
-          }).finally(() => {
+      const onSuccess = (studentData) => {
+        this.studentForSearch = studentData;
+        this.showPENSearchDialog = true;
         this.isSearchingStudent = false;
-      });
+      };
+      searchStudentByPen(this, pen, onSuccess);
     },
-    populateStudentInfo(data) {
-      let student = {};
-      student['pen'] = data.pen;
-      student['studentID'] = data.studentID;
-      student['fullName'] = data.firstName + ' ' + (data.middleName ?? '') + ' ' + data.lastName;
-      student['localID'] = data.localID;
-      student['gender'] = data.gender;
-      student['dob'] = data.doB;
-      return student;
+    async downloadSummaryReport(reportType){
+      this.summaryDownloadType = reportType;
+      const schoolID = this.userInfo.activeInstituteIdentifier;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, ApiRoutes.gradReports.BASE_URL, this.docTypeFilename, this.docTypeName);
     },
     close() {
       this.showPENSearchDialog = false;
@@ -236,17 +239,16 @@ h3 {
   color: #38598a;
 }
 
+button {
+  color: #1976d2;
+}
+
 .sub-category-group {
   padding-left: 2em;
 }
 
 v-text-field{
   width: 4em;
-}
-
-v-card{
-  padding: 1.1rem;
-  width: 40rem;
 }
 
 ul {
@@ -273,7 +275,4 @@ i {
   align-items: center;
 }
 
-::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-  color: white !important;
-}
 </style>

@@ -4,39 +4,104 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { v4: uuidv4 } = require('uuid');
+const {getSchoolBySchoolID} = require("./cache-service");
 
-async function downloadStudentGradReport(req, res, docType) {
+async function handleReportDownload(req, res, reportType) {
     try {
         const token = getAccessToken(req);
         const correlationID = uuidv4();
+        const formattedDate = getFormattedDate();
+        const docType = req.query.docType; // Get docType from query parameters
+
+        if (!docType) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'docType query parameter is required.' });
+        }
+
         let url;
         let fileName;
+        let notFoundMessage;
 
-        const formattedDate = getFormattedDate();
-        const pen = req.query.pen;
+        if (reportType === 'student') {
+            const pen = req.query.pen;
+            if (!isValidPEN(pen)) {
+                return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid PEN format.' });
+            }
 
-        if(!isValidPEN(pen)){
-            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid PEN format.' });
+            switch (docType) {
+                case 'transcript':
+                    url = `${config.get('gradReports:rootURL')}/studentcredential/${pen}/type/TRAN`;
+                    fileName = `${pen}_Transcript_${formattedDate}.pdf`;
+                    break;
+                case 'xml':
+                    url = `${config.get('gradReports:rootURL')}/studenttranscript/${pen}?type=xml`;
+                    fileName = `${pen}_XML_${formattedDate}.pdf`;
+                    break;
+                case 'tvr':
+                    url = `${config.get('gradReports:rootURL')}/studentcredential/${pen}/type/ACHV`;
+                    fileName = `${pen}_TVR_${formattedDate}.pdf`;
+                    break;
+                default:
+                    return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
+            }
+            notFoundMessage = 'Report not found for this PEN.';
+        } else if (reportType === 'summary') {
+            const schoolMincode = getSchoolBySchoolID(req.params.schoolID)?.mincode; //Optional chaining
+            if (!schoolMincode) {
+                return res.status(HttpStatus.NOT_FOUND).json({ message: 'School not found for this schoolID.' });
+            }
+            url = `${config.get('gradReports:summaryURL')}/school/report/${schoolMincode}?type=`;
+
+            switch (docType) {
+                case 'graduated':
+                    url += 'GRADREG';
+                    fileName = `${schoolMincode}_GraduatedSummary_${formattedDate}.pdf`;
+                    break;
+                case 'nongraduated':
+                    url += 'NONGRADREG';
+                    fileName = `${schoolMincode}_NotGraduatedSummary_${formattedDate}.pdf`;
+                    break;
+                case 'historicalGraduated':
+                    url += 'GRADREGARC';
+                    fileName = `${schoolMincode}_HistoricalGraduatedSummary_${formattedDate}.pdf`;
+                    break;
+                case 'historicalNongraduated':
+                    url += 'NONGRADREGARC';
+                    fileName = `${schoolMincode}_HistoricalNotGraduatedSummary_${formattedDate}.pdf`;
+                    break;
+                default:
+                    return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
+            }
+            notFoundMessage = 'Report not found for school.';
+        } else if (reportType === 'tvr') {
+            const schoolMincode = getSchoolBySchoolID(req.params.schoolID)?.mincode; //Optional Chaining
+            if (!schoolMincode) {
+                return res.status(HttpStatus.NOT_FOUND).json({ message: 'School not found for this schoolID.' });
+            }
+            url = `${config.get('gradReports:rootURL')}/amalgamated/schoolreport/${schoolMincode}?type=`;
+
+            switch (docType) {
+                case 'graduating':
+                    url += 'TVRGRAD';
+                    fileName = `${schoolMincode}_TranscriptVerificationGraduatingSummaryReport_${formattedDate}.pdf`;
+                    break;
+                case 'nonGraduating':
+                    url += 'TVRNONGRAD';
+                    fileName = `${schoolMincode}_TranscriptVerificationNonGraduatingSummaryReport_${formattedDate}.pdf`;
+                    break;
+                default:
+                    return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
+            }
+            notFoundMessage = 'Report not found for school.';
+        }
+        else {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid reportType' });
         }
 
-        if (docType === 'transcript') {
-            url = config.get('gradReports:rootURL') + '/studentcredential/' + pen + '/type/TRAN';
-            fileName = `${pen}_Transcript_${formattedDate}.pdf`;
-        } else if (docType === 'xml') {
-            url = config.get('gradReports:rootURL') + '/studenttranscript/' + pen + '?type=xml';
-            fileName = `${pen}_XML_${formattedDate}.pdf`;
-        } else if (docType === 'tvr') {
-            url = config.get('gradReports:rootURL') + '/studentcredential/' + pen + '/type/ACHV';
-            fileName = `${pen}_TVR_${formattedDate}.pdf`;
-        } else {
-            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
-        }
 
         const result = await getBinaryData(token, url, correlationID);
 
-        // EDUC-GRAD-BUSINESS-API returns a 204 if a record is not found in their db
         if (result.status === 204) {
-            return res.status(HttpStatus.NOT_FOUND).json({ message: 'Report not found for this PEN.' });
+            return res.status(HttpStatus.NOT_FOUND).json({ message: notFoundMessage });
         }
 
         const contentType = result.headers?.['content-type'] || 'application/pdf';
@@ -51,12 +116,23 @@ async function downloadStudentGradReport(req, res, docType) {
     }
 }
 
+async function downloadStudentGradReport(req, res) {
+    return handleReportDownload(req, res, 'student');
+}
+
+async function downloadSummaryGradReport(req, res) {
+    return handleReportDownload(req, res, 'summary');
+}
+async function downloadTVRSummary(req,res){
+    return handleReportDownload(req, res, 'tvr');
+}
+
 function getFormattedDate() {
     const today = new Date();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     const year = today.getFullYear();
-    return month + day + year;
+    return `${month}${day}${year}`;
 }
 
 function isValidPEN(pen) {
@@ -89,5 +165,7 @@ function checkDigit(pen) {
 }
 
 module.exports = {
-    downloadStudentGradReport
+    downloadStudentGradReport,
+    downloadSummaryGradReport,
+    downloadTVRSummary
 };
