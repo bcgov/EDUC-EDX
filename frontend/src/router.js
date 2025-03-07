@@ -36,12 +36,11 @@ import GraduationTableComponent from './components/graduation/GraduationTableCom
 import GradUploadDataComponent from './components/graduation/school/upload/GradUploadDataComponent.vue';
 import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
-import GradProjectionsTVR from './components/graduation/school/projections/GradProjectionsTVR.vue';
+import GradProjectionsTVR from './components/graduation/school/reports/GradProjectionsTVR.vue';
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
 
-// a comment for commit.
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
   history: createWebHistory(),

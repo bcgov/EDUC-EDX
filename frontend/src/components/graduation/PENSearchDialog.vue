@@ -14,21 +14,21 @@
         <div>
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Name:</v-col>
-            <v-col cols="9">{{ student['fullName'] }}</v-col>
+            <v-col cols="9">{{ student.fullName }}</v-col>
           </v-row>
 
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Local ID:</v-col>
-            <v-col cols="9">{{ student['localID']}}</v-col>
+            <v-col cols="9">{{ student.localID}}</v-col>
           </v-row>
 
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">DOB:</v-col>
-            <v-col cols="9">{{ student['dob'] }}</v-col>
+            <v-col cols="9">{{ student.dob }}</v-col>
           </v-row>
           <v-row no-gutters align="center">
             <v-col cols="3" class="key-col">Gender:</v-col>
-            <v-col cols="9">{{ student['gender'] }}</v-col>
+            <v-col cols="9">{{ student.gender }}</v-col>
           </v-row>
         </div>
       </v-card-text>
@@ -55,7 +55,7 @@ import PrimaryButton from "../util/PrimaryButton.vue";
 import ApiService from "../../common/apiService";
 import {ApiRoutes} from "../../utils/constants";
 import alertMixin from "../../mixins/alertMixin";
-import {getFormattedDate} from "../../utils/common";
+import {getTodayFormattedDate} from "../../utils/gdc/gradReports";
 
 export default {
   name: 'PENSearchDialog',
@@ -73,11 +73,14 @@ export default {
       type: String,
       required: true,
       default: ''
+    },
+    modelValue: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['close'],
+  emits: ['close', 'update:modelValue'],
   data: () => ({
-    dialog: false,
     resolve: null,
     reject: null,
     isLoading: false,
@@ -94,6 +97,14 @@ export default {
     },
   }),
   computed: {
+    dialog: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+      }
+    },
     downloadMessage() {
       return "Download " + this.docTypeFilename;
     },
@@ -107,16 +118,6 @@ export default {
     }
   },
   methods: {
-    open(title, message, options) {
-      this.dialog = true;
-      this.title = title;
-      this.message = message;
-      this.options = Object.assign(this.options, options);
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-      });
-    },
     async downloadDocument() {
       this.isLoading = true;
       const url = `${ApiRoutes.gradReports.BASE_URL}/student/report`;
@@ -131,7 +132,7 @@ export default {
         });
 
         const contentDisposition = response.headers['content-disposition'];
-        let filename = this.student['pen'] + '_' + this.docTypeFilename + '_' + getFormattedDate();
+        let filename = this.student.pen + '_' + this.docTypeFilename + '_' + getTodayFormattedDate();
         if (contentDisposition) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(contentDisposition);
@@ -172,6 +173,7 @@ export default {
     },
     cancel() {
       this.$emit('close');
+      this.$emit('update:modelValue', false);
     },
   }
 };

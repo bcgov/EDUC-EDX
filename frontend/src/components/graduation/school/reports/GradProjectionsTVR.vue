@@ -12,16 +12,16 @@
           <button type="button" class="link-style" @click="downloadSummaryReport('nonGraduating')">
             TVRs for Projected Non-Graduating Students
             <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
           </button>
         </li>
         <li>
           <button type="button" class="link-style" @click="downloadSummaryReport('graduating')">
             TVRs for Projected Graduating Students
             <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
+              <i class="mdi mdi-tray-arrow-down"></i>
+            </span>
           </button>
         </li>
       </ul>
@@ -60,16 +60,18 @@
 
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import {generateGradStartAndEndDateStrings, getFormattedDate} from "../../../../utils/common";
 import PrimaryButton from "../../../util/PrimaryButton.vue";
 import {penIsValid} from "../../../../utils/institute/formRules";
-import ApiService from "../../../../common/apiService";
-import {ApiRoutes, MINISTRY_NAME} from "../../../../utils/constants";
+import {ApiRoutes} from "../../../../utils/constants";
 import {isValidPEN} from "../../../../utils/validation";
 import PENSearchDialog from "../../PENSearchDialog.vue";
 import {mapState} from "pinia";
-import {appStore} from "../../../../store/modules/app";
 import {authStore} from "../../../../store/modules/auth";
+import {
+  fetchAndDownloadGradReport,
+  generateGradStartAndEndDateStrings,
+  searchStudentByPen
+} from "../../../../utils/gdc/gradReports";
 
 export default {
   name: 'GradProjectionsTVR',
@@ -85,7 +87,6 @@ export default {
       default: null
     },
   },
-  emits: [],
   data() {
     return {
       currentStartMoYr: '',
@@ -99,15 +100,16 @@ export default {
       student: {},
       showPENSearchDialog: false,
       summaryDownloadType: '',
+      isSearchingStudent: false
     };
   },
   computed: {
-    ...mapState(appStore, ['alertNotificationQueue', 'alertNotification', 'activeSchoolsMap']),
     ...mapState(authStore, ['userInfo']),
     docTypeFilename() {
       switch(this.summaryDownloadType){
         case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
         case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
+        default: return '';
       }
     },
     docTypeName() {
@@ -118,14 +120,8 @@ export default {
       }
     },
   },
-  watch: {
-
-  },
   async created() {
     this.populateDateRanges();
-  },
-  beforeUnmount() {
-
   },
   methods: {
     penIsValid,
@@ -140,88 +136,19 @@ export default {
       this.histEndMoYr = datesList.shift();
     },
     searchStudentForGivenPEN() {
-      this.student = {};
+      this.isSearchingStudent = true;
 
-      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + "search-grad-pen", {
-        params: {
-          pen: this.studentPEN
-        }
-      })
-          .then(res => {
-            this.alert = false;
-            this.student = {};
-            this.student['pen'] = res.data.pen;
-            this.student['studentID'] = res.data.studentID;
-            this.student['fullName'] = res.data.firstName + ' ' + (res.data.middleName ?? '') + ' ' + res.data.lastName;
-            this.student['localID'] = res.data.localID;
-            this.student['gender'] = res.data.gender;
-            this.student['dob'] = res.data.doB;
-
-          })
-          .catch(error => {
-            if (error?.response?.data?.message) {
-              this.setFailureAlert(error?.response?.data?.message);
-            } else {
-              this.setFailureAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
-            }
-          }).finally(() => {
+      const onSuccess = (studentData) => {
+        this.student = studentData;
         this.showPENSearchDialog = true;
-      });
+        this.isSearchingStudent = false;
+      };
+      searchStudentByPen(this, this.studentPEN, onSuccess);
     },
     async downloadSummaryReport(reportType){
-      this.isLoading = true;
       this.summaryDownloadType = reportType;
       const schoolID = this.userInfo.activeInstituteIdentifier;
-      const url = `${ApiRoutes.gradReports.BASE_URL}/school/${schoolID}/tvr`;
-      try {
-        const response = await ApiService.apiAxios.get(url, {
-          params: {
-            docType: this.summaryDownloadType
-          },
-          responseType: 'blob'
-        })
-
-        const contentDisposition = response.headers['content-disposition'];
-        const schoolMincode = this.activeSchoolsMap.get(schoolID)?.mincode
-        let filename = `${schoolMincode}_${this.docTypeFilename}_${getFormattedDate()}`;
-        if (contentDisposition) {
-          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-          const matches = filenameRegex.exec(contentDisposition);
-          if (matches != null && matches[1]) {
-            filename = matches[1].replace(/['"]/g, '');
-          }
-        }
-        filename = filename.replace(/\s/g, '');
-
-        const blob = response.data;
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(link.href);
-
-        let successMsg = `${this.docTypeName} downloaded for school`;
-        this.setSuccessAlert(successMsg)
-
-      } catch (error) {
-        console.error("Error downloading file:", error);
-        let errorMsg;
-
-        if(error.code === "ERR_BAD_REQUEST"){
-          errorMsg = `${this.docTypeName} TVR not found for school`;
-        } else {
-          errorMsg = "Error encountered while attempting to retrieve document"
-        }
-
-        this.setFailureAlert(errorMsg);
-
-      } finally {
-        this.summaryDownloadType = '';
-        this.isLoading = false;
-      }
-
+      await fetchAndDownloadGradReport(this, schoolID, reportType, ApiRoutes.gradReports.BASE_URL, this.docTypeFilename, this.docTypeName, false);
     },
     close() {
       this.showPENSearchDialog = false;
@@ -279,7 +206,4 @@ i {
   align-items: center;
 }
 
-::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-  color: white !important;
-}
 </style>

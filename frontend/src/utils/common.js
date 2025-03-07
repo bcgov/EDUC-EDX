@@ -111,35 +111,3 @@ export function constructPenMatchObjectFromSdcStudent(student) {
     postal: student.postalCode
   };
 }
-
-export function generateGradStartAndEndDateStrings(){
-  let currentYr = new Date().getFullYear();
-  let currentMo = new Date().getMonth();
-  const startMonth = 'October';
-  const endMonth = 'September';
-
-  let dates = [];
-
-  if (currentMo < 9){
-    dates.push(startMonth + ' ' + (currentYr - 1).toString());
-    dates.push(endMonth + ' ' + (currentYr).toString());
-    dates.push(startMonth + ' ' + (currentYr - 2).toString());
-    dates.push(endMonth + ' ' + (currentYr - 1).toString());
-  } else {
-    this.currentStartMoYr = this.startMonth + ' ' + (currentYr).toString();
-    this.currentEndMoYr = this.endMonth + ' ' + (currentYr + 1).toString();
-    this.histStartMoYr = this.startMonth + ' ' + (currentYr - 1).toString();
-    this.histEndMoYr = this.endMonth + ' ' + (currentYr - 2).toString();
-  }
-
-  return dates;
-}
-
-export function getFormattedDate() {
-  const today = new Date();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-indexed
-  const day = String(today.getDate()).padStart(2, '0');
-  const year = today.getFullYear();
-
-  return month + day + year;
-}
