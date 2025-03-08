@@ -6,7 +6,16 @@
     </div>
 
     <div class="border">
-      <h3>Student Transcripts</h3>
+      <h3>District Level Reports</h3>
+      <div class="sub-category-group mt-2">
+        <button type="button" class="link-style" @click="downloadYearEndReport()">
+          Year-End District Credential and Transcript Distribution Reports
+          <span class="icon-container ml-1">
+                  <i class="mdi mdi-tray-arrow-down"></i>
+                </span>
+        </button>
+      </div>
+      <h3 class="mt-8">Student Transcripts</h3>
       <div class="sub-category-group mt-2">
         <h4 class="mt-8">Individual Student Transcript Preview by PEN</h4>
         <p>Preview a student's transcript. For school use only. Official transcripts must be ordered by students through the StudentTranscripts Service.</p>
@@ -53,52 +62,6 @@
           </v-col>
         </v-form>
       </div>
-
-      <h3 class="mt-8">Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
-      <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
-      <div class="sub-category-group">
-        <ul>
-          <li>
-            <button type="button" class="link-style" @click="downloadSummaryReport('graduated')">
-              Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="link-style" @click="downloadSummaryReport('nonGraduated')">
-              Not Yet Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
-      <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
-      <div class="sub-category-group">
-        <ul>
-          <li>
-            <button type="button" class="link-style" @click="downloadSummaryReport('historicalGraduated')">
-              Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="link-style" @click="downloadSummaryReport('historicalNongraduated')">
-              Not Yet Graduated Students
-              <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down"></i>
-              </span>
-            </button>
-          </li>
-        </ul>
-      </div>
     </div>
     <PENSearchDialog
         v-model="showPENSearchDialog"
@@ -123,7 +86,7 @@ import {
 } from "../../../../utils/gdc/gradReports";
 
 export default {
-  name: 'GradReportsAndTranscripts',
+  name: 'DistrictGradReportsAndTranscripts',
   components: {
     PrimaryButton,
     PENSearchDialog
@@ -160,19 +123,13 @@ export default {
     ...mapState(authStore, ['userInfo']),
     docTypeFilename() {
       switch (this.summaryDownloadType) {
-        case 'graduated': return 'GraduatedSummary';
-        case 'nonGraduated': return 'NotGraduatedSummary';
-        case 'historicalGraduated': return 'HistoricalGraduatedSummary';
-        case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary'
+        case 'yearEnd': return 'YearEnd';
         default: return '';
       }
     },
     docTypeName(){
       switch (this.summaryDownloadType) {
-        case 'graduated': return 'Graduated Students Summary';
-        case 'nonGraduated': return 'Not Yet Graduated Students Summary';
-        case 'historicalGraduated': return 'Historical Graduated Students Summary';
-        case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary'
+        case 'yearEnd': return 'Year-End District Credential and Transcript Distribution Reports';
         default: return '';
       }
     }
@@ -200,10 +157,10 @@ export default {
       };
       searchStudentByPen(this, pen, onSuccess);
     },
-    async downloadSummaryReport(reportType){
-      this.summaryDownloadType = reportType;
-      const schoolID = this.userInfo.activeInstituteIdentifier;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true);
+    async downloadYearEndReport(){
+      this.summaryDownloadType = 'yearEnd';
+      const districtID = this.userInfo.activeInstituteIdentifier;
+      await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, this.docTypeFilename, this.docTypeName, false);
     },
     close() {
       this.showPENSearchDialog = false;

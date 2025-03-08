@@ -61,9 +61,10 @@ async function downloadGradReportFile(response, schoolID, docTypeFilename, forma
     window.URL.revokeObjectURL(link.href);
 }
 
-export async function fetchAndDownloadGradReport(context, schoolID, reportType, baseUrl, docTypeFilename, docTypeName, isSummary = true) {
+export async function fetchAndDownloadGradReport(context, instituteID, reportType, docTypeFilename, docTypeName, isSchool, isSummary = true) {
     context.isLoading = true;
-    const url = `${baseUrl}/school/${schoolID}/${isSummary ? 'summary' : 'tvr'}`;
+    const instituteType = isSchool ? 'school' : 'district';
+    const url = `${ApiRoutes.gradReports.BASE_URL}/${instituteType}/${instituteID}/${isSummary ? 'summary' : 'tvr'}`;
     const formattedDate = getTodayFormattedDate();
 
     try {
@@ -72,9 +73,9 @@ export async function fetchAndDownloadGradReport(context, schoolID, reportType, 
             responseType: 'blob'
         });
 
-        await downloadGradReportFile(response, schoolID, docTypeFilename, formattedDate);
+        await downloadGradReportFile(response, instituteID, docTypeFilename, formattedDate);
 
-        let successMsg = `${docTypeName} downloaded for school`;
+        let successMsg = `${docTypeName} downloaded for ${instituteType}`;
         context.setSuccessAlert(successMsg);
 
     } catch (error) {
@@ -82,7 +83,7 @@ export async function fetchAndDownloadGradReport(context, schoolID, reportType, 
         let errorMsg;
 
         if (error.code === "ERR_BAD_REQUEST") {
-            errorMsg = `${docTypeName} not found for school`;
+            errorMsg = `${docTypeName} not found for ${instituteType}`;
         } else {
             errorMsg = "Error encountered while attempting to retrieve document";
         }

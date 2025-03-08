@@ -4,14 +4,15 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { v4: uuidv4 } = require('uuid');
-const {getSchoolBySchoolID} = require("./cache-service");
+const {getSchoolBySchoolID, getDistrictByDistrictID} = require("./cache-service");
+const {edxUserHasAccessToInstitute} = require("./permissionUtils")
 
 async function handleReportDownload(req, res, reportType) {
     try {
         const token = getAccessToken(req);
         const correlationID = uuidv4();
         const formattedDate = getFormattedDate();
-        const docType = req.query.docType; // Get docType from query parameters
+        const docType = req.query.docType;
 
         if (!docType) {
             return res.status(HttpStatus.BAD_REQUEST).json({ message: 'docType query parameter is required.' });
@@ -45,35 +46,42 @@ async function handleReportDownload(req, res, reportType) {
             }
             notFoundMessage = 'Report not found for this PEN.';
         } else if (reportType === 'summary') {
-            const schoolMincode = getSchoolBySchoolID(req.params.schoolID)?.mincode; //Optional chaining
-            if (!schoolMincode) {
-                return res.status(HttpStatus.NOT_FOUND).json({ message: 'School not found for this schoolID.' });
+            const instituteMincode = req.params.schoolID ? getSchoolBySchoolID(req.params.schoolID)?.mincode : getDistrictByDistrictID(req.params.districtID).districtNumber;
+            const instituteType = req.params.schoolID ? "school" : "district";
+
+            if (!instituteMincode) {
+                return res.status(HttpStatus.NOT_FOUND).json({ message: 'Institute not found with this ID.' });
             }
-            url = `${config.get('gradReports:summaryURL')}/school/report/${schoolMincode}?type=`;
+
+            url = `${config.get('gradReports:summaryURL')}/${instituteType}/report/${instituteMincode}?type=`;
 
             switch (docType) {
                 case 'graduated':
                     url += 'GRADREG';
-                    fileName = `${schoolMincode}_GraduatedSummary_${formattedDate}.pdf`;
+                    fileName = `${instituteMincode}_GraduatedSummary_${formattedDate}.pdf`;
                     break;
                 case 'nongraduated':
                     url += 'NONGRADREG';
-                    fileName = `${schoolMincode}_NotGraduatedSummary_${formattedDate}.pdf`;
+                    fileName = `${instituteMincode}_NotGraduatedSummary_${formattedDate}.pdf`;
                     break;
                 case 'historicalGraduated':
                     url += 'GRADREGARC';
-                    fileName = `${schoolMincode}_HistoricalGraduatedSummary_${formattedDate}.pdf`;
+                    fileName = `${instituteMincode}_HistoricalGraduatedSummary_${formattedDate}.pdf`;
                     break;
                 case 'historicalNongraduated':
                     url += 'NONGRADREGARC';
-                    fileName = `${schoolMincode}_HistoricalNotGraduatedSummary_${formattedDate}.pdf`;
+                    fileName = `${instituteMincode}_HistoricalNotGraduatedSummary_${formattedDate}.pdf`;
+                    break;
+                case 'yearEnd':
+                    url += 'DISTREP_YE_SD';
+                    fileName = `${instituteMincode}_YearEnd_${formattedDate}.pdf`;
                     break;
                 default:
                     return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
             }
             notFoundMessage = 'Report not found for school.';
         } else if (reportType === 'tvr') {
-            const schoolMincode = getSchoolBySchoolID(req.params.schoolID)?.mincode; //Optional Chaining
+            const schoolMincode = getSchoolBySchoolID(req.params.schoolID)?.mincode;
             if (!schoolMincode) {
                 return res.status(HttpStatus.NOT_FOUND).json({ message: 'School not found for this schoolID.' });
             }
@@ -96,7 +104,6 @@ async function handleReportDownload(req, res, reportType) {
         else {
             return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid reportType' });
         }
-
 
         const result = await getBinaryData(token, url, correlationID);
 
@@ -121,9 +128,15 @@ async function downloadStudentGradReport(req, res) {
 }
 
 async function downloadSummaryGradReport(req, res) {
+    if(req.query.docType !== "yearEnd" && !edxUserHasAccessToInstitute(req.session.activeInstituteType, "SCHOOL", req.session.activeInstituteIdentifier, req.params.schoolID)){
+        return res.status(HttpStatus.FORBIDDEN);
+    }
     return handleReportDownload(req, res, 'summary');
 }
 async function downloadTVRSummary(req,res){
+    if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, "SCHOOL", req.session.activeInstituteIdentifier, req.params.schoolID)){
+        return res.status(HttpStatus.FORBIDDEN);
+    }
     return handleReportDownload(req, res, 'tvr');
 }
 
