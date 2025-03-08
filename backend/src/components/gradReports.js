@@ -5,6 +5,7 @@ const log = require('./logger');
 const config = require('../config');
 const { v4: uuidv4 } = require('uuid');
 const {getSchoolBySchoolID, getDistrictByDistrictID} = require("./cache-service");
+const {edxUserHasAccessToInstitute} = require("./permissionUtils")
 
 async function handleReportDownload(req, res, reportType) {
     try {
@@ -127,9 +128,15 @@ async function downloadStudentGradReport(req, res) {
 }
 
 async function downloadSummaryGradReport(req, res) {
+    if(req.query.docType !== "yearEnd" && !edxUserHasAccessToInstitute(req.session.activeInstituteType, "SCHOOL", req.session.activeInstituteIdentifier, req.params.schoolID)){
+        return res.status(HttpStatus.FORBIDDEN);
+    }
     return handleReportDownload(req, res, 'summary');
 }
 async function downloadTVRSummary(req,res){
+    if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, "SCHOOL", req.session.activeInstituteIdentifier, req.params.schoolID)){
+        return res.status(HttpStatus.FORBIDDEN);
+    }
     return handleReportDownload(req, res, 'tvr');
 }
 

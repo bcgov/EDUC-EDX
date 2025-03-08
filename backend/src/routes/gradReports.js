@@ -10,7 +10,7 @@ const validate = require('../components/validator');
 const {gradReportDownloadSchema} = require('../validations/gradReports');
 
 router.get('/student/report', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW),
-    validate(gradReportDownloadSchema), (req, res) => downloadStudentGradReport(req, res));
+    validate(gradReportDownloadSchema), downloadStudentGradReport);
 router.get('/school/:schoolID/summary', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW),
     validate(gradReportDownloadSchema), downloadSummaryGradReport);
 router.get('/school/:schoolID/tvr', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW),
