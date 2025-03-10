@@ -136,7 +136,7 @@ export default {
   },
   methods: {
     backButtonClick() {
-      this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.schoolID } });
+      this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.userInfo.activeInstituteIdentifier } });
     },
     populateDateRanges() {
       let datesList = generateGradStartAndEndDateStrings();
