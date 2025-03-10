@@ -176,45 +176,6 @@
           </v-row>
         </v-card>
       </v-col>
-
-      <v-col
-        v-if="hasRequiredPermission('GRAD_DIS_RPT_VIEW') && isLoggedInDistrictUser && !disableGradFunctionality"
-        cols="12"
-        md="6"
-      >
-        <v-card
-          id="graduationCard"
-          class="mx-auto"
-          width="29em"
-          height="100%"
-          outlined
-          rounded
-          @click="openDistrictReports()"
-        >
-          <v-row class="pl-4">
-            <v-col cols="3">
-              <div>
-                <v-icon
-                  icon="mdi-chart-box-outline"
-                  aria-hidden="false"
-                  color="rgb(0, 51, 102)"
-                  size="100"
-                />
-              </div>
-            </v-col>
-            <v-col class="mt-2">
-              <v-row no-gutters>
-                <v-col>
-                  <h4 class="dashboard-title">
-                    {{ PAGE_TITLES.GRAD_DISTRICT_REPORTS }}
-                  </h4>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-
       <v-col
         v-if="hasRequiredPermission('GRAD_DIS_TVR_VIEW') && isLoggedInDistrictUser && !disableGradFunctionality"
         cols="12"
@@ -265,6 +226,7 @@
           height="100%"
           outlined
           rounded
+          @click="openDistrictReports"
         >
           <v-row class="pl-4">
             <v-col cols="3">
