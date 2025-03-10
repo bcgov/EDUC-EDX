@@ -181,7 +181,11 @@
 
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import {fetchAndDownloadGradReport, generateGradStartAndEndDateStrings} from '../../../../utils/gdc/gradReports';
+import {
+  docTypeFilename, docTypeName,
+  fetchAndDownloadGradReport,
+  generateGradStartAndEndDateStrings
+} from '../../../../utils/gdc/gradReports';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
 import {penIsValid} from '../../../../utils/institute/formRules';
 import ApiService from '../../../../common/apiService';
@@ -228,7 +232,6 @@ export default {
         category: '',
         type: ''
       },
-      summaryDownloadType: '',
     };
   },
   computed: {
@@ -337,38 +340,13 @@ export default {
         this.setWarningAlert('Please select a school');
       }
     },
-    docTypeFilename() {
-      switch(this.summaryDownloadType){
-      case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
-      case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
-      case 'graduated': return 'GraduatedSummary';
-      case 'nonGraduated': return 'NotGraduatedSummary';
-      case 'historicalGraduated': return 'HistoricalGraduatedSummary';
-      case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary';
-      default: return '';
-      }
-    },
-    docTypeName() {
-      switch (this.summaryDownloadType) {
-      case 'graduating': return 'TVRs for graduating students';
-      case 'nonGraduating': return 'TVRs for non-graduating students';
-      case 'graduated': return 'Graduated Students Summary';
-      case 'nonGraduated': return 'Not Yet Graduated Students Summary';
-      case 'historicalGraduated': return 'Historical Graduated Students Summary';
-      case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary';
-      default:
-        return '';
-      }
-    },
     async downloadSummaryReport(reportType){
-      this.summaryDownloadType = reportType;
       const schoolID = this.headerSearchParams.schoolID;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true);
     },
     async downloadTVRReport(reportType){
-      this.summaryDownloadType = reportType;
       const schoolID = this.headerSearchParams.schoolID;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true,false);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true,false);
     },
   }
 };
@@ -381,10 +359,6 @@ export default {
   border-radius: 5px;
   padding: 35px;
   margin: 2em;
-}
-
-:deep(.v-btn__content){
-  white-space: break-spaces;
 }
 
 h3 {

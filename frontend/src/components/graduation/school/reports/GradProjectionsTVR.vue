@@ -94,6 +94,7 @@ import PENSearchDialog from '../../PENSearchDialog.vue';
 import {mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import {
+  docTypeFilename, docTypeName,
   fetchAndDownloadGradReport,
   generateGradStartAndEndDateStrings,
   searchStudentByPen
@@ -125,26 +126,11 @@ export default {
       studentExists: false,
       student: {},
       showPENSearchDialog: false,
-      summaryDownloadType: '',
       isSearchingStudent: false
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    docTypeFilename() {
-      switch(this.summaryDownloadType){
-      case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
-      case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
-      default: return '';
-      }
-    },
-    docTypeName() {
-      switch (this.summaryDownloadType) {
-      case 'graduating': return 'TVRs for graduating students';
-      case 'nonGraduating': return 'TVRs for non-graduating students';
-      default: return '';
-      }
-    },
   },
   async created() {
     this.populateDateRanges();
@@ -172,9 +158,8 @@ export default {
       searchStudentByPen(this, this.studentPEN, onSuccess);
     },
     async downloadTVRReport(reportType){
-      this.summaryDownloadType = reportType;
       const schoolID = this.userInfo.activeInstituteIdentifier;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true,false);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true,false);
     },
     close() {
       this.showPENSearchDialog = false;
@@ -194,10 +179,6 @@ export default {
   border-radius: 5px;
   padding: 35px;
   margin: 2em;
-}
-
-:deep(.v-btn__content){
-  white-space: break-spaces;
 }
 
 h3 {

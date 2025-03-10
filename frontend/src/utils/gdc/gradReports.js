@@ -123,3 +123,27 @@ export async function searchStudentByPen(context, pen, onSuccess) {
     }
   }
 }
+
+export function docTypeFilename(summaryDownloadType) {
+  switch(summaryDownloadType){
+  case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
+  case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
+  case 'graduated': return 'GraduatedSummary';
+  case 'nonGraduated': return 'NotGraduatedSummary';
+  case 'historicalGraduated': return 'HistoricalGraduatedSummary';
+  case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary';
+  default: return '';
+  }
+}
+
+export function docTypeName(summaryDownloadType) {
+  switch (summaryDownloadType) {
+  case 'graduating': return 'TVRs for graduating students';
+  case 'nonGraduating': return 'TVRs for non-graduating students';
+  case 'graduated': return 'Graduated Students Summary';
+  case 'nonGraduated': return 'Not Yet Graduated Students Summary';
+  case 'historicalGraduated': return 'Historical Graduated Students Summary';
+  case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary';
+  default: return '';
+  }
+}

@@ -163,6 +163,7 @@ import PENSearchDialog from '../../PENSearchDialog.vue';
 import { mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import {
+  docTypeFilename, docTypeName,
   fetchAndDownloadGradReport,
   generateGradStartAndEndDateStrings,
   searchStudentByPen
@@ -197,31 +198,12 @@ export default {
       studentPENTranscriptIsValid: false,
       studentPENXML: null,
       studentPENXMLIsValid: false,
-      summaryDownloadType:'',
       penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
       isSearchingStudent: false
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    docTypeFilename() {
-      switch (this.summaryDownloadType) {
-      case 'graduated': return 'GraduatedSummary';
-      case 'nonGraduated': return 'NotGraduatedSummary';
-      case 'historicalGraduated': return 'HistoricalGraduatedSummary';
-      case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary';
-      default: return '';
-      }
-    },
-    docTypeName(){
-      switch (this.summaryDownloadType) {
-      case 'graduated': return 'Graduated Students Summary';
-      case 'nonGraduated': return 'Not Yet Graduated Students Summary';
-      case 'historicalGraduated': return 'Historical Graduated Students Summary';
-      case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary';
-      default: return '';
-      }
-    }
   },
   async created() {
     this.populateDateRanges();
@@ -250,9 +232,8 @@ export default {
       searchStudentByPen(this, pen, onSuccess);
     },
     async downloadSummaryReport(reportType){
-      this.summaryDownloadType = reportType;
       const schoolID = this.userInfo.activeInstituteIdentifier;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true);
     },
     close() {
       this.showPENSearchDialog = false;
@@ -274,10 +255,6 @@ export default {
   border-radius: 5px;
   padding: 35px;
   margin: 2em;
-}
-
-:deep(.v-btn__content){
-  white-space: break-spaces;
 }
 
 h3 {
