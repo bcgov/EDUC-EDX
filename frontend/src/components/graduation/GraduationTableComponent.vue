@@ -107,7 +107,7 @@
           height="100%"
           outlined
           rounded
-          @click="openReports()"
+          @click="openSchoolReports()"
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -189,6 +189,7 @@
           height="100%"
           outlined
           rounded
+          @click="openDistrictReports()"
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -226,7 +227,6 @@
           height="100%"
           outlined
           rounded
-          @click="openDistrictProjections()"
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -385,11 +385,11 @@ export default {
     openProjections() {
       this.$router.push({name: 'grad-projections', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
-    openDistrictProjections() {
-      this.$router.push({name: 'grad-district-projections', params: {districtID: this.userInfo.activeInstituteIdentifier}});
+    openSchoolReports() {
+      this.$router.push({name: 'grad-school-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
     },
-    openReports() {
-      this.$router.push({name: 'grad-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    openDistrictReports() {
+      this.$router.push({name: 'grad-district-reports', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     openGradChangeForm() {
       window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank', 'noopener');

@@ -38,6 +38,8 @@ export const PERMISSION = Object.freeze(
 
     EAS_SCH_EDIT: 'EAS_SCH_EDIT',
 
+    GRAD_DIS_RPT_VIEW: 'GRAD_DIS_RPT_VIEW',
+
   }
 );
 
