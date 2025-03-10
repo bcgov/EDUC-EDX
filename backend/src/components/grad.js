@@ -114,7 +114,7 @@ async function getFilesetsPaginated(req, res) {
     if (data.content && data.content.length > 0) {
       data.content = data.content.map(fileset => {
         if (req?.params?.districtID) {
-          var school = cacheService.getSchoolBySchoolID(fileset.schoolID);
+          const school = cacheService.getSchoolBySchoolID(fileset.schoolID);
           fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
         }
         if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
