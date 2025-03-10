@@ -40,8 +40,8 @@ import GradProjectionsTVR from './components/graduation/school/reports/GradProje
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
-import DistrictGradReportsAndTranscripts
-  from "./components/graduation/district/reports/DistrictGradReportsAndTranscripts.vue";
+import GradDistrictProjectionsTVR from './components/graduation/district/reports/GradDistrictProjectionsTVR.vue';
+import GradDistrictReportsAndTranscripts from './components/graduation/district/reports/GradDistrictReportsAndTranscripts.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -361,7 +361,7 @@ const router = createRouter({
         {
           path: 'graduation/district/:districtID/reports',
           name: 'grad-district-reports',
-          component: DistrictGradReportsAndTranscripts,
+          component: GradDistrictReportsAndTranscripts,
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
@@ -433,6 +433,17 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_TVR_VIEW
+          },
+        },
+        {
+          path: 'graduation/district/:districtID/projections',
+          name: 'grad-district-projections',
+          component: GradDistrictProjectionsTVR,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRAD_DISTRICT_PROJECTIONS,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_DIS_TVR_VIEW
           },
         },
         {
