@@ -126,20 +126,12 @@ async function getFilesetsPaginated(req, res) {
     }
 
     if (data.content && data.content.length > 0) {
-      let users;
-      if (req.params.schoolID) {
-        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: req.params.schoolID}}, req.session.correlationID);
-      }
-      else if (req.params.districtID) {
-        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {districtID: req.params.districtID}}, req.session.correlationID);
-      }
-
       data.content = data.content.map(fileset => {
         if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
-          const userId = fileset.updateUser.slice(4);
-          const user = users.find(u => u.edxUserID === userId);
+          const userID = fileset.updateUser.slice(4);
+          const user = cacheService.getEdxUserByID(userID);
           if (user) {
-            fileset.updateUser = `${user.firstName} ${user.lastName}`;
+            fileset.updateUser = user.displayName;
           }
         }
         return fileset;
