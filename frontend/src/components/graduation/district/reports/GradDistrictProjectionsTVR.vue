@@ -99,7 +99,7 @@
                   <button
                     type="button"
                     class="link-style"
-                    @click="downloadSummaryReport('nonGraduating')"
+                    @click="downloadTVRReport('nonGraduating')"
                   >
                     TVRs for Projected Non-Graduating Students
                     <span class="icon-container ml-1">
@@ -112,7 +112,7 @@
                   <button
                     type="button"
                     class="link-style"
-                    @click="downloadSummaryReport('graduating')"
+                    @click="downloadTVRReport('graduating')"
                   >
                     TVRs for Projected Graduating Students
                     <span class="icon-container ml-1">
@@ -124,42 +124,45 @@
               <h3>Graduation Projections Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
               <ul>
                 <li>
-                  <a
-                    href=""
+                  <button
+                    type="button"
                     class="link-style"
+                    @click="downloadSummaryReport('nonGraduated')"
                   >
                     Projected Non-Graduates - Summary Report
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
-                  </a>
+                  </button>
                 </li>
 
                 <li>
-                  <a
-                    href=""
+                  <button
+                    type="button"
                     class="link-style"
+                    @click="downloadSummaryReport('graduated')"
                   >
                     Projected Graduates - Summary Report
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
-                  </a>
+                  </button>
                 </li>
               </ul>
 
               <h3>Historical Graduation Projected Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
               <ul>
                 <li>
-                  <a
-                    href=""
+                  <button
+                    type="button"
                     class="link-style"
+                    @click="downloadSummaryReport('historicalNongraduated')"
                   >
                     Archived Projected Non-Graduates Report
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -225,6 +228,7 @@ export default {
         category: '',
         type: ''
       },
+      summaryDownloadType: '',
     };
   },
   computed: {
@@ -337,15 +341,21 @@ export default {
       switch(this.summaryDownloadType){
       case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
       case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
+      case 'graduated': return 'GraduatedSummary';
+      case 'nonGraduated': return 'NotGraduatedSummary';
+      case 'historicalGraduated': return 'HistoricalGraduatedSummary';
+      case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary';
       default: return '';
       }
     },
     docTypeName() {
       switch (this.summaryDownloadType) {
-      case 'graduating':
-        return 'TVRs for graduating students';
-      case 'nonGraduating':
-        return 'TVRs for non-graduating students';
+      case 'graduating': return 'TVRs for graduating students';
+      case 'nonGraduating': return 'TVRs for non-graduating students';
+      case 'graduated': return 'Graduated Students Summary';
+      case 'nonGraduated': return 'Not Yet Graduated Students Summary';
+      case 'historicalGraduated': return 'Historical Graduated Students Summary';
+      case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary';
       default:
         return '';
       }
@@ -353,7 +363,12 @@ export default {
     async downloadSummaryReport(reportType){
       this.summaryDownloadType = reportType;
       const schoolID = this.headerSearchParams.schoolID;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, ApiRoutes.gradReports.BASE_URL, this.docTypeFilename, this.docTypeName, false);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true);
+    },
+    async downloadTVRReport(reportType){
+      this.summaryDownloadType = reportType;
+      const schoolID = this.headerSearchParams.schoolID;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true,false);
     },
   }
 };

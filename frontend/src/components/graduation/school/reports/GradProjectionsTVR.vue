@@ -23,7 +23,7 @@
           <button
             type="button"
             class="link-style"
-            @click="downloadSummaryReport('nonGraduating')"
+            @click="downloadTVRReport('nonGraduating')"
           >
             TVRs for Projected Non-Graduating Students
             <span class="icon-container ml-1">
@@ -35,7 +35,7 @@
           <button
             type="button"
             class="link-style"
-            @click="downloadSummaryReport('graduating')"
+            @click="downloadTVRReport('graduating')"
           >
             TVRs for Projected Graduating Students
             <span class="icon-container ml-1">
@@ -171,7 +171,7 @@ export default {
       };
       searchStudentByPen(this, this.studentPEN, onSuccess);
     },
-    async downloadSummaryReport(reportType){
+    async downloadTVRReport(reportType){
       this.summaryDownloadType = reportType;
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true,false);
