@@ -227,6 +227,7 @@
           height="100%"
           outlined
           rounded
+          @click="openDistrictProjections()"
         >
           <v-row class="pl-4">
             <v-col cols="3">
@@ -384,6 +385,9 @@ export default {
     },
     openProjections() {
       this.$router.push({name: 'grad-projections', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
+    openDistrictProjections() {
+      this.$router.push({name: 'grad-district-projections', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     openSchoolReports() {
       this.$router.push({name: 'grad-school-reports', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
