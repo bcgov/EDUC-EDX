@@ -170,7 +170,7 @@ export const PAGE_TITLES = Object.freeze({
   ASSESSMENT: 'Assessments',
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
   ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
-  GRAD_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',
+  GRAD_PROJECTIONS: 'Transcript Verification Reports',
   GRAD_REPORTS: 'Graduation Reports and Transcripts',
   GRAD_TRANSCRIPT_PREVIEW: 'Student Transcript Preview(s)',
   GRAD_DISTRICT_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',

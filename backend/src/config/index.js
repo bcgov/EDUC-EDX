@@ -145,7 +145,8 @@ nconf.defaults({
     filesetURL: process.env.GRAD_API_ENDPOINT + '/fileset',
   },
   gradReports: {
-    rootURL: process.env.GRAD_REPORTS_API_ENDPOINT
+    rootURL: process.env.GRAD_REPORTS_API_ENDPOINT,
+    summaryURL: process.env.GRAD_SUMMARY_REPORTS_API_ENDPOINT
   },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
