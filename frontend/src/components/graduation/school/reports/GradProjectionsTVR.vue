@@ -62,7 +62,6 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import PrimaryButton from "../../../util/PrimaryButton.vue";
 import {penIsValid} from "../../../../utils/institute/formRules";
-import {ApiRoutes} from "../../../../utils/constants";
 import {isValidPEN} from "../../../../utils/validation";
 import PENSearchDialog from "../../PENSearchDialog.vue";
 import {mapState} from "pinia";
@@ -148,7 +147,7 @@ export default {
     async downloadSummaryReport(reportType){
       this.summaryDownloadType = reportType;
       const schoolID = this.userInfo.activeInstituteIdentifier;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, ApiRoutes.gradReports.BASE_URL, this.docTypeFilename, this.docTypeName, false);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, this.docTypeFilename, this.docTypeName, true,false);
     },
     close() {
       this.showPENSearchDialog = false;
