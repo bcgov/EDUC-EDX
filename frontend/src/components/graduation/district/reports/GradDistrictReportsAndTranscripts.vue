@@ -221,10 +221,6 @@ export default {
   margin: 2em;
 }
 
-:deep(.v-btn__content){
-  white-space: break-spaces;
-}
-
 h3 {
   color: #38598a;
 }
