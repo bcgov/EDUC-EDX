@@ -139,7 +139,7 @@
               v-model="searchFilter.roleName"
               variant="underlined"
               :clearable="true"
-              :items="schoolRoles"
+              :items="filteredSchoolRoles"
               item-title="label"
               item-value="edxRoleCode"
               label="Role"
@@ -198,7 +198,7 @@
               :user-roles="getCurrentUserSchoolRoles(user)"
               :user="user"
               :institute-code="schoolID"
-              :institute-roles="schoolRoles"
+              :institute-roles="filteredSchoolRoles"
               institute-type-code="SCHOOL"
               institute-type-label="School"
               @refresh="getUsersData"
@@ -270,7 +270,7 @@
             <v-divider />
             <v-card-text>
               <InviteUserPage
-                :user-roles="schoolRoles"
+                :user-roles="filteredSchoolRoles"
                 :institute-code="schoolID"
                 institute-type-code="SCHOOL"
                 institute-type-label="School"
@@ -345,6 +345,13 @@ export default {
       return this.users.filter(user => {
         return user.edxUserSchools.some(school => school.edxUserSchoolRoles.some(role => role.edxRoleCode === ROLES.EDX_SCHOOL_ADMIN));
       })?.length > 0;
+    },
+    filteredSchoolRoles() {
+      let school = this.schoolsMap.get(this.schoolID);
+      if(!school?.canIssueTranscripts) {
+        return this.schoolRoles.filter(role => role.edxRoleCode !== 'GRAD_SCH_ADMIN');
+      }
+      return this.schoolRoles;
     }
   },
   async beforeMount() {
