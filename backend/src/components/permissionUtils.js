@@ -573,7 +573,7 @@ async function checkValidRoles(req, incomingRoles) {
     params: req.query
   };
   let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
-  let allowedRoles = filterSchoolRoles(req, data);
+  let allowedRoles = filterSchoolRoles(req?.body?.params?.schoolID, data);
   return incomingRoles.every(role => {
     return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0
   });
