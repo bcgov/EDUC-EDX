@@ -41,7 +41,7 @@ import GradReportsAndTranscripts from './components/graduation/school/reports/Gr
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
 import GradDistrictProjectionsTVR from './components/graduation/district/reports/GradDistrictProjectionsTVR.vue';
-import DistrictGradReportsAndTranscripts from './components/graduation/district/reports/DistrictGradReportsAndTranscripts.vue';
+import GradDistrictReportsAndTranscripts from './components/graduation/district/reports/GradDistrictReportsAndTranscripts.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -361,7 +361,7 @@ const router = createRouter({
         {
           path: 'graduation/district/:districtID/reports',
           name: 'grad-district-reports',
-          component: DistrictGradReportsAndTranscripts,
+          component: GradDistrictReportsAndTranscripts,
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
