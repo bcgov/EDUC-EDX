@@ -111,35 +111,17 @@ async function getFilesetsPaginated(req, res) {
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
 
-    if(req?.params?.districtID){
-      data?.content.forEach(value => {
-        value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
-      });
-      data?.content.sort((a,b) =>  {
-        if (a.schoolName > b.schoolName) {
-          return 1;
-        } else if (a.schoolName < b.schoolName) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-
     if (data.content && data.content.length > 0) {
-      let users;
-      if (req.params.schoolID) {
-        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: req.params.schoolID}}, req.session.correlationID);
-      }
-      else if (req.params.districtID) {
-        users = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {districtID: req.params.districtID}}, req.session.correlationID);
-      }
-
       data.content = data.content.map(fileset => {
+        if (req?.params?.districtID) {
+          const school = cacheService.getSchoolBySchoolID(fileset.schoolID);
+          fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
+        }
         if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
-          const userId = fileset.updateUser.slice(4);
-          const user = users.find(u => u.edxUserID === userId);
+          const userID = fileset.updateUser.slice(4);
+          const user = cacheService.getEdxUserByID(userID);
           if (user) {
-            fileset.updateUser = `${user.firstName} ${user.lastName}`;
+            fileset.updateUser = user.displayName;
           }
         }
         return fileset;
@@ -290,10 +272,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     });
   }
   return search;
-}
-
-function getSchoolName(school) {
-  return school.mincode + ' - ' + school.schoolName;
 }
 
 function createPenLocalIdCriteria(key, idString) {

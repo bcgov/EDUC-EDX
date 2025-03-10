@@ -36,6 +36,7 @@ let documentTypeCodesMap = new Map();
 let assessmentTypeCodesMap = new Map();
 let assessmentSpecialCaseTypeCodesMap = new Map();
 let documentTypeCodes = [];
+let edxUsers = new Map();
 const cachedData = {};
 
 const cacheService = {
@@ -248,6 +249,26 @@ const cacheService = {
   },
   getDocumentTypeCodeLabelByCode(code) {
     return documentTypeCodesMap.get(code);
+  },
+  async loadAllEdxUsersToMap() {
+    log.debug('Loading all EDX Users to cache.');
+    await retry(async () => {
+      const data = await getApiCredentials();
+      const edxUsersResponse = await getData(data.accessToken, config.get('edx:edxUsersURL'));
+      if (edxUsersResponse && edxUsersResponse.length > 0) {
+        edxUsers.clear();
+        edxUsersResponse.forEach(user => {
+          //Do not cache the user's roles, schools, or districts as this security context can change before the cache is invalidated.
+          edxUsers.set(user.edxUserID, { 'edxUserID': user.edxUserID, 'firstName': user.firstName, 'lastName': user.lastName, 'displayName': `${user.firstName} ${user.lastName}`.trim() });
+        });
+      }
+      log.info(`Loaded ${edxUsers.size} EDX Users to cache.`);
+    }, {
+      retries: 50
+    });
+  },
+  getEdxUserByID(edxUserID) {
+    return edxUsers.get(edxUserID);
   },
   isActiveRecord(record) {
     const currentTime = LocalDate.now();

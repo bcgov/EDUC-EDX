@@ -12,6 +12,7 @@ try {
       await cacheService.loadAllAuthoritiesToMap();
       await cacheService.loadAllRolePermissionsToMap();
       await cacheService.loadAllDocumentTypeCodesToMap();
+      await cacheService.loadAllEdxUsersToMap();
     } catch (e) {
       log.error(e);
     }
