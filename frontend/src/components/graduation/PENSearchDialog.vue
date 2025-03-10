@@ -1,8 +1,8 @@
 <template>
   <v-dialog
-      v-model="dialog"
-      max-width="40%"
-      @keydown.esc="cancel"
+    v-model="dialog"
+    max-width="40%"
+    @keydown.esc="cancel"
   >
     <v-card>
       <v-card-title class="header pt-1 pb-1">
@@ -12,50 +12,91 @@
       </v-card-title>
       <v-card-text :class="[options.messagePadding, { 'black--text': !options.dark }]">
         <div>
-          <v-row no-gutters align="center">
-            <v-col cols="3" class="key-col">Name:</v-col>
-            <v-col cols="9">{{ student.fullName }}</v-col>
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col
+              cols="3"
+              class="key-col"
+            >
+              Name:
+            </v-col>
+            <v-col cols="9">
+              {{ student.fullName }}
+            </v-col>
           </v-row>
 
-          <v-row no-gutters align="center">
-            <v-col cols="3" class="key-col">Local ID:</v-col>
-            <v-col cols="9">{{ student.localID}}</v-col>
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col
+              cols="3"
+              class="key-col"
+            >
+              Local ID:
+            </v-col>
+            <v-col cols="9">
+              {{ student.localID }}
+            </v-col>
           </v-row>
 
-          <v-row no-gutters align="center">
-            <v-col cols="3" class="key-col">DOB:</v-col>
-            <v-col cols="9">{{ student.dob }}</v-col>
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col
+              cols="3"
+              class="key-col"
+            >
+              DOB:
+            </v-col>
+            <v-col cols="9">
+              {{ student.dob }}
+            </v-col>
           </v-row>
-          <v-row no-gutters align="center">
-            <v-col cols="3" class="key-col">Gender:</v-col>
-            <v-col cols="9">{{ student.gender }}</v-col>
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col
+              cols="3"
+              class="key-col"
+            >
+              Gender:
+            </v-col>
+            <v-col cols="9">
+              {{ student.gender }}
+            </v-col>
           </v-row>
         </div>
       </v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer />
         <PrimaryButton
-            id="rejectBtn"
-            secondary
-            text="Cancel"
-            :click-action="cancel"
+          id="rejectBtn"
+          secondary
+          text="Cancel"
+          :click-action="cancel"
         />
         <PrimaryButton
-            id="resolveBtn"
-            :text="downloadMessage"
-            :click-action="downloadDocument"
-            :loading="isLoading"  />
+          id="resolveBtn"
+          :text="downloadMessage"
+          :click-action="downloadDocument"
+          :loading="isLoading"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import PrimaryButton from "../util/PrimaryButton.vue";
-import ApiService from "../../common/apiService";
-import {ApiRoutes} from "../../utils/constants";
-import alertMixin from "../../mixins/alertMixin";
-import {getTodayFormattedDate} from "../../utils/gdc/gradReports";
+import PrimaryButton from '../util/PrimaryButton.vue';
+import ApiService from '../../common/apiService';
+import {ApiRoutes} from '../../utils/constants';
+import alertMixin from '../../mixins/alertMixin';
+import {getTodayFormattedDate} from '../../utils/gdc/gradReports';
 
 export default {
   name: 'PENSearchDialog',
@@ -99,21 +140,21 @@ export default {
   computed: {
     dialog: {
       get() {
-        return this.modelValue
+        return this.modelValue;
       },
       set(value) {
-        this.$emit('update:modelValue', value)
+        this.$emit('update:modelValue', value);
       }
     },
     downloadMessage() {
-      return "Download " + this.docTypeFilename;
+      return 'Download ' + this.docTypeFilename;
     },
     docTypeFilename() {
       switch (this.downloadType) {
-        case 'transcript': return 'Transcript';
-        case 'xml': return 'XML';
-        case 'tvr': return 'TVR';
-        default: return '';
+      case 'transcript': return 'Transcript';
+      case 'xml': return 'XML';
+      case 'tvr': return 'TVR';
+      default: return '';
       }
     }
   },
@@ -152,16 +193,16 @@ export default {
         window.URL.revokeObjectURL(link.href);
 
         let successMsg = `${this.docTypeFilename} downloaded for student`;
-        this.setSuccessAlert(successMsg)
+        this.setSuccessAlert(successMsg);
 
       } catch (error) {
-        console.error("Error downloading file:", error);
+        console.error('Error downloading file:', error);
         let errorMsg;
 
-        if(error.code === "ERR_BAD_REQUEST"){
+        if(error.code === 'ERR_BAD_REQUEST'){
           errorMsg = `${this.docTypeFilename} not found for student`;
         } else {
-          errorMsg = "Error encountered while attempting to retrieve document"
+          errorMsg = 'Error encountered while attempting to retrieve document';
         }
 
         this.setFailureAlert(errorMsg);
