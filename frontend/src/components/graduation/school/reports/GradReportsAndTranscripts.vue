@@ -135,7 +135,7 @@
             <button
               type="button"
               class="link-style"
-              @click="downloadSummaryReport('historicalNongraduated')"
+              @click="downloadSummaryReport('historicalNonGraduated')"
             >
               Not Yet Graduated Students
               <span class="icon-container ml-1">

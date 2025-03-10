@@ -156,9 +156,21 @@
                   <button
                     type="button"
                     class="link-style"
-                    @click="downloadSummaryReport('historicalNongraduated')"
+                    @click="downloadSummaryReport('historicalNonGraduated')"
                   >
                     Archived Projected Non-Graduates Report
+                    <span class="icon-container ml-1">
+                      <i class="mdi mdi-tray-arrow-down" />
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    class="link-style"
+                    @click="downloadSummaryReport('historicalGraduated')"
+                  >
+                    Archived Projected Graduates Report
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>

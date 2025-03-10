@@ -131,7 +131,7 @@ export function docTypeFilename(summaryDownloadType) {
   case 'graduated': return 'GraduatedSummary';
   case 'nonGraduated': return 'NotGraduatedSummary';
   case 'historicalGraduated': return 'HistoricalGraduatedSummary';
-  case 'historicalNongraduated': return 'HistoricalNotGraduatedSummary';
+  case 'historicalNonGraduated': return 'HistoricalNotGraduatedSummary';
   default: return '';
   }
 }
@@ -143,7 +143,7 @@ export function docTypeName(summaryDownloadType) {
   case 'graduated': return 'Graduated Students Summary';
   case 'nonGraduated': return 'Not Yet Graduated Students Summary';
   case 'historicalGraduated': return 'Historical Graduated Students Summary';
-  case 'historicalNongraduated': return 'Historical Not Yet Graduated Students Summary';
+  case 'historicalNonGraduated': return 'Historical Not Yet Graduated Students Summary';
   default: return '';
   }
 }
