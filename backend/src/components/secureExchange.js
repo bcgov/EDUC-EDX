@@ -1227,7 +1227,7 @@ async function getRolesByInstituteType(req, res) {
       params: req.query
     };
     let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(filterSchoolRoles(req, data));
+    return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting roles', e.stack);
     return handleExceptionResponse(e, res);
