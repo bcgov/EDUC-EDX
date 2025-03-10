@@ -111,22 +111,12 @@ async function getFilesetsPaginated(req, res) {
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
 
-    if(req?.params?.districtID){
-      data?.content.forEach(value => {
-        value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
-      });
-      data?.content.sort((a,b) =>  {
-        if (a.schoolName > b.schoolName) {
-          return 1;
-        } else if (a.schoolName < b.schoolName) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-
     if (data.content && data.content.length > 0) {
       data.content = data.content.map(fileset => {
+        if (req?.params?.districtID) {
+          var school = cacheService.getSchoolBySchoolID(fileset.schoolID);
+          fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
+        }
         if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
           const userID = fileset.updateUser.slice(4);
           const user = cacheService.getEdxUserByID(userID);
@@ -282,10 +272,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     });
   }
   return search;
-}
-
-function getSchoolName(school) {
-  return school.mincode + ' - ' + school.schoolName;
 }
 
 function createPenLocalIdCriteria(key, idString) {
