@@ -13,7 +13,6 @@ const {
   isPdf,
   isImage, getCreateOrUpdateUserValue
 } = require('./utils');
-const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config/index');
 const log = require('./logger');
 const HttpStatus = require('http-status-codes');
