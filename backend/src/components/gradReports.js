@@ -68,7 +68,7 @@ async function handleReportDownload(req, res, reportType) {
         url += 'GRADREGARC';
         fileName = `${instituteMincode}_HistoricalGraduatedSummary_${formattedDate}.pdf`;
         break;
-      case 'historicalNongraduated':
+      case 'historicalNonGraduated':
         url += 'NONGRADREGARC';
         fileName = `${instituteMincode}_HistoricalNotGraduatedSummary_${formattedDate}.pdf`;
         break;
