@@ -132,6 +132,9 @@ export function docTypeFilename(summaryDownloadType) {
   case 'nonGraduated': return 'NotGraduatedSummary';
   case 'historicalGraduated': return 'HistoricalGraduatedSummary';
   case 'historicalNonGraduated': return 'HistoricalNotGraduatedSummary';
+  case 'transcript': return 'Transcript';
+  case 'xml': return 'XML';
+  case 'tvr': return 'TVR';
   default: return '';
   }
 }

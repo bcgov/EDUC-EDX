@@ -96,7 +96,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
-import {getTodayFormattedDate} from '../../utils/gdc/gradReports';
+import {docTypeFilename, getTodayFormattedDate} from '../../utils/gdc/gradReports';
 
 export default {
   name: 'PENSearchDialog',
@@ -147,16 +147,8 @@ export default {
       }
     },
     downloadMessage() {
-      return 'Download ' + this.docTypeFilename;
+      return 'Download ' + docTypeFilename(this.downloadType);
     },
-    docTypeFilename() {
-      switch (this.downloadType) {
-      case 'transcript': return 'Transcript';
-      case 'xml': return 'XML';
-      case 'tvr': return 'TVR';
-      default: return '';
-      }
-    }
   },
   methods: {
     async downloadDocument() {
@@ -173,7 +165,7 @@ export default {
         });
 
         const contentDisposition = response.headers['content-disposition'];
-        let filename = this.student.pen + '_' + this.docTypeFilename + '_' + getTodayFormattedDate();
+        let filename = this.student.pen + '_' + docTypeFilename(this.downloadType) + '_' + getTodayFormattedDate();
         if (contentDisposition) {
           const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
           const matches = filenameRegex.exec(contentDisposition);
@@ -192,7 +184,7 @@ export default {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(link.href);
 
-        let successMsg = `${this.docTypeFilename} downloaded for student`;
+        let successMsg = `${docTypeFilename(this.downloadType)} downloaded for student`;
         this.setSuccessAlert(successMsg);
 
       } catch (error) {
@@ -200,7 +192,7 @@ export default {
         let errorMsg;
 
         if(error.code === 'ERR_BAD_REQUEST'){
-          errorMsg = `${this.docTypeFilename} not found for student`;
+          errorMsg = `${docTypeFilename(this.downloadType)} not found for student`;
         } else {
           errorMsg = 'Error encountered while attempting to retrieve document';
         }
@@ -221,9 +213,6 @@ export default {
 </script>
 
 <style scoped>
-:deep(.v-toolbar-title__placeholder){
-  overflow: visible;
-}
 
 .header {
   background-color: #003366;

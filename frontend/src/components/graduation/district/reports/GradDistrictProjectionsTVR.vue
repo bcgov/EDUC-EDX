@@ -185,7 +185,7 @@
     <PENSearchDialog
       v-model="showPENSearchDialog"
       :student="student"
-      download-type="TVR"
+      download-type="tvr"
       @close="close"
     />
   </v-container>
