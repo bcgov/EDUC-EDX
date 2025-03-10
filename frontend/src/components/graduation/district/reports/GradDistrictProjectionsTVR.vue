@@ -96,27 +96,29 @@
               <p>For current students reported in final year of a graduation program (Grade 12 or AD).</p>
               <ul>
                 <li>
-                  <a
-                    href=""
+                  <button
+                    type="button"
                     class="link-style"
+                    @click="downloadSummaryReport('nonGraduating')"
                   >
                     TVRs for Projected Non-Graduating Students
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
-                  </a>
+                  </button>
                 </li>
 
                 <li>
-                  <a
-                    href=""
+                  <button
+                    type="button"
                     class="link-style"
+                    @click="downloadSummaryReport('graduating')"
                   >
                     TVRs for Projected Graduating Students
                     <span class="icon-container ml-1">
                       <i class="mdi mdi-tray-arrow-down" />
                     </span>
-                  </a>
+                  </button>
                 </li>
               </ul>
               <h3>Graduation Projections Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})</h3>
@@ -176,7 +178,7 @@
 
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import {generateGradStartAndEndDateStrings} from '../../../../utils/common';
+import {fetchAndDownloadGradReport, generateGradStartAndEndDateStrings} from '../../../../utils/gdc/gradReports';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
 import {penIsValid} from '../../../../utils/institute/formRules';
 import ApiService from '../../../../common/apiService';
@@ -325,13 +327,34 @@ export default {
       }else{
         this.headerSearchParams.schoolID = '';
       }
-      // TODO - do something with this search, populate the correct download links for the selected school
     },
     handleDistrictReportsDivClick() {
       if (!this.schoolCodeNameFilter) {
         this.setWarningAlert('Please select a school');
       }
-    }
+    },
+    docTypeFilename() {
+      switch(this.summaryDownloadType){
+      case 'graduating': return 'TranscriptVerificationGraduatingSummaryReport';
+      case 'nonGraduating': return 'TranscriptVerificationNonGraduatingSummaryReport';
+      default: return '';
+      }
+    },
+    docTypeName() {
+      switch (this.summaryDownloadType) {
+      case 'graduating':
+        return 'TVRs for graduating students';
+      case 'nonGraduating':
+        return 'TVRs for non-graduating students';
+      default:
+        return '';
+      }
+    },
+    async downloadSummaryReport(reportType){
+      this.summaryDownloadType = reportType;
+      const schoolID = this.headerSearchParams.schoolID;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, ApiRoutes.gradReports.BASE_URL, this.docTypeFilename, this.docTypeName, false);
+    },
   }
 };
 </script>
@@ -351,6 +374,10 @@ export default {
 
 h3 {
   color: #38598a;
+}
+
+button {
+  color: #1976d2;
 }
 
 ul {
@@ -375,10 +402,6 @@ i {
 .link-style {
   display: inline-flex;
   align-items: center;
-}
-
-::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-  color: white !important;
 }
 
 .disabled-section {

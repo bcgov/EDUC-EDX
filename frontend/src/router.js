@@ -40,8 +40,8 @@ import GradProjectionsTVR from './components/graduation/school/reports/GradProje
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
-import DistrictGradReportsAndTranscripts from "./components/graduation/district/reports/DistrictGradReportsAndTranscripts.vue";
-import GradDistrictProjectionsTVR from './components/graduation/district/projections/GradDistrictProjectionsTVR.vue';
+import GradDistrictProjectionsTVR from './components/graduation/district/reports/GradDistrictProjectionsTVR.vue';
+import DistrictGradReportsAndTranscripts from './components/graduation/district/reports/DistrictGradReportsAndTranscripts.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
