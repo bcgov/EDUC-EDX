@@ -364,7 +364,7 @@ const router = createRouter({
           component: GradDistrictReportsAndTranscripts,
           props: true,
           meta: {
-            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
+            pageTitle: PAGE_TITLES.GRAD_TRANSCRIPT_PREVIEW,
             requiresAuth: true,
             permission: PERMISSION.GRAD_DIS_RPT_VIEW
           },
