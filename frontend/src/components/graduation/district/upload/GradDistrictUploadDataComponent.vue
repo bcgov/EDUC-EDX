@@ -293,6 +293,13 @@
         <p>Once this action is completed <strong>it cannot be undone</strong> and <strong>any fixes to data issues or changes to student data will need to be completed again.</strong></p>
       </template>
     </ConfirmationDialog>
+    <ConfirmationDialog ref="confirmIncorrectDatesFile">
+      <template #message>
+        <p>Check that you are submitting the correct file. All reported course session dates are from a previous reporting period.</p>
+        &nbsp;
+        <p>Would you like to continue with this submission?</p>
+      </template>
+    </ConfirmationDialog>
     <div v-if="disableScreen">
       <v-overlay
         :model-value="disableScreen"
@@ -538,9 +545,28 @@ export default {
         this.successfulUploadCount += 1;
         fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
-        console.error(e);
-        fileJSON.error = e.response.data;
-        fileJSON.status = this.fileUploadError;
+        if(e?.message.includes('428')){
+          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + fileJSON.name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+          if (!confirmation) {
+            fileJSON.error = 'Abandoned';
+            fileJSON.status = this.fileUploadError;
+            return;
+          }
+          try {
+            await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file?fileOverride=true', document)
+              .then(() => {});
+            this.successfulUploadCount += 1;
+            fileJSON.status = this.fileUploadSuccess;
+          }catch (e2) {
+            console.error(e);
+            fileJSON.error = 'Error occurred during upload, please try again later.';
+            fileJSON.status = this.fileUploadError;
+          }
+        }else{
+          console.error(e);
+          fileJSON.error = e.response.data;
+          fileJSON.status = this.fileUploadError;
+        }
       } 
     },
     async getFilesetPaginated() {
