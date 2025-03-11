@@ -96,7 +96,6 @@
           </v-col>
         </v-form>
       </div>
-    </div>
     <div class="sub-category-group mt-2">
       <h3>School Level Graduation Summary Reports</h3>
       <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
@@ -207,6 +206,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     <PENSearchDialog
       v-model="showPENSearchDialog"
