@@ -65,7 +65,7 @@
             />
           </v-col>
         </v-form>
-        <h4 class="mt-8">
+        <h4 >
           Individual Student XML Previews by PEN
         </h4>
         <p>A user-friendly preview of what is currently available to a Post-Secondary institution that has been authorized by a student to receive transcript updates via XML data transfer.</p>
@@ -96,7 +96,6 @@
           </v-col>
         </v-form>
       </div>
-    <div class="sub-category-group mt-2">
       <h3>School Level Graduation Summary Reports</h3>
       <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
       <v-row
@@ -135,13 +134,14 @@
           </v-autocomplete>
         </v-col>
       </v-row>
+    <div class="mt-2">
       <div
           id="districtGradReports"
           @click="handleDistrictReportsDivClick"
       >
         <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
           <div class="ps-8">
-            <h3 class="mt-8">
+            <h3>
               Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})
             </h3>
             <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
