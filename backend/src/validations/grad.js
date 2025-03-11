@@ -24,7 +24,9 @@ const gradDistrictFileUploadSchema =  object({
   params: object({
     districtID: string().nonNullable()
   }).noUnknown(),
-  query: object().noUnknown(),
+  query: object({
+    fileOverride: boolean().optional()
+  })
 }).noUnknown();
 
 const gradErrorFilesetStudentPaginatedSchema = object({
