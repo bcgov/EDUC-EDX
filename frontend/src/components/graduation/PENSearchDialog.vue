@@ -147,7 +147,7 @@ export default {
       }
     },
     downloadMessage() {
-      return 'Download ' + docTypeFilename(this.downloadType);
+      return 'View ' + docTypeFilename(this.downloadType);
     },
   },
   methods: {
@@ -164,27 +164,17 @@ export default {
           responseType: 'blob'
         });
 
-        const contentDisposition = response.headers['content-disposition'];
-        let filename = this.student.pen + '_' + docTypeFilename(this.downloadType) + '_' + getTodayFormattedDate();
-        if (contentDisposition) {
-          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-          const matches = filenameRegex.exec(contentDisposition);
-          if (matches != null && matches[1]) {
-            filename = matches[1].replace(/['"]/g, '');
-          }
-        }
-        filename = filename.replace(/\s/g, '');
-
         const blob = response.data;
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(link.href);
+        const blobURL = window.URL.createObjectURL(blob);
 
-        let successMsg = `${docTypeFilename(this.downloadType)} downloaded for student`;
+        const newTab = window.open(blobURL, '_blank');
+        if (newTab) {
+          newTab.focus();
+        } else {
+          alert('Please allow pop-ups for this site to view the document.');
+        }
+
+        let successMsg = `${docTypeFilename(this.downloadType)} opened for student`;
         this.setSuccessAlert(successMsg);
 
       } catch (error) {
