@@ -96,7 +96,7 @@ import PrimaryButton from '../util/PrimaryButton.vue';
 import ApiService from '../../common/apiService';
 import {ApiRoutes} from '../../utils/constants';
 import alertMixin from '../../mixins/alertMixin';
-import {docTypeFilename, getTodayFormattedDate} from '../../utils/gdc/gradReports';
+import {docTypeFilename} from '../../utils/gdc/gradReports';
 
 export default {
   name: 'PENSearchDialog',
