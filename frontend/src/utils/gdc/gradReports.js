@@ -2,7 +2,6 @@
 
 import ApiService from '../../common/apiService';
 import {ApiRoutes, MINISTRY_NAME} from '../constants';
-import {appStore} from '../../store/modules/app';
 
 export function generateGradStartAndEndDateStrings(){
   let currentYr = new Date().getFullYear();
@@ -27,45 +26,22 @@ export function generateGradStartAndEndDateStrings(){
   return dates;
 }
 
-export function getTodayFormattedDate() {
-  const today = new Date();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const year = today.getFullYear();
-
-  return month + day + year;
-}
-
-async function downloadGradReportFile(response, schoolID, docTypeFilename, formattedDate) {
-  const contentDisposition = response.headers['content-disposition'];
-  const store = appStore();
-  const schoolMincode = store.activeSchoolsMap.get(schoolID)?.mincode;
-
-  let filename = `${schoolMincode}_${docTypeFilename}_${formattedDate}`;
-  if (contentDisposition) {
-    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-    const matches = filenameRegex.exec(contentDisposition);
-    if (matches != null && matches[1]) {
-      filename = matches[1].replace(/['"]/g, '');
-    }
-  }
-  filename = filename.replace(/\s/g, '');
-
+async function downloadGradReportFile(response) {
   const blob = response.data;
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  window.URL.revokeObjectURL(link.href);
+  const blobURL = window.URL.createObjectURL(blob);
+
+  const newTab = window.open(blobURL, '_blank');
+  if (newTab) {
+    newTab.focus();
+  } else {
+    alert('Please allow pop-ups for this site to view the report.');
+  }
 }
 
 export async function fetchAndDownloadGradReport(context, instituteID, reportType, docTypeFilename, docTypeName, isSchool, isSummary = true) {
   context.isLoading = true;
   const instituteType = isSchool ? 'school' : 'district';
   const url = `${ApiRoutes.gradReports.BASE_URL}/${instituteType}/${instituteID}/${isSummary ? 'summary' : 'tvr'}`;
-  const formattedDate = getTodayFormattedDate();
 
   try {
     const response = await ApiService.apiAxios.get(url, {
@@ -73,9 +49,9 @@ export async function fetchAndDownloadGradReport(context, instituteID, reportTyp
       responseType: 'blob'
     });
 
-    await downloadGradReportFile(response, instituteID, docTypeFilename, formattedDate);
+    await downloadGradReportFile(response);
 
-    let successMsg = `${docTypeName} downloaded for ${instituteType}`;
+    let successMsg = `${docTypeName} opened for ${instituteType}`;
     context.setSuccessAlert(successMsg);
 
   } catch (error) {
