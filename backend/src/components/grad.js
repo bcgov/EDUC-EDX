@@ -67,7 +67,7 @@ async function getStudentFilesetByPenFilesetId(req, res) {
     const params = {
       params: {
         pen: req.params.pen,
-        incomingFilesetId: req.query?.searchParams?.incomingFilesetId,
+        incomingFilesetID: req.query?.incomingFilesetID,
       }
     };
     if (req.params.districtID) {
@@ -108,7 +108,7 @@ async function getFilesetsPaginated(req, res) {
 
     if (req.params.pen) {
       search.push({
-        condition: 'OR',
+        condition: 'AND',
         searchCriteriaList: [
           { key: 'demographicStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
           { key: 'courseStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },

@@ -103,7 +103,7 @@ const gradSchoolFilesetByPenSchema = object({
     pen: string()
   }),
   query: object({
-    incomingFilesetId: string().optional()
+    incomingFilesetID: string().optional()
   })
 }).noUnknown();
 
@@ -114,7 +114,7 @@ const gradDistrictFilesetByPenSchema = object({
     pen: string()
   }),
   query: object({
-    incomingFilesetId: string().optional()
+    incomingFilesetID: string().optional()
   })
 }).noUnknown();
 
