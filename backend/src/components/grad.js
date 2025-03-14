@@ -62,6 +62,29 @@ async function downloadErrorReport(req, res) {
   }
 }
 
+async function getStudentFilesetByPenFilesetId(req, res) {
+  try {
+    const params = {
+      params: {
+        pen: req.params.pen,
+        incomingFilesetID: req.query?.incomingFilesetID,
+      }
+    };
+    if (req.params.districtID) {
+      params.params.districtID = req.params.districtID;
+    } else if (req.params.schoolID) {
+      params.params.schoolID = req.params.schoolID;
+    }
+    const token = getAccessToken(req);
+    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting error fileset object', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getFilesetsPaginated(req, res) {
   try {
     const search = [];
@@ -81,6 +104,15 @@ async function getFilesetsPaginated(req, res) {
           searchCriteriaList: [{ key: 'schoolID', value: req.query.searchParams.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
         });
       }
+    }
+
+    if (req.params.pen) {
+      search.push({
+        condition: 'AND',
+        searchCriteriaList: [
+          { key: 'demographicStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
+        ]
+      });
     }
 
     const now = new Date();
@@ -130,7 +162,7 @@ async function getFilesetsPaginated(req, res) {
 
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    log.error('Error getting error fileset student paginated list', e.stack);
+    log.error('Error getting error fileset paginated list', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -345,5 +377,6 @@ module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated,
-  downloadErrorReport
+  downloadErrorReport,
+  getStudentFilesetByPenFilesetId
 };
