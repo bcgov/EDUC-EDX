@@ -390,7 +390,7 @@
           width="25em"
           outlined
           rounded
-          @click="openGraduationCard()"
+          @click="openGraduationSchoolCard()"
         >
           <v-row class="pl-4">
             <v-col cols="4">
@@ -427,7 +427,7 @@
           width="25em"
           outlined
           rounded
-          @click="openGraduationCard()"
+          @click="openGraduationDistrictCard()"
         >
           <v-row class="pl-4">
             <v-col cols="4">
@@ -705,8 +705,11 @@ export default {
     openSDCDistrictCollection() {
       router.push({name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
-    openGraduationCard() {
-      router.push({name: 'graduation', params: {instituteIdentifierID: this.userInfo.activeInstituteIdentifier}});
+    openGraduationSchoolCard() {
+      router.push({name: 'graduationSchoolTabs', params: {schoolID: this.userInfo.activeInstituteIdentifier}});
+    },
+    openGraduationDistrictCard() {
+      router.push({name: 'graduationDistrictTabs', params: {districtID: this.userInfo.activeInstituteIdentifier}});
     },
     getSDCCollectionBySchoolId() {
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_COLLECTION_BY_SCHOOL_ID + `/${this.userInfo.activeInstituteIdentifier}`).then(response => {
