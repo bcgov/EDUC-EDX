@@ -151,10 +151,11 @@ export default {
         { title: 'Details', key: 'details', 
           subHeader: 
       [
-        {title: 'File Type', key: 'fileType', cols: '2'},
-        {title: 'Error/Warning', key: 'errors', cols: '2'},
-        {title: 'Error Field', key: 'field', cols: '3'},
-        {title: 'Description', key: 'desc', cols:'3'}
+        {title: 'File Type', key: 'fileType'},
+        {title: 'Error/Warning', key: 'errors'},
+        {title: 'Error Context', key: 'errorContext'},
+        {title: 'Error Field', key: 'field'},
+        {title: 'Description', key: 'desc', cols:'4'}
       ]
         },
       ],
