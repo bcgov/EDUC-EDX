@@ -1,22 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <button
-        type="button"
-        class="link-style ml-1"
-        @click="backButtonClick"
-      >
-        Return to GRAD Dashboard
-      </button>
-    </div>
-
-    <div class="border">
+    <div>
       <h3>District Level Reports</h3>
       <div class="sub-category-group mt-2">
         <button

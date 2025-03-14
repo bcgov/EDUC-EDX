@@ -2,20 +2,7 @@
   <v-container 
     fluid
   >
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to GRAD Dashboard</a>
-    </div>
     <div
-      class="border"
     >
       <v-row>
         <v-col class="d-flex justify-center">
