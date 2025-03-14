@@ -71,7 +71,8 @@ const FILTER_OPERATION = Object.freeze(
     IN_LEFT_JOIN: 'in_left_join',
     NONE_IN_DISTRICT: 'none_in_district',
     CUSTOM_CHILD_JOIN: 'custom_child_join',
-    EQUAL_WITH_LEFT_JOIN: 'eq_lj'
+    EQUAL_WITH_LEFT_JOIN: 'eq_lj',
+    CUSTOM_PEN_JOIN: 'custom_pen_join',
   }
 );
 const CONDITION = Object.freeze(
