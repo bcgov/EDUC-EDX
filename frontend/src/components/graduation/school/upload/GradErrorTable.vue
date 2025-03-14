@@ -56,19 +56,21 @@
               <v-row>
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
-                  cols="2"
+                 
                 > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
-                  cols="2"
-                  
                 >
                 <v-chip class="status-chip" :color="getStatusColor(error?.validationIssueSeverityCode)">
                   {{ formatText(error?.validationIssueSeverityCode) }}
                 </v-chip>
               </v-col>
-                <v-col v-if="column.subHeader[2].key === 'field'" cols="3">{{ error?.validationIssueFieldCodeDescription }}</v-col>
-                <v-col v-if="column.subHeader[3].key === 'desc'">
+                <v-col v-if="column.subHeader[2].key === 'errorContext'">
+                  <span v-if="error?.errorContext !== null">{{  error?.errorContext}}</span>
+                  <span v-else>-</span>
+                </v-col>
+                <v-col v-if="column.subHeader[3].key === 'field'">{{ error?.validationIssueFieldCodeDescription }}</v-col>
+                <v-col v-if="column.subHeader[4].key === 'desc'" cols="4">
                   <div v-html="error?.validationIssueDescription"></div> 
                 </v-col>
               </v-row>
