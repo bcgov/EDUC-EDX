@@ -148,6 +148,9 @@ nconf.defaults({
     rootURL: process.env.GRAD_REPORTS_API_ENDPOINT,
     summaryURL: process.env.GRAD_SUMMARY_REPORTS_API_ENDPOINT
   },
+  gradCurrentStudents: {
+    rootURL: process.env.GRAD_STUDENT_API_ENDPOINT
+  },
   frontendConfig: {
     bannerEnvironment: process.env.BANNER_ENVIRONMENT,
     bannerColor: process.env.BANNER_COLOR,

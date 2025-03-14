@@ -143,7 +143,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
         condition: null,
         searchCriteriaList: [{ key: 'incomingFileset.incomingFilesetID', value: req.params.activeIncomingFilesetID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
-    } 
+    }
 
     if (req.query.searchParams?.['moreFilters']) {
       let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
@@ -173,6 +173,66 @@ async function getErrorFilesetStudentPaginated(req, res) {
     log.error('Error getting error fileset student paginated list', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+async function getCurrentGradStudentsPaginated(req, res){
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
+  }
+
+  const search = [];
+
+  if(req.params.schoolID) {
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND }]
+    });
+  }
+
+  if (req.query.searchParams?.['moreFilters']) {
+    let criteriaArray = createCurrentGradStudentSearchCriteria(req.query.searchParams['moreFilters']);
+    criteriaArray.forEach(criteria => {
+      search.push(criteria);
+    });
+  }
+
+  const studentSearchParam = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: JSON.stringify(search)
+    }
+  };
+
+  const accessToken = getAccessToken(req);
+
+  console.log('Params: ' + JSON.stringify(studentSearchParam));
+  let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
+
+  data.content.forEach(item => {
+    if(item.schoolAtGradId){
+      const school = cacheService.getSchoolBySchoolID(item.schoolAtGradId);
+      item.schoolAtGraduationName = school.schoolName;
+    }else{
+      item.schoolAtGraduationName = '-';
+    }
+  });
+
+  return res.status(HttpStatus.OK).json(data);
+}
+
+function createCurrentGradStudentSearchCriteria(searchParams){
+  let searchCriteriaList = [];
+
+  Object.keys(searchParams).forEach(function(key){
+    let pValue = searchParams[key] ? searchParams[key].map(filter => filter.value) : null;
+    if(key === 'grade'){
+      searchCriteriaList.push({key: 'studentGrade', operation: FILTER_OPERATION.IN, value: pValue.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
+    }
+  });
+
+  return searchCriteriaList;
 }
 
 function toTableRow(validationIssues) {
@@ -345,5 +405,6 @@ module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated,
-  downloadErrorReport
+  downloadErrorReport,
+  getCurrentGradStudentsPaginated
 };
