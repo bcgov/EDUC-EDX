@@ -110,12 +110,7 @@ async function getFilesetsPaginated(req, res) {
       search.push({
         condition: 'AND',
         searchCriteriaList: [
-          {
-            key: 'pen',
-            value: req.params.pen,
-            operation: FILTER_OPERATION.CUSTOM_PEN_JOIN,
-            valueType: VALUE_TYPE.STRING
-          }
+          { key: 'demographicStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
         ]
       });
     }
