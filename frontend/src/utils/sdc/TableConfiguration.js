@@ -106,6 +106,42 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
   },
 );
 
+export const GRADE_10_12_FILTER = Object.freeze(
+  {
+    heading: 'Grade',
+    id: 'grade',
+    multiple: true,
+    key: 'grade',
+    filterOptions: [
+      {
+        title: 'Gr. 10',
+        id: 'grade10',
+        value: '10'
+      },
+      {
+        title: 'Gr. 11',
+        id: 'grade11',
+        value: '11'
+      },
+      {
+        title: 'Gr. 12',
+        id: 'grade12',
+        value: '12'
+      },
+      {
+        title: 'Adult Grad',
+        id: 'gradeAD',
+        value: 'AD'
+      },
+      {
+        title: 'Adult Non Grad',
+        id: 'gradeAN',
+        value: 'AN'
+      }
+    ]
+  },
+);
+
 export const GRADE_FILTER = Object.freeze(
   {
     heading: 'Grade',
@@ -799,6 +835,27 @@ export const FTE = Object.freeze(
         ]
       }
 
+    }
+  }
+);
+
+export const GRAD_CURRENT_STUDENTS = Object.freeze(
+  {
+    tableHeaders: [
+      { title: 'PEN', key: 'pen', align: 'start' },
+      { title: 'Local ID', key: 'localID', align: 'start' },
+      { title: 'Last Name', key: 'lastName', align: 'start' },
+      { title: 'First Name', key: 'firstName', align: 'start' },
+      { title: 'Middle Name', key: 'middleName', align: 'start' },
+      { title: 'Birthdate', key: 'dob', align: 'start' },
+      { title: 'Grade', key: 'studentGrade', align: 'start' },
+      { title: 'Program', key: 'programCode', align: 'start' },
+      { title: 'Program Completion Date', key: 'programCompletionDate', align: 'start' },
+      { title: 'School at Graduation', key: 'schoolAtGraduationName', align: 'start' },
+      { title: 'Honours Standing', key: 'honorsStanding', align: 'start' }
+    ],
+    allowedFilters: {
+      grade: GRADE_10_12_FILTER,
     }
   }
 );
