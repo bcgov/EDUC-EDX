@@ -189,13 +189,6 @@ async function getCurrentGradStudentsPaginated(req, res){
     });
   }
 
-  if (req.query.searchParams?.['moreFilters']) {
-    let criteriaArray = createCurrentGradStudentSearchCriteria(req.query.searchParams['moreFilters']);
-    criteriaArray.forEach(criteria => {
-      search.push(criteria);
-    });
-  }
-
   const studentSearchParam = {
     params: {
       pageNumber: req.query.pageNumber,
@@ -207,7 +200,6 @@ async function getCurrentGradStudentsPaginated(req, res){
 
   const accessToken = getAccessToken(req);
 
-  console.log('Params: ' + JSON.stringify(studentSearchParam));
   let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
 
   data.content.forEach(item => {
@@ -220,19 +212,6 @@ async function getCurrentGradStudentsPaginated(req, res){
   });
 
   return res.status(HttpStatus.OK).json(data);
-}
-
-function createCurrentGradStudentSearchCriteria(searchParams){
-  let searchCriteriaList = [];
-
-  Object.keys(searchParams).forEach(function(key){
-    let pValue = searchParams[key] ? searchParams[key].map(filter => filter.value) : null;
-    if(key === 'grade'){
-      searchCriteriaList.push({key: 'studentGrade', operation: FILTER_OPERATION.IN, value: pValue.toString(), valueType: VALUE_TYPE.STRING, condition: CONDITION.AND});
-    }
-  });
-
-  return searchCriteriaList;
 }
 
 function toTableRow(validationIssues) {
