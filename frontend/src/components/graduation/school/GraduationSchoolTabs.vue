@@ -3,23 +3,6 @@
     fluid
     class="px-16"
   >
-    <v-row class="mt-1 mb-1 px-5">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to Dashboard</a>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-divider class="divider" />
-      </v-col>
-    </v-row>
     <v-row no-gutters>
       <v-col>
         <v-tabs

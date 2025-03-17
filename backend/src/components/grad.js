@@ -207,6 +207,45 @@ async function getErrorFilesetStudentPaginated(req, res) {
   }
 }
 
+async function getCurrentGradStudentsPaginated(req, res){
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
+  }
+
+  const search = [];
+
+  if(req.params.schoolID) {
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND }]
+    });
+  }
+
+  const studentSearchParam = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: JSON.stringify(search)
+    }
+  };
+
+  const accessToken = getAccessToken(req);
+
+  let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
+
+  data.content.forEach(item => {
+    if(item.schoolAtGradId){
+      const school = cacheService.getSchoolBySchoolID(item.schoolAtGradId);
+      item.schoolAtGraduationName = school.schoolName;
+    }else{
+      item.schoolAtGraduationName = '-';
+    }
+  });
+
+  return res.status(HttpStatus.OK).json(data);
+}
+
 function toTableRow(validationIssues) {
   let fieldCodes = cacheService.getGradDataCollectionValidationFieldCodes();
   let updatedFieldCodes = [];
@@ -378,5 +417,6 @@ module.exports = {
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated,
   downloadErrorReport,
-  getStudentFilesetByPenFilesetId
+  getStudentFilesetByPenFilesetId,
+  getCurrentGradStudentsPaginated
 };

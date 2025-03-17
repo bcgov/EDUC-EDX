@@ -5,7 +5,9 @@ const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
-const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport, getStudentFilesetByPenFilesetId } = require('../components/grad');
+const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId
+} = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
 const {getCachedGradCollectionData} = require('../components/gdc-cache');
@@ -22,6 +24,9 @@ router.get('/validation-field-codes', passport.authenticate('jwt', {session: fal
 
 router.post('/school/:schoolID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
   checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradFileUploadSchema), scanFilePayload, uploadFile);
+
+router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), getCurrentGradStudentsPaginated);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema),
