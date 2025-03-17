@@ -75,6 +75,7 @@ async function getStudentFilesetByPenFilesetId(req, res) {
     } else if (req.params.schoolID) {
       params.params.schoolID = req.params.schoolID;
     }
+
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
 
@@ -111,6 +112,12 @@ async function getFilesetsPaginated(req, res) {
         condition: 'AND',
         searchCriteriaList: [
           { key: 'demographicStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
+        ]
+      });
+      search.push({
+        condition: 'AND',
+        searchCriteriaList: [
+          { key: 'filesetStatusCode', value: 'COMPLETED', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING },
         ]
       });
     }
