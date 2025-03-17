@@ -114,12 +114,6 @@ async function getFilesetsPaginated(req, res) {
           { key: 'demographicStudentEntities.pen', value: req.params.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
         ]
       });
-      search.push({
-        condition: 'AND',
-        searchCriteriaList: [
-          { key: 'filesetStatusCode', value: 'COMPLETED', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING },
-        ]
-      });
     }
 
     const now = new Date();

@@ -1,13 +1,8 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <h3>Student Search</h3>
-      </v-col>
-    </v-row>
     <v-row class="mb-1">
       <v-col>
-        Enter a PEN below to search for a student in the collection
+        Enter a PEN below to search in the schools uploaded graduation data files.
       </v-col>
     </v-row>
     <v-form
