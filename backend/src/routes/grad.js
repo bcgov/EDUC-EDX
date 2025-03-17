@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
