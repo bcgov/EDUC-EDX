@@ -34,6 +34,15 @@
             <span v-else-if="props.item['courseLevel'] === null">no course level</span>
             <span v-else>{{ props.item['courseCode'] }}{{ props.item['courseLevel'] }}</span>
           </span>
+          <span v-else-if="column.key === 'status'">
+                <v-icon
+                  v-bind="tooltipProps"
+                  size="25"
+                  :color="getIssueIconColor(props.item['studentStatusCode'])"
+                >
+                  {{ getIssueIcon(props.item['studentStatusCode']) }}
+                </v-icon>
+            </span>
           <span v-else-if="column.key === 'session'">
             <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">no session provided</span>
             <span v-else> {{ props.item['courseYear'] }}{{ props.item['courseMonth'] }}</span>
@@ -91,8 +100,25 @@ export default {
             
   },
   methods: {
-    rowclicked() {
-  
+    getIssueIcon(issue){
+      switch (issue) {
+      case 'ERROR':
+        return 'mdi-alert-circle-outline';
+      case 'WARNING':
+        return 'mdi-alert-outline';
+      default:
+        return '';
+      }
+    },
+    getIssueIconColor(issue){
+      switch (issue) {
+      case 'ERROR':
+        return '#d90606';
+      case 'WARNING':
+        return '#2196F3';
+      default:
+        return '';
+      }
     },
        
   }
