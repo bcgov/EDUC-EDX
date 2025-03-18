@@ -1,11 +1,4 @@
 <template>
-  <v-row class="align-center searchBox">
-    <v-col
-      cols="12"
-      md="4"
-      lg="4"
-      class="d-flex justify-start"
-    >
       <v-autocomplete
         id="school-code-name-filter"
         v-model="schoolCodeNameFilter"
@@ -39,8 +32,6 @@
           </v-list-item>
         </template>
       </v-autocomplete>
-    </v-col>
-  </v-row>
 </template>
 
 <script>
