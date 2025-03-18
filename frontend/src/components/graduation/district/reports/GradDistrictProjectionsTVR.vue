@@ -2,8 +2,7 @@
   <v-container
     fluid
   >
-    <div
-    >
+    <div>
       <h4 class="mt-8">
         Individual TVRs by PEN
       </h4>
@@ -37,42 +36,11 @@
       <div class="sub-category-group mt-2">
         <h3>School Level Graduation Projection Summary Reports</h3>
         <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
-        <v-row
-          class="align-center searchBox"
-        >
-          <v-col
-            cols="12"
-            md="4"
-            lg="4"
-            class="d-flex justify-start"
-          >
-            <v-autocomplete
-              id="name-text-field"
-              v-model="schoolCodeNameFilter"
-              label="School Code & Name"
-              variant="underlined"
-              item-value="schoolID"
-              item-title="schoolCodeName"
-              autocomplete="off"
-              :items="schoolSearchNames"
-              :clearable="true"
-              @update:model-value="searchButtonClick"
-            >
-              <template #item="{ props, item }">
-                <v-list-item
-                  v-bind="props"
-                  title=""
-                >
-                  <v-list-item-title style="color: black !important;">
-                    {{
-                      item.title
-                    }}
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-            </v-autocomplete>
-          </v-col>
-        </v-row>
+        <SchoolCodeNameFilter
+          v-model="schoolCodeNameFilter"
+          :items="schoolSearchNames"
+          @search="searchButtonClick"
+        />
         <div
           id="districtGradReports"
           @click="handleDistrictReportsDivClick"
@@ -193,10 +161,13 @@ import {isValidPEN} from '../../../../utils/validation';
 import PENSearchDialog from '../../PENSearchDialog.vue';
 import {appStore} from '../../../../store/modules/app';
 import {mapState} from 'pinia';
+import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictProjectionsTVR',
   components: {
+    SchoolCodeNameFilter,
     PENSearchDialog,
     PrimaryButton
   },
@@ -321,6 +292,7 @@ export default {
             let schoolItem = {
               schoolCodeName: school.mincode + ' - ' + school.schoolName,
               schoolID: school.schoolID,
+              status: getStatusAuthorityOrSchool(school)
             };
             this.schoolSearchNames.push(schoolItem);
           }
@@ -352,13 +324,6 @@ export default {
 </script>
 
 <style scoped>
-
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin: 2em;
-}
 
 h3 {
   color: #38598a;
