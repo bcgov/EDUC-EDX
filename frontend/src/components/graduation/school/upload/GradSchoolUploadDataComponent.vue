@@ -2,8 +2,7 @@
   <v-container 
     fluid
   >
-    <div
-    >
+    <div>
       <v-row>
         <v-col class="d-flex justify-center">
           <h1>Upload Graduation Data Files</h1>
@@ -42,9 +41,9 @@
         v-model:items-per-page.sync="pageSize"
         :items-length="totalElements"
         :items="filesetList"
-        @update:page="getFilesetPaginated"
         :headers="headers"
         mobile-breakpoint="0"
+        @update:page="getFilesetPaginated"
       >
         <template #item="props">
           <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">

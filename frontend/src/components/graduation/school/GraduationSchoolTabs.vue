@@ -34,7 +34,7 @@
             value="studentSearch"
             prepend-icon="mdi-account-search-outline"
           >
-            Student Search
+            Find Student in Data Submissions
           </v-tab>
           <v-tab
             id="currentStudents"

@@ -75,6 +75,7 @@ async function getStudentFilesetByPenFilesetId(req, res) {
     } else if (req.params.schoolID) {
       params.params.schoolID = req.params.schoolID;
     }
+
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
 
