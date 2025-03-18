@@ -304,7 +304,6 @@ export default {
   emits: [],
   data() {
     return {
-      isLoading: false,
       rules: Rules,
       studentPEN: null,
       isValid: false,
