@@ -23,6 +23,27 @@ export const WARNING_FILTER = Object.freeze(
   }
 );
 
+export const PROGRAM_COMPLETION_FILTER = Object.freeze(
+  {
+    heading: 'Program',
+    id: 'programCompletion',
+    multiple: false,
+    key: 'programCompletion',
+    filterOptions: [
+      {
+        title: 'Program Complete',
+        id: 'programComplete',
+        value: 'PROGRAM_COMPLETE'
+      },
+      {
+        title: 'Program Incomplete',
+        id: 'programIncomplete',
+        value: 'PROGRAM_INCOMPLETE'
+      }
+    ]
+  }
+);
+
 export const STUDENT_TYPE_FILTER = Object.freeze(
   {
     heading: 'Student Type',
@@ -856,6 +877,7 @@ export const GRAD_CURRENT_STUDENTS = Object.freeze(
     ],
     allowedFilters: {
       grade: GRADE_10_12_FILTER,
+      programComplete: PROGRAM_COMPLETION_FILTER
     }
   }
 );

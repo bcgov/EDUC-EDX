@@ -250,7 +250,6 @@ async function getSchoolsPaginated(req){
       searchCriteriaList: JSON.stringify(schoolSearchCriteria)
     }
   };
-
   const accessToken = getAccessToken(req);
   return getDataWithParams(accessToken, `${config.get('institute:rootURL')}/school/paginated`, schoolSearchParam, req.session?.correlationID);
 }
