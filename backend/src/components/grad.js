@@ -1,6 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData,
-  logApiError
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData
 } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
