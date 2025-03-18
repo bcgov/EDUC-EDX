@@ -195,7 +195,7 @@ import {appStore} from '../../../../store/modules/app';
 import {mapState} from 'pinia';
 
 export default {
-  name: 'GradProjectionsTVR',
+  name: 'GradDistrictProjectionsTVR',
   components: {
     PENSearchDialog,
     PrimaryButton

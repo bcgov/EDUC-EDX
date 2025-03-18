@@ -89,12 +89,12 @@
         style="top:0; height: 100%;"
         rounded="true"
       >
-      <GradErrorFilters
-        :filters="config.allowedFilters"
-        @apply-filters="applyFilters"
-        @clear-filters="clearFilters"
-        @close="showFilters= !showFilters"
-      />
+        <GradErrorFilters
+          :filters="config.allowedFilters"
+          @apply-filters="applyFilters"
+          @clear-filters="clearFilters"
+          @close="showFilters= !showFilters"
+        />
       </v-navigation-drawer>
     </div>
   </v-container>
@@ -108,7 +108,7 @@ import { authStore } from '../../../../store/modules/auth';
 import { mapState } from 'pinia';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
-import GradErrorFilters from './GradErrorFilters.vue';
+import GradErrorFilters from '../../GradFilters.vue';
 import { ERROR_REPORT_FILTERS } from '../../../../utils/gdc/Filters';
 import { gdcStore } from '../../../../store/modules/gdc';
       

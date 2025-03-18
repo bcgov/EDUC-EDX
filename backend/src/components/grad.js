@@ -1,5 +1,7 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData} = require('./utils');
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData,
+  logApiError
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -178,7 +180,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
     } 
 
     if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      let criteriaArray = createMoreFiltersErrorFilesetSearchCriteria(req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
       });
@@ -221,6 +223,13 @@ async function getCurrentGradStudentsPaginated(req, res){
     });
   }
 
+  if (req.query.searchParams?.['moreFilters']) {
+    let criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
+    criteriaArray.forEach(criteria => {
+      search.push(criteria);
+    });
+  }
+
   const studentSearchParam = {
     params: {
       pageNumber: req.query.pageNumber,
@@ -231,7 +240,6 @@ async function getCurrentGradStudentsPaginated(req, res){
   };
 
   const accessToken = getAccessToken(req);
-
   let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
 
   data.content.forEach(item => {
@@ -257,7 +265,54 @@ function toTableRow(validationIssues) {
   return validationIssues;
 }
 
-function createMoreFiltersSearchCriteria(searchFilter = []) {
+function createMoreFiltersCurrentStudentsSearchCriteria(searchFilter = []) {
+  let search = [];
+  for (const [key, filter] of Object.entries(searchFilter)) {
+    let pValue = filter ? filter.map(filter => filter.value) : null;
+    if (key === 'grade' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'studentGrade', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'pen' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'pen', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'firstName' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'firstName', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'lastName' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'lastName', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'localID' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'localID', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'programComplete') {
+      let pValueID = filter ? filter.map(filter => filter.id) : null;
+      if(pValueID.toString() === 'programComplete'){
+        search.push({
+          condition: CONDITION.AND,
+          searchCriteriaList: [{ key: 'programCompletionDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+        });
+      }else{
+        search.push({
+          condition: CONDITION.AND,
+          searchCriteriaList: [{ key: 'programCompletionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+        });
+      }
+    }
+  }
+  return search;
+}
+
+function createMoreFiltersErrorFilesetSearchCriteria(searchFilter = []) {
   let penLocalIdFilter = [];
   let nameFilter = [];
   let fileTypeList = [];

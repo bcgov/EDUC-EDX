@@ -2,9 +2,6 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        <h3 class="subHeading pt-4">
-          Current Students
-        </h3>
         <h4 style="font-weight: normal">
           Below is a table of all the current students reported to the Ministry by your school.
         </h4>
@@ -42,7 +39,7 @@
           :data="studentList"
           :total-elements="totalElements"
           :is-loading="isLoading"
-          :reset="true"
+          reset
           @reload="reload"
         />
       </v-col>
@@ -58,8 +55,10 @@
       style="top:0; height: 100%;"
       rounded="true"
     >
-      <Filters
+      <GradErrorFilters
         :filters="config.allowedFilters"
+        :show-error-field="false"
+        :show-program-field="true"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
         @close="showFilters= !showFilters"
@@ -74,15 +73,15 @@ import { mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import CustomTable from '../../../common/CustomTable.vue';
 import {GRAD_CURRENT_STUDENTS} from '../../../../utils/sdc/TableConfiguration';
-import Filters from '../../../common/Filters.vue';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
+import GradErrorFilters from '../../GradFilters.vue';
 
 export default {
   name: 'GradSchoolCurrentStudents',
   components: {
-    Filters,
+    GradErrorFilters,
     CustomTable
 
   },
@@ -118,24 +117,24 @@ export default {
     }
   },
   async created() {
-    this.loadStudents();
   },
   methods: {
     toggleFilters() {
       this.showFilters= !this.showFilters;
     },
     applyFilters($event) {
+      this.pageNumber = 1;
       this.filterSearchParams.moreFilters = cloneDeep($event);
       this.loadStudents();
     },
     clearFilters() {
+      this.pageNumber = 1;
       this.filterSearchParams.moreFilters = {};
       this.loadStudents();
     },
     loadStudents() {
       this.isLoading= true;
       this.filterSearchParams.schoolID = this.schoolID;
-      console.log('Filt: ' + JSON.stringify(this.filterSearchParams));
 
       ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/current-students', {
         params: {

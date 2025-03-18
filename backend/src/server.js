@@ -71,16 +71,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   }).catch((e) => {
     log.error('Error loading SCHOOL_ORGANIZATION_TYPES data during boot .', e);
   });
-
-  cacheService.loadDataToCache(
-    constants.CACHE_KEYS.SCHOOL_REPORTING_REQUIREMENT_CODES,
-    'institute:reportingRequirementCodesURL'
-  ).then(() => {
+  cacheService.loadDataToCache(constants.CACHE_KEYS.SCHOOL_REPORTING_REQUIREMENT_CODES,    'institute:reportingRequirementCodesURL' ).then(() => {
     log.info('Loaded SCHOOL_REPORTING_REQUIREMENT_TYPES data to memory');
   }).catch((e) => {
     log.error('Error loading SCHOOL_REPORTING_REQUIREMENT_TYPES data during boot .', e);
   });
-
   cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_NEIGHBORHOOD_LEARNING_TYPES, 'institute:neighbourhoodLearningURL').then(() => {
     log.info('Loaded SCHOOL_NEIGHBOURHOOD_LEARNING_TYPES data to memory');
   }).catch((e) => {
@@ -137,6 +132,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
       log.info('Loaded GDC_VALIDATION_FIELD_CODES data to memory');
     }).catch((e) => {
       log.error('Error loading GDC_VALIDATION_FIELD_CODES data during boot.', e);
+    });
+    cacheService.loadDataToCache(constants.CACHE_KEYS.GDC_PROGRAM_CODES, 'grad:gradProgramCodesURL').then(() => {
+      log.info('Loaded GDC_PROGRAM_CODES data to memory');
+    }).catch((e) => {
+      log.error('Error loading GDC_PROGRAM_CODES data during boot.', e);
     });
   }
 

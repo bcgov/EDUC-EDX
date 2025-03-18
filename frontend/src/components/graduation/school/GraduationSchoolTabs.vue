@@ -64,7 +64,7 @@
               />
             </v-window-item>
             <v-window-item value="gradProjections">
-              <GradProjectionsTVR
+              <GradSchoolProjectionsTVR
                 :school-i-d="schoolID"
               />
             </v-window-item>
@@ -97,7 +97,7 @@ import { appStore } from '../../../store/modules/app';
 import { mapState } from 'pinia';
 import {PAGE_TITLES} from '../../../utils/constants';
 import GradSchoolUploadDataComponent from './upload/GradSchoolUploadDataComponent.vue';
-import GradProjectionsTVR from '../district/reports/GradDistrictProjectionsTVR.vue';
+import GradSchoolProjectionsTVR from '../school/reports/GradSchoolProjectionsTVR.vue';
 import GradReportsAndTranscripts from './reports/GradSchoolReportsAndTranscripts.vue';
 import GradSchoolStudentSearch from './students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './students/GradSchoolCurrentStudents.vue';
@@ -108,7 +108,7 @@ export default {
     GradSchoolCurrentStudents,
     GradSchoolStudentSearch,
     GradReportsAndTranscripts,
-    GradProjectionsTVR,
+    GradSchoolProjectionsTVR,
     GradSchoolUploadDataComponent
   },
   mixins: [alertMixin],
