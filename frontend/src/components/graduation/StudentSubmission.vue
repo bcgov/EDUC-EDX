@@ -21,11 +21,24 @@
     <v-divider />
 
     <v-card-text>
+      <v-row>
+        <v-col>
+          <h4>Below is a list of submissions for the student</h4>
+        </v-col>
+      </v-row>
       <v-list
         v-model:selected="selected"
         :items="submittedStudentRecord"
         @update:selected="refreshSearch"
       >
+      <v-row class="heading">
+        <v-col cols="5">
+          Submission Date
+        </v-col>
+        <v-col>
+          Upload User
+        </v-col>
+      </v-row>
         <v-list-item
           v-for="(item, index) in submittedStudentRecord"
           :key="index"
@@ -126,5 +139,11 @@ export default {
 /deep/ .active {
   color: white;
   background-color: #38598a;
+}
+
+.heading {
+color: grey;
+padding-left: 1rem;
+padding-bottom: 10px;
 }
 </style>

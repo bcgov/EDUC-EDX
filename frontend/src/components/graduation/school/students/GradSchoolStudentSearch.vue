@@ -82,7 +82,15 @@
           <div class="border">
             <v-row class="name-header">
               <v-col>
-                <h4>{{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}</h4>
+                <span>
+                  <v-icon
+                  size="25"
+                  :color="getIssueIconColor(demStudentData?.studentStatusCode)"
+                >
+                  {{ getIssueIcon(demStudentData?.studentStatusCode) }}
+                </v-icon>
+                {{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}
+                </span>
               </v-col>
             </v-row>
             <v-row>
@@ -291,6 +299,7 @@ export default {
       view: 'course',
       showSubmission: false,
       courseHeaders: [
+        { key: 'status', align: 'start'},
         { title: 'Course', key: 'course', align: 'start'},
         { title: 'Session', key: 'session', align: 'end'},
         { title: 'Status', key: 'courseStatus', align: 'end'},
@@ -303,6 +312,7 @@ export default {
         { title: 'Related Course', key: 'relatedCourse', align: 'end'},
       ],
       assessmentHeaders: [
+        { key: 'status', align: 'start'},
         { title: 'Assessment', key: 'courseCode', align: 'start'},
         { title: 'Session', key: 'session', align: 'end'},
         { title: 'Status', key: 'courseStatus', align: 'end'},
@@ -343,6 +353,7 @@ export default {
     },
     async searchStudent() {
       this.isLoading= true;
+      this.noDataFlag=false;
       this.filterSearchParams.pen = this.studentPEN;
       await this.getStudentSubmissions();
       await this.findStudentInFilesetByPEN();
@@ -363,7 +374,12 @@ export default {
           this.courseData = response.data.courseStudents;
         }).catch(error => {
           console.error(error);
-          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail. Please try again later.');
+          this.isLoading = false;
+          if(error?.response?.status == 404) {
+            this.noDataFlag=true;
+          } else {
+            setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail. Please try again later.');
+          }
         });
     },
     async getStudentSubmissions() {
@@ -379,19 +395,10 @@ export default {
       }).then(response => {
         this.filesetStudentSubmissions = response.data.content;
         this.totalElements = response.data.totalElements;
-        if(isEmpty(this.selectedSubmission)) {
-          let createDate =  LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
-          let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-          this.selectedSubmission = this.filesetStudentSubmissions[0];
-        } else {
-          console.log( this.selectedSubmission);
-          let createDate =  this.selectedSubmission.createDate;
-          let createTime = this.selectedSubmission.createTime;
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+        if(response.data.content.length > 0) {
+          this.setIncomingFilesetIDSelection();
         }
       }).catch(error => {
-        clearInterval(this.interval);
         console.error(error);
         this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
       });
@@ -399,10 +406,23 @@ export default {
     clear() {
       this.studentPEN = null;
       this.isValid = false;
+      this.selectedSubmission = null;
+      this.selectedSubmissionText = '';
+    },
+    setIncomingFilesetIDSelection() {
+      if(isEmpty(this.selectedSubmission)) {
+          let createDate =  LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
+          let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
+          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+          this.selectedSubmission = this.filesetStudentSubmissions[0];
+        } else {
+          let createDate =  this.selectedSubmission.createDate;
+          let createTime = this.selectedSubmission.createTime;
+          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+        }
     },
     showCourse() {
       this.view = 'course';
-  
     },
     showAssessment() {
       this.view = 'assessment';
@@ -418,7 +438,27 @@ export default {
         return last;
       }
       return '';
-    }
+    },
+    getIssueIcon(issue){
+      switch (issue) {
+      case 'ERROR':
+        return 'mdi-alert-circle-outline';
+      case 'WARNING':
+        return 'mdi-alert-outline';
+      default:
+        return '';
+      }
+    },
+    getIssueIconColor(issue){
+      switch (issue) {
+      case 'ERROR':
+        return '#d90606';
+      case 'WARNING':
+        return '#2196F3';
+      default:
+        return '';
+      }
+    },
   },
 };
 </script>
