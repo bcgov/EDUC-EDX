@@ -36,11 +36,16 @@
       <div class="sub-category-group mt-2">
         <h3>School Level Graduation Projection Summary Reports</h3>
         <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
-        <SchoolCodeNameFilter
-          v-model="schoolCodeNameFilter"
-          :items="schoolSearchNames"
-          @search="searchButtonClick"
-        />
+        <v-row>
+          <v-col cols="4">
+            <SchoolCodeNameFilter
+              v-model="schoolCodeNameFilter"
+              :items="schoolSearchNames"
+              @search="searchButtonClick"
+            />
+          </v-col>
+        </v-row>
+
         <div
           id="districtGradReports"
           @click="handleDistrictReportsDivClick"

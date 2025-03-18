@@ -4,7 +4,7 @@
       <v-col>
         Enter a PEN below to search in the schools uploaded graduation data files.
       </v-col>
-    </v-row>
+    </v-row> 
     <v-form
       v-model="isValid"
       class="d-flex"
@@ -14,7 +14,7 @@
           <v-text-field
             ref="studentPENField"
             v-model="studentPEN"
-            placeholder="Enter PEN"
+            label="Enter PEN"
             :rules="[rules.required(),rules.validPEN()]"
             variant="underlined"
           />
@@ -361,7 +361,8 @@ export default {
     async findStudentInFilesetByPEN() {
       await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/pen/${this.studentPEN}`, {
         params: {
-          incomingFilesetID: this.incomingFilesetID
+          incomingFilesetID: this.incomingFilesetID,
+          schoolID: this.$route.params.schoolID
         }
       })
         .then(response => {
@@ -369,7 +370,7 @@ export default {
           if(isEmpty(response.data)) {
             this.noDataFlag=true;
           }
-          this.demStudentData = response.data.demographicStudents[0];
+          this.demStudentData = response.data.demographicStudent;
           this.assessmentData = response.data.assessmentStudents;
           this.courseData = response.data.courseStudents;
         }).catch(error => {
@@ -397,6 +398,8 @@ export default {
         this.totalElements = response.data.totalElements;
         if(response.data.content.length > 0) {
           this.setIncomingFilesetIDSelection();
+        } else {
+          this.selectedSubmission = null;
         }
       }).catch(error => {
         console.error(error);

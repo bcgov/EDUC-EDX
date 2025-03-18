@@ -39,11 +39,16 @@
           </p>
         </v-col>
       </v-row>
-      <SchoolCodeNameFilter
-        v-model="schoolCodeNameFilter"
-        :items="schoolSearchNames"
-        @search="searchButtonClick"
-      />
+      <v-row>
+        <v-col cols="4">
+          <SchoolCodeNameFilter
+            v-model="schoolCodeNameFilter"
+            :items="schoolSearchNames"
+            @search="searchButtonClick"
+          />
+        </v-col>
+      </v-row>
+      
       <v-data-table-server
         v-model:page.sync="pageNumber"
         v-model:items-per-page.sync="pageSize"

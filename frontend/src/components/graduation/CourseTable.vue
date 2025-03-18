@@ -36,7 +36,6 @@
           </span>
           <span v-else-if="column.key === 'status'">
                 <v-icon
-                  v-bind="tooltipProps"
                   size="25"
                   :color="getIssueIconColor(props.item['studentStatusCode'])"
                 >
