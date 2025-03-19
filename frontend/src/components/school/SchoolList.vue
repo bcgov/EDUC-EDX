@@ -8,20 +8,6 @@
       flat
     />
     <div v-else>
-      <v-row>
-        <v-col class="mt-1 d-flex justify-start">
-          <v-icon
-            small
-            color="#1976d2"
-          >
-            mdi-arrow-left
-          </v-icon>
-          <a
-            class="ml-1"
-            @click="backButtonClick"
-          >Return to Dashboard</a>
-        </v-col>
-      </v-row>
       <v-row
         class="px-3 py-0 align-center searchBox"
       >
@@ -272,7 +258,7 @@ import alertMixin from '../../mixins/alertMixin';
 import {formatPhoneNumber, formatContactName} from '../../utils/format';
 import {getStatusColorAuthorityOrSchool, getStatusAuthorityOrSchool, isContactCurrent} from '../../utils/institute/status';
 import {edxStore} from '../../store/modules/edx';
-import {LocalDateTime} from "@js-joda/core";
+import {LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'SchoolListPage',
@@ -456,7 +442,7 @@ export default {
 
         if (oldestPrincipal !== null &&
             LocalDateTime.parse(oldestPrincipal.effectiveDate)
-                .isBefore(LocalDateTime.parse(contact.effectiveDate))) {
+              .isBefore(LocalDateTime.parse(contact.effectiveDate))) {
           continue;
         }
         oldestPrincipal = contact;

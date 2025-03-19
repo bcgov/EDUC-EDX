@@ -4,12 +4,6 @@
       <v-col>
         <h2 class="subjectHeading">School Year: {{ schoolYear.replace('-','/') }}</h2>
       </v-col>
-    </v-row>    
-    <v-row no-gutters class="mt-2 mb-2 d-flex justify-start">
-      <v-col class="mt-1 d-flex justify-start">
-        <v-icon small color="#1976d2"> mdi-arrow-left </v-icon>
-        <a class="ml-1" @click="backToAssesmentSessions()">Return to Assessment Sessions</a>
-      </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
