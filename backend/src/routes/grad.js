@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
-const { validateAccessToken, checkEdxUserPermission } = require('../components/permissionUtils');
+const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
   getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId
@@ -27,41 +27,37 @@ router.get('/grad-program-codes', passport.authenticate('jwt', {session: false},
   validateAccessToken, getCachedGradCollectionData(constants.CACHE_KEYS.GDC_PROGRAM_CODES, 'grad:gradProgramCodesURL'));
 
 router.post('/school/:schoolID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradFileUploadSchema), scanFilePayload, uploadFile);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradFileUploadSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, scanFilePayload, uploadFile);
 
 router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), getCurrentGradStudentsPaginated);
-
-router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema),
-  getErrorFilesetStudentPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsPaginated);
 
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetPaginatedSchema),
-  getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+
+router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, getErrorFilesetStudentPaginated);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/errorReportDownload', auth.refreshJWT, isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema),
-  downloadErrorReport);
+  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, downloadErrorReport);
 
 router.post('/district/:districtID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFileUploadSchema), scanFilePayload, uploadFile);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFileUploadSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, scanFilePayload, uploadFile);
 
 router.get('/fileset/district/:districtID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetPaginatedSchema),
-  getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolPenFilesetPaginatedSchema), getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetByPenSchema), getStudentFilesetByPenFilesetId);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetByPenSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/fileset/district/:districtID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictPenFilesetPaginatedSchema), getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictPenFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetByPenSchema), getStudentFilesetByPenFilesetId);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 
 
