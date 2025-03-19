@@ -6,18 +6,6 @@
     <v-row>
       <v-col>
         <v-row class="pt-0">
-          <v-col class="mt-1 d-flex justify-start">
-            <v-icon
-              small
-              color="#1976d2"
-            >
-              mdi-arrow-left
-            </v-icon>
-            <a
-              class="ml-1"
-              @click="backButtonClick"
-            >Return to Dashboard</a>
-          </v-col>
           <v-col class="d-flex justify-end">
             <PrimaryButton
               id="newMessageBtn"

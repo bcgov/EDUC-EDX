@@ -1,20 +1,5 @@
 <template>
   <v-container fluid>
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <button
-        type="button"
-        class="link-style ml-1"
-        @click="backButtonClick"
-      >
-        Return to GRAD Dashboard
-      </button>
-    </div>
     <div class="border">
       <h3>Transcript Verification Reports (TVRs)</h3>
       <p>For current students reported in final year of a graduation program (Grade 12 or AD)</p>

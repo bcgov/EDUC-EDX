@@ -6,25 +6,6 @@
     />
     <div v-else>
       <div>
-        <v-row>
-          <v-col class="d-flex justify-center">
-            <v-card
-              flat
-              min-width="55em"
-            >
-              <v-icon
-                small
-                color="#1976d2"
-              >
-                mdi-arrow-left
-              </v-icon>
-              <a
-                class="ml-1 mt-1"
-                @click="backButtonClick"
-              >Return to Dashboard</a>
-            </v-card>
-          </v-col>
-        </v-row>
         <v-row
           no-gutters
           class="mt-2"

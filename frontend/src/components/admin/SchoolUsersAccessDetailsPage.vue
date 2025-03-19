@@ -21,25 +21,6 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="mt-1 d-flex justify-start">
-            <v-icon
-              class="mt-1"
-              small
-              color="#1976d2"
-            >
-              mdi-arrow-left
-            </v-icon>
-            <a
-              v-if="isDistrictUser"
-              class="ml-1 mt-1"
-              @click="backButtonClick"
-            >Return to School User Management</a>
-            <a
-              v-else
-              class="ml-1 mt-1"
-              @click="backToHome"
-            >Return to Dashboard</a>
-          </v-col>
           <v-col class="d-flex justify-end">
             <v-tooltip
               v-model="showTooltip"
