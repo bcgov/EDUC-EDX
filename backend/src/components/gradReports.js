@@ -114,6 +114,7 @@ async function handleReportDownload(req, res, reportType) {
     const contentType = result.headers?.['content-type'] || 'application/pdf';
     res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
     res.setHeader('Content-Type', contentType);
+    res.setHeader('filename', fileName);
     const buffer = Buffer.from(result.data);
     return res.status(HttpStatus.OK).send(buffer);
 

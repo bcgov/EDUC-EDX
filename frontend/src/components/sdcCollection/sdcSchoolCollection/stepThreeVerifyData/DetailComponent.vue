@@ -147,7 +147,7 @@
 
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import CustomTable from '../../../common/CustomTable.vue';
+import CustomTable from '../../common/SDCCustomTable.vue';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';

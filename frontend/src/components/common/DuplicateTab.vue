@@ -259,7 +259,7 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import CustomTable from './CustomTable.vue';
+import CustomTable from '../sdcCollection/common/SDCCustomTable.vue';
 import ProgramDuplicateResolution from '../sdcCollection/sdcDistrictCollection/duplicates/ProgramDuplicateResolution.vue';
 import ChangeGrade from '../sdcCollection/sdcDistrictCollection/duplicates/ChangeGrade.vue';
 import EnrollmentDuplicateResolveViaRemove from '../sdcCollection/sdcDistrictCollection/duplicates/EnrollmentDuplicateResolveViaRemove.vue';

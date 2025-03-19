@@ -179,11 +179,11 @@
 
 <script>
 
-import {displayName} from '../../utils/format';
-import {sdcCollectionStore} from '../../store/modules/sdcCollection';
+import {displayName} from '../../../utils/format';
+import {sdcCollectionStore} from '../../../store/modules/sdcCollection';
 
 export default {
-  name: 'CustomTable',
+  name: 'SDCCustomTable',
   components: {
 
   },

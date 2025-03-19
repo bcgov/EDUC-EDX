@@ -70,6 +70,48 @@ export async function fetchAndDownloadGradReport(context, instituteID, reportTyp
   }
 }
 
+export async function downloadDocument(context, studenPEN, downloadType) {
+  const url = `${ApiRoutes.gradReports.BASE_URL}/student/report`;
+
+  try {
+    const response = await ApiService.apiAxios.get(url, {
+      params: {
+        pen: studenPEN,
+        docType: downloadType,
+      },
+      responseType: 'blob'
+    });
+
+    const blob = response.data;
+    const blobURL = window.URL.createObjectURL(blob);
+
+    const newTab = window.open(blobURL, '_blank');
+    newTab.onload = () => {
+      // And then add a timeout to guarentee the title is changed
+      setTimeout(() => {
+        newTab.document.title = response.headers.filename;
+      }, 100);
+    };
+
+    if (newTab) {
+      newTab.focus();
+    } else {
+      alert('Please allow pop-ups for this site to view the document.');
+    }
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    let errorMsg;
+
+    if(error.code === 'ERR_BAD_REQUEST'){
+      errorMsg = `${docTypeFilename(downloadType)} not found for student`;
+    } else {
+      errorMsg = 'Error encountered while attempting to retrieve document';
+    }
+
+    context.setFailureAlert(errorMsg);
+  }
+}
+
 export async function searchStudentByPen(context, pen, onSuccess) {
   try {
     const response = await ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-grad-pen', {
