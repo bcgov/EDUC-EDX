@@ -38,7 +38,9 @@ const gradErrorFilesetStudentPaginatedSchema = object({
     pageNumber: number().moreThan(-1).integer().optional(),
     pageSize: number().positive().integer().optional(),
     sort: object().optional(),
-    searchParams: object().optional()
+    searchParams: object().optional(),
+    schoolID: string().optional(),
+    districtID: string().optional(),
   })
 }).noUnknown();
 

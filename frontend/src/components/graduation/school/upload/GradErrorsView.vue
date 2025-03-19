@@ -28,7 +28,7 @@
           </span>
           <router-link
             class="ml-2"
-            :to="{ path: downloadReportURL() }"
+            :to="downloadReportURL()"
             target="_blank"
           >
             <v-icon
@@ -181,7 +181,16 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/errorReportDownload`;
+      let query = {};
+      if (this.userInfo && this.userInfo.activeInstituteType === 'SCHOOL') {
+        query.schoolID = this.instituteIdentifierID;
+      } else {
+        query.districtID = this.instituteIdentifierID;
+      }
+      return {
+        path: `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/errorReportDownload`,
+        query
+      };
     },
     toggleFilters() {
       this.showFilters= !this.showFilters;
@@ -200,6 +209,7 @@ export default {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty),
+          ...(this.userInfo.activeInstituteType === 'SCHOOL' ? { schoolID: this.instituteIdentifierID } : { districtID: this.instituteIdentifierID })
         }
       }).then(response => {
         this.errorList = response.data.content;
