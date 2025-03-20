@@ -52,26 +52,34 @@
           class="pt-2 row-text"
         >
           <span v-if="column.key === 'details' && column.hasOwnProperty('subHeader')">
-            <span v-for="(error, index) in props.item['errorFilesetStudentValidationIssues']" :key="index">
+            <span
+              v-for="(error, index) in props.item['errorFilesetStudentValidationIssues']"
+              :key="index"
+            >
               <v-row>
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
-                 
                 > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
                 >
-                <v-chip class="status-chip" :color="getStatusColor(error?.validationIssueSeverityCode)">
-                  {{ formatText(error?.validationIssueSeverityCode) }}
-                </v-chip>
-              </v-col>
+                  <v-chip
+                    class="status-chip"
+                    :color="getStatusColor(error?.validationIssueSeverityCode)"
+                  >
+                    {{ formatText(error?.validationIssueSeverityCode) }}
+                  </v-chip>
+                </v-col>
                 <v-col v-if="column.subHeader[2].key === 'errorContext'">
-                  <span v-if="error?.errorContext !== null">{{  error?.errorContext}}</span>
+                  <span v-if="error?.errorContext !== null">{{ error?.errorContext }}</span>
                   <span v-else>-</span>
                 </v-col>
                 <v-col v-if="column.subHeader[3].key === 'field'">{{ error?.validationIssueFieldCodeDescription }}</v-col>
-                <v-col v-if="column.subHeader[4].key === 'desc'" cols="4">
-                  <div v-html="error?.validationIssueDescription"></div> 
+                <v-col
+                  v-if="column.subHeader[4].key === 'desc'"
+                  cols="4"
+                >
+                  <div v-html="error?.validationIssueDescription" /> 
                 </v-col>
               </v-row>
             </span>
@@ -153,11 +161,11 @@ export default {
     },
     formatFileType(text) {
       if(text === 'ASSESSMENT') {
-        return capitalize(text) + ' (.XAM)'
+        return capitalize(text) + ' (.XAM)';
       } else if(text === 'COURSE') {
-        return capitalize(text) + ' (.CRS)'
+        return capitalize(text) + ' (.CRS)';
       } else if(text === 'DEMOGRAPHICS') {
-        return capitalize(text) + ' (.DEM)'
+        return capitalize(text) + ' (.DEM)';
       }
     },
     getStatusColor(status) {

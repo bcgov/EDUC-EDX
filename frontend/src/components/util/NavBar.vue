@@ -215,13 +215,13 @@ export default {
           authorized: this.hasRequiredPermission(PERMISSION.SECURE_EXCHANGE),
         },
         {
-          title: PAGE_TITLES.SCHOOL_DETAILS,
-          link: { name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+          title: PAGE_TITLES.SCHOOL_CONTACTS,
+          link: { name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
-          title: PAGE_TITLES.SCHOOL_CONTACTS,
-          link: { name: 'schoolDetails', query: {contacts: true}, params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+          title: PAGE_TITLES.SCHOOL_DETAILS,
+          link: { name: 'schoolDetails', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
           authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
@@ -230,14 +230,14 @@ export default {
           authorized: this.userInfo.activeInstituteType === 'SCHOOL' && this.hasRequiredPermission(PERMISSION.SCHOOL_SDC_VIEW)  && !this.disableSdcFunctionality,
         },
         {
-          title: PAGE_TITLES.DATA_COLLECTION,
-          link: { name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.userInfo.activeInstituteType === 'DISTRICT' && this.hasRequiredPermission(PERMISSION.DISTRICT_SDC_VIEW)  && !this.disableSdcFunctionality,
+          title: PAGE_TITLES.GRADUATION,
+          link: { name: 'graduationSchoolTabs', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
-          title: PAGE_TITLES.SCHOOLS,
-          link: { name: 'schools'},
-          authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
+          title: PAGE_TITLES.ASSESSMENT_SESSIONS,
+          link: { name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
@@ -248,6 +248,26 @@ export default {
           title: PAGE_TITLES.DISTRICT_CONTACTS,
           link: { name: 'districtDetails', params: {districtID: this.userInfo.activeInstituteIdentifier, activeTab: 'contacts'}},
           authorized: this.hasRequiredPermission(PERMISSION.EDX_DISTRICT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
+        },
+        {
+          title: PAGE_TITLES.SCHOOLS,
+          link: { name: 'schools'},
+          authorized: this.hasRequiredPermission(PERMISSION.EDX_SCHOOL_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT',
+        },
+        {
+          title: PAGE_TITLES.DATA_COLLECTION,
+          link: { name: 'sdcDistrictCollectionSummary', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.userInfo.activeInstituteType === 'DISTRICT' && this.hasRequiredPermission(PERMISSION.DISTRICT_SDC_VIEW)  && !this.disableSdcFunctionality,
+        },
+        {
+          title: PAGE_TITLES.GRADUATION,
+          link: { name: 'graduationDistrictTabs', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) && this.userInfo.activeInstituteType === 'DISTRICT',
+        },
+        {
+          title: PAGE_TITLES.ASSESSMENT_SESSIONS,
+          link: { name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
           title: PAGE_TITLES.ADMINISTRATION,
