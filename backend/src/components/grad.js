@@ -53,7 +53,7 @@ async function downloadErrorReport(req, res) {
 
     const resData = await getData(token, url);
 
-    res.setHeader('Content-Disposition', 'attachment; filename=StudentErrorReport.csv');
+    res.setHeader('Content-Disposition', `attachment; filename=${resData?.reportName}.csv`);
     res.setHeader('Content-Type', 'text/csv');
     const buffer = Buffer.from(resData.documentData, 'base64');
     return res.status(HttpStatus.OK).send(buffer);
