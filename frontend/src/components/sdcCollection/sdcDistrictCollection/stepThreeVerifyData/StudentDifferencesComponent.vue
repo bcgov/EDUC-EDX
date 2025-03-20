@@ -113,7 +113,7 @@ import {ApiRoutes} from '../../../../utils/constants';
 import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import Spinner from '../../../common/Spinner.vue';
 import alertMixin from '../../../../mixins/alertMixin';
-import CustomTable from '../../../common/CustomTable.vue';
+import CustomTable from '../../common/SDCCustomTable.vue';
 import Filters from '../../../common/Filters.vue';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import {appStore} from '../../../../store/modules/app';

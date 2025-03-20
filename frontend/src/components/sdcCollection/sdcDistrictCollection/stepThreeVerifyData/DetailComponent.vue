@@ -127,7 +127,7 @@
 
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import CustomTable from '../../../common/CustomTable.vue';
+import CustomTable from '../../common/SDCCustomTable.vue';
 import {downloadStudentOnlyReportURL,downloadStudentErrorsReportURL} from '../../../../utils/common';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
