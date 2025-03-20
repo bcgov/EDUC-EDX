@@ -2,21 +2,7 @@
   <v-container 
     fluid
   >
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to GRAD Dashboard</a>
-    </div>
-    <div
-      class="border"
-    >
+    <div>
       <v-row>
         <v-col class="d-flex justify-center">
           <h1>Upload Graduation Data Files</h1>
@@ -53,42 +39,16 @@
           </p>
         </v-col>
       </v-row>
-      <v-row
-        class="align-center searchBox"
-      >
-        <v-col
-          cols="12"
-          md="4"
-          lg="4"
-          class="d-flex justify-start pt-0"
-        >
-          <v-autocomplete
-            id="name-text-field"
+      <v-row>
+        <v-col cols="4">
+          <SchoolCodeNameFilter
             v-model="schoolCodeNameFilter"
-            label="School Code & Name"
-            variant="underlined"
-            item-value="schoolID"
-            item-title="schoolCodeName"
-            autocomplete="off"
             :items="schoolSearchNames"
-            :clearable="true"
-            @update:model-value="searchButtonClick"
-          >
-            <template #item="{ props, item }">
-              <v-list-item
-                v-bind="props"
-                title=""
-              >
-                <v-list-item-title style="color: black !important;">
-                  {{
-                    item.title
-                  }}
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-          </v-autocomplete>
+            @search="searchButtonClick"
+          />
         </v-col>
       </v-row>
+      
       <v-data-table-server
         v-model:page.sync="pageNumber"
         v-model:items-per-page.sync="pageSize"
@@ -335,10 +295,13 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
+import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
+    SchoolCodeNameFilter,
     ConfirmationDialog
   },
   mixins: [alertMixin],
@@ -628,6 +591,7 @@ export default {
             let schoolItem = {
               schoolCodeName: school.mincode + ' - ' + school.schoolName,
               schoolID: school.schoolID,
+              status: getStatusAuthorityOrSchool(school)
             };
             this.schoolSearchNames.push(schoolItem);
           }
@@ -648,12 +612,6 @@ export default {
 </script>
   
 <style scoped>
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin: 2em;
-}
 .schools-in-progress-header {
   margin-top: 12px;
   margin-bottom: 1em;

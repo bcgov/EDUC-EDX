@@ -32,16 +32,19 @@ import AccessSchoolUsersDetailsPage from './components/admin/SchoolUsersAccessDe
 import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 import {PERMISSION} from './utils/constants/Permission';
-import GraduationTableComponent from './components/graduation/GraduationTableComponent.vue';
-import GradUploadDataComponent from './components/graduation/school/upload/GradUploadDataComponent.vue';
+import GraduationSchoolTabs from './components/graduation/school/GraduationSchoolTabs.vue';
+import GradUploadDataComponent from './components/graduation/school/upload/GradSchoolUploadDataComponent.vue';
 import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
-import GradProjectionsTVR from './components/graduation/school/reports/GradProjectionsTVR.vue';
-import GradReportsAndTranscripts from './components/graduation/school/reports/GradReportsAndTranscripts.vue';
+import GradProjectionsTVR from './components/graduation/school/reports/GradSchoolProjectionsTVR.vue';
+import GradReportsAndTranscripts from './components/graduation/school/reports/GradSchoolReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
 import GradDistrictProjectionsTVR from './components/graduation/district/reports/GradDistrictProjectionsTVR.vue';
 import GradDistrictReportsAndTranscripts from './components/graduation/district/reports/GradDistrictReportsAndTranscripts.vue';
+import GradSchoolStudentSearch from './components/graduation/school/students/GradSchoolStudentSearch.vue';
+import GradSchoolCurrentStudents from './components/graduation/school/students/GradSchoolCurrentStudents.vue';
+import GraduationDistrictTabs from './components/graduation/district/GraduationDistrictTabs.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -327,9 +330,19 @@ const router = createRouter({
           },
         },
         {
-          path: 'graduation/:instituteIdentifierID',
-          name: 'graduation',
-          component: GraduationTableComponent,
+          path: 'graduation/school/:schoolID',
+          name: 'graduationSchoolTabs',
+          component: GraduationSchoolTabs,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRADUATION,
+            requiresAuth: true
+          },
+        },
+        {
+          path: 'graduation/district/:districtID',
+          name: 'graduationDistrictTabs',
+          component: GraduationDistrictTabs,
           props: true,
           meta: {
             pageTitle: PAGE_TITLES.GRADUATION,
@@ -433,6 +446,28 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_TVR_VIEW
+          },
+        },
+        {
+          path: 'graduation/:schoolID/search',
+          name: 'grad-student-search',
+          component: GradSchoolStudentSearch,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRAD_SCHOOL_STUDENT_SEARCH,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_SCH_RPT_VIEW
+          },
+        },
+        {
+          path: 'graduation/:schoolID/current-students',
+          name: 'grad-current-students',
+          component: GradSchoolCurrentStudents,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.GRAD_SCHOOL_CURRENT_STUDENTS,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_SCH_RPT_VIEW
           },
         },
         {

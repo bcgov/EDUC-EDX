@@ -103,18 +103,6 @@
               </v-col>
             </v-row>
             <v-row no-gutters>
-              <v-col class="mt-7 d-flex justify-start">
-                <v-icon
-                  small
-                  color="#1976d2"
-                >
-                  mdi-arrow-left
-                </v-icon>
-                <a
-                  class="ml-1"
-                  @click="backButtonClick"
-                >Return to Inbox</a>
-              </v-col>
               <v-col class="d-flex justify-end">
                 <v-btn
                   id="markAsButton"

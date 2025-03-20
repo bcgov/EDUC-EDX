@@ -11,23 +11,6 @@
       </v-col>
     </v-row>
     <v-row
-      no-gutters
-      class="mt-2 mb-2 d-flex justify-start"
-    >
-      <v-col class="mt-1 d-flex justify-start">
-        <v-icon
-          small
-          color="#1976d2"
-        >
-          mdi-arrow-left
-        </v-icon>
-        <a
-          class="ml-1"
-          @click="backToDashboard()"
-        >Return to Dashboard</a>
-      </v-col>
-    </v-row>
-    <v-row
       v-if="isLoading"
       class="mt-0"
     >

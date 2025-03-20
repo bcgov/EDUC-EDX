@@ -13,6 +13,9 @@ try {
       await cacheService.loadAllRolePermissionsToMap();
       await cacheService.loadAllDocumentTypeCodesToMap();
       await cacheService.loadAllEdxUsersToMap();
+      await cacheService.loadAllAssessmentTypeCodesToMap();
+      await cacheService.loadAllSpecialCaseTypeCodesToMap();
+      await cacheService.loadAllGradProgramCodesToMap();
     } catch (e) {
       log.error(e);
     }

@@ -38,7 +38,9 @@ const gradErrorFilesetStudentPaginatedSchema = object({
     pageNumber: number().moreThan(-1).integer().optional(),
     pageSize: number().positive().integer().optional(),
     sort: object().optional(),
-    searchParams: object().optional()
+    searchParams: object().optional(),
+    schoolID: string().optional(),
+    districtID: string().optional(),
   })
 }).noUnknown();
 
@@ -46,6 +48,34 @@ const gradSchoolFilesetPaginatedSchema = object({
   body: object().noUnknown(),
   params: object({
     schoolID: string()
+  }),
+  query: object({
+    pageNumber: number().moreThan(-1).integer().optional(),
+    pageSize: number().positive().integer().optional(),
+    sort: object().optional(),
+    searchParams: object().optional()
+  })
+}).noUnknown();
+
+const gradSchoolPenFilesetPaginatedSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    schoolID: string(),
+    pen: string()
+  }),
+  query: object({
+    pageNumber: number().moreThan(-1).integer().optional(),
+    pageSize: number().positive().integer().optional(),
+    sort: object().optional(),
+    searchParams: object().optional()
+  })
+}).noUnknown();
+
+const gradDistrictPenFilesetPaginatedSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    districtID: string(),
+    pen: string()
   }),
   query: object({
     pageNumber: number().moreThan(-1).integer().optional(),
@@ -68,10 +98,36 @@ const gradDistrictFilesetPaginatedSchema = object({
   })
 }).noUnknown();
 
+const gradSchoolFilesetByPenSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    schoolID: string(),
+    pen: string()
+  }),
+  query: object({
+    incomingFilesetID: string().optional()
+  })
+}).noUnknown();
+
+const gradDistrictFilesetByPenSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    districtID: string(),
+    pen: string()
+  }),
+  query: object({
+    incomingFilesetID: string().optional()
+  })
+}).noUnknown();
+
 module.exports = {
   gradFileUploadSchema,
   gradDistrictFilesetPaginatedSchema,
   gradErrorFilesetStudentPaginatedSchema,
   gradSchoolFilesetPaginatedSchema,
-  gradDistrictFileUploadSchema
+  gradDistrictFileUploadSchema,
+  gradSchoolPenFilesetPaginatedSchema,
+  gradSchoolFilesetByPenSchema,
+  gradDistrictFilesetByPenSchema,
+  gradDistrictPenFilesetPaginatedSchema
 };

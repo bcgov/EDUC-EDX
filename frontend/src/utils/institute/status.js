@@ -96,8 +96,8 @@ export function isContactCurrent(contact) {
  */
 export function getStatusAuthorityOrSchool(authorityOrSchool) {
   const currentDate = LocalDateTime.now();
-  let openedDate = authorityOrSchool.openedDate;
-  let closedDate = authorityOrSchool.closedDate;
+  let openedDate = authorityOrSchool.openedDate || authorityOrSchool.effectiveDate;
+  let closedDate = authorityOrSchool.closedDate || authorityOrSchool.expiryDate;
 
   if (!openedDate) {
     return 'Never Opened';

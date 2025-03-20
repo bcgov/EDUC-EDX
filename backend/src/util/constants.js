@@ -178,6 +178,7 @@ cacheKeys = {
   PRB_VALIDATION_ISSUE_TYPE_CODES: 'prb_validation_issue_type_codes',
   COLLECTION_TYPE_CODES: 'collection_type_codes',
   GDC_VALIDATION_ISSUE_TYPE_CODES: 'gdc_validation_issue_type_codes',
+  GDC_PROGRAM_CODES: 'gdc_program_codes',
   GDC_VALIDATION_FIELD_CODES: 'gdc_validation_field_codes',
 };
 const CACHE_KEYS = Object.freeze(cacheKeys);

@@ -60,6 +60,7 @@ export const ApiRoutes = Object.freeze({
   gdc: {
     BASE_URL: gdcRoot,
     VALIDATION_FIELD_CODES: gdcRoot + '/validation-field-codes',
+    GRAD_PROGRAM_CODES: gdcRoot + '/grad-program-codes',
   },
   gradReports: {
     BASE_URL: gradReportsRoot,
@@ -171,6 +172,8 @@ export const PAGE_TITLES = Object.freeze({
   ASSESSMENT_SESSIONS: 'Assessment Sessions',
   ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
   GRAD_PROJECTIONS: 'Transcript Verification Reports',
+  GRAD_SCHOOL_STUDENT_SEARCH: 'Student Search',
+  GRAD_SCHOOL_CURRENT_STUDENTS: 'Current Students',
   GRAD_REPORTS: 'Graduation Reports and Transcripts',
   GRAD_TRANSCRIPT_PREVIEW: 'Graduation Reports and Transcripts',
   GRAD_DISTRICT_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',

@@ -1,5 +1,6 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData} = require('./utils');
+const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -62,6 +63,26 @@ async function downloadErrorReport(req, res) {
   }
 }
 
+async function getStudentFilesetByPenFilesetId(req, res) {
+  try {
+    const params = {
+      params: {
+        pen: req.params.pen,
+        incomingFilesetID: req.query?.incomingFilesetID,
+        schoolID: req.query?.schoolID,
+      }
+    };
+
+    const token = getAccessToken(req);
+    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
+
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting error fileset object', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getFilesetsPaginated(req, res) {
   try {
     const search = [];
@@ -81,6 +102,15 @@ async function getFilesetsPaginated(req, res) {
           searchCriteriaList: [{ key: 'schoolID', value: req.query.searchParams.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
         });
       }
+    }
+
+    if (req.query?.searchParams?.pen) {
+      search.push({
+        condition: 'AND',
+        searchCriteriaList: [
+          { key: 'demographicStudentEntities.pen', value: req.query?.searchParams?.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
+        ]
+      });
     }
 
     const now = new Date();
@@ -130,7 +160,7 @@ async function getFilesetsPaginated(req, res) {
 
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
-    log.error('Error getting error fileset student paginated list', e.stack);
+    log.error('Error getting error fileset paginated list', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -146,7 +176,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
     } 
 
     if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
+      let criteriaArray = createMoreFiltersErrorFilesetSearchCriteria(req.query.searchParams['moreFilters']);
       criteriaArray.forEach(criteria => {
         search.push(criteria);
       });
@@ -175,6 +205,51 @@ async function getErrorFilesetStudentPaginated(req, res) {
   }
 }
 
+async function getCurrentGradStudentsPaginated(req, res){
+  if (!req.session.activeInstituteIdentifier) {
+    return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
+  }
+
+  const search = [];
+
+  if(req.params.schoolID) {
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND }]
+    });
+  }
+
+  if (req.query.searchParams?.['moreFilters']) {
+    let criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
+    criteriaArray.forEach(criteria => {
+      search.push(criteria);
+    });
+  }
+
+  const studentSearchParam = {
+    params: {
+      pageNumber: req.query.pageNumber,
+      pageSize: req.query.pageSize,
+      sort: req.query.sort,
+      searchCriteriaList: JSON.stringify(search)
+    }
+  };
+
+  const accessToken = getAccessToken(req);
+  let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
+
+  data.content.forEach(item => {
+    if(item.schoolAtGradId){
+      const school = cacheService.getSchoolBySchoolID(item.schoolAtGradId);
+      item.schoolAtGraduationName = school.schoolName;
+    }else{
+      item.schoolAtGraduationName = '-';
+    }
+  });
+
+  return res.status(HttpStatus.OK).json(data);
+}
+
 function toTableRow(validationIssues) {
   let fieldCodes = cacheService.getGradDataCollectionValidationFieldCodes();
   let updatedFieldCodes = [];
@@ -186,7 +261,54 @@ function toTableRow(validationIssues) {
   return validationIssues;
 }
 
-function createMoreFiltersSearchCriteria(searchFilter = []) {
+function createMoreFiltersCurrentStudentsSearchCriteria(searchFilter = []) {
+  let search = [];
+  for (const [key, filter] of Object.entries(searchFilter)) {
+    let pValue = filter ? filter.map(filter => filter.value) : null;
+    if (key === 'grade' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'studentGrade', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'pen' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'pen', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'firstName' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'firstName', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'lastName' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'lastName', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'localID' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'localID', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
+    }else if (key === 'programComplete') {
+      let pValueID = filter ? filter.map(filter => filter.id) : null;
+      if(pValueID.toString() === 'programComplete'){
+        search.push({
+          condition: CONDITION.AND,
+          searchCriteriaList: [{ key: 'programCompletionDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+        });
+      }else{
+        search.push({
+          condition: CONDITION.AND,
+          searchCriteriaList: [{ key: 'programCompletionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+        });
+      }
+    }
+  }
+  return search;
+}
+
+function createMoreFiltersErrorFilesetSearchCriteria(searchFilter = []) {
   let penLocalIdFilter = [];
   let nameFilter = [];
   let fileTypeList = [];
@@ -345,5 +467,7 @@ module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
   getFilesetsPaginated,
-  downloadErrorReport
+  downloadErrorReport,
+  getStudentFilesetByPenFilesetId,
+  getCurrentGradStudentsPaginated
 };

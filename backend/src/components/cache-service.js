@@ -123,7 +123,7 @@ const cacheService = {
     });
   },
   async loadAllSpecialCaseTypeCodesToMap() {
-    log.debug('Loading all specialcase Type Codes during start up');
+    log.debug('Loading all special case Type codes during start up');
     await retry(async () => {
       const data = await getApiCredentials();
       const provincialSpecialCaseTypeCodesResponse = await getData(data.accessToken, `${config.get('eas:assessmentSpecialCaseTypeCodeURL')}`);
@@ -420,7 +420,7 @@ const cacheService = {
   },
   getAllAssessmentSpecialCases(){         
     return assessmentSpecialCaseTypeCodesMap;
-  },
+  }
 };
 
 module.exports = cacheService;

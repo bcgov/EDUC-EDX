@@ -2,21 +2,7 @@
   <v-container 
     fluid
   >
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to GRAD Dashboard</a>
-    </div>
-    <div
-      class="border"
-    >
+    <div>
       <v-row>
         <v-col class="d-flex justify-center">
           <h1>Upload Graduation Data Files</h1>
@@ -55,9 +41,9 @@
         v-model:items-per-page.sync="pageSize"
         :items-length="totalElements"
         :items="filesetList"
-        @update:page="getFilesetPaginated"
         :headers="headers"
         mobile-breakpoint="0"
+        @update:page="getFilesetPaginated"
       >
         <template #item="props">
           <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
@@ -292,7 +278,7 @@ import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
   
 export default {
-  name: 'GradUploadDataComponent',
+  name: 'GradSchoolUploadDataComponent',
   components: {
     ConfirmationDialog
   },

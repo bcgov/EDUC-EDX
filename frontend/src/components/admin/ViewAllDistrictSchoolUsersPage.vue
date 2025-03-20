@@ -8,21 +8,6 @@
       v-else
       class="mb-5"
     >
-      <v-row>
-        <v-col class="mt-1 d-flex justify-start">
-          <v-icon
-            class="mt-1"
-            small
-            color="#1976d2"
-          >
-            mdi-arrow-left
-          </v-icon>
-          <a
-            class="ml-1 mt-1"
-            @click="backButtonClick"
-          >Return to School User Management</a>
-        </v-col>
-      </v-row>
       <v-row class="d-sm-flex align-center searchBox">
         <v-col
           class="d-flex pt-1 pb-0"

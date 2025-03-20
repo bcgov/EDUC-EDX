@@ -2,18 +2,6 @@
   <v-container 
     fluid
   >
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <a
-        class="ml-1"
-        @click="backButtonClick"
-      >Return to File Upload</a>
-    </div>
     <div
       class="border"
     >
@@ -28,7 +16,7 @@
           </span>
           <router-link
             class="ml-2"
-            :to="{ path: downloadReportURL() }"
+            :to="downloadReportURL()"
             target="_blank"
           >
             <v-icon
@@ -89,12 +77,12 @@
         style="top:0; height: 100%;"
         rounded="true"
       >
-      <GradErrorFilters
-        :filters="config.allowedFilters"
-        @apply-filters="applyFilters"
-        @clear-filters="clearFilters"
-        @close="showFilters= !showFilters"
-      />
+        <GradErrorFilters
+          :filters="config.allowedFilters"
+          @apply-filters="applyFilters"
+          @clear-filters="clearFilters"
+          @close="showFilters= !showFilters"
+        />
       </v-navigation-drawer>
     </div>
   </v-container>
@@ -108,7 +96,7 @@ import { authStore } from '../../../../store/modules/auth';
 import { mapState } from 'pinia';
 import {isEmpty, omitBy, cloneDeep} from 'lodash';
 import GradErrorTable from './GradErrorTable.vue';
-import GradErrorFilters from './GradErrorFilters.vue';
+import GradErrorFilters from '../../GradFilters.vue';
 import { ERROR_REPORT_FILTERS } from '../../../../utils/gdc/Filters';
 import { gdcStore } from '../../../../store/modules/gdc';
       
@@ -151,10 +139,11 @@ export default {
         { title: 'Details', key: 'details', 
           subHeader: 
       [
-        {title: 'File Type', key: 'fileType', cols: '2'},
-        {title: 'Error/Warning', key: 'errors', cols: '2'},
-        {title: 'Error Field', key: 'field', cols: '3'},
-        {title: 'Description', key: 'desc', cols:'3'}
+        {title: 'File Type', key: 'fileType'},
+        {title: 'Error/Warning', key: 'errors'},
+        {title: 'Error Context', key: 'errorContext'},
+        {title: 'Error Field', key: 'field'},
+        {title: 'Description', key: 'desc', cols:'4'}
       ]
         },
       ],
@@ -180,7 +169,16 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/errorReportDownload`;
+      let query = {};
+      if (this.userInfo && this.userInfo.activeInstituteType === 'SCHOOL') {
+        query.schoolID = this.instituteIdentifierID;
+      } else {
+        query.districtID = this.instituteIdentifierID;
+      }
+      return {
+        path: `${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/errorReportDownload`,
+        query
+      };
     },
     toggleFilters() {
       this.showFilters= !this.showFilters;
@@ -199,6 +197,7 @@ export default {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
           searchParams: omitBy(this.filterSearchParams, isEmpty),
+          ...(this.userInfo.activeInstituteType === 'SCHOOL' ? { schoolID: this.instituteIdentifierID } : { districtID: this.instituteIdentifierID })
         }
       }).then(response => {
         this.errorList = response.data.content;

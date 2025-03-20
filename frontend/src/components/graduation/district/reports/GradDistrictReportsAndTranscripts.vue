@@ -1,22 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="mt-1 mb-1">
-      <v-icon
-        small
-        color="#1976d2"
-      >
-        mdi-arrow-left
-      </v-icon>
-      <button
-        type="button"
-        class="link-style ml-1"
-        @click="backButtonClick"
-      >
-        Return to GRAD Dashboard
-      </button>
-    </div>
-
-    <div class="border">
+    <div>
       <h3>District Level Reports</h3>
       <div class="sub-category-group mt-2">
         <button
@@ -65,7 +49,7 @@
             />
           </v-col>
         </v-form>
-        <h4 >
+        <h4>
           Individual Student XML Previews by PEN
         </h4>
         <p>A user-friendly preview of what is currently available to a Post-Secondary institution that has been authorized by a student to receive transcript updates via XML data transfer.</p>
@@ -98,115 +82,89 @@
       </div>
       <h3>School Level Graduation Summary Reports</h3>
       <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
-      <v-row
-          class="align-center searchBox"
-      >
-        <v-col
-            cols="12"
-            md="4"
-            lg="4"
-            class="d-flex justify-start"
-        >
-          <v-autocomplete
-              id="name-text-field"
-              v-model="schoolCodeNameFilter"
-              label="School Code & Name"
-              variant="underlined"
-              item-value="schoolID"
-              item-title="schoolCodeName"
-              autocomplete="off"
-              :items="schoolSearchNames"
-              :clearable="true"
-              @update:model-value="searchButtonClick"
-          >
-            <template #item="{ props, item }">
-              <v-list-item
-                  v-bind="props"
-                  title=""
-              >
-                <v-list-item-title style="color: black !important;">
-                  {{
-                    item.title
-                  }}
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-          </v-autocomplete>
+      <v-row>
+        <v-col cols="4">
+          <SchoolCodeNameFilter
+            v-model="schoolCodeNameFilter"
+            :items="schoolSearchNames"
+            @search="searchButtonClick"
+          />
         </v-col>
       </v-row>
-    <div class="mt-2">
-      <div
+
+      <div class="mt-2">
+        <div
           id="districtGradReports"
           @click="handleDistrictReportsDivClick"
-      >
-        <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
-          <div class="ps-8">
-            <h3>
-              Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})
-            </h3>
-            <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
-            <div class="sub-category-group">
-              <ul>
-                <li>
-                  <button
+        >
+          <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
+            <div class="ps-8">
+              <h3>
+                Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})
+              </h3>
+              <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
+              <div class="sub-category-group">
+                <ul>
+                  <li>
+                    <button
                       type="button"
                       class="link-style"
                       @click="downloadSummaryReport('graduated')"
-                  >
-                    Graduated Students
-                    <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down" />
-              </span>
-                  </button>
-                </li>
-                <li>
-                  <button
+                    >
+                      Graduated Students
+                      <span class="icon-container ml-1">
+                        <i class="mdi mdi-tray-arrow-down" />
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
                       type="button"
                       class="link-style"
                       @click="downloadSummaryReport('nonGraduated')"
-                  >
-                    Not Yet Graduated Students
-                    <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down" />
-              </span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
-            <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
-            <div class="sub-category-group">
-              <ul>
-                <li>
-                  <button
+                    >
+                      Not Yet Graduated Students
+                      <span class="icon-container ml-1">
+                        <i class="mdi mdi-tray-arrow-down" />
+                      </span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
+              <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
+              <div class="sub-category-group">
+                <ul>
+                  <li>
+                    <button
                       type="button"
                       class="link-style"
                       @click="downloadSummaryReport('historicalGraduated')"
-                  >
-                    Graduated Students
-                    <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down" />
-              </span>
-                  </button>
-                </li>
-                <li>
-                  <button
+                    >
+                      Graduated Students
+                      <span class="icon-container ml-1">
+                        <i class="mdi mdi-tray-arrow-down" />
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
                       type="button"
                       class="link-style"
                       @click="downloadSummaryReport('historicalNonGraduated')"
-                  >
-                    Not Yet Graduated Students
-                    <span class="icon-container ml-1">
-                <i class="mdi mdi-tray-arrow-down" />
-              </span>
-                  </button>
-                </li>
-              </ul>
+                    >
+                      Not Yet Graduated Students
+                      <span class="icon-container ml-1">
+                        <i class="mdi mdi-tray-arrow-down" />
+                      </span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
     <PENSearchDialog
       v-model="showPENSearchDialog"
@@ -230,11 +188,14 @@ import {
   generateGradStartAndEndDateStrings,
   searchStudentByPen
 } from '../../../../utils/gdc/gradReports';
-import {appStore} from "../../../../store/modules/app";
+import {appStore} from '../../../../store/modules/app';
+import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'DistrictGradReportsAndTranscripts',
   components: {
+    SchoolCodeNameFilter,
     PrimaryButton,
     PENSearchDialog
   },
@@ -351,6 +312,7 @@ export default {
             let schoolItem = {
               schoolCodeName: school.mincode + ' - ' + school.schoolName,
               schoolID: school.schoolID,
+              status: getStatusAuthorityOrSchool(school)
             };
             this.schoolSearchNames.push(schoolItem);
           }
@@ -387,13 +349,6 @@ export default {
 </script>
 
 <style scoped>
-
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin: 2em;
-}
 
 h3 {
   color: #38598a;
