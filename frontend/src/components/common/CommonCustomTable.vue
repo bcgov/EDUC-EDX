@@ -90,10 +90,6 @@ export default {
       required: true,
       default: null
     },
-    showDiff: {
-      type: Boolean,
-      default: false
-    },
     hidePagination: {
       type: Boolean,
       default: false
@@ -113,24 +109,12 @@ export default {
       required: true,
       default: false
     },
-    schoolCollection: {
-      type: Object,
-      required: false,
-      default: null
-    },
-    disableSelect: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
   },
-  emits: ['reload', 'editSelectedRow', 'selections'],
+  emits: ['reload'],
   data() {
     return {
-      selected: [],
-      pageNumber: 1,
       pageSize: 15,
-      masterCheckbox: false,
+      pageNumber: 1,
       loading: true
     };
   },
@@ -145,32 +129,13 @@ export default {
       },
       immediate: true
     },
-    selected: {
-      handler(val) {
-        if(val) {
-          this.$emit('selections', this.selected);
-        }
-      },
-      deep: true
-    },
     reset: {
-      handler(val) {
-        if(val) {
-          this.masterCheckbox = false;
-          this.selected.splice(0);
-        }
+      handler() {
+        this.pageNumber = 1;
       },
       immediate: true
     }
   },
-  created() {
-
-  },
-  methods: {
-    rowclicked(props) {
-      this.$emit('editSelectedRow', props);
-    }
-  }
 };
 </script>
 

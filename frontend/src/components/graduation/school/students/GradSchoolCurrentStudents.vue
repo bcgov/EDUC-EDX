@@ -37,9 +37,10 @@
         <CommonCustomTable
           :headers="config.tableHeaders"
           :data="studentList"
+          :page-number="pageNumber"
           :total-elements="totalElements"
           :is-loading="isLoading"
-          reset
+          :reset="resetVal"
           @reload="reload"
         >
           <template #resolution="{ student }">
@@ -51,7 +52,7 @@
               <template #activator="{ props }">
                 <v-btn
                   color="primary"
-                  text="..."
+                  icon="mdi-file-document-multiple-outline"
                   variant="text"
                   v-bind="props"
                 />
@@ -157,6 +158,7 @@ export default {
       studentList: [],
       showFilters: null,
       totalElements: 0,
+      resetVal: false,
       pageNumber: 1,
       pageSize: 15,
       config: GRAD_CURRENT_STUDENTS,
@@ -181,11 +183,13 @@ export default {
     },
     applyFilters($event) {
       this.pageNumber = 1;
+      this.resetVal = true;
       this.filterSearchParams.moreFilters = cloneDeep($event);
       this.loadStudents();
     },
     clearFilters() {
       this.pageNumber = 1;
+      this.resetVal = true;
       this.filterSearchParams.moreFilters = {};
       this.loadStudents();
     },
@@ -219,6 +223,7 @@ export default {
         this.setFailureAlert('An error occurred while trying to retrieve students list. Please try again later.');
       }).finally(() => {
         this.isLoading = false;
+        this.resetVal = false;
       });
     },
     reload(value) {
