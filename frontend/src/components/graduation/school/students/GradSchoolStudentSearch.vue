@@ -84,12 +84,12 @@
               <v-col>
                 <span>
                   <v-icon
-                  size="25"
-                  :color="getIssueIconColor(demStudentData?.studentStatusCode)"
-                >
-                  {{ getIssueIcon(demStudentData?.studentStatusCode) }}
-                </v-icon>
-                {{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}
+                    size="25"
+                    :color="getIssueIconColor(demStudentData?.studentStatusCode)"
+                  >
+                    {{ getIssueIcon(demStudentData?.studentStatusCode) }}
+                  </v-icon>
+                  {{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}
                 </span>
               </v-col>
             </v-row>
@@ -414,15 +414,15 @@ export default {
     },
     setIncomingFilesetIDSelection() {
       if(isEmpty(this.selectedSubmission)) {
-          let createDate =  LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
-          let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-          this.selectedSubmission = this.filesetStudentSubmissions[0];
-        } else {
-          let createDate =  this.selectedSubmission.createDate;
-          let createTime = this.selectedSubmission.createTime;
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-        }
+        let createDate =  LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
+        let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
+        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+        this.selectedSubmission = this.filesetStudentSubmissions[0];
+      } else {
+        let createDate =  this.selectedSubmission.createDate;
+        let createTime = this.selectedSubmission.createTime;
+        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+      }
     },
     showCourse() {
       this.view = 'course';
