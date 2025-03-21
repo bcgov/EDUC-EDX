@@ -131,7 +131,7 @@
                   <div class="heading">
                     Birthdate
                   </div>
-                  <div>{{ demStudentData?.birthdate }}</div>
+                  <div>{{ formatDate(demStudentData?.birthdate) }}</div>
                 </div>
               </v-col>
               <v-col>
@@ -193,7 +193,7 @@
                     <span v-if="demStudentData?.city">{{ demStudentData?.city }}, </span>
                     <span v-if="demStudentData?.provincialCode">{{ demStudentData?.provincialCode }}, </span>
                     <span v-if="demStudentData?.countryCode">{{ demStudentData?.countryCode }}, </span>
-                    <span v-if="demStudentData?.postalCode">{{ demStudentData?.postalCode }}, </span>
+                    <span v-if="demStudentData?.postalCode">{{ demStudentData?.postalCode }} </span>
                   </div>
                 </div>
               </v-col>
@@ -273,6 +273,7 @@ import {isEmpty, omitBy} from 'lodash';
 import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
 import Spinner from '../../../common/Spinner.vue';
 import {setFailureAlert} from '../../../composable/alertComposable';
+import {formatDateTime} from '../../../../utils/format';
 
 export default {
   name: 'GradSchoolStudentSearch',
@@ -346,6 +347,9 @@ export default {
 
   },
   methods: {
+    formatDate(inputDate) {
+      return formatDateTime(inputDate,'uuuuMMdd','uuuu/MM/dd', false);
+    },
     async refreshSearch(selectedSubmission) {
       this.incomingFilesetID =  selectedSubmission[0].incomingFilesetID;
       this.selectedSubmission = selectedSubmission[0];
@@ -414,7 +418,7 @@ export default {
     },
     setIncomingFilesetIDSelection() {
       if(isEmpty(this.selectedSubmission)) {
-        let createDate =  LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
+        let createDate =  formatDateTime(this.filesetStudentSubmissions[0].createDate,'uuuu-MM-dd\'T\'HH:mm:ss.SSSSSS','uuuu/MM/dd', false);
         let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
         this.selectedSubmission = this.filesetStudentSubmissions[0];
