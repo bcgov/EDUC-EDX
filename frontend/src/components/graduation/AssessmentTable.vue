@@ -2,6 +2,8 @@
   <v-data-table
     :items="data"
     :headers="headers"
+    v-model:page="pageNumber"
+    v-model:items-per-page="pageSize"
     mobile-breakpoint="0"
   >
     <template #headers>
@@ -30,8 +32,8 @@
           class="pt-2 row-text"
         >
           <span v-if="column.key === 'session'">
-            <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">no session provided</span>
-            <span v-else> {{ props.item['courseYear'] }}{{ props.item['courseMonth'] }}</span>
+            <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">-</span>
+            <span v-else> {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}</span>
           </span>
           <span v-else-if="column.key === 'status'">
                 <v-icon
@@ -74,6 +76,8 @@ export default {
   emits: ['reload'],
   data() {
     return {
+      pageNumber: 1,
+      pageSize: 25
     };
   },
   computed: {
@@ -119,6 +123,13 @@ export default {
     color: #7f7f7f;
   }
 
+  :deep(.v-table__wrapper){
+         overflow: unset;
+       }
+
+       :deep(.v-data-table-footer__items-per-page) {
+       display: none;
+ }
   
    .row-text {
     vertical-align: text-top;

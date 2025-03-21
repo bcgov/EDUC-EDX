@@ -63,6 +63,7 @@
 <script>
 import alertMixin from '../../mixins/alertMixin';
 import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
+import {formatDateTime} from '../../utils/format';
 
 export default {
   name: 'StudentSubmission',
@@ -110,7 +111,7 @@ export default {
   methods: {
     handleSubmissionData(value) {
       this.submittedStudentRecord = value.map(fileset => {
-        let createDate =  LocalDateTime.parse(fileset.createDate).format(DateTimeFormatter.ofPattern('uuuu-MM-dd'));
+        let createDate =  formatDateTime(fileset.createDate,'uuuu-MM-dd\'T\'HH:mm:ss.SSSSSS','uuuu/MM/dd', false);
         let createTime = LocalDateTime.parse(fileset.createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         return {
           incomingFilesetID: fileset.incomingFilesetID,
