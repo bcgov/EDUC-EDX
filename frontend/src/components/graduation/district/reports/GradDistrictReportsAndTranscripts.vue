@@ -1,33 +1,33 @@
 <template>
   <v-container fluid>
-    <div>
-      <h3>District Level Reports</h3>
-      <div class="sub-category-group mt-2">
-        <button
-          type="button"
-          class="link-style"
-          @click="downloadYearEndReport()"
-        >
-          Year-End District Credential and Transcript Distribution Reports
-          <span class="icon-container ml-1">
-            <i class="mdi mdi-tray-arrow-down" />
-          </span>
-        </button>
-      </div>
-      <h3 class="mt-8">
-        Student Transcripts
-      </h3>
-      <div class="sub-category-group mt-2">
-        <h4 class="mt-8">
-          Individual Student Transcript Preview by PEN
-        </h4>
-        <p>Preview a student's transcript. For school use only. Official transcripts must be ordered by students through the StudentTranscripts Service.</p>
-        <v-form
-          id="transcriptForm"
-          v-model="studentPENTranscriptIsValid"
-          class="d-flex"
-        >
-          <v-col cols="2">
+    <v-row>
+      <v-col>
+        <h3>Individual Students</h3>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col>
+        <span style="font-size: small; color: gray">View available reports for individual students based on PEN.</span>
+      </v-col>
+    </v-row>
+    <v-card
+      class="mt-2"
+      width="30em"
+      border="sm"
+    >
+      <v-card-title>Student Reports</v-card-title>
+      <v-card-text
+        style="color: gray"
+        class="mt-n2"
+      >
+        Any student that exists in GRAD
+      </v-card-text>
+      <v-form
+        id="transcriptForm"
+        v-model="studentPENTranscriptIsValid"
+      >
+        <v-row class="pl-3">
+          <v-col cols="8">
             <v-text-field
               id="studentPENTranscriptField"
               ref="transcriptField"
@@ -38,8 +38,8 @@
             />
           </v-col>
           <v-col
-            cols="2"
-            class="pt-6"
+            cols="4"
+            class="mt-3"
           >
             <PrimaryButton
               id="searchPENTranscriptBtn"
@@ -48,130 +48,335 @@
               :click-action="() => searchStudentForGivenPEN(true)"
             />
           </v-col>
-        </v-form>
-        <h4>
-          Individual Student XML Previews by PEN
-        </h4>
-        <p>A user-friendly preview of what is currently available to a Post-Secondary institution that has been authorized by a student to receive transcript updates via XML data transfer.</p>
-        <v-form
-          v-model="studentPENXMLIsValid"
-          class="d-flex"
-        >
-          <v-col cols="2">
-            <v-text-field
-              id="studentPENXMLField"
-              ref="xmlField"
-              v-model="studentPENXML"
-              placeholder="Enter PEN"
-              :rules="penRules"
-              variant="underlined"
-            />
-          </v-col>
-          <v-col
-            cols="2"
-            class="pt-6"
-          >
-            <PrimaryButton
-              id="searchPENXMLBtn"
-              text="Search"
-              :disabled="!studentPENXMLIsValid"
-              :click-action="() => searchStudentForGivenPEN(false)"
-            />
-          </v-col>
-        </v-form>
-      </div>
-      <h3>School Level Graduation Summary Reports</h3>
-      <p>Select a school from the list below to review the Graduation Summary Reports for the school.</p>
-      <v-row>
-        <v-col cols="4">
-          <SchoolCodeNameFilter
-            v-model="schoolCodeNameFilter"
-            :items="schoolSearchNames"
-            @search="searchButtonClick"
-          />
+        </v-row>
+        <div v-if="showPENSearchResultArea">
+          <v-row class="pl-3 pb-3">
+            <v-col
+              style="font-weight: bold"
+              cols="3"
+            >
+              Name:
+            </v-col>
+            <v-col cols="9">
+              {{ studentForSearch.fullName }}
+            </v-col>
+            <v-col
+              style="font-weight: bold"
+              cols="3"
+            >
+              Local ID:
+            </v-col>
+            <v-col cols="9">
+              {{ studentForSearch.localID }}
+            </v-col>
+            <v-col
+              style="font-weight: bold"
+              cols="3"
+            >
+              Birthdate:
+            </v-col>
+            <v-col cols="9">
+              {{ studentForSearch.dob }}
+            </v-col>
+            <v-col
+              style="font-weight: bold"
+              cols="3"
+            >
+              Gender:
+            </v-col>
+            <v-col cols="9">
+              {{ studentForSearch.gender }}
+            </v-col>
+            <v-col cols="12">
+              <a @click="downloadTVRReport"><v-icon
+                icon="mdi-download"
+                class="mr-1"
+              />TVR</a>
+            </v-col>
+            <v-col
+              cols="12"
+              class="mt-n2"
+            >
+              <a @click="downloadTranscriptPreview"><v-icon
+                icon="mdi-download"
+                class="mr-1"
+              />Transcript Preview</a>
+            </v-col>
+            <v-col
+              cols="12"
+              class="mt-n2"
+            >
+              <a @click="downloadXMLPreview"><v-icon
+                icon="mdi-download"
+                class="mr-1"
+              />XML Preview</a>
+            </v-col>
+          </v-row>
+        </div>
+      </v-form>
+    </v-card>
+    <v-row class="mt-5">
+      <v-col>
+        <h3>School Level Reports</h3>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col>
+        <span style="font-size: small; color: gray">Select a school below to find the reports available for the school.</span>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col
+        cols="4"
+        class="d-flex justify-start"
+      >
+        <SchoolCodeNameFilter
+          v-model="schoolCodeNameFilter"
+          :items="schoolSearchNames"
+        />
+      </v-col>
+    </v-row>
+    <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
+      <v-row class="mt-2">
+        <v-col>
+          <h3>Transcript Verification Reports (TVRs)</h3>
         </v-col>
       </v-row>
-
-      <div class="mt-2">
-        <div
-          id="districtGradReports"
-          @click="handleDistrictReportsDivClick"
+      <v-card
+        class="mt-2"
+        width="30em"
+        style="border: 1px solid black;border-radius: 10px;"
+      >
+        <v-card-title>Current Grade 12 & AD Students</v-card-title>
+        <v-card-text
+          style="color: gray"
+          class="mt-n2"
         >
-          <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
-            <div class="ps-8">
-              <h3>
-                Graduation Summary Reports ({{ currentStartMoYr }} to {{ currentEndMoYr }})
-              </h3>
-              <p>Daily, cumulative lists of students in the current cycle, either graduated or not yet graduated, based on the latest information submitted by the school.</p>
-              <div class="sub-category-group">
-                <ul>
-                  <li>
-                    <button
-                      type="button"
-                      class="link-style"
-                      @click="downloadSummaryReport('graduated')"
-                    >
-                      Graduated Students
-                      <span class="icon-container ml-1">
-                        <i class="mdi mdi-tray-arrow-down" />
-                      </span>
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      class="link-style"
-                      @click="downloadSummaryReport('nonGraduated')"
-                    >
-                      Not Yet Graduated Students
-                      <span class="icon-container ml-1">
-                        <i class="mdi mdi-tray-arrow-down" />
-                      </span>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <h3> Historical Graduation Summary Reports ({{ histStartMoYr }} to {{ histEndMoYr }})</h3>
-              <p>Lists of students in previous cycles, either graduated or not yet graduated, based on the final information submitted by the school during the cycle.</p>
-              <div class="sub-category-group">
-                <ul>
-                  <li>
-                    <button
-                      type="button"
-                      class="link-style"
-                      @click="downloadSummaryReport('historicalGraduated')"
-                    >
-                      Graduated Students
-                      <span class="icon-container ml-1">
-                        <i class="mdi mdi-tray-arrow-down" />
-                      </span>
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      class="link-style"
-                      @click="downloadSummaryReport('historicalNonGraduated')"
-                    >
-                      Not Yet Graduated Students
-                      <span class="icon-container ml-1">
-                        <i class="mdi mdi-tray-arrow-down" />
-                      </span>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+          Students in final year of a graduation program
+        </v-card-text>
+        <v-form
+          id="transcriptForm"
+          v-model="studentPENTranscriptIsValid"
+        >
+          <v-row class="pl-3 pb-3">
+            <v-col cols="12">
+              <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
+                icon="mdi-download"
+                class="mr-1"
+              />Projected Non-Graduates</a>
+            </v-col>
+            <v-col
+              cols="12"
+              class="mt-n2"
+            >
+              <a @click="downloadProjectedTVRReport('graduating')"><v-icon
+                icon="mdi-download"
+                class="mr-1"
+              />Projected Graduates</a>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card>
+      <v-row class="mt-5">
+        <v-col>
+          <h3>Projection Reports</h3>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col>
+          <span style="font-size: small; color: gray">Based on registrations that are not yet complete and are meant to predict graduation.</span>
+        </v-col>
+      </v-row>
+      <v-row
+        no-gutters
+        class="d-flex flex-row"
+      >
+        <v-card
+          class="mt-2 mr-4"
+          width="30em"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title>Current Reporting Cycle</v-card-title>
+          <v-card-text
+            style="color: gray"
+            class="mt-n2"
+          >
+            October {{ lastYear }} to September {{ currentYear }}
+          </v-card-text>
+          <v-form
+            id="transcriptForm"
+            v-model="studentPENTranscriptIsValid"
+          >
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Projected Non-Graduates</a>
+              </v-col>
+              <v-col
+                cols="12"
+                class="mt-n2"
+              >
+                <a @click="downloadProjectedTVRReport('graduating')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Projected Graduates</a>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+        <v-card
+          class="mt-2"
+          width="30em"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title>Previous Reporting Cycle</v-card-title>
+          <v-card-text
+            style="color: gray"
+            class="mt-n2"
+          >
+            October {{ yearBeforeLast }} to September {{ lastYear }}
+          </v-card-text>
+          <v-form
+            id="transcriptForm"
+            v-model="studentPENTranscriptIsValid"
+          >
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Projected Non-Graduates</a>
+              </v-col>
+              <v-col
+                cols="12"
+                class="mt-n2"
+              >
+                <a @click="downloadProjectedTVRReport('graduating')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Projected Graduates</a>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-row>
+      <v-row class="mt-5">
+        <v-col>
+          <h3>Graduation Reports</h3>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col>
+          <span style="font-size: small; color: gray">Based on what students have completed as of the current date.</span>
+        </v-col>
+      </v-row>
+      <v-row
+        no-gutters
+        class="d-flex flex-row"
+      >
+        <v-card
+          class="mt-2 mr-4"
+          width="30em"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title>Current Reporting Cycle</v-card-title>
+          <v-card-text
+            style="color: gray"
+            class="mt-n2"
+          >
+            October {{ lastYear }} to September {{ currentYear }}
+          </v-card-text>
+          <v-form
+            id="transcriptForm"
+            v-model="studentPENTranscriptIsValid"
+          >
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <a @click="downloadSummaryReport('graduated')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Graduated Students</a>
+              </v-col>
+              <v-col
+                cols="12"
+                class="mt-n2"
+              >
+                <a @click="downloadSummaryReport('nonGraduated')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Not Yet Graduated Students</a>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+        <v-card
+          class="mt-2"
+          width="30em"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title>Previous Reporting Cycle</v-card-title>
+          <v-card-text
+            style="color: gray"
+            class="mt-n2"
+          >
+            October {{ yearBeforeLast }} to September {{ lastYear }}
+          </v-card-text>
+          <v-form
+            id="transcriptForm"
+            v-model="studentPENTranscriptIsValid"
+          >
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <a @click="downloadSummaryReport('historicalGraduated')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Graduated Students</a>
+              </v-col>
+              <v-col
+                cols="12"
+                class="mt-n2"
+              >
+                <a @click="downloadSummaryReport('historicalNonGraduated')"><v-icon
+                  icon="mdi-download"
+                  class="mr-1"
+                />Not Yet Graduated Students</a>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-row>
     </div>
-    <PENSearchDialog
-      v-model="showPENSearchDialog"
-      :student="studentForSearch"
-      :download-type="studentDownloadType"
-      @close="close"
-    />
+    <v-row class="mt-5">
+      <v-col>
+        <h3>District Level Reports</h3>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="mt-n3">
+        <a @click="downloadYearEndReport"><v-icon
+          icon="mdi-download"
+          class="mr-1"
+        />Year-End District Credential and Transcript Distribution Reports</a>
+      </v-col>
+    </v-row>
+    <v-fab
+      v-if="isLoading"
+      key="fixed"
+      style="margin-top: 20em"
+      app
+      location="right bottom"
+      size="large"
+      icon
+    >
+      <v-progress-circular
+        :size="40"
+        :width="7"
+        color="primary"
+        indeterminate
+      />
+    </v-fab>
   </v-container>
 </template>
 
@@ -179,29 +384,27 @@
 import {isValidPEN} from '../../../../utils/validation';
 import alertMixin from '../../../../mixins/alertMixin';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
-import PENSearchDialog from '../../PENSearchDialog.vue';
 import { mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import {
-  docTypeFilename, docTypeName,
+  docTypeFilename, docTypeName, downloadDocument,
   fetchAndDownloadGradReport,
-  generateGradStartAndEndDateStrings,
   searchStudentByPen
 } from '../../../../utils/gdc/gradReports';
-import {appStore} from '../../../../store/modules/app';
+import {LocalDate} from '@js-joda/core';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import {appStore} from '../../../../store/modules/app';
 import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
-  name: 'DistrictGradReportsAndTranscripts',
+  name: 'GradDistrictReportsAndTranscripts',
   components: {
     SchoolCodeNameFilter,
-    PrimaryButton,
-    PENSearchDialog
+    PrimaryButton
   },
   mixins: [alertMixin],
   props: {
-    schoolID: {
+    districtID: {
       type: String,
       required: false,
       default: null
@@ -211,87 +414,39 @@ export default {
   data() {
     return {
       isLoading: false,
-      currentStartMoYr: '',
-      currentEndMoYr: '',
-      histStartMoYr: '',
-      histEndMoYr: '',
-      showPENSearchDialog: false,
+      currentYear: null,
+      lastYear: null,
+      schoolCodeNameFilter: null,
+      schoolSearchNames: [],
+      yearBeforeLast: null,
+      showPENSearchResultArea: false,
       studentForSearch: {},
       studentDownloadType: '',
       studentPENTranscript: null,
       studentPENTranscriptIsValid: false,
       studentPENXML: null,
       studentPENXMLIsValid: false,
-      summaryDownloadType:'',
       penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
-      isSearchingStudent: false,
-      schoolsCacheMap: null,
-      schoolCodeNameFilter: null,
-      filterSearchParams: null,
-      schoolSearchNames: [],
-      headerSearchParams: {
-        schoolNumber: '',
-        status: '',
-        category: '',
-        type: ''
-      },
+      isSearchingStudent: false
     };
   },
   computed: {
-    ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['schoolsMap']),
-    docTypeFilename() {
-      switch (this.summaryDownloadType) {
-      case 'yearEnd': return 'YearEnd';
-      default: return '';
-      }
-    },
-    docTypeName(){
-      switch (this.summaryDownloadType) {
-      case 'yearEnd': return 'Year-End District Credential and Transcript Distribution Reports';
-      default: return '';
-      }
-    }
+    ...mapState(authStore, ['userInfo']),
   },
   async created() {
-    this.populateDateRanges();
+    this.populateYearValues();
     appStore().getInstitutesData().finally(() => {
       this.schoolsCacheMap = this.schoolsMap;
       this.getSchoolDropDownItems();
     });
   },
   methods: {
-    backButtonClick() {
-      this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.userInfo.activeInstituteIdentifier } });
-    },
-    populateDateRanges() {
-      let datesList = generateGradStartAndEndDateStrings();
-      this.currentStartMoYr = datesList.shift();
-      this.currentEndMoYr = datesList.shift();
-      this.histStartMoYr = datesList.shift();
-      this.histEndMoYr = datesList.shift();
-    },
-    searchStudentForGivenPEN(isTranscriptRequest) {
-      this.isSearchingStudent = true;
-      const pen = isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML;
-      this.studentDownloadType = isTranscriptRequest ? 'transcript' : 'xml';
-
-      const onSuccess = (studentData) => {
-        this.studentForSearch = studentData;
-        this.showPENSearchDialog = true;
-        this.isSearchingStudent = false;
-      };
-      searchStudentByPen(this, pen, onSuccess);
-    },
-    async downloadYearEndReport(){
-      this.summaryDownloadType = 'yearEnd';
-      const districtID = this.userInfo.activeInstituteIdentifier;
-      await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, this.docTypeFilename, this.docTypeName, false);
-    },
     getSchoolDropDownItems() {
       this.schoolSearchNames = [];
       let now = new Date();
       let currentSchoolYearStart, currentSchoolYearEnd;
+
       if (now.getMonth() >= 6) {
         currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
         currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
@@ -299,15 +454,19 @@ export default {
         currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
         currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
       }
+
       const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
       const windowEnd = currentSchoolYearEnd;
+
       this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.userInfo.activeInstituteIdentifier && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
+        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
           if (!school.effectiveDate) {
             return;
           }
+
           let schoolOpened = new Date(school.effectiveDate);
           let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
+
           if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
             let schoolItem = {
               schoolCodeName: school.mincode + ' - ' + school.schoolName,
@@ -319,21 +478,57 @@ export default {
         }
       });
     },
-    searchButtonClick() {
-      if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
-        this.headerSearchParams.schoolID = this.schoolCodeNameFilter;
-      }else{
-        this.headerSearchParams.schoolID = '';
-      }
+    populateYearValues() {
+      this.currentYear = LocalDate.now().year();
+      this.lastYear = LocalDate.now().minusYears(1).year();
+      this.yearBeforeLast = LocalDate.now().minusYears(2).year();
     },
-    handleDistrictReportsDivClick() {
-      if (!this.schoolCodeNameFilter) {
-        this.setWarningAlert('Please select a school');
-      }
+    searchStudentForGivenPEN(isTranscriptRequest) {
+      this.isSearchingStudent = true;
+      const pen = isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML;
+      this.studentDownloadType = isTranscriptRequest ? 'transcript' : 'xml';
+
+      const onSuccess = (studentData) => {
+        this.studentForSearch = studentData;
+        this.showPENSearchResultArea = true;
+        this.isSearchingStudent = false;
+      };
+      searchStudentByPen(this, pen, onSuccess);
     },
-    async downloadSummaryReport(reportType){
-      const schoolID = this.headerSearchParams.schoolID;
+    async downloadYearEndReport(){
+      this.summaryDownloadType = 'yearEnd';
+      const districtID = this.districtID;
+      await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, this.docTypeFilename, this.docTypeName, false);
+    },
+    async downloadTVRReport() {
+      this.isLoading = true;
+      let reportType = 'tvr';
+      await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
+    },
+    async downloadTranscriptPreview() {
+      this.isLoading = true;
+      let reportType = 'transcript';
+      await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
+    },
+    async downloadXMLPreview() {
+      this.isLoading = true;
+      let reportType = 'xml';
+      await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
+    },
+    async downloadSummaryReport(reportType) {
+      this.isLoading = true;
+      const schoolID = this.schoolCodeNameFilter;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true);
+      this.isLoading = false;
+    },
+    async downloadProjectedTVRReport(reportType) {
+      this.isLoading = true;
+      const schoolID = this.schoolCodeNameFilter;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
+      this.isLoading = false;
     },
     close() {
       this.showPENSearchDialog = false;
@@ -350,6 +545,13 @@ export default {
 
 <style scoped>
 
+.border {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 35px;
+  margin: 2em;
+}
+
 h3 {
   color: #38598a;
 }
@@ -362,7 +564,7 @@ button {
   padding-left: 2em;
 }
 
-v-text-field{
+v-text-field {
   width: 4em;
 }
 

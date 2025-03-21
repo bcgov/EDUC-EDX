@@ -60,7 +60,7 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
-import {INDSUPPORT_PR} from '../../../../utils/sdc/TableConfiguration';
+import {INDSUPPORT_PR} from '../../../../utils/constants/TableConfiguration';
 import IndigenousHeadcountsComponent from '../stepOneUploadData/IndigenousHeadcountsComponent.vue';
 import BandHeadcountsComponent from './BandHeadcountsComponent.vue';
   

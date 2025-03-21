@@ -127,13 +127,73 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
   },
 );
 
-export const GRADE_10_12_FILTER = Object.freeze(
+export const GRADE_GRAD_FILTER = Object.freeze(
   {
     heading: 'Grade',
     id: 'grade',
     multiple: true,
     key: 'grade',
     filterOptions: [
+      {
+        title: 'Kind. Half',
+        id: 'gradeKH',
+        value: 'KH'
+      },
+      {
+        title: 'Kind. Full',
+        id: 'gradeKF',
+        value: 'KF'
+      },
+      {
+        title: 'Gr. 1',
+        id: 'grade1',
+        value: '01'
+      },
+      {
+        title: 'Gr. 2',
+        id: 'grade2',
+        value: '02'
+      },
+      {
+        title: 'Gr. 3',
+        id: 'grade3',
+        value: '03'
+      },
+      {
+        title: 'Gr. 4',
+        id: 'grade4',
+        value: '04'
+      },
+      {
+        title: 'Gr. 5',
+        id: 'grade5',
+        value: '05'
+      },
+      {
+        title: 'Gr. 6',
+        id: 'grade6',
+        value: '06'
+      },
+      {
+        title: 'Gr. 7',
+        id: 'grade7',
+        value: '07'
+      },
+      {
+        title: 'Elem. Ungraded',
+        id: 'gradeEU',
+        value: 'EU'
+      },
+      {
+        title: 'Gr. 8',
+        id: 'grade8',
+        value: '08'
+      },
+      {
+        title: 'Gr. 9',
+        id: 'grade9',
+        value: '09'
+      },
       {
         title: 'Gr. 10',
         id: 'grade10',
@@ -148,6 +208,31 @@ export const GRADE_10_12_FILTER = Object.freeze(
         title: 'Gr. 12',
         id: 'grade12',
         value: '12'
+      },
+      {
+        title: 'Sec. Ungraded',
+        id: 'gradeSU',
+        value: 'SU'
+      },
+      {
+        title: 'Graduated Adult',
+        id: 'gradeGA',
+        value: 'GA'
+      },
+      {
+        title: 'Home School',
+        id: 'gradeHS',
+        value: 'HS'
+      },
+      {
+        title: 'Graduated',
+        id: 'gradeGR',
+        value: 'GR'
+      },
+      {
+        title: 'Other',
+        id: 'gradeOT',
+        value: 'OT'
       },
       {
         title: 'Adult Grad',
@@ -877,7 +962,7 @@ export const GRAD_CURRENT_STUDENTS = Object.freeze(
       { title: 'Reports', key: 'resolution', align: 'start' }
     ],
     allowedFilters: {
-      grade: GRADE_10_12_FILTER,
+      grade: GRADE_GRAD_FILTER,
       programComplete: PROGRAM_COMPLETION_FILTER
     }
   }

@@ -233,7 +233,7 @@ import { sdcCollectionStore } from '../../../store/modules/sdcCollection';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
 import {displayName} from '../../../utils/format';
-import {SCH_DUPLICATES} from '../../../utils/sdc/TableConfiguration';
+import {SCH_DUPLICATES} from '../../../utils/constants/TableConfiguration';
 import {cloneDeep} from 'lodash';
 import ViewStudentDetailsComponent from '../../common/ViewStudentDetailsComponent.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';

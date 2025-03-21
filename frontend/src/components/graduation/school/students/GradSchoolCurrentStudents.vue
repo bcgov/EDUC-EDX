@@ -127,7 +127,7 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import { mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
-import {GRAD_CURRENT_STUDENTS} from '../../../../utils/sdc/TableConfiguration';
+import {GRAD_CURRENT_STUDENTS} from '../../../../utils/constants/TableConfiguration';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';

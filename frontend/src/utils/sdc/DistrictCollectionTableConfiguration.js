@@ -25,7 +25,7 @@ import {
   STUDENT_TYPE_FILTER,
   SUPPORT_BLOCKS_FILTER,
   WARNING_FILTER
-} from './TableConfiguration';
+} from '../constants/TableConfiguration';
 
 /**
  * Tables

@@ -47,7 +47,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { SPECIALED_PR } from '../../../../utils/sdc/TableConfiguration';
+import { SPECIALED_PR } from '../../../../utils/constants/TableConfiguration';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
 
 export default {
