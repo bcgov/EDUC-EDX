@@ -46,7 +46,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { CAREER_PR } from '../../../../utils/sdc/TableConfiguration';
+import { CAREER_PR } from '../../../../utils/constants/TableConfiguration';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
   
 export default {

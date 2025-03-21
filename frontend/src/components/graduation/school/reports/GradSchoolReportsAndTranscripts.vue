@@ -325,6 +325,22 @@
         </v-form>
       </v-card>
     </v-row>
+    <v-fab
+      v-if="isLoading"
+      key="fixed"
+      style="margin-top: 20em"
+      app
+      location="right bottom"
+      size="large"
+      icon
+    >
+      <v-progress-circular
+        :size="40"
+        :width="7"
+        color="primary"
+        indeterminate
+      />
+    </v-fab>
   </v-container>
 </template>
 
@@ -342,7 +358,7 @@ import {
 import {LocalDate} from '@js-joda/core';
 
 export default {
-  name: 'GradReportsAndTranscripts',
+  name: 'GradSchoolReportsAndTranscripts',
   components: {
     PrimaryButton
   },
@@ -400,24 +416,34 @@ export default {
       searchStudentByPen(this, pen, onSuccess);
     },
     async downloadTVRReport(){
+      this.isLoading = true;
       let reportType = 'tvr';
       await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
     },
     async downloadTranscriptPreview(){
+      this.isLoading = true;
       let reportType = 'transcript';
       await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
     },
     async downloadXMLPreview(){
+      this.isLoading = true;
       let reportType = 'xml';
       await downloadDocument(this, this.studentForSearch.pen, reportType);
+      this.isLoading = false;
     },
     async downloadSummaryReport(reportType){
+      this.isLoading = true;
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true);
+      this.isLoading = false;
     },
     async downloadProjectedTVRReport(reportType){
+      this.isLoading = true;
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true,false);
+      this.isLoading = false;
     },
     close() {
       this.showPENSearchDialog = false;

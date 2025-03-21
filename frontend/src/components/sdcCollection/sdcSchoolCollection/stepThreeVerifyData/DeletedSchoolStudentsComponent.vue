@@ -17,7 +17,7 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
-import { FTE } from '../../../../utils/sdc/TableConfiguration';
+import { FTE } from '../../../../utils/constants/TableConfiguration';
 
 export default {
   name: 'DeleteSchoolStudentsComponent',

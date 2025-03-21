@@ -47,7 +47,7 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import DetailComponent from './DetailComponent.vue';
 import SummaryComponent from '../../../common/SummaryComponent.vue';
-import { ELL } from '../../../../utils/sdc/TableConfiguration';
+import { ELL } from '../../../../utils/constants/TableConfiguration';
 
 export default {
   name: 'EnglishLangComponent',
