@@ -50,10 +50,6 @@ export async function fetchAndDownloadGradReport(context, instituteID, reportTyp
     });
 
     await downloadGradReportFile(response);
-
-    let successMsg = `${docTypeName} opened for ${instituteType}`;
-    context.setSuccessAlert(successMsg);
-
   } catch (error) {
     console.error('Error downloading file:', error);
     let errorMsg;

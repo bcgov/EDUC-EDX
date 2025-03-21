@@ -245,6 +245,14 @@ async function getCurrentGradStudentsPaginated(req, res){
     }else{
       item.schoolAtGraduationName = '-';
     }
+
+    if(item.honorsStanding && item.honorsStanding === 'Y'){
+      item.honorsStanding = 'Yes';
+    }else if(item.honorsStanding && item.honorsStanding === 'N'){
+      item.honorsStanding = 'No';
+    }else {
+      item.honorsStanding = '-';
+    }
   });
 
   return res.status(HttpStatus.OK).json(data);

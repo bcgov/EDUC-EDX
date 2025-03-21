@@ -13,21 +13,14 @@
             value="uploadData"
             prepend-icon="mdi-file-upload-outline"
           >
-            Upload Data
-          </v-tab>
-          <v-tab
-            id="gradProjections"
-            value="gradProjections"
-            prepend-icon="mdi-finance"
-          >
-            Graduation Projections & TVRs
+            Data Submission
           </v-tab>
           <v-tab
             id="gradReports"
             value="gradReports"
-            prepend-icon="mdi-certificate-outline"
+            prepend-icon="mdi-finance"
           >
-            Graduation Reports & Transcripts
+            Reports
           </v-tab>
           <v-tab
             id="studentSearch"
@@ -43,14 +36,6 @@
           >
             Current Students
           </v-tab>
-          <v-tab
-            id="historicalChange"
-            value="historicalChange"
-            prepend-icon="mdi-account-edit-outline"
-            @click="openGradChangeForm"
-          >
-            Historical Change
-          </v-tab>
         </v-tabs>
       </v-col>
     </v-row>
@@ -60,11 +45,6 @@
           <v-window v-model="tab">
             <v-window-item value="uploadData">
               <GradSchoolUploadDataComponent
-                :school-i-d="schoolID"
-              />
-            </v-window-item>
-            <v-window-item value="gradProjections">
-              <GradSchoolProjectionsTVR
                 :school-i-d="schoolID"
               />
             </v-window-item>
@@ -97,7 +77,6 @@ import { appStore } from '../../../store/modules/app';
 import { mapState } from 'pinia';
 import {PAGE_TITLES} from '../../../utils/constants';
 import GradSchoolUploadDataComponent from './upload/GradSchoolUploadDataComponent.vue';
-import GradSchoolProjectionsTVR from '../school/reports/GradSchoolProjectionsTVR.vue';
 import GradReportsAndTranscripts from './reports/GradSchoolReportsAndTranscripts.vue';
 import GradSchoolStudentSearch from './students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './students/GradSchoolCurrentStudents.vue';
@@ -108,7 +87,6 @@ export default {
     GradSchoolCurrentStudents,
     GradSchoolStudentSearch,
     GradReportsAndTranscripts,
-    GradSchoolProjectionsTVR,
     GradSchoolUploadDataComponent
   },
   mixins: [alertMixin],
@@ -130,13 +108,6 @@ export default {
     ...mapState(appStore, ['config'])
   },
   methods: {
-    backButtonClick() {
-      this.$router.push({name: 'home'});
-    },
-    openGradChangeForm() {
-      window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank', 'noopener');
-      this.tab = 'uploadData';
-    }
   }
 };
 </script>

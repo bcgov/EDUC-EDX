@@ -13,21 +13,14 @@
             value="uploadData"
             prepend-icon="mdi-file-upload-outline"
           >
-            Upload Data
-          </v-tab>
-          <v-tab
-            id="gradProjections"
-            value="gradProjections"
-            prepend-icon="mdi-finance"
-          >
-            Graduation Projections & TVRs
+            Data Submission
           </v-tab>
           <v-tab
             id="gradReports"
             value="gradReports"
-            prepend-icon="mdi-certificate-outline"
+            prepend-icon="mdi-finance"
           >
-            Graduation Reports & Transcripts
+            Reports
           </v-tab>
           <v-tab
             id="studentSearch"
@@ -43,14 +36,6 @@
           >
             Current Students
           </v-tab>
-          <v-tab
-            id="historicalChange"
-            value="historicalChange"
-            prepend-icon="mdi-account-edit-outline"
-            @click="openGradChangeForm"
-          >
-            Historical Change
-          </v-tab>
         </v-tabs>
       </v-col>
     </v-row>
@@ -61,11 +46,6 @@
             <v-window-item value="uploadData">
               <GradDistrictUploadDataComponent
                 :district-i-d="districtID"
-              />
-            </v-window-item>
-            <v-window-item value="gradProjections">
-              <GradDistrictProjectionsTVR
-                :school-i-d="districtID"
               />
             </v-window-item>
             <v-window-item value="gradReports">
@@ -80,7 +60,7 @@
             </v-window-item>
             <v-window-item value="currentStudents">
               <GradDistrictCurrentStudents
-                :school-i-d="districtID"
+                :district-i-d="districtID"
               />
             </v-window-item>
           </v-window>
@@ -96,7 +76,6 @@ import { authStore } from '../../../store/modules/auth';
 import { appStore } from '../../../store/modules/app';
 import { mapState } from 'pinia';
 import {PAGE_TITLES} from '../../../utils/constants';
-import GradDistrictProjectionsTVR from '../district/reports/GradDistrictProjectionsTVR.vue';
 import GradDistrictReportsAndTranscripts from './reports/GradDistrictReportsAndTranscripts.vue';
 import GradDistrictStudentSearch from './students/GradDistrictStudentSearch.vue';
 import GradDistrictCurrentStudents from './students/GradDistrictCurrentStudents.vue';
@@ -107,7 +86,6 @@ export default {
   components: {
     GradDistrictUploadDataComponent,
     GradDistrictReportsAndTranscripts,
-    GradDistrictProjectionsTVR,
     GradDistrictCurrentStudents,
     GradDistrictStudentSearch
   },
@@ -130,13 +108,7 @@ export default {
     ...mapState(appStore, ['config'])
   },
   methods: {
-    backButtonClick() {
-      this.$router.push({name: 'home'});
-    },
-    openGradChangeForm() {
-      window.open('https://forms.gov.bc.ca/education-training/trax-change-form', '_blank', 'noopener');
-      this.tab = 'uploadData';
-    }
+
   }
 };
 </script>

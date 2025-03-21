@@ -238,7 +238,5 @@ export default {
 };
 </script>
 <style scoped>
-.subHeading {
-  color: #38598a;
-}
+
 </style>
