@@ -403,7 +403,7 @@ export default {
         params: {
           edxUserID: this.user.edxUserID,
           selectedRoles: this.selectedRoles,
-          expiryDate: this.accessExpiryDate
+          expiryDate: this.accessExpiryDate === '' ? null : this.accessExpiryDate
         }
       };
       let url = ApiRoutes.edx.EXCHANGE_ACCESS_ROLES_URL;
