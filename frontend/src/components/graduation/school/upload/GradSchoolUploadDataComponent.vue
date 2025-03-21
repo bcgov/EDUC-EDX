@@ -3,21 +3,8 @@
     fluid
   >
     <div>
-      <v-row>
-        <v-col class="d-flex justify-center">
-          <h1>Upload Graduation Data Files</h1>
-        </v-col>
-      </v-row>
-      <v-row class="centered">
-        <span class="mr-1">Please click on the link below to select your three GRAD data files (DEM, XAM and CRS) to upload to GRAD for processing.</span>
-        <span class="mr-1">All three files must be present in order for the files to be validated and loaded to GRAD.</span>
-        <span class="mr-1">If three files are not present for loading, unprocessed files will be deleted from our server after 3 hours.</span>
-      </v-row>
-      <v-row class="centered mt-n8">
-        <span class="mr-1">Note the status of your files in the Summary of Uploaded Data table below.</span>
-      </v-row>
-      <v-row>
-        <v-col class="d-flex justify-space-evenly mt-n5">
+      <v-row class="mt-1">
+        <v-col>
           <v-btn
             id="uploadButton"
             prepend-icon="mdi-file-upload"
@@ -28,12 +15,98 @@
             @click="handleFileImport"
           />
         </v-col>
+        <v-col class="d-flex justify-end">
+          <v-menu
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <a
+                class="mt-n1 mr-1"
+                style="font-weight: bold"
+                v-bind="props"
+                @click="toggleMoreInfoTooltip"
+              >...</a>
+              <a
+                v-bind="props"
+                @click="toggleMoreInfoTooltip"
+              >
+                More Info
+              </a>
+            </template>
+            <v-card
+              style="max-width: 30em;border: 2px solid black; border-radius: 10px;"
+              class="pa-2"
+            >
+              <div style="font-weight: bold">
+                Data Processing
+              </div>
+              <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
+              <div class="mt-4">
+                Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                File Formats
+              </div>
+              <div>
+                For more information on the required file formats, see the <a
+                  target="_blank"
+                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax-specs.pdf"
+                >Graduation Data File Specification</a>.
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                Data Corrections
+              </div>
+              <div>
+                To make a correction to data outside of the data file uploads, submit a <a
+                  target="_blank"
+                  href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                >GRAD Change Form</a>
+              </div>
+            </v-card>
+          </v-menu>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="mt-2">
+          <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
+        </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
-          <p class="schools-in-progress-header">
+        <v-col
+          class="pb-0 d-flex justify-start"
+        >
+          <span class="schools-in-progress-header">
             Summary of Uploaded Data
-          </p>
+          </span>
+        </v-col>
+        <v-col class="d-flex justify-end mt-3">
+          <div>
+            <v-icon
+              icon="mdi-alert-circle-outline"
+              color="error"
+            />
+            <span class="ml-1">Not Loaded</span>
+          </div>
+          <div class="ml-4">
+            <v-icon
+              icon="mdi-clock-alert-outline"
+              color="warning"
+            />
+            <span class="ml-1">Awaiting Other Files</span>
+          </div>
+          <div class="ml-4">
+            <v-icon
+              icon="mdi-check-circle-outline"
+              color="success"
+            />
+            <span class="ml-1">Processed</span>
+          </div>
         </v-col>
       </v-row>
       <v-data-table-server
@@ -74,14 +147,14 @@
               <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
                 {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
               </span>
-              <div v-else-if="column.key === 'demFileStatusCode' || column.key === 'xamFileStatusCode' || column.key === 'crsFileStatusCode'">
-                <div v-if="(column.key === 'demFileStatusCode' && props.item.demFileName) ||(column.key === 'xamFileStatusCode' && props.item.xamFileName) || (column.key === 'crsFileStatusCode' && props.item.crsFileName)">
+              <div v-else-if="column.key === 'demFileName' || column.key === 'xamFileName' || column.key === 'crsFileName'">
+                <div v-if="(column.key === 'demFileName' && props.item.demFileName) ||(column.key === 'xamFileName' && props.item.xamFileName) || (column.key === 'crsFileName' && props.item.crsFileName)">
                   <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
                     <v-icon
                       icon="mdi-check-circle-outline"
                       color="success"
                     />
-                    Processed
+                    {{ props.item[column.key] }}
                   </span>
                   <span v-else-if="isFilesetInProgress(props.item)">
                     <v-progress-circular
@@ -90,22 +163,18 @@
                       color="primary"
                       indeterminate
                     />
-                    Processing
+                    {{ props.item[column.key] }}
                   </span>
                   <span v-else>
                     <v-icon
                       icon="mdi-clock-alert-outline"
                       color="warning"
                     />
-                    Awaiting Other Files
+                    {{ props.item[column.key] }}
                   </span>
                 </div>
                 <span v-else>
-                  <v-icon
-                    icon="mdi-alert-circle-outline"
-                    color="error"
-                  />
-                  Not Loaded
+                  -
                 </span>
               </div>
               <span v-else-if="props.item[column.key]">
@@ -315,21 +384,19 @@ export default {
       totalElements: 0,
       pageNumber: 1,
       pageSize: 15,
+      showMoreInfoTooltip: false,
       isLoading: false,
       filterSearchParams: {
         moreFilters: {}
       },
       headers: [
         {key: 'alert'},
-        {title: 'DEM File Name', key: 'demFileName'},
-        {title: 'DEM File Upload Date', key: 'demFileUploadDate'},
-        {title: 'DEM File Status', key: 'demFileStatusCode'},
-        {title: 'XAM File Name', key: 'xamFileName'},
-        {title: 'XAM File Upload Date', key: 'xamFileUploadDate'},
-        {title: 'XAM File Status', key: 'xamFileStatusCode'},
-        {title: 'CRS File Name', key: 'crsFileName'},
-        {title: 'CRS File Upload Date', key: 'crsFileUploadDate'},
-        {title: 'CRS File Status', key: 'crsFileStatusCode'},
+        {title: 'DEM File', key: 'demFileName'},
+        {title: 'Upload Date', key: 'demFileUploadDate'},
+        {title: 'XAM File', key: 'xamFileName'},
+        {title: 'Upload Date', key: 'xamFileUploadDate'},
+        {title: 'CRS File', key: 'crsFileName'},
+        {title: 'Upload Date', key: 'crsFileUploadDate'},
         {title: 'Upload User', key: 'updateUser'},
         {title: 'Errors/Warnings', key: 'errorLink'},
       ],
@@ -379,6 +446,9 @@ export default {
       this.fileUploadList = [];
       this.uploadFileValue = null;
       this.inputKey=0;
+    },
+    toggleMoreInfoTooltip(){
+      this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
     },
     validateFileExtension(fileJSON) {
       const extension = `.${fileJSON.name.split('.').slice(-1)}`;
@@ -550,6 +620,7 @@ export default {
   text-align: start;
   line-height: 1.5;
   font-size: 1rem;
+  color: #38598AFF;
 }
 
 :deep(.v-btn__content){

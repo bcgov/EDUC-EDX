@@ -3,7 +3,6 @@
     <v-data-table-server
       v-model:page.sync="pageNumber"
       v-model:items-per-page.sync="pageSize"
-      v-model="selected"
       :items-length="totalElements"
       :items="data"
       :headers="headers"
