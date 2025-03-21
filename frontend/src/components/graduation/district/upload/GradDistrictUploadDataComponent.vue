@@ -627,7 +627,8 @@ export default {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.districtID}});
     },
     navigateToErrors(row) {
-      this.$router.push({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
+      const routeData = this.$router.resolve({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
+      window.open(routeData.href, '_blank');
     },
     getSchoolDropDownItems() {
       this.schoolSearchNames = [];
