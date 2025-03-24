@@ -86,12 +86,13 @@ export default {
       let now = new Date();
       let currentSchoolYearStart, currentSchoolYearEnd;
 
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
+      // 0 indexed for months
+      if (now.getMonth() >= 9) {
+        currentSchoolYearStart = new Date(now.getFullYear(), 9, 1); // October 1 of this year
+        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 8, 30); // September 30 of next year
       } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
+        currentSchoolYearStart = new Date(now.getFullYear() - 1, 9, 1); // October 1 of last yea
+        currentSchoolYearEnd = new Date(now.getFullYear(), 8, 30); // September 30 of this year
       }
 
       const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
