@@ -40,7 +40,7 @@
           <v-col cols="4">
             <SchoolCodeNameFilter
               v-model="schoolCodeNameFilter"
-              :items="schoolSearchNames"
+              :district-i-d="districtID"
               @search="searchButtonClick"
             />
           </v-col>
@@ -164,10 +164,7 @@ import ApiService from '../../../../common/apiService';
 import {ApiRoutes, MINISTRY_NAME} from '../../../../utils/constants';
 import {isValidPEN} from '../../../../utils/validation';
 import PENSearchDialog from '../../PENSearchDialog.vue';
-import {appStore} from '../../../../store/modules/app';
-import {mapState} from 'pinia';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
-import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictProjectionsTVR',
@@ -197,7 +194,6 @@ export default {
       studentExists: false,
       student: {},
       showPENSearchDialog: false,
-      schoolsCacheMap: null,
       schoolCodeNameFilter: null,
       filterSearchParams: null,
       schoolSearchNames: [],
@@ -208,22 +204,6 @@ export default {
         type: ''
       },
     };
-  },
-  computed: {
-    ...mapState(appStore, ['schoolsMap']),
-  },
-  watch: {
-
-  },
-  async created() {
-    this.populateDateRanges();
-    appStore().getInstitutesData().finally(() => {
-      this.schoolsCacheMap = this.schoolsMap;
-      this.getSchoolDropDownItems();
-    });
-  },
-  beforeUnmount() {
-
   },
   methods: {
     penIsValid,
@@ -272,37 +252,6 @@ export default {
       this.studentPEN = null;
 
       this.$refs.studentPENField.reset();
-    },
-    getSchoolDropDownItems() {
-      this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
-      }
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-      this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      });
     },
     searchButtonClick() {
       if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
