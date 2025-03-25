@@ -15,10 +15,12 @@
       width="30em"
       border="sm"
     >
-      <v-card-title>Student Reports</v-card-title>
+      <v-card-title style="font-size: medium">
+        Student Reports
+      </v-card-title>
       <v-card-text
-        style="color: gray"
-        class="mt-n2"
+        style="color: gray;font-size: small"
+        class="mt-n3"
       >
         Any student that exists in GRAD
       </v-card-text>
@@ -145,12 +147,15 @@
       <v-card
         class="mt-2"
         width="30em"
+        border="sm"
         style="border: 1px solid black;border-radius: 10px;"
       >
-        <v-card-title>Current Grade 12 & AD Students</v-card-title>
+        <v-card-title style="font-size: medium;">
+          Current Grade 12 & AD Students
+        </v-card-title>
         <v-card-text
-          style="color: gray"
-          class="mt-n2"
+          style="color: gray;font-size: small"
+          class="mt-n3"
         >
           Students in final year of a graduation program
         </v-card-text>
@@ -195,11 +200,14 @@
           class="mt-2 mr-4"
           width="30em"
           style="border: 1px solid black;border-radius: 10px;"
+          border="sm"
         >
-          <v-card-title>Current Reporting Cycle</v-card-title>
+          <v-card-title style="font-size: medium;">
+            Current Reporting Cycle
+          </v-card-title>
           <v-card-text
-            style="color: gray"
-            class="mt-n2"
+            style="color: gray;font-size: small"
+            class="mt-n3"
           >
             October {{ lastYear }} to September {{ currentYear }}
           </v-card-text>
@@ -229,12 +237,15 @@
         <v-card
           class="mt-2"
           width="30em"
+          border="sm"
           style="border: 1px solid black;border-radius: 10px;"
         >
-          <v-card-title>Previous Reporting Cycle</v-card-title>
+          <v-card-title style="font-size: medium;">
+            Previous Reporting Cycle
+          </v-card-title>
           <v-card-text
-            style="color: gray"
-            class="mt-n2"
+            style="color: gray;font-size: small"
+            class="mt-n3"
           >
             October {{ yearBeforeLast }} to September {{ lastYear }}
           </v-card-text>
@@ -279,12 +290,15 @@
         <v-card
           class="mt-2 mr-4"
           width="30em"
+          border="sm"
           style="border: 1px solid black;border-radius: 10px;"
         >
-          <v-card-title>Current Reporting Cycle</v-card-title>
+          <v-card-title style="font-size: medium;">
+            Current Reporting Cycle
+          </v-card-title>
           <v-card-text
-            style="color: gray"
-            class="mt-n2"
+            style="color: gray;font-size: small"
+            class="mt-n3"
           >
             October {{ lastYear }} to September {{ currentYear }}
           </v-card-text>
@@ -313,13 +327,16 @@
         </v-card>
         <v-card
           class="mt-2"
+          border="sm"
           width="30em"
           style="border: 1px solid black;border-radius: 10px;"
         >
-          <v-card-title>Previous Reporting Cycle</v-card-title>
+          <v-card-title style="font-size: medium;">
+            Previous Reporting Cycle
+          </v-card-title>
           <v-card-text
-            style="color: gray"
-            class="mt-n2"
+            style="color: gray;font-size: small"
+            class="mt-n3"
           >
             October {{ yearBeforeLast }} to September {{ lastYear }}
           </v-card-text>
