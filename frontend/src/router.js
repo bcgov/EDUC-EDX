@@ -36,11 +36,9 @@ import GraduationSchoolTabs from './components/graduation/school/GraduationSchoo
 import GradUploadDataComponent from './components/graduation/school/upload/GradSchoolUploadDataComponent.vue';
 import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
-import GradProjectionsTVR from './components/graduation/school/reports/GradSchoolProjectionsTVR.vue';
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradSchoolReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
 import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
-import GradDistrictProjectionsTVR from './components/graduation/district/reports/GradDistrictProjectionsTVR.vue';
 import GradDistrictReportsAndTranscripts from './components/graduation/district/reports/GradDistrictReportsAndTranscripts.vue';
 import GradSchoolStudentSearch from './components/graduation/school/students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './components/graduation/school/students/GradSchoolCurrentStudents.vue';
@@ -384,7 +382,7 @@ const router = createRouter({
         },
         {
           path: 'graduation/:instituteIdentifierID/errorReport/:activeIncomingFilesetID',
-          name: 'error',
+          name: 'grad-gdc-error-report',
           component: GradErrorsView,
           props: true,
           meta: {
@@ -438,17 +436,6 @@ const router = createRouter({
           },
         },
         {
-          path: 'graduation/:schoolID/projections',
-          name: 'grad-projections',
-          component: GradProjectionsTVR,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.GRAD_PROJECTIONS,
-            requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_TVR_VIEW
-          },
-        },
-        {
           path: 'graduation/:schoolID/search',
           name: 'grad-student-search',
           component: GradSchoolStudentSearch,
@@ -468,17 +455,6 @@ const router = createRouter({
             pageTitle: PAGE_TITLES.GRAD_SCHOOL_CURRENT_STUDENTS,
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_RPT_VIEW
-          },
-        },
-        {
-          path: 'graduation/district/:districtID/projections',
-          name: 'grad-district-projections',
-          component: GradDistrictProjectionsTVR,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.GRAD_DISTRICT_PROJECTIONS,
-            requiresAuth: true,
-            permission: PERMISSION.GRAD_DIS_TVR_VIEW
           },
         },
         {

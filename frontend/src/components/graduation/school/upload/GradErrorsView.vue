@@ -3,17 +3,18 @@
     fluid
   >
     <div
-      class="border"
+      class="borderSpace"
     >
+      <v-row v-if="schoolID">
+        <v-col>
+          <h2 class="school-header">{{schoolNameAndMincode}}</h2>
+        </v-col>
+      </v-row>
       <v-row justify="space-between">
         <v-col
           cols="4"
           class="found-align"
         >
-          <span
-            id="studentsFound"
-          ><b>Total Errors in files:  {{ totalElements }}</b>
-          </span>
           <router-link
             class="ml-2"
             :to="downloadReportURL()"
@@ -21,8 +22,8 @@
           >
             <v-icon
               small
-              class="ml-1"
-              color="#003366"
+              class="mr-1"
+              color="#1976d2"
             >
               mdi-tray-arrow-down
             </v-icon>
@@ -99,6 +100,7 @@ import GradErrorTable from './GradErrorTable.vue';
 import GradErrorFilters from '../../GradFilters.vue';
 import { ERROR_REPORT_FILTERS } from '../../../../utils/gdc/Filters';
 import { gdcStore } from '../../../../store/modules/gdc';
+import {appStore} from '../../../../store/modules/app';
       
 export default {
   name: 'GradErrorsView',
@@ -129,13 +131,14 @@ export default {
       filterSearchParams: {
         moreFilters: {}
       },
+      schoolID: null,
+      schoolNameAndMincode: null,
       isLoading: false,
       headers: [
         { title: 'PEN', key: 'pen', align: 'start',},
         { title: 'Local ID', key: 'localID', align: 'end'},
         { title: 'Last Name', key: 'lastName', align: 'end'},
         { title: 'First Name', key: 'firstName', align: 'end'},
-        { title: 'Birthdate', key: 'birthdate', align: 'end'},
         { title: 'Details', key: 'details', 
           subHeader: 
       [
@@ -152,22 +155,25 @@ export default {
     };
   },
   computed: {
+    ...mapState(appStore, ['schoolsMap']),
     ...mapState(authStore, ['userInfo']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
     },
   },
-  watch: {
-  
-  },
   async created() {
     this.getErrorFilesetStudentPaginated();
     gdcStore().getValidationFieldCodes();
-  },
-  beforeUnmount() {
-          
+    this.schoolID = this.$route.query.schoolID;
+    appStore().getInstitutesData().then(() => {
+      this.schoolNameAndMincode = this.getSchoolNameAndID();
+    });
   },
   methods: {
+    getSchoolNameAndID(){
+      let curSchool = this.schoolsMap.get(this.schoolID);
+      return curSchool.mincode + ' - ' + curSchool.schoolName;
+    },
     downloadReportURL() {
       let query = {};
       if (this.userInfo && this.userInfo.activeInstituteType === 'SCHOOL') {
@@ -229,22 +235,29 @@ export default {
 };
 </script>
       
-      <style scoped>
-      
-        .border {
-          border: 2px solid grey;
-          border-radius: 5px;
-          padding: 35px;
-          margin: 2em;
-        }
-  
-       :deep(.v-btn__content){
-         white-space: break-spaces;
-       }
-    
-    ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
-      color: white !important;
-    }
-      </style>
+<style scoped>
+  .school-header {
+    margin-top: 12px;
+    margin-bottom: 1em;
+    font-weight: bold;
+    text-align: start;
+    line-height: 1.5;
+    font-size: 1.2rem;
+    color: #38598AFF;
+  }
+
+  .borderSpace {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+
+  :deep(.v-btn__content){
+   white-space: break-spaces;
+  }
+
+  ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
+  color: white !important;
+  }
+</style>
       
   
