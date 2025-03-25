@@ -44,7 +44,6 @@
     <template #item="props">
       <tr
         class="mt-2"
-        @click="rowclicked(props.item)"
       >
         <td
           v-for="column in headers"
@@ -63,13 +62,17 @@
                 <v-col
                   v-if="column.subHeader[1].key === 'errors'"
                 >
-                  <v-chip
-                    class="status-chip"
-                    :color="getStatusColor(error?.validationIssueSeverityCode)"
-                  >
-                    {{ formatText(error?.validationIssueSeverityCode) }}
-                  </v-chip>
-                </v-col>
+                  <v-tooltip text="Tooltip">
+                    <template #activator="{ props }">
+                      <v-icon
+                        class="mt-n1"
+                        v-bind="props"
+                        :color="getStatusColor(error?.validationIssueSeverityCode)"
+                        :icon="getIssueIcon(error?.validationIssueSeverityCode)"
+                      />
+                    </template>
+                    {{error?.validationIssueSeverityCode === 'WARNING' ? 'Warning' : 'Error'}}
+                  </v-tooltip></v-col>
                 <v-col v-if="column.subHeader[2].key === 'errorContext'">
                   <span v-if="error?.errorContext !== null">{{ error?.errorContext }}</span>
                   <span v-else>-</span>
@@ -96,7 +99,6 @@
       
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
-import {capitalize} from 'lodash';
       
 export default {
   name: 'GradErrorTable',
@@ -153,35 +155,13 @@ export default {
           
   },
   methods: {
-    rowclicked() {
-
-    },
-    formatText(text) {
-      return capitalize(text);
-    },
     formatFileType(text) {
       if(text === 'ASSESSMENT') {
-        return capitalize(text) + ' (.XAM)';
+        return 'XAM';
       } else if(text === 'COURSE') {
-        return capitalize(text) + ' (.CRS)';
+        return 'CRS';
       } else if(text === 'DEMOGRAPHICS') {
-        return capitalize(text) + ' (.DEM)';
-      }
-    },
-    getStatusColor(status) {
-      if (status === 'WARNING') {
-        return '#ff9800';
-      }
-      else if (status === 'ERROR') {
-        return '#d90606';
-      }
-    },
-    getStatusTextColor(status) {
-      if (status === 'WARNING') {
-        return 'warning-text';
-      }
-      else if (status === 'ERROR') {
-        return 'error-text';
+        return 'DEM';
       }
     },
     getIssueIcon(status) {
@@ -192,7 +172,14 @@ export default {
         return 'mdi-alert-circle-outline';
       }
     },
-     
+    getStatusColor(status) {
+      if (status === 'WARNING') {
+        return '#ff9800';
+      }
+      else if (status === 'ERROR') {
+        return '#d90606';
+      }
+    },
   }
 };
 </script>

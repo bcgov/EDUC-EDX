@@ -34,7 +34,8 @@
               </a>
             </template>
             <v-card
-              style="max-width: 30em;border: 2px solid black; border-radius: 10px;"
+              style="max-width: 30em;"
+              border="sm"
               class="pa-2"
             >
               <div style="font-weight: bold">
@@ -627,7 +628,7 @@ export default {
       this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.districtID}});
     },
     navigateToErrors(row) {
-      const routeData = this.$router.resolve({name: 'error', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID}});
+      const routeData = this.$router.resolve({name: 'grad-gdc-error-report', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID},  query: { schoolID: row.schoolID}});
       window.open(routeData.href, '_blank');
     },
     getSchoolDropDownItems() {
