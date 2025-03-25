@@ -14,7 +14,7 @@
       >
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
-          :items="schoolSearchNames"
+          :district-i-d="districtID"
           @search="loadStudents"
         />
       </v-col>
@@ -148,8 +148,6 @@ import {
 } from '../../../../utils/gdc/gradReports';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
-import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
-import {appStore} from '../../../../store/modules/app';
 
 export default {
   name: 'GradDistrictCurrentStudents',
@@ -172,13 +170,11 @@ export default {
       isLoading: false,
       schoolCodeNameFilter: null,
       studentList: [],
-      schoolSearchNames: [],
       showFilters: null,
       totalElements: 0,
       resetVal: false,
       pageNumber: 1,
       pageSize: 15,
-      schoolsCacheMap: null,
       config: GRAD_CURRENT_STUDENTS,
       filterSearchParams: {
         tabFilter: [],
@@ -188,17 +184,10 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    ...mapState(appStore, ['schoolsMap']),
     filterCount() {
       let filters = Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []);
       return new Set(filters.map(filter => filter.title)).size;
     }
-  },
-  async created() {
-    appStore().getInstitutesData().finally(() => {
-      this.schoolsCacheMap = this.schoolsMap;
-      this.getSchoolDropDownItems();
-    });
   },
   methods: {
     toggleFilters() {
@@ -227,42 +216,6 @@ export default {
     async downloadXMLPreview(student) {
       let reportType = 'xml';
       await downloadDocument(this, student.pen, reportType);
-    },
-    getSchoolDropDownItems() {
-      this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
-
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
-      }
-
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-
-      this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
-
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
-
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      });
     },
     loadStudents() {
       if(this.schoolCodeNameFilter) {

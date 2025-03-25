@@ -13,7 +13,7 @@
         <v-col cols="3">
           <SchoolCodeNameFilter
             v-model="schoolNameNumber"
-            :items="schoolSearchNames"
+            :district-i-d="districtID"
           />
         </v-col>
         <v-col cols="2">
@@ -90,12 +90,12 @@
               <v-col>
                 <span>
                   <v-icon
-                  size="25"
-                  :color="getIssueIconColor(demStudentData?.studentStatusCode)"
-                >
-                  {{ getIssueIcon(demStudentData?.studentStatusCode) }}
-                </v-icon>
-                {{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}
+                    size="25"
+                    :color="getIssueIconColor(demStudentData?.studentStatusCode)"
+                  >
+                    {{ getIssueIcon(demStudentData?.studentStatusCode) }}
+                  </v-icon>
+                  {{ demStudentData?.pen }} - {{ getName(demStudentData?.lastName, demStudentData?.firstName, demStudentData?.middleName) }}
                 </span>
               </v-col>
             </v-row>
@@ -270,8 +270,6 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import * as Rules from '../../../../utils/institute/formRules';
-import { mapState } from 'pinia';
-import {appStore} from '../../../../store/modules/app';
 import CourseTable from '../../CourseTable.vue';
 import AssessmentTable from '../../AssessmentTable.vue';
 import StudentSubmission from '../../StudentSubmission.vue';
@@ -282,7 +280,6 @@ import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
 import Spinner from '../../../common/Spinner.vue';
 import {setFailureAlert} from '../../../composable/alertComposable';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
-import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 import {formatDateTime} from '../../../../utils/format';
 
 export default {
@@ -309,7 +306,6 @@ export default {
       studentPEN: null,
       isValid: false,
       schoolNameNumber: null,
-      schoolSearchNames: [],
       view: 'course',
       showSubmission: false,
       courseHeaders: [
@@ -354,54 +350,9 @@ export default {
       incomingFilesetID: null
     };
   },
-  computed: {
-    ...mapState(appStore, ['schoolsMap']),
-  },
-  async created() {
-    appStore().getInstitutesData().finally(() => {
-      this.schoolsCacheMap = this.schoolsMap;
-      this.getSchoolDropDownItems();
-    });
-  },
   methods: {
     formatDate(inputDate) {
       return formatDateTime(inputDate,'uuuuMMdd','uuuu/MM/dd', false);
-    },
-    getSchoolDropDownItems() {
-      this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
-
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
-      }
-
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-
-      this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
-
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
-
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      });
     },
     async refreshSearch(selectedSubmission) {
       this.incomingFilesetID =  selectedSubmission[0].incomingFilesetID;
@@ -474,14 +425,14 @@ export default {
     setIncomingFilesetIDSelection() {
       if(isEmpty(this.selectedSubmission)) {
         let createDate =  formatDateTime(this.filesetStudentSubmissions[0].createDate,'uuuu-MM-dd\'T\'HH:mm:ss.SSSSSS','uuuu/MM/dd', false);
-          let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-          this.selectedSubmission = this.filesetStudentSubmissions[0];
-        } else {
-          let createDate =  this.selectedSubmission.createDate;
-          let createTime = this.selectedSubmission.createTime;
-          this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-        }
+        let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
+        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+        this.selectedSubmission = this.filesetStudentSubmissions[0];
+      } else {
+        let createDate =  this.selectedSubmission.createDate;
+        let createTime = this.selectedSubmission.createTime;
+        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
+      }
     },
     showCourse() {
       this.view = 'course';

@@ -118,7 +118,7 @@
         >
           <SchoolCodeNameFilter
             v-model="schoolCodeNameFilter"
-            :items="schoolSearchNames"
+            :district-i-d="districtID"
             @search="searchButtonClick"
           />
         </v-col>
@@ -367,7 +367,6 @@ import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
-import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
@@ -425,11 +424,9 @@ export default {
         {title: 'Errors/Warnings', key: 'errorLink'},
       ],
       activeSchoolsCacheMap: null,
-      schoolsCacheMap: null,
       disableScreen: false,
       wsNotificationText: '',
       schoolCodeNameFilter: null,
-      schoolSearchNames: [],
       headerSearchParams: {
         schoolNumber: '',
         status: '',
@@ -467,9 +464,7 @@ export default {
   async created() {
     await this.getFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
-      this.schoolsCacheMap = this.schoolsMap;
       this.activeSchoolsCacheMap = this.activeSchoolsMap;
-      this.getSchoolDropDownItems();
     });
   },
   beforeUnmount() {
@@ -630,42 +625,6 @@ export default {
     navigateToErrors(row) {
       const routeData = this.$router.resolve({name: 'grad-gdc-error-report', params: {instituteIdentifierID: this.districtID, activeIncomingFilesetID: row.incomingFilesetID},  query: { schoolID: row.schoolID}});
       window.open(routeData.href, '_blank');
-    },
-    getSchoolDropDownItems() {
-      this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
-
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
-      }
-
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-
-      this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
-
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
-
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      });
     },
     searchButtonClick() {
       if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {

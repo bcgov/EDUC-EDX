@@ -132,7 +132,7 @@
       >
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
-          :items="schoolSearchNames"
+          :district-i-d="districtID"
         />
       </v-col>
     </v-row>
@@ -393,8 +393,6 @@ import {
 } from '../../../../utils/gdc/gradReports';
 import {LocalDate} from '@js-joda/core';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
-import {appStore} from '../../../../store/modules/app';
-import {getStatusAuthorityOrSchool} from '../../../../utils/institute/status';
 
 export default {
   name: 'GradDistrictReportsAndTranscripts',
@@ -417,7 +415,6 @@ export default {
       currentYear: null,
       lastYear: null,
       schoolCodeNameFilter: null,
-      schoolSearchNames: [],
       yearBeforeLast: null,
       showPENSearchResultArea: false,
       studentForSearch: {},
@@ -431,53 +428,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap']),
     ...mapState(authStore, ['userInfo']),
   },
-  async created() {
-    this.populateYearValues();
-    appStore().getInstitutesData().finally(() => {
-      this.schoolsCacheMap = this.schoolsMap;
-      this.getSchoolDropDownItems();
-    });
-  },
   methods: {
-    getSchoolDropDownItems() {
-      this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
-
-      if (now.getMonth() >= 6) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 6, 1); // July 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 5, 30); // June 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 6, 1); // July 1 of last year
-        currentSchoolYearEnd = new Date(now.getFullYear(), 5, 30); // June 30 of this year
-      }
-
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-
-      this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
-
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
-
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
-      });
-    },
     populateYearValues() {
       this.currentYear = LocalDate.now().year();
       this.lastYear = LocalDate.now().minusYears(1).year();
