@@ -546,7 +546,7 @@ export default {
         fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
         if(e?.message.includes('428')){
-          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + this.uploadFileValue[index].name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + fileJSON.name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
           if (!confirmation) {
             fileJSON.error = 'Abandoned';
             fileJSON.status = this.fileUploadError;
