@@ -143,15 +143,6 @@
               class="mr-1"
             />Projected Non-Graduates</a>
           </v-col>
-          <v-col
-            cols="12"
-            class="mt-n2"
-          >
-            <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-              icon="mdi-download"
-              class="mr-1"
-            />Projected Graduates</a>
-          </v-col>
         </v-row>
       </v-form>
     </v-card>
@@ -192,15 +183,6 @@
                 class="mr-1"
               />Projected Non-Graduates</a>
             </v-col>
-            <v-col
-              cols="12"
-              class="mt-n2"
-            >
-              <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />Projected Graduates</a>
-            </v-col>
           </v-row>
         </v-form>
       </v-card>
@@ -226,15 +208,6 @@
                 icon="mdi-download"
                 class="mr-1"
               />Projected Non-Graduates</a>
-            </v-col>
-            <v-col
-              cols="12"
-              class="mt-n2"
-            >
-              <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />Projected Graduates</a>
             </v-col>
           </v-row>
         </v-form>
