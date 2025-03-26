@@ -88,28 +88,28 @@
               {{ studentForSearch.gender }}
             </v-col>
             <v-col cols="12">
-              <a @click="downloadTVRReport"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />TVR</a>
+              <DownloadLink
+                label="TVR"
+                :download-action="downloadTVRReport"
+              />
             </v-col>
             <v-col
               cols="12"
               class="mt-n2"
             >
-              <a @click="downloadTranscriptPreview"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />Transcript Preview</a>
+              <DownloadLink
+                label="Transcript Preview"
+                :download-action="downloadTranscriptPreview"
+              />
             </v-col>
             <v-col
               cols="12"
               class="mt-n2"
             >
-              <a @click="downloadXMLPreview"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />XML Preview</a>
+              <DownloadLink
+                label="XML Preview"
+                :download-action="downloadXMLPreview"
+              />
             </v-col>
           </v-row>
         </div>
@@ -147,7 +147,7 @@
         width="30em"
         style="border: 1px solid black;border-radius: 10px;"
       >
-        <v-card-title>Current Grade 12 & AD Students</v-card-title>
+        <v-card-title>Current Grade 12 &amp; AD Students</v-card-title>
         <v-card-text
           style="color: gray"
           class="mt-n2"
@@ -160,19 +160,19 @@
         >
           <v-row class="pl-3 pb-3">
             <v-col cols="12">
-              <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />Projected Non-Graduates</a>
+              <DownloadLink
+                label="Projected Non-Graduates"
+                :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+              />
             </v-col>
             <v-col
               cols="12"
               class="mt-n2"
             >
-              <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-                icon="mdi-download"
-                class="mr-1"
-              />Projected Graduates</a>
+              <DownloadLink
+                label="Projected Graduates"
+                :download-action="() => downloadProjectedTVRReport('graduating')"
+              />
             </v-col>
           </v-row>
         </v-form>
@@ -209,19 +209,19 @@
           >
             <v-row class="pl-3 pb-3">
               <v-col cols="12">
-                <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Projected Non-Graduates</a>
+                <DownloadLink
+                  label="Projected Non-Graduates"
+                  :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                />
               </v-col>
               <v-col
                 cols="12"
                 class="mt-n2"
               >
-                <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Projected Graduates</a>
+                <DownloadLink
+                  label="Projected Graduates"
+                  :download-action="() => downloadProjectedTVRReport('graduating')"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -244,19 +244,19 @@
           >
             <v-row class="pl-3 pb-3">
               <v-col cols="12">
-                <a @click="downloadProjectedTVRReport('nonGraduating')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Projected Non-Graduates</a>
+                <DownloadLink
+                  label="Projected Non-Graduates"
+                  :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                />
               </v-col>
               <v-col
                 cols="12"
                 class="mt-n2"
               >
-                <a @click="downloadProjectedTVRReport('graduating')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Projected Graduates</a>
+                <DownloadLink
+                  label="Projected Graduates"
+                  :download-action="() => downloadProjectedTVRReport('graduating')"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -294,22 +294,28 @@
           >
             <v-row class="pl-3 pb-3">
               <v-col cols="12">
-                <a @click="downloadSummaryReport('graduated')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Graduated Students</a>
+                <DownloadLink
+                  label="Graduated Students"
+                  :download-action="() => downloadSummaryReport('graduated')"
+                />
               </v-col>
               <v-col
                 cols="12"
                 class="mt-n2"
               >
-                <a @click="downloadSummaryReport('nonGraduated')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Not Yet Graduated Students</a>
+                <DownloadLink
+                  label="Not Yet Graduated Students"
+                  :download-action="() => downloadSummaryReport('nonGraduated')"
+                />
               </v-col>
             </v-row>
           </v-form>
+          <v-card-text
+            class="pt-1 pb-3"
+            style="color: gray"
+          >
+            * Generated daily based on latest data submissions
+          </v-card-text>
         </v-card>
         <v-card
           class="mt-2"
@@ -329,22 +335,28 @@
           >
             <v-row class="pl-3 pb-3">
               <v-col cols="12">
-                <a @click="downloadSummaryReport('historicalGraduated')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Graduated Students</a>
+                <DownloadLink
+                  label="Graduated Students"
+                  :download-action="() => downloadSummaryReport('historicalGraduated')"
+                />
               </v-col>
               <v-col
                 cols="12"
                 class="mt-n2"
               >
-                <a @click="downloadSummaryReport('historicalNonGraduated')"><v-icon
-                  icon="mdi-download"
-                  class="mr-1"
-                />Not Yet Graduated Students</a>
+                <DownloadLink
+                  label="Not Yet Graduated Students"
+                  :download-action="() => downloadSummaryReport('historicalNonGraduated')"
+                />
               </v-col>
             </v-row>
           </v-form>
+          <v-card-text
+            class="pt-1 pb-3"
+            style="color: gray"
+          >
+            * Generated based on final data submissions
+          </v-card-text>
         </v-card>
       </v-row>
     </div>
@@ -355,51 +367,35 @@
     </v-row>
     <v-row>
       <v-col class="mt-n3">
-        <a @click="downloadYearEndReport"><v-icon
-          icon="mdi-download"
-          class="mr-1"
-        />Year-End District Credential and Transcript Distribution Reports</a>
+        <DownloadLink
+          label="Year-End District Credential and Transcript Distribution Reports"
+          :download-action="downloadYearEndReport"
+        />
       </v-col>
     </v-row>
-    <v-fab
-      v-if="isLoading"
-      key="fixed"
-      style="margin-top: 20em"
-      app
-      location="right bottom"
-      size="large"
-      icon
-    >
-      <v-progress-circular
-        :size="40"
-        :width="7"
-        color="primary"
-        indeterminate
-      />
-    </v-fab>
   </v-container>
 </template>
 
 <script>
-import {isValidPEN} from '../../../../utils/validation';
+import { isValidPEN } from '../../../../utils/validation';
 import alertMixin from '../../../../mixins/alertMixin';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
-import { mapState} from 'pinia';
-import {authStore} from '../../../../store/modules/auth';
+import { mapState } from 'pinia';
+import { authStore } from '../../../../store/modules/auth';
 import {
-  docTypeFilename, docTypeName, downloadDocument,
+  docTypeFilename,
+  docTypeName,
+  downloadDocument,
   fetchAndDownloadGradReport,
   searchStudentByPen
 } from '../../../../utils/gdc/gradReports';
-import {LocalDate} from '@js-joda/core';
+import { LocalDate } from '@js-joda/core';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import DownloadLink from '../../../common/DownloadLink.vue';
 
 export default {
   name: 'GradDistrictReportsAndTranscripts',
-  components: {
-    SchoolCodeNameFilter,
-    PrimaryButton
-  },
+  components: { SchoolCodeNameFilter, PrimaryButton, DownloadLink },
   mixins: [alertMixin],
   props: {
     districtID: {
@@ -408,7 +404,6 @@ export default {
       default: null
     },
   },
-  emits: [],
   data() {
     return {
       isLoading: false,
@@ -430,11 +425,15 @@ export default {
   computed: {
     ...mapState(authStore, ['userInfo']),
   },
+  created() {
+    this.populateYearValues();
+  },
   methods: {
     populateYearValues() {
-      this.currentYear = LocalDate.now().year();
-      this.lastYear = LocalDate.now().minusYears(1).year();
-      this.yearBeforeLast = LocalDate.now().minusYears(2).year();
+      const now = LocalDate.now();
+      this.currentYear = now.year();
+      this.lastYear = now.minusYears(1).year();
+      this.yearBeforeLast = now.minusYears(2).year();
     },
     searchStudentForGivenPEN(isTranscriptRequest) {
       this.isSearchingStudent = true;
@@ -454,22 +453,13 @@ export default {
       await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, this.docTypeFilename, this.docTypeName, false);
     },
     async downloadTVRReport() {
-      this.isLoading = true;
-      let reportType = 'tvr';
-      await downloadDocument(this, this.studentForSearch.pen, reportType);
-      this.isLoading = false;
+      await downloadDocument(this, this.studentForSearch.pen, 'tvr');
     },
     async downloadTranscriptPreview() {
-      this.isLoading = true;
-      let reportType = 'transcript';
-      await downloadDocument(this, this.studentForSearch.pen, reportType);
-      this.isLoading = false;
+      await downloadDocument(this, this.studentForSearch.pen, 'transcript');
     },
     async downloadXMLPreview() {
-      this.isLoading = true;
-      let reportType = 'xml';
-      await downloadDocument(this, this.studentForSearch.pen, reportType);
-      this.isLoading = false;
+      await downloadDocument(this, this.studentForSearch.pen, 'xml');
     },
     async downloadSummaryReport(reportType) {
       this.isLoading = true;
