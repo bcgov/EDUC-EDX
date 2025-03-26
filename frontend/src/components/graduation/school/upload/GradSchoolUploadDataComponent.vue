@@ -488,7 +488,6 @@ export default {
           this.inputKey++;
           this.isLoadingFiles = false;
         } else {
-          let fileIndex = 0;
           this.filePromises = this.uploadFileValue.map((fileValue) => {
             return new Promise((resolve, reject) => {
               let reader = new FileReader();
@@ -496,7 +495,6 @@ export default {
               reader.onload = () => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: reader.result,
                   status: FILE_UPLOAD_STATUS.PENDING,
                   error: null,
@@ -509,7 +507,6 @@ export default {
               reader.onerror = (error) => {
                 let statusJson = {
                   name: fileValue.name,
-                  index: fileIndex++,
                   fileContents: null,
                   status: FILE_UPLOAD_STATUS.ERROR,
                   error: error,
@@ -526,7 +523,7 @@ export default {
           for await (const fileJSON of this.fileUploadList) {
             if(fileJSON.error === null){
               await new Promise(resolve => setTimeout(resolve, 3000));
-              await this.uploadFile(fileJSON, fileJSON.index);
+              await this.uploadFile(fileJSON);
               this.inputKey++;
             }
           }
@@ -535,13 +532,13 @@ export default {
         }
       }
     },
-    async uploadFile(fileJSON, index) {
+    async uploadFile(fileJSON) {
       let document;
       try{
         document = {
-          fileName: getFileNameWithMaxNameLength(this.uploadFileValue[index].name),
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
           fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents))),
-          fileType: this.uploadFileValue[index].name.split('.')[1]
+          fileType: fileJSON.name.split('.')[1]
         };
         await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file', document)
           .then(() => {});
@@ -549,7 +546,7 @@ export default {
         fileJSON.status = this.fileUploadSuccess;
       } catch (e) {
         if(e?.message.includes('428')){
-          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + this.uploadFileValue[index].name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
+          const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + fileJSON.name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
           if (!confirmation) {
             fileJSON.error = 'Abandoned';
             fileJSON.status = this.fileUploadError;
