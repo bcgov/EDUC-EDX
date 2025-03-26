@@ -57,6 +57,13 @@ const gradSchoolFilesetPaginatedSchema = object({
   })
 }).noUnknown();
 
+const gradSchoolFilesetMetricSchema = object({
+  body: object().noUnknown(),
+  params: object({
+    schoolID: string()
+  })
+}).noUnknown();
+
 const gradSchoolPenFilesetPaginatedSchema = object({
   body: object().noUnknown(),
   params: object({
@@ -129,5 +136,6 @@ module.exports = {
   gradSchoolPenFilesetPaginatedSchema,
   gradSchoolFilesetByPenSchema,
   gradDistrictFilesetByPenSchema,
-  gradDistrictPenFilesetPaginatedSchema
+  gradDistrictPenFilesetPaginatedSchema,
+  gradSchoolFilesetMetricSchema
 };

@@ -205,6 +205,34 @@ async function getErrorFilesetStudentPaginated(req, res) {
   }
 }
 
+async function getSubmissionMetrics(req, res){
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/submission`;
+
+    const resData = await getData(token, url);
+
+    return res.status(HttpStatus.OK).send(resData);
+  } catch (e) {
+    log.error('getSubmissionMetrics Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function getErrorMetrics(req, res){
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/errors`;
+
+    const resData = await getData(token, url);
+
+    return res.status(HttpStatus.OK).send(resData);
+  } catch (e) {
+    log.error('getSubmissionMetrics Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getCurrentGradStudentsPaginated(req, res){
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
@@ -477,5 +505,7 @@ module.exports = {
   getFilesetsPaginated,
   downloadErrorReport,
   getStudentFilesetByPenFilesetId,
-  getCurrentGradStudentsPaginated
+  getCurrentGradStudentsPaginated,
+  getSubmissionMetrics,
+  getErrorMetrics
 };
