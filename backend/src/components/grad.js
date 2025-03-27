@@ -207,11 +207,15 @@ async function getErrorFilesetStudentPaginated(req, res) {
 
 async function getSubmissionMetrics(req, res){
   try {
-    const token = getAccessToken(req);
-    const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/submission`;
+    const resData = res.locals.requestedIncomingFileset;
 
-    const resData = await getData(token, url);
-
+    if (resData.updateUser && resData.updateUser.startsWith('EDX/')) {
+      const userID = resData.updateUser.slice(4);
+      const user = cacheService.getEdxUserByID(userID);
+      if (user) {
+        resData.updateUser = user.displayName;
+      }
+    }
     return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
     log.error('getSubmissionMetrics Error', e.stack);
@@ -228,7 +232,7 @@ async function getErrorMetrics(req, res){
 
     return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
-    log.error('getSubmissionMetrics Error', e.stack);
+    log.error('getErrorMetrics Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }

@@ -61,6 +61,9 @@ const gradSchoolFilesetMetricSchema = object({
   body: object().noUnknown(),
   params: object({
     schoolID: string()
+  }),
+  query: object({
+
   })
 }).noUnknown();
 

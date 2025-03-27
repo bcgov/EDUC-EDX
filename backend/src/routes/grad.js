@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
-const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
+const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
   getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics
@@ -43,10 +43,10 @@ router.get('/filesetErrors/:activeIncomingFilesetID/errorReportDownload', auth.r
   checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, downloadErrorReport);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/submission-summary', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW),
-  validate(gradSchoolFilesetMetricSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, getSubmissionMetrics);
+  validate(gradSchoolFilesetMetricSchema), findInstituteInformation_query, loadIncomingFileset, checkUserHasAccessToIncomingFileset, getSubmissionMetrics);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/error-summary', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW),
-  validate(gradSchoolFilesetMetricSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, getErrorMetrics);
+  validate(gradSchoolFilesetMetricSchema), findInstituteInformation_query, loadIncomingFileset, checkUserHasAccessToIncomingFileset, getErrorMetrics);
 
 router.post('/district/:districtID/upload-file', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
   checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFileUploadSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, scanFilePayload, uploadFile);
