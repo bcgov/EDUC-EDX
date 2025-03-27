@@ -355,6 +355,19 @@ function checkStudentBelongsInCollection(req, res, next) {
   }
 }
 
+function checkUserHasAccessToIncomingFileset(req, res, next){
+  if (req.session.activeInstituteType === 'DISTRICT' && res.locals.requestedIncomingFileset.districtID !== req.session.activeInstituteIdentifier){
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'District user does not have access to school.'
+    });
+  }else if(req.session.activeInstituteType === 'SCHOOL' && res.locals.requestedIncomingFileset.schoolID !== req.session.activeInstituteIdentifier){
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'User does not have access to school.'
+    });
+  }
+  return next();
+}
+
 function checkIfStudentBelongsInDistrictCollection(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudent) {
     return res.status(HttpStatus.NOT_FOUND).json({
@@ -388,6 +401,24 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
   res.locals.requestedSdcSchoolCollectionID = res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionID;
   return next();
 }
+
+async function loadIncomingFileset(req, res, next) {
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/submission`;
+
+    res.locals.requestedIncomingFileset = await getData(token, url);
+  } catch (e) {
+    log.error('Unable to load the incoming fileset with ID: ' + req.params.activeIncomingFilesetID, e.stack);
+  }
+  return next();
+}
+
 
 async function loadSdcSchoolCollection(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionID) {
@@ -630,7 +661,9 @@ const permUtils = {
   checkDistrictBelongsInSdcDistrictCollection,
   checkAnyEdxUserSignoffPermission,
   checkPermissionForSignOff,
-  checkActiveInstituteIdentifier
+  checkActiveInstituteIdentifier,
+  loadIncomingFileset,
+  checkUserHasAccessToIncomingFileset
 };
 
 module.exports = permUtils;
