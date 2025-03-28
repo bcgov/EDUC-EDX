@@ -578,7 +578,8 @@ function checkActiveInstituteIdentifier(req, res, next) {
 }
 
 async function checkIfRoleIsAllowedForSchool(req, res, next) {
-  let isRoleAllowed = await checkValidRoles(req, req.body.params.selectedRoles);
+  let schoolID = req?.body?.params?.schoolID;
+  let isRoleAllowed = await checkValidRoles(req, req.body.params.selectedRoles, schoolID);
   if(!isRoleAllowed) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'Role is not allowed.'
@@ -589,7 +590,8 @@ async function checkIfRoleIsAllowedForSchool(req, res, next) {
 
 
 async function checkUserRoleForNewUser(req, res, next) {
-  let isRoleAllowed = await checkValidRoles(req, req.body.edxActivationRoleCodes);
+  let schoolID = req?.body?.schoolID;
+  let isRoleAllowed = await checkValidRoles(req, req.body.edxActivationRoleCodes, schoolID);
   if(!isRoleAllowed) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'Role is not allowed.'
@@ -598,13 +600,13 @@ async function checkUserRoleForNewUser(req, res, next) {
   return next();
 }
 
-async function checkValidRoles(req, incomingRoles) {
+async function checkValidRoles(req, incomingRoles, schoolID) {
   const token = getAccessToken(req);
   const params = {
     params: req.query
   };
   let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
-  let allowedRoles = filterSchoolRoles(req?.body?.params?.schoolID, data);
+  let allowedRoles = filterSchoolRoles(schoolID, data);
   return incomingRoles.every(role => {
     return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0
   });
