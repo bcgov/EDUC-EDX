@@ -6,6 +6,7 @@
       </v-col>
     </v-row>
     <v-form
+      ref="gradDistrictStudentSearchForm"
       v-model="isValid"
       class="d-flex"
     >
@@ -14,6 +15,7 @@
           <SchoolCodeNameFilter
             v-model="schoolNameNumber"
             :district-i-d="districtID"
+            :rules="[rules.required()]"
           />
         </v-col>
         <v-col cols="2">
@@ -416,11 +418,14 @@ export default {
       });
     },
     clear() {
-      this.studentPEN = null;
-      this.isValid = false;
-      this.selectedSubmission = null;
+      this.$refs.gradDistrictStudentSearchForm.reset();
+      this.demStudentData = null;
+      this.assessmentData = [];
+      this.courseData = [];
+      this.selectedSubmission = {};
       this.selectedSubmissionText = '';
-      this.schoolNameNumber =  null;
+      this.noDataFlag = false;
+      this.incomingFilesetID = null;
     },
     setIncomingFilesetIDSelection() {
       if(isEmpty(this.selectedSubmission)) {
