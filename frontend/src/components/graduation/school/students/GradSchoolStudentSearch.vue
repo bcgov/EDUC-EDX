@@ -54,18 +54,22 @@
       </v-row>
     </div>
     <div v-else-if="!isLoading && demStudentData">
-      <v-row justify="space-between align">
+      <v-row
+        no-gutters
+        class="mb-n2"
+      >
         <v-col
           cols="4"
-          class="mb-n5"
+          align-self="center"
         >
-          <span class="heading ">
+          <span class="heading">
             {{ totalElements }} Submissions Found
           </span>
         </v-col>
         <v-col
           cols="8"
-          class="d-flex justify-end mb-n6"
+          class="d-flex justify-end"
+          align-self="center"
         >
           <v-btn
             id="search"
@@ -77,7 +81,10 @@
           />
         </v-col>
       </v-row>
-      <v-row>
+      <v-row
+        no-gutters
+        class="mt-2"
+      >
         <v-col>
           <div class="border">
             <v-row class="name-header">
@@ -424,7 +431,7 @@ export default {
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
         this.selectedSubmission = this.filesetStudentSubmissions[0];
       } else {
-        let createDate =  this.selectedSubmission.createDate;
+        let createDate =  formatDateTime(this.selectedSubmission.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
         let createTime = this.selectedSubmission.createTime;
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
       }
