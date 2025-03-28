@@ -174,11 +174,7 @@
                     Program Codes
                   </div>
                   <div>
-                    <span v-if="demStudentData?.programCode1">{{ demStudentData?.programCode1 }}, </span>
-                    <span v-if="demStudentData?.programCode2">{{ demStudentData?.programCode2 }}, </span>
-                    <span v-if="demStudentData?.programCode3">{{ demStudentData?.programCode3 }}, </span>
-                    <span v-if="demStudentData?.programCode4">{{ demStudentData?.programCode4 }}, </span>
-                    <span v-if="demStudentData?.programCode5">{{ demStudentData?.programCode5 }}</span>
+                    <span>{{ getProgramsList() }}</span>
                   </div>
                 </div>
               </v-col>
@@ -410,6 +406,11 @@ export default {
         this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
       });
     },
+    getProgramsList() {
+      let programCodes = [this.demStudentData?.programCode1, this.demStudentData?.programCode2, this.demStudentData?.programCode3, this.demStudentData?.programCode4, this.demStudentData?.programCode5];
+      let cleanArray = programCodes.filter(x => x != null);
+      return cleanArray.join(', ');
+    },
     clear() {
       this.studentPEN = null;
       this.isValid = false;
@@ -418,7 +419,7 @@ export default {
     },
     setIncomingFilesetIDSelection() {
       if(isEmpty(this.selectedSubmission)) {
-        let createDate =  formatDateTime(this.filesetStudentSubmissions[0].createDate,'uuuu-MM-dd\'T\'HH:mm:ss.SSSSSS','uuuu/MM/dd', false);
+        let createDate =  formatDateTime(this.filesetStudentSubmissions[0].createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
         let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
         this.selectedSubmission = this.filesetStudentSubmissions[0];

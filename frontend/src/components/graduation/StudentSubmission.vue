@@ -31,14 +31,14 @@
         :items="submittedStudentRecord"
         @update:selected="refreshSearch"
       >
-      <v-row class="heading">
-        <v-col cols="5">
-          Submission Date
-        </v-col>
-        <v-col>
-          Upload User
-        </v-col>
-      </v-row>
+        <v-row class="heading">
+          <v-col cols="5">
+            Submission Date
+          </v-col>
+          <v-col>
+            Upload User
+          </v-col>
+        </v-row>
         <v-list-item
           v-for="(item, index) in submittedStudentRecord"
           :key="index"
@@ -111,7 +111,7 @@ export default {
   methods: {
     handleSubmissionData(value) {
       this.submittedStudentRecord = value.map(fileset => {
-        let createDate =  formatDateTime(fileset.createDate,'uuuu-MM-dd\'T\'HH:mm:ss.SSSSSS','uuuu/MM/dd', false);
+        let createDate =  formatDateTime(fileset.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
         let createTime = LocalDateTime.parse(fileset.createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         return {
           incomingFilesetID: fileset.incomingFilesetID,
