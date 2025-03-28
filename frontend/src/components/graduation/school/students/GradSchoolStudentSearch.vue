@@ -432,7 +432,7 @@ export default {
         this.selectedSubmission = this.filesetStudentSubmissions[0];
       } else {
         let createDate =  formatDateTime(this.selectedSubmission.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
-        let createTime = this.selectedSubmission.createTime;
+        let createTime = LocalDateTime.parse(this.selectedSubmission.createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
       }
     },
