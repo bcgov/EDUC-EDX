@@ -210,7 +210,7 @@
               <v-col cols="12">
                 <DownloadLink
                   label="Projected Non-Graduates"
-                  :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                  :download-action="downloadGradProjections"
                 />
               </v-col>
             </v-row>
@@ -239,7 +239,7 @@
               <v-col cols="12">
                 <DownloadLink
                   label="Projected Non-Graduates"
-                  :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                  :download-action="downloadGradProjections"
                 />
               </v-col>
             </v-row>
@@ -440,7 +440,7 @@ export default {
     async downloadYearEndReport(){
       this.summaryDownloadType = 'yearEnd';
       const districtID = this.districtID;
-      await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, this.docTypeFilename, this.docTypeName, false);
+      await fetchAndDownloadGradReport(this, districtID, this.summaryDownloadType, docTypeFilename('yearEnd'), docTypeName('yearEnd'), false);
     },
     async downloadTVRReport() {
       await downloadDocument(this, this.studentForSearch.pen, 'tvr');
@@ -454,7 +454,7 @@ export default {
     async downloadSummaryReport(reportType) {
       this.isLoading = true;
       const schoolID = this.schoolCodeNameFilter;
-      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true);
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
       this.isLoading = false;
     },
     async downloadProjectedTVRReport(reportType) {
@@ -463,8 +463,10 @@ export default {
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
       this.isLoading = false;
     },
+    downloadGradProjections(){
+      return;
+    },
     close() {
-      this.showPENSearchDialog = false;
       this.studentForSearch = {};
       this.studentPENXML = null;
       this.studentPENTranscript = null;
@@ -493,10 +495,6 @@ button {
   color: #1976d2;
 }
 
-.sub-category-group {
-  padding-left: 2em;
-}
-
 v-text-field {
   width: 4em;
 }
@@ -518,11 +516,6 @@ p {
 
 i {
   font-size: 1.25em;
-}
-
-.link-style {
-  display: inline-flex;
-  align-items: center;
 }
 
 .disabled-section {
