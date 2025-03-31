@@ -371,6 +371,7 @@ export default {
     async searchStudent() {
       this.isLoading = true;
       this.noDataFlag = false;
+      this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
       this.filterSearchParams.schoolID = this.schoolNameNumber;
       await this.getStudentSubmissions();

@@ -331,6 +331,11 @@ function createMoreFiltersCurrentStudentsSearchCriteria(searchFilter = []) {
         condition: CONDITION.AND,
         searchCriteriaList: [{ key: 'localID', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
       });
+    }else if (key === 'programCode' && pValue) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: [{ key: 'programCode', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+      });
     }else if (key === 'programComplete') {
       let pValueID = filter ? filter.map(filter => filter.id) : null;
       if(pValueID.toString() === 'programComplete'){

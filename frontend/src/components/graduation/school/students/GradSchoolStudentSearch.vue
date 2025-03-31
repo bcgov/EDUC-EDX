@@ -363,6 +363,7 @@ export default {
     async searchStudent() {
       this.isLoading= true;
       this.noDataFlag=false;
+      this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
       await this.getStudentSubmissions();
       await this.findStudentInFilesetByPEN();
