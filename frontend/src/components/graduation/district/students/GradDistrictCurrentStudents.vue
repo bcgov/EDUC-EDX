@@ -219,6 +219,7 @@ export default {
     },
     schoolSelected(){
       this.pageNumber = 1;
+      this.resetVal = true;
       this.loadStudents();
     },
     loadStudents() {
