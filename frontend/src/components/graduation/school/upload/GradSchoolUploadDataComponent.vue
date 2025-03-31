@@ -588,7 +588,7 @@ export default {
       }).catch(error => {
         clearInterval(this.interval);
         console.error(error);
-        this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
+        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {
         this.isLoading = false;
       });
