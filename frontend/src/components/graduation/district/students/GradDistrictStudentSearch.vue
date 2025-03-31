@@ -367,6 +367,7 @@ export default {
       this.isLoading = true;
       this.noDataFlag = false;
       await this.findStudentInFilesetByPEN();
+      await this.setIncomingFilesetIDSelection();
     },
     async searchStudent() {
       this.isLoading = true;
