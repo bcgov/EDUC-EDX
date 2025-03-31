@@ -364,7 +364,9 @@ export default {
     async refreshSearch(selectedSubmission) {
       this.incomingFilesetID = selectedSubmission[0].incomingFilesetID;
       this.selectedSubmission = selectedSubmission[0];
-      await this.searchStudent();
+      this.isLoading = true;
+      this.noDataFlag = false;
+      await this.findStudentInFilesetByPEN();
     },
     async searchStudent() {
       this.isLoading = true;
@@ -413,13 +415,14 @@ export default {
         this.filesetStudentSubmissions = response.data.content;
         this.totalElements = response.data.totalElements;
         if(response.data.content.length > 0) {
+          this.selectedSubmission = null;
           this.setIncomingFilesetIDSelection();
         } else {
           this.selectedSubmission = null;
         }
       }).catch(error => {
         console.error(error);
-        this.setFailureAlert('An error occurred while trying to fileset list. Please try again later.');
+        this.setFailureAlert('An error occurred while trying get to fileset list. Please try again later.');
       });
     },
     clear() {
@@ -439,8 +442,8 @@ export default {
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
         this.selectedSubmission = this.filesetStudentSubmissions[0];
       } else {
-        let createDate =  formatDateTime(this.selectedSubmission.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
-        let createTime = LocalDateTime.parse(this.selectedSubmission.createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
+        let createDate =  this.selectedSubmission.createDate;
+        let createTime = this.selectedSubmission.createTime;
         this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
       }
     },
