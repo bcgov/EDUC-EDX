@@ -371,6 +371,7 @@ export default {
     async searchStudent() {
       this.isLoading = true;
       this.noDataFlag = false;
+      this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
       this.filterSearchParams.schoolID = this.schoolNameNumber;
       await this.getStudentSubmissions();
@@ -415,7 +416,6 @@ export default {
         this.filesetStudentSubmissions = response.data.content;
         this.totalElements = response.data.totalElements;
         if(response.data.content.length > 0) {
-          this.selectedSubmission = null;
           this.setIncomingFilesetIDSelection();
         } else {
           this.selectedSubmission = null;
