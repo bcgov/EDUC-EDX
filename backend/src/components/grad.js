@@ -247,7 +247,8 @@ async function getCurrentGradStudentsPaginated(req, res){
   if(req.params.schoolID) {
     search.push({
       condition: null,
-      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND }]
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
+        { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
     });
   }
 
