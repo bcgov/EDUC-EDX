@@ -15,7 +15,7 @@
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
           :district-i-d="districtID"
-          @search="loadStudents"
+          @search="schoolSelected"
         />
       </v-col>
       <v-col
@@ -216,6 +216,10 @@ export default {
     async downloadXMLPreview(student) {
       let reportType = 'xml';
       await downloadDocument(this, student.pen, reportType);
+    },
+    schoolSelected(){
+      this.pageNumber = 1;
+      this.loadStudents();
     },
     loadStudents() {
       if(this.schoolCodeNameFilter) {
