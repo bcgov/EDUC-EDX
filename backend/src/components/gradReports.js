@@ -76,6 +76,14 @@ async function handleReportDownload(req, res, reportType) {
         url += 'DISTREP_YE_SD';
         fileName = `${instituteMincode}_YearEnd_${formattedDate}.pdf`;
         break;
+      case 'historicalProjNonGrad':
+        url+= 'NONGRADPRJARC';
+        fileName = `${instituteMincode}_HistoricalNotGraduatedProjection_${formattedDate}.pdf`;
+        break;
+      case 'projNonGrad':
+        url+= 'NONGRADPRJ';
+        fileName = `${instituteMincode}_NotGraduatedProjection_${formattedDate}.pdf`;
+        break;
       default:
         return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid docType' });
       }

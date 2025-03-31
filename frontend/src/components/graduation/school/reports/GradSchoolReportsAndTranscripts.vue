@@ -182,7 +182,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Projected Non-Graduates"
-                :download-action="downloadProjectedGradReport"
+                :download-action="() => downloadGradProjections('projNonGrad')"
               />
             </v-col>
           </v-row>
@@ -208,7 +208,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Projected Non-Graduates"
-                :download-action = "downloadProjectedGradReport"
+                :download-action = "() => downloadGradProjections('historicalProjNonGrad')"
               />
             </v-col>
           </v-row>
@@ -399,11 +399,13 @@ export default {
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
     },
-    downloadProjectedGradReport(){
-      return;
+    async downloadGradProjections(reportType){
+      this.isLoading = true;
+      const schoolID = this.userInfo.activeInstituteIdentifier;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
+      this.isLoading = false;
     },
     close() {
-      this.showPENSearchDialog = false;
       this.studentForSearch = {};
       this.studentPENXML = null;
       this.studentPENTranscript = null;
