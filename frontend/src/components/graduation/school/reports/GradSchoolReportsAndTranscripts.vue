@@ -182,7 +182,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Projected Non-Graduates"
-                :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                :download-action="downloadProjectedGradReport"
               />
             </v-col>
           </v-row>
@@ -208,7 +208,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Projected Non-Graduates"
-                :download-action="() => downloadProjectedTVRReport('nonGraduating')"
+                :download-action = "downloadProjectedGradReport"
               />
             </v-col>
           </v-row>
@@ -399,6 +399,9 @@ export default {
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
     },
+    downloadProjectedGradReport(){
+      return;
+    },
     close() {
       this.showPENSearchDialog = false;
       this.studentForSearch = {};
@@ -414,23 +417,12 @@ export default {
 
 <style scoped>
 
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin: 2em;
-}
-
 h3 {
   color: #38598a;
 }
 
 button {
   color: #1976d2;
-}
-
-.sub-category-group {
-  padding-left: 2em;
 }
 
 v-text-field{
@@ -454,11 +446,6 @@ p {
 
 i {
   font-size: 1.25em;
-}
-
-.link-style {
-  display: inline-flex;
-  align-items: center;
 }
 
 </style>
