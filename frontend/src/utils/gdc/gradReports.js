@@ -149,7 +149,9 @@ export function docTypeFilename(summaryDownloadType) {
   case 'transcript': return 'Transcript';
   case 'xml': return 'XML';
   case 'tvr': return 'TVR';
-  case 'yearEnd': return 'Year-End Report';
+  case 'yearEnd': return 'YearEndReport';
+  case 'projNonGrad': return 'ProjectedNotGraduated';
+  case 'historicalProjNonGrad': return 'HistoricalProjectedNotGraduated';
   default: return '';
   }
 }
@@ -163,6 +165,8 @@ export function docTypeName(summaryDownloadType) {
   case 'historicalGraduated': return 'Historical Graduated Students Summary';
   case 'historicalNonGraduated': return 'Historical Not Yet Graduated Students Summary';
   case 'yearEnd': return 'Year-End District Credential and Transcript Distribution Reports';
+  case 'projNonGrad': return 'Not Yet Graduated Projection Report';
+  case 'historicalProjNonGrad': return 'Historical Not Yet Graduated Projection Report';
   default: return '';
   }
 }

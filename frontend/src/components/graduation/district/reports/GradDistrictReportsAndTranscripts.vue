@@ -210,7 +210,7 @@
               <v-col cols="12">
                 <DownloadLink
                   label="Projected Non-Graduates"
-                  :download-action="downloadGradProjections"
+                  :download-action="() => downloadGradProjections('projNonGrad')"
                 />
               </v-col>
             </v-row>
@@ -239,7 +239,7 @@
               <v-col cols="12">
                 <DownloadLink
                   label="Projected Non-Graduates"
-                  :download-action="downloadGradProjections"
+                  :download-action="() => downloadGradProjections('historicalProjNonGrad')"
                 />
               </v-col>
             </v-row>
@@ -463,8 +463,11 @@ export default {
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
       this.isLoading = false;
     },
-    downloadGradProjections(){
-      return;
+    async downloadGradProjections(reportType){
+      this.isLoading = true;
+      const schoolID = this.schoolCodeNameFilter;
+      await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
+      this.isLoading = false;
     },
     close() {
       this.studentForSearch = {};
@@ -479,13 +482,6 @@ export default {
 </script>
 
 <style scoped>
-
-.border {
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 35px;
-  margin: 2em;
-}
 
 h3 {
   color: #38598a;
