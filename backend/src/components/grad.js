@@ -286,6 +286,8 @@ async function getCurrentGradStudentsPaginated(req, res){
     }else {
       item.honorsStanding = '-';
     }
+
+    item.dob.replaceAll('-', '/');
   });
 
   return res.status(HttpStatus.OK).json(data);
