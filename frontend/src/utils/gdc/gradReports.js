@@ -122,7 +122,7 @@ export async function searchStudentByPen(context, pen, onSuccess) {
       fullName: response.data.firstName + ' ' + (response.data.middleName ?? '') + ' ' + response.data.lastName,
       localID: response.data.localID,
       gender: response.data.gender,
-      dob: response.data.doB
+      dob: response.data.doB.replaceAll('-', '/')
     };
 
     if (onSuccess && typeof onSuccess === 'function') {
