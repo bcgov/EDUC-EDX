@@ -506,7 +506,7 @@ router.beforeEach((to, _from, next) => {
             next('/unauthorized');
           } else if (to?.meta) {
             if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
-              apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle);
+              apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle + ' (' + aStore.userInfo.activeInstituteCode + ')');
             } else {
               apStore.setPageTitle(to.meta.pageTitle);
             }

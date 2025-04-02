@@ -35,13 +35,21 @@ async function getUserInfo(req, res) {
     });
   }
   let activeInstituteTitle;
+  let activeInstituteCode;
   switch (req.session.activeInstituteType) {
-  case 'SCHOOL':
-    activeInstituteTitle = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier)?.schoolName;
+  case 'SCHOOL': {
+    const school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
+    activeInstituteTitle = school?.schoolName;
+    activeInstituteCode = school?.mincode;
     break;
+  }
   case 'DISTRICT':
-    activeInstituteTitle = cacheService.getDistrictJSONByDistrictID(req.session.activeInstituteIdentifier)?.name;
+  {
+    const district = cacheService.getDistrictJSONByDistrictID(req.session.activeInstituteIdentifier);
+    activeInstituteTitle = district?.name;
+    activeInstituteCode = district?.districtNumber;
     break;
+  }
   default:
     break;
   }
@@ -56,7 +64,8 @@ async function getUserInfo(req, res) {
       activeInstituteType: req.session.activeInstituteType,
       activeInstituteTitle: activeInstituteTitle,
       identityTypeLabel: 'IDIR',
-      activeInstitutePermissions: req.session.activeInstitutePermissions
+      activeInstitutePermissions: req.session.activeInstitutePermissions,
+      activeInstituteCode: activeInstituteCode,
     };
     return res.status(HttpStatus.OK).json(resData);
   }
@@ -73,6 +82,7 @@ async function getUserInfo(req, res) {
       identityTypeLabel: req.session.digitalIdentityData.identityTypeLabel,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       edxUserID: req.session.edxUserData?.edxUserID,
+      activeInstituteCode: activeInstituteCode,
     };
     return res.status(HttpStatus.OK).json(resData);
   }
@@ -117,6 +127,7 @@ async function getUserInfo(req, res) {
       identityTypeLabel: identityType.label,
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       edxUserID: req.session.edxUserData?.edxUserID,
+      activeInstituteCode: activeInstituteCode,
     };
 
     return res.status(HttpStatus.OK).json(resData);
