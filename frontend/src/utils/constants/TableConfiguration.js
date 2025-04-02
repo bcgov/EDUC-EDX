@@ -135,66 +135,6 @@ export const GRADE_GRAD_FILTER = Object.freeze(
     key: 'grade',
     filterOptions: [
       {
-        title: 'Kind. Half',
-        id: 'gradeKH',
-        value: 'KH'
-      },
-      {
-        title: 'Kind. Full',
-        id: 'gradeKF',
-        value: 'KF'
-      },
-      {
-        title: 'Gr. 1',
-        id: 'grade1',
-        value: '01'
-      },
-      {
-        title: 'Gr. 2',
-        id: 'grade2',
-        value: '02'
-      },
-      {
-        title: 'Gr. 3',
-        id: 'grade3',
-        value: '03'
-      },
-      {
-        title: 'Gr. 4',
-        id: 'grade4',
-        value: '04'
-      },
-      {
-        title: 'Gr. 5',
-        id: 'grade5',
-        value: '05'
-      },
-      {
-        title: 'Gr. 6',
-        id: 'grade6',
-        value: '06'
-      },
-      {
-        title: 'Gr. 7',
-        id: 'grade7',
-        value: '07'
-      },
-      {
-        title: 'Elem. Ungraded',
-        id: 'gradeEU',
-        value: 'EU'
-      },
-      {
-        title: 'Gr. 8',
-        id: 'grade8',
-        value: '08'
-      },
-      {
-        title: 'Gr. 9',
-        id: 'grade9',
-        value: '09'
-      },
-      {
         title: 'Gr. 10',
         id: 'grade10',
         value: '10'
@@ -210,6 +150,16 @@ export const GRADE_GRAD_FILTER = Object.freeze(
         value: '12'
       },
       {
+        title: 'Adult Grad',
+        id: 'gradeAD',
+        value: 'AD'
+      },
+      {
+        title: 'Adult Non Grad',
+        id: 'gradeAN',
+        value: 'AN'
+      },
+      {
         title: 'Sec. Ungraded',
         id: 'gradeSU',
         value: 'SU'
@@ -223,26 +173,6 @@ export const GRADE_GRAD_FILTER = Object.freeze(
         title: 'Home School',
         id: 'gradeHS',
         value: 'HS'
-      },
-      {
-        title: 'Graduated',
-        id: 'gradeGR',
-        value: 'GR'
-      },
-      {
-        title: 'Other',
-        id: 'gradeOT',
-        value: 'OT'
-      },
-      {
-        title: 'Adult Grad',
-        id: 'gradeAD',
-        value: 'AD'
-      },
-      {
-        title: 'Adult Non Grad',
-        id: 'gradeAN',
-        value: 'AN'
       }
     ]
   },
