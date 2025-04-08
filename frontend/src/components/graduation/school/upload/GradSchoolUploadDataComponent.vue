@@ -54,7 +54,7 @@
               <div>
                 For more information on the required file formats, see the <a
                   target="_blank"
-                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax-specs.pdf"
+                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
                 >Graduation Data File Specification</a>.
               </div>
               <div
