@@ -43,22 +43,38 @@
       <v-col>
         <v-card-text class="pt-0">
           <v-window v-model="tab">
-            <v-window-item value="uploadData">
+            <v-window-item 
+              value="uploadData"
+              transition="false"
+              reverse-transition="false"
+            >
               <GradDistrictUploadDataComponent
                 :district-i-d="districtID"
               />
             </v-window-item>
-            <v-window-item value="studentSearch">
+            <v-window-item 
+              value="studentSearch"
+              transition="false"
+              reverse-transition="false"
+            >
               <GradDistrictStudentSearch
                 :district-i-d="districtID"
               />
             </v-window-item>
-            <v-window-item value="gradReports">
+            <v-window-item 
+              value="gradReports"
+              transition="false"
+              reverse-transition="false"
+            >
               <GradDistrictReportsAndTranscripts
                 :district-i-d="districtID"
               />
             </v-window-item>
-            <v-window-item value="currentStudents">
+            <v-window-item 
+              value="currentStudents"
+              transition="false"
+              reverse-transition="false"
+            >
               <GradDistrictCurrentStudents
                 :district-i-d="districtID"
               />
