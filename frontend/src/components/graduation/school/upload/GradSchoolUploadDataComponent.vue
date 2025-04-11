@@ -3,82 +3,257 @@
     fluid
   >
     <div>
-      <v-row class="mt-1">
-        <v-col>
-          <v-btn
-            id="uploadButton"
-            prepend-icon="mdi-file-upload"
-            variant="elevated"
-            color="#003366"
-            text="Upload Graduation Data Files"
-            :loading="isLoadingFiles"
-            @click="handleFileImport"
+      <v-row v-if="isSummerPeriod">
+        <v-col cols="12">
+          <v-alert
+            density="compact"
+            type="info"
+            variant="tonal"
+            text="There are two options for submitting data during the Summer Reporting Period. Review the options below and select the most appropriate method for your school."
           />
         </v-col>
-        <v-col class="d-flex justify-end">
-          <v-menu
-            location="bottom"
-          >
-            <template #activator="{ props }">
-              <a
-                class="mt-n1 mr-1"
-                style="font-weight: bold"
-                v-bind="props"
-                @click="toggleMoreInfoTooltip"
-              >...</a>
-              <a
-                v-bind="props"
-                @click="toggleMoreInfoTooltip"
-              >
-                More Info
-              </a>
-            </template>
-            <v-card
-              style="max-width: 30em;"
-              border="sm"
-              class="pa-2"
+      </v-row>
+      <div v-if="isSummerPeriod">
+        <v-row class="mt-4">
+          <v-col cols="5">
+            <v-row>
+              <v-col>
+                <h3>Option 1 - Manually enter data for Summer Course Completions</h3>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  id="uploadButton"
+                  prepend-icon="mdi-file-upload"
+                  variant="elevated"
+                  color="#003366"
+                  text="Upload Summer School Marks"
+                  :loading="isLoadingFiles"
+                  @click="handleXLSFileImport"
+                />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-1">
+                <span style="font-size: small; color: gray">.XLSX files accepted</span>
+              </v-col>
+            </v-row>
+            <v-row
+              class="mt-4"
+              no-gutters
             >
-              <div style="font-weight: bold">
-                Data Processing
-              </div>
-              <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
-              <div class="mt-4">
-                Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
-              </div>
-              <div
-                style="font-weight: bold"
-                class="mt-4"
+              <v-col>
+                <v-alert
+                  density="compact"
+                  type="info"
+                  variant="text"
+                  text="Manual data should only be reported for students completing courses in July and August and not be returning to the BC school system in September."
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="2">
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <v-divider
+                  thickness="2"
+                  vertical
+                  class="divider"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <span>OR</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <v-divider
+                  thickness="2"
+                  vertical
+                  class="divider"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="5">
+            <v-row>
+              <v-col cols="8">
+                <h3>Option 2 - Upload Graduation Data Files</h3>
+              </v-col>
+              <v-col class="d-flex justify-end">
+                <v-menu
+                  location="bottom"
+                >
+                  <template #activator="{ props }">
+                    <a
+                      class="mt-n1 mr-1"
+                      style="font-weight: bold"
+                      v-bind="props"
+                      @click="toggleMoreInfoTooltip"
+                    >...</a>
+                    <a
+                      v-bind="props"
+                      @click="toggleMoreInfoTooltip"
+                    >
+                      More Info
+                    </a>
+                  </template>
+                  <v-card
+                    style="max-width: 30em;"
+                    border="sm"
+                    class="pa-2"
+                  >
+                    <div style="font-weight: bold">
+                      Data Processing
+                    </div>
+                    <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
+                    <div class="mt-4">
+                      Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
+                    </div>
+                    <div
+                      style="font-weight: bold"
+                      class="mt-4"
+                    >
+                      File Formats
+                    </div>
+                    <div>
+                      For more information on the required file formats, see the <a
+                        target="_blank"
+                        href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                      >Graduation Data File Specification</a>.
+                    </div>
+                    <div
+                      style="font-weight: bold"
+                      class="mt-4"
+                    >
+                      Data Corrections
+                    </div>
+                    <div>
+                      To make a correction to data outside of the data file uploads, submit a <a
+                        target="_blank"
+                        href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                      >GRAD Change Form</a>
+                    </div>
+                  </v-card>
+                </v-menu>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  id="uploadButton"
+                  prepend-icon="mdi-file-upload"
+                  variant="outlined"
+                  color="#003366"
+                  text="Upload Graduation Data Files"
+                  :loading="isLoadingFiles"
+                  @click="showUploadConfirmationDialog = !showUploadConfirmationDialog"
+                />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-1">
+                <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
+              </v-col>
+            </v-row>
+            <v-row
+              class="mt-4"
+              no-gutters
+            >
+              <v-col>
+                <v-alert
+                  density="compact"
+                  type="warning"
+                  icon="mdi-alert"
+                  variant="text"
+                  :text="'Only submit data for students who are part of the ' + currentYear + '/' + nextYear + ' reporting cycle. If reporting students in the ' + nextYear + '/' + yearAfterNext + ' school year, wait until the new reporting period opens in October.'"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </div>
+      <div v-else>
+        <v-row class="mt-1">
+          <v-col>
+            <v-btn
+              id="uploadButton"
+              prepend-icon="mdi-file-upload"
+              variant="elevated"
+              color="#003366"
+              text="Upload Graduation Data Files"
+              :loading="isLoadingFiles"
+              @click="handleFileImport"
+            />
+          </v-col>
+          <v-col class="d-flex justify-end">
+            <v-menu
+              location="bottom"
+            >
+              <template #activator="{ props }">
+                <a
+                  class="mt-n1 mr-1"
+                  style="font-weight: bold"
+                  v-bind="props"
+                  @click="toggleMoreInfoTooltip"
+                >...</a>
+                <a
+                  v-bind="props"
+                  @click="toggleMoreInfoTooltip"
+                >
+                  More Info
+                </a>
+              </template>
+              <v-card
+                style="max-width: 30em;"
+                border="sm"
+                class="pa-2"
               >
-                File Formats
-              </div>
-              <div>
-                For more information on the required file formats, see the <a
-                  target="_blank"
-                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
-                >Graduation Data File Specification</a>.
-              </div>
-              <div
-                style="font-weight: bold"
-                class="mt-4"
-              >
-                Data Corrections
-              </div>
-              <div>
-                To make a correction to data outside of the data file uploads, submit a <a
-                  target="_blank"
-                  href="https://forms.gov.bc.ca/education-training/trax-change-form"
-                >GRAD Change Form</a>
-              </div>
-            </v-card>
-          </v-menu>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col class="mt-2">
-          <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
-        </v-col>
-      </v-row>
-      <v-row>
+                <div style="font-weight: bold">
+                  Data Processing
+                </div>
+                <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
+                <div class="mt-4">
+                  Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
+                </div>
+                <div
+                  style="font-weight: bold"
+                  class="mt-4"
+                >
+                  File Formats
+                </div>
+                <div>
+                  For more information on the required file formats, see the <a
+                    target="_blank"
+                    href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                  >Graduation Data File Specification</a>.
+                </div>
+                <div
+                  style="font-weight: bold"
+                  class="mt-4"
+                >
+                  Data Corrections
+                </div>
+                <div>
+                  To make a correction to data outside of the data file uploads, submit a <a
+                    target="_blank"
+                    href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                  >GRAD Change Form</a>
+                </div>
+              </v-card>
+            </v-menu>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col class="mt-2">
+            <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
+          </v-col>
+        </v-row>
+      </div>
+      <v-row class="mt-5">
         <v-col
           class="pb-0 d-flex justify-start"
         >
@@ -198,6 +373,15 @@
         v-model="uploadFileValue"
         style="display: none"
         :accept="acceptableFileExtensions.join(',')"
+        multiple
+      />
+      <v-file-input
+        id="selectXLSFileInput"
+        ref="uploaderXLS"
+        :key="inputKeyXLS"
+        v-model="uploadFileValueXLS"
+        style="display: none"
+        :accept="acceptableXLSFileExtensions.join(',')"
         multiple
       />
     </v-form>
@@ -332,6 +516,50 @@
       </v-overlay>
     </div>
   </v-container>
+  <v-dialog
+    v-model="showUploadConfirmationDialog"
+    :max-width="700"
+  >
+    <v-card class="ma-auto">
+      <v-card-title style="background-color: #003366; color: white">
+        Confirm Upload of Graduation Data Files
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <span>Are you sure you should be reporting data in the summer? Please confirm the details below before proceeding with your upload.</span>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-checkbox
+              v-model="uploadConfirmCheck"
+              color="#003366"
+              style="opacity: 1.0"
+              :label="'I am reporting data for the ' + currentYear + '/' + nextYear + ' cycle'"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn
+          color="#003366"
+          variant="outlined"
+          style="white-space: pre-wrap;"
+          text="Wait until the next reporting cycle"
+          @click="showUploadConfirmationDialog = !showUploadConfirmationDialog"
+        />
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Continue with upload"
+          :disabled="!uploadConfirmCheck"
+          @click="openFileDialogAfterConfirm"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
   
 <script>
@@ -346,6 +574,7 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
+import {LocalDateTime} from '@js-joda/core';
   
 export default {
   name: 'GradSchoolUploadDataComponent',
@@ -364,14 +593,22 @@ export default {
   data() {
     return {
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
+      acceptableXLSFileExtensions: ['.xlsx'],
       requiredRules: [v => !!v || 'Required'],
       uploadFileValue: null,
+      uploadConfirmCheck: false,
+      showUploadConfirmationDialog: false,
+      uploadFileValueXLS: null,
       hasFileAttached: false,
       fileLoaded: false,
       progress: 0,
+      currentYear: null,
+      yearAfterNext: null,
+      nextYear: null,
       initialLoad: true,
       interval: null,
       inputKey: 0,
+      inputKeyXLS: 0,
       validForm: false,
       isLoadingFiles: false,
       fileUploadPending: FILE_UPLOAD_STATUS.PENDING,
@@ -379,8 +616,11 @@ export default {
       fileUploadError: FILE_UPLOAD_STATUS.ERROR,
       populatedSuccessMessage: null,
       successfulUploadCount: 0,
+      successfulXLSUploadCount: 0,
       fileUploadList: [],
+      fileUploadListXLS: [],
       progressCounts: [],
+      isSummerPeriod: false,
       filesetList: [],
       totalElements: 0,
       pageNumber: 1,
@@ -404,6 +644,7 @@ export default {
       schoolsMap: null,
       disableScreen: false,
       wsNotificationText: '',
+      activeReportingPeriod: null
     };
   },
   computed: {
@@ -415,6 +656,11 @@ export default {
     uploadFileValue() {
       if(this.uploadFileValue){
         this.importFile();
+      }
+    },
+    uploadFileValueXLS() {
+      if(this.uploadFileValueXLS){
+        this.importFileXLS();
       }
     },
     notification(notificationData) {
@@ -437,16 +683,40 @@ export default {
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
     });
+    this.getActiveReportingDates();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
+    openFileDialogAfterConfirm(){
+      this.showUploadConfirmationDialog = false;
+      this.handleFileImport();
+    },
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
       this.uploadFileValue = null;
       this.inputKey=0;
+    },
+    getActiveReportingDates() {
+      ApiService.apiAxios.get(ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS)
+        .then(response => {
+          this.activeReportingPeriod = response.data;
+          let reportingPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.schYrStart);
+          this.currentYear = reportingPeriodStart.year();
+          this.nextYear = reportingPeriodStart.plusYears(1).year();
+          this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
+          this.setIsSummerPeriod();
+        });
+    },
+    setIsSummerPeriod(){
+      let summerPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.summerStart);
+      let summerPeriodEnd = LocalDateTime.parse(this.activeReportingPeriod.summerEnd);
+
+      let today = LocalDateTime.now();
+
+      this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
     },
     toggleMoreInfoTooltip(){
       this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
@@ -461,12 +731,27 @@ export default {
       fileJSON.status = this.fileUploadError;
       fileJSON.error = failMessage;
     },
+    validateFileExtensionXLS(fileJSON) {
+      const extension = `.${fileJSON.name.split('.').slice(-1)}`;
+      const failMessage = 'File extension is invalid. Extension must be ".xlsx".';
+
+      if(extension && (this.acceptableXLSFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+        return true;
+      }
+      fileJSON.status = this.fileUploadError;
+      fileJSON.error = failMessage;
+    },
     async startPollingStatus() {
       this.interval = setInterval(this.getFilesetPaginated, 30000);  // polling the api every 30 seconds
     },
     async validateForm() {
       await this.$nextTick();
       await this.$refs.documentForm.validate();
+    },
+    handleXLSFileImport() {
+      this.populatedSuccessMessage = null;
+      this.successfulXLSUploadCount = 0;
+      this.$refs.uploaderXLS.click();
     },
     handleFileImport() {
       this.populatedSuccessMessage = null;
@@ -478,6 +763,76 @@ export default {
     },
     isFilesetComplete(fileset){
       return fileset.filesetStatusCode === 'COMPLETED';
+    },
+    async importFileXLS() {
+      if(this.uploadFileValueXLS.length > 0) {
+        this.isLoadingFiles = true;
+
+        await this.validateForm();
+        if (!this.uploadFileValueXLS[0] || !this.validForm) {
+          this.inputKeyXLS++;
+          this.isLoadingFiles = false;
+        } else {
+          this.filePromises = this.uploadFileValueXLS.map((fileValue) => {
+            return new Promise((resolve, reject) => {
+              let reader = new FileReader();
+              reader.readAsText(fileValue);
+              reader.onload = () => {
+                let statusJson = {
+                  name: fileValue.name,
+                  fileContents: reader.result,
+                  status: FILE_UPLOAD_STATUS.PENDING,
+                  error: null,
+                  warning: null
+                };
+                this.validateFileExtensionXLS(statusJson);
+                this.fileUploadListXLS.push(statusJson);
+                resolve(statusJson);
+              };
+              reader.onerror = (error) => {
+                let statusJson = {
+                  name: fileValue.name,
+                  fileContents: null,
+                  status: FILE_UPLOAD_STATUS.ERROR,
+                  error: error,
+                  warning: null
+                };
+                this.fileUploadListXLS.push(statusJson);
+                reject(statusJson);
+              };
+            });
+          });
+
+          await Promise.all(this.filePromises);
+
+          for await (const fileJSON of this.fileUploadListXLS) {
+            if(fileJSON.error === null){
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              await this.uploadFileXLS(fileJSON);
+              this.inputKeyXLS++;
+            }
+          }
+          this.uploadFileValueXLS = null;
+          await this.getFilesetPaginated();
+        }
+      }
+    },
+    async uploadFileXLS(fileJSON) {
+      let document;
+      try{
+        document = {
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
+          fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents))),
+          fileType: fileJSON.name.split('.')[1]
+        };
+        await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file-xls', document);
+        this.successfulXLSUploadCount += 1;
+        fileJSON.status = this.fileUploadSuccess;
+      } catch (e) {
+        console.error(e);
+        fileJSON.error = e.response.data;
+        fileJSON.status = this.fileUploadError;
+      }
     },
     async importFile() {
       if(this.uploadFileValue.length > 0) {
@@ -630,6 +985,10 @@ export default {
   color: #7f7f7f;
 }
 
+:deep(div > div > div.v-input__control > div > label){
+  opacity: 1.0;
+}
+
 .fileUploadError{
   background-color: #d5304a;
   color: white;
@@ -657,8 +1016,12 @@ export default {
   color: white !important;
 }
 
+.divider {
+  height: 4rem;
+}
+
 :deep(.v-data-table-footer__items-per-page) {
-       display: none;
+   display: none;
  }
   </style>
   

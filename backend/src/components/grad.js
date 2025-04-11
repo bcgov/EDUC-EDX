@@ -46,6 +46,54 @@ async function uploadFile(req, res) {
   }
 }
 
+async function getActiveReportingPeriod(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('grad:rootURL')}/reporting-period/active`;
+    const data = await getData(token, url);
+    return res.status(200).json(data);
+  } catch (e) {
+    log.error(e, 'getActiveReportingPeriod', 'Error occurred while attempting to GET GDC Active Reporting Period.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function uploadFileXLS(req, res) {
+  try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
+    const payload = {
+      fileContents: req.body.fileContents,
+      fileName: req.body.fileName,
+      fileType: req.body.fileType,
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
+    };
+
+    if (req.query.fileOverride){
+      payload.courseSessionOverride = true;
+    }
+
+    // const token = getAccessToken(req);
+    let data;
+
+    // MAKE CALLOUTS HERE
+    // if (req.params.schoolID){
+    //   data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
+    // } else {
+    //   data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
+    // }
+    // data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
+    // broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e.status === 400) {
+      return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
+    }
+    log.error('uploadFileXLS Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function downloadErrorReport(req, res) {
   try {
     const token = getAccessToken(req);
@@ -519,5 +567,7 @@ module.exports = {
   getStudentFilesetByPenFilesetId,
   getCurrentGradStudentsPaginated,
   getSubmissionMetrics,
-  getErrorMetrics
+  getErrorMetrics,
+  uploadFileXLS,
+  getActiveReportingPeriod
 };
