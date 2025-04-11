@@ -113,7 +113,6 @@
     >
       <GradErrorFilters
         :filters="config.allowedFilters"
-        :show-error-field="false"
         :show-program-field="true"
         @apply-filters="applyFilters"
         @clear-filters="clearFilters"
