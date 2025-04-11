@@ -3,6 +3,181 @@
     fluid
   >
     <div>
+      <v-row v-if="isSummerPeriod">
+        <v-col cols="12">
+          <v-alert
+            density="compact"
+            type="info"
+            variant="tonal"
+            text="There are two options for submitting data during the Summer Reporting Period. Review the options below and select the most appropriate method for your school."
+          />
+        </v-col>
+      </v-row>
+    </div>
+    <div v-if="isSummerPeriod">
+      <v-row class="mt-4">
+        <v-col cols="5">
+          <v-row>
+            <v-col>
+              <h3>Option 1 - Manually enter data for Summer Course Completions</h3>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                id="uploadButton"
+                prepend-icon="mdi-file-upload"
+                variant="elevated"
+                color="#003366"
+                text="Upload Summer School Marks"
+                :loading="isLoadingFiles"
+                @click="handleFileImportXLS"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col class="mt-1">
+              <span style="font-size: small; color: gray">.XLSX files accepted</span>
+            </v-col>
+          </v-row>
+          <v-row
+            class="mt-4"
+            no-gutters
+          >
+            <v-col>
+              <v-alert
+                density="compact"
+                type="info"
+                variant="text"
+                text="Manual data should only be reported for students completing courses in July and August and not be returning to the BC school system in September."
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col cols="2">
+          <v-row>
+            <v-col class="d-flex justify-center">
+              <v-divider
+                thickness="2"
+                vertical
+                class="divider"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="d-flex justify-center">
+              <span>OR</span>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="d-flex justify-center">
+              <v-divider
+                thickness="2"
+                vertical
+                class="divider"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col cols="5">
+          <v-row>
+            <v-col cols="8">
+              <h3>Option 2 - Upload Graduation Data Files</h3>
+            </v-col>
+            <v-col class="d-flex justify-end">
+              <v-menu
+                location="bottom"
+              >
+                <template #activator="{ props }">
+                  <a
+                    class="mt-n1 mr-1"
+                    style="font-weight: bold"
+                    v-bind="props"
+                    @click="toggleMoreInfoTooltip"
+                  >...</a>
+                  <a
+                    v-bind="props"
+                    @click="toggleMoreInfoTooltip"
+                  >
+                    More Info
+                  </a>
+                </template>
+                <v-card
+                  style="max-width: 30em;"
+                  border="sm"
+                  class="pa-2"
+                >
+                  <div style="font-weight: bold">
+                    Data Processing
+                  </div>
+                  <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
+                  <div class="mt-4">
+                    Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
+                  </div>
+                  <div
+                    style="font-weight: bold"
+                    class="mt-4"
+                  >
+                    File Formats
+                  </div>
+                  <div>
+                    For more information on the required file formats, see the <a
+                      target="_blank"
+                      href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                    >Graduation Data File Specification</a>.
+                  </div>
+                  <div
+                    style="font-weight: bold"
+                    class="mt-4"
+                  >
+                    Data Corrections
+                  </div>
+                  <div>
+                    To make a correction to data outside of the data file uploads, submit a <a
+                      target="_blank"
+                      href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                    >GRAD Change Form</a>
+                  </div>
+                </v-card>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                id="uploadButton"
+                prepend-icon="mdi-file-upload"
+                variant="outlined"
+                color="#003366"
+                text="Upload Graduation Data Files"
+                :loading="isLoadingFiles"
+                @click="showUploadConfirmationDialog = !showUploadConfirmationDialog"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col class="mt-1">
+              <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
+            </v-col>
+          </v-row>
+          <v-row
+            class="mt-4"
+            no-gutters
+          >
+            <v-col>
+              <v-alert
+                density="compact"
+                type="warning"
+                icon="mdi-alert"
+                variant="text"
+                text="Only submit data for students who are part of the 2024/2025 reporting cycle. If reporting students in the 2025/2026 school year, wait until the new reporting period opens in October."
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else>
       <v-row class="mt-1">
         <v-col>
           <v-btn
@@ -78,128 +253,127 @@
           <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col
-          cols="6"
-          class="pb-0 d-flex justify-start"
-        >
-          <p class="schools-in-progress-header mb-0">
-            Summary of Uploaded Data
-          </p>
-        </v-col>
-        <v-col class="d-flex justify-end mt-2">
-          <div>
-            <v-icon
-              icon="mdi-alert-circle-outline"
-              color="error"
-            />
-            <span class="ml-1">Not Loaded</span>
-          </div>
-          <div class="ml-4">
-            <v-icon
-              icon="mdi-clock-alert-outline"
-              color="warning"
-            />
-            <span class="ml-1">Awaiting Other Files</span>
-          </div>
-          <div class="ml-4">
-            <v-icon
-              icon="mdi-check-circle-outline"
-              color="success"
-            />
-            <span class="ml-1">Processed</span>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          class="mt-n2"
-          cols="4"
-        >
-          <SchoolCodeNameFilter
-            v-model="schoolCodeNameFilter"
-            :district-i-d="districtID"
-            @search="searchButtonClick"
-          />
-        </v-col>
-      </v-row>
-      
-      <v-data-table-server
-        v-model:page.sync="pageNumber"
-        v-model:items-per-page.sync="pageSize"
-        :items-length="totalElements"
-        :items="filesetList"
-        :headers="headers"
-        mobile-breakpoint="0"
-        @update:page="getFilesetPaginated"
+    </div>
+    <v-row class="mt-5">
+      <v-col
+        cols="6"
+        class="pb-0 d-flex justify-start"
       >
-        <template #item="props">
-          <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
-            <td
-              v-for="column in headers"
-              :key="column.key"
-            >
-              <span v-if="column.key === 'errorLink'">
-                <a
-                  v-if="isFilesetComplete(props.item)"
-                  class="ml-1"
-                  @click="navigateToErrors(props.item)"
-                >View Report</a>
-              </span>
-              <span v-else-if="column.key ==='alert'">
-                <v-tooltip text="Please upload the missing file(s) to allow processing to begin.">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-icon
-                      v-if="!isFilesetInProgress(props.item)"
-                      v-bind="tooltipProps"
-                      icon="mdi-alert-circle-outline"
-                      color="error"
-                    />
-                  </template>
-                </v-tooltip>
-              </span>
-              <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
-                {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
-              </span>
-              <div v-else-if="column.key === 'demFileName' || column.key === 'xamFileName' || column.key === 'crsFileName'">
-                <div v-if="(column.key === 'demFileName' && props.item.demFileName) ||(column.key === 'xamFileName' && props.item.xamFileName) || (column.key === 'crsFileName' && props.item.crsFileName)">
-                  <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
-                    <v-icon
-                      icon="mdi-check-circle-outline"
-                      color="success"
-                    />
-                    {{ props.item[column.key] }}
-                  </span>
-                  <span v-else-if="isFilesetInProgress(props.item)">
-                    <v-progress-circular
-                      :size="20"
-                      :width="4"
-                      color="primary"
-                      indeterminate
-                    />
-                    {{ props.item[column.key] }}
-                  </span>
-                  <span v-else>
-                    <v-icon
-                      icon="mdi-clock-alert-outline"
-                      color="warning"
-                    />
-                    {{ props.item[column.key] }}
-                  </span>
-                </div>
+        <p class="schools-in-progress-header mb-0">
+          Summary of Uploaded Data
+        </p>
+      </v-col>
+      <v-col class="d-flex justify-end mt-2">
+        <div>
+          <v-icon
+            icon="mdi-alert-circle-outline"
+            color="error"
+          />
+          <span class="ml-1">Not Loaded</span>
+        </div>
+        <div class="ml-4">
+          <v-icon
+            icon="mdi-clock-alert-outline"
+            color="warning"
+          />
+          <span class="ml-1">Awaiting Other Files</span>
+        </div>
+        <div class="ml-4">
+          <v-icon
+            icon="mdi-check-circle-outline"
+            color="success"
+          />
+          <span class="ml-1">Processed</span>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        class="mt-n2"
+        cols="4"
+      >
+        <SchoolCodeNameFilter
+          v-model="schoolCodeNameFilter"
+          :district-i-d="districtID"
+          @search="searchButtonClick"
+        />
+      </v-col>
+    </v-row>
+    <v-data-table-server
+      v-model:page.sync="pageNumber"
+      v-model:items-per-page.sync="pageSize"
+      :items-length="totalElements"
+      :items="filesetList"
+      :headers="headers"
+      mobile-breakpoint="0"
+      @update:page="getFilesetPaginated"
+    >
+      <template #item="props">
+        <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
+          <td
+            v-for="column in headers"
+            :key="column.key"
+          >
+            <span v-if="column.key === 'errorLink'">
+              <a
+                v-if="isFilesetComplete(props.item)"
+                class="ml-1"
+                @click="navigateToErrors(props.item)"
+              >View Report</a>
+            </span>
+            <span v-else-if="column.key ==='alert'">
+              <v-tooltip text="Please upload the missing file(s) to allow processing to begin.">
+                <template #activator="{ props: tooltipProps }">
+                  <v-icon
+                    v-if="!isFilesetInProgress(props.item)"
+                    v-bind="tooltipProps"
+                    icon="mdi-alert-circle-outline"
+                    color="error"
+                  />
+                </template>
+              </v-tooltip>
+            </span>
+            <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
+              {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
+            </span>
+            <div v-else-if="column.key === 'demFileName' || column.key === 'xamFileName' || column.key === 'crsFileName'">
+              <div v-if="(column.key === 'demFileName' && props.item.demFileName) ||(column.key === 'xamFileName' && props.item.xamFileName) || (column.key === 'crsFileName' && props.item.crsFileName)">
+                <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
+                  <v-icon
+                    icon="mdi-check-circle-outline"
+                    color="success"
+                  />
+                  {{ props.item[column.key] }}
+                </span>
+                <span v-else-if="isFilesetInProgress(props.item)">
+                  <v-progress-circular
+                    :size="20"
+                    :width="4"
+                    color="primary"
+                    indeterminate
+                  />
+                  {{ props.item[column.key] }}
+                </span>
                 <span v-else>
-                  -
+                  <v-icon
+                    icon="mdi-clock-alert-outline"
+                    color="warning"
+                  />
+                  {{ props.item[column.key] }}
                 </span>
               </div>
-              <span v-else-if="props.item[column.key]">
-                {{ props.item[column.key] }}
+              <span v-else>
+                -
               </span>
-              <span v-else>-</span>
-            </td>
-          </tr>
-        </template>
-      </v-data-table-server>
-    </div>
+            </div>
+            <span v-else-if="props.item[column.key]">
+              {{ props.item[column.key] }}
+            </span>
+            <span v-else>-</span>
+          </td>
+        </tr>
+      </template>
+    </v-data-table-server>
     <v-form
       ref="documentForm"
       v-model="validForm"
@@ -211,6 +385,15 @@
         v-model="uploadFileValue"
         style="display: none"
         :accept="acceptableFileExtensions.join(',')"
+        multiple
+      />
+      <v-file-input
+        id="selectXLSFileInput"
+        ref="uploaderXLS"
+        :key="inputKeyXLS"
+        v-model="uploadFileValueXLS"
+        style="display: none"
+        :accept="acceptableXLSFileExtensions.join(',')"
         multiple
       />
     </v-form>
@@ -352,6 +535,50 @@
       </v-overlay>
     </div>
   </v-container>
+  <v-dialog
+    v-model="showUploadConfirmationDialog"
+    :max-width="700"
+  >
+    <v-card class="ma-auto">
+      <v-card-title style="background-color: #003366; color: white">
+        Confirm Upload of Graduation Data Files
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <span>Are you sure you should be reporting data in the summer? Please confirm the details below before proceeding with your upload.</span>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-checkbox
+              v-model="uploadConfirmCheck"
+              color="#003366"
+              style="opacity: 1.0"
+              :label="'I am reporting data for the ' + currentYear + '/' + nextYear + ' cycle'"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn
+          color="#003366"
+          variant="outlined"
+          style="white-space: pre-wrap;"
+          text="Wait until the next reporting cycle"
+          @click="showUploadConfirmationDialog = !showUploadConfirmationDialog"
+        />
+        <v-btn
+          color="#003366"
+          variant="elevated"
+          style="white-space: pre-wrap;"
+          text="Continue with upload"
+          :disabled="!uploadConfirmCheck"
+          @click="openFileDialogAfterConfirm"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
   
 <script>
@@ -367,6 +594,7 @@ import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import {LocalDateTime} from '@js-joda/core';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
@@ -386,6 +614,7 @@ export default {
   data() {
     return {
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
+      acceptableXLSFileExtensions: ['.xlsx'],
       requiredRules: [v => !!v || 'Required'],
       uploadFileValue: null,
       hasFileAttached: false,
@@ -394,6 +623,9 @@ export default {
       initialLoad: true,
       interval: null,
       inputKey: 0,
+      uploadConfirmCheck: false,
+      showUploadConfirmationDialog: false,
+      inputKeyXLS: 0,
       validForm: false,
       isLoadingFiles: false,
       fileUploadPending: FILE_UPLOAD_STATUS.PENDING,
@@ -401,13 +633,20 @@ export default {
       fileUploadError: FILE_UPLOAD_STATUS.ERROR,
       populatedSuccessMessage: null,
       successfulUploadCount: 0,
+      successfulUploadCountXLS: 0,
       fileUploadList: [],
+      fileUploadListXLS: [],
       progressCounts: [],
       filesetList: [],
       totalElements: 0,
+      currentYear: null,
+      yearAfterNext: null,
+      nextYear: null,
+      isSummerPeriod: false,
       pageNumber: 1,
       pageSize: 20,
       isLoading: false,
+      uploadFileValueXLS: null,
       filterSearchParams: {
         moreFilters: {}
       },
@@ -446,6 +685,11 @@ export default {
         this.importFile();
       }
     },
+    uploadFileValueXLS() {
+      if(this.uploadFileValueXLS){
+        this.importFileXLS();
+      }
+    },
     notification(notificationData) {
       if (notificationData) {
         try {
@@ -466,11 +710,16 @@ export default {
     appStore().getInstitutesData().finally(() => {
       this.activeSchoolsCacheMap = this.activeSchoolsMap;
     });
+    this.getActiveReportingDates();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
+    openFileDialogAfterConfirm(){
+      this.showUploadConfirmationDialog = false;
+      this.handleFileImport();
+    },
     closeOverlay(){
       this.isLoadingFiles = !this.isLoadingFiles;
       this.fileUploadList = [];
@@ -482,6 +731,16 @@ export default {
       const failMessage = 'File extension is invalid. Extension must be ".dem" or ".xam" or ".crs".';
   
       if(extension && (this.acceptableFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
+        return true;
+      }
+      fileJSON.status = this.fileUploadError;
+      fileJSON.error = failMessage;
+    },
+    validateFileExtensionXLS(fileJSON) {
+      const extension = `.${fileJSON.name.split('.').slice(-1)}`;
+      const failMessage = 'File extension is invalid. Extension must be ".xlsx".';
+
+      if(extension && (this.acceptableXLSFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
         return true;
       }
       fileJSON.status = this.fileUploadError;
@@ -499,11 +758,106 @@ export default {
       this.successfulUploadCount = 0;
       this.$refs.uploader.click();
     },
+    handleFileImportXLS() {
+      this.populatedSuccessMessage = null;
+      this.successfulUploadCountXLS = 0;
+      this.$refs.uploaderXLS.click();
+    },
     isFilesetInProgress(fileset){
       return fileset.demFileName != null && fileset.crsFileName != null && fileset.xamFileName != null;
     },
     isFilesetComplete(fileset){
       return fileset.filesetStatusCode === 'COMPLETED';
+    },
+    getActiveReportingDates() {
+      ApiService.apiAxios.get(ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS)
+        .then(response => {
+          this.activeReportingPeriod = response.data;
+          let reportingPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.schYrStart);
+          this.currentYear = reportingPeriodStart.year();
+          this.nextYear = reportingPeriodStart.plusYears(1).year();
+          this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
+          this.setIsSummerPeriod();
+        });
+    },
+    setIsSummerPeriod(){
+      let summerPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.summerStart);
+      let summerPeriodEnd = LocalDateTime.parse(this.activeReportingPeriod.summerEnd);
+
+      let today = LocalDateTime.now();
+
+      this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
+    },
+    async importFileXLS() {
+      if(this.uploadFileValueXLS.length > 0) {
+        this.isLoadingFiles = true;
+
+        await this.validateForm();
+        if (!this.uploadFileValueXLS[0] || !this.validForm) {
+          this.inputKeyXLS++;
+          this.isLoadingFiles = false;
+        } else {
+          this.filePromises = this.uploadFileValueXLS.map((fileValue) => {
+            return new Promise((resolve, reject) => {
+              let reader = new FileReader();
+              reader.readAsText(fileValue);
+              reader.onload = () => {
+                let statusJson = {
+                  name: fileValue.name,
+                  fileContents: reader.result,
+                  status: FILE_UPLOAD_STATUS.PENDING,
+                  error: null,
+                  warning: null
+                };
+                this.validateFileExtensionXLS(statusJson);
+                this.fileUploadListXLS.push(statusJson);
+                resolve(statusJson);
+              };
+              reader.onerror = (error) => {
+                let statusJson = {
+                  name: fileValue.name,
+                  fileContents: null,
+                  status: FILE_UPLOAD_STATUS.ERROR,
+                  error: error,
+                  warning: null
+                };
+                this.fileUploadListXLS.push(statusJson);
+                reject(statusJson);
+              };
+            });
+          });
+
+          await Promise.all(this.filePromises);
+
+          for await (const fileJSON of this.fileUploadListXLS) {
+            if(fileJSON.error === null){
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              await this.uploadFileXLS(fileJSON);
+              this.inputKeyXLS++;
+            }
+          }
+          this.uploadFileValueXLS = null;
+          await this.getFilesetPaginated();
+        }
+      }
+    },
+    async uploadFileXLS(fileJSON) {
+      let document;
+      try{
+        document = {
+          fileName: getFileNameWithMaxNameLength(fileJSON.name),
+          fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents))),
+          fileType: fileJSON.name.split('.')[1]
+        };
+        await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file-xls', document)
+          .then(() => {});
+        this.successfulUploadCountXLS += 1;
+        fileJSON.status = this.fileUploadSuccess;
+      } catch (e) {
+        console.error(e);
+        fileJSON.error = e.response.data;
+        fileJSON.status = this.fileUploadError;
+      }
     },
     async importFile() {
       if(this.uploadFileValue.length > 0) {
@@ -683,6 +1037,14 @@ export default {
 
 ::v-deep .v-theme--myCustomLightTheme.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) span {
   color: white !important;
+}
+
+:deep(div > div > div.v-input__control > div > label){
+  opacity: 1.0;
+}
+
+.divider {
+  height: 4rem;
 }
 
 :deep(.v-data-table-footer__items-per-page) {

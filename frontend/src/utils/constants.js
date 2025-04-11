@@ -61,6 +61,7 @@ export const ApiRoutes = Object.freeze({
     BASE_URL: gdcRoot,
     VALIDATION_FIELD_CODES: gdcRoot + '/validation-field-codes',
     GRAD_PROGRAM_CODES: gdcRoot + '/grad-program-codes',
+    ACTIVE_REPORTING_PERIODS: gdcRoot + '/active-reporting-period'
   },
   gradReports: {
     BASE_URL: gradReportsRoot,
