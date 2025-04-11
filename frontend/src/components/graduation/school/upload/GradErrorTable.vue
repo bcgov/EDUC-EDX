@@ -55,7 +55,7 @@
               v-for="(error, index) in props.item['errorFilesetStudentValidationIssues']"
               :key="index"
             >
-              <v-row>
+              <v-row style="margin-bottom: 0">
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
                 > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>

@@ -317,7 +317,8 @@
         rounded="true"
       >
         <GradErrorFilters
-          :filters="config.allowedFilters"
+          :filters="[]"
+          :show-file-type-and-error-warn-fields="true"
           @apply-filters="applyFilters"
           @clear-filters="clearFilters"
           @close="showFilters= !showFilters"

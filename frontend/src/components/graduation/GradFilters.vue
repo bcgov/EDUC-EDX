@@ -157,28 +157,94 @@
           </v-btn-toggle>
         </v-row>
       </div>
-      <div v-if="showErrorField">
+      <div v-if="showFileTypeAndErrorWarnFields">
         <v-row>
-          <v-col class="filter-heading">
-            Error Field
+          <v-col
+            class="filter-heading"
+          >
+            File Type
           </v-col>
         </v-row>
-          
         <v-row>
-          <v-col cols="6">
-            <v-autocomplete
-              id="errorField"
-              v-model="errorFieldValue"
-              label="Error Field"
-              variant="underlined"
-              :items="gdcStore.validationFieldCode"
-              item-value="code"
-              item-title="description"
-              class="mt-n7 mb-n8"
-              clearable
-              @update:model-value="setFieldCodeFilter('fieldCode', $event)"
-            />
+          <v-btn-toggle
+            v-model="demCrsXamSelector"
+            color="#003366"
+            rounded="0"
+            class="filter-toggle"
+            @update:model-value="setFileTypeFilter('fileType', $event)"
+          >
+            <div>
+              <v-btn
+                id="demFileType"
+                value="DEM-ERROR"
+                class="filter-button"
+                rounded="lg"
+              >
+                DEM
+              </v-btn>
+            </div>
+            <div>
+              <v-btn
+                id="crsFileType"
+                value="CRS-ERROR"
+                class="filter-button"
+                rounded="lg"
+              >
+                CRS
+              </v-btn>
+            </div>
+            <div>
+              <v-btn
+                id="xamFileType"
+                value="XAM-ERROR"
+                class="filter-button"
+                rounded="lg"
+              >
+                XAM
+              </v-btn>
+            </div>
+          </v-btn-toggle>
+        </v-row>
+      </div>
+      <div v-if="showFileTypeAndErrorWarnFields">
+        <v-row>
+          <v-col
+            class="filter-heading"
+          >
+            Errors/Warnings
           </v-col>
+        </v-row>
+        <v-row>
+          <v-btn-toggle
+            v-model="errorWarnSelector"
+            :disabled="demCrsXamSelector == null"
+            color="#003366"
+            rounded="0"
+            multiple
+            class="filter-toggle"
+            @update:model-value="setErrorWarningFilter('warnings', $event)"
+          >
+            <div>
+              <v-btn
+                id="errorSelect"
+                value="ERROR"
+                class="filter-button"
+                rounded="lg"
+              >
+                Has Errors
+              </v-btn>
+            </div>
+            <div>
+              <v-btn
+                id="warnSelect"
+                value="WARNING"
+                class="filter-button"
+                rounded="lg"
+              >
+                Has Warnings
+              </v-btn>
+            </div>
+          </v-btn-toggle>
         </v-row>
       </div>
       <div v-if="showProgramField">
@@ -221,12 +287,12 @@ export default {
       required: true,
       default: null
     },
-    showErrorField: {
+    showProgramField: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
     },
-    showProgramField: {
+    showFileTypeAndErrorWarnFields: {
       type: Boolean,
       required: false,
       default: false
@@ -237,6 +303,13 @@ export default {
     return {
       selected: {},
       pen: null,
+      errorWarnSelector: null,
+      errorSelector: null,
+      warnSelector: null,
+      demCrsXamSelector: null,
+      demSelector: null,
+      crsSelector: null,
+      xamSelector: null,
       localID: null,
       programCodes: [],
       firstName: null,
@@ -300,6 +373,25 @@ export default {
     setProgramCodeFilter(key, $event){
       if($event) {
         this.selected[key] = [{title: 'programCode', value: $event}];
+        this.apply();
+      } else {
+        delete this.selected[key];
+        this.apply();
+      }
+    },
+    setFileTypeFilter(key, $event){
+      if($event) {
+        this.selected[key] = [{title: 'fileType', value: $event}];
+        this.apply();
+      } else {
+        delete this.selected[key];
+        delete this.selected['warnings'];
+        this.apply();
+      }
+    },
+    setErrorWarningFilter(key, $event){
+      if($event && ($event.includes('ERROR') || $event.includes('WARNING'))) {
+        this.selected[key] = [{title: 'warnings', value: $event}];
         this.apply();
       } else {
         delete this.selected[key];
