@@ -150,7 +150,8 @@ const gradProcessSchoolSummerStudentsSchema =  object({
   }).concat(baseRequestSchema).noUnknown(),
   params: object({
     schoolID: string().nonNullable()
-  }).noUnknown()
+  }).noUnknown(),
+  query: object().noUnknown()
 }).noUnknown();
 
 const gradProcessDistrictSummerStudentsSchema =  object({
@@ -173,7 +174,8 @@ const gradProcessDistrictSummerStudentsSchema =  object({
   }).concat(baseRequestSchema).noUnknown(),
   params: object({
     districtID: string().nonNullable()
-  }).noUnknown()
+  }).noUnknown(),
+  query: object().noUnknown()
 }).noUnknown();
 
 module.exports = {
