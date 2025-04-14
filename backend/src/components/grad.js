@@ -94,19 +94,26 @@ async function uploadFileXLS(req, res) {
 
 async function processSummerStudents(req, res) {
   try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
+    const payload = {
+      fileName: req.body.fileName,
+      summerStudents: req.body.summerStudents,
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
+    };
     const token = getAccessToken(req);
     let data;
     if (req.params.schoolID){
-      data = await postData(token, req.body, `${config.get('grad:rootURL')}/${req.params.schoolID}/process`, req.session?.correlationID);
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/process`, req.session?.correlationID);
     } else {
-      data = await postData(token, req.body, `${config.get('grad:rootURL')}/district/${req.params.districtID}/process`, req.session?.correlationID);
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/process`, req.session?.correlationID);
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 400) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
-    log.error('uploadFileXLS Error', e.stack);
+    log.error('processSummerStudents Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
