@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, uploadFileXLS, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, processSummerStudents
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
@@ -15,7 +15,9 @@ const constants = require('../util/constants');
 const { gradFileUploadSchema, gradErrorFilesetStudentPaginatedSchema, gradDistrictFilesetPaginatedSchema, gradSchoolFilesetPaginatedSchema,
   gradDistrictFileUploadSchema, gradSchoolPenFilesetPaginatedSchema, gradSchoolFilesetByPenSchema, gradDistrictPenFilesetPaginatedSchema,
   gradDistrictFilesetByPenSchema,
-  gradSchoolFilesetMetricSchema
+  gradSchoolFilesetMetricSchema,
+  gradProcessSchoolSummerStudentsSchema,
+  gradProcessDistrictSummerStudentsSchema
 } = require('../validations/grad');
 
 router.get('/validation-issue-type-codes', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, 
@@ -73,5 +75,14 @@ router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt'
   checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/active-reporting-period', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getActiveReportingPeriod);
+
+
+router.post('/school/:schoolID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradProcessSchoolSummerStudentsSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, processSummerStudents);
+
+router.post('/district/:districtID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradProcessDistrictSummerStudentsSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, processSummerStudents);
+
+
 
 module.exports = router;

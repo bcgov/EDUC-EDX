@@ -579,6 +579,17 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <v-dialog
+    v-model="previewUploadedStudents"
+  >
+    <PreviewStudents
+      :headers="summerHeaders"
+      :data="summerStudents"
+      :file-name="xlsFileName"
+      :districtID="districtID"
+      @close="closeSheet"
+    />
+  </v-dialog>
 </template>
   
 <script>
@@ -595,12 +606,14 @@ import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
 import {LocalDateTime} from '@js-joda/core';
+import PreviewStudents from '../../PreviewStudents.vue';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
     SchoolCodeNameFilter,
-    ConfirmationDialog
+    ConfirmationDialog,
+    PreviewStudents
   },
   mixins: [alertMixin],
   props: {
@@ -635,7 +648,6 @@ export default {
       successfulUploadCount: 0,
       successfulUploadCountXLS: 0,
       fileUploadList: [],
-      fileUploadListXLS: [],
       progressCounts: [],
       filesetList: [],
       totalElements: 0,
@@ -672,6 +684,23 @@ export default {
         category: '',
         type: ''
       },
+      previewUploadedStudents: false,
+      summerHeaders:
+      [ 
+        {title :'School Code', key: 'schoolCode'},
+        {title :'PEN', key: 'pen'},
+        {title :'Legal Surname', key: 'legalSurname'},
+        {title :'Legal Middle Name', key: 'legalMiddleName'},
+        {title :'Legal Given First Name', key: 'legalFirstName'},
+        {title :'DOB', key: 'dob'},
+        {title :'Course', key: 'course'},
+        {title :'Session Date', key: 'sessionDate'},
+        {title :'Final Sch %', key: 'finalPercent'},
+        {title :'Final Letter Grade', key: 'finalLetterGrade'},
+        {title :'Number of Credits', key: 'noOfCredits'}
+      ],
+      summerStudents:[],
+      xlsFileName: null
     };
   },
   computed: {
@@ -716,6 +745,10 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
+    closeSheet() {
+      this.previewUploadedStudents = !this.previewUploadedStudents;
+      this.summerStudents = [];
+    },
     openFileDialogAfterConfirm(){
       this.showUploadConfirmationDialog = false;
       this.handleFileImport();
@@ -725,6 +758,9 @@ export default {
       this.fileUploadList = [];
       this.uploadFileValue = null;
       this.inputKey=0;
+      if(this.isSummerPeriod && this.successfulXLSUploadCount === 1) {
+        this.previewUploadedStudents = true;
+      }
     },
     validateFileExtension(fileJSON) {
       const extension = `.${fileJSON.name.split('.').slice(-1)}`;
@@ -800,7 +836,7 @@ export default {
           this.filePromises = this.uploadFileValueXLS.map((fileValue) => {
             return new Promise((resolve, reject) => {
               let reader = new FileReader();
-              reader.readAsText(fileValue);
+              reader.readAsBinaryString(fileValue);
               reader.onload = () => {
                 let statusJson = {
                   name: fileValue.name,
@@ -810,7 +846,7 @@ export default {
                   warning: null
                 };
                 this.validateFileExtensionXLS(statusJson);
-                this.fileUploadListXLS.push(statusJson);
+                this.fileUploadList.push(statusJson);
                 resolve(statusJson);
               };
               reader.onerror = (error) => {
@@ -821,7 +857,7 @@ export default {
                   error: error,
                   warning: null
                 };
-                this.fileUploadListXLS.push(statusJson);
+                this.fileUploadList.push(statusJson);
                 reject(statusJson);
               };
             });
@@ -829,7 +865,7 @@ export default {
 
           await Promise.all(this.filePromises);
 
-          for await (const fileJSON of this.fileUploadListXLS) {
+          for await (const fileJSON of this.fileUploadList) {
             if(fileJSON.error === null){
               await new Promise(resolve => setTimeout(resolve, 3000));
               await this.uploadFileXLS(fileJSON);
@@ -846,13 +882,16 @@ export default {
       try{
         document = {
           fileName: getFileNameWithMaxNameLength(fileJSON.name),
-          fileContents: btoa(unescape(encodeURIComponent(fileJSON.fileContents))),
+          fileContents: btoa(fileJSON.fileContents),
           fileType: fileJSON.name.split('.')[1]
         };
         await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file-xls', document)
-          .then(() => {});
-        this.successfulUploadCountXLS += 1;
-        fileJSON.status = this.fileUploadSuccess;
+          .then(response => {
+            this.summerStudents = response.data.summerStudents;
+            this.xlsFileName = document.fileName;
+            this.successfulUploadCountXLS += 1;
+            fileJSON.status = this.fileUploadSuccess;
+          });
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
