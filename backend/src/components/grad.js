@@ -73,23 +73,47 @@ async function uploadFileXLS(req, res) {
       payload.courseSessionOverride = true;
     }
 
-    // const token = getAccessToken(req);
+    const token = getAccessToken(req);
     let data;
-
-    // MAKE CALLOUTS HERE
-    // if (req.params.schoolID){
-    //   data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
-    // } else {
-    //   data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
-    // }
-    // data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
-    // broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
+    if (req.params.schoolID){
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/excel-upload`, req.session?.correlationID);
+    } else {
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/excel-upload`, req.session?.correlationID);
+    }
+    data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
+    broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 400) {
       return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
     }
     log.error('uploadFileXLS Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function processSummerStudents(req, res) {
+  try {
+    let createUpdateUser = getCreateOrUpdateUserValue(req);
+    const payload = {
+      fileName: req.body.fileName,
+      summerStudents: req.body.summerStudents,
+      createUser: createUpdateUser,
+      updateUser: createUpdateUser
+    };
+    const token = getAccessToken(req);
+    let data;
+    if (req.params.schoolID){
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/process`, req.session?.correlationID);
+    } else {
+      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/process`, req.session?.correlationID);
+    }
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    if (e.status === 400) {
+      return res.status(HttpStatus.BAD_REQUEST).json(e.data.subErrors[0].message);
+    }
+    log.error('processSummerStudents Error', e.stack);
     return handleExceptionResponse(e, res);
   }
 }
@@ -569,5 +593,6 @@ module.exports = {
   getSubmissionMetrics,
   getErrorMetrics,
   uploadFileXLS,
-  getActiveReportingPeriod
+  getActiveReportingPeriod,
+  processSummerStudents
 };

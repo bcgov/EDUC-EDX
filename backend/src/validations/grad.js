@@ -1,4 +1,4 @@
-const { object, string, number, boolean} = require('yup');
+const { object, string, number, boolean, array} = require('yup');
 const {baseRequestSchema} = require('./base');
 
 const gradFileUploadSchema =  object({
@@ -130,6 +130,54 @@ const gradDistrictFilesetByPenSchema = object({
   })
 }).noUnknown();
 
+const gradProcessSchoolSummerStudentsSchema =  object({
+  body:object({
+    fileName: string().nonNullable(),
+    summerStudents: array().of(object({
+      schoolCode: string().nonNullable(),
+      pen: string().nonNullable(),
+      legalSurname: string().nonNullable(),
+      legalMiddleName: string().nullable(),
+      legalFirstName: string().nullable(),
+      dob: string().nullable(),
+      studentGrade: string().nullable(),
+      course: string().nullable(),
+      sessionDate: string().nullable(),
+      finalPercent: string().nullable(),
+      finalLetterGrade: string().nullable(),
+      noOfCredits: string().nullable(),
+    }))
+  }).concat(baseRequestSchema).noUnknown(),
+  params: object({
+    schoolID: string().nonNullable()
+  }).noUnknown(),
+  query: object().noUnknown()
+}).noUnknown();
+
+const gradProcessDistrictSummerStudentsSchema =  object({
+  body:object({
+    fileName: string().nonNullable(),
+    summerStudents: array().of(object({
+      schoolCode: string().nonNullable(),
+      pen: string().nonNullable(),
+      legalSurname: string().nonNullable(),
+      legalMiddleName: string().nullable(),
+      legalFirstName: string().nullable(),
+      dob: string().nullable(),
+      studentGrade: string().nullable(),
+      course: string().nullable(),
+      sessionDate: string().nullable(),
+      finalPercent: string().nullable(),
+      finalLetterGrade: string().nullable(),
+      noOfCredits: string().nullable(),
+    }))
+  }).concat(baseRequestSchema).noUnknown(),
+  params: object({
+    districtID: string().nonNullable()
+  }).noUnknown(),
+  query: object().noUnknown()
+}).noUnknown();
+
 module.exports = {
   gradFileUploadSchema,
   gradDistrictFilesetPaginatedSchema,
@@ -140,5 +188,7 @@ module.exports = {
   gradSchoolFilesetByPenSchema,
   gradDistrictFilesetByPenSchema,
   gradDistrictPenFilesetPaginatedSchema,
-  gradSchoolFilesetMetricSchema
+  gradSchoolFilesetMetricSchema,
+  gradProcessSchoolSummerStudentsSchema,
+  gradProcessDistrictSummerStudentsSchema
 };
