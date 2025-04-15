@@ -8,7 +8,7 @@
     >
       <v-row no-gutters>
         <v-col class="d-flex justify-start">
-          Preview of Summer Course Data
+          Preview of Summer Course Data - {{ fileName }}
         </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
