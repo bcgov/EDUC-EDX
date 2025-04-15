@@ -422,17 +422,11 @@ export default {
     this.getErrorFilesetStudentPaginated();
     gdcStore().getValidationFieldCodes();
     this.schoolID = this.$route.query.schoolID;
-    appStore().getInstitutesData().then(() => {
-      this.schoolNameAndMincode = this.getSchoolNameAndID();
-    });
+    await appStore().getInstitutesData();
     this.getFilesetSummary();
     this.getSummaryOfErrors();
   },
   methods: {
-    getSchoolNameAndID(){
-      let curSchool = this.schoolsMap.get(this.schoolID);
-      return curSchool.mincode + ' - ' + curSchool.schoolName;
-    },
     downloadReportURL() {
       let query = {};
       if (this.userInfo && this.userInfo.activeInstituteType === 'SCHOOL') {
