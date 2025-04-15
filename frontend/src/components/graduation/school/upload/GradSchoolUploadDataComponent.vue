@@ -566,8 +566,7 @@
   >
     <PreviewStudents
       :headers="summerHeaders"
-      :data="summerStudents"
-      :file-name="xlsFileName"
+      :summer-students="summerStudents"
       :schoolID="schoolID"
       @close="closeSheet"
     />
@@ -673,8 +672,7 @@ export default {
         {title :'Final Letter Grade', key: 'finalLetterGrade'},
         {title :'Number of Credits', key: 'noOfCredits'}
       ],
-      summerStudents:[],
-      xlsFileName: null
+      summerStudents:[]
     };
   },
   computed: {
@@ -864,8 +862,11 @@ export default {
         };
         await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file-xls', document)
         .then(response => {
-            this.summerStudents = response.data.summerStudents;
-            this.xlsFileName = document.fileName;
+            let detail = {
+              fileName: document.fileName,
+              data: response.data.summerStudents
+            }
+            this.summerStudents.push(detail);
             this.successfulXLSUploadCount += 1;
             fileJSON.status = this.fileUploadSuccess;
           }
