@@ -384,6 +384,7 @@ export default {
         this.selected[key] = [{title: 'fileType', value: $event}];
         this.apply();
       } else {
+        this.errorWarnSelector = null;
         delete this.selected[key];
         delete this.selected['warnings'];
         this.apply();
