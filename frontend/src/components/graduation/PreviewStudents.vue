@@ -1,5 +1,4 @@
 <template>
-
 <v-card
     id="previewCard"
   >
@@ -9,7 +8,7 @@
     >
       <v-row no-gutters>
         <v-col class="d-flex justify-start">
-          Preview of Summer Course Data
+          Preview of Summer Course Data - {{ fileName }}
         </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
@@ -37,17 +36,24 @@
 
     <v-row>
       <v-col
-        class="d-flex justify-end"
+        class="d-flex justify-end mr-3 mt-3"
       >
+      <v-pagination
+            v-model="page"
+            :length="summerStudents.length"
+            :total-visible="2"
+            rounded="circle"
+            class="mt-n3"
+            @update:model-value="navigate"
+          />
         <v-btn
             id="waitForReporting"
             color="#003366"
             text="Wait until the next Reporting Cycle"
             class="mr-2 mb-1"
             variant="elevated"
-            @click="cancel"
+            @click="waitForReporting"
           />
-
           <v-btn
             id="processData"
             color="#003366"
@@ -79,13 +85,8 @@ export default {
       required: true,
       default: null
     },
-    data: {
+    summerStudents: {
       type: Array,
-      required: true,
-      default: null
-    },
-    fileName: {
-      type: String,
       required: true,
       default: null
     },
@@ -105,12 +106,25 @@ export default {
     return {
       pageNumber: 1,
       pageSize: 25,
+      data:[],
+      fileName: null,
+      page: 1,
+      removeIndex: null,
     };
   },
   computed: {
     
   },
   watch: {
+    summerStudents: {
+      handler(value) {
+        if(value.length > 0) {
+          this.fileName = value[0].fileName;
+          this.data = value[0].data;
+        }
+      },
+      immediate: true
+    }
   },
   async created() {
         
@@ -119,6 +133,29 @@ export default {
             
   },
   methods: {
+    navigate() {
+      this.setDataforView(this.page - 1);
+      this.removeIndex = null;
+    },
+    waitForReporting() {
+      this.removeIndex = this.summerStudents.findIndex(value => value.fileName === this.fileName);
+      this.summerStudents.splice(this.removeIndex, 1);
+      if(this.summerStudents.length > 0) {
+        this.page = (this.page  === 1 ? 1 : this.page - 1);
+        if(this.removeIndex === 0) {
+          this.setDataforView(0);
+        }  else {
+          this.setDataforView(this.removeIndex - 1);
+        }
+      } else {
+        this.$emit('close');
+      }
+    },
+    setDataforView(index) {
+      this.data = [];
+      this.data = this.summerStudents[index].data;
+      this.fileName = this.summerStudents[index].fileName;
+    },
     cancel() {
       this.$emit('close');
     },
@@ -127,9 +164,17 @@ export default {
         fileName: this.fileName,
         summerStudents: this.data
       }
-      await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/process', body)
+      let url = this.schoolID ? ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID: ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID;
+      await ApiService.apiAxios.post(url + '/process', body)
         .then(() => {
-          this.$emit('close');
+          if(this.page < this.summerStudents.length) {
+            this.data = [];
+            let dataAtIndex = this.summerStudents[this.page++];
+            this.data = dataAtIndex.data;
+            this.fileName = dataAtIndex.fileName;
+          } else {
+            this.$emit('close');
+          }
           }).catch(error => {
             console.error(error);
             this.setFailureAlert('An error occurred while trying to process students. Please try again later.');

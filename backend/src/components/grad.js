@@ -80,8 +80,6 @@ async function uploadFileXLS(req, res) {
     } else {
       data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/excel-upload`, req.session?.correlationID);
     }
-    data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
-    broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.status === 400) {
