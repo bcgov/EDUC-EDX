@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, uploadFileXLS, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, processSummerStudents
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, processSummerStudents, getGradSchoolDetails
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
@@ -83,6 +83,7 @@ router.post('/school/:schoolID/process', passport.authenticate('jwt', {session: 
 router.post('/district/:districtID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
   checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradProcessDistrictSummerStudentsSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, processSummerStudents);
 
-
+router.get('/school/:schoolID/grad-school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getGradSchoolDetails);
 
 module.exports = router;

@@ -39,6 +39,13 @@
                 <span style="font-size: small; color: gray">.XLSX files accepted</span>
               </v-col>
             </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-2">
+                <v-chip
+                  color="warning"
+                ><span>Reporting mode for the summer period is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
+              </v-col>
+            </v-row>
             <v-row
               class="mt-4"
               no-gutters
@@ -159,6 +166,13 @@
                 <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
               </v-col>
             </v-row>
+            <v-row no-gutters>
+              <v-col class="mt-2">
+                <v-chip
+                  color="warning"
+                ><span>Your reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
+              </v-col>
+            </v-row>
             <v-row
               class="mt-4"
               no-gutters
@@ -235,6 +249,18 @@
                   style="font-weight: bold"
                   class="mt-4"
                 >
+                  Reporting Mode
+                </div>
+                <div>
+                  For more information, see "Replace or Append Course Status" in the <a
+                    target="_blank"
+                    href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                  >Graduation Data File Specification</a>
+                </div>
+                <div
+                  style="font-weight: bold"
+                  class="mt-4"
+                >
                   Data Corrections
                 </div>
                 <div>
@@ -250,6 +276,13 @@
         <v-row no-gutters>
           <v-col class="mt-2">
             <span style="font-size: small; color: gray">.DEM, .CRS, and .XAM files accepted</span>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col class="mt-2">
+            <v-chip
+              color="warning"
+            ><span>Your reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
           </v-col>
         </v-row>
       </div>
@@ -567,7 +600,7 @@
     <PreviewStudents
       :headers="summerHeaders"
       :summer-students="summerStudents"
-      :schoolID="schoolID"
+      :school-i-d="schoolID"
       @close="closeSheet"
     />
   </v-dialog>
@@ -639,6 +672,7 @@ export default {
       pageSize: 15,
       showMoreInfoTooltip: false,
       isLoading: false,
+      submissionModeCode: '',
       filterSearchParams: {
         moreFilters: {}
       },
@@ -712,6 +746,7 @@ export default {
       this.schoolsMap = this.activeSchoolsMap;
     });
     this.getActiveReportingDates();
+    this.getGradSchoolDetails();
   },
   beforeUnmount() {
     clearInterval(this.interval);
@@ -743,6 +778,12 @@ export default {
           this.nextYear = reportingPeriodStart.plusYears(1).year();
           this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
           this.setIsSummerPeriod();
+        });
+    },
+    getGradSchoolDetails() {
+      ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/grad-school')
+        .then(response => {
+          this.submissionModeCode =  response.data.submissionModeCode.charAt(0).toUpperCase() + response.data.submissionModeCode.toLowerCase().slice(1);
         });
     },
     setIsSummerPeriod(){
@@ -861,16 +902,16 @@ export default {
           fileType: fileJSON.name.split('.')[1]
         };
         await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/upload-file-xls', document)
-        .then(response => {
+          .then(response => {
             let detail = {
               fileName: document.fileName,
               data: response.data.summerStudents
-            }
+            };
             this.summerStudents.push(detail);
             this.successfulXLSUploadCount += 1;
             fileJSON.status = this.fileUploadSuccess;
           }
-        )
+          );
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
