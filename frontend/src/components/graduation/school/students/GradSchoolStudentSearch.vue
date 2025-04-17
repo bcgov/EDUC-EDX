@@ -366,8 +366,8 @@ export default {
       await this.setIncomingFilesetIDSelection();
     },
     async searchStudent() {
-      this.isLoading= true;
-      this.noDataFlag=false;
+      this.isLoading = true;
+      this.noDataFlag = false;
       this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
       this.filterSearchParams.collectionObject = this.collectionObject;
