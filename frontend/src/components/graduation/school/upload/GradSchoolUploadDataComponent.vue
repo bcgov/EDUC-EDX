@@ -43,7 +43,7 @@
               <v-col class="mt-2">
                 <v-chip
                   color="warning"
-                ><span>Reporting mode for the summer period is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
+                ><span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
               </v-col>
             </v-row>
             <v-row
@@ -170,7 +170,7 @@
               <v-col class="mt-2">
                 <v-chip
                   color="warning"
-                ><span>Your reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
+                ><span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
               </v-col>
             </v-row>
             <v-row
@@ -282,7 +282,7 @@
           <v-col class="mt-2">
             <v-chip
               color="warning"
-            ><span>Your reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
+            ><span>School reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
           </v-col>
         </v-row>
       </div>
