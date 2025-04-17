@@ -307,6 +307,20 @@ async function getErrorMetrics(req, res){
   }
 }
 
+async function getGradSchoolDetails(req, res){
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('gradSchool:rootURL')}/search/${req.params.schoolID}`;
+
+    const resData = await getData(token, url);
+
+    return res.status(HttpStatus.OK).send(resData);
+  } catch (e) {
+    log.error('getGradSchoolDetails Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getCurrentGradStudentsPaginated(req, res){
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
@@ -592,5 +606,6 @@ module.exports = {
   getErrorMetrics,
   uploadFileXLS,
   getActiveReportingPeriod,
-  processSummerStudents
+  processSummerStudents,
+  getGradSchoolDetails
 };
