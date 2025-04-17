@@ -20,7 +20,7 @@
       </v-icon>
     </template>
     <template #item="{ props, item }">
-      <v-list-item 
+      <v-list-item
         v-bind="props"
         prepend-icon="mdi-circle-medium"
         :base-color="getStatusColorAuthorityOrSchool(item.raw.status)"
@@ -38,6 +38,7 @@
 import {getStatusAuthorityOrSchool, getStatusColorAuthorityOrSchool} from '../../utils/institute/status';
 import {mapState} from 'pinia';
 import {appStore} from '../../store/modules/app';
+import { LocalDateTime } from '@js-joda/core';
 
 export default {
   name: 'SchoolCodeNameFilter',
@@ -48,18 +49,24 @@ export default {
     },
     districtID: {
       type: String,
-      required: true
+      required: false,
+      default: ''
+    },
+    collectionObject: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   emits: ['update:modelValue', 'search'],
   data() {
     return {
-      schoolsCacheMap: null,
+      schoolsCacheMap: [],
       schoolSearchNames: []
     };
   },
   computed: {
-    ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap']),
+    ...mapState(appStore, ['schoolsMap']),
 
     schoolCodeNameFilter: {
       get() {
@@ -83,39 +90,33 @@ export default {
     },
     getSchoolDropDownItems() {
       this.schoolSearchNames = [];
-      let now = new Date();
-      let currentSchoolYearStart, currentSchoolYearEnd;
+      const now = LocalDateTime.now();
+      let cutoff = now;
 
-      // 0 indexed for months
-      if (now.getMonth() >= 9) {
-        currentSchoolYearStart = new Date(now.getFullYear(), 9, 1); // October 1 of this year
-        currentSchoolYearEnd = new Date(now.getFullYear() + 1, 8, 30); // September 30 of next year
-      } else {
-        currentSchoolYearStart = new Date(now.getFullYear() - 1, 9, 1); // October 1 of last yea
-        currentSchoolYearEnd = new Date(now.getFullYear(), 8, 30); // September 30 of this year
+      if (this.collectionObject) {
+        const summerStart = LocalDateTime.parse(this.collectionObject.summerStart);
+        const schYrEnd = LocalDateTime.parse(this.collectionObject.schYrEnd);
+        const summerEnd = LocalDateTime.parse(this.collectionObject.summerEnd);
+        cutoff = now.isBefore(summerStart) ? schYrEnd : summerEnd;
       }
 
-      const windowStart = new Date(currentSchoolYearStart.getFullYear() - 2, currentSchoolYearStart.getMonth(), currentSchoolYearStart.getDate());
-      const windowEnd = currentSchoolYearEnd;
-
       this.schoolsCacheMap.forEach(school => {
-        if (school.districtID === this.districtID && school.schoolCategoryCode === 'PUBLIC' && school.canIssueTranscripts === true) {
-          if (!school.effectiveDate) {
-            return;
-          }
+        if (school.districtID !== this.districtID) return;
+        if (school.schoolCategoryCode !== 'PUBLIC') return;
+        if (!school.canIssueTranscripts) return;
+        if (!school.effectiveDate) return;
 
-          let schoolOpened = new Date(school.effectiveDate);
-          let schoolClosed = school.expiryDate ? new Date(school.expiryDate) : null;
+        const openDate = LocalDateTime.parse(school.effectiveDate);
+        const endOfCloseDateGraceWindow = school.expiryDate ? LocalDateTime.parse(school.expiryDate).plusMonths(3) : null;
 
-          if (schoolOpened <= windowEnd && (!schoolClosed || schoolClosed >= windowStart)) {
-            let schoolItem = {
-              schoolCodeName: school.mincode + ' - ' + school.schoolName,
-              schoolID: school.schoolID,
-              status: getStatusAuthorityOrSchool(school)
-            };
-            this.schoolSearchNames.push(schoolItem);
-          }
-        }
+        if (cutoff.isBefore(openDate)) return;
+        if (endOfCloseDateGraceWindow && cutoff.isAfter(endOfCloseDateGraceWindow)) return;
+
+        this.schoolSearchNames.push({
+          schoolCodeName: `${school.mincode} - ${school.schoolName}`,
+          schoolID: school.schoolID,
+          status: getStatusAuthorityOrSchool(school)
+        });
       });
     },
   },

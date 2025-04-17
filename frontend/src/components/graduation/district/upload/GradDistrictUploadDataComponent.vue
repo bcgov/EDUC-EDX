@@ -295,6 +295,7 @@
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
           :district-i-d="districtID"
+          :collection-object="collectionObject"
           @search="searchButtonClick"
         />
       </v-col>
@@ -621,6 +622,11 @@ export default {
       required: false,
       default: null
     },
+    collectionObject: {
+      type: Object,
+      required: false,
+      default: null
+    }
   },
   emits: [],
   data() {
@@ -888,7 +894,7 @@ export default {
             let detail = {
               fileName: document.fileName,
               data: response.data.summerStudents
-            }
+            };
             this.summerStudents.push(detail);
             this.successfulUploadCountXLS += 1;
             fileJSON.status = this.fileUploadSuccess;
@@ -991,6 +997,7 @@ export default {
     },
     async getFilesetPaginated() {
       this.isLoading= true;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,

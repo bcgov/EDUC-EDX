@@ -76,8 +76,7 @@ router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt'
 
 router.get('/active-reporting-period', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getActiveReportingPeriod);
 
-
-router.post('/school/:schoolID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 
+router.post('/school/:schoolID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradProcessSchoolSummerStudentsSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, processSummerStudents);
 
 router.post('/district/:districtID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, 

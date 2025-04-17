@@ -634,6 +634,10 @@ export default {
       required: false,
       default: null
     },
+    collectionObject: {
+      type: Object,
+      required: true
+    }
   },
   emits: [],
   data() {
@@ -690,7 +694,6 @@ export default {
       schoolsMap: null,
       disableScreen: false,
       wsNotificationText: '',
-      activeReportingPeriod: null,
       previewUploadedStudents: false,
       summerHeaders:
       [ 
@@ -745,7 +748,7 @@ export default {
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
     });
-    this.getActiveReportingDates();
+    this.setActiveReportingDates();
     this.getGradSchoolDetails();
   },
   beforeUnmount() {
@@ -769,16 +772,12 @@ export default {
         this.previewUploadedStudents = true;
       }
     },
-    getActiveReportingDates() {
-      ApiService.apiAxios.get(ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS)
-        .then(response => {
-          this.activeReportingPeriod = response.data;
-          let reportingPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.schYrStart);
-          this.currentYear = reportingPeriodStart.year();
-          this.nextYear = reportingPeriodStart.plusYears(1).year();
-          this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
-          this.setIsSummerPeriod();
-        });
+    setActiveReportingDates() {
+      let reportingPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
+      this.currentYear = reportingPeriodStart.year();
+      this.nextYear = reportingPeriodStart.plusYears(1).year();
+      this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
+      this.setIsSummerPeriod();
     },
     getGradSchoolDetails() {
       ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/grad-school')
@@ -787,8 +786,8 @@ export default {
         });
     },
     setIsSummerPeriod(){
-      let summerPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.summerStart);
-      let summerPeriodEnd = LocalDateTime.parse(this.activeReportingPeriod.summerEnd);
+      let summerPeriodStart = LocalDateTime.parse(this.collectionObject.summerStart);
+      let summerPeriodEnd = LocalDateTime.parse(this.collectionObject.summerEnd);
 
       let today = LocalDateTime.now();
 
@@ -1010,6 +1009,7 @@ export default {
     },
     async getFilesetPaginated() {
       this.isLoading= true;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,

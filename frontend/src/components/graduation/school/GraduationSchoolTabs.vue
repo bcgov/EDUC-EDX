@@ -49,7 +49,9 @@
               reverse-transition="false"
             >
               <GradSchoolUploadDataComponent
+                v-if="collectionObject"
                 :school-i-d="schoolID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -59,6 +61,7 @@
             >
               <GradSchoolStudentSearch
                 :school-i-d="schoolID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -91,11 +94,12 @@ import alertMixin from '../../../mixins/alertMixin';
 import { authStore } from '../../../store/modules/auth';
 import { appStore } from '../../../store/modules/app';
 import { mapState } from 'pinia';
-import {PAGE_TITLES} from '../../../utils/constants';
+import {ApiRoutes, PAGE_TITLES} from '../../../utils/constants';
 import GradSchoolUploadDataComponent from './upload/GradSchoolUploadDataComponent.vue';
 import GradReportsAndTranscripts from './reports/GradSchoolReportsAndTranscripts.vue';
 import GradSchoolStudentSearch from './students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './students/GradSchoolCurrentStudents.vue';
+import ApiService from '../../../common/apiService';
 
 export default {
   name: 'GraduationSchoolTabs',
@@ -116,14 +120,24 @@ export default {
   data() {
     return {
       PAGE_TITLES: PAGE_TITLES,
-      tab: null
+      tab: null,
+      collectionObject: null
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
     ...mapState(appStore, ['config'])
   },
+  created() {
+    this.getActiveReportingDates();
+  },
   methods: {
+    getActiveReportingDates() {
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS}`)
+        .then(response => {
+          this.collectionObject = response.data;
+        });
+    },
   }
 };
 </script>

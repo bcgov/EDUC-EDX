@@ -293,6 +293,10 @@ export default {
       required: false,
       default: null
     },
+    collectionObject: {
+      type: Object,
+      required: true
+    }
   },
   emits: [],
   data() {
@@ -362,11 +366,16 @@ export default {
       await this.setIncomingFilesetIDSelection();
     },
     async searchStudent() {
-      this.isLoading= true;
-      this.noDataFlag=false;
+      this.isLoading = true;
+      this.noDataFlag = false;
       this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       await this.getStudentSubmissions();
+      if (this.filesetStudentSubmissions.length === 0) {
+        this.noDataFlag = true;
+        return;
+      }
       await this.findStudentInFilesetByPEN();
     },
     async findStudentInFilesetByPEN() {

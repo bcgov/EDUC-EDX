@@ -15,6 +15,7 @@
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
           :district-i-d="districtID"
+          :collection-object="collectionObject"
           @search="schoolSelected"
         />
       </v-col>
@@ -162,6 +163,11 @@ export default {
       required: false,
       default: null
     },
+    collectionObject: {
+      type: Object,
+      required: false,
+      default: null
+    }
   },
   emits: [],
   data() {
