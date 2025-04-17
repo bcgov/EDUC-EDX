@@ -997,6 +997,7 @@ export default {
     },
     async getFilesetPaginated() {
       this.isLoading= true;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,

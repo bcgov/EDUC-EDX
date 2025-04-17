@@ -303,8 +303,7 @@ export default {
     },
     collectionObject: {
       type: Object,
-      required: false,
-      default: null
+      required: true
     }
   },
   emits: [],
@@ -381,7 +380,12 @@ export default {
       this.selectedSubmission = null;
       this.filterSearchParams.pen = this.studentPEN;
       this.filterSearchParams.schoolID = this.schoolNameNumber;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       await this.getStudentSubmissions();
+      if (this.filesetStudentSubmissions.length === 0) {
+        this.noDataFlag = true;
+        return;
+      }
       await this.findStudentInFilesetByPEN();
     },
     async findStudentInFilesetByPEN() {

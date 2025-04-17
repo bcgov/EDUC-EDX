@@ -49,6 +49,7 @@
               reverse-transition="false"
             >
               <GradDistrictUploadDataComponent
+                v-if="collectionObject"
                 :district-i-d="districtID"
                 :collection-object="collectionObject"
               />
