@@ -43,7 +43,9 @@
               <v-col class="mt-2">
                 <v-chip
                   color="warning"
-                ><span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
+                >
+                  <span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span>
+                </v-chip>
               </v-col>
             </v-row>
             <v-row
@@ -136,6 +138,18 @@
                       style="font-weight: bold"
                       class="mt-4"
                     >
+                      Reporting Mode
+                    </div>
+                    <div>
+                      For more information, see "Replace or Append Course Status" in the <a
+                        target="_blank"
+                        href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                      >Graduation Data File Specification</a>
+                    </div>
+                    <div
+                      style="font-weight: bold"
+                      class="mt-4"
+                    >
                       Data Corrections
                     </div>
                     <div>
@@ -170,7 +184,9 @@
               <v-col class="mt-2">
                 <v-chip
                   color="warning"
-                ><span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span></v-chip>
+                >
+                  <span>Summer reporting mode is:&nbsp;</span><span style="font-weight: bold">Append</span>
+                </v-chip>
               </v-col>
             </v-row>
             <v-row
@@ -282,7 +298,9 @@
           <v-col class="mt-2">
             <v-chip
               color="warning"
-            ><span>School reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span></v-chip>
+            >
+              <span>School reporting mode is:&nbsp;</span><span style="font-weight: bold">{{ submissionModeCode }}</span>
+            </v-chip>
           </v-col>
         </v-row>
       </div>

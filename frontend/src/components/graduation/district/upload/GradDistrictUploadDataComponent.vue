@@ -130,6 +130,18 @@
                     style="font-weight: bold"
                     class="mt-4"
                   >
+                    Reporting Mode
+                  </div>
+                  <div>
+                    For more information, see "Replace or Append Course Status" in the <a
+                      target="_blank"
+                      href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                    >Graduation Data File Specification</a>
+                  </div>
+                  <div
+                    style="font-weight: bold"
+                    class="mt-4"
+                  >
                     Data Corrections
                   </div>
                   <div>
@@ -231,6 +243,18 @@
                   target="_blank"
                   href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
                 >Graduation Data File Specification</a>.
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                Reporting Mode
+              </div>
+              <div>
+                For more information, see "Replace or Append Course Status" in the <a
+                  target="_blank"
+                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
+                >Graduation Data File Specification</a>
               </div>
               <div
                 style="font-weight: bold"
@@ -585,7 +609,7 @@
     <PreviewStudents
       :headers="summerHeaders"
       :summer-students="summerStudents"
-      :districtID="districtID"
+      :district-i-d="districtID"
       @close="closeSheet"
     />
   </v-dialog>
@@ -888,7 +912,7 @@ export default {
             let detail = {
               fileName: document.fileName,
               data: response.data.summerStudents
-            }
+            };
             this.summerStudents.push(detail);
             this.successfulUploadCountXLS += 1;
             fileJSON.status = this.fileUploadSuccess;
