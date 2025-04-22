@@ -319,6 +319,7 @@
         <SchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
           :district-i-d="districtID"
+          :collection-object="collectionObject"
           @search="searchButtonClick"
         />
       </v-col>
@@ -645,6 +646,11 @@ export default {
       required: false,
       default: null
     },
+    collectionObject: {
+      type: Object,
+      required: false,
+      default: null
+    }
   },
   emits: [],
   data() {
@@ -1015,6 +1021,7 @@ export default {
     },
     async getFilesetPaginated() {
       this.isLoading= true;
+      this.filterSearchParams.collectionObject = this.collectionObject;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,

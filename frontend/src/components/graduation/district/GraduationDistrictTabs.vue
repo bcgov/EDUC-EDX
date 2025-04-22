@@ -49,7 +49,9 @@
               reverse-transition="false"
             >
               <GradDistrictUploadDataComponent
+                v-if="collectionObject"
                 :district-i-d="districtID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -59,6 +61,7 @@
             >
               <GradDistrictStudentSearch
                 :district-i-d="districtID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -68,6 +71,7 @@
             >
               <GradDistrictReportsAndTranscripts
                 :district-i-d="districtID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -77,6 +81,7 @@
             >
               <GradDistrictCurrentStudents
                 :district-i-d="districtID"
+                :collection-object="collectionObject"
               />
             </v-window-item>
           </v-window>
@@ -91,11 +96,12 @@ import alertMixin from '../../../mixins/alertMixin';
 import { authStore } from '../../../store/modules/auth';
 import { appStore } from '../../../store/modules/app';
 import { mapState } from 'pinia';
-import {PAGE_TITLES} from '../../../utils/constants';
+import {ApiRoutes, PAGE_TITLES} from '../../../utils/constants';
 import GradDistrictReportsAndTranscripts from './reports/GradDistrictReportsAndTranscripts.vue';
 import GradDistrictStudentSearch from './students/GradDistrictStudentSearch.vue';
 import GradDistrictCurrentStudents from './students/GradDistrictCurrentStudents.vue';
 import GradDistrictUploadDataComponent from './upload/GradDistrictUploadDataComponent.vue';
+import ApiService from '../../../common/apiService';
 
 export default {
   name: 'GraduationSchoolTabs',
@@ -116,15 +122,24 @@ export default {
   data() {
     return {
       PAGE_TITLES: PAGE_TITLES,
-      tab: null
+      tab: null,
+      collectionObject: null
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
     ...mapState(appStore, ['config'])
   },
+  created() {
+    this.getActiveReportingDates();
+  },
   methods: {
-
+    getActiveReportingDates() {
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS}`)
+        .then(response => {
+          this.collectionObject = response.data;
+        });
+    },
   }
 };
 </script>
