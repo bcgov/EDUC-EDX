@@ -152,7 +152,7 @@
                       For more information, see "Replace or Append Course Status" in the <a
                         target="_blank"
                         href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
-                      >Graduation Data File Specification</a>
+                      >Graduation Data File Specification</a>. Note all graduated students are on "Append Mode".
                     </div>
                     <div
                       style="font-weight: bold"
