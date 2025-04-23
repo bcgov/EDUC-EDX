@@ -58,28 +58,25 @@
               <v-row style="margin-bottom: 0">
                 <v-col
                   v-if="column.subHeader[0].key === 'fileType'"
-                > {{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}</v-col>
-                <v-col
-                  v-if="column.subHeader[1].key === 'errors'"
-                >
-                  <v-tooltip text="Tooltip">
-                    <template #activator="{ props }">
-                      <v-icon
-                        class="mt-n1"
-                        v-bind="props"
-                        :color="getStatusColor(error?.validationIssueSeverityCode)"
-                        :icon="getIssueIcon(error?.validationIssueSeverityCode)"
-                      />
-                    </template>
-                    {{error?.validationIssueSeverityCode === 'WARNING' ? 'Warning' : 'Error'}}
-                  </v-tooltip></v-col>
-                <v-col v-if="column.subHeader[2].key === 'errorContext'">
+                  cols="2"
+                >{{ formatFileType(error?.errorFilesetValidationIssueTypeCode) }}&nbsp;<v-tooltip text="Tooltip">
+                  <template #activator="{ props }">
+                    <v-icon
+                      class="mt-n1"
+                      v-bind="props"
+                      :color="getStatusColor(error?.validationIssueSeverityCode)"
+                      :icon="getIssueIcon(error?.validationIssueSeverityCode)"
+                    />
+                  </template>
+                  {{ error?.validationIssueSeverityCode === 'WARNING' ? 'Warning' : 'Error' }}
+                </v-tooltip></v-col>
+                <v-col v-if="column.subHeader[1].key === 'errorContext'">
                   <span v-if="error?.errorContext !== null">{{ error?.errorContext }}</span>
                   <span v-else>-</span>
                 </v-col>
-                <v-col v-if="column.subHeader[3].key === 'field'">{{ error?.validationIssueFieldCodeDescription }}</v-col>
+                <v-col v-if="column.subHeader[2].key === 'field'">{{ error?.validationIssueFieldCodeDescription }}</v-col>
                 <v-col
-                  v-if="column.subHeader[4].key === 'desc'"
+                  v-if="column.subHeader[3].key === 'desc'"
                   cols="5"
                 >
                   <div v-html="error?.validationIssueDescription" /> 
