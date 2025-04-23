@@ -80,7 +80,7 @@
                 <v-col v-if="column.subHeader[3].key === 'field'">{{ error?.validationIssueFieldCodeDescription }}</v-col>
                 <v-col
                   v-if="column.subHeader[4].key === 'desc'"
-                  cols="4"
+                  cols="5"
                 >
                   <div v-html="error?.validationIssueDescription" /> 
                 </v-col>

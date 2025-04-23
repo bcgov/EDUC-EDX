@@ -403,7 +403,7 @@ export default {
         {title: 'Error/Warning', key: 'errors'},
         {title: 'Error Context', key: 'errorContext'},
         {title: 'Error Field', key: 'field'},
-        {title: 'Description', key: 'desc', cols:'4'}
+        {title: 'Description', key: 'desc', cols:'5'}
       ]
         },
       ],
