@@ -1,9 +1,9 @@
 <template>
   <v-data-table
-    :items="data"
-    :headers="headers"
     v-model:page="pageNumber"
     v-model:items-per-page="pageSize"
+    :items="data"
+    :headers="headers"
     mobile-breakpoint="0"
   >
     <template #headers>
@@ -37,13 +37,13 @@
             <span v-else>{{ props.item['courseCode'] }}{{ props.item['courseLevel'] }}</span>
           </span>
           <span v-else-if="column.key === 'status'">
-                <v-icon
-                  size="25"
-                  :color="getIssueIconColor(props.item['studentStatusCode'])"
-                >
-                  {{ getIssueIcon(props.item['studentStatusCode']) }}
-                </v-icon>
-            </span>
+            <v-icon
+              size="25"
+              :color="getIssueIconColor(props.item['studentStatusCode'])"
+            >
+              {{ getIssueIcon(props.item['studentStatusCode']) }}
+            </v-icon>
+          </span>
           <span v-else-if="column.key === 'session'">
             <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">-</span>
             <span v-else> {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}</span>

@@ -1,13 +1,19 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col>
-        <h3>Individual Students</h3>
+      <v-col cols="12">
+        <v-alert
+          density="compact"
+          type="info"
+          variant="tonal"
+        >
+          School data submissions completed during business hours will be processed overnight. GRAD System reports are updated by the following day. For troubleshooting, please review your data submission error reports.
+        </v-alert>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row>
       <v-col>
-        <span style="font-size: small; color: gray">View available reports for individual students based on PEN.</span>
+        <h3>Individual Student Reports</h3>
       </v-col>
     </v-row>
     <v-card
@@ -15,14 +21,11 @@
       width="30em"
       border="sm"
     >
-      <v-card-title style="font-size: medium">
-        Student Reports
-      </v-card-title>
       <v-card-text
         style="color: gray;font-size: small"
         class="mt-n3"
       >
-        Any student that exists in GRAD
+        Find TVRs and preview transcripts for individual students in GRAD using their PEN.
       </v-card-text>
       <v-form
         id="transcriptForm"
@@ -142,7 +145,7 @@
     <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
       <v-row class="mt-2">
         <v-col>
-          <h3>Transcript Verification Reports (TVRs)</h3>
+          <h3>Transcript Verification Report (TVR) Packages</h3>
         </v-col>
       </v-row>
       <v-card
@@ -158,7 +161,7 @@
           style="color: gray;font-size: small"
           class="mt-n3"
         >
-          Students in final year of a graduation program
+          TVR packages for all students in their final year of a graduation program.
         </v-card-text>
         <v-form
           id="transcriptForm"
@@ -185,12 +188,12 @@
       </v-card>
       <v-row class="mt-5">
         <v-col>
-          <h3>Projection Reports</h3>
+          <h3>Graduation Projection Summary Reports</h3>
         </v-col>
       </v-row>
       <v-row no-gutters>
         <v-col>
-          <span style="font-size: small; color: gray">Based on registrations that are not yet complete and are meant to predict graduation.</span>
+          <span style="font-size: small; color: gray">Graduation projections based on course and assessment registrations and completions.</span>
         </v-col>
       </v-row>
       <v-row
@@ -258,12 +261,12 @@
       </v-row>
       <v-row class="mt-5">
         <v-col>
-          <h3>Graduation Reports</h3>
+          <h3>Graduation Status Summary Reports</h3>
         </v-col>
       </v-row>
       <v-row no-gutters>
         <v-col>
-          <span style="font-size: small; color: gray">Based on what students have completed as of the current date.</span>
+          <span style="font-size: small; color: gray">Current graduation status based on course and assessment completions only.</span>
         </v-col>
       </v-row>
       <v-row
@@ -307,12 +310,6 @@
               </v-col>
             </v-row>
           </v-form>
-          <v-card-text
-            class="pt-1 pb-3"
-            style="color: gray"
-          >
-            * Generated daily based on latest data submissions
-          </v-card-text>
         </v-card>
         <v-card
           class="mt-2"
@@ -351,12 +348,6 @@
               </v-col>
             </v-row>
           </v-form>
-          <v-card-text
-            class="pt-1 pb-3"
-            style="color: gray"
-          >
-            * Generated based on final data submissions
-          </v-card-text>
         </v-card>
       </v-row>
     </div>

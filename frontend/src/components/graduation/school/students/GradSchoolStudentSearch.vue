@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row class="mb-1">
       <v-col>
-        Enter a PEN below to search in the schools uploaded graduation data files.
+        Enter a PEN below to review the school data submission history for the student within the past two reporting periods.
       </v-col>
     </v-row> 
     <v-form

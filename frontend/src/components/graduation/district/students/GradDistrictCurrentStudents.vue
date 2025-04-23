@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <h4 style="font-weight: normal">
-          Select a school from the list below to see all the current students reported to the ministry by the school.
+          Select a school from the list below to see students with the selected school as their School of Record in GRAD and a Current status.
         </h4>
       </v-col>
     </v-row>

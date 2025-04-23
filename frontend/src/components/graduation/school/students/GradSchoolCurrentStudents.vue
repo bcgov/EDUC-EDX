@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <h4 style="font-weight: normal">
-          Below is a table of all the current students reported to the Ministry by your school.
+          Students with {{schoolName}} as their School of Record in GRAD and a Current status.
         </h4>
       </v-col>
     </v-row>
@@ -135,6 +135,7 @@ import {
   downloadDocument
 } from '../../../../utils/gdc/gradReports';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
+import {appStore} from '../../../../store/modules/app';
 
 export default {
   name: 'GradSchoolCurrentStudents',
@@ -156,6 +157,7 @@ export default {
       isLoading: false,
       studentList: [],
       showFilters: null,
+      schoolName: '',
       totalElements: 0,
       resetVal: false,
       pageNumber: 1,
@@ -169,16 +171,24 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
+    ...mapState(appStore, ['schoolsMap']),
     filterCount() {
       let filters = Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []);
       return new Set(filters.map(filter => filter.title)).size;
     }
   },
   async created() {
+    appStore().getInstitutesData().then(() => {
+      this.getSchoolNameFromID();
+    });
   },
   methods: {
     toggleFilters() {
       this.showFilters= !this.showFilters;
+    },
+    getSchoolNameFromID(){
+      let curSchool = this.schoolsMap.get(this.schoolID);
+      this.schoolName = curSchool.schoolName;
     },
     applyFilters($event) {
       this.pageNumber = 1;

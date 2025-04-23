@@ -9,10 +9,13 @@
             density="compact"
             type="info"
             variant="tonal"
-          >There are two options for submitting data during the <a
-            target="_blank"
-            href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/assessment/graduation/trax-updates"
-          >Summer Reporting Period</a>. Review the options below and select the most appropriate method for your school.</v-alert>
+          >
+            There are two options for submitting data during the <a
+              target="_blank"
+              href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/assessment/graduation/trax-updates"
+            >Summer Reporting Period</a>. Review the options below and select the most appropriate method for your school.<br><br>
+            Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD reports (transcript, TVRs, etc.) are available after overnight processing.
+          </v-alert>
         </v-col>
       </v-row>
       <div v-if="isSummerPeriod">
@@ -215,6 +218,17 @@
         </v-row>
       </div>
       <div v-else>
+        <v-row>
+          <v-col cols="12">
+            <v-alert
+              density="compact"
+              type="info"
+              variant="tonal"
+            >
+              Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD reports (transcript, TVRs, etc.) are available after overnight processing.
+            </v-alert>
+          </v-col>
+        </v-row>
         <v-row class="mt-1">
           <v-col>
             <v-btn

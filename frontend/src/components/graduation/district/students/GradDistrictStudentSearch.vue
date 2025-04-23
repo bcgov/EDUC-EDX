@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row class="mb-1">
       <v-col>
-        Select a school from the list below and enter a PEN to search for a student in the collection.
+        Select a school and enter a PEN below to review the school data submission history for the student within the past two reporting periods.
       </v-col>
     </v-row>
     <v-form
