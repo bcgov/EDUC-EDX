@@ -2,19 +2,21 @@
   <v-container 
     fluid
   >
-    <div>
+    <div v-if="isSummerPeriod">
       <v-row v-if="isSummerPeriod">
         <v-col cols="12">
           <v-alert
             density="compact"
             type="info"
             variant="tonal"
-            text="There are two options for submitting data during the Summer Reporting Period. Review the options below and select the most appropriate method for your school."
-          />
+          >
+            There are two options for submitting data during the <a
+              target="_blank"
+              href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/assessment/graduation/trax-updates"
+            >Summer Reporting Period</a>. Review the options below and select the most appropriate method for your school.
+          </v-alert>
         </v-col>
       </v-row>
-    </div>
-    <div v-if="isSummerPeriod">
       <v-row class="mt-4">
         <v-col cols="5">
           <v-row>
@@ -125,6 +127,12 @@
                       target="_blank"
                       href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/trax_data_transfer_specifications.pdf"
                     >Graduation Data File Specification</a>.
+                  </div>
+                  <div class="mt-4">
+                    For Summer Reporting file specifications see, <a
+                      target="_blank"
+                      href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/assessment/graduation/trax-updates"
+                    >Summer School Marks Reporting</a>.
                   </div>
                   <div
                     style="font-weight: bold"
