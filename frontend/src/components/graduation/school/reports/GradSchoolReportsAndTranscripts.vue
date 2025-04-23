@@ -145,6 +145,15 @@
               :download-action="() => downloadProjectedTVRReport('nonGraduating')"
             />
           </v-col>
+          <v-col 
+            cols="12" 
+            class="mt-n2"
+          >
+            <DownloadLink
+              label="Projected Graduates"
+              :download-action="() => downloadProjectedTVRReport('graduating')"
+            />
+          </v-col>
         </v-row>
       </v-form>
     </v-card>
