@@ -166,7 +166,7 @@
           select-strategy="classic"
         >
           <div
-            v-for="newrole in instituteRoles"
+            v-for="newrole in instituteRolesSorted"
             :key="newrole.edxRoleCode"
             :value="newrole.edxRoleCode"
           >
@@ -238,6 +238,7 @@ import {DateTimeFormatter, LocalDate} from '@js-joda/core';
 import {PERMISSION} from '../../utils/constants/Permission';
 import {ROLES} from '../../utils/constants/Roles';
 import ConfirmationDialog from '../util/ConfirmationDialog.vue';
+import {sortBy} from 'lodash';
 
 export default {
   name: 'AccessUserCard',
@@ -296,15 +297,28 @@ export default {
         if(district1701Role.length > 0 && district1701ReadOnlyRole.length > 0){
           return 'Only one district Student Data Collection role can be selected.';
         }
+        let districtGDCRole = this.selectedRoles.filter(userRole => userRole === ROLES.GRAD_DIS_ADMIN);
+        let districtGDCReadOnlyRole = this.selectedRoles.filter(userRole => userRole === ROLES.GRAD_DIS_RO);
+        if(districtGDCRole.length > 0 && districtGDCReadOnlyRole.length > 0){
+          return 'Only one district Graduation Data Collection role can be selected.';
+        }
       }else{
         let school1701Role = this.selectedRoles.filter(userRole => userRole === ROLES.SCHOOL_SDC);
         let school1701ReadOnlyRole = this.selectedRoles.filter(userRole => userRole === ROLES.SCH_SDC_RO);
         if(school1701Role.length > 0 && school1701ReadOnlyRole.length > 0){
           return 'Only one school Student Data Collection role can be selected.';
         }
+        let schoolGDCRole = this.selectedRoles.filter(userRole => userRole === ROLES.GRAD_SCH_ADMIN);
+        let schoolGDCReadOnlyRole = this.selectedRoles.filter(userRole => userRole === ROLES.GRAD_SCH_RO);
+        if(schoolGDCRole.length > 0 && schoolGDCReadOnlyRole.length > 0){
+          return 'Only one school Graduation Data Collection role can be selected.';
+        }
       }
       return null;
     }
+  },
+  created() {
+    this.instituteRolesSorted = sortBy(this.instituteRoles, ['label']);
   },
   methods: {
     isDistrictUser(){
