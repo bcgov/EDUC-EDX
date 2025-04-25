@@ -1,5 +1,17 @@
 <template>
   <v-container fluid>
+    <v-row
+      no-gutters
+    >
+      <v-col>
+        <v-alert
+          density="compact"
+          type="info"
+          variant="tonal"
+          text="The table columns marked with an asterisk (*) are updated nightly. All other columns are updated on a per-student basis, using only uploaded data that is error-free."
+        />
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <h4 style="font-weight: normal">

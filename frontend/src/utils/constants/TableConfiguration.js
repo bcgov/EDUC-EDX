@@ -886,10 +886,10 @@ export const GRAD_CURRENT_STUDENTS = Object.freeze(
       { title: 'Birthdate', key: 'dob', align: 'start' },
       { title: 'Grade', key: 'studentGrade', align: 'start' },
       { title: 'Program', key: 'programCode', align: 'start' },
-      { title: 'Program Completion Date', key: 'programCompletionDate', align: 'start' },
-      { title: 'School at Graduation', key: 'schoolAtGraduationName', align: 'start' },
-      { title: 'Honours Standing', key: 'honorsStanding', align: 'start' },
-      { title: 'Reports', key: 'resolution', align: 'start' }
+      { title: 'Program Completion Date*', key: 'programCompletionDate', align: 'start' },
+      { title: 'School at Graduation*', key: 'schoolAtGraduationName', align: 'start' },
+      { title: 'Honours Standing*', key: 'honorsStanding', align: 'start' },
+      { title: 'Reports*', key: 'resolution', align: 'start' }
     ],
     allowedFilters: {
       grade: GRADE_GRAD_FILTER,
