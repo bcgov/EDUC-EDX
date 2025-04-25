@@ -284,6 +284,7 @@ import InviteUserPage from './InviteUserPage.vue';
 import Spinner from '../common/Spinner.vue';
 import alertMixin from '../../mixins/alertMixin';
 import { ROLES } from '../../utils/constants/Roles.js';
+import {sortBy} from 'lodash';
 
 export default {
   name: 'SchoolUsersAccessDetailsPage',
@@ -332,7 +333,7 @@ export default {
       if(!school?.canIssueTranscripts) {
         return this.schoolRoles.filter(role => role.edxRoleCode !== 'GRAD_SCH_ADMIN');
       }
-      return this.schoolRoles;
+      return sortBy(this.schoolRoles, ['label']);
     }
   },
   async beforeMount() {

@@ -3,7 +3,7 @@
     fluid
   >
     <div>
-      <v-row v-if="isSummerPeriod">
+      <v-row v-if="isSummerPeriod && hasRequiredPermission('GRAD_DIS_UPLOAD')">
         <v-col cols="12">
           <v-alert
             density="compact"
@@ -18,7 +18,7 @@
           </v-alert>
         </v-col>
       </v-row>
-      <div v-if="isSummerPeriod">
+      <div v-if="isSummerPeriod && hasRequiredPermission('GRAD_DIS_UPLOAD')">
         <v-row class="mt-4">
           <v-col cols="5">
             <v-row>
@@ -62,7 +62,7 @@
                   density="compact"
                   type="info"
                   variant="text"
-                  text="Manual data should only be reported for students completing courses in July and August and not be returning to the BC school system in September."
+                  text="Manual data should only be reported for students completing courses in July and August and not returning to the BC school system in September."
                 />
               </v-col>
             </v-row>
@@ -217,7 +217,7 @@
           </v-col>
         </v-row>
       </div>
-      <div v-else>
+      <div v-else-if="hasRequiredPermission('GRAD_DIS_UPLOAD')">
         <v-row>
           <v-col cols="12">
             <v-alert
@@ -1072,8 +1072,8 @@ export default {
         this.isLoading = false;
       });
     },
-    backButtonClick() {
-      this.$router.push({name: 'graduation', params: {instituteIdentifierID: this.schoolID}});
+    hasRequiredPermission(permission){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
     },
     navigateToErrors(row) {
       const routeData = this.$router.resolve({name: 'grad-gdc-error-report', params: {instituteIdentifierID: this.schoolID, activeIncomingFilesetID: row.incomingFilesetID}});

@@ -39,7 +39,7 @@ router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {s
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsPaginated);
 
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, getErrorFilesetStudentPaginated);
@@ -60,19 +60,19 @@ router.post('/district/:districtID/upload-file-xls', passport.authenticate('jwt'
   checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFileUploadSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, scanFilePayload, uploadFileXLS);
 
 router.get('/fileset/district/:districtID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradSchoolFilesetByPenSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetByPenSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/fileset/district/:districtID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictPenFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradDistrictPenFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
 router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_UPLOAD), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/active-reporting-period', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getActiveReportingPeriod);
 
