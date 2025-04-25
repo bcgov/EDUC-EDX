@@ -3,7 +3,7 @@
     fluid
   >
     <div>
-      <v-row v-if="isSummerPeriod && hasRequiredPermission('GRAD_DIS_UPLOAD')">
+      <v-row v-if="isSummerPeriod && hasRequiredPermission('GRAD_SCH_UPLOAD')">
         <v-col cols="12">
           <v-alert
             density="compact"
@@ -18,7 +18,7 @@
           </v-alert>
         </v-col>
       </v-row>
-      <div v-if="isSummerPeriod && hasRequiredPermission('GRAD_DIS_UPLOAD')">
+      <div v-if="isSummerPeriod && hasRequiredPermission('GRAD_SCH_UPLOAD')">
         <v-row class="mt-4">
           <v-col cols="5">
             <v-row>
@@ -217,7 +217,7 @@
           </v-col>
         </v-row>
       </div>
-      <div v-else-if="hasRequiredPermission('GRAD_DIS_UPLOAD')">
+      <div v-else-if="hasRequiredPermission('GRAD_SCH_UPLOAD')">
         <v-row>
           <v-col cols="12">
             <v-alert
