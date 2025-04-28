@@ -547,7 +547,8 @@
         <v-card-actions class="d-flex justify-end">
           <v-row>
             <v-col class="d-flex justify-end">
-              <span class="mr-2 mt-1">{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
+              <span v-if="!isSummerPeriod"  class="mr-2 mt-1">{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
+              <span v-else class="mr-2 mt-1">{{ inputKeyXLS }} of {{ fileUploadList?.length }} Complete</span>
               <v-btn
                 id="closeOverlayBtn"
                 color="#003366"
@@ -795,9 +796,10 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
-    closeSheet() {
+    async closeSheet() {
       this.previewUploadedStudents = !this.previewUploadedStudents;
       this.summerStudents = [];
+      await this.getFilesetPaginated();
     },
     openFileDialogAfterConfirm(){
       this.showUploadConfirmationDialog = false;
@@ -808,6 +810,7 @@ export default {
       this.fileUploadList = [];
       this.uploadFileValue = null;
       this.inputKey=0;
+      this.inputKeyXLS=0;
       if(this.isSummerPeriod && this.successfulXLSUploadCount === 1) {
         this.previewUploadedStudents = true;
       }

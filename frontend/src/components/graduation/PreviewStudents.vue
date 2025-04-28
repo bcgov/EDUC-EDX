@@ -28,11 +28,12 @@
       <span>Below is a preview of your uploaded data from file: <b>{{fileName}}</b>. Please review the data before processing the data. See the Summary of Uploaded data table for status and error reporting.</span>
 
       <v-data-table
-      :headers="headers"
-      :items="data"
-      v-model:page="pageNumber"
-      v-model:items-per-page="pageSize"
-    />
+        :headers="headers"
+        :items="data"
+        v-model:page="pageNumber"
+        v-model:items-per-page="pageSize"
+        class="mt-3"
+      />
 
     <v-row>
       <v-col
@@ -197,6 +198,10 @@ export default {
        :deep(.v-data-table-footer__items-per-page) {
        display: none;
  }
+
+ :deep(.v-data-table-header__content) {
+  color: #7f7f7fed !important;
+}
 
 
         </style>
