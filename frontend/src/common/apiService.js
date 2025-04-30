@@ -183,7 +183,7 @@ export default {
   getAllCollectionTypeCodes: getCodes(`${ApiRoutes.sdc.COLLECTION_TYPE_CODES_URL}`),
   getGdcValidationFieldCodes: getCodes(`${ApiRoutes.gdc.VALIDATION_FIELD_CODES}`),
   getGradProgramCodes: getCodes(`${ApiRoutes.gdc.GRAD_PROGRAM_CODES}`),
-  getAllAssessmentSpecialCaseCodes:getCodes(`${ApiRoutes.assessment.GET_ASSESSMENT_SPECIALCASE_TYPES}`),
+  getAllAssessmentSpecialCaseCodes:getCodes(`${ApiRoutes.assessments.GET_ASSESSMENT_SPECIALCASE_TYPES}`),
 
 
 };
