@@ -454,7 +454,7 @@
       </v-col>
 
       <v-col
-        v-if="((hasRequiredPermission('EAS_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('EAS_DIS_EDIT') && isLoggedInDistrictUser)) && !disableEASFunctionality"
+        v-if="((hasRequiredPermission('ASSESSMENT_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('ASSESSMENT_DIS_EDIT') && isLoggedInDistrictUser)) && !disableAssessmentFunctionality"
         cols="12"
         md="6"
       >
@@ -557,7 +557,7 @@ export default {
       PAGE_TITLES: PAGE_TITLES,
       disableSdcFunctionality: null,
       disableGradFunctionality: null,
-      disableEASFunctionality: null,
+      disableAssessmentFunctionality: null,
       schoolYear: ''
     };
   },
@@ -583,7 +583,7 @@ export default {
   created() {
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
     this.disableGradFunctionality = this.config.DISABLE_GRAD_FUNCTIONALITY;
-    this.disableEASFunctionality = this.config.DISABLE_EAS_FUNCTIONALITY;
+    this.disableAssessmentFunctionality = this.config.DISABLE_ASSESSMENT_FUNCTIONALITY;
     if (this.hasRequiredPermission('SECURE_EXCHANGE')) {
       this.getExchangesCount();
     }
@@ -610,7 +610,7 @@ export default {
       }
       this.isDistrictActive();
     }
-    if (!this.disableEASFunctionality && (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT))) {
+    if (!this.disableAssessmentFunctionality && (this.hasRequiredPermission(PERMISSION.ASSESSMENT_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.ASSESSMENT_DIS_EDIT))) {
       this.getActiveSessionsForSchoolYear();
     }
   },
@@ -808,7 +808,7 @@ export default {
       } 
     },
     getActiveSessionsForSchoolYear() {
-      ApiService.apiAxios.get(ApiRoutes.eas.GET_ASSESSMENT_SESSIONS+'/active/'+this.userInfo.activeInstituteType).then(response => {
+      ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+this.userInfo.activeInstituteType).then(response => {
         if(response.data?.length >0) {
           this.schoolYear = response.data[0].schoolYear;     
         }

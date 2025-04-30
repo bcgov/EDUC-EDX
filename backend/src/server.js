@@ -25,7 +25,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   const cacheService = require('./components/cache-service');
   const sdcDisabled = config.get('frontendConfig').disableSdcFunctionality;
   const gradDisabled = config.get('frontendConfig').disableGradFunctionality;
-  const easDisabled = config.get('frontendConfig').disableEASFunctionality;
+  const assessmentsDisabled = config.get('frontendConfig').disableAssessmentFunctionality;
   cacheService.loadAllSchoolsToMap().then(() => {
     log.info('Loaded school data to memory');
   }).catch((e) => {
@@ -109,7 +109,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     require('./schedulers/cache-service-scheduler');
   });
 
-  if(!easDisabled) {
+  if(!assessmentsDisabled) {
     cacheService.loadAllAssessmentTypeCodesToMap().then(() => {
       log.info('Loaded AssessmentTypeCodes data to memory');
     }).catch((e) => {

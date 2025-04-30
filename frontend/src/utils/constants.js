@@ -12,7 +12,7 @@ const gdcRoot = baseRoot + '/grad';
 const gradReportsRoot = baseRoot + '/gradReports';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
-const easRoot = baseRoot + '/eas';
+const assessmentsRoot = baseRoot + '/assessments';
 
 let object;
 
@@ -135,13 +135,13 @@ export const ApiRoutes = Object.freeze({
     ROOT_ENDPOINT: studentRequestRoot,
     SEARCH_URL: studentRequestRoot + '/',
   },
-  eas: {
-    BASE_URL: easRoot,
-    GET_ASSESSMENT_SESSIONS: easRoot + '/assessment-sessions',
-    GET_ASSESSMENT_TYPES: easRoot + '/assessment-types',
-    GET_ASSESSMENT_SPECIALCASE_TYPES: easRoot + '/assessment-specialcase-types',
-    ASSESSMENT_STUDENTS: easRoot + '/assessment-registrations/student',
-    GET_ASSESSMENT_STUDENTS_PAGINATED: easRoot + '/assessment-registrations/paginated',
+  assessments: {
+    BASE_URL: assessmentsRoot,
+    GET_ASSESSMENT_SESSIONS: assessmentsRoot + '/assessment-sessions',
+    GET_ASSESSMENT_TYPES: assessmentsRoot + '/assessment-types',
+    GET_ASSESSMENT_SPECIALCASE_TYPES: assessmentsRoot + '/assessment-specialcase-types',
+    ASSESSMENT_STUDENTS: assessmentsRoot + '/assessment-registrations/student',
+    GET_ASSESSMENT_STUDENTS_PAGINATED: assessmentsRoot + '/assessment-registrations/paginated',
   }
 });
 
