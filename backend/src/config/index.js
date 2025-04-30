@@ -160,7 +160,7 @@ nconf.defaults({
     bannerColor: process.env.BANNER_COLOR,
     disableSdcFunctionality: process.env.DISABLE_SDC_FUNCTIONALITY === 'true',
     disableGradFunctionality: process.env.DISABLE_GRAD_FUNCTIONALITY === 'true',
-    disableEASFunctionality: process.env.DISABLE_EAS_FUNCTIONALITY === 'true',
+    disableAssessmentFunctionality: process.env.DISABLE_ASSESSMENT_FUNCTIONALITY === 'true',
     termsOfUseURL: process.env.TERMS_OF_USE,
     helpURL: process.env.HELP,
     webSocketURL: process.env.WEB_SOCKET_URL,
@@ -170,12 +170,12 @@ nconf.defaults({
     host: process.env.CLAMAV_HOST,
     port: process.env.CLAMAV_PORT,
   },
-  eas:{
-    rootURL: process.env.EAS_API_ENDPOINT,
-    assessmentSessionsURL: process.env.EAS_API_ENDPOINT+ '/sessions',
-    assessmentTypeCodeURL: process.env.EAS_API_ENDPOINT+ '/assessment-types',
-    assessmentSpecialCaseTypeCodeURL: process.env.EAS_API_ENDPOINT+ '/assessment-specialcase-types',
-    assessmentStudentsURL: process.env.EAS_API_ENDPOINT+ '/student',
+  assessments:{
+    rootURL: process.env.ASSESSMENT_API_ENDPOINT,
+    assessmentSessionsURL: process.env.ASSESSMENT_API_ENDPOINT+ '/sessions',
+    assessmentTypeCodeURL: process.env.ASSESSMENT_API_ENDPOINT+ '/assessment-types',
+    assessmentSpecialCaseTypeCodeURL: process.env.ASSESSMENT_API_ENDPOINT+ '/assessment-specialcase-types',
+    assessmentStudentsURL: process.env.ASSESSMENT_API_ENDPOINT+ '/student',
   }
 });
 module.exports = nconf;

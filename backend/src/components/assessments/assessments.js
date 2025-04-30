@@ -5,11 +5,11 @@ const config = require('../../config');
 const cacheService = require('../cache-service');
 const { createMoreFiltersSearchCriteria } = require('./studentFilters');
 const moment = require('moment');
-const {DateTimeFormatter, LocalDate, LocalDateTime} = require("@js-joda/core");
+const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
 
 async function getAssessmentSessions(req, res) {
   try {
-    const url = `${config.get('eas:assessmentSessionsURL')}`;
+    const url = `${config.get('assessments:assessmentSessionsURL')}`;
     const token = getAccessToken(req);
     const data = await getData(token, url);
     const today = LocalDate.now();
@@ -30,7 +30,7 @@ async function getAssessmentSessions(req, res) {
 
 async function getActiveAssessmentSessions(req, res) {
   try {
-    const url = `${config.get('eas:assessmentSessionsURL')}/active`;
+    const url = `${config.get('assessments:assessmentSessionsURL')}/active`;
     const token = getAccessToken(req);
     const data = await getData(token, url);
     return res.status(200).json(data);
@@ -42,7 +42,7 @@ async function getActiveAssessmentSessions(req, res) {
 
 async function getAssessmentSessionsBySchoolYear(req, res) {
   try {
-    const url = `${config.get('eas:assessmentSessionsURL')}/school-year/${req.params.schoolYear}`;
+    const url = `${config.get('assessments:assessmentSessionsURL')}/school-year/${req.params.schoolYear}`;
     const token = getAccessToken(req);
     let data = await getData(token, url);
 
@@ -88,7 +88,7 @@ async function getAssessmentStudentsPaginated(req, res) {
     };
 
     const token = getAccessToken(req);
-    let data = await getDataWithParams(token,`${config.get('eas:assessmentStudentsURL')}/paginated`, params);
+    let data = await getDataWithParams(token,`${config.get('assessments:assessmentStudentsURL')}/paginated`, params);
 
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
@@ -102,7 +102,7 @@ async function getAssessmentStudentsPaginated(req, res) {
     if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
     } else {
-      await logApiError(e, 'Error getting eas assessment student paginated list');
+      await logApiError(e, 'Error getting assessment student paginated list');
       return handleExceptionResponse(e, res);
     }
   }
@@ -118,7 +118,7 @@ async function postAssessmentStudent(req, res){
       createDate: null
     };
     const token = getAccessToken(req);
-    const result = await postData(token, payload, `${config.get('eas:assessmentStudentsURL')}`, req.session?.correlationID);
+    const result = await postData(token, payload, `${config.get('assessments:assessmentStudentsURL')}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     await logApiError(e, 'postAssessmentStudent', 'Error occurred while attempting to create the assessment student registration.');
@@ -129,13 +129,13 @@ async function postAssessmentStudent(req, res){
 async function getAssessmentStudentByID(req, res) {
   try {  
     const token = getAccessToken(req);
-    let data = await getData(token, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
+    let data = await getData(token, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
     return res.status(200).json(includeAssessmentStudentProps(data));
   } catch (e) {
     if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
     } else {
-      await logApiError(e, 'Error getting eas assessment student');
+      await logApiError(e, 'Error getting assessment student');
       return handleExceptionResponse(e, res);
     }
   }
@@ -144,7 +144,7 @@ async function getAssessmentStudentByID(req, res) {
 async function deleteAssessmentStudentByID(req, res) {  
   try {
     const token = getAccessToken(req);
-    const result = await deleteData(token, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
+    const result = await deleteData(token, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'deleteAssessmentStudentByID', 'Error occurred while attempting to delete the assessment student registration.');
@@ -187,7 +187,7 @@ async function updateAssessmentStudentByID(req, res) {
     payload.updateUser =  getCreateOrUpdateUserValue(req);
     payload.updateDate = null;
     payload.createDate = null;
-    const result = await putData(token, payload, `${config.get('eas:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
+    const result = await putData(token, payload, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'updateAssessmentStudent', 'Error occurred while attempting to save the changes to the assessment student registration.');
