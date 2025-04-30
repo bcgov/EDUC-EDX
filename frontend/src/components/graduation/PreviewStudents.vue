@@ -42,7 +42,7 @@
       <v-pagination
             v-model="page"
             :length="summerStudents.length"
-            :total-visible="2"
+            :total-visible="3"
             rounded="circle"
             class="mt-n3"
             @update:model-value="navigate"
