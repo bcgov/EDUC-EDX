@@ -595,8 +595,8 @@ function getGradSchools(req, res) {
     let schools = cacheService.getGradSchoolsList();
     return res.status(HttpStatus.OK).json(schools);
   } catch (e) {
-    logApiError(e, 'getGradSchools', 'Error occurred while attempting to GET all gradSchoolMap.');
-    return errorResponse(res);
+    log.error('getGradSchools Error', e.stack);
+    return handleExceptionResponse(e, res);
   }
 }
 
