@@ -7,6 +7,7 @@ export const appStore = defineStore('app', {
   state: () => ({
     pageTitle: null,
     schoolsMap: new Map(),
+    gradSchoolMap: new Map(),
     notClosedSchoolsMap: new Map(),
     activeSchoolsMap: new Map(),
     activeDistrictsMap: new Map(),
@@ -34,6 +35,12 @@ export const appStore = defineStore('app', {
         if(isSchoolActive(element)){
           this.notClosedSchoolsMap.set(element.schoolID, element);
         }
+      });
+    },
+    async setGradSchools(gradDchoolsResponse) {
+      this.gradSchoolMap = new Map();
+      gradDchoolsResponse.forEach(element => {
+        this.gradSchoolMap.set(element.schoolID, element);
       });
     },
     async setActiveSchools(activeSchoolsResponse) {
@@ -75,6 +82,10 @@ export const appStore = defineStore('app', {
         if(this.schoolsMap.size === 0) {
           const response = await ApiService.getSchools();
           await this.setSchools(response.data);
+        }
+        if(this.gradSchoolMap.size === 0) {
+          const response = await ApiService.getGradSchools();
+          await this.setGradSchools(response.data);
         }
         if (this.activeSchoolsMap.size === 0) {
           const response = await ApiService.getActiveSchools();
