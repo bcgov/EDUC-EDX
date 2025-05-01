@@ -320,7 +320,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config']),
+    ...mapState(appStore, ['schoolsMap', 'notClosedSchoolsMap', 'config', 'gradSchoolMap']),
     ...mapState(edxStore, ['schoolRoles','schoolRolesCopy']),
     ...mapState(authStore, ['userInfo']),
     hasAdminUsers() {
@@ -329,8 +329,8 @@ export default {
       })?.length > 0;
     },
     filteredSchoolRoles() {
-      let school = this.schoolsMap.get(this.schoolID);
-      if(!school?.canIssueTranscripts) {
+      let school = this.gradSchoolMap.get(this.schoolID);
+      if(school?.canIssueTranscripts === 'N') {
         return this.schoolRoles.filter(role => role.edxRoleCode !== 'GRAD_SCH_ADMIN');
       }
       return sortBy(this.schoolRoles, ['label']);

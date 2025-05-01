@@ -134,6 +134,7 @@ export default {
   getExchangeStatuses: getCodes(`${ApiRoutes.edx.STATUSES_URL}`),
   getMinistryTeamCodes: getCodes(`${ApiRoutes.edx.MINISTRY_TEAM_URL}`),
   getSchools: getCodes(`${ApiRoutes.SCHOOL_DATA_URL}`),
+  getGradSchools: getCodes(`${ApiRoutes.gdc.BASE_URL}/grad-schools`),
   getEdxExchangeSchoolIds: getCodes(`${ApiRoutes.edx.USERS_URL}/user-schools`),
   getEdxRoles: getCodes(`${ApiRoutes.edx.USERS_URL}/roles`),
   getSecureExchangeDocumentTypes: getCodes(`${ApiRoutes.edx.DOCUMENT_TYPES_URL}`),

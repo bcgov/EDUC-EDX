@@ -66,7 +66,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap']),
+    ...mapState(appStore, ['schoolsMap', 'gradSchoolMap']),
 
     schoolCodeNameFilter: {
       get() {
@@ -101,9 +101,10 @@ export default {
       }
 
       this.schoolsCacheMap.forEach(school => {
+        let gradSchool = this.gradSchoolMap.get(this.schoolID);
         if (school.districtID !== this.districtID) return;
         if (school.schoolCategoryCode !== 'PUBLIC') return;
-        if (!school.canIssueTranscripts) return;
+        if (gradSchool.canIssueTranscripts === 'N') return;
         if (!school.effectiveDate) return;
 
         const openDate = LocalDateTime.parse(school.effectiveDate);

@@ -37,6 +37,8 @@ let assessmentTypeCodesMap = new Map();
 let assessmentSpecialCaseTypeCodesMap = new Map();
 let documentTypeCodes = [];
 let edxUsers = new Map();
+let gradSchoolsMap = new Map();
+let gradSchools = [];
 const cachedData = {};
 
 const cacheService = {
@@ -105,6 +107,34 @@ const cacheService = {
       retries: 50
     });
 
+  },
+  async loadAllGradSchools(url) {
+    log.debug('Loading all grad schools during start up');
+    await retry(async () => {
+      const data = await getApiCredentials();
+      const schools = await getData(data.accessToken,`${config.get(url)}`);
+      gradSchoolsMap.clear();
+      gradSchools=[];
+      if (schools && schools.length > 0) {
+        for (const data of schools) {
+          gradSchoolsMap.set(data.schoolID, data);
+          gradSchools.push(data);
+        }
+      }
+      log.info(`Loaded ${gradSchoolsMap.size} grad schools.`);
+    }, {
+      retries: 50
+    });
+  },
+
+  getGradSchoolByID(schoolID) {
+    return gradSchoolsMap.get(schoolID);
+  },
+  getGradSchoolsMap() {
+    return gradSchoolsMap;
+  },
+  getGradSchoolsList() {
+    return gradSchools;
   },
   async loadAllAssessmentTypeCodesToMap() {
     log.debug('Loading all assessment Type Codes during start up');

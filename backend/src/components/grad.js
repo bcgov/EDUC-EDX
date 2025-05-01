@@ -590,6 +590,16 @@ function createSeverityFilter(fileType, pValue) {
   return warningList;
 }
 
+function getGradSchools(req, res) {
+  try {
+    let schools = cacheService.getGradSchoolsList();
+    return res.status(HttpStatus.OK).json(schools);
+  } catch (e) {
+    log.error('getGradSchools Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
@@ -602,5 +612,6 @@ module.exports = {
   uploadFileXLS,
   getActiveReportingPeriod,
   processSummerStudents,
-  getGradSchoolDetails
+  getGradSchoolDetails,
+  getGradSchools
 };
