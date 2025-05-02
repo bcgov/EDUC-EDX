@@ -45,6 +45,8 @@ messagePubSub.init().then(() => {
   require('./messaging/handlers/edx-event-handler').subscribe();
   require('./messaging/handlers/sdc-event-handler').subscribe();
   require('./messaging/handlers/gdc-event-handler').subscribe();
+  require('./messaging/handlers/grad-school-update-handler').subscribe();
+  require('./messaging/handlers/grad-school-jetstream-subscriber').subscribe();
 }).catch((e) => log.error(e));
 //initialize app
 const app = express();
