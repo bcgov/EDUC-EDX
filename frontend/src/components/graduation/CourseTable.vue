@@ -48,6 +48,16 @@
             <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">-</span>
             <span v-else> {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}</span>
           </span>
+          <span v-else-if="column.key === 'interimPercentage'">
+            <span v-if="props.item['interimPercentage'] && props.item['interimLetterGrade']">{{ props.item['interimPercentage'] }} ({{ props.item['interimLetterGrade'] }})</span>
+            <span v-else-if="props.item['interimPercentage']">{{ props.item['interimPercentage'] }}</span>
+            <span v-else>-</span>
+          </span>
+          <span v-else-if="column.key === 'finalPercentage'">
+            <span v-if="props.item['finalPercentage'] && props.item['finalLetterGrade']">{{ props.item['finalPercentage'] }} ({{ props.item['finalLetterGrade'] }})</span>
+            <span v-else-if="props.item['finalPercentage']">{{ props.item['finalPercentage'] }}</span>
+            <span v-else>-</span>
+          </span>
           <span v-else-if="column.key === 'relatedCourse'">
             <span v-if="props.item['relatedCourse'] === null">-</span>
             <span v-else-if="props.item['relatedLevel'] === null">-</span>
