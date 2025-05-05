@@ -236,7 +236,7 @@
               type="info"
               variant="tonal"
             >
-              Uploads are unavailable, as the Summer Reporting Period is complete. The School Year Reporting Period will open in October.
+              Uploads are unavailable, as the Summer Reporting Period is complete. The next School Reporting Period will begin in October.
             </v-alert>
           </v-col>
         </v-row>
