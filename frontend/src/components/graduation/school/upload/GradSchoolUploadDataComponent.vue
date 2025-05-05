@@ -218,7 +218,29 @@
         </v-row>
       </div>
       <div v-else-if="hasRequiredPermission('GRAD_SCH_UPLOAD')">
-        <v-row>
+        <v-row v-if="isBetweenSchoolSummerPeriod">
+          <v-col cols="12">
+            <v-alert
+              density="compact"
+              type="info"
+              variant="tonal"
+            >
+              Uploads are unavailable, as the School Year Reporting Period is complete. The Summer Reporting Period will open in August.
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="isBetweenSummerSchoolPeriod">
+          <v-col cols="12">
+            <v-alert
+              density="compact"
+              type="info"
+              variant="tonal"
+            >
+              Uploads are unavailable, as the Summer Reporting Period is complete. The next School Reporting Period will begin in October.
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row v-else>
           <v-col cols="12">
             <v-alert
               density="compact"
@@ -238,6 +260,7 @@
               color="#003366"
               text="Upload Graduation Data Files"
               :loading="isLoadingFiles"
+              :disabled="isBetweenSchoolSummerPeriod || isBetweenSummerSchoolPeriod"
               @click="handleFileImport"
             />
           </v-col>
@@ -547,8 +570,14 @@
         <v-card-actions class="d-flex justify-end">
           <v-row>
             <v-col class="d-flex justify-end">
-              <span v-if="!isSummerPeriod"  class="mr-2 mt-1">{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
-              <span v-else class="mr-2 mt-1">{{ inputKeyXLS }} of {{ fileUploadList?.length }} Complete</span>
+              <span
+                v-if="!isSummerPeriod"
+                class="mr-2 mt-1"
+              >{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
+              <span
+                v-else
+                class="mr-2 mt-1"
+              >{{ inputKeyXLS }} of {{ fileUploadList?.length }} Complete</span>
               <v-btn
                 id="closeOverlayBtn"
                 color="#003366"
@@ -711,6 +740,8 @@ export default {
       fileUploadList: [],
       progressCounts: [],
       isSummerPeriod: false,
+      isBetweenSchoolSummerPeriod: false,
+      isBetweenSummerSchoolPeriod: false,
       filesetList: [],
       totalElements: 0,
       pageNumber: 1,
@@ -820,7 +851,7 @@ export default {
       this.currentYear = reportingPeriodStart.year();
       this.nextYear = reportingPeriodStart.plusYears(1).year();
       this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
-      this.setIsSummerPeriod();
+      this.setPeriodFlags();
     },
     getGradSchoolDetails() {
       ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/grad-school')
@@ -828,13 +859,17 @@ export default {
           this.submissionModeCode =  response.data.submissionModeCode.charAt(0).toUpperCase() + response.data.submissionModeCode.toLowerCase().slice(1);
         });
     },
-    setIsSummerPeriod(){
-      let summerPeriodStart = LocalDateTime.parse(this.collectionObject.summerStart);
-      let summerPeriodEnd = LocalDateTime.parse(this.collectionObject.summerEnd);
+    setPeriodFlags(){
+      const summerPeriodStart = LocalDateTime.parse(this.collectionObject.summerStart);
+      const summerPeriodEnd = LocalDateTime.parse(this.collectionObject.summerEnd);
+      const schoolPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
+      const schoolPeriodEnd = LocalDateTime.parse(this.collectionObject.schYrEnd);
 
-      let today = LocalDateTime.now();
+      const today = LocalDateTime.now();
 
       this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
+      this.isBetweenSummerSchoolPeriod = today.isAfter(summerPeriodEnd) && today.isBefore(schoolPeriodStart);
+      this.isBetweenSchoolSummerPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
     },
     toggleMoreInfoTooltip(){
       this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
