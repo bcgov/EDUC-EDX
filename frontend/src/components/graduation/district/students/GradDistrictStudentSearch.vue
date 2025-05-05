@@ -12,7 +12,7 @@
     >
       <v-row>
         <v-col cols="3">
-          <SchoolCodeNameFilter
+          <GradSchoolCodeNameFilter
             v-model="schoolNameNumber"
             :district-i-d="districtID"
             :collection-object="collectionObject"
@@ -282,7 +282,7 @@ import {isEmpty, omitBy} from 'lodash';
 import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
 import Spinner from '../../../common/Spinner.vue';
 import {setFailureAlert} from '../../../composable/alertComposable';
-import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import {formatDateTime} from '../../../../utils/format';
 
 export default {
@@ -292,7 +292,7 @@ export default {
     AssessmentTable,
     StudentSubmission,
     Spinner,
-    SchoolCodeNameFilter
+    GradSchoolCodeNameFilter
   },
   mixins: [alertMixin],
   props: {

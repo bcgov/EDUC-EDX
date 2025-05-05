@@ -135,14 +135,14 @@
         cols="4"
         class="d-flex justify-start"
       >
-        <SchoolCodeNameFilter
-          v-model="schoolCodeNameFilter"
+        <GradSchoolCodeNameFilter
+          v-model="gradSchoolCodeNameFilter"
           :district-i-d="districtID"
           :collection-object="collectionObject"
         />
       </v-col>
     </v-row>
-    <div :class="{ 'disabled-section': !schoolCodeNameFilter }">
+    <div :class="{ 'disabled-section': !gradSchoolCodeNameFilter }">
       <v-row class="mt-2">
         <v-col>
           <h3>Transcript Verification Report (TVR) Packages</h3>
@@ -381,12 +381,12 @@ import {
   searchStudentByPen
 } from '../../../../utils/gdc/gradReports';
 import { LocalDate } from '@js-joda/core';
-import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import DownloadLink from '../../../common/DownloadLink.vue';
 
 export default {
   name: 'GradDistrictReportsAndTranscripts',
-  components: { SchoolCodeNameFilter, PrimaryButton, DownloadLink },
+  components: { GradSchoolCodeNameFilter, PrimaryButton, DownloadLink },
   mixins: [alertMixin],
   props: {
     districtID: {
@@ -405,7 +405,7 @@ export default {
       isLoading: false,
       currentYear: null,
       lastYear: null,
-      schoolCodeNameFilter: null,
+      gradSchoolCodeNameFilter: null,
       yearBeforeLast: null,
       showPENSearchResultArea: false,
       studentForSearch: {},
@@ -459,19 +459,19 @@ export default {
     },
     async downloadSummaryReport(reportType) {
       this.isLoading = true;
-      const schoolID = this.schoolCodeNameFilter;
+      const schoolID = this.gradSchoolCodeNameFilter;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
       this.isLoading = false;
     },
     async downloadProjectedTVRReport(reportType) {
       this.isLoading = true;
-      const schoolID = this.schoolCodeNameFilter;
+      const schoolID = this.gradSchoolCodeNameFilter;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
       this.isLoading = false;
     },
     async downloadGradProjections(reportType){
       this.isLoading = true;
-      const schoolID = this.schoolCodeNameFilter;
+      const schoolID = this.gradSchoolCodeNameFilter;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
       this.isLoading = false;
     },

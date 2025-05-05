@@ -24,7 +24,7 @@
         cols="4"
         class="d-flex justify-start"
       >
-        <SchoolCodeNameFilter
+        <GradSchoolCodeNameFilter
           v-model="schoolCodeNameFilter"
           :district-i-d="districtID"
           :collection-object="collectionObject"
@@ -159,12 +159,12 @@ import {
   downloadDocument
 } from '../../../../utils/gdc/gradReports';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
-import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 
 export default {
   name: 'GradDistrictCurrentStudents',
   components: {
-    SchoolCodeNameFilter,
+    GradSchoolCodeNameFilter,
     CommonCustomTable,
     GradErrorFilters
   },

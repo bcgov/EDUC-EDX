@@ -359,8 +359,8 @@
         class="mt-n2"
         cols="4"
       >
-        <SchoolCodeNameFilter
-          v-model="schoolCodeNameFilter"
+        <GradSchoolCodeNameFilter
+          v-model="gradSchoolCodeNameFilter"
           :district-i-d="districtID"
           :collection-object="collectionObject"
           @search="searchButtonClick"
@@ -678,14 +678,14 @@ import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
 import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
-import SchoolCodeNameFilter from '../../../common/SchoolCodeNameFilter.vue';
+import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import {LocalDateTime} from '@js-joda/core';
 import PreviewStudents from '../../PreviewStudents.vue';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
-    SchoolCodeNameFilter,
+    GradSchoolCodeNameFilter,
     ConfirmationDialog,
     PreviewStudents
   },
@@ -758,7 +758,7 @@ export default {
       activeSchoolsCacheMap: null,
       disableScreen: false,
       wsNotificationText: '',
-      schoolCodeNameFilter: null,
+      gradSchoolCodeNameFilter: null,
       headerSearchParams: {
         schoolNumber: '',
         status: '',
@@ -1110,8 +1110,8 @@ export default {
       window.open(routeData.href, '_blank');
     },
     searchButtonClick() {
-      if(this.schoolCodeNameFilter !== null && this.schoolCodeNameFilter!== '') {
-        this.headerSearchParams.schoolID = this.schoolCodeNameFilter;
+      if(this.gradSchoolCodeNameFilter !== null && this.gradSchoolCodeNameFilter!== '') {
+        this.headerSearchParams.schoolID = this.gradSchoolCodeNameFilter;
       }else{
         this.headerSearchParams.schoolID = '';
       }

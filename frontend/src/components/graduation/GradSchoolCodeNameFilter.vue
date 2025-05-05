@@ -41,7 +41,7 @@ import {appStore} from '../../store/modules/app';
 import { LocalDateTime } from '@js-joda/core';
 
 export default {
-  name: 'SchoolCodeNameFilter',
+  name: 'GradSchoolCodeNameFilter',
   props: {
     modelValue: {
       type: [String, Number, Object],
@@ -62,7 +62,8 @@ export default {
   data() {
     return {
       schoolsCacheMap: [],
-      schoolSearchNames: []
+      schoolSearchNames: [],
+      allowedSchoolCategories: ['PUBLIC', 'YUKON']
     };
   },
   computed: {
@@ -103,8 +104,8 @@ export default {
       this.schoolsCacheMap.forEach(school => {
         let gradSchool = this.gradSchoolMap.get(school.schoolID);
         if (school.districtID !== this.districtID) return;
-        if (school.schoolCategoryCode !== 'PUBLIC') return;
-        if (gradSchool?.canIssueTranscripts === 'N') return;
+        if (!this.allowedSchoolCategories.includes(school.schoolCategoryCode)) return;
+        if (gradSchool?.canIssueTranscripts !== 'Y') return;
         if (!school.effectiveDate) return;
 
         const openDate = LocalDateTime.parse(school.effectiveDate);
