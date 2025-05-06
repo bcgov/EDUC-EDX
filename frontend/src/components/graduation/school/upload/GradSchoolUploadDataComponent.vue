@@ -14,7 +14,7 @@
               target="_blank"
               href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/assessment/graduation/trax-updates"
             >Summer Reporting Period</a>. Review the options below and select the most appropriate method for your school.<br><br>
-            Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD reports (transcript, TVRs, etc.) are available after overnight processing.
+            Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD System reports (transcript, TVRs, etc.) are available after overnight processing.
           </v-alert>
         </v-col>
       </v-row>
@@ -247,7 +247,7 @@
               type="info"
               variant="tonal"
             >
-              Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD reports (transcript, TVRs, etc.) are available after overnight processing.
+              Data Submission Error Reports are available after an upload completes. Please review and reconcile the Error Report after each submission. Student graduation status and GRAD System reports (transcript, TVRs, etc.) are available after overnight processing.
             </v-alert>
           </v-col>
         </v-row>

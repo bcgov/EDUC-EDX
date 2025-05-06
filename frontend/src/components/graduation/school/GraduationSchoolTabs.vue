@@ -16,18 +16,18 @@
             Data Submission
           </v-tab>
           <v-tab
-            id="gradReports"
-            value="gradReports"
-            prepend-icon="mdi-finance"
-          >
-            GRAD System Reports
-          </v-tab>
-          <v-tab
             id="studentSearch"
             value="studentSearch"
             prepend-icon="mdi-account-search-outline"
           >
             Find Student in Data Submissions
+          </v-tab>
+          <v-tab
+            id="gradReports"
+            value="gradReports"
+            prepend-icon="mdi-finance"
+          >
+            GRAD System Reports
           </v-tab>
           <v-tab
             id="currentStudents"
