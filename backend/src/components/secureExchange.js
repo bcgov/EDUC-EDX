@@ -962,16 +962,20 @@ async function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad) {
+async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, isGradAdmin) {
   log.info('Set InstituteTypeIdentifierAndRedirectToSchool And Redirect called');
 
   if(sdcSchoolCollectionID && schoolID){
     log.info('Staff user logged in, redirecting to selected school');
     setSDCStaffSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/open-school-collection-summary/' + schoolID);
-  }else if(directToGrad && schoolID){
-    log.info('Staff user logged in, redirecting to selected school');
-    setGradStaffSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+  }else if(directToGrad && schoolID && isGradAdmin){
+    log.info('Staff admin user logged in, redirecting to selected school');
+    setGradStaffAdminSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+    res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
+  }else if(directToGrad && schoolID && !isGradAdmin){
+    log.info('Staff viewer user logged in, redirecting to selected school');
+    setGradStaffViewerSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
   }else {
     log.info('User has no associated schools or districts redirecting to Unauthorized Page');
@@ -1013,9 +1017,9 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
           res.redirect(config.get('server:frontend') + '/unauthorizedNoEDXUser');
           return;
         }
-        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad);
+        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false);
       });
-  }else if(roles.includes('GRAD_DATA_COLLECTION_ADMIN') && directToGrad){
+  }else if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER'))) && directToGrad){
     Promise.all([
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID)
     ])
@@ -1026,7 +1030,11 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
           }
         });
 
-        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad);
+        if(roles.includes('GRAD_DATA_COLLECTION_ADMIN')){
+          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, true);
+        }else{
+          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false);
+        }
       });
   }else{
     log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
@@ -1119,13 +1127,25 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
   }
 }
 
-function setGradStaffSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+function setGradStaffAdminSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
   let permissionsArray = [];
 
   if(req.session.passport.user._json.idir_guid){
-    permissionsArray = cacheService.getGradStaffSchoolPermissions();
+    permissionsArray = cacheService.getGradStaffSchoolAdminPermissions();
+  }
+
+  req.session.activeInstitutePermissions = permissionsArray;
+}
+
+function setGradStaffViewerSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+  req.session.activeInstituteIdentifier = activeInstituteIdentifier;
+  req.session.activeInstituteType = activeInstituteType;
+  let permissionsArray = [];
+
+  if(req.session.passport.user._json.idir_guid){
+    permissionsArray = cacheService.getGradStaffSchoolViewerPermissions();
   }
 
   req.session.activeInstitutePermissions = permissionsArray;
@@ -1270,7 +1290,8 @@ module.exports = {
   generateOrRegeneratePrimaryEdxActivationCode,
   getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
   getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
-  setGradSessionInstituteIdentifiers: setGradStaffSessionInstituteIdentifiers,
+  setGradStaffAdminSessionInstituteIdentifiers,
+  setGradStaffViewerSessionInstituteIdentifiers,
   setSDCStaffSessionInstituteIdentifiers,
   getRolesByInstituteType
 };
