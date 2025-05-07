@@ -114,6 +114,10 @@ router.get('/silent_sdc_idir_login', async function (req, res, next) {
     await client.set(idir_guid + '::staffLinkInstituteID', req.query.schoolID, 'EX', 1800);
     await client.set(idir_guid + '::staffLinkGradDashboard', 'true', 'EX', 1800);
     await client.set(idir_guid + '::staffLinkInstituteType', 'SCHOOL', 'EX', 1800);
+  }else if(req.query.districtID && req.query.gradDashboard){
+    await client.set(idir_guid + '::staffLinkInstituteID', req.query.districtID, 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkGradDashboard', 'true', 'EX', 1800);
+    await client.set(idir_guid + '::staffLinkInstituteType', 'DISTRICT', 'EX', 1800);
   }else{
     res.status(401).json(UnauthorizedRsp);
   }
@@ -149,8 +153,10 @@ router.get(
       getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
     }else if(instituteType === 'SCHOOL' && staffLinkDashboard){
       getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), null, true);
-    }else if(instituteID && instituteCollectionID){
-      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString());
+    }else if(instituteType === 'DISTRICT' && instituteCollectionID){
+      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
+    }else if(instituteType === 'DISTRICT' && staffLinkDashboard){
+      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), null, true);
     }else{
       await res.redirect(config.get('server:frontend') + '/unauthorized');
     }
