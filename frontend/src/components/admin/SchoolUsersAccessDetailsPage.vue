@@ -331,7 +331,7 @@ export default {
     filteredSchoolRoles() {
       let school = this.gradSchoolMap.get(this.schoolID);
       if(school?.canIssueTranscripts === 'N') {
-        return this.schoolRoles.filter(role => role.edxRoleCode !== 'GRAD_SCH_ADMIN');
+        return this.schoolRoles.filter(role => role.edxRoleCode !== 'GRAD_SCH_ADMIN' && role.edxRoleCode !== 'GRAD_SCH_RO');
       }
       return sortBy(this.schoolRoles, ['label']);
     }

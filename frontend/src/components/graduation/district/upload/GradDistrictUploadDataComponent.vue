@@ -787,7 +787,7 @@ export default {
         {title :'Birthdate', key: 'dob'},
         {title :'Course', key: 'course'},
         {title :'Session Date', key: 'sessionDate'},
-        {title :'Final School Percent', key: 'finalPercent'},
+        {title :'Final %', key: 'finalPercent'},
         {title :'Final Letter Grade', key: 'finalLetterGrade'},
         {title :'Number of Credits', key: 'noOfCredits'}
       ],
