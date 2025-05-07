@@ -13,6 +13,8 @@ let sdcStaffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_
 let sdcStaffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
 let gradStaffAdminSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW'];
 let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
+let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW'];
+let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
 let schoolMap = new Map();
 let schools = [];
 let districts = [];
@@ -180,6 +182,12 @@ const cacheService = {
   },
   getGradStaffSchoolViewerPermissions() {
     return gradStaffViewSchoolPermissions;
+  },
+  getGradStaffDistrictAdminPermissions() {
+    return gradStaffAdminDistrictPermissions;
+  },
+  getGradStaffDistrictViewerPermissions() {
+    return gradStaffViewDistrictPermissions;
   },
   getSDCStaffSchoolPermissions() {
     return sdcStaffSchoolPermissions;
