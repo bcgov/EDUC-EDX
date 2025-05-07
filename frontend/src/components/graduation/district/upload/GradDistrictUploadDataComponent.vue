@@ -542,8 +542,17 @@
                         icon="mdi-file-document"
                       />
                     </v-col>
-                    <v-col cols="11">
+                    <v-col cols="9">
                       <span><b>{{ file.name }}</b> - {{ file.error }}</span>
+                    </v-col>
+                    <v-col cols="2" class="d-flex justify-end">
+                      <ClipboardButton
+                        id="copyErrorButton"
+                        :copy-text="file.error"
+                        icon="mdi-content-copy"
+                        foreground-style="color: #38598A"
+                        background-color="white"
+                      />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -681,10 +690,12 @@ import {appStore} from '../../../../store/modules/app';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import {LocalDateTime} from '@js-joda/core';
 import PreviewStudents from '../../PreviewStudents.vue';
+import ClipboardButton from '../../../util/ClipboardButton.vue';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
   components: {
+    ClipboardButton,
     GradSchoolCodeNameFilter,
     ConfirmationDialog,
     PreviewStudents
@@ -773,10 +784,10 @@ export default {
         {title :'Legal Surname', key: 'legalSurname'},
         {title :'Legal Middle Name', key: 'legalMiddleName'},
         {title :'Legal Given First Name', key: 'legalFirstName'},
-        {title :'DOB', key: 'dob'},
+        {title :'Birthdate', key: 'dob'},
         {title :'Course', key: 'course'},
         {title :'Session Date', key: 'sessionDate'},
-        {title :'Final Sch %', key: 'finalPercent'},
+        {title :'Final School Percent', key: 'finalPercent'},
         {title :'Final Letter Grade', key: 'finalLetterGrade'},
         {title :'Number of Credits', key: 'noOfCredits'}
       ],

@@ -1,5 +1,5 @@
 <template>
-<v-card
+  <v-card
     id="previewCard"
   >
     <v-card-title
@@ -25,21 +25,21 @@
     </v-card-title>
     <v-divider />
     <v-card-text>
-      <span>Below is a preview of your uploaded data from file: <b>{{fileName}}</b>. Please review the data before processing the data. See the Summary of Uploaded data table for status and error reporting.</span>
+      <span>Below is a preview of your uploaded data from file: <b>{{ fileName }}</b>. Please review the data before processing the data. See the Summary of Uploaded data table for status and error reporting.</span>
 
       <v-data-table
-        :headers="headers"
-        :items="data"
         v-model:page="pageNumber"
         v-model:items-per-page="pageSize"
+        :headers="headers"
+        :items="data"
         class="mt-3"
       />
 
-    <v-row>
-      <v-col
-        class="d-flex justify-end mr-3 mt-3"
-      >
-      <v-pagination
+      <v-row>
+        <v-col
+          class="d-flex justify-end mr-3 mt-3"
+        >
+          <v-pagination
             v-model="page"
             :length="summerStudents.length"
             :total-visible="3"
@@ -47,7 +47,7 @@
             class="mt-n3"
             @update:model-value="navigate"
           />
-        <v-btn
+          <v-btn
             id="waitForReporting"
             color="#003366"
             text="Wait until the next Reporting Cycle"
@@ -63,9 +63,8 @@
             variant="outlined"
             @click="processStudents"
           />
-      </v-col>
-    </v-row>
-
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -164,7 +163,7 @@ export default {
       let body = {
         fileName: this.fileName,
         summerStudents: this.data
-      }
+      };
       let url = this.schoolID ? ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID: ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID;
       await ApiService.apiAxios.post(url + '/process', body)
         .then(() => {
@@ -176,10 +175,10 @@ export default {
           } else {
             this.$emit('close');
           }
-          }).catch(error => {
-            console.error(error);
-            this.setFailureAlert('An error occurred while trying to process students. Please try again later.');
-      });
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while trying to process students. Please try again later.');
+        });
       
     }
   }

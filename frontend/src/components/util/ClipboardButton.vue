@@ -7,7 +7,7 @@
     <template #activator="{ props }">
       <v-btn
         :id="id"
-        color="#38598A"
+        :color="backgroundColor"
         :disabled="disabled"
         :dark="!disabled"
         size="30"
@@ -19,7 +19,7 @@
       >
         <v-icon
           v-if="icon"
-          style="color: white"
+          :style="foregroundStyle"
           :class="iconStyle"
           size="18"
         >
@@ -46,6 +46,14 @@ export default {
     icon: {
       type: String,
       default: null
+    },
+    backgroundColor:{
+      type: String,
+      default: '#38598A'
+    },
+    foregroundStyle:{
+      type: String,
+      default: 'color: white'
     },
     iconStyle: {
       type: String,
