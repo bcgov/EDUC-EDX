@@ -57,7 +57,6 @@
         >
           <template #resolution="{ student }">
             <v-menu
-              transition="fab-transition"
               location="end"
               offset="10"
             >
