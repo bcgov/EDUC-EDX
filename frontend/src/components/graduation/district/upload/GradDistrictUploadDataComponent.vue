@@ -330,29 +330,6 @@
           Summary of Uploaded Data
         </p>
       </v-col>
-      <v-col class="d-flex justify-end mt-2">
-        <div>
-          <v-icon
-            icon="mdi-alert-circle-outline"
-            color="error"
-          />
-          <span class="ml-1">Not Loaded</span>
-        </div>
-        <div class="ml-4">
-          <v-icon
-            icon="mdi-clock-alert-outline"
-            color="warning"
-          />
-          <span class="ml-1">Awaiting Other Files</span>
-        </div>
-        <div class="ml-4">
-          <v-icon
-            icon="mdi-check-circle-outline"
-            color="success"
-          />
-          <span class="ml-1">Processed</span>
-        </div>
-      </v-col>
     </v-row>
     <v-row>
       <v-col
@@ -390,50 +367,46 @@
               >View Report</a>
             </span>
             <span v-else-if="column.key ==='alert'">
-              <v-tooltip text="Please upload the missing file(s) to allow processing to begin.">
-                <template #activator="{ props: tooltipProps }">
-                  <v-icon
-                    v-if="!isFilesetInProgress(props.item)"
-                    v-bind="tooltipProps"
-                    icon="mdi-alert-circle-outline"
-                    color="error"
-                  />
-                </template>
-              </v-tooltip>
-            </span>
-            <span v-else-if="column.key === 'demFileUploadDate' || column.key === 'xamFileUploadDate' || column.key === 'crsFileUploadDate'">
-              {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
-            </span>
-            <div v-else-if="column.key === 'demFileName' || column.key === 'xamFileName' || column.key === 'crsFileName'">
-              <div v-if="(column.key === 'demFileName' && props.item.demFileName) ||(column.key === 'xamFileName' && props.item.xamFileName) || (column.key === 'crsFileName' && props.item.crsFileName)">
-                <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
-                  <v-icon
+              <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
+                <v-tooltip text="Files processed. Error report available.">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-icon
                     icon="mdi-check-circle-outline"
+                    v-bind="tooltipProps"
                     color="success"
                   />
-                  {{ props.item[column.key] }}
-                </span>
-                <span v-else-if="isFilesetInProgress(props.item)">
-                  <v-progress-circular
-                    :size="20"
+                  </template>
+                </v-tooltip>
+              </span>
+              <span v-else-if="isFilesetInProgress(props.item)">
+                <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-progress-circular
                     :width="4"
                     color="primary"
+                    v-bind="tooltipProps"
                     indeterminate
-                  />
-                  {{ props.item[column.key] }}
-                </span>
-                <span v-else>
-                  <v-icon
-                    icon="mdi-clock-alert-outline"
-                    color="warning"
-                  />
-                  {{ props.item[column.key] }}
-                </span>
-              </div>
-              <span v-else>
-                -
+                  >
+                    <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
+                  </v-progress-circular>
+                  </template>
+                </v-tooltip>
               </span>
-            </div>
+                <span v-else>
+                  <v-tooltip text="Missing files. Upload missing files to continue processing.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-clock-alert-outline"
+                        v-bind="tooltipProps"
+                        color="warning"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+            </span>
+            <span v-else-if="column.key === 'updateDate'">
+              {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
+            </span>
             <span v-else-if="props.item[column.key]">
               {{ props.item[column.key] }}
             </span>
@@ -564,13 +537,14 @@
           <v-row>
             <v-col class="d-flex justify-end">
               <span
-                v-if="!isSummerPeriod"
+                v-if="isXlsUpload"
                 class="mr-2 mt-1"
-              >{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
+              >{{ inputKeyXLS }} of {{ fileUploadList?.length }} Complete</span>
               <span
                 v-else
                 class="mr-2 mt-1"
-              >{{ inputKeyXLS }} of {{ fileUploadList?.length }} Complete</span>
+              >{{ inputKey }} of {{ fileUploadList?.length }} Complete</span>
+
               <v-btn
                 id="closeOverlayBtn"
                 color="#003366"
@@ -758,11 +732,9 @@ export default {
         {key: 'alert'},
         {title: 'School Name', key: 'schoolName', sortable: false},
         {title: 'DEM File', key: 'demFileName', sortable: false},
-        {title: 'Upload Date', key: 'demFileUploadDate', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
-        {title: 'Upload Date', key: 'xamFileUploadDate', sortable: false},
         {title: 'CRS File', key: 'crsFileName', sortable: false},
-        {title: 'Upload Date', key: 'crsFileUploadDate', sortable: false},
+        {title: 'Upload Date', key: 'updateDate', sortable: false},
         {title: 'Upload User', key: 'updateUser', sortable: false},
         {title: 'Errors/Warnings', key: 'errorLink', sortable: false},
       ],
@@ -791,7 +763,8 @@ export default {
         {title :'Final Letter Grade', key: 'finalLetterGrade'},
         {title :'Number of Credits', key: 'noOfCredits'}
       ],
-      summerStudents:[]
+      summerStudents:[],
+      isXlsUpload: false
     };
   },
   computed: {
@@ -807,6 +780,7 @@ export default {
     },
     uploadFileValueXLS() {
       if(this.uploadFileValueXLS){
+        this.isXlsUpload = !this.isXlsUpload;
         this.importFileXLS();
       }
     },
@@ -851,6 +825,7 @@ export default {
       this.uploadFileValue = null;
       this.inputKey=0;
       this.inputKeyXLS=0;
+      this.isXlsUpload = false;
       if(this.isSummerPeriod && this.successfulUploadCountXLS >= 1) {
         this.previewUploadedStudents = true;
       }
