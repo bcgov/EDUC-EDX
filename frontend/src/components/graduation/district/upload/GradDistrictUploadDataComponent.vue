@@ -893,7 +893,7 @@ export default {
       const today = LocalDateTime.now();
 
       this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
-      this.isBetweenSummerSchoolPeriod = today.isAfter(summerPeriodEnd) && today.isBefore(schoolPeriodStart);
+      this.isBetweenSummerSchoolPeriod = (today.isBefore(schoolPeriodStart) && today.isBefore(summerPeriodStart)) || (today.isAfter(summerPeriodEnd) && today.isAfter(schoolPeriodEnd));
       this.isBetweenSchoolSummerPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
     },
     async importFileXLS() {
