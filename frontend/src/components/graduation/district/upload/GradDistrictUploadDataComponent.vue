@@ -567,7 +567,7 @@
     </ConfirmationDialog>
     <ConfirmationDialog ref="confirmIncorrectDatesFile">
       <template #message>
-        <p>Check that you are submitting the correct file. All reported course session dates are from a previous reporting period.</p>
+        <p>Are you submitting the correct files? All reported course session dates are from one month ago or earlier.</p>
         &nbsp;
         <p>Would you like to continue with this submission?</p>
       </template>
