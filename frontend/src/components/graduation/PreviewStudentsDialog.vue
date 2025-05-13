@@ -16,13 +16,12 @@
 </template>
 
 <script>
-import PrimaryButton from '../util/PrimaryButton.vue';
 import PreviewStudents from './PreviewStudents.vue';
 export default {
   name: 'PreviewStudentsDialog',
   components: {
-    PrimaryButton,
-    PreviewStudents},
+    PreviewStudents
+  },
   props: {
     contentClass: {
       type: String,
