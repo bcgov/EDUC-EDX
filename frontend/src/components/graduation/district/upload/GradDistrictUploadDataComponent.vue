@@ -637,16 +637,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-dialog
-    v-model="previewUploadedStudents"
-  >
-    <PreviewStudents
-      :headers="summerHeaders"
-      :summer-students="summerStudents"
-      :district-i-d="districtID"
-      @close="closeSheet"
-    />
-  </v-dialog>
+  <PreviewStudentsDialog ref="previewDialog"/>
 </template>
   
 <script>
@@ -663,8 +654,8 @@ import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import {LocalDateTime} from '@js-joda/core';
-import PreviewStudents from '../../PreviewStudents.vue';
 import ClipboardButton from '../../../util/ClipboardButton.vue';
+import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue'
 
 export default {
   name: 'GradDistrictUploadDataComponent',
@@ -672,7 +663,7 @@ export default {
     ClipboardButton,
     GradSchoolCodeNameFilter,
     ConfirmationDialog,
-    PreviewStudents
+    PreviewStudentsDialog
   },
   mixins: [alertMixin],
   props: {
@@ -810,11 +801,6 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
-    async closeSheet() {
-      this.previewUploadedStudents = !this.previewUploadedStudents;
-      this.summerStudents = [];
-      await this.getFilesetPaginated();
-    },
     openFileDialogAfterConfirm(){
       this.showUploadConfirmationDialog = false;
       this.handleFileImport();
@@ -826,9 +812,6 @@ export default {
       this.inputKey=0;
       this.inputKeyXLS=0;
       this.isXlsUpload = false;
-      if(this.isSummerPeriod && this.successfulUploadCountXLS >= 1) {
-        this.previewUploadedStudents = true;
-      }
     },
     validateFileExtension(fileJSON) {
       const extension = `.${fileJSON.name.split('.').slice(-1)}`;
@@ -965,8 +948,15 @@ export default {
             };
             this.summerStudents.push(detail);
             this.successfulUploadCountXLS += 1;
-            fileJSON.status = this.fileUploadSuccess;
           });
+        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, this.districtID, {color: '#fff', closeIcon: false, subtitle: false, dark: false})
+        if (!previewDialog) {
+          this.summerStudents = [];
+          fileJSON.error = 'Upload cancelled by the user';
+          fileJSON.status = 'Abandoned';
+        } else {
+          fileJSON.status = this.fileUploadSuccess;
+        }
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;
