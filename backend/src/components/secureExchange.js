@@ -1073,7 +1073,15 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
         }
         await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, false);
       });
-  } else if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER'))) && directToGrad){
+  } else{
+    log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
+    res.redirect(config.get('server:frontend') + '/unauthorized');
+  }
+}
+
+ function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
+  let roles = req.session.passport.user._json.realm_access.roles;
+  if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER'))) && directToGrad){
     Promise.all([
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
     ])
@@ -1089,10 +1097,10 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
         }
       });
   } else{
-    log.info('IDIR user logged in without EDX_ADMIN role; redirecting to Unauthorized Page');
+    log.info('IDIR user logged in without GRAD_DATA_COLLECTION_ADMIN or GRAD_DATA_COLLECTION_VIEWER role; redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
   }
-}
+ }
 
 function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
   if(!isValidTenant || isValidTenant !== 'true'){
@@ -1321,6 +1329,7 @@ module.exports = {
   generateOrRegeneratePrimaryEdxActivationCode,
   getAndSetupStaffUserAndRedirectWithSchoolCollectionLink,
   getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
+  getAndSetupStaffUserAndRedirectWithDistrictGradLink,
   setGradStaffAdminSessionInstituteIdentifiers,
   setGradStaffViewerSessionInstituteIdentifiers,
   setSDCStaffSessionInstituteIdentifiers,
