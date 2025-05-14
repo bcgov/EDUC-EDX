@@ -9,6 +9,7 @@
       :headers="summerHeaders"
       :summer-students="summerStudents"
       :district-i-d="districtID"
+      :school-i-d="schoolID"
       @close="closeSheet"
       @process="process"
     />
@@ -35,6 +36,7 @@ export default {
     summerHeaders: [],
     summerStudents: [],
     districtID: null,
+    schoolID: null,
     options: {
       color: 'primary',
       zIndex: 2000000,
@@ -49,11 +51,12 @@ export default {
     }
   }),
   methods: {
-    open(summerHeaders, summerStudents, districtID, options) {
+    open(summerHeaders, summerStudents, districtID, schoolID, options) {
       this.dialog = true;
       this.summerHeaders = summerHeaders;
       this.summerStudents = summerStudents;
       this.districtID = districtID;
+      this.schoolID = schoolID;
       this.options = Object.assign(this.options, options);
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
