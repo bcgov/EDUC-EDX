@@ -949,7 +949,7 @@ export default {
             this.summerStudents.push(detail);
             this.successfulUploadCountXLS += 1;
           });
-        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, this.districtID, {color: '#fff', closeIcon: false, subtitle: false, dark: false})
+        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, this.districtID, null, {color: '#fff', closeIcon: false, subtitle: false, dark: false})
         if (!previewDialog) {
           this.summerStudents = [];
           fileJSON.error = 'Upload cancelled by the user';
