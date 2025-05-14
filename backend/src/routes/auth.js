@@ -9,7 +9,7 @@ const {v4: uuidv4} = require('uuid');
 const redis = require('../util/redis/redis-client');
 const {getSessionUser} = require('../components/utils');
 const {getAndSetupEDXUserAndRedirect, getAndSetupStaffUserAndRedirectWithDistrictCollectionLink,
-  getAndSetupStaffUserAndRedirectWithSchoolCollectionLink
+  getAndSetupStaffUserAndRedirectWithSchoolCollectionLink, getAndSetupStaffUserAndRedirectWithDistrictGradLink
 } = require('../components/secureExchange');
 
 const {
@@ -156,7 +156,7 @@ router.get(
     }else if(instituteType === 'DISTRICT' && instituteCollectionID){
       getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
     }else if(instituteType === 'DISTRICT' && staffLinkDashboard){
-      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), null, true);
+      getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, instituteID.toString(), null, true);
     }else{
       await res.redirect(config.get('server:frontend') + '/unauthorized');
     }
