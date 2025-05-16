@@ -454,7 +454,7 @@
       </v-col>
 
       <v-col
-        v-if="((hasRequiredPermission('ASSESSMENT_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('ASSESSMENT_DIS_EDIT') && isLoggedInDistrictUser)) && !disableAssessmentFunctionality"
+        v-if="((hasRequiredPermission('EAS_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('EAS_DIS_EDIT') && isLoggedInDistrictUser)) && !disableAssessmentFunctionality"
         cols="12"
         md="6"
       >
@@ -610,7 +610,7 @@ export default {
       }
       this.isDistrictActive();
     }
-    if (!this.disableAssessmentFunctionality && (this.hasRequiredPermission(PERMISSION.ASSESSMENT_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.ASSESSMENT_DIS_EDIT))) {
+    if (!this.disableAssessmentFunctionality && (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT))) {
       this.getActiveSessionsForSchoolYear();
     }
   },
