@@ -13,6 +13,7 @@ const gradReportsRoot = baseRoot + '/gradReports';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
 const assessmentsRoot = baseRoot + '/assessments';
+const challengeReportsRoot = baseRoot + '/challengeReports';
 
 let object;
 
@@ -142,6 +143,9 @@ export const ApiRoutes = Object.freeze({
     GET_ASSESSMENT_SPECIALCASE_TYPES: assessmentsRoot + '/assessment-specialcase-types',
     ASSESSMENT_STUDENTS: assessmentsRoot + '/assessment-registrations/student',
     GET_ASSESSMENT_STUDENTS_PAGINATED: assessmentsRoot + '/assessment-registrations/paginated',
+  },
+  challengeReports: {
+    BASE_URL: challengeReportsRoot
   }
 });
 
@@ -180,6 +184,7 @@ export const PAGE_TITLES = Object.freeze({
   GRAD_DISTRICT_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',
   GRAD_DISTRICT_REPORTS: 'Graduation Summary Reports',
   GRAD_CHANGE_FORM: 'GRAD Change Form',
+  CHALLENGE_REPORTS: 'Funding Reports for Course Challenges'
 });
 
 
