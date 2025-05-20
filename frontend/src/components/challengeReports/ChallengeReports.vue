@@ -92,13 +92,13 @@ export default {
     setStatusColor() {
       switch (this.reportsStatus) {
       case 'Not Started':
-        return '#4e6478';
+        return 'gray';
       case 'Preliminary Stage':
-        return '#81692c';
+        return 'orange';
       case 'Finalized Stage':
-        return '#234720';
+        return 'green';
       default:
-        return '#4e6478';
+        return 'gray';
       }
     },
     setTooltipText() {
