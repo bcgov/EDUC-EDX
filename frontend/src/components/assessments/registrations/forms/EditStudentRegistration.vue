@@ -457,7 +457,7 @@ export default {
     getAssessmentStudentDetail(assessmentStudentID) {
       this.loadingCount += 1;
       this.selectedAssessmentStudentID=assessmentStudentID;
-      ApiService.apiAxios.get(`${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/${assessmentStudentID}`)
+      ApiService.apiAxios.get(`${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/${assessmentStudentID}`)
         .then(response => {
           this.assessmentStudentDetail = response.data;
           this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);          
@@ -484,7 +484,7 @@ export default {
       );
       ApiService.apiAxios
           .put(
-              `${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID,
+              `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID,
               putAssessmentStudentDetail
           )
           .then((res) => {
@@ -513,7 +513,7 @@ export default {
       confirmation.then((result) => {
         if (result) {
           this.loadingCount += 1;
-          ApiService.apiAxios.delete(`${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID)
+          ApiService.apiAxios.delete(`${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID)
             .then(() => {
               setSuccessAlert('Success! The student registration details have been deleted.');   
               this.$emit('reset-student-registration-pagination');

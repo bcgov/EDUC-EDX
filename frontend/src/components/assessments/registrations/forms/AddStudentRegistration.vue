@@ -363,7 +363,7 @@ export default {
 
       ApiService.apiAxios
           .post(
-              `${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}`,
+              `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}`,
               newAssessmentStudentDetail
           )
           .then((res) => {

@@ -232,7 +232,7 @@ export default {
         ]
       }
       ApiService.apiAxios
-        .get(`${ApiRoutes.eas.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {
+        .get(`${ApiRoutes.assessments.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {
           params: {
             pageNumber: this.pageNumber - 1,
             pageSize: this.pageSize,

@@ -222,7 +222,7 @@ apiRouter.use('/sdc',sdcRouter);
 apiRouter.use('/grad',gradRouter);
 apiRouter.use('/gradReports', gradReportsRouter);
 apiRouter.use('/challengeReports', challengeReportsRouter);
-apiRouter.use('/assessment',assessmentRouter);
+apiRouter.use('/assessments',assessmentRouter);
 
 //Handle 500 error
 app.use((err, _req, res, next) => {

@@ -79,7 +79,7 @@ export default {
       this.loading = true;
       ApiService.apiAxios
         .get(
-          `${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}/school-year/` + this.schoolYear + '/' + this.userInfo.activeInstituteType,
+          `${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}/school-year/` + this.schoolYear + '/' + this.userInfo.activeInstituteType,
           {}
         ).then((response) => {
           this.schoolYearSessions = response.data;          

@@ -172,7 +172,7 @@ export default {
     getAllAssessmentSessions() {
       this.loading = true;
       ApiService.apiAxios
-          .get(`${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType, {})
+          .get(`${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType, {})
           .then((response) => {
             this.allSessions = response.data.sort((a, b) =>
                 LocalDateTime.parse(b.activeUntilDate).compareTo(LocalDateTime.parse(a.activeUntilDate))
