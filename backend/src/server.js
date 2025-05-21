@@ -138,7 +138,7 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading GDC_PROGRAM_CODES data during boot.', e);
     });
-    cacheService.loadAllGradSchools('gradSchool:rootURL').then(() => {
+    cacheService.loadAllGradSchools().then(() => {
       log.info('Loaded GRAD_SCHOOLS data to memory');
     }).catch((e) => {
       log.error('Error loading GRAD_SCHOOLS data during boot.', e);
