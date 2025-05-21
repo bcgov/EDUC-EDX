@@ -289,6 +289,11 @@ export default {
               authorized: this.hasRequiredSchoolPermission(PERMISSION.EDX_USER_SCHOOL_ADMIN)
             },
           ],
+        },
+        {
+          title: PAGE_TITLES.CHALLENGE_REPORTS,
+          link: { name: 'challengeReports', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+          authorized: this.hasRequiredPermission(PERMISSION.SUPERINT)
         }
       ];
       this.hasAnyItems = this.items.filter(obj => obj.authorized).length > 0;

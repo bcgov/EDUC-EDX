@@ -1,7 +1,9 @@
 <template>
   <a
-    :class="{ 'disabled-link': loading }"
-    @click="handleClick"
+    :class="{ 'disabled-link': loading || disabled }"  
+    :aria-disabled="disabled || loading"
+    :tabindex="disabled || loading ? -1 : 0"            
+    @click="handleClick"       
   >
     <template v-if="loading">
       <v-progress-circular
@@ -36,6 +38,10 @@ export default {
     downloadAction: {
       type: Function,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

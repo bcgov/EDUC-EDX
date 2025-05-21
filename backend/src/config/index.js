@@ -176,6 +176,9 @@ nconf.defaults({
     assessmentTypeCodeURL: process.env.ASSESSMENT_API_ENDPOINT+ '/assessment-types',
     assessmentSpecialCaseTypeCodeURL: process.env.ASSESSMENT_API_ENDPOINT+ '/assessment-specialcase-types',
     assessmentStudentsURL: process.env.ASSESSMENT_API_ENDPOINT+ '/student',
+  },
+  challengeReports:{
+    rootURL: process.env.CHALLENGE_REPORTS_API_ENDPOINT
   }
 });
 module.exports = nconf;

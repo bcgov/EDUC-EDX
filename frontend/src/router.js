@@ -43,6 +43,7 @@ import GradDistrictReportsAndTranscripts from './components/graduation/district/
 import GradSchoolStudentSearch from './components/graduation/school/students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './components/graduation/school/students/GradSchoolCurrentStudents.vue';
 import GraduationDistrictTabs from './components/graduation/district/GraduationDistrictTabs.vue';
+import ChallengeReports from './components/challengeReports/ChallengeReports.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -467,6 +468,17 @@ const router = createRouter({
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_RPT_VIEW
           },
+        },
+        {
+          path: 'challenge-reports/:districtID',
+          name: 'challengeReports',
+          component: ChallengeReports,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.CHALLENGE_REPORTS,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_DIS_RPT_VIEW
+          }
         }
       ]
     },
