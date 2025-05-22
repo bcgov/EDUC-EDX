@@ -276,7 +276,8 @@ export default {
       await appStore().getInstitutesData();
     }
   },
-  created() {
+  async created() {
+    await appStore().refreshEntities();
     authStore().getUserInfo().then(() => {
       this.districtID = this.userInfo.activeInstituteIdentifier;
       this.getUsersData();
