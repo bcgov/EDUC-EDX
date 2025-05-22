@@ -118,14 +118,6 @@ export const appStore = defineStore('app', {
         const responseActiveDistricts = await ApiService.getActiveDistricts();
         await this.setActiveDistricts(responseActiveDistricts.data);
 
-        // const response = await ApiService.getAuthorities();
-        // await this.setIndependentAuthorities(response.data);
-
-        // if(!this.config.DISABLE_SDC_FUNCTIONALITY) {
-        //   const responseFunding = await ApiService.getAllFundingGroups();
-        //   await this.setFundingGroups(responseFunding.data);
-        // }
-
         if(!this.config.DISABLE_GRAD_FUNCTIONALITY) {
           const responseFunding = await ApiService.getGradSchools();
           await this.setGradSchools(responseFunding.data);
