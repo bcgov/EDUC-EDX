@@ -101,6 +101,37 @@ export const appStore = defineStore('app', {
         }
       }
     },
+    async refreshEntities() {
+      if(localStorage.getItem('jwtToken')) { // DONT Call api if there is not token.
+        const responseMinSchool = await ApiService.getSchools();
+        await this.setSchools(responseMinSchool.data);
+
+        const responseGradSchool = await ApiService.getGradSchools();
+        await this.setGradSchools(responseGradSchool.data);
+
+        const responseActiveSchools = await ApiService.getActiveSchools();
+        await this.setActiveSchools(responseActiveSchools.data);
+
+        const responseDistricts = await ApiService.getDistricts();
+        await this.setDistricts(responseDistricts.data);
+
+        const responseActiveDistricts = await ApiService.getActiveDistricts();
+        await this.setActiveDistricts(responseActiveDistricts.data);
+
+        // const response = await ApiService.getAuthorities();
+        // await this.setIndependentAuthorities(response.data);
+
+        // if(!this.config.DISABLE_SDC_FUNCTIONALITY) {
+        //   const responseFunding = await ApiService.getAllFundingGroups();
+        //   await this.setFundingGroups(responseFunding.data);
+        // }
+
+        if(!this.config.DISABLE_GRAD_FUNCTIONALITY) {
+          const responseFunding = await ApiService.getGradSchools();
+          await this.setGradSchools(responseFunding.data);
+        }
+      }
+    },
   },
 });
 
