@@ -125,7 +125,8 @@ export default {
       await appStore().getInstitutesData();
     }
   },
-  created() {
+  async created() {
+    await appStore().refreshEntities();
     authStore().getUserInfo().then(() => {
       if(this.userInfo.activeInstituteType === 'SCHOOL') {
         this.isDistrictUser = false;
