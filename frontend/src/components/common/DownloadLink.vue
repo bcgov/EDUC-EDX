@@ -66,6 +66,6 @@ export default {
 <style scoped>
 .disabled-link {
   pointer-events: none;
-  opacity: 0.6;
+  color: grey;
 }
 </style>
