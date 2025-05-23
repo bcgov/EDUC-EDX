@@ -5,13 +5,6 @@
     <div
       class="borderSpace"
     >
-      <v-row v-if="schoolID">
-        <v-col>
-          <h2 class="school-header">
-            {{ schoolNameAndMincode }}
-          </h2>
-        </v-col>
-      </v-row>
       <v-row
         class="mt-n10"
       >
@@ -22,7 +15,7 @@
           >
             <v-slide-group-item>
               <v-col cols="12">
-                <Spinner v-if="cardsLoading"/>
+                <Spinner v-if="cardsLoading" />
                 <v-card
                   v-else
                   min-height="9.2em"
@@ -79,7 +72,7 @@
           >
             <v-slide-group-item>
               <v-col cols="12">
-                <Spinner v-if="cardsLoading"/>
+                <Spinner v-if="cardsLoading" />
                 <v-card
                   v-else
                   height="9.3em"
@@ -300,6 +293,7 @@
             :headers="headers"
             :total-elements="totalElements"
             :is-loading="isLoading"
+            :submission-route="submissionRoute"
             @reload="reload"
           />
         </v-col>
@@ -388,7 +382,6 @@ export default {
         moreFilters: {}
       },
       schoolID: null,
-      schoolNameAndMincode: null,
       isLoading: false,
       cardsLoading: false,
       headers: [
@@ -405,6 +398,7 @@ export default {
         {title: 'Description', key: 'desc', cols:'5'}
       ]
         },
+        { title: 'Submission', key: 'submissionLink' }
       ],
       showFilters: false,
       config: ERROR_REPORT_FILTERS
@@ -416,6 +410,26 @@ export default {
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter).reduce((total, filter) => total.concat(filter), []).length;
     },
+    submissionRoute() {
+      let routeObject = { name: null, params: {}, query: { activeTab: 'studentSearch', incomingFilesetID: this.activeIncomingFilesetID }};
+      if (!this.userInfo) {
+        return routeObject;
+      }
+      switch (this.userInfo.activeInstituteType) {
+      case 'SCHOOL':
+        routeObject.name = 'graduationSchoolTabs';
+        routeObject.params = { schoolID: this.instituteIdentifierID };
+        break;
+      case 'DISTRICT':
+        routeObject.name = 'graduationDistrictTabs';
+        routeObject.params = { districtID: this.instituteIdentifierID };
+        routeObject.query.schoolID = this.schoolID;
+        break;
+      default:
+        break;
+      }
+      return routeObject;
+    }
   },
   async created() {
     this.getErrorFilesetStudentPaginated();
@@ -441,13 +455,6 @@ export default {
     toggleFilters() {
       this.showFilters= !this.showFilters;
     },
-    backButtonClick() {
-      if(this.userInfo.activeInstituteType === 'SCHOOL') {
-        this.$router.push({name: 'grad-school-upload', params: {schoolID: this.instituteIdentifierID}});
-      } else {
-        this.$router.push({name: 'grad-district-upload', params: {districtID: this.instituteIdentifierID}});
-      }
-    },
     getErrorFilesetStudentPaginated() {
       this.isLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/paginated`, {
@@ -471,6 +478,7 @@ export default {
       this.cardsLoading= true;
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/submission-summary`).then(response => {
         let summaryResponse = response.data;
+        this.schoolID = summaryResponse.schoolID;
         this.lastUploadDateTime = this.formatDate(summaryResponse.updateDate);
         this.lastUploadUser = summaryResponse.updateUser;
         this.demFileName = summaryResponse.demFileName;

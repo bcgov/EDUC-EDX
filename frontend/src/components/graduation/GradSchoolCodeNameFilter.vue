@@ -13,8 +13,8 @@
   >
     <template #prepend-inner>
       <v-icon
-        v-if="schoolCodeNameFilter"
-        :color="getStatusColorAuthorityOrSchool(schoolSearchNames.find(school=>school.schoolID===schoolCodeNameFilter)?.status)"
+        v-if="selectedSchool"
+        :color="selectedSchool?.status ? getStatusColorAuthorityOrSchool(selectedSchool?.status) : ''"
       >
         mdi-circle-medium
       </v-icon>
@@ -76,6 +76,12 @@ export default {
       set(val) {
         this.$emit('update:modelValue', val);
       }
+    },
+    selectedSchool() {
+      if (!this.schoolCodeNameFilter) {
+        return undefined;
+      }
+      return this.schoolSearchNames.find(school=>school.schoolID===this.schoolCodeNameFilter);
     }
   },
   async created() {
