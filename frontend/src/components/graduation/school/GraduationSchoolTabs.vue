@@ -6,7 +6,7 @@
     <v-row no-gutters>
       <v-col>
         <v-tabs
-          v-model="tab"
+          v-model="activeTab"
           style="color: #38598a"
         >
           <v-tab
@@ -42,7 +42,7 @@
     <v-row no-gutters>
       <v-col>
         <v-card-text class="pt-0">
-          <v-window v-model="tab">
+          <v-window v-model="activeTab">
             <v-window-item 
               value="uploadData"
               transition="false"
@@ -61,7 +61,6 @@
             >
               <GradSchoolStudentSearch
                 :school-i-d="schoolID"
-                :collection-object="collectionObject"
               />
             </v-window-item>
             <v-window-item 
@@ -100,6 +99,7 @@ import GradReportsAndTranscripts from './reports/GradSchoolReportsAndTranscripts
 import GradSchoolStudentSearch from './students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './students/GradSchoolCurrentStudents.vue';
 import ApiService from '../../../common/apiService';
+import router from '../../../router';
 
 export default {
   name: 'GraduationSchoolTabs',
@@ -119,14 +119,25 @@ export default {
   },
   data() {
     return {
+      validTabs: ['uploadData', 'studentSearch', 'gradReports', 'currentStudents'],
       PAGE_TITLES: PAGE_TITLES,
-      tab: null,
       collectionObject: null
     };
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated','userInfo']),
-    ...mapState(appStore, ['config'])
+    ...mapState(appStore, ['config']),
+    activeTab: {
+      get() {
+        return this.validTabs.includes(this.$route.query?.activeTab) ? this.$route.query?.activeTab : 'uploadData';
+      },
+      set(value) {
+        if (!this.validTabs.includes(value)) {
+          return;
+        }
+        router.push({name: 'graduationSchoolTabs', params: { schoolID: this.schoolID }, query: { activeTab: value }});
+      }
+    },
   },
   created() {
     this.getActiveReportingDates();

@@ -87,6 +87,15 @@
           <span v-else-if="props.item[column.key]">
             {{ props.item[column.key] }}
           </span>
+          <span v-else-if="column.key === 'submissionLink'">
+            <v-btn
+              icon="mdi-page-next-outline"
+              color="primary"
+              variant="text"
+              :to="getSubmissionRoute(props.item['pen'])"
+              target="_blank"
+            />
+          </span>
           <span v-else>-</span>
         </td>
       </tr>
@@ -123,6 +132,10 @@ export default {
       required: true,
       default: false
     },
+    submissionRoute: {
+      type: Object,
+      required: true
+    }
   },
   emits: ['reload'],
   data() {
@@ -131,9 +144,6 @@ export default {
       pageNumber: 1,
       pageSize: 15
     };
-  },
-  computed: {
-  
   },
   watch: {
     pageNumber: {
@@ -152,6 +162,11 @@ export default {
           
   },
   methods: {
+    getSubmissionRoute(pen) {
+      const toLink = structuredClone(this.submissionRoute);
+      toLink.query.pen = ((pen instanceof String) || (typeof pen === 'string')) ? pen : '';
+      return toLink;
+    },
     formatFileType(text) {
       if(text === 'ASSESSMENT') {
         return 'XAM';
