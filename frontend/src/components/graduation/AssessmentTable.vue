@@ -1,26 +1,39 @@
 <template>
   <v-data-table
-    :items="data"
-    :headers="headers"
     v-model:page="pageNumber"
     v-model:items-per-page="pageSize"
+    :items="data"
+    :headers="headers"
     mobile-breakpoint="0"
   >
-    <template #headers>
+    <template #headers="{ getSortIcon, toggleSort }">
       <tr>
         <th
           v-for="column in headers"
           id="header"
           :key="column.key"
+          :class="{
+            'text-center': column.align === 'center',
+            'text-start': column.align === 'start',
+            'text-end': column.align === 'end',
+            'v-data-table__th--sortable': column.sortable,
+          }"
+          :style="{ cursor: column.sortable ? 'pointer' : 'default' }"
+          @click="column.sortable && toggleSort(column)"
         >
-          <v-row>
-            <v-col class="header-text mr-12">
-              {{ column.title }}
-            </v-col>
-          </v-row>
+          <div class="v-data-table-header__content d-flex align-center">
+            <span class="header-text mr-12">{{ column.title }}</span>
+            <v-icon
+              v-if="column.sortable"
+              class="v-data-table-header__sort-icon ml-1"
+              :icon="getSortIcon(column)"
+              size="x-small"
+            />
+          </div>
         </th>
       </tr>
     </template>
+
     <template #item="props">
       <tr
         class="mt-2"
@@ -36,13 +49,13 @@
             <span v-else> {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}</span>
           </span>
           <span v-else-if="column.key === 'status'">
-                <v-icon
-                  size="25"
-                  :color="getIssueIconColor(props.item['studentStatusCode'])"
-                >
-                  {{ getIssueIcon(props.item['studentStatusCode']) }}
-                </v-icon>
-            </span>
+            <v-icon
+              size="25"
+              :color="getIssueIconColor(props.item['studentStatusCode'])"
+            >
+              {{ getIssueIcon(props.item['studentStatusCode']) }}
+            </v-icon>
+          </span>
           <span v-else-if="props.item[column.key]">
             {{ props.item[column.key] }}
           </span>
