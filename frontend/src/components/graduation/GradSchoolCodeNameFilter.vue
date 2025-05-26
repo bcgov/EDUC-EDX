@@ -116,10 +116,7 @@ export default {
         if (!school.effectiveDate) return;
 
         const openDate = LocalDateTime.parse(school.effectiveDate);
-        const endOfCloseDateGraceWindow = school.expiryDate ? LocalDateTime.parse(school.expiryDate).plusMonths(3) : null;
-
         if (cutoff.isBefore(openDate)) return;
-        if (endOfCloseDateGraceWindow && cutoff.isAfter(endOfCloseDateGraceWindow)) return;
 
         this.schoolSearchNames.push({
           schoolCodeName: `${school.mincode} - ${school.schoolName}`,
