@@ -40,8 +40,9 @@ export const PERMISSION = Object.freeze(
 
     GRAD_DIS_RPT_VIEW: 'GRAD_DIS_RPT_VIEW',
 
-    SUPERINT: 'SUPERINT'
+    SUPERINT: 'SUPERINT',
 
+    CHALLENGE_REPORTS: 'CHALLENGE_REPORTS',
   }
 );
 

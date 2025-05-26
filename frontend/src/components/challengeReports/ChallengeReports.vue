@@ -32,7 +32,7 @@
           :style="{ width: tooltipWidth }"
         >
           <div v-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_NOT_YET_AVAILABLE">
-            The ministry has not yet released the preliminary data on course challenges. Your district’s superintendent will be emailed when data is available.
+            The ministry has not yet released the preliminary data on course challenges. Your district’s Enrolment Data Collection Administrator will be emailed when data is available.
           </div>
           <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY">
             Data corrections can be made through <strong>GRAD File Upload</strong> or a <a
@@ -42,7 +42,7 @@
             >GRAD Change Form</a>.
             Changes submitted before the due date will be reflected in the report data.
             Changes submitted past the due date will not be reflected in the report and are not eligible for funding.
-            Your district’s superintendent will be emailed when the final data is available.
+            Your district’s Enrolment Data Collection Administrator will be emailed when the final data is available.
           </div>
           <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_FINAL">
             The data reported is final. It reflects the course challenges that will be funded for your district.
@@ -224,9 +224,9 @@ export default {
       const currentMonth = currentDate.getMonth();
 
       if (currentMonth > 5) {
-        this.startingYear = currentYear;
-      } else {
         this.startingYear = currentYear - 1;
+      } else {
+        this.startingYear = currentYear - 2;
       }
       this.endingYear = this.startingYear + 1;
     },
