@@ -220,6 +220,7 @@ const reportTypeValues = [
   ['csv_dis_errors_warns', 'ALL_STUDENT_ERRORS_WARNS_DIS_CSV'],
   ['csv_dis_french', 'ALL_STUDENT_FRENCH_DIS_CSV'],
   ['csv_dis_career', 'ALL_STUDENT_CAREER_DIS_CSV'],
+  ['csv_dis_indigenous', 'ALL_STUDENT_INDIGENOUS_DIS_CSV'],
   ['zero-fte-summary_dis','DIS_ZERO_FTE_SUMMARY']
 ];
 const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
