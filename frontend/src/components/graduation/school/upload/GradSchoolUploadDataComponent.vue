@@ -382,30 +382,30 @@
               </span>
               <span v-else-if="column.key ==='alert'">
                 <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
-                <v-tooltip text="Files processed. Error report available.">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-icon
-                    icon="mdi-check-circle-outline"
-                    v-bind="tooltipProps"
-                    color="success"
-                  />
-                  </template>
-                </v-tooltip>
-              </span>
-              <span v-else-if="isFilesetInProgress(props.item)">
-                <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-progress-circular
-                    :width="4"
-                    color="primary"
-                    v-bind="tooltipProps"
-                    indeterminate
-                  >
-                    <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
-                  </v-progress-circular>
-                  </template>
-                </v-tooltip>
-              </span>
+                  <v-tooltip text="Files processed. Error report available.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-check-circle-outline"
+                        v-bind="tooltipProps"
+                        color="success"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+                <span v-else-if="isFilesetInProgress(props.item)">
+                  <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-progress-circular
+                        :width="4"
+                        color="primary"
+                        v-bind="tooltipProps"
+                        indeterminate
+                      >
+                        <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
+                      </v-progress-circular>
+                    </template>
+                  </v-tooltip>
+                </span>
                 <span v-else>
                   <v-tooltip text="Missing files. Upload missing files to continue processing.">
                     <template #activator="{ props: tooltipProps }">
@@ -534,7 +534,10 @@
                     <v-col cols="9">
                       <span><b>{{ file.name }}</b> - {{ file.error }}</span>
                     </v-col>
-                    <v-col cols="2" class="d-flex justify-end">
+                    <v-col
+                      cols="2"
+                      class="d-flex justify-end"
+                    >
                       <ClipboardButton
                         id="copyErrorButton"
                         :copy-text="file.error"
@@ -646,7 +649,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <PreviewStudentsDialog ref="previewDialog"/>
+  <PreviewStudentsDialog ref="previewDialog" />
 </template>
   
 <script>
@@ -663,7 +666,7 @@ import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import {LocalDateTime} from '@js-joda/core';
 import ClipboardButton from '../../../util/ClipboardButton.vue';
-import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue'
+import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue';
   
 export default {
   name: 'GradSchoolUploadDataComponent',
@@ -728,7 +731,7 @@ export default {
         moreFilters: {}
       },
       headers: [
-        {key: 'alert'},
+        {key: 'alert', sortable: false},
         {title: 'DEM File', key: 'demFileName', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
         {title: 'CRS File', key: 'crsFileName', sortable: false},
@@ -955,14 +958,14 @@ export default {
             this.summerStudents.push(detail);
             this.successfulXLSUploadCount += 1;
           });
-          const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, null, this.schoolID, {color: '#fff', closeIcon: false, subtitle: false, dark: false})
-          if (!previewDialog) {
-            this.summerStudents = [];
-            fileJSON.error = 'Upload cancelled by the user';
-            fileJSON.status = 'Abandoned';
-          } else {
-            fileJSON.status = this.fileUploadSuccess;
-          }  
+        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, null, this.schoolID, {color: '#fff', closeIcon: false, subtitle: false, dark: false});
+        if (!previewDialog) {
+          this.summerStudents = [];
+          fileJSON.error = 'Upload cancelled by the user';
+          fileJSON.status = 'Abandoned';
+        } else {
+          fileJSON.status = this.fileUploadSuccess;
+        }  
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;

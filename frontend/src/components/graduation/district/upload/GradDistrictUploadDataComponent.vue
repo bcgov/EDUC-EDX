@@ -655,7 +655,7 @@ import {appStore} from '../../../../store/modules/app';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import {LocalDateTime} from '@js-joda/core';
 import ClipboardButton from '../../../util/ClipboardButton.vue';
-import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue'
+import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue';
 
 export default {
   name: 'GradDistrictUploadDataComponent',
@@ -720,7 +720,7 @@ export default {
         moreFilters: {}
       },
       headers: [
-        {key: 'alert'},
+        {key: 'alert', sortable: false},
         {title: 'School Name', key: 'schoolName', sortable: false},
         {title: 'DEM File', key: 'demFileName', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
@@ -949,7 +949,7 @@ export default {
             this.summerStudents.push(detail);
             this.successfulUploadCountXLS += 1;
           });
-        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, this.districtID, null, {color: '#fff', closeIcon: false, subtitle: false, dark: false})
+        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, this.districtID, null, {color: '#fff', closeIcon: false, subtitle: false, dark: false});
         if (!previewDialog) {
           this.summerStudents = [];
           fileJSON.error = 'Upload cancelled by the user';
