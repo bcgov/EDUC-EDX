@@ -33,7 +33,6 @@ import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 import {PERMISSION} from './utils/constants/Permission';
 import GraduationSchoolTabs from './components/graduation/school/GraduationSchoolTabs.vue';
-import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradSchoolReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
@@ -369,45 +368,23 @@ const router = createRouter({
           },
         },
         {
-          path: '/assessment-sessions/:institutionID',
-          name: 'district-assessment-sessions',
-          component: AssessmentSessions,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
-            requiresAuth: true,
-            permission: PERMISSION.EAS_DIS_EDIT
-          },
-        },
-        {
-          path: '/assessment-sessions/:institutionID',
-          name: 'school-assessment-sessions',
-          component: AssessmentSessions,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
-            requiresAuth: true,
-            permission: PERMISSION.EAS_SCH_EDIT
-          },
-        },
-        {
-          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          path: '/assessment-sessions/details',
           name: 'district-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,
           meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
+            pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
             permission: PERMISSION.EAS_DIS_EDIT
           },
         },
         {
-          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          path: '/assessment-sessions/details',
           name: 'school-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,
           meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
+            pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
             permission: PERMISSION.EAS_SCH_EDIT
           },

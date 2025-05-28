@@ -86,16 +86,15 @@ export const PROFICIENCY_SCORE_RANGE_FILTER = Object.freeze(
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
     tableHeaders: [
-      { title: 'Session', key: 'sessionName_desc'},
+      { title: 'Session', key: 'session'},
       { title: 'School', key: 'schoolName_desc' },
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
       { title: 'PEN', key: 'pen' },
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
       { title: 'Local ID', key: 'localID' },
-      { title: 'Surname', key: 'surName' },
-      { title: 'Given Name', key: 'givenName' },
-      { title: 'Course Name (Code)', key: 'assessmentTypeName_desc' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
-      { title: 'Proficiency Score', key: 'proficiencyScore' },
+      { title: 'Surname, Given Name', key: 'name' },
+      { title: 'AssessmentCode', key: 'assessmentTypeCode' },
+      { title: 'Score', key: 'score' },
+      { title: 'ISR', key: 'isr' },
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,
@@ -109,15 +108,14 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
   {
     tableHeaders: [
-      { title: 'Session', key: 'sessionName_desc'},
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
+      { title: 'Session', key: 'session'},
       { title: 'PEN', key: 'pen' },
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
       { title: 'Local ID', key: 'localID' },
-      { title: 'Surname', key: 'surName' },
-      { title: 'Given Name', key: 'givenName' },
-      { title: 'Course Name (Code)', key: 'assessmentTypeName_desc' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
-      { title: 'Proficiency Score', key: 'proficiencyScore' },
+      { title: 'Surname, Given Name', key: 'name' },
+      { title: 'AssessmentCode', key: 'assessmentTypeCode' },
+      { title: 'Score', key: 'score' },
+      { title: 'ISR', key: 'isr' },
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,

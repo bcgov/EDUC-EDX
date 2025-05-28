@@ -235,8 +235,8 @@ export default {
           authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
-          title: PAGE_TITLES.ASSESSMENT_SESSIONS,
-          link: { name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}},
+          title: PAGE_TITLES.ASSESSMENT,
+          link: {name: 'school-assessment-session-detail'},
           authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && this.userInfo.activeInstituteType === 'SCHOOL',
         },
         {
@@ -265,8 +265,8 @@ export default {
           authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
-          title: PAGE_TITLES.ASSESSMENT_SESSIONS,
-          link: { name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}},
+          title: PAGE_TITLES.ASSESSMENT,
+          link: {name: 'district-assessment-session-detail'},
           authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && this.userInfo.activeInstituteType === 'DISTRICT',
         },
         {
