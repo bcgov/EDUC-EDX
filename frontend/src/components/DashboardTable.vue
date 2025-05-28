@@ -485,11 +485,6 @@
                   </h4>
                 </v-col>
               </v-row>
-              <v-row no-gutters>
-                <v-col>
-                  School Year: {{ schoolYear }}
-                </v-col>
-              </v-row>
             </v-col>
           </v-row>
         </v-card>
@@ -609,9 +604,6 @@ export default {
         this.getDistrictSchoolsLastUpdateDate();
       }
       this.isDistrictActive();
-    }
-    if (!this.disableAssessmentFunctionality && (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) || this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT))) {
-      this.getActiveSessionsForSchoolYear();
     }
   },
   methods: {
@@ -802,22 +794,10 @@ export default {
     },
     redirectToAssessment() {
       if(this.isLoggedInDistrictUser) {
-        router.push({name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});    
+        router.push({name: 'district-assessment-session-detail'});
       } else if (this.isLoggedInSchoolUser) {
-        router.push({name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});    
+        router.push({name: 'school-assessment-session-detail'});
       } 
-    },
-    getActiveSessionsForSchoolYear() {
-      ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+this.userInfo.activeInstituteType).then(response => {
-        if(response.data?.length >0) {
-          this.schoolYear = response.data[0].schoolYear;     
-        }
-      }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loadingTable = false;
-      });  
     },
     isSchoolActive(){
       appStore().getInstitutesData().finally(() => {

@@ -39,9 +39,14 @@
             @click="rowClicked(props.item)"
           >
             <td v-for="column in headers" :key="column.key" class="td-data">
-              <div>
-                <span v-if="props.item[column.key]">{{props.item[column.key] }}</span>
-              </div>
+              <span v-if="column.key === 'session'">
+                  {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}
+              </span>
+              <span v-else-if="column.key === 'name'">
+                  {{ props.item['surname'] }}, {{ props.item['givenName'] }}
+              </span>
+              <span v-else-if="props.item[column.key]">{{props.item[column.key] }}</span>
+              <span v-else>-</span>
             </td>
           </tr>
       </template>

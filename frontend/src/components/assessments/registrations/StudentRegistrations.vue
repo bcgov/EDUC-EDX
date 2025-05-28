@@ -12,7 +12,7 @@
             <v-btn
                 id="addStudentReg"
                 color="#003366"
-                text="Add Record"
+                text="Add Registration"
                 class="mr-1 mb-1"
                 variant="outlined"
                 @click="openCreateStudentRegDialog"
