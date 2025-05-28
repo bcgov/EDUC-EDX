@@ -65,26 +65,6 @@
         <v-row>
           <v-col class="py-0" cols="6">
             <v-text-field
-              id="givenName"
-              v-model="givenName"
-              label="First Name"
-              color="primary"
-              variant="underlined"
-            />
-          </v-col>
-          <v-col class="py-0" cols="6">
-            <v-text-field
-              id="surName"
-              v-model="surName"
-              label="Last Name"
-              color="primary"
-              variant="underlined"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="py-0" cols="6">
-            <v-text-field
               id="pen"
               v-model="pen"
               label="PEN"
@@ -102,21 +82,28 @@
             />
           </v-col>
         </v-row>
-      </div>
-      <div >
         <v-row>
-          <v-col cols="12" class="pt-0">
-            <v-row v-if="false">
-              <v-text-field
-                id="searchInput"
-                v-model="penLocalIdNameFilter"
-                label="PEN or Local ID or Name"
-                color="primary"
-                variant="underlined"
-              />
-            </v-row>            
+          <v-col class="py-0" cols="6">
+            <v-text-field
+              id="givenName"
+              v-model="givenName"
+              label="First Name"
+              color="primary"
+              variant="underlined"
+            />
+          </v-col>
+          <v-col class="py-0" cols="6">
+            <v-text-field
+              id="surName"
+              v-model="surName"
+              label="Last Name"
+              color="primary"
+              variant="underlined"
+            />
           </v-col>
         </v-row>
+      </div>
+      <div>
         <v-row v-if="userInfo.activeInstituteType === 'DISTRICT'">
           <v-col cols="12" class="pt-0">
             <slot name="text-search">              
@@ -140,7 +127,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="pt-0">
+          <v-col cols="12" class="mt-n8">
             <slot name="text-search">              
               <v-autocomplete
                 id="selectSchool"
