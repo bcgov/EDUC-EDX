@@ -31,6 +31,8 @@
       <DetailComponent
         :config="config"
         :district="district"
+        :show-export-btn="true"
+        :export-type="'csv_dis_inclusive'"
         :is-final-sign-off="isFinalSignOff"
         :is-collection-active="isCollectionActive"
       />
