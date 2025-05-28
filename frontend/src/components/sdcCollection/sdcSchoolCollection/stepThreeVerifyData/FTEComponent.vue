@@ -31,6 +31,7 @@
         :school="school"
         :config="config"
         :show-export-btn="true"
+        :export-type="'csv_school'"
         :is-final-sign-off="isFinalSignOff"
         :is-collection-active="isCollectionActive"
       />
