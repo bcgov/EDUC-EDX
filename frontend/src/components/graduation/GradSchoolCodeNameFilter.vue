@@ -63,7 +63,6 @@ export default {
     return {
       schoolsCacheMap: [],
       schoolSearchNames: [],
-      allowedSchoolCategories: ['PUBLIC', 'YUKON']
     };
   },
   computed: {
@@ -111,7 +110,6 @@ export default {
       this.schoolsCacheMap.forEach(school => {
         let gradSchool = this.gradSchoolMap.get(school.schoolID);
         if (school.districtID !== this.districtID) return;
-        if (!this.allowedSchoolCategories.includes(school.schoolCategoryCode)) return;
         if (gradSchool?.canIssueTranscripts !== 'Y') return;
         if (!school.effectiveDate) return;
 
