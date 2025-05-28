@@ -21,21 +21,21 @@
       <v-row>
         <v-col class="d-flex justify-start">
           <PrimaryButton
+            id="applyPenLocalIdNameFilter"
+            large-icon
+            icon="mdi-magnify"
+            text="Search Name and ID"
+            :click-action="($event) => setPenLocalIdNameFilter($event, 'click')"
+          />
+        </v-col>
+        <v-col class="d-flex justify-end">
+          <PrimaryButton
             id="clear-filter"
             secondary
             large-icon
             icon="mdi-filter-off-outline"
             text="Clear All"
             :click-action="clear"
-          />
-        </v-col>
-        <v-col class="d-flex justify-end">
-          <PrimaryButton
-            id="applyPenLocalIdNameFilter"
-            large-icon
-            icon="mdi-magnify"
-            text="Search Name and ID"
-            :click-action="($event) => setPenLocalIdNameFilter($event, 'click')"
           />
         </v-col>
       </v-row>
@@ -67,7 +67,7 @@
             <v-text-field
               id="givenName"
               v-model="givenName"
-              label="Given Name"
+              label="First Name"
               color="primary"
               variant="underlined"
             />
@@ -76,7 +76,7 @@
             <v-text-field
               id="surName"
               v-model="surName"
-              label="Surname"
+              label="Last Name"
               color="primary"
               variant="underlined"
             />
@@ -104,11 +104,6 @@
         </v-row>
       </div>
       <div >
-        <v-row>
-          <v-col id="schoolDistrictFilters" class="filter-heading pb-0">
-            District, School and Assessment Center
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="12" class="pt-0">
             <v-row v-if="false">
@@ -213,7 +208,22 @@
                 </v-btn>
               </span>
             </div>     
-            <div v-else-if="filter?.id === 'specialCaseCode'">
+            <div v-else-if="filter?.id === 'proficiencyScoreValue'">
+
+              <span 
+                v-for="(option, i) in filter?.filterOptions" 
+                :key="option.value"
+              >
+                <v-btn
+                  :id="option?.id"
+                  :value="option"
+                  class="filter-button"
+                  rounded="lg"
+                >
+                  {{ option?.title }}
+                </v-btn>
+              </span>
+
               <span 
                 v-for="(option, i) in specialCaseSearchNames"
                 :key="option.value"
@@ -356,7 +366,7 @@ export default {
         session.assessments.forEach(assessment => {
           let existingItem = this.assessmentTypeSearchNames.find(item => item.id === assessment.assessmentTypeCode);
           if (!existingItem) {
-            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeName, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode, displayOrder: assessment.displayOrder});
+            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeCode, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode, displayOrder: assessment.displayOrder});
           }
         });
       });
@@ -365,10 +375,12 @@ export default {
     },
     setupSpecialCaseCodes() {
       this.specialCaseSearchNames = [];
+      console.log(this.specialCaseCodes);
       Object.keys(this.specialCaseCodes).forEach(key => {
         this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
       });
-      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['title']); 
+      this.specialCaseSearchNames.push({title: 'No Result', id: 'noResults', value: 'false'});
+      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['id']); 
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
@@ -465,7 +477,10 @@ export default {
   color: #003366;
   margin-top: 1em;
 }
-
+.filter-card {
+      height: 100%;
+      overflow-y: auto;
+    }
 .filter-button {
   color: #003366;
   padding: 5px;
