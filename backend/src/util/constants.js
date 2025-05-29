@@ -219,6 +219,7 @@ const reportTypeValues = [
   ['csv_school_french', 'ALL_STUDENT_FRENCH_SCHOOL_CSV'],
   ['csv_school_career', 'ALL_STUDENT_CAREER_SCHOOL_CSV'],
   ['csv_school_indigenous', 'ALL_STUDENT_INDIGENOUS_SCHOOL_CSV'],
+  ['csv_school_inclusive', 'ALL_STUDENT_INCLUSIVE_SCHOOL_CSV'],
   ['csv_dis', 'ALL_STUDENT_DIS_CSV'],
   ['csv_dis_errors_warns', 'ALL_STUDENT_ERRORS_WARNS_DIS_CSV'],
   ['csv_dis_french', 'ALL_STUDENT_FRENCH_DIS_CSV'],
