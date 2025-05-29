@@ -20,41 +20,9 @@ export const ASSESSMENT_TYPE_CODE_FILTER = Object.freeze(
   }
 );
 
-export const SPECIAL_CASE_FILTER = Object.freeze(
-  {
-    heading: 'Special Case',
-    id: 'specialCaseCode',
-    multiple: true,
-    key: 'specialCaseCode',
-    filterOptions: [
-    ]
-  }
-);
-
-export const PROFICIENCY_SCORE_FILTER = Object.freeze(
-  {
-    heading: 'Proficiency Score',
-    id: 'proficiencyScore',
-    multiple: false,
-    key: 'proficiencyScore',
-    filterOptions: [
-      {
-        title: 'Have Results',
-        id: 'results',
-        value: 'true'
-      },
-      {
-        title: 'No Results Received',
-        id: 'noResults',
-        value: 'false'
-      }
-    ]
-  }
-);
-
 export const PROFICIENCY_SCORE_RANGE_FILTER = Object.freeze(
   {
-    heading: '',
+    heading: 'Score',
     id: 'proficiencyScoreValue',
     multiple: true,
     key: 'proficiencyScoreValue',
@@ -99,8 +67,6 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
     allowedFilters: {
       session: SESSION_CODE_FILTER,
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-      specialCaseCode: SPECIAL_CASE_FILTER,
-      proficiencyScore: PROFICIENCY_SCORE_FILTER,
       proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER
     }
   });
@@ -120,8 +86,6 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
     allowedFilters: {
       session: SESSION_CODE_FILTER,
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-      specialCaseCode: SPECIAL_CASE_FILTER,
-      proficiencyScore: PROFICIENCY_SCORE_FILTER,
       proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER
     }
   });
