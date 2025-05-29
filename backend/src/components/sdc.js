@@ -679,6 +679,7 @@ function getFileDetails(reportType, mincode) {
     'ALL_STUDENT_ELL_DIS_CSV': { filename: `AllDistrictEnglishLanguageLearningProgramStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_FRENCH_SCHOOL_CSV': { filename: `AllSchoolFrenchStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ALL_STUDENT_CAREER_SCHOOL_CSV': { filename: `AllSchoolCareerStudents_${mincode}.csv`, contentType: 'text/csv' },
+    'ALL_STUDENT_INDIGENOUS_SCHOOL_CSV': { filename: `AllSchoolIndigenousAndSupportProgramStudents_${mincode}.csv`, contentType: 'text/csv' },
     'ELL_HEADCOUNT': { filename: `ELLHeadcount_School_${mincode}.pdf`, contentType: 'application/pdf' },
     'DIS_ELL_HEADCOUNT': { filename: `ELLHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
     'DIS_ELL_HEADCOUNT_PER_SCHOOL': { filename: `ELLHeadcountPerSchool_District_${mincode}.pdf`, contentType: 'application/pdf' },
