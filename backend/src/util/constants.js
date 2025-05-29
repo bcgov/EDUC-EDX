@@ -221,6 +221,7 @@ const reportTypeValues = [
   ['csv_school_indigenous', 'ALL_STUDENT_INDIGENOUS_SCHOOL_CSV'],
   ['csv_school_inclusive', 'ALL_STUDENT_INCLUSIVE_SCHOOL_CSV'],
   ['csv_school_ell', 'ALL_STUDENT_ELL_SCHOOL_CSV'],
+  ['csv_school_refugee', 'ALL_STUDENT_REFUGEE_SCHOOL_CSV'],
   ['csv_dis', 'ALL_STUDENT_DIS_CSV'],
   ['csv_dis_errors_warns', 'ALL_STUDENT_ERRORS_WARNS_DIS_CSV'],
   ['csv_dis_french', 'ALL_STUDENT_FRENCH_DIS_CSV'],
@@ -228,6 +229,7 @@ const reportTypeValues = [
   ['csv_dis_indigenous', 'ALL_STUDENT_INDIGENOUS_DIS_CSV'],
   ['csv_dis_inclusive', 'ALL_STUDENT_INCLUSIVE_DIS_CSV'],
   ['csv_dis_ell', 'ALL_STUDENT_ELL_DIS_CSV'],
+  ['csv_dis_refugee', 'ALL_STUDENT_REFUGEE_DIS_CSV'],
   ['zero-fte-summary_dis','DIS_ZERO_FTE_SUMMARY']
 ];
 const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
