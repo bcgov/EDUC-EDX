@@ -92,14 +92,14 @@
           @update:sessionID="sessionID = $event"
       />
     </v-bottom-sheet>
-    <v-bottom-sheet 
+    <v-bottom-sheet
       v-model="editStudentRegistrationSheet"
       :inset="true"
       :no-click-animation="true"
       :scrollable="true"
       :persistent="true"
     >
-      <StudentRegistrationDetail        
+      <StudentRegistrationDetail
         :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
         :school-year-sessions="schoolYearSessions"
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
@@ -120,7 +120,7 @@ import {ApiRoutes} from '../../../utils/constants';
 import {authStore} from '../../../store/modules/auth';
 import {mapState} from 'pinia';
 import StudentRegistrationDetail from './StudentRegistrationDetail.vue';
-import AddStudentRegistration from "./forms/AddStudentRegistration.vue";
+import AddStudentRegistration from './forms/AddStudentRegistration.vue';
 
 export default {
   name: 'StudentRegistrations',
@@ -192,10 +192,7 @@ export default {
     },
     closeNewAndLoadStudentRegistrations(){
       this.newStudentRegistrationSheet = !this.newStudentRegistrationSheet;
-      if(this.reloadStudentRegistrationsFlag === true){
-        this.getAssessmentStudents();
-      }
-      this.reloadStudentRegistrationsFlag = false;
+      this.getAssessmentStudents();
     },
     openCreateStudentRegDialog() {
       this.newStudentRegistrationSheet = !this.newStudentRegistrationSheet;
@@ -217,7 +214,7 @@ export default {
       this.loading = true;
       let sort = {assessmentStudentID: 'ASC',};
       let assessmentSearchParams = cloneDeep(this.filterSearchParams);
-      if (! this.sessionID) {        
+      if (! this.sessionID) {
         assessmentSearchParams.moreFilters.schoolYear = [
           { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
         ];
@@ -225,11 +222,11 @@ export default {
       if (this.userInfo.activeInstituteType === 'DISTRICT'){
         assessmentSearchParams.moreFilters.districtID = [
           {title: 'districtID', id: 'districtID', value: this.userInfo.activeInstituteIdentifier}
-        ]
+        ];
       } else {
         assessmentSearchParams.moreFilters.schoolID = [
           {title: 'schoolNameNumber', id: 'schoolID', value: this.userInfo.activeInstituteIdentifier}
-        ]
+        ];
       }
       ApiService.apiAxios
         .get(`${ApiRoutes.assessments.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {

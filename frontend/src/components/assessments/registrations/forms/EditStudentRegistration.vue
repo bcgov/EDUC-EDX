@@ -1,169 +1,178 @@
 <template>
-  <v-row class="mt-0" :class="functionType !== 'add' ? 'mb-12' : 'mb-2'">
+  <v-row
+    class="mt-0"
+    :class="functionType !== 'add' ? 'mb-12' : 'mb-2'"
+  >
     <v-col class="pt-0">
       <v-row v-if="isLoading()">
         <v-col class="d-flex justify-center">
           <Spinner
-              :flat="true"
-              style="margin-bottom: 15.5rem"
+            :flat="true"
+            style="margin-bottom: 15.5rem"
           />
         </v-col>
       </v-row>
       <div
-          v-else
-          ref="topDiv"
+        v-else
+        ref="topDiv"
       >
         <v-row class="mt-n4">
           <v-col :cols="hasError ? 6 : 12">
             <v-form
-                ref="registrationDetailsForm"
-                v-model="studentRegistrationDetailsFormValid"
+              ref="registrationDetailsForm"
+              v-model="studentRegistrationDetailsFormValid"
             >
               <v-autocomplete
-                  id="Session"
-                  v-model="assessmentStudentDetail.sessionID"
-                  variant="underlined"
-                  :items="sessionSearchNames"
-                  label="Session"
-                  :clearable="isSessionEditable"
-                  item-title="sessionCodeName"
-                  item-value="sessionCodeValue"
-                  autocomplete="off"
-                  :color="getFieldColor(isSessionEditable)"
-                  :readonly="!isSessionEditable"
-                  :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
-                  :rules="[rules.required()]"
-                  @update:model-value="refreshAssessmentTypes($event)"
+                id="Session"
+                v-model="assessmentStudentDetail.sessionID"
+                variant="underlined"
+                :items="sessionSearchNames"
+                label="Session"
+                :clearable="isSessionEditable"
+                item-title="sessionCodeName"
+                item-value="sessionCodeValue"
+                autocomplete="off"
+                :color="getFieldColor(isSessionEditable)"
+                :readonly="!isSessionEditable"
+                :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
+                :rules="[rules.required()]"
+                @update:model-value="refreshAssessmentTypes($event)"
               />
               <v-autocomplete
-                  id="AssessmentCourse"
-                  v-model="assessmentStudentDetail.assessmentTypeName_desc"
-                  variant="underlined"
-                  :items="assessmentTypeSearchNames"
-                  label="Assessment Course"
-                  :clearable="isSessionEditable"
-                  item-title="assessmentCodeName"
-                  item-value="assessmentCodeValue"
-                  autocomplete="off"
-                  :color="getFieldColor(isSessionEditable)"
-                  :readonly="!isSessionEditable"
-                  :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
-                  :rules="[rules.required()]"
-                  @update:model-value="syncAssessmentValue($event)"
+                id="AssessmentCourse"
+                v-model="assessmentStudentDetail.assessmentTypeName_desc"
+                variant="underlined"
+                :items="assessmentTypeSearchNames"
+                label="Assessment Course"
+                :clearable="isSessionEditable"
+                item-title="assessmentCodeName"
+                item-value="assessmentCodeValue"
+                autocomplete="off"
+                :color="getFieldColor(isSessionEditable)"
+                :readonly="!isSessionEditable"
+                :class="!isSessionEditable ? 'readonly-text' : 'fieldtext'"
+                :rules="[rules.required()]"
+                @update:model-value="syncAssessmentValue($event)"
               />
               <v-autocomplete
-                  id="AssessmentCenter"
-                  v-model="assessmentStudentDetail.assessmentCenterID"
-                  variant="underlined"
-                  :items="assessmentCenterSearchNames"
-                  label="Assessment Center"
-                  :clearable="isSessionEditable"
-                  item-title="schoolCodeName"
-                  item-value="schoolCodeValue"
-                  autocomplete="off"
-                  density="compact"
-                  :color="getFieldColor(isSessionEditable)"
-                  :readonly="!isSessionEditable"
-                  :class="isSessionEditable ? 'fieldtext' : 'readonly-text'"
+                id="AssessmentCenter"
+                v-model="assessmentStudentDetail.assessmentCenterID"
+                variant="underlined"
+                :items="assessmentCenterSearchNames"
+                label="Assessment Center"
+                :clearable="isSessionEditable"
+                item-title="schoolCodeName"
+                item-value="schoolCodeValue"
+                autocomplete="off"
+                density="compact"
+                :color="getFieldColor(isSessionEditable)"
+                :readonly="!isSessionEditable"
+                :class="isSessionEditable ? 'fieldtext' : 'readonly-text'"
               />
               <v-text-field
-                  id="PEN"
-                  v-model="assessmentStudentDetail.pen"
-                  label="Personal Education Number (PEN)"
-                  variant="underlined"
-                  :maxlength="25"
-                  density="compact"
-                  :readonly="true"
-                  :class="['readonly-text']"
+                id="PEN"
+                v-model="assessmentStudentDetail.pen"
+                label="Personal Education Number (PEN)"
+                variant="underlined"
+                :maxlength="25"
+                density="compact"
+                :readonly="true"
+                :class="['readonly-text']"
               />
               <v-text-field
-                  id="LocalID"
-                  v-model="assessmentStudentDetail.localID"
-                  label="Local ID"
-                  variant="underlined"
-                  :maxlength="25"
-                  density="compact"
-                  :readonly="true"
-                  :class="['readonly-text']"
+                id="LocalID"
+                v-model="assessmentStudentDetail.localID"
+                label="Local ID"
+                variant="underlined"
+                :maxlength="25"
+                density="compact"
+                :readonly="true"
+                :class="['readonly-text']"
               />
               <v-text-field
-                  id="SurName"
-                  v-model="assessmentStudentDetail.surName"
-                  label="SurName"
-                  variant="underlined"
-                  density="compact"
-                  :readonly="true"
-                  :class="['readonly-text']"
+                id="Surname"
+                v-model="assessmentStudentDetail.surname"
+                label="Legal Last Name"
+                variant="underlined"
+                density="compact"
+                :readonly="true"
+                :class="['readonly-text']"
               />
               <v-text-field
-                  id="GivenName"
-                  v-model="assessmentStudentDetail.givenName"
-                  label="Given Name"
-                  variant="underlined"
-                  :maxlength="25"
-                  density="compact"
-                  :readonly="true"
-                  :class="['readonly-text']"
+                id="GivenName"
+                v-model="assessmentStudentDetail.givenName"
+                label="Legal First Name"
+                variant="underlined"
+                :maxlength="25"
+                density="compact"
+                :readonly="true"
+                :class="['readonly-text']"
               />
               <v-text-field
-                  id="School"
-                  v-model="assessmentStudentDetail.schoolName_desc"
-                  label="School"
-                  variant="underlined"
-                  :maxlength="25"
-                  density="compact"
-                  :readonly="true"
-                  :class="['readonly-text']"
+                id="School"
+                v-model="assessmentStudentDetail.schoolName_desc"
+                label="School"
+                variant="underlined"
+                :maxlength="25"
+                density="compact"
+                :readonly="true"
+                :class="['readonly-text']"
               />
               <v-text-field
-                  id="AttemptNumber"
-                  v-model="assessmentStudentDetail.numberOfAttempts"
-                  label="Attempt Number"
-                  variant="underlined"
-                  :readonly="true"
-                  density="compact"
-                  :class="['readonly-text']"
+                id="AttemptNumber"
+                v-model="assessmentStudentDetail.numberOfAttempts"
+                label="Attempt Number"
+                variant="underlined"
+                :readonly="true"
+                density="compact"
+                :class="['readonly-text']"
               />
               <v-autocomplete
-                  id="ProficiencyScore"
-                  v-model="assessmentStudentDetail.proficiencyScore"
-                  variant="underlined"
-                  :items="proficiencyScoreSearchNames"
-                  label="Proficiency Score"
-                  :readonly="!isSessionEditable || assessmentStudentDetail.provincialSpecialCaseCode === 'A'"
-                  :clearable="isSessionEditable"
-                  :class="isSessionEditable ? 'fieldtext': 'readonly-text'"
-                  item-title="proficiencyScoreCodeName"
-                  item-value="proficiencyScoreCodeValue"
-                  autocomplete="off"
-                  density="compact"
-                  :color="getFieldColor(isSessionEditable)"
-                  @update:model-value="setupSpecialCaseCodes($event)"
+                id="ProficiencyScore"
+                v-model="assessmentStudentDetail.proficiencyScore"
+                variant="underlined"
+                :items="proficiencyScoreSearchNames"
+                label="Proficiency Score"
+                :readonly="!isSessionEditable || assessmentStudentDetail.provincialSpecialCaseCode === 'A'"
+                :clearable="isSessionEditable"
+                :class="isSessionEditable ? 'fieldtext': 'readonly-text'"
+                item-title="proficiencyScoreCodeName"
+                item-value="proficiencyScoreCodeValue"
+                autocomplete="off"
+                disabled
+                density="compact"
+                :color="getFieldColor(isSessionEditable)"
+                @update:model-value="setupSpecialCaseCodes($event)"
               />
               <v-autocomplete
-                  id="SpecialCase"
-                  v-model="assessmentStudentDetail.provincialSpecialCaseCode"
-                  variant="underlined"
-                  :items="specialCaseSearchNames"
-                  label="Special Case"
-                  :readonly="!isSessionEditable"
-                  :clearable="isSessionEditable"
-                  :class="isSessionEditable ? 'fieldtext': 'readonly-text'"
-                  item-title="specialCaseCodeName"
-                  item-value="specialCaseCodeValue"
-                  autocomplete="off"
-                  density="compact"
-                  :color="getFieldColor(isSessionEditable)"
+                id="SpecialCase"
+                v-model="assessmentStudentDetail.provincialSpecialCaseCode"
+                variant="underlined"
+                :items="specialCaseSearchNames"
+                label="Special Case"
+                :readonly="!isSessionEditable"
+                :clearable="isSessionEditable"
+                :class="isSessionEditable ? 'fieldtext': 'readonly-text'"
+                item-title="specialCaseCodeName"
+                disabled
+                item-value="specialCaseCodeValue"
+                autocomplete="off"
+                density="compact"
+                :color="getFieldColor(isSessionEditable)"
               />
             </v-form>
           </v-col>
-          <v-col cols="12" md="6" v-if="assessmentStudentDetail?.assessmentStudentValidationIssues?.length > 0">
+          <v-col
+            v-if="assessmentStudentDetail?.assessmentStudentValidationIssues?.length > 0"
+            cols="12"
+            md="6"
+          >
             <v-row v-if="hasError">
               <v-col>
                 <v-alert
-                    type="warning"
-                    variant="tonal"
-                    text="Warning! Updates to student details will not be saved until all errors are fixed."
+                  type="warning"
+                  variant="tonal"
+                  text="Warning! Updates to student details will not be saved until all errors are fixed."
                 />
               </v-col>
             </v-row>
@@ -171,21 +180,21 @@
               <v-col class="pl-0">
                 <div class="timeline-container">
                   <v-timeline
-                      side="end"
-                      density="compact"
-                      style="margin-left: 1em"
-                      align="start"
-                      truncate-line="start"
+                    side="end"
+                    density="compact"
+                    style="margin-left: 1em"
+                    align="start"
+                    truncate-line="start"
                   >
                     <v-timeline-item
-                        v-for="(issue, index) in assessmentStudentDetail.assessmentStudentValidationIssues"
-                        :key="index"
-                        dot-color="white"
-                        fill-dot
-                        icon-color="#d90606"
-                        icon="mdi-alert-circle-outline"
-                        size="large"
-                        width="100%"
+                      v-for="(issue, index) in assessmentStudentDetail.assessmentStudentValidationIssues"
+                      :key="index"
+                      dot-color="white"
+                      fill-dot
+                      icon-color="#d90606"
+                      icon="mdi-alert-circle-outline"
+                      size="large"
+                      width="100%"
                     >
                       <v-row class="mt-n1">
                         <v-col>
@@ -196,7 +205,7 @@
                       </v-row>
                       <v-row>
                         <v-col>
-                          <span> {{issue.validationMessage}}</span>
+                          <span> {{ issue.validationMessage }}</span>
                         </v-col>
                       </v-row>
                     </v-timeline-item>
@@ -208,30 +217,30 @@
         </v-row>
       </div>
       <v-row
-          :class="functionType !== 'add' ? 'footer' : ''"
-          no-gutters
+        :class="functionType !== 'add' ? 'footer' : ''"
+        no-gutters
       >
         <v-col class="d-flex justify-end mr-3 mt-3">
           <v-btn
-              v-if="isSessionEditable && !assessmentStudentDetail.provincialSpecialCaseCode && !assessmentStudentDetail.proficiencyScore"
-              id="removeRecord"
-              color="#003366"
-              large-icon
-              prepend-icon="mdi-delete"
-              text="Remove"
-              variant="outlined"
-              class="mr-1"
-              :disabled="!studentRegistrationDetailsFormValid"
-              @click="deleteStudentRegistration"
+            v-if="isSessionEditable && !assessmentStudentDetail.provincialSpecialCaseCode && !assessmentStudentDetail.proficiencyScore"
+            id="removeRecord"
+            color="#003366"
+            large-icon
+            prepend-icon="mdi-delete"
+            text="Remove"
+            variant="outlined"
+            class="mr-1"
+            :disabled="!studentRegistrationDetailsFormValid"
+            @click="deleteStudentRegistration"
           />
           <v-btn
-              v-if="isSessionEditable"
-              id="saveRecord"
-              color="#003366"
-              text="Validate & Save"
-              class="mr-1"
-              :disabled="!studentRegistrationDetailsFormValid"
-              @click="saveStudentRegistration"
+            v-if="isSessionEditable"
+            id="saveRecord"
+            color="#003366"
+            text="Validate & Save"
+            class="mr-1"
+            :disabled="!studentRegistrationDetailsFormValid"
+            @click="saveStudentRegistration"
           />
         </v-col>
       </v-row>
@@ -261,7 +270,7 @@ import { mapState } from 'pinia';
 import {easStore} from '../../../../store/modules/eas';
 
 import moment from 'moment';
-import {PROFICIENCY_SCORE_RANGE_FILTER} from "../../../../utils/eas/StudentRegistrationTableConfiguration";
+import {PROFICIENCY_SCORE_RANGE_FILTER} from '../../../../utils/eas/StudentRegistrationTableConfiguration';
 
 export default {
   name: 'EditStudentRegistration',
@@ -483,30 +492,33 @@ export default {
         Object.entries(this.assessmentStudentDetail).filter(([key]) => !key.endsWith('_desc'))
       );
       ApiService.apiAxios
-          .put(
-              `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID,
-              putAssessmentStudentDetail
-          )
-          .then((res) => {
-            this.assessmentStudentDetail.assessmentStudentValidationIssues = res.data.assessmentStudentValidationIssues;
-            if(this.assessmentStudentDetail.assessmentStudentValidationIssues){
-              this.hasError = true;
-            } else if(!this.assessmentStudentDetail.assessmentStudentValidationIssues) {
-              this.hasError = false;
-              setSuccessAlert('Success! The student registration details have been updated.');
-              this.$emit('reset-student-registration-pagination');
-              this.$emit('reset-student-registration-parent');
-            }
-            this.loadingCount -= 1;
-          })
-          .catch((error) => {
-            console.error(error);
-            setFailureAlert(
-                error?.response?.data?.message
-                    ? error?.response?.data?.message
-                    : 'An error occurred while trying to update student registration details. Please try again later.'
-            );
-          })
+        .put(
+          `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID,
+          putAssessmentStudentDetail
+        )
+        .then((res) => {
+          this.assessmentStudentDetail.assessmentStudentValidationIssues = res.data.assessmentStudentValidationIssues;
+          if(this.assessmentStudentDetail.assessmentStudentValidationIssues){
+            this.hasError = true;
+          } else if(!this.assessmentStudentDetail.assessmentStudentValidationIssues) {
+            this.hasError = false;
+            setSuccessAlert('Success! The student registration details have been updated.');
+            this.$emit('reset-student-registration-pagination');
+            this.$emit('reset-student-registration-parent');
+          }
+          this.loadingCount -= 1;
+        })
+        .catch((error) => {
+          console.error(error);
+          setFailureAlert(
+            error?.response?.data?.message
+              ? error?.response?.data?.message
+              : 'An error occurred while trying to update student registration details. Please try again later.'
+          );
+        }).finally(() => {
+          this.loadingCount -= 1;
+          this.$emit('reset-student-registration-parent');
+        });
     },
     deleteStudentRegistration() {
       const confirmation = this.$refs.confirmRemoveStudentRegistration.open('Confirm Removal of Student Registration', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
