@@ -1,21 +1,33 @@
 <template>
-  <v-container id="enrollmentTab" fluid>
+  <v-container
+    id="enrollmentTab"
+    fluid
+  >
     <v-row>
       <v-col cols="12">
         <v-row justify="space-between">
-          <v-col cols="4" class="found-align">
-            <span id="currentPage" class="bold">
+          <v-col
+            cols="4"
+            class="found-align"
+          >
+            <span
+              id="currentPage"
+              class="bold"
+            >
               Records Found: {{ totalElements }}
             </span>
           </v-col>
-          <v-col cols="8" class="d-flex justify-end">
+          <v-col
+            cols="8"
+            class="d-flex justify-end"
+          >
             <v-btn
-                id="addStudentReg"
-                color="#003366"
-                text="Add Registration"
-                class="mr-1 mb-1"
-                variant="outlined"
-                @click="openCreateStudentRegDialog"
+              id="addStudentReg"
+              color="#003366"
+              text="Add Registration"
+              class="mr-1 mb-1"
+              variant="outlined"
+              @click="openCreateStudentRegDialog"
             />
             <v-btn
               id="filters"
@@ -78,18 +90,18 @@
       </v-navigation-drawer>
     </v-row>
     <v-bottom-sheet
-        v-model="newStudentRegistrationSheet"
-        :inset="true"
-        :no-click-animation="true"
-        :persistent="true"
-        max-height="90vh"
+      v-model="newStudentRegistrationSheet"
+      :inset="true"
+      :no-click-animation="true"
+      :persistent="true"
+      max-height="90vh"
     >
       <AddStudentRegistration
-          :session-id="sessionID"
-          :school-year-sessions="schoolYearSessions"
-          @reload-student-registrations="reloadStudentRegistrationsFlag = true"
-          @close-new-student-registration="closeNewAndLoadStudentRegistrations"
-          @update:sessionID="sessionID = $event"
+        :session-id="sessionID"
+        :school-year-sessions="schoolYearSessions"
+        @reload-student-registrations="reloadStudentRegistrationsFlag = true"
+        @close-new-student-registration="closeNewAndLoadStudentRegistrations"
+        @update:sessionID="sessionID = $event"
       />
     </v-bottom-sheet>
     <v-bottom-sheet

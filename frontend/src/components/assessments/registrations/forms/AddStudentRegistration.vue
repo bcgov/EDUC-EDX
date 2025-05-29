@@ -41,68 +41,6 @@
               ref="addRegistrationForm"
               v-model="addStudentRegistrationFormValid"
             >
-              <v-row v-if="isDistrictUser">
-                <v-col>
-                  <v-autocomplete
-                    id="School"
-                    v-model="newStudentDetail.schoolID"
-                    variant="underlined"
-                    :items="schoolSearchNames"
-                    label="School"
-                    item-title="schoolCodeName"
-                    item-value="schoolID"
-                    autocomplete="off"
-                    :rules="[rules.required()]"
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-select
-                    id="Session"
-                    v-model="selectedSessionID"
-                    variant="underlined"
-                    :items="sessionSearchNames"
-                    label="Session"
-                    item-title="sessionCodeName"
-                    item-value="sessionCodeValue"
-                    :disabled="!!sessionID"
-                    :rules="[rules.required()]"
-                    @update:model-value="refreshAssessmentTypes($event)"
-                  />
-                </v-col>
-                <v-col>
-                  <v-autocomplete
-                    id="AssessmentCourse"
-                    v-model="newStudentDetail.assessmentID"
-                    variant="underlined"
-                    :items="assessmentTypeSearchNames"
-                    label="Assessment/Course"
-                    item-title="assessmentCodeName"
-                    item-value="assessmentCodeValue"
-                    autocomplete="off"
-                    :rules="[rules.required()]"
-                    :disabled="!sessionID && !selectedSessionID"
-                    @update:model-value="syncAssessmentValue($event)"
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-autocomplete
-                    id="AssessmentCenter"
-                    v-model="newStudentDetail.assessmentCenterID"
-                    variant="underlined"
-                    :items="assessmentCenterSearchNames"
-                    label="Assessment Center"
-                    :clearable="true"
-                    item-title="schoolCodeName"
-                    item-value="schoolID"
-                    autocomplete="off"
-                    density="compact"
-                  />
-                </v-col>
-              </v-row>
               <v-row>
                 <v-col>
                   <v-text-field
@@ -146,6 +84,68 @@
                     variant="underlined"
                     density="compact"
                     :rules="[rules.required()]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row v-if="isDistrictUser">
+                <v-col>
+                  <v-autocomplete
+                    id="School"
+                    v-model="newStudentDetail.schoolID"
+                    variant="underlined"
+                    :items="schoolSearchNames"
+                    label="School"
+                    item-title="schoolCodeName"
+                    item-value="schoolID"
+                    autocomplete="off"
+                    :rules="[rules.required()]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="mt-n2">
+                <v-col>
+                  <v-select
+                    id="Session"
+                    v-model="selectedSessionID"
+                    variant="underlined"
+                    :items="sessionSearchNames"
+                    label="Session"
+                    item-title="sessionCodeName"
+                    item-value="sessionCodeValue"
+                    :disabled="!!sessionID"
+                    :rules="[rules.required()]"
+                    @update:model-value="refreshAssessmentTypes($event)"
+                  />
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    id="AssessmentCourse"
+                    v-model="newStudentDetail.assessmentID"
+                    variant="underlined"
+                    :items="assessmentTypeSearchNames"
+                    label="Assessment/Course"
+                    item-title="assessmentCodeName"
+                    item-value="assessmentCodeValue"
+                    autocomplete="off"
+                    :rules="[rules.required()]"
+                    :disabled="!sessionID && !selectedSessionID"
+                    @update:model-value="syncAssessmentValue($event)"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-autocomplete
+                    id="AssessmentCenter"
+                    v-model="newStudentDetail.assessmentCenterID"
+                    variant="underlined"
+                    :items="assessmentCenterSearchNames"
+                    label="Assessment Center"
+                    :clearable="true"
+                    item-title="schoolCodeName"
+                    item-value="schoolID"
+                    autocomplete="off"
+                    density="compact"
                   />
                 </v-col>
               </v-row>
