@@ -72,6 +72,10 @@ export function getDemogValidationResults(student, sdcSchoolCollectionID) {
       });
   });
 }
+export function downloadStudentProgramReportURL(route, target) {
+  return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${route.params.sdcDistrictCollectionID}/report/${target}/download`;
+}
+
 export function downloadStudentOnlyReportURL(route) {
   return `${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${route.params.sdcDistrictCollectionID}/report/csv_dis/download`;
 }

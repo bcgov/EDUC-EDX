@@ -24,7 +24,7 @@
             class="mr-2 mb-1"
             prepend-icon="mdi-tray-arrow-down"
             variant="elevated"
-            @click="showExportDialog = true"
+            @click="handleExportClick"
           />
           <v-btn
             id="filters"
@@ -128,7 +128,11 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import CustomTable from '../../common/SDCCustomTable.vue';
-import {downloadStudentOnlyReportURL,downloadStudentErrorsReportURL} from '../../../../utils/common';
+import {
+  downloadStudentOnlyReportURL,
+  downloadStudentErrorsReportURL,
+  downloadStudentProgramReportURL
+} from '../../../../utils/common';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {cloneDeep, isEmpty, omitBy} from 'lodash';
@@ -160,6 +164,11 @@ export default {
     showExportBtn: {
       type: Boolean,
       default: false
+    },
+    exportType: {
+      type: String,
+      required: false,
+      default: 'all-students'
     },
     isFinalSignOff: {
       type: Boolean,
@@ -216,12 +225,24 @@ export default {
     });
   },
   methods: {
+    handleExportClick() {
+      if (this.exportType === 'all-students') {
+        this.showExportDialog = true;
+      } else {
+        this.downloadStudentProgramReport();
+      }
+    },
     closeAndLoadStudents() {
       this.editStudentSheet = !this.editStudentSheet;
       if (this.reloadStudentsFlag === true) {
         this.loadStudents();
       }
       this.reloadStudentsFlag = false;
+    },
+    downloadStudentProgramReport(){
+      const routeData = this.$router.resolve({path: downloadStudentProgramReportURL(this.$route, this.exportType)});
+      window.open(routeData.href, '_blank');
+      this.showExportDialog = false;
     },
     downloadStudentReport(){
       const routeData = this.$router.resolve({path: downloadStudentOnlyReportURL(this.$route)});

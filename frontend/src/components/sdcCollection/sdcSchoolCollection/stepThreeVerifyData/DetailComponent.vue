@@ -24,7 +24,7 @@
             >
               mdi-tray-arrow-down
             </v-icon>
-            <span class="export">Export All Student Records</span>
+            <span class="export">Export Student Records</span>
           </router-link>
         </v-col>
         <v-col
@@ -187,6 +187,11 @@ export default {
       type: Boolean,
       default: false
     },
+    exportType: {
+      type: String,
+      required: false,
+      default: 'csv_school'
+    },
     isFinalSignOff: {
       type: Boolean,
       required: false
@@ -252,7 +257,7 @@ export default {
   },
   methods: {
     downloadReportURL() {
-      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/csv_school/download`;
+      return `${ApiRoutes.sdc.BASE_URL}/${this.$route.params.schoolCollectionID}/report/${this.exportType}/download`;
     },
     editStudent($event) {
       const selectedStudent = cloneDeep($event);

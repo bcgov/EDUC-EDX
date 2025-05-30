@@ -31,6 +31,8 @@
       <DetailComponent
         :config="config"
         :school="school"
+        :show-export-btn="true"
+        :export-type="'csv_school_inclusive'"
         :is-final-sign-off="isFinalSignOff"
         :is-collection-active="isCollectionActive"
       />
