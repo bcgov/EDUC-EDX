@@ -347,7 +347,7 @@ export default {
       let schoolCollection = this.isActive ? this.activeSchoolsMap : this.schoolsMap;
       schoolCollection?.forEach((school) => {
         this.schoolSearchNames.push({
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
+          schoolCodeName: school.mincode + ' - ' + school.schoolName,
           schoolCodeValue: school.schoolID
         });
       });

@@ -25,6 +25,7 @@
               id="addStudentReg"
               color="#003366"
               text="Add Registration"
+              prepend-icon="mdi-plus"
               class="mr-1 mb-1"
               variant="outlined"
               @click="openCreateStudentRegDialog"

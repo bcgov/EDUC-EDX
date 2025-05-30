@@ -55,7 +55,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
 
       session.assessments.forEach(assessment => {
         let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
-        assessment.assessmentTypeName = assessmentType.label + ' (' + assessment.assessmentTypeCode + ')';
+        assessment.assessmentTypeName = assessment.assessmentTypeCode;
         assessment.displayOrder = assessmentType.displayOrder;
       });
     });
@@ -168,7 +168,7 @@ function includeAssessmentStudentProps(assessmentStudent) {
       assessmentStudent.assessmentCenterName_desc = getSchoolName(assessmentCenter);
     }    
 
-    assessmentStudent.assessmentTypeName_desc = cacheService.getAssessmentTypeByCode(assessmentStudent.assessmentTypeCode).label+' ('+assessmentStudent.assessmentTypeCode+')';
+    assessmentStudent.assessmentTypeName_desc = assessmentStudent.assessmentTypeCode;
     assessmentStudent.provincialSpecialCaseName_desc = assessmentStudent.provincialSpecialCaseCode ? cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode) : null;
     assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') +' '+assessmentStudent.courseYear;
   }

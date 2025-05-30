@@ -6,7 +6,7 @@
     >
       <v-row no-gutters>
         <v-col class="d-flex justify-start">
-          Add Assessment Registration
+          Add Graduation Assessment Registration
         </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
@@ -123,7 +123,7 @@
                     v-model="newStudentDetail.assessmentID"
                     variant="underlined"
                     :items="assessmentTypeSearchNames"
-                    label="Assessment/Course"
+                    label="Assessment Code"
                     item-title="assessmentCodeName"
                     item-value="assessmentCodeValue"
                     autocomplete="off"
@@ -209,13 +209,23 @@
         cols="24"
         class="justify-end"
       >
-        <v-btn
-          id="saveRecord"
-          color="#003366"
-          text="Validate & Save"
-          :disabled="!addStudentRegistrationFormValid"
-          @click="saveStudentRegistration"
-        />
+        <v-col class="d-flex justify-end">
+          <v-btn
+            id="cancelRecord"
+            color="#003366"
+            text="Cancel"
+            class="mr-2"
+            variant="outlined"
+            @click="cancel"
+          />
+          <v-btn
+            id="saveRecord"
+            color="#003366"
+            text="Validate & Save"
+            :disabled="!addStudentRegistrationFormValid"
+            @click="saveStudentRegistration"
+          />
+        </v-col>
       </v-row>
     </v-card-text>
   </v-card>
@@ -328,7 +338,7 @@ export default {
     setupSchoolList() {
       this.activeSchoolsMap?.forEach((school) => {
         this.schoolSearchNames.push({
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
+          schoolCodeName: school.mincode + ' - ' + school.schoolName,
           schoolID: school.schoolID,
         });
       });
@@ -341,7 +351,7 @@ export default {
         sessions.push({
           sessionCourseMonth: parseInt(session.courseMonth),
           sessionCourseYear: parseInt(session.courseYear),
-          sessionCodeName: this.formatMonth(session.courseMonth) + ' ' + session.courseYear,
+          sessionCodeName: session.courseYear + '/' + session.courseMonth,
           sessionCodeValue: session.sessionID
         });
       });
