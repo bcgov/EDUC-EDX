@@ -358,7 +358,7 @@ export default {
           if (error?.response?.data?.message) {
             this.setErrorAlert(error?.response?.data?.message);
           } else {
-            this.setErrorAlert(`PEN must be a valid PEN associated with a student at the ${MINISTRY_NAME}`);
+            this.setErrorAlert(`PEN must be a valid.`);
           }
         }).finally(() => {
           this.isSearchingStudent = false;

@@ -219,7 +219,7 @@ export default {
           (session) => session.sessionID === this.sessionID
         );
         this.filterSearchParams.moreFilters.session = [
-          { title: capitalize(Month.of(month).toString()) , id: activeSession.sessionID, value: activeSession.sessionID },
+          { title: capitalize(Month.of(activeSession.courseMonth).toString()) , id: activeSession.sessionID, value: activeSession.sessionID },
         ];
       }
     },
