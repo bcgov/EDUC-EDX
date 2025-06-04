@@ -127,7 +127,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="mt-n8">
+          <v-col cols="12" class="mt-n4">
             <slot name="text-search">              
               <v-autocomplete
                 id="selectSchool"
@@ -362,7 +362,6 @@ export default {
     },
     setupSpecialCaseCodes() {
       this.specialCaseSearchNames = [];
-      console.log(this.specialCaseCodes);
       Object.keys(this.specialCaseCodes).forEach(key => {
         this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
       });
