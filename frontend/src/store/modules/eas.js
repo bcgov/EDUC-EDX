@@ -25,8 +25,8 @@ export const easStore = defineStore('EasStore', {
       return this.specialCaseCodes;
     },
     async getActiveSchoolYear(activeInstituteType) {
-      var response = await ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+ activeInstituteType);
-      var schoolYear = response.data[0] ? response.data[0].schoolYear.replace(/\//g, '-') : '';
+      let response = await ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+ activeInstituteType);
+      let schoolYear = response.data[0] ? response.data[0].schoolYear.replace(/\//g, '-') : '';
       this.setSchoolYear(schoolYear);
     },
   },
