@@ -218,14 +218,14 @@
         </v-row>
       </div>
       <div v-else-if="hasRequiredPermission('GRAD_SCH_UPLOAD')">
-        <v-row v-if="isBetweenSchoolSummerPeriod">
+        <v-row v-if="isBeforeSummerSchoolPeriod">
           <v-col cols="12">
             <v-alert
               density="compact"
               type="info"
               variant="tonal"
             >
-              Uploads are unavailable, as the School Year Reporting Period is complete. The Summer Reporting Period will open in August.
+              Uploads are unavailable, as the School Year Reporting Period is complete. The Summer Reporting Period will open on {{ summerPeriodStart }}.
             </v-alert>
           </v-col>
         </v-row>
@@ -260,7 +260,7 @@
               color="#003366"
               text="Upload Graduation Data Files"
               :loading="isLoadingFiles"
-              :disabled="isBetweenSchoolSummerPeriod || isBetweenSummerSchoolPeriod"
+              :disabled="isBeforeSummerSchoolPeriod || isBetweenSummerSchoolPeriod"
               @click="handleFileImport"
             />
           </v-col>
@@ -667,6 +667,7 @@ import {appStore} from '../../../../store/modules/app';
 import {LocalDateTime} from '@js-joda/core';
 import ClipboardButton from '../../../util/ClipboardButton.vue';
 import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue';
+import {formatDate} from '../../../../utils/format';
   
 export default {
   name: 'GradSchoolUploadDataComponent',
@@ -690,6 +691,7 @@ export default {
   emits: [],
   data() {
     return {
+      summerPeriodStart: '',
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
       acceptableXLSFileExtensions: ['.xlsx'],
       requiredRules: [v => !!v || 'Required'],
@@ -718,7 +720,7 @@ export default {
       fileUploadList: [],
       progressCounts: [],
       isSummerPeriod: false,
-      isBetweenSchoolSummerPeriod: false,
+      isBeforeSummerSchoolPeriod: false,
       isBetweenSummerSchoolPeriod: false,
       filesetList: [],
       totalElements: 0,
@@ -824,6 +826,7 @@ export default {
       this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
       this.setPeriodFlags();
     },
+    formatDate,
     getGradSchoolDetails() {
       ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/grad-school')
         .then(response => {
@@ -836,11 +839,12 @@ export default {
       const schoolPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
       const schoolPeriodEnd = LocalDateTime.parse(this.collectionObject.schYrEnd);
 
+      this.summerPeriodStart = formatDate(summerPeriodStart.toString().substring(0, 10),'uuuu-MM-dd', 'uuuu/MM/dd');
       const today = LocalDateTime.now();
 
       this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
       this.isBetweenSummerSchoolPeriod = (today.isBefore(schoolPeriodStart) && today.isBefore(summerPeriodStart)) || (today.isAfter(summerPeriodEnd) && today.isAfter(schoolPeriodEnd));
-      this.isBetweenSchoolSummerPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
+      this.isBeforeSummerSchoolPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
     },
     toggleMoreInfoTooltip(){
       this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
