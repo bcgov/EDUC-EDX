@@ -7,12 +7,18 @@
     </v-row>
     <v-row v-else>
         <v-col>
-          <v-tabs v-model="tab" color="#38598a">
+          <v-tabs v-model="tab" style="color: #38598a">
             <v-tab 
               :value="1"
               prepend-icon="mdi-account-multiple-outline"
               >
               Registrations and Results 
+            </v-tab>
+            <v-tab 
+              :value="2"
+              prepend-icon="mdi-finance"
+              >
+              Reports
             </v-tab>
           </v-tabs>
           <v-window v-model="tab">
@@ -20,8 +26,9 @@
               <StudentRegistrations v-if="schoolYearSessions.length > 0" :school-year="schoolYear"
                                     :school-year-sessions="schoolYearSessions" :session-ID="sessionID" />
             </v-window-item>
-            <v-window-item :value="2" transition="false" reverse-transition="false"/>
-            <v-window-item :value="3" transition="false" reverse-transition="false"/>
+            <v-window-item :value="2" transition="false" reverse-transition="false">
+              <AssessmentReports/>
+            </v-window-item>
           </v-window>
         </v-col>
       </v-row>
@@ -35,12 +42,15 @@ import { ApiRoutes } from '../../utils/constants';
 import { mapState } from 'pinia';
 import Spinner from '../common/Spinner.vue';
 import {authStore} from '../../store/modules/auth';
+import { easStore } from '../../store/modules/eas';
+import AssessmentReports from './reports/AssessmentReports.vue';
 
 export default {
   name: 'AssessmentSessionDetail',
   components: {
     StudentRegistrations,
     Spinner,
+    AssessmentReports
   },
   mixins: [alertMixin],
   props: {
@@ -56,32 +66,18 @@ export default {
       schoolYearSessions: [],
       isLoading: false,
       tab: '',
-      schoolYear: '',
       session: ''
     };
   },
   computed: {
-    ...mapState(authStore, ['userInfo']),    
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(easStore, ['schoolYear'])   
   },
   async created() {    
     this.loading = true;
-    await this.getActiveSessionsForSchoolYear();
+    easStore().getActiveSchoolYear(this.userInfo.activeInstituteType).then(() => this.getAllSessionsforYear());
   },
   methods: {
-    async getActiveSessionsForSchoolYear() {
-      ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+this.userInfo.activeInstituteType).then(response => {
-        if(response.data?.length >0) {
-          this.schoolYear = response.data[0].schoolYear.replace(/\//g, '-');
-          this.session = response.data[0].courseYear + '/' + response.data[0].courseMonth;
-        }
-      }).catch(error => {
-        console.error(error);
-        this.setFailureAlert(error.response?.data?.message || error.message);
-      }).finally(() => {
-        this.loadingTable = false;
-        this.getAllSessionsforYear();
-      });  
-    },
     async  getAllSessionsforYear() {
       this.loading = true;
       ApiService.apiAxios

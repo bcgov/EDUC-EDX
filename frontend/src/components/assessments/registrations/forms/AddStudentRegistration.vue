@@ -235,7 +235,6 @@
 
 import { sortBy } from 'lodash';
 import { mapState } from 'pinia';
-import moment from 'moment';
 import {appStore} from '../../../../store/modules/app';
 import {ApiRoutes} from '../../../../utils/constants';
 import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
@@ -426,9 +425,6 @@ export default {
     },
     validateForm() {
       this.$refs?.addRegistrationForm?.validate();
-    },
-    formatMonth(month) {
-      return moment(month, 'MM').format('MMMM');
     },
     cancel() {
       this.$emit('close-new-student-registration');

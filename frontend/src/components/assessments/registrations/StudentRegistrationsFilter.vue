@@ -127,7 +127,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="mt-n8">
+          <v-col cols="12" class="mt-n4">
             <slot name="text-search">              
               <v-autocomplete
                 id="selectSchool"
@@ -250,12 +250,12 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
-import { isEmpty, sortBy} from 'lodash';
+import { isEmpty, sortBy, capitalize} from 'lodash';
 import { mapState } from 'pinia';
-import moment from 'moment';
 import {appStore} from '../../../store/modules/app';
 import {authStore} from '../../../store/modules/auth';
 import {easStore} from '../../../store/modules/eas';
+import { Month } from '@js-joda/core';
 
 export default {
   name: 'StudentRegistrationsFilter',
@@ -362,7 +362,6 @@ export default {
     },
     setupSpecialCaseCodes() {
       this.specialCaseSearchNames = [];
-      console.log(this.specialCaseCodes);
       Object.keys(this.specialCaseCodes).forEach(key => {
         this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
       });
@@ -445,7 +444,7 @@ export default {
       this.$emit('apply-assessment-filters', this.selected);
     },
     formatMonth(month) {
-      return moment(month, 'MM').format('MMMM');
+      return capitalize(Month.of(month).toString());
     }
   },
 };
