@@ -124,9 +124,9 @@
 
 <script>
 import StudentRegistrationsCustomTable from './StudentRegistrationsCustomTable.vue';
-import { cloneDeep, isEmpty, omitBy } from 'lodash';
+import { cloneDeep, isEmpty, omitBy, capitalize } from 'lodash';
 import StudentRegistrationsFilter from './StudentRegistrationsFilter.vue';
-import moment from 'moment';
+import { Month } from '@js-joda/core';
 import {SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT, SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL} from '../../../utils/eas/StudentRegistrationTableConfiguration';
 import ApiService from '../../../common/apiService';
 import {ApiRoutes} from '../../../utils/constants';
@@ -219,7 +219,7 @@ export default {
           (session) => session.sessionID === this.sessionID
         );
         this.filterSearchParams.moreFilters.session = [
-          { title: moment(activeSession.courseMonth, 'MM').format('MMMM') , id: activeSession.sessionID, value: activeSession.sessionID },
+          { title: capitalize(Month.of(month).toString()) , id: activeSession.sessionID, value: activeSession.sessionID },
         ];
       }
     },

@@ -252,7 +252,6 @@ import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
 import { sortBy } from 'lodash';
 import * as Rules from '../../../utils/institute/formRules';
-import { easStore } from '../../../store/modules/eas';
 
 export default {
   name: 'AssessmentReports',

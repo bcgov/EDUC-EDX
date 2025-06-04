@@ -226,8 +226,6 @@ import { appStore } from '../../../../store/modules/app';
 import {authStore} from '../../../../store/modules/auth';
 import { mapState } from 'pinia';
 import {easStore} from '../../../../store/modules/eas';
-
-import moment from 'moment';
 import {PROFICIENCY_SCORE_RANGE_FILTER} from '../../../../utils/eas/StudentRegistrationTableConfiguration';
 
 export default {
@@ -359,7 +357,7 @@ export default {
         this.sessionSearchNames.push({
           sessionCourseMonth: parseInt(session.courseMonth),
           sessionCourseYear: parseInt(session.courseYear),
-          sessionCodeName: this.formatMonth(session.courseMonth) + ' ' + session.courseYear,
+          sessionCodeName: session.courseMonth + '/' + session.courseYear,
           sessionCodeValue: session.sessionID
         });
       });
@@ -503,9 +501,6 @@ export default {
     },
     validateForm() {
       this.$refs?.registrationDetailsForm?.validate();
-    },
-    formatMonth(month) {
-      return moment(month, 'MM').format('MMMM');
     },
     getFieldColor() {
       return !this.isSessionEditable ? '#7f7f7f' : '#003366';
