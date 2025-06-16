@@ -11,9 +11,9 @@ const constants = require('../util/constants');
 
 let sdcStaffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_SDC_EDIT', 'DIS_SDC_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
 let sdcStaffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
-let gradStaffAdminSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW'];
+let gradStaffAdminSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_SCH_EDIT'];
 let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
-let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW'];
+let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_EDIT'];
 let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
 let schoolMap = new Map();
 let schools = [];
