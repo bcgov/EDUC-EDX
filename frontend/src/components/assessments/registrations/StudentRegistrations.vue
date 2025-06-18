@@ -238,7 +238,7 @@ export default {
         ];
       } else {
         assessmentSearchParams.moreFilters.schoolID = [
-          {title: 'schoolNameNumber', id: 'schoolID', value: this.userInfo.activeInstituteIdentifier}
+          {title: 'schoolNameNumber', id: 'schoolOfRecordSchoolID', value: this.userInfo.activeInstituteIdentifier}
         ];
       }
       ApiService.apiAxios

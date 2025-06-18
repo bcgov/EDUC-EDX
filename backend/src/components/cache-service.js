@@ -16,6 +16,7 @@ let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'G
 let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_EDIT'];
 let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
 let schoolMap = new Map();
+let districtToSchoolsMap = new Map();
 let schools = [];
 let districts = [];
 let districtsMap = new Map();
@@ -54,6 +55,7 @@ const cacheService = {
       const schoolsResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/school`);
       schools = []; // reset the value.
       schoolMap.clear();// reset the value.
+      districtToSchoolsMap.clear();
       mincode_school_ID_Map.clear();
       activeSchools = [];
       if (schoolsResponse && schoolsResponse.length > 0) {
@@ -62,12 +64,20 @@ const cacheService = {
           schoolMap.set(schoolObject.schoolID, schoolObject);
           mincode_school_ID_Map.set(schoolObject.mincode, schoolObject.schoolID);
           schools.push(schoolObject);
+
+          if(districtToSchoolsMap.has(schoolObject.districtID)){
+            districtToSchoolsMap.get(schoolObject.districtID).push(schoolObject.schoolID);
+          }else{
+            districtToSchoolsMap.set(schoolObject.districtID, [schoolObject.schoolID]);
+          }
+
           if (isSchoolActive(schoolObject)) {
             activeSchools.push(schoolObject);
           }
         }
       }
       log.info(`Loaded ${schoolMap.size} schools.`);
+      log.info(`Loaded ${districtToSchoolsMap.size} district to schools.`);
       log.info(`Loaded ${activeSchools.length} active schools.`);
     }, {
       retries: 50
@@ -78,6 +88,9 @@ const cacheService = {
   },
   getSchoolBySchoolID(schoolID) {
     return schoolMap.get(schoolID);
+  },
+  getAllSchoolIDsForDistrictID(districtID) {
+    return districtToSchoolsMap.get(districtID);
   },
   getDistrictByDistrictID(districtID) {
     return districtsMap.get(districtID);

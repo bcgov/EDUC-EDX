@@ -1,37 +1,58 @@
 <template>
-  <v-container class="containerSetup" :fluid="true">
-    <v-row v-if="isLoading" class="mt-0">
+  <v-container
+    class="containerSetup"
+    :fluid="true"
+  >
+    <v-row
+      v-if="isLoading"
+      class="mt-0"
+    >
       <v-col>
         <Spinner />
       </v-col>
     </v-row>
     <v-row v-else>
-        <v-col>
-          <v-tabs v-model="tab" style="color: #38598a">
-            <v-tab 
-              :value="1"
-              prepend-icon="mdi-account-multiple-outline"
-              >
-              Registrations and Results 
-            </v-tab>
-            <v-tab 
-              :value="2"
-              prepend-icon="mdi-finance"
-              >
-              Reports
-            </v-tab>
-          </v-tabs>
-          <v-window v-model="tab">
-            <v-window-item :value="1" transition="false" reverse-transition="false">
-              <StudentRegistrations v-if="schoolYearSessions.length > 0" :school-year="schoolYear"
-                                    :school-year-sessions="schoolYearSessions" :session-ID="sessionID" />
-            </v-window-item>
-            <v-window-item :value="2" transition="false" reverse-transition="false">
-              <AssessmentReports/>
-            </v-window-item>
-          </v-window>
-        </v-col>
-      </v-row>
+      <v-col>
+        <v-tabs
+          v-model="tab"
+          style="color: #38598a"
+        >
+          <v-tab 
+            :value="1"
+            prepend-icon="mdi-account-multiple-outline"
+          >
+            Registrations and Results 
+          </v-tab>
+          <v-tab 
+            :value="2"
+            prepend-icon="mdi-finance"
+          >
+            Reports
+          </v-tab>
+        </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item
+            :value="1"
+            transition="false"
+            reverse-transition="false"
+          >
+            <StudentRegistrations
+              v-if="schoolYearSessions.length > 0"
+              :school-year="schoolYear"
+              :school-year-sessions="schoolYearSessions"
+              :session-i-d="sessionID"
+            />
+          </v-window-item>
+          <v-window-item
+            :value="2"
+            transition="false"
+            reverse-transition="false"
+          >
+            <AssessmentReports />
+          </v-window-item>
+        </v-window>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>

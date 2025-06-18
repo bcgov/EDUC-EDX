@@ -127,7 +127,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="mt-n4">
+          <v-col cols="12">
             <slot name="text-search">              
               <v-autocomplete
                 id="selectSchool"
