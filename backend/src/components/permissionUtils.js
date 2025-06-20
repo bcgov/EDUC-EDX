@@ -495,7 +495,13 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
   if (!Array.isArray(res.locals.requestedSdcSchoolCollectionStudentIDs)) {
     return next();
   }
-  if (res.locals.requestedSdcSchoolCollectionStudentIDs.length > 15) {
+  let requestedSdcSchoolCollectionStudentIDs = Array.isArray(res.locals.requestedSdcSchoolCollectionStudentIDs) ? res.locals.requestedSdcSchoolCollectionStudentIDs : [];
+  if (requestedSdcSchoolCollectionStudentIDs.length <= 0) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'Zero SDC School Collection Student IDs were requested.'
+    });
+  }
+  if (requestedSdcSchoolCollectionStudentIDs.length > 15) {
     return res.status(HttpStatus.BAD_REQUEST).json({
       message: 'Too many SDC School Collection Student IDs were requested.'
     });
@@ -508,7 +514,7 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
   }
   let searchCriteria = [{
     condition: CONDITION.OR,
-    searchCriteriaList: res.locals.requestedSdcSchoolCollectionStudentIDs.map((rsscsid) => {
+    searchCriteriaList: requestedSdcSchoolCollectionStudentIDs.map((rsscsid) => {
       return {
         key: 'sdcSchoolCollectionStudentID',
         value: rsscsid,
@@ -528,7 +534,7 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
   const searchParameters = {
     params: {
       pageNumber: 0,
-      pageSize: res.locals.requestedSdcSchoolCollectionStudentIDs.length,
+      pageSize: requestedSdcSchoolCollectionStudentIDs.length,
       sort: JSON.stringify({'sdcSchoolCollectionStudentID': 'ASC'}),
       searchCriteriaList: JSON.stringify(searchCriteria),
     }
@@ -543,6 +549,11 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
 }
 
 async function checkIfRequestedSdcSchoolCollectionStudentsBelongToRequestedSdcSchoolCollection(req, res, next) {
+  if (!Array.isArray(res.locals.requestedSdcSchoolCollectionStudentIDs)) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested SDC School Collection Student IDs were not found in the request.'
+    });
+  }
   if (!Array.isArray(res.locals.requestedSdcSchoolCollectionStudents)) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'The requested SDC School Collection Students were not found in the request.'
@@ -553,12 +564,14 @@ async function checkIfRequestedSdcSchoolCollectionStudentsBelongToRequestedSdcSc
       message: 'The requested SDC School Collection was not found in the request.'
     });
   }
-  if (res.locals.requestedSdcSchoolCollectionStudents.length !== res.locals.requestedSdcSchoolCollectionStudentIDs.length) {
+  let requestedSdcSchoolCollectionStudentIDs = Array.isArray(res.locals.requestedSdcSchoolCollectionStudentIDs) ? res.locals.requestedSdcSchoolCollectionStudentIDs : [];
+  let requestedSdcSchoolCollectionStudents = Array.isArray(res.locals.requestedSdcSchoolCollectionStudents) ? res.locals.requestedSdcSchoolCollectionStudents : [];
+  if (requestedSdcSchoolCollectionStudentIDs.length !== requestedSdcSchoolCollectionStudents.length) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'One or more of the requested SDC School Collection Students were not found.'
     });
   }
-  res.locals.requestedSdcSchoolCollectionStudents.forEach((sdcSchoolCollectionStudent) => {
+  requestedSdcSchoolCollectionStudents.forEach((sdcSchoolCollectionStudent) => {
     if (sdcSchoolCollectionStudent.sdcSchoolCollectionID !== res.locals.requestedSdcSchoolCollection.sdcSchoolCollectionID) {
       return res.status(HttpStatus.FORBIDDEN).json({
         message: 'One or more of the requested Assessment Students are not accessible by the user.'
@@ -601,7 +614,13 @@ async function loadRequestedAssessmentStudents(req, res, next) {
   if (!Array.isArray(res.locals.requestedAssessmentStudentIDs)) {
     return next();
   }
-  if (res.locals.requestedAssessmentStudentIDs.length > 15) {
+  let requestedAssessmentStudentIDs = Array.isArray(res.locals.requestedAssessmentStudentIDs) ? res.locals.requestedAssessmentStudentIDs : [];
+  if (requestedAssessmentStudentIDs.length <= 0) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'Zero Assessment Student IDs were requested.'
+    });
+  }
+  if (requestedAssessmentStudentIDs.length > 15) {
     return res.status(HttpStatus.BAD_REQUEST).json({
       message: 'Too many Assessment Student IDs were requested.'
     });
@@ -614,7 +633,7 @@ async function loadRequestedAssessmentStudents(req, res, next) {
   }
   let searchCriteria = [{
     condition: CONDITION.OR,
-    searchCriteriaList: res.locals.requestedAssessmentStudentIDs.map((rasid) => {
+    searchCriteriaList: requestedAssessmentStudentIDs.map((rasid) => {
       return {
         key: 'assessmentStudentID',
         value: rasid,
@@ -627,7 +646,7 @@ async function loadRequestedAssessmentStudents(req, res, next) {
   const searchParameters = {
     params: {
       pageNumber: 0,
-      pageSize: res.locals.requestedAssessmentStudentIDs.length,
+      pageSize: requestedAssessmentStudentIDs.length,
       sort: JSON.stringify({'assessmentStudentID': 'ASC'}),
       searchCriteriaList: JSON.stringify(searchCriteria),
     }
@@ -656,17 +675,24 @@ function checkCurrentUserAccessToRequestedAssessmentStudent(req, res, next) {
 }
 
 function checkCurrentUserAccessToRequestedAssessmentStudents(req, res, next) {
+  if (!Array.isArray(res.locals.requestedAssessmentStudentIDs)) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested Assessment Student IDs were not found in the request.'
+    });
+  }
   if (!Array.isArray(res.locals.requestedAssessmentStudents)) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'The requested Assessment Students were not found in the request.'
     });
   }
-  if (res.locals.requestedAssessmentStudents.length !== res.locals.requestedAssessmentStudentIDs.length) {
+  let requestedAssessmentStudentIDs = Array.isArray(res.locals.requestedAssessmentStudentIDs) ? res.locals.requestedAssessmentStudentIDs : [];
+  let requestedAssessmentStudents = Array.isArray(res.locals.requestedAssessmentStudents) ? res.locals.requestedAssessmentStudents : [];
+  if (requestedAssessmentStudentIDs.length !== requestedAssessmentStudents.length) {
     return res.status(HttpStatus.FORBIDDEN).json({
       message: 'One or more of the requested Assessment Students were not found.'
     });
   }
-  res.locals.requestedAssessmentStudents.forEach((assessmentStudent) => {
+  requestedAssessmentStudents.forEach((assessmentStudent) => {
     if (!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, assessmentStudent.schoolOfRecordSchoolID)) {
       return res.status(HttpStatus.FORBIDDEN).json({
         message: 'One or more of the requested Assessment Students are not accessible by the user.'
