@@ -129,7 +129,7 @@
       <v-col
         v-if="userInfo.activeInstituteType === 'DISTRICT'"
         cols="4"
-      >            
+      >
         <v-autocomplete
           id="selectSchool"
           v-model="schoolNameNumberFilter"
@@ -311,7 +311,7 @@ export default {
     async getAllSessions() {
       this.loading = true;
       ApiService.apiAxios
-        .get(`${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}` + '/' + this.userInfo.activeInstituteType).then((response) => {
+        .get(`${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}/${this.userInfo.activeInstituteType.toLowerCase()}`).then((response) => {
           this.schoolYearSessions = response.data.sort((a, b) =>
             LocalDateTime.parse(b.activeUntilDate).compareTo(LocalDateTime.parse(a.activeUntilDate))
           );

@@ -31,6 +31,15 @@
               @click="openCreateStudentRegDialog"
             />
             <v-btn
+              id="removeStudentReg"
+              color="#003366"
+              text="Remove Registration"
+              prepend-icon="mdi-minus"
+              class="mr-1 mb-1"
+              :disabled="selectedAssessmentStudents.length <= 0"
+              @click="removeStudents"
+            />
+            <v-btn
               id="filters"
               color="#003366"
               text="Filter"
@@ -56,6 +65,7 @@
             <StudentRegistrationsCustomTable
               :headers="config.tableHeaders"
               :data="assessmentStudents"
+              :selected-rows="selectedAssessmentStudents"
               :total-elements="totalElements"
               :is-loading="isLoading"
               :reset="resetFlag"
@@ -65,6 +75,7 @@
               @editSelectedRow="editRegistration"
               @loadNext="loadNext"
               @loadPrevious="loadPrevious"
+              @selected-rows-changed="updateSelectedAssessmentStudents"
             />
           </v-col>
         </v-row>
@@ -120,6 +131,11 @@
       />
     </v-bottom-sheet>
   </v-container>
+  <ConfirmationDialog ref="confirmRemovalOfStudentRegistrations">
+    <template #message>
+      <p>You have selected one or more registrations to remove. This action cannot be undone. Please confirm that you would like to proceed.</p>
+    </template>
+  </ConfirmationDialog>
 </template>
 
 <script>
@@ -134,10 +150,13 @@ import {authStore} from '../../../store/modules/auth';
 import {mapState} from 'pinia';
 import StudentRegistrationDetail from './StudentRegistrationDetail.vue';
 import AddStudentRegistration from './forms/AddStudentRegistration.vue';
+import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
+import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 
 export default {
   name: 'StudentRegistrations',
   components: {
+    ConfirmationDialog,
     AddStudentRegistration,
     StudentRegistrationsCustomTable,
     StudentRegistrationsFilter,
@@ -163,6 +182,7 @@ export default {
     return {
       config: null,
       assessmentStudents: [],
+      selectedAssessmentStudents: [],
       filterSearchParams: {
         moreFilters: {},
       },
@@ -232,17 +252,8 @@ export default {
           { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
         ];
       }
-      if (this.userInfo.activeInstituteType === 'DISTRICT'){
-        assessmentSearchParams.moreFilters.districtID = [
-          {title: 'districtID', id: 'districtID', value: this.userInfo.activeInstituteIdentifier}
-        ];
-      } else {
-        assessmentSearchParams.moreFilters.schoolID = [
-          {title: 'schoolNameNumber', id: 'schoolOfRecordSchoolID', value: this.userInfo.activeInstituteIdentifier}
-        ];
-      }
       ApiService.apiAxios
-        .get(`${ApiRoutes.assessments.GET_ASSESSMENT_STUDENTS_PAGINATED}/${this.userInfo.activeInstituteType}`, {
+        .get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/paginated`, {
           params: {
             pageNumber: this.pageNumber - 1,
             pageSize: this.pageSize,
@@ -263,6 +274,25 @@ export default {
           this.isLoading = false;
         });
     },
+    async removeStudents() {
+      const confirmation = await this.$refs.confirmRemovalOfStudentRegistrations.open('Confirm Registration Removal', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove Registration(s)', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      this.loading = true;
+      let payload = this.selectedAssessmentStudents.map(sas => sas.assessmentStudentID);
+      ApiService.apiAxios.post(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/remove`, payload)
+        .then(() => {
+          setSuccessAlert('The registrations have been removed.');
+          this.selectedAssessmentStudents = [];
+          this.getAssessmentStudents();
+        }).catch(error => {
+          console.error(error);
+          setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to remove the registrations. Please try again later.');
+        }).finally(() => {
+          this.loading = false;
+        });
+    },
     applyFilters($event) {
       this.filterSearchParams.moreFilters = cloneDeep($event);
       this.pageNumber = 1;
@@ -279,12 +309,14 @@ export default {
     loadNext() {
       if (this.canLoadNext) {
         this.pageNumber += 1;
+        this.selectedAssessmentStudents = [];
         this.getAssessmentStudents();
       }
     },
     loadPrevious() {
       if (this.canLoadPrevious) {
         this.pageNumber -= 1;
+        this.selectedAssessmentStudents = [];
         this.getAssessmentStudents();
       }
     },
@@ -294,7 +326,11 @@ export default {
       } else if(value?.pageNumber) {
         this.pageNumber = value?.pageNumber;
       }
+      this.selectedAssessmentStudents = [];
       this.getAssessmentStudents();
+    },
+    updateSelectedAssessmentStudents(updatedSelectedAssessmentStudents) {
+      this.selectedAssessmentStudents = updatedSelectedAssessmentStudents;
     }
   },
 };

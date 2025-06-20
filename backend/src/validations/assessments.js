@@ -5,8 +5,7 @@ const putStudentAssessmentSchema = object({
   body: object({
     assessmentStudentID: string().nonNullable(),
     sessionID:string().nonNullable(),
-    districtID: string().nullable().optional(),
-    schoolID: string().nonNullable(),
+    schoolOfRecordSchoolID: string().nonNullable(),
     assessmentCenterID: string().nonNullable(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
@@ -42,8 +41,7 @@ const putStudentAssessmentSchema = object({
 const postAssessmentStudentSchema = object({
   body: object({
     sessionID:string().nonNullable(),
-    districtID: string().nonNullable(),
-    schoolID: string().nonNullable(),
+    schoolOfRecordSchoolID: string().nonNullable(),
     assessmentCenterID: string().nonNullable(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
