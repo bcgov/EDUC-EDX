@@ -6,6 +6,7 @@ const cacheService = require('../cache-service');
 const { createMoreFiltersSearchCriteria } = require('./studentFilters');
 const moment = require('moment');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
+const log = require('../logger');
 
 async function getAssessmentSessions(req, res) {
   try {
@@ -195,6 +196,30 @@ async function updateAssessmentStudentByID(req, res) {
   }
 }
 
+async function downloadXamFile(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/download`;
+    
+    const data = await getData(token, url);
+
+    const fileName = `${data?.reportType || 'SessionResults.xam'}`;
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    
+    if (data && data.documentData) {
+      const buffer = Buffer.from(data.documentData, 'base64');
+      return res.send(buffer);
+    } else {
+      const emptyBuffer = Buffer.from('');
+      return res.send(emptyBuffer);
+    }
+  } catch (e) {
+    log.error(e, 'downloadXamFile', 'Error occurred while attempting to download XAM file.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function getSchoolName(school) {
   return school.mincode + ' - ' + school.schoolName;
 }
@@ -222,5 +247,7 @@ module.exports = {
   updateAssessmentStudentByID,
   deleteAssessmentStudentByID,
   getAssessmentSpecialCases,
-  postAssessmentStudent
+  postAssessmentStudent,
+  downloadXamFile
 };
+

@@ -1,6 +1,5 @@
 <template>
   <v-container fluid>
-
     <v-row>
       <v-col>
         <h3>Individual Student Reports</h3>
@@ -101,114 +100,123 @@
         <h3>Session Results</h3>
       </v-col>
     </v-row>
-    <v-row v-if="userInfo.activeInstituteType === 'DISTRICT'" class="mt-n6">
+    <v-row
+      v-if="userInfo.activeInstituteType === 'DISTRICT'"
+      class="mt-n6"
+    >
       <v-col>
         <span
-        style="color: gray;font-size: small"
-      >
-        Select a school and a session below to find the reports available for download.
-      </span>
+          style="color: gray;font-size: small"
+        >
+          Select a school and a session below to find the reports available for download.
+        </span>
       </v-col>
     </v-row>
-    <v-row v-else class="mt-n6">
+    <v-row
+      v-else
+      class="mt-n6"
+    >
       <v-col>
         <span
-        style="color: gray;font-size: small"
-      >
-        Select a session below to find the reports available for download.
-      </span>
+          style="color: gray;font-size: small"
+        >
+          Select a session below to find the reports available for download.
+        </span>
       </v-col>
     </v-row>
 
     <v-row class="mt-n2">
-          <v-col cols="4" v-if="userInfo.activeInstituteType === 'DISTRICT'">            
-              <v-autocomplete
-                id="selectSchool"
-                v-model="schoolNameNumberFilter"
-                variant="underlined"
-                :items="schoolSearchNames"
-                color="#003366"
-                label="School Name or Number"
-                single-line
-                :clearable="true"
-                item-title="schoolCodeName"
-                item-value="schoolCodeValue"
-                autocomplete="off"
-              />
-          </v-col>
+      <v-col
+        v-if="userInfo.activeInstituteType === 'DISTRICT'"
+        cols="4"
+      >            
+        <v-autocomplete
+          id="selectSchool"
+          v-model="schoolNameNumberFilter"
+          variant="underlined"
+          :items="schoolSearchNames"
+          color="#003366"
+          label="School Name or Number"
+          single-line
+          :clearable="true"
+          item-title="schoolCodeName"
+          item-value="schoolCodeValue"
+          autocomplete="off"
+        />
+      </v-col>
 
-          <v-col cols="4">
-            <v-select
-              id="selectedSession"
-              v-model="selectedSessionID"
-              variant="underlined"
-              :items="sessionSearchNames"
-              label="Session"
-              item-title="sessionCodeName"
-              item-value="sessionCodeValue"
-              :rules="[rules.required()]"
-              :clearable="true"
-            />
-          </v-col>
+      <v-col cols="4">
+        <v-select
+          id="selectedSession"
+          v-model="selectedSessionID"
+          variant="underlined"
+          :items="sessionSearchNames"
+          label="Session"
+          item-title="sessionCodeName"
+          item-value="sessionCodeValue"
+          :rules="[rules.required()]"
+          :clearable="true"
+        />
+      </v-col>
     </v-row>
     <div :class="{ 'disabled-section': disableCondition }">
       <v-row
         no-gutters
         class="d-flex"
       >
-      <v-card
-        class="mt-2 mr-4"
-        width="30em"
-        border="sm"
-        style="border: 1px solid black;border-radius: 10px;"
-      >
-        <v-card-title style="font-size: medium;">
-          Assessment Results
-        </v-card-title>
+        <v-card
+          class="mt-2 mr-4"
+          width="30em"
+          border="sm"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title style="font-size: medium;">
+            Assessment Results
+          </v-card-title>
 
-        <v-row class="pl-3 pb-3">
+          <v-row class="pl-3 pb-3">
             <v-col cols="12">
               <DownloadLink
                 label="Session Results.csv"
                 :download-action="() => downloadDetailedDOARReport()"
               />
             </v-col>
-        </v-row>
-        <v-row class="pl-3 pb-3 mt-n6">
+          </v-row>
+          <v-row class="pl-3 pb-3 mt-n6">
             <v-col cols="12">
               <DownloadLink
                 label="Session Results.xam"
-                :download-action="() => downloadDetailedDOARReport()"
+                :download-action="() => downloadXamFile()"
               />
             </v-col>
-        </v-row>
-        <v-row class="pl-3 pb-3 mt-n6">
+          </v-row>
+          <v-row class="pl-3 pb-3 mt-n6">
             <v-col cols="12">
               <DownloadLink
                 label="Session Results by Student.pdf"
-                :download-action="() => downloadDetailedDOARReport()"
+                :download-action="() => downloadStudentReport()"
               />
             </v-col>
-        </v-row>
-        <v-row class="pl-3 pb-3 mt-n6">
+          </v-row>
+          <v-row class="pl-3 pb-3 mt-n6">
             <v-col cols="12">
               <DownloadLink
                 label="Session Results by Assessment.pdf"
-                :download-action="() => downloadDetailedDOARReport()"
+                :download-action="() => downloadAssessmentResults()"
               />
             </v-col>
-        </v-row>
-      </v-card>
+          </v-row>
+        </v-card>
 
-      <v-card
-        class="mt-2"
-        width="30em"
-        border="sm"
-        style="border: 1px solid black;border-radius: 10px;"
-      >
-        <v-card-title style="font-size: medium;">
-          Distribution of Assessment Results (DOAR)
-        </v-card-title>
+        <v-card
+          class="mt-2"
+          width="30em"
+          border="sm"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title style="font-size: medium;">
+            Distribution of Assessment Results (DOAR)
+          </v-card-title>
           <v-row class="pl-3 pb-3">
             <v-col 
               cols="12"
@@ -229,13 +237,11 @@
               />
             </v-col>
           </v-row>
-      </v-card>
+        </v-card>
       </v-row>
     </div>
 
-    <div :class="{ 'disabled-section': !schoolNameNumberFilter }">
-   
-    </div>
+    <div :class="{ 'disabled-section': !schoolNameNumberFilter }" />
   </v-container>
 </template>
 
@@ -283,6 +289,8 @@ export default {
       rules: Rules,
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
+      selectedSessionID: null,
+      isDistrictUser: false
     };
   },
   computed: {
@@ -293,6 +301,9 @@ export default {
     }
   },
   async created() {
+    authStore().getUserInfo().then(() => {
+      this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
+    });
     await this.getAllSessions();
     this.setupSchoolLists();
   },
@@ -304,12 +315,12 @@ export default {
           this.schoolYearSessions = response.data.sort((a, b) =>
             LocalDateTime.parse(b.activeUntilDate).compareTo(LocalDateTime.parse(a.activeUntilDate))
           );
-      }).catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        this.loading = false;
-        this.setupSessions();
-      });
+        }).catch((error) => {
+          console.error(error);
+        }).finally(() => {
+          this.loading = false;
+          this.setupSessions();
+        });
     },
     setupSessions() {
       let sessions = [];
@@ -317,9 +328,9 @@ export default {
       this.schoolYearSessions?.forEach((session) => {
         if(parseInt(session.courseYear) >= sessionYearMinusTwo){
           sessions.push({
-          sessionCodeName: session.courseYear + '/' + session.courseMonth,
-          sessionCodeValue: session.sessionID
-        });
+            sessionCodeName: session.courseYear + '/' + session.courseMonth,
+            sessionCodeValue: session.sessionID
+          });
         }
       });
       this.sessionSearchNames = sortBy(sessions, ['sessionCourseYear','sessionCourseMonth']);
@@ -358,7 +369,7 @@ export default {
           if (error?.response?.data?.message) {
             this.setErrorAlert(error?.response?.data?.message);
           } else {
-            this.setErrorAlert(`PEN must be a valid.`);
+            this.setErrorAlert('PEN must be a valid.');
           }
         }).finally(() => {
           this.isSearchingStudent = false;
@@ -378,7 +389,20 @@ export default {
 
     },
     async downloadXamFile() {
-
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType}/${this.selectedSessionID}/school/${this.schoolNameNumberFilter}/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message
+            ? error?.response?.data?.message
+            : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
     },
     async downloadGradProjections(){
 

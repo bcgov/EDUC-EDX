@@ -143,6 +143,7 @@ export const ApiRoutes = Object.freeze({
     GET_ASSESSMENT_SPECIALCASE_TYPES: assessmentsRoot + '/assessment-specialcase-types',
     ASSESSMENT_STUDENTS: assessmentsRoot + '/assessment-registrations/student',
     GET_ASSESSMENT_STUDENTS_PAGINATED: assessmentsRoot + '/assessment-registrations/paginated',
+    BASE_REPORTS_URL: assessmentsRoot + '/reports',
   },
   challengeReports: {
     BASE_URL: challengeReportsRoot

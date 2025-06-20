@@ -1,7 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, deleteAssessmentStudentByID, postAssessmentStudent } = require('../components/assessments/assessments');
+const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, deleteAssessmentStudentByID, postAssessmentStudent, downloadXamFile } = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, findInstituteType_params, checkPermissionForRequestedInstitute } = require('../components/permissionUtils');
@@ -20,5 +20,7 @@ router.get('/assessment-registrations/paginated/:instituteType', passport.authen
 router.delete('/assessment-registrations/student/:instituteType/:assessmentStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, findInstituteType_params, checkPermissionForRequestedInstitute(PERMISSION.EAS_DIS_EDIT, PERMISSION.EAS_SCH_EDIT), deleteAssessmentStudentByID);
 
 router.get('/assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,  getAssessmentSpecialCases);
+
+router.get('/reports/:instituteType/:sessionID/school/:schoolID/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, findInstituteType_params, checkPermissionForRequestedInstitute(PERMISSION.EAS_DIS_EDIT, PERMISSION.EAS_SCH_EDIT),  downloadXamFile);
 
 module.exports = router;
