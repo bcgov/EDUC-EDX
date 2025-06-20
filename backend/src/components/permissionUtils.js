@@ -469,7 +469,7 @@ function findSdcSchoolCollectionStudentID_body(req, res, next) {
 }
 
 function findSdcSchoolCollectionStudentIDs_body(req, res, next) {
-  res.locals.requestedSdcSchoolCollectionStudentIDs = req.body;
+  res.locals.requestedSdcSchoolCollectionStudentIDs = Array.isArray(req.body) ? req.body : null;
   return next();
 }
 
@@ -588,7 +588,7 @@ function findAssessmentStudentID_params(req, res, next) {
 }
 
 function findAssessmentStudentIDs_body(req, res, next) {
-  res.locals.requestedAssessmentStudentIDs = req.body;
+  res.locals.requestedAssessmentStudentIDs = Array.isArray(req.body) ? req.body : null;
   return next();
 }
 
