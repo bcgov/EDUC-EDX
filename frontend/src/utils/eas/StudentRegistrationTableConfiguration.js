@@ -54,6 +54,7 @@ export const PROFICIENCY_SCORE_RANGE_FILTER = Object.freeze(
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
     tableHeaders: [
+      { title: 'select', key: 'select' },
       { title: 'Session', key: 'session'},
       { title: 'School', key: 'schoolName_desc' },
       { title: 'PEN', key: 'pen' },
@@ -74,6 +75,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
   {
     tableHeaders: [
+      { title: 'select', key: 'select' },
       { title: 'Session', key: 'session'},
       { title: 'PEN', key: 'pen' },
       { title: 'Assessment Center', key: 'assessmentCenterName_desc' },

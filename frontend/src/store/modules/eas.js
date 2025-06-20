@@ -25,7 +25,7 @@ export const easStore = defineStore('EasStore', {
       return this.specialCaseCodes;
     },
     async getActiveSchoolYear(activeInstituteType) {
-      let response = await ApiService.apiAxios.get(ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS+'/active/'+ activeInstituteType);
+      let response = await ApiService.apiAxios.get(`${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}/${activeInstituteType.toLowerCase()}/active`);
       let schoolYear = response.data[0] ? response.data[0].schoolYear.replace(/\//g, '-') : '';
       this.setSchoolYear(schoolYear);
     },

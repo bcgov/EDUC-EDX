@@ -204,7 +204,7 @@
       </v-row>
     </v-col>
   </v-row>
-  <ConfirmationDialog ref="confirmRemoveStudentRegistration">
+  <ConfirmationDialog ref="confirmRemovalOfStudentRegistration">
     <template #message>
       <p>Are you sure you want to remove this student registration from the session?</p>
     </template>
@@ -422,7 +422,7 @@ export default {
     getAssessmentStudentDetail(assessmentStudentID) {
       this.loadingCount += 1;
       this.selectedAssessmentStudentID=assessmentStudentID;
-      ApiService.apiAxios.get(`${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/${assessmentStudentID}`)
+      ApiService.apiAxios.get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/${assessmentStudentID}`)
         .then(response => {
           this.assessmentStudentDetail = response.data;
           this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);          
@@ -447,9 +447,14 @@ export default {
       const putAssessmentStudentDetail = Object.fromEntries(
         Object.entries(this.assessmentStudentDetail).filter(([key]) => !key.endsWith('_desc'))
       );
+
+      if(!this.isDistrictUser){
+        putAssessmentStudentDetail.schoolOfRecordSchoolID = this.userInfo.activeInstituteIdentifier;
+      }
+
       ApiService.apiAxios
         .put(
-          `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID,
+          `${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/${this.selectedAssessmentStudentID}`,
           putAssessmentStudentDetail
         )
         .then((res) => {
@@ -476,28 +481,28 @@ export default {
           this.$emit('reset-student-registration-parent');
         });
     },
-    deleteStudentRegistration() {
-      const confirmation = this.$refs.confirmRemoveStudentRegistration.open('Confirm Removal of Student Registration', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove', rejectText: 'Cancel'});
-      confirmation.then((result) => {
-        if (result) {
-          this.loadingCount += 1;
-          ApiService.apiAxios.delete(`${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}/`+this.selectedAssessmentStudentID)
-            .then(() => {
-              setSuccessAlert('Success! The student registration details have been deleted.');   
-              this.$emit('reset-student-registration-pagination');
-            }).catch((error) => {
-              console.error(error);
-              setFailureAlert(
-                error?.response?.data?.message
-                  ? error?.response?.data?.message
-                  : 'An error occurred while trying to delete student registration details. Please try again later.'
-              );
-            }).finally(() => {
-              this.loadingCount -= 1;
-              this.$emit('reset-student-registration-parent');
-            });
-        } 
-      });
+    async deleteStudentRegistration() {
+      const confirmation = await this.$refs.confirmRemovalOfStudentRegistration.open('Confirm Registration Removal', null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Remove Registration(s)', rejectText: 'Cancel'});
+      if (!confirmation) {
+        return;
+      }
+      this.loadingCount += 1;
+      let payload = [this.selectedAssessmentStudentID];
+      ApiService.apiAxios.post(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/remove`, payload)
+        .then(() => {
+          setSuccessAlert('Success! The student registration details have been deleted.');   
+          this.$emit('reset-student-registration-pagination');
+        }).catch((error) => {
+          console.error(error);
+          setFailureAlert(
+            error?.response?.data?.message
+              ? error?.response?.data?.message
+              : 'An error occurred while trying to delete student registration details. Please try again later.'
+          );
+        }).finally(() => {
+          this.loadingCount -= 1;
+          this.$emit('reset-student-registration-parent');
+        });
     },
     validateForm() {
       this.$refs?.registrationDetailsForm?.validate();

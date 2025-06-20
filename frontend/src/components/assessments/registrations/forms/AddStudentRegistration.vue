@@ -91,7 +91,7 @@
                 <v-col>
                   <v-autocomplete
                     id="School"
-                    v-model="newStudentDetail.schoolID"
+                    v-model="newStudentDetail.schoolOfRecordSchoolID"
                     variant="underlined"
                     :items="schoolSearchNames"
                     label="School"
@@ -278,7 +278,7 @@ export default {
       hasError: false,
       newStudentDetail: {
         assessmentID: null,
-        schoolID: null,
+        schoolOfRecordSchoolID: null,
         assessmentCenterID: null,
         givenName: null,
         surname: null,
@@ -393,12 +393,12 @@ export default {
       );
 
       if(!this.isDistrictUser){
-        newAssessmentStudentDetail.schoolID = this.userInfo.activeInstituteIdentifier;
+        newAssessmentStudentDetail.schoolOfRecordSchoolID = this.userInfo.activeInstituteIdentifier;
       }
 
       ApiService.apiAxios
         .post(
-          `${ApiRoutes.assessments.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}`,
+          `${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students`,
           newAssessmentStudentDetail
         )
         .then((res) => {

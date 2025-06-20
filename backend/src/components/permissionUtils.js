@@ -6,6 +6,7 @@ const {getAccessToken, getData, SecureExchangeStatuses, getDataWithParams} = req
 const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config');
 const log = require('./logger');
+const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 
 //Common checks
 function checkEDXUserAccessToRequestedInstitute(req, res, next) {
@@ -467,6 +468,11 @@ function findSdcSchoolCollectionStudentID_body(req, res, next) {
   return next();
 }
 
+function findSdcSchoolCollectionStudentIDs_body(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionStudentIDs = req.body;
+  return next();
+}
+
 async function loadSdcSchoolCollectionStudent(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudentID) {
     return next();
@@ -481,6 +487,205 @@ async function loadSdcSchoolCollectionStudent(req, res, next) {
     res.locals.requestedSdcSchoolCollectionStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${res.locals.requestedSdcSchoolCollectionStudentID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the SDC School Collection Student in loadSdcSchoolCollectionStudent.', e.stack);
+  }
+  return next();
+}
+
+async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
+  if (!Array.isArray(res.locals.requestedSdcSchoolCollectionStudentIDs)) {
+    return next();
+  }
+  if (res.locals.requestedSdcSchoolCollectionStudentIDs.length > 15) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'Too many SDC School Collection Student IDs were requested.'
+    });
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  let searchCriteria = [{
+    condition: CONDITION.OR,
+    searchCriteriaList: res.locals.requestedSdcSchoolCollectionStudentIDs.map((rsscsid) => {
+      return {
+        key: 'sdcSchoolCollectionStudentID',
+        value: rsscsid,
+        operation: FILTER_OPERATION.EQUAL,
+        valueType: VALUE_TYPE.UUID,
+        condition: CONDITION.OR
+      };
+    })
+  }];
+  searchCriteria[0].searchCriteriaList.push({
+    key: 'sdcSchoolCollectionStudentID',
+    value: '0a617e77-8ccb-1623-818c-d0a4b9dc0474',
+    operation: FILTER_OPERATION.EQUAL,
+    valueType: VALUE_TYPE.UUID,
+    condition: CONDITION.OR
+  });
+  const searchParameters = {
+    params: {
+      pageNumber: 0,
+      pageSize: res.locals.requestedSdcSchoolCollectionStudentIDs.length,
+      sort: JSON.stringify({'sdcSchoolCollectionStudentID': 'ASC'}),
+      searchCriteriaList: JSON.stringify(searchCriteria),
+    }
+  };
+  try {
+    let response = await getDataWithParams(token,`${config.get('sdc:schoolCollectionStudentURL')}/paginated`, searchParameters);
+    res.locals.requestedSdcSchoolCollectionStudents = response.content;
+  } catch (e) {
+    log.error('Unable to load the requested SDC School Collection Students in loadRequestedSdcSchoolCollectionStudents.', e.stack);
+  }
+  return next();
+}
+
+async function checkIfRequestedSdcSchoolCollectionStudentsBelongToRequestedSdcSchoolCollection(req, res, next) {
+  if (!Array.isArray(res.locals.requestedSdcSchoolCollectionStudents)) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested SDC School Collection Students were not found in the request.'
+    });
+  }
+  if (!res.locals.requestedSdcSchoolCollection) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested SDC School Collection was not found in the request.'
+    });
+  }
+  if (res.locals.requestedSdcSchoolCollectionStudents.length !== res.locals.requestedSdcSchoolCollectionStudentIDs.length) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'One or more of the requested SDC School Collection Students were not found.'
+    });
+  }
+  res.locals.requestedSdcSchoolCollectionStudents.forEach((sdcSchoolCollectionStudent) => {
+    if (sdcSchoolCollectionStudent.sdcSchoolCollectionID !== res.locals.requestedSdcSchoolCollection.sdcSchoolCollectionID) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'One or more of the requested Assessment Students are not accessible by the user.'
+      });
+    }
+  });
+  return next();
+}
+
+//Find Assessments
+function findAssessmentStudentID_params(req, res, next) {
+  res.locals.requestedAssessmentStudentID = req.params.assessmentStudentID;
+  return next();
+}
+
+function findAssessmentStudentIDs_body(req, res, next) {
+  res.locals.requestedAssessmentStudentIDs = req.body;
+  return next();
+}
+
+async function loadRequestedAssessmentStudent(req, res, next) {
+  if (!res.locals.requestedAssessmentStudentID) {
+    return next();
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  try {
+    res.locals.requestedAssessmentStudent = await getData(token, `${config.get('assessments:assessmentStudentsURL')}/${res.locals.requestedAssessmentStudentID}`, req.session?.correlationID);
+  } catch (e) {
+    log.error('Unable to load the requested Assessment Student in loadRequestedAssessmentStudent.', e.stack);
+  }
+  return next();
+}
+
+async function loadRequestedAssessmentStudents(req, res, next) {
+  if (!Array.isArray(res.locals.requestedAssessmentStudentIDs)) {
+    return next();
+  }
+  if (res.locals.requestedAssessmentStudentIDs.length > 15) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'Too many Assessment Student IDs were requested.'
+    });
+  }
+  const token = getAccessToken(req);
+  if (!token) {
+    return res.status(HttpStatus.UNAUTHORIZED).json({
+      message: 'Token is unavailable.'
+    });
+  }
+  let searchCriteria = [{
+    condition: CONDITION.OR,
+    searchCriteriaList: res.locals.requestedAssessmentStudentIDs.map((rasid) => {
+      return {
+        key: 'assessmentStudentID',
+        value: rasid,
+        operation: FILTER_OPERATION.EQUAL,
+        valueType: VALUE_TYPE.UUID,
+        condition: CONDITION.OR
+      };
+    })
+  }];
+  const searchParameters = {
+    params: {
+      pageNumber: 0,
+      pageSize: res.locals.requestedAssessmentStudentIDs.length,
+      sort: JSON.stringify({'assessmentStudentID': 'ASC'}),
+      searchCriteriaList: JSON.stringify(searchCriteria),
+    }
+  };
+  try {
+    let response = await getDataWithParams(token,`${config.get('assessments:assessmentStudentsURL')}/paginated`, searchParameters);
+    res.locals.requestedAssessmentStudents = response.content;
+  } catch (e) {
+    log.error('Unable to load the requested Assessment Students in loadRequestedAssessmentStudents.', e.stack);
+  }
+  return next();
+}
+
+function checkCurrentUserAccessToRequestedAssessmentStudent(req, res, next) {
+  if (!res.locals.requestedAssessmentStudent) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested Assessment Student was not found in the request.'
+    });
+  }
+  if (!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, res.locals.requestedAssessmentStudent.schoolOfRecordSchoolID)) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'User does not have access to the requested Assessment Student.'
+    });
+  }
+  return next();
+}
+
+function checkCurrentUserAccessToRequestedAssessmentStudents(req, res, next) {
+  if (!Array.isArray(res.locals.requestedAssessmentStudents)) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'The requested Assessment Students were not found in the request.'
+    });
+  }
+  if (res.locals.requestedAssessmentStudents.length !== res.locals.requestedAssessmentStudentIDs.length) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'One or more of the requested Assessment Students were not found.'
+    });
+  }
+  res.locals.requestedAssessmentStudents.forEach((assessmentStudent) => {
+    if (!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, assessmentStudent.schoolOfRecordSchoolID)) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'One or more of the requested Assessment Students are not accessible by the user.'
+      });
+    }
+  });
+  return next();
+}
+
+function checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent(req, res, next) {
+  if (!req.body.schoolOfRecordSchoolID) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'The schoolOfRecordSchoolID was not specified in the request.'
+    });
+  }
+  if (!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, req.body.schoolOfRecordSchoolID)) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'The current user does not have access to the specified schoolOfRecordSchoolID.'
+    });
   }
   return next();
 }
@@ -608,7 +813,7 @@ async function checkValidRoles(req, incomingRoles, schoolID) {
   let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
   let allowedRoles = filterSchoolRoles(schoolID, data);
   return incomingRoles.every(role => {
-    return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0
+    return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0;
   });
 }
 
@@ -655,6 +860,9 @@ const permUtils = {
   findDistrictContactId_params,
   checkStudentBelongsInCollection,
   findSdcSchoolCollectionStudentID_body,
+  findSdcSchoolCollectionStudentIDs_body,
+  loadRequestedSdcSchoolCollectionStudents,
+  checkIfRequestedSdcSchoolCollectionStudentsBelongToRequestedSdcSchoolCollection,
   edxUserHasAccessToInstitute,
   findSchoolContactId_params,
   findSdcSchoolCollectionsInDuplicate,
@@ -665,7 +873,14 @@ const permUtils = {
   checkPermissionForSignOff,
   checkActiveInstituteIdentifier,
   loadIncomingFileset,
-  checkUserHasAccessToIncomingFileset
+  checkUserHasAccessToIncomingFileset,
+  findAssessmentStudentID_params,
+  findAssessmentStudentIDs_body,
+  loadRequestedAssessmentStudent,
+  loadRequestedAssessmentStudents,
+  checkCurrentUserAccessToRequestedAssessmentStudent,
+  checkCurrentUserAccessToRequestedAssessmentStudents,
+  checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent
 };
 
 module.exports = permUtils;
