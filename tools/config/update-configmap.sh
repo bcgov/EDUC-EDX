@@ -1,4 +1,4 @@
-  envValue=$1
+envValue=$1
 APP_NAME=$2
 OPENSHIFT_NAMESPACE=$3
 COMMON_NAMESPACE=$4
