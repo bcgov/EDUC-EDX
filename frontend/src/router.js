@@ -33,16 +33,14 @@ import ApiService from './common/apiService';
 import SDCDistrictCollectionView from './components/sdcCollection/sdcDistrictCollection/SDCDistrictCollectionView.vue';
 import {PERMISSION} from './utils/constants/Permission';
 import GraduationSchoolTabs from './components/graduation/school/GraduationSchoolTabs.vue';
-import GradUploadDataComponent from './components/graduation/school/upload/GradSchoolUploadDataComponent.vue';
-import AssessmentSessions from './components/assessments/AssessmentSessions.vue';
 import AssessmentSessionDetail from './components/assessments/AssessmentSessionDetail.vue';
 import GradReportsAndTranscripts from './components/graduation/school/reports/GradSchoolReportsAndTranscripts.vue';
 import GradErrorsView from './components/graduation/school/upload/GradErrorsView.vue';
-import GradDistrictUploadDataComponent from './components/graduation/district/upload/GradDistrictUploadDataComponent.vue';
 import GradDistrictReportsAndTranscripts from './components/graduation/district/reports/GradDistrictReportsAndTranscripts.vue';
 import GradSchoolStudentSearch from './components/graduation/school/students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './components/graduation/school/students/GradSchoolCurrentStudents.vue';
 import GraduationDistrictTabs from './components/graduation/district/GraduationDistrictTabs.vue';
+import ChallengeReports from './components/challengeReports/ChallengeReports.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -348,28 +346,6 @@ const router = createRouter({
           },
         },
         {
-          path: 'graduation/school/:schoolID/upload',
-          name: 'grad-school-upload',
-          component: GradUploadDataComponent,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
-            requiresAuth: true,
-            permission: PERMISSION.GRAD_SCH_UPLOAD
-          },
-        },
-        {
-          path: 'graduation/district/:districtID/upload',
-          name: 'grad-district-upload',
-          component: GradDistrictUploadDataComponent,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.GRAD_DATA_COLLECTION,
-            requiresAuth: true,
-            permission: PERMISSION.GRAD_DIS_UPLOAD
-          },
-        },
-        {
           path: 'graduation/district/:districtID/reports',
           name: 'grad-district-reports',
           component: GradDistrictReportsAndTranscripts,
@@ -392,47 +368,25 @@ const router = createRouter({
           },
         },
         {
-          path: '/assessment-sessions/:institutionID',
-          name: 'district-assessment-sessions',
-          component: AssessmentSessions,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
-            requiresAuth: true,
-            permission: PERMISSION.ASSESSMENT_DIS_EDIT
-          },
-        },
-        {
-          path: '/assessment-sessions/:institutionID',
-          name: 'school-assessment-sessions',
-          component: AssessmentSessions,
-          props: true,
-          meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSIONS,
-            requiresAuth: true,
-            permission: PERMISSION.ASSESSMENT_SCH_EDIT
-          },
-        },
-        {
-          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          path: '/assessment-sessions/details',
           name: 'district-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,
           meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
+            pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
-            permission: PERMISSION.ASSESSMENT_DIS_EDIT
+            permission: PERMISSION.EAS_DIS_EDIT
           },
         },
         {
-          path: '/assessment-sessions/details/:schoolYear/:sessionID?',
+          path: '/assessment-sessions/details',
           name: 'school-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,
           meta: {
-            pageTitle: PAGE_TITLES.ASSESSMENT_SESSION_DETAIL,
+            pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
-            permission: PERMISSION.ASSESSMENT_SCH_EDIT
+            permission: PERMISSION.EAS_SCH_EDIT
           },
         },
         {
@@ -467,6 +421,17 @@ const router = createRouter({
             requiresAuth: true,
             permission: PERMISSION.GRAD_SCH_RPT_VIEW
           },
+        },
+        {
+          path: 'challenge-reports/:districtID',
+          name: 'challengeReports',
+          component: ChallengeReports,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.CHALLENGE_REPORTS,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_DIS_RPT_VIEW
+          }
         }
       ]
     },

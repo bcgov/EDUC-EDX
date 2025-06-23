@@ -31,6 +31,7 @@
         :config="config"
         :district="district"
         :show-export-btn="true"
+        :export-type="'all-students'"
         :is-final-sign-off="isFinalSignOff"
         :is-collection-active="isCollectionActive"
       />

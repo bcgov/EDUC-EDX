@@ -39,14 +39,6 @@
         <v-col
           class="d-flex justify-end mr-3 mt-3"
         >
-          <v-pagination
-            v-model="page"
-            :length="summerStudents.length"
-            :total-visible="3"
-            rounded="circle"
-            class="mt-n3"
-            @update:model-value="navigate"
-          />
           <v-btn
             id="waitForReporting"
             color="#003366"
@@ -101,7 +93,7 @@ export default {
       default: null
     },
   },
-  emits: ['reload', 'close'],
+  emits: ['reload', 'close', 'process'],
   data() {
     return {
       pageNumber: 1,
@@ -133,28 +125,10 @@ export default {
             
   },
   methods: {
-    navigate() {
-      this.setDataforView(this.page - 1);
-      this.removeIndex = null;
-    },
     waitForReporting() {
       this.removeIndex = this.summerStudents.findIndex(value => value.fileName === this.fileName);
       this.summerStudents.splice(this.removeIndex, 1);
-      if(this.summerStudents.length > 0) {
-        this.page = (this.page  === 1 ? 1 : this.page - 1);
-        if(this.removeIndex === 0) {
-          this.setDataforView(0);
-        }  else {
-          this.setDataforView(this.removeIndex - 1);
-        }
-      } else {
-        this.$emit('close');
-      }
-    },
-    setDataforView(index) {
-      this.data = [];
-      this.data = this.summerStudents[index].data;
-      this.fileName = this.summerStudents[index].fileName;
+      this.$emit('close');
     },
     cancel() {
       this.$emit('close');
@@ -167,19 +141,11 @@ export default {
       let url = this.schoolID ? ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID: ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID;
       await ApiService.apiAxios.post(url + '/process', body)
         .then(() => {
-          if(this.page < this.summerStudents.length) {
-            this.data = [];
-            let dataAtIndex = this.summerStudents[this.page++];
-            this.data = dataAtIndex.data;
-            this.fileName = dataAtIndex.fileName;
-          } else {
-            this.$emit('close');
-          }
+          this.$emit('process');
         }).catch(error => {
           console.error(error);
           this.setFailureAlert('An error occurred while trying to process students. Please try again later.');
         });
-      
     }
   }
 };

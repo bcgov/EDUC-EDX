@@ -13,8 +13,8 @@
   >
     <template #prepend-inner>
       <v-icon
-        v-if="schoolCodeNameFilter"
-        :color="getStatusColorAuthorityOrSchool(schoolSearchNames.find(school=>school.schoolID===schoolCodeNameFilter)?.status)"
+        v-if="selectedSchool"
+        :color="selectedSchool?.status ? getStatusColorAuthorityOrSchool(selectedSchool?.status) : ''"
       >
         mdi-circle-medium
       </v-icon>
@@ -63,7 +63,6 @@ export default {
     return {
       schoolsCacheMap: [],
       schoolSearchNames: [],
-      allowedSchoolCategories: ['PUBLIC', 'YUKON']
     };
   },
   computed: {
@@ -76,9 +75,16 @@ export default {
       set(val) {
         this.$emit('update:modelValue', val);
       }
+    },
+    selectedSchool() {
+      if (!this.schoolCodeNameFilter) {
+        return undefined;
+      }
+      return this.schoolSearchNames.find(school=>school.schoolID===this.schoolCodeNameFilter);
     }
   },
   async created() {
+    await appStore().refreshEntities();
     appStore().getInstitutesData().finally(() => {
       this.schoolsCacheMap = this.schoolsMap;
       this.getSchoolDropDownItems();
@@ -104,15 +110,11 @@ export default {
       this.schoolsCacheMap.forEach(school => {
         let gradSchool = this.gradSchoolMap.get(school.schoolID);
         if (school.districtID !== this.districtID) return;
-        if (!this.allowedSchoolCategories.includes(school.schoolCategoryCode)) return;
         if (gradSchool?.canIssueTranscripts !== 'Y') return;
         if (!school.effectiveDate) return;
 
         const openDate = LocalDateTime.parse(school.effectiveDate);
-        const endOfCloseDateGraceWindow = school.expiryDate ? LocalDateTime.parse(school.expiryDate).plusMonths(3) : null;
-
         if (cutoff.isBefore(openDate)) return;
-        if (endOfCloseDateGraceWindow && cutoff.isAfter(endOfCloseDateGraceWindow)) return;
 
         this.schoolSearchNames.push({
           schoolCodeName: `${school.mincode} - ${school.schoolName}`,

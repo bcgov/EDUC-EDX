@@ -1,5 +1,6 @@
 'use strict';
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
+const cacheService = require('../cache-service');
 
 function createMoreFiltersSearchCriteria(searchFilter = []) {
   let searchCriteriaList = [];
@@ -12,7 +13,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     
     //Default Filter Begin
     if (key === 'schoolYear' && pValue) {
-      searchCriteriaList.push({ key: 'assessmentEntity.sessionEntity.schoolYear', value: pValue[0].replace('-', '/'), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.schoolYear', value: pValue[0].replace('-', '/'), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }  
     //Default Filter End
     
@@ -33,11 +34,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
 
     if (key === 'districtID' && pValue) {
-      searchCriteriaList.push({key: 'districtID', value: pValue[0], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND})
+      let schools = cacheService.getAllSchoolIDsForDistrictID(pValue[0]);
+      searchCriteriaList.push({key: 'schoolOfRecordSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND});
     }
 
     if (key === 'schoolID' && pValue) {
-      searchCriteriaList.push({key: 'schoolID', value: pValue[0], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND})
+      searchCriteriaList.push({key: 'schoolOfRecordSchoolID', value: pValue[0], operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND});
     }
 
     if (key === 'schoolNameNumber' && pValue) {
@@ -51,7 +53,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }
 
     if (key === 'session' && pValue) {
-      searchCriteriaList.push({ key: 'assessmentEntity.sessionEntity.sessionID', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.sessionID', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
     }
 
     if (key === 'assessmentTypeCode' && pValue) {

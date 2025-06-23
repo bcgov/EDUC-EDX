@@ -6,7 +6,8 @@
       </v-col>
     </v-row> 
     <v-form
-      v-model="isValid"
+      ref="gradSchoolStudentSearchForm"
+      v-model="studentSearchFormIsValid"
       class="d-flex"
     >
       <v-row>
@@ -25,7 +26,7 @@
             color="#003366"
             text="Search"
             class="mr-1 mt-2"
-            :disabled="!isValid"
+            :disabled="!studentSearchFormIsValid"
             @click="searchStudent"
           />
           <v-btn
@@ -40,10 +41,7 @@
       </v-row>
     </v-form>
 
-    <div v-if="noDataFlag">
-      <p>Student not found.</p>
-    </div>
-    <div v-else-if="isLoading">
+    <div v-if="isLoading">
       <v-row>
         <v-col class="d-flex justify-center">
           <Spinner
@@ -53,7 +51,10 @@
         </v-col>
       </v-row>
     </div>
-    <div v-else-if="!isLoading && demStudentData">
+    <div v-else-if="!isLoading && studentSearched && !studentFound">
+      <p>Student not found.</p>
+    </div>    
+    <div v-else-if="!isLoading && studentSearched && studentFound">
       <v-row
         no-gutters
         class="mb-n2"
@@ -63,7 +64,7 @@
           align-self="center"
         >
           <span class="heading">
-            {{ totalElements }} Submissions Found
+            {{ totalFoundSubmissions }} Submissions Found
           </span>
         </v-col>
         <v-col
@@ -77,7 +78,7 @@
             :text="selectedSubmissionText"
             variant="text"
             append-icon="mdi-account-details"
-            @click="showSubmission = !showSubmission"
+            @click="showSubmissionSelector = !showSubmissionSelector"
           />
         </v-col>
       </v-row>
@@ -244,7 +245,7 @@
     </div>
 
     <v-navigation-drawer
-      v-model="showSubmission"
+      v-model="showSubmissionSelector"
       location="right"
       :temporary="true"
       width="500"
@@ -257,7 +258,7 @@
       <StudentSubmission
         :submissions="filesetStudentSubmissions"
         :selected-submission="selectedSubmission"
-        @close="showSubmission= !showSubmission"
+        @close="showSubmissionSelector = !showSubmissionSelector"
         @refresh-search="refreshSearch"
       />
     </v-navigation-drawer>
@@ -292,162 +293,153 @@ export default {
       type: String,
       required: false,
       default: null
-    },
-    collectionObject: {
-      type: Object,
-      required: true
     }
   },
   emits: [],
   data() {
     return {
       rules: Rules,
-      studentPEN: null,
-      isValid: false,
+      requestCount: 0,
       view: 'course',
-      showSubmission: false,
+      studentSearched: false,
+      studentSearchFormIsValid: false,
+      showSubmissionSelector: false,
       courseHeaders: [
-        { key: 'status', align: 'start'},
-        { title: 'Course', key: 'course', align: 'start'},
-        { title: 'Session', key: 'session', align: 'end'},
-        { title: 'Status', key: 'courseStatus', align: 'end'},
-        { title: 'Int. Grade', key: 'interimPercentage', align: 'end'},
-        { title: 'Final Grade', key: 'finalPercentage', align: 'end'},
-        { title: 'Credits', key: 'numberOfCredits', align: 'end'},
-        { title: 'Description', key: 'courseDescription', align: 'end'},
-        { title: 'Grad Reqt.', key: 'courseGraduationRequirement', align: 'end'},
-        { title: 'Type', key: 'courseType', align: 'end'},
-        { title: 'Related Course', key: 'relatedCourse', align: 'end'},
+        { key: 'status', align: 'start', sortable: true },
+        { title: 'Course', key: 'course', align: 'start', sortable: true },
+        { title: 'Session', key: 'session', align: 'end', sortable: true },
+        { title: 'Status', key: 'courseStatus', align: 'end', sortable: true },
+        { title: 'Int. Grade', key: 'interimPercentage', align: 'end', sortable: true },
+        { title: 'Final Grade', key: 'finalPercentage', align: 'end', sortable: true },
+        { title: 'Credits', key: 'numberOfCredits', align: 'end', sortable: true },
+        { title: 'Description', key: 'courseDescription', align: 'end', sortable: true },
+        { title: 'Grad Reqt.', key: 'courseGraduationRequirement', align: 'end', sortable: true },
+        { title: 'Type', key: 'courseType', align: 'end', sortable: true },
+        { title: 'Related Course', key: 'relatedCourse', align: 'end', sortable: true },
       ],
       assessmentHeaders: [
-        { key: 'status', align: 'start'},
-        { title: 'Assessment', key: 'courseCode', align: 'start'},
-        { title: 'Session', key: 'session', align: 'end'},
-        { title: 'Status', key: 'courseStatus', align: 'end'},
-        { title: 'Proficiency Score', key: 'finalPercent', align: 'end'},
-        { title: 'eExam', key: 'isElectronicExam', align: 'end'},
-        { title: 'Special Case', key: 'provincialSpecialCase', align: 'end'},
-        { title: 'Local Course ID', key: 'localCourseID', align: 'end'},
+        { key: 'status', align: 'start', sortable: true },
+        { title: 'Assessment', key: 'courseCode', align: 'start', sortable: true },
+        { title: 'Session', key: 'session', align: 'end', sortable: true },
+        { title: 'Status', key: 'courseStatus', align: 'end', sortable: true },
+        { title: 'Proficiency Score', key: 'finalPercent', align: 'end', sortable: true },
+        { title: 'eExam', key: 'isElectronicExam', align: 'end', sortable: true },
+        { title: 'Special Case', key: 'provincialSpecialCase', align: 'end', sortable: true },
+        { title: 'Local Course ID', key: 'localCourseID', align: 'end', sortable: true },
       ],
-      filterSearchParams: {
-        moreFilters: {},
-        pen: ''
-      },
+      studentPEN: this.$route.query.pen ?? '',
+      selectedSubmission: {},
       filesetStudentSubmissions: [],
-      totalElements: 0,
-      pageNumber: 1,
-      pageSize: 1000,
+      totalFoundSubmissions: 0,
       demStudentData: null,
       assessmentData: [],
-      courseData: [],
-      selectedSubmission: {},
-      selectedSubmissionText: '',
-      isLoading: false,
-      noDataFlag: false,
-      incomingFilesetID: null
+      courseData: []
     };
   },
   computed: {
-    
+    isLoading() {
+      return this.requestCount > 0;
+    },
+    studentFound() {
+      return this.totalFoundSubmissions >= 1;
+    },
+    selectedSubmissionText() {
+      if (isEmpty(this.selectedSubmission)) {
+        return 'Not Selected';
+      }
+      return `Submitted: ${this.selectedSubmission.createDate} ${this.selectedSubmission.createTime}`;
+    }
   },
   async created() {
-
+    if (isEmpty(this.studentPEN)) {
+      return;
+    }
+    await this.searchStudent();
   },
   methods: {
-    formatDate(inputDate) {
-      return formatDateTime(inputDate,'uuuuMMdd','uuuu/MM/dd', false);
-    },
-    async refreshSearch(selectedSubmission) {
-      this.incomingFilesetID =  selectedSubmission[0].incomingFilesetID;
-      this.selectedSubmission = selectedSubmission[0];
-      this.isLoading = true;
-      this.noDataFlag = false;
-      await this.findStudentInFilesetByPEN();
-      await this.setIncomingFilesetIDSelection();
-    },
     async searchStudent() {
-      this.isLoading = true;
-      this.noDataFlag = false;
-      this.selectedSubmission = null;
-      this.filterSearchParams.pen = this.studentPEN;
-      this.filterSearchParams.collectionObject = this.collectionObject;
       await this.getStudentSubmissions();
+      this.studentSearched = true;
+      this.selectDefaultStudentSubmission();
       if (this.filesetStudentSubmissions.length === 0) {
-        this.noDataFlag = true;
         return;
       }
       await this.findStudentInFilesetByPEN();
     },
-    async findStudentInFilesetByPEN() {
-      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/pen/${this.studentPEN}`, {
-        params: {
-          incomingFilesetID: this.incomingFilesetID,
-          schoolID: this.$route.params.schoolID
-        }
-      })
-        .then(response => {
-          this.isLoading = false;
-          if(isEmpty(response.data)) {
-            this.noDataFlag=true;
-          }
-          this.demStudentData = response.data.demographicStudent;
-          this.assessmentData = response.data.assessmentStudents;
-          this.courseData = response.data.courseStudents;
-        }).catch(error => {
-          console.error(error);
-          this.isLoading = false;
-          if(error?.response?.status == 404) {
-            this.noDataFlag=true;
-          } else {
-            setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail. Please try again later.');
-          }
-        });
+    async refreshSearch(selectedSubmission) {
+      this.selectedSubmission = selectedSubmission[0];
+      await this.findStudentInFilesetByPEN();
+    },
+    clear() {
+      this.studentPEN = '';
+      this.$refs.gradSchoolStudentSearchForm.reset();
+      this.studentSearched = false;
+      this.selectedSubmission = {};
+      this.filesetStudentSubmissions = [];
+      this.totalFoundSubmissions = 0;
+      this.demStudentData = null;
+      this.assessmentData = [];
+      this.courseData = [];
     },
     async getStudentSubmissions() {
+      this.requestCount += 1;
       await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
         params: {
-          pageNumber: this.pageNumber - 1,
-          pageSize: this.pageSize,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
+          pageNumber: 0,
+          pageSize: 1000,
+          searchParams: omitBy({
+            pen: this.studentPEN,
+            moreFilters: {}
+          }, isEmpty),
           sort: {
             updateDate: 'DESC'
           },
         }
       }).then(response => {
         this.filesetStudentSubmissions = response.data.content;
-        this.totalElements = response.data.totalElements;
-        if(response.data.content.length > 0) {
-          this.setIncomingFilesetIDSelection();
-        } else {
-          this.selectedSubmission = null;
-        }
+        this.totalFoundSubmissions = response.data.totalElements;
       }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying get to fileset list. Please try again later.');
+      }).finally(() => {
+        this.requestCount -= 1;
       });
+    },
+    async findStudentInFilesetByPEN() {
+      this.requestCount += 1;
+      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/pen/${this.studentPEN}`, {
+        params: {
+          incomingFilesetID: this.selectedSubmission.incomingFilesetID,
+          schoolID: this.$route.params.schoolID
+        }
+      }).then(response => {
+        this.demStudentData = response.data.demographicStudent;
+        this.assessmentData = response.data.assessmentStudents;
+        this.courseData = response.data.courseStudents;
+      }).catch(error => {
+        console.error(error);
+        setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student detail. Please try again later.');
+      }).finally(() => {
+        this.requestCount -= 1;
+      });
+    },
+    selectDefaultStudentSubmission() {
+      if (this.filesetStudentSubmissions.length === 0) {
+        this.selectedSubmission = {};
+        return;
+      }
+      let matchingSubmission = this.filesetStudentSubmissions.find((submission) => submission.incomingFilesetID === this.$route.query.incomingFilesetID) ?? this.filesetStudentSubmissions[0];
+      this.selectedSubmission = {
+        incomingFilesetID: matchingSubmission.incomingFilesetID,
+        createDate: formatDateTime(matchingSubmission.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false),
+        createTime: LocalDateTime.parse(matchingSubmission.createDate).format(DateTimeFormatter.ofPattern('HH:mm')),
+        updateUser: matchingSubmission.updateUser
+      };
     },
     getProgramsList() {
       let programCodes = [this.demStudentData?.programCode1, this.demStudentData?.programCode2, this.demStudentData?.programCode3, this.demStudentData?.programCode4, this.demStudentData?.programCode5];
       let cleanArray = programCodes.filter(x => x != null);
       return cleanArray.join(', ');
-    },
-    clear() {
-      this.studentPEN = null;
-      this.isValid = false;
-      this.selectedSubmission = null;
-      this.selectedSubmissionText = '';
-    },
-    setIncomingFilesetIDSelection() {
-      if(isEmpty(this.selectedSubmission)) {
-        let createDate =  formatDateTime(this.filesetStudentSubmissions[0].createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
-        let createTime = LocalDateTime.parse(this.filesetStudentSubmissions[0].createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
-        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-        this.selectedSubmission = this.filesetStudentSubmissions[0];
-      } else {
-        let createDate =  this.selectedSubmission.createDate;
-        let createTime = this.selectedSubmission.createTime;
-        this.selectedSubmissionText = 'Submitted:' + createDate + ' ' + createTime;
-      }
     },
     showCourse() {
       this.view = 'course';
@@ -455,19 +447,22 @@ export default {
     showAssessment() {
       this.view = 'assessment';
     },
-    getName(last, first, middle){
-      if(first && middle){
+    formatDate(inputDate) {
+      return formatDateTime(inputDate, 'uuuuMMdd', 'uuuu/MM/dd', false);
+    },
+    getName(last, first, middle) {
+      if (first && middle) {
         return last + ', ' + first + ' ' + middle;
-      }else if(first){
+      } else if (first) {
         return last + ', ' + first;
-      }else if(middle){
+      } else if (middle) {
         return last + ', ' + middle;
-      }else if(last){
+      } else if (last) {
         return last;
       }
       return '';
     },
-    getIssueIcon(issue){
+    getIssueIcon(issue) {
       switch (issue) {
       case 'ERROR':
         return 'mdi-alert-circle-outline';
@@ -477,7 +472,7 @@ export default {
         return '';
       }
     },
-    getIssueIconColor(issue){
+    getIssueIconColor(issue) {
       switch (issue) {
       case 'ERROR':
         return '#d90606';

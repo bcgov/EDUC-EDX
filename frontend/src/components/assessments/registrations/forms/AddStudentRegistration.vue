@@ -1,17 +1,22 @@
 <template>
   <v-card>
-    <v-card-title id="viewAddStudentRegistrationCardTitle" class="sheetHeader pt-1 pb-1">
+    <v-card-title
+      id="viewAddStudentRegistrationCardTitle"
+      class="sheetHeader pt-1 pb-1"
+    >
       <v-row no-gutters>
-        <v-col class="d-flex justify-start"> Add Assessment Registration</v-col>
+        <v-col class="d-flex justify-start">
+          Add Graduation Assessment Registration
+        </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
-              id="cancel"
-              color="white"
-              text="Close"
-              size="30"
-              icon="mdi-close"
-              variant="tonal"
-              @click="cancel"
+            id="cancel"
+            color="white"
+            text="Close"
+            size="30"
+            icon="mdi-close"
+            variant="tonal"
+            @click="cancel"
           />
         </v-col>
       </v-row>
@@ -20,131 +25,157 @@
     <v-card-text class="mt-0 mb-6">
       <v-row v-if="isLoading()">
         <v-col class="d-flex justify-center">
-          <Spinner :flat="true" style="margin-bottom: 15.5rem" />
+          <Spinner
+            :flat="true"
+            style="margin-bottom: 15.5rem"
+          />
         </v-col>
       </v-row>
-      <div v-else ref="topDiv">
+      <div
+        v-else
+        ref="topDiv"
+      >
         <v-row class="d-flex">
-          <v-col :cols = "this.newStudentDetail.assessmentStudentValidationIssues.length > 0 ? 6 : 12">
-            <v-form ref="addRegistrationForm" v-model="addStudentRegistrationFormValid">
+          <v-col :cols="newStudentDetail.assessmentStudentValidationIssues.length > 0 ? 6 : 12">
+            <v-form
+              ref="addRegistrationForm"
+              v-model="addStudentRegistrationFormValid"
+            >
               <v-row>
                 <v-col>
+                  <v-text-field
+                    id="PEN"
+                    v-model="newStudentDetail.pen"
+                    label="Personal Education Number (PEN)"
+                    variant="underlined"
+                    :maxlength="25"
+                    density="compact"
+                    :rules="[rules.required(), rules.penIsValid()]"
+                  />
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    id="LocalID"
+                    v-model="newStudentDetail.localID"
+                    label="Local ID"
+                    variant="underlined"
+                    :maxlength="25"
+                    density="compact"
+                    :rules="[rules.required(), rules.number()]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    id="GivenName"
+                    v-model="newStudentDetail.givenName"
+                    label="Student's Legal First Name"
+                    variant="underlined"
+                    density="compact"
+                    :rules="[rules.required()]"
+                  />
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    id="SurName"
+                    v-model="newStudentDetail.surname"
+                    label="Student's Legal Last Name"
+                    variant="underlined"
+                    density="compact"
+                    :rules="[rules.required()]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row v-if="isDistrictUser">
+                <v-col>
+                  <v-autocomplete
+                    id="School"
+                    v-model="newStudentDetail.schoolOfRecordSchoolID"
+                    variant="underlined"
+                    :items="schoolSearchNames"
+                    label="School"
+                    item-title="schoolCodeName"
+                    item-value="schoolID"
+                    autocomplete="off"
+                    :rules="[rules.required()]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="mt-n2">
+                <v-col>
                   <v-select
-                      id="Session"
-                      v-model="selectedSessionID"
-                      variant="underlined"
-                      :items="sessionSearchNames"
-                      label="Session"
-                      item-title="sessionCodeName"
-                      item-value="sessionCodeValue"
-                      :disabled="!!this.sessionID"
-                      :rules="[rules.required()]"
-                      @update:model-value="refreshAssessmentTypes($event)"
+                    id="Session"
+                    v-model="selectedSessionID"
+                    variant="underlined"
+                    :items="sessionSearchNames"
+                    label="Session"
+                    item-title="sessionCodeName"
+                    item-value="sessionCodeValue"
+                    :disabled="!!sessionID"
+                    :rules="[rules.required()]"
+                    @update:model-value="refreshAssessmentTypes($event)"
                   />
+                </v-col>
+                <v-col>
                   <v-autocomplete
-                      id="AssessmentCourse"
-                      v-model="newStudentDetail.assessmentID"
-                      variant="underlined"
-                      :items="assessmentTypeSearchNames"
-                      label="Assessment/Course"
-                      item-title="assessmentCodeName"
-                      item-value="assessmentCodeValue"
-                      autocomplete="off"
-                      :rules="[rules.required()]"
-                      :disabled="!sessionID && !selectedSessionID"
-                      @update:model-value="syncAssessmentValue($event)"
+                    id="AssessmentCourse"
+                    v-model="newStudentDetail.assessmentID"
+                    variant="underlined"
+                    :items="assessmentTypeSearchNames"
+                    label="Assessment Code"
+                    item-title="assessmentCodeName"
+                    item-value="assessmentCodeValue"
+                    autocomplete="off"
+                    :rules="[rules.required()]"
+                    :disabled="!sessionID && !selectedSessionID"
+                    @update:model-value="syncAssessmentValue($event)"
                   />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
                   <v-autocomplete
-                      id="AssessmentCenter"
-                      v-model="newStudentDetail.assessmentCenterID"
-                      variant="underlined"
-                      :items="assessmentCenterSearchNames"
-                      label="Assessment Center"
-                      :clearable="true"
-                      item-title="schoolCodeName"
-                      item-value="schoolID"
-                      autocomplete="off"
-                      density="compact"
-                  />
-                  <v-text-field
-                      id="PEN"
-                      v-model="newStudentDetail.pen"
-                      label="Personal Education Number (PEN)"
-                      variant="underlined"
-                      :maxlength="25"
-                      density="compact"
-                      :rules="[rules.required(), rules.penIsValid()]"
-                  />
-                  <v-text-field
-                      id="LocalID"
-                      v-model="newStudentDetail.localID"
-                      label="Local ID"
-                      variant="underlined"
-                      :maxlength="25"
-                      density="compact"
-                      :rules="[rules.required(), rules.number()]"
-                  />
-                  <v-text-field
-                      id="SurName"
-                      v-model="newStudentDetail.surName"
-                      label="Student's Legal Last Name"
-                      variant="underlined"
-                      density="compact"
-                      :rules="[rules.required()]"
-                  />
-                  <v-text-field
-                      id="GivenName"
-                      v-model="newStudentDetail.givenName"
-                      label="Student's Legal First Name"
-                      variant="underlined"
-                      density="compact"
-                      :rules="[rules.required()]"
-                  />
-                  <v-autocomplete
-                      id="School"
-                      variant="underlined"
-                      v-model="newStudentDetail.schoolID"
-                      :items="schoolSearchNames"
-                      label="School"
-                      item-title="schoolCodeName"
-                      item-value="schoolID"
-                      autocomplete="off"
-                      :rules="[rules.required()]"
-                  />
-                  <v-autocomplete
-                      id="SpecialCase"
-                      v-model="newStudentDetail.provincialSpecialCaseName"
-                      label="Special Case"
-                      variant="underlined"
-                      :items="specialCaseSearchNames"
-                      item-title="specialCaseCodeName"
-                      item-value="specialCaseCodeValue"
+                    id="AssessmentCenter"
+                    v-model="newStudentDetail.assessmentCenterID"
+                    variant="underlined"
+                    :items="assessmentCenterSearchNames"
+                    label="Assessment Center"
+                    :clearable="true"
+                    item-title="schoolCodeName"
+                    item-value="schoolID"
+                    autocomplete="off"
+                    density="compact"
                   />
                 </v-col>
               </v-row>
             </v-form>
           </v-col>
-          <v-col cols="12" md="6" v-if="newStudentDetail?.assessmentStudentValidationIssues?.length > 0">
+          <v-col
+            v-if="newStudentDetail?.assessmentStudentValidationIssues?.length > 0"
+            cols="12"
+            md="6"
+          >
             <v-row v-if="hasError">
               <v-col>
                 <v-alert
-                    type="warning"
-                    variant="tonal"
-                    text="Warning! Updates to student details will not be saved until all errors are fixed."
+                  type="warning"
+                  variant="tonal"
+                  text="Warning! Updates to student details will not be saved until all errors are fixed."
                 />
               </v-col>
             </v-row>
             <v-row>
               <v-col class="pl-0">
                 <div class="timeline-container">
-                <v-timeline
+                  <v-timeline
                     side="end"
                     density="compact"
                     style="margin-left: 1em"
                     align="start"
                     truncate-line="start"
-                >
-                  <v-timeline-item
+                  >
+                    <v-timeline-item
                       v-for="(issue, index) in newStudentDetail.assessmentStudentValidationIssues"
                       :key="index"
                       dot-color="white"
@@ -153,37 +184,49 @@
                       icon="mdi-alert-circle-outline"
                       size="large"
                       width="100%"
-                  >
-                    <v-row class="mt-n1">
-                      <v-col>
-                        <h3 class="validation-issue">
-                          {{ issue.validationLabel }}
-                        </h3>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <span> {{issue.validationMessage}}</span>
-                      </v-col>
-                    </v-row>
-                  </v-timeline-item>
-                </v-timeline>
+                    >
+                      <v-row class="mt-n1">
+                        <v-col>
+                          <h3 class="validation-issue">
+                            {{ issue.validationLabel }}
+                          </h3>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col>
+                          <span> {{ issue.validationMessage }}</span>
+                        </v-col>
+                      </v-row>
+                    </v-timeline-item>
+                  </v-timeline>
                 </div>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
       </div>
-      <v-row cols="24" class="justify-end">
-        <v-btn
+      <v-row
+        cols="24"
+        class="justify-end"
+      >
+        <v-col class="d-flex justify-end">
+          <v-btn
+            id="cancelRecord"
+            color="#003366"
+            text="Cancel"
+            class="mr-2"
+            variant="outlined"
+            @click="cancel"
+          />
+          <v-btn
             id="saveRecord"
             color="#003366"
             text="Validate & Save"
             :disabled="!addStudentRegistrationFormValid"
             @click="saveStudentRegistration"
-        />
+          />
+        </v-col>
       </v-row>
-
     </v-card-text>
   </v-card>
 </template>
@@ -192,15 +235,13 @@
 
 import { sortBy } from 'lodash';
 import { mapState } from 'pinia';
-import moment from 'moment';
-import {appStore} from "../../../../store/modules/app";
-import {easStore} from "../../../../store/modules/eas";
-import {ApiRoutes} from "../../../../utils/constants";
-import {setFailureAlert, setSuccessAlert} from "../../../composable/alertComposable";
-import ApiService from "../../../../common/apiService";
-import Spinner from "../../../common/Spinner.vue";
+import {appStore} from '../../../../store/modules/app';
+import {ApiRoutes} from '../../../../utils/constants';
+import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
+import ApiService from '../../../../common/apiService';
+import Spinner from '../../../common/Spinner.vue';
 import * as Rules from '../../../../utils/institute/formRules';
-import {authStore} from "../../../../store/modules/auth";
+import {authStore} from '../../../../store/modules/auth';
 
 
 export default {
@@ -233,32 +274,30 @@ export default {
       schoolSearchNames: [],
       assessmentTypeSearchNames: [],
       assessmentCenterSearchNames: [],
-      specialCaseSearchNames: [],
       addStudentRegistrationFormValid: false,
       hasError: false,
       newStudentDetail: {
         assessmentID: null,
-        schoolID: null,
+        schoolOfRecordSchoolID: null,
         assessmentCenterID: null,
         givenName: null,
-        surName: null,
+        surname: null,
         pen: null,
         localID: null,
         isElectronicExam: null,
         proficiencyScore: null,
-        provincialSpecialCaseCode: null,
         assessmentStudentValidationIssues: []
       },
       selectedSessionID: null,
       studentRegistrationValidationIssues: [],
       loadingCount: 0,
-      isActive: false
+      isActive: false,
+      isDistrictUser: false
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeSchoolsMap', 'config']),
-    ...mapState(easStore, ['specialCaseCodes']),
   },
   watch: {
     saveEvent: {
@@ -281,9 +320,11 @@ export default {
     }
   },
   created() {
+    authStore().getUserInfo().then(() => {
+      this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
+    });
     this.setupSchoolList();
     this.setupSessions();
-    this.setupSpecialCaseCodes();
     if(this.sessionID){
       this.selectedSessionID = this.sessionID;
       this.refreshAssessmentTypes(this.sessionID);
@@ -296,7 +337,7 @@ export default {
     setupSchoolList() {
       this.activeSchoolsMap?.forEach((school) => {
         this.schoolSearchNames.push({
-          schoolCodeName: school.schoolName + ' - ' + school.mincode,
+          schoolCodeName: school.mincode + ' - ' + school.schoolName,
           schoolID: school.schoolID,
         });
       });
@@ -309,21 +350,11 @@ export default {
         sessions.push({
           sessionCourseMonth: parseInt(session.courseMonth),
           sessionCourseYear: parseInt(session.courseYear),
-          sessionCodeName: this.formatMonth(session.courseMonth) + ' ' + session.courseYear,
+          sessionCodeName: session.courseYear + '/' + session.courseMonth,
           sessionCodeValue: session.sessionID
         });
       });
       this.sessionSearchNames = sortBy(sessions, ['sessionCourseYear','sessionCourseMonth']);
-    },
-    setupSpecialCaseCodes() {
-      let specialCases = [];
-      Object.keys(this.specialCaseCodes).forEach(key => {
-        specialCases.push({
-          specialCaseCodeName: this.specialCaseCodes[key],
-          specialCaseCodeValue: key
-        });
-      });
-      this.specialCaseSearchNames = sortBy(specialCases, ['specialCaseCodeName']);
     },
     refreshAssessmentTypes($event) {
       let session = this.schoolYearSessions.find(session => session.sessionID === $event);
@@ -358,43 +389,42 @@ export default {
       this.loadingCount += 1;
 
       const newAssessmentStudentDetail = Object.fromEntries(
-          Object.entries(this.newStudentDetail).filter(([key]) => !key.endsWith('_desc'))
+        Object.entries(this.newStudentDetail).filter(([key]) => !key.endsWith('_desc'))
       );
 
+      if(!this.isDistrictUser){
+        newAssessmentStudentDetail.schoolOfRecordSchoolID = this.userInfo.activeInstituteIdentifier;
+      }
+
       ApiService.apiAxios
-          .post(
-              `${ApiRoutes.eas.ASSESSMENT_STUDENTS}/${this.userInfo.activeInstituteType}`,
-              newAssessmentStudentDetail
-          )
-          .then((res) => {
-            this.newStudentDetail = res.data;
-            console.log(this.newStudentDetail.assessmentStudentValidationIssues)
-            if(this.newStudentDetail.assessmentStudentValidationIssues){
-              this.hasError = true;
-            } else if(!this.newStudentDetail.assessmentStudentValidationIssues) {
-              console.log("found success");
-              this.hasError = false;
-              setSuccessAlert('Success! The new student registration has been created.');
-              this.$emit('close-new-student-registration');
-            }
-            this.loadingCount -= 1;
-          })
-          .catch((error) => {
-            console.error(error);
-            setFailureAlert(
-                error?.response?.data?.message
-                    ? error?.response?.data?.message
-                    : 'An error occurred while trying to update student registration details. Please try again later.'
-            );
-          })
+        .post(
+          `${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students`,
+          newAssessmentStudentDetail
+        )
+        .then((res) => {
+          this.newStudentDetail = res.data;
+          if(this.newStudentDetail.assessmentStudentValidationIssues){
+            this.hasError = true;
+          } else if(!this.newStudentDetail.assessmentStudentValidationIssues) {
+            this.hasError = false;
+            setSuccessAlert('Success! The new student registration has been created.');
+            this.$emit('close-new-student-registration');
+          }
+          this.loadingCount -= 1;
+        })
+        .catch((error) => {
+          console.error(error);
+          setFailureAlert(
+            error?.response?.data?.message
+              ? error?.response?.data?.message
+              : 'An error occurred while trying to update student registration details. Please try again later.'
+          );
+        });
 
       this.loadingCount -= 1;
     },
     validateForm() {
       this.$refs?.addRegistrationForm?.validate();
-    },
-    formatMonth(month) {
-      return moment(month, 'MM').format('MMMM');
     },
     cancel() {
       this.$emit('close-new-student-registration');

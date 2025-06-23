@@ -5,8 +5,7 @@ const putStudentAssessmentSchema = object({
   body: object({
     assessmentStudentID: string().nonNullable(),
     sessionID:string().nonNullable(),
-    districtID: string().nullable().optional(),
-    schoolID: string().nonNullable(),
+    schoolOfRecordSchoolID: string().nonNullable(),
     assessmentCenterID: string().nonNullable(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
@@ -14,7 +13,8 @@ const putStudentAssessmentSchema = object({
     pen: string().max(9).nonNullable(),
     localID: string().max(12).nonNullable(),
     givenName: string().max(25).nonNullable(),
-    surName: string().max(25).nonNullable(),
+    surname: string().max(25).nonNullable(),
+    localCourseID: string().max(20).nullable().optional(),
     isElectronicExam: boolean().nullable().optional(),
     proficiencyScore: number().nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
@@ -41,8 +41,7 @@ const putStudentAssessmentSchema = object({
 const postAssessmentStudentSchema = object({
   body: object({
     sessionID:string().nonNullable(),
-    districtID: string().nonNullable(),
-    schoolID: string().nonNullable(),
+    schoolOfRecordSchoolID: string().nonNullable(),
     assessmentCenterID: string().nonNullable(),
     assessmentID:string().nonNullable(),
     assessmentTypeCode: string().nonNullable(),
@@ -53,9 +52,10 @@ const postAssessmentStudentSchema = object({
     pen: string().max(9).nonNullable(),
     localID: string().max(12).nonNullable(),
     givenName: string().max(25).nonNullable(),
-    surName: string().max(25).nonNullable(),
+    surname: string().max(25).nonNullable(),
     isElectronicExam: boolean().nullable().optional(),
     proficiencyScore: number().nullable().optional(),
+    localCourseID: string().max(20).nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
     assessmentStudentValidationIssues: array().of(object({
       assessmentStudentID:string().nullable().optional(),

@@ -21,21 +21,21 @@
       <v-row>
         <v-col class="d-flex justify-start">
           <PrimaryButton
+            id="applyPenLocalIdNameFilter"
+            large-icon
+            icon="mdi-magnify"
+            text="Search Name and ID"
+            :click-action="($event) => setPenLocalIdNameFilter($event, 'click')"
+          />
+        </v-col>
+        <v-col class="d-flex justify-end">
+          <PrimaryButton
             id="clear-filter"
             secondary
             large-icon
             icon="mdi-filter-off-outline"
             text="Clear All"
             :click-action="clear"
-          />
-        </v-col>
-        <v-col class="d-flex justify-end">
-          <PrimaryButton
-            id="applyPenLocalIdNameFilter"
-            large-icon
-            icon="mdi-magnify"
-            text="Search Name and ID"
-            :click-action="($event) => setPenLocalIdNameFilter($event, 'click')"
           />
         </v-col>
       </v-row>
@@ -65,26 +65,6 @@
         <v-row>
           <v-col class="py-0" cols="6">
             <v-text-field
-              id="givenName"
-              v-model="givenName"
-              label="Given Name"
-              color="primary"
-              variant="underlined"
-            />
-          </v-col>
-          <v-col class="py-0" cols="6">
-            <v-text-field
-              id="surName"
-              v-model="surName"
-              label="Surname"
-              color="primary"
-              variant="underlined"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="py-0" cols="6">
-            <v-text-field
               id="pen"
               v-model="pen"
               label="PEN"
@@ -102,26 +82,28 @@
             />
           </v-col>
         </v-row>
+        <v-row>
+          <v-col class="py-0" cols="6">
+            <v-text-field
+              id="givenName"
+              v-model="givenName"
+              label="First Name"
+              color="primary"
+              variant="underlined"
+            />
+          </v-col>
+          <v-col class="py-0" cols="6">
+            <v-text-field
+              id="surName"
+              v-model="surName"
+              label="Last Name"
+              color="primary"
+              variant="underlined"
+            />
+          </v-col>
+        </v-row>
       </div>
-      <div >
-        <v-row>
-          <v-col id="schoolDistrictFilters" class="filter-heading pb-0">
-            District, School and Assessment Center
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" class="pt-0">
-            <v-row v-if="false">
-              <v-text-field
-                id="searchInput"
-                v-model="penLocalIdNameFilter"
-                label="PEN or Local ID or Name"
-                color="primary"
-                variant="underlined"
-              />
-            </v-row>            
-          </v-col>
-        </v-row>
+      <div>
         <v-row v-if="userInfo.activeInstituteType === 'DISTRICT'">
           <v-col cols="12" class="pt-0">
             <slot name="text-search">              
@@ -145,7 +127,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="pt-0">
+          <v-col cols="12">
             <slot name="text-search">              
               <v-autocomplete
                 id="selectSchool"
@@ -213,7 +195,22 @@
                 </v-btn>
               </span>
             </div>     
-            <div v-else-if="filter?.id === 'specialCaseCode'">
+            <div v-else-if="filter?.id === 'proficiencyScoreValue'">
+
+              <span 
+                v-for="(option, i) in filter?.filterOptions" 
+                :key="option.value"
+              >
+                <v-btn
+                  :id="option?.id"
+                  :value="option"
+                  class="filter-button"
+                  rounded="lg"
+                >
+                  {{ option?.title }}
+                </v-btn>
+              </span>
+
               <span 
                 v-for="(option, i) in specialCaseSearchNames"
                 :key="option.value"
@@ -253,12 +250,12 @@
 <script>
 import alertMixin from '../../../mixins/alertMixin';
 import PrimaryButton from '../../util/PrimaryButton.vue';
-import { isEmpty, sortBy} from 'lodash';
+import { isEmpty, sortBy, capitalize} from 'lodash';
 import { mapState } from 'pinia';
-import moment from 'moment';
 import {appStore} from '../../../store/modules/app';
 import {authStore} from '../../../store/modules/auth';
 import {easStore} from '../../../store/modules/eas';
+import { Month } from '@js-joda/core';
 
 export default {
   name: 'StudentRegistrationsFilter',
@@ -356,7 +353,7 @@ export default {
         session.assessments.forEach(assessment => {
           let existingItem = this.assessmentTypeSearchNames.find(item => item.id === assessment.assessmentTypeCode);
           if (!existingItem) {
-            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeName, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode, displayOrder: assessment.displayOrder});
+            this.assessmentTypeSearchNames.push({title: assessment.assessmentTypeCode, id: assessment.assessmentTypeCode, value: assessment.assessmentTypeCode, displayOrder: assessment.displayOrder});
           }
         });
       });
@@ -368,7 +365,8 @@ export default {
       Object.keys(this.specialCaseCodes).forEach(key => {
         this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
       });
-      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['title']); 
+      this.specialCaseSearchNames.push({title: 'No Result', id: 'noResults', value: 'false'});
+      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['id']); 
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
@@ -446,7 +444,7 @@ export default {
       this.$emit('apply-assessment-filters', this.selected);
     },
     formatMonth(month) {
-      return moment(month, 'MM').format('MMMM');
+      return capitalize(Month.of(month).toString());
     }
   },
 };
@@ -465,7 +463,10 @@ export default {
   color: #003366;
   margin-top: 1em;
 }
-
+.filter-card {
+      height: 100%;
+      overflow-y: auto;
+    }
 .filter-button {
   color: #003366;
   padding: 5px;

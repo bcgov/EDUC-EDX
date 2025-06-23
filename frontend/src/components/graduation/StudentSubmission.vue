@@ -28,8 +28,8 @@
       </v-row>
       <v-list
         v-model:selected="selected"
+        mandatory
         :items="submittedStudentRecord"
-        @update:selected="refreshSearch"
       >
         <v-row class="heading">
           <v-col cols="5">
@@ -67,8 +67,6 @@ import {formatDateTime} from '../../utils/format';
 
 export default {
   name: 'StudentSubmission',
-  components: {
-  },
   mixins: [alertMixin],
   props: {
     submissions: {
@@ -83,34 +81,9 @@ export default {
     }
   },
   emits: ['close', 'refreshSearch'],
-  data() {
-    return {
-      submittedStudentRecord:[],
-      selected: null
-    };
-  },
   computed: {
-    
-  },
-  watch : {
-    submissions: {
-      handler(value) {
-        if(value.length > 0) {
-          this.handleSubmissionData(value);
-        }
-      },
-      immediate: true
-    },
-  },
-  async beforeMount() {
-    
-  },
-  created() {
-   
-  },
-  methods: {
-    handleSubmissionData(value) {
-      this.submittedStudentRecord = value.map(fileset => {
+    submittedStudentRecord() {
+      return this.submissions.map(fileset => {
         let createDate =  formatDateTime(fileset.createDate.substring(0, 19),'uuuu-MM-dd\'T\'HH:mm:ss','uuuu/MM/dd', false);
         let createTime = LocalDateTime.parse(fileset.createDate).format(DateTimeFormatter.ofPattern('HH:mm'));
         return {
@@ -120,18 +93,20 @@ export default {
           updateUser: fileset.updateUser
         };
       });
-      this.selected = this.setActiveRecord(this.selectedSubmission);
     },
+    selected: {
+      get() {
+        return this.submittedStudentRecord.filter(submission => submission.incomingFilesetID === this.selectedSubmission.incomingFilesetID);
+      },
+      set(value) {
+        this.$emit('refreshSearch', value);
+      }
+    }
+  },
+  methods: {
     close() {
       this.$emit('close');
-    },
-    setActiveRecord(selectedItem) {
-      return this.submittedStudentRecord.filter(submission => submission.incomingFilesetID === selectedItem.incomingFilesetID);
-    },
-    refreshSearch() {
-      this.$emit('refreshSearch', this.selected);
     }
-    
   }
 };
 </script>

@@ -18,7 +18,18 @@
       </template>
       <template #headers>
         <tr class="header-row">
-          <th v-for="column in headers" id="header" :key="column.key">
+          <th
+            v-for="column in headers"
+            id="header"
+            :key="column.key"
+          >
+            <div v-if="column.title === 'select'">
+              <v-checkbox
+                v-model="allSelected"
+                :indeterminate="!allSelected && selected.length > 0"
+                hide-details="true"
+              />
+            </div>
             <div v-if="column.title !== 'select'">
               <div class="header-text">
                 {{ column.title }}
@@ -34,16 +45,32 @@
         </tr>
       </template>
       <template #item="props">
-          <tr
-            class="hoverTable"
-            @click="rowClicked(props.item)"
+        <tr
+          class="hoverTable"
+          @click="rowClicked(props.item)"
+        >
+          <td
+            v-for="column in headers"
+            :key="column.key"
+            class="td-data"
           >
-            <td v-for="column in headers" :key="column.key" class="td-data">
-              <div>
-                <span v-if="props.item[column.key]">{{props.item[column.key] }}</span>
-              </div>
-            </td>
-          </tr>
+            <v-checkbox
+              v-if="column.title === 'select'"
+              v-model="selected"
+              :value="props.item"
+              hide-details="true"
+              @click.stop
+            />
+            <span v-if="column.key === 'session'">
+              {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}
+            </span>
+            <span v-else-if="column.key === 'name'">
+              {{ props.item['surname'] }}, {{ props.item['givenName'] }}
+            </span>
+            <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
+            <span v-else>-</span>
+          </td>
+        </tr>
       </template>
       <template #bottom>
         <div class="pagination-controls">
@@ -70,9 +97,9 @@
 <script>
 
 import { mapState } from 'pinia';
-import {authStore} from "../../../store/modules/auth";
-import {appStore} from "../../../store/modules/app";
-import {displayName} from "../../../utils/format";
+import {authStore} from '../../../store/modules/auth';
+import {appStore} from '../../../store/modules/app';
+import {displayName} from '../../../utils/format';
 
 export default {
   name: 'StudentRegistrationsCustomTable',
@@ -84,6 +111,11 @@ export default {
       default: null,
     },
     data: {
+      type: Array,
+      required: true,
+      default: null,
+    },
+    selectedRows: {
       type: Array,
       required: true,
       default: null,
@@ -118,27 +150,49 @@ export default {
       default: false,
     },
   },
-  emits: [ 'reload-registrations', 'openStudentDetails', 'editSelectedRow', 'loadPrevious', 'loadNext'],
+  emits: [ 'reload-registrations', 'editSelectedRow', 'loadPrevious', 'loadNext', 'selected-rows-changed'],
   data() {
     return {
-      masterCheckbox: false,
-      selected: [],
       pageNumber: 1,
       pageSize: 15,
       loading: true,
       edxURL: null,
-      user: null,
+      user: null
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['config']),
+    selected: {
+      get() {
+        if (this.selectedRows === null) {
+          return [];
+        }
+        return this.selectedRows;
+      },
+      set(newSelectedRows) {
+        this.$emit('selected-rows-changed', newSelectedRows);
+      }
+    },
+    allSelected: {
+      get() {
+        if (this.data.length <= 0) {
+          return false;
+        }
+        return this.data.length === this.selected.length;
+      },
+      set(allSelected) {
+        if (allSelected) {
+          this.selected = [...this.data];
+        } else {
+          this.selected = [];
+        }
+      }
+    }
   },
   watch: {
     pageNumber(val) {
       if (val) {
-        this.masterCheckbox = false;
-        this.selected = [];
         this.$emit('reload-registrations', { pageNumber: val });
       }
     }
@@ -159,10 +213,6 @@ export default {
     rowClicked(props) {
       this.$emit('editSelectedRow', props);
     },
-    onClick(prop) {
-      this.selected.push(prop.item.raw);
-      this.masterCheckbox = this.selected.length > 0 && this.isAllSelected();
-    },        
     displayName,
   },
 };

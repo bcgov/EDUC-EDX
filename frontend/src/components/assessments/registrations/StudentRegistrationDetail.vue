@@ -2,7 +2,7 @@
   <v-card id="viewStudentCard">
     <v-card-title id="viewStudentCardTitle" class="sheetHeader pt-1 pb-1">
       <v-row no-gutters>
-        <v-col class="d-flex justify-start"> Edit Student Registration</v-col>
+        <v-col class="d-flex justify-start">Edit Graduation Assessment Registration</v-col>
         <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"

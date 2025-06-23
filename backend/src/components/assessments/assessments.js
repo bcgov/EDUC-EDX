@@ -1,11 +1,13 @@
 'use strict';
-const { logApiError, getAccessToken, getData, putData, postData, deleteData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse} = require('../utils');
+const { logApiError, getAccessToken, getData, putData, postData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse} = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
 const { createMoreFiltersSearchCriteria } = require('./studentFilters');
 const moment = require('moment');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
+const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
+const log = require('../logger');
 
 async function getAssessmentSessions(req, res) {
   try {
@@ -55,7 +57,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
 
       session.assessments.forEach(assessment => {
         let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
-        assessment.assessmentTypeName = assessmentType.label + ' (' + assessment.assessmentTypeCode + ')';
+        assessment.assessmentTypeName = assessment.assessmentTypeCode;
         assessment.displayOrder = assessmentType.displayOrder;
       });
     });
@@ -69,14 +71,19 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
 
 async function getAssessmentStudentsPaginated(req, res) {
   try {
-    const search = [];
-    
-    if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']);
-      criteriaArray.forEach(criteria => {
-        search.push(criteria);
-      });
-    }
+    const search = req.query.searchParams?.['moreFilters'] ? createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']) : [];
+
+    const instituteFilter = {
+      condition: CONDITION.AND,
+      searchCriteriaList: [{
+        key: req.session.activeInstituteType === 'SCHOOL' ? 'schoolOfRecordSchoolID' : 'districtID',
+        value: req.session.activeInstituteIdentifier,
+        operation: FILTER_OPERATION.EQUAL,
+        valueType: VALUE_TYPE.UUID,
+        condition: CONDITION.AND
+      }]
+    };
+    search.push(instituteFilter);
 
     const params = {
       params: {
@@ -110,7 +117,6 @@ async function getAssessmentStudentsPaginated(req, res) {
 
 async function postAssessmentStudent(req, res){
   try {
-    req.body.districtID = cacheService.getSchoolBySchoolID(req.body.schoolID).districtID;
     const payload = {
       ...req.body,
       updateUser: getCreateOrUpdateUserValue(req),
@@ -129,8 +135,8 @@ async function postAssessmentStudent(req, res){
 async function getAssessmentStudentByID(req, res) {
   try {  
     const token = getAccessToken(req);
-    let data = await getData(token, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
-    return res.status(200).json(includeAssessmentStudentProps(data));
+    let assessmentStudent = getAssessmentStudent(req.params.assessmentStudentID, res, token, req.session?.correlationID);
+    return res.status(200).json(includeAssessmentStudentProps(assessmentStudent));
   } catch (e) {
     if (e?.status === 404) {
       res.status(HttpStatus.OK).json(null);
@@ -141,34 +147,31 @@ async function getAssessmentStudentByID(req, res) {
   }
 }
 
-async function deleteAssessmentStudentByID(req, res) {  
+async function removeAssessmentStudents(req, res) {
   try {
     const token = getAccessToken(req);
-    const result = await deleteData(token, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`);
-    return res.status(HttpStatus.OK).json(result);
+    const result = await postData(token, req.body, `${config.get('assessments:assessmentStudentsURL')}/delete-students`, req.session?.correlationID);
+    return res.status(HttpStatus.NO_CONTENT).json(result);
   } catch (e) {
-    logApiError(e, 'deleteAssessmentStudentByID', 'Error occurred while attempting to delete the assessment student registration.');
+    logApiError(e, 'removeAssessmentStudents', 'Error occurred while attempting to delete the assessment student registrations.');
     return handleExceptionResponse(e, res);
   }
 }
 
 function includeAssessmentStudentProps(assessmentStudent) {
   if(assessmentStudent) {
-    let school = cacheService.getSchoolBySchoolID(assessmentStudent.schoolID);
+    let school = cacheService.getSchoolBySchoolID(assessmentStudent.schoolOfRecordSchoolID);
     let assessmentCenter = cacheService.getSchoolBySchoolID(assessmentStudent.assessmentCenterID);
-    let district = cacheService.getDistrictJSONByDistrictID(school.districtID);
 
-    if(school && district) {
+    if(school) {
       assessmentStudent.schoolName_desc = getSchoolName(school);
-      assessmentStudent.districtID = school.districtID;
-      assessmentStudent.districtName_desc = getDistrictName(district);
     }
     
     if(assessmentCenter) {
       assessmentStudent.assessmentCenterName_desc = getSchoolName(assessmentCenter);
     }    
 
-    assessmentStudent.assessmentTypeName_desc = cacheService.getAssessmentTypeByCode(assessmentStudent.assessmentTypeCode).label+' ('+assessmentStudent.assessmentTypeCode+')';
+    assessmentStudent.assessmentTypeName_desc = assessmentStudent.assessmentTypeCode;
     assessmentStudent.provincialSpecialCaseName_desc = assessmentStudent.provincialSpecialCaseCode ? cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode) : null;
     assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') +' '+assessmentStudent.courseYear;
   }
@@ -195,12 +198,32 @@ async function updateAssessmentStudentByID(req, res) {
   }
 }
 
-function getSchoolName(school) {
-  return school.mincode + ' - ' + school.schoolName;
+async function downloadXamFile(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/download`;
+
+    const data = await getData(token, url);
+
+    const fileName = `${data?.reportType || 'SessionResults.xam'}`;
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    if (data && data.documentData) {
+      const buffer = Buffer.from(data.documentData, 'base64');
+      return res.send(buffer);
+    } else {
+      const emptyBuffer = Buffer.from('');
+      return res.send(emptyBuffer);
+    }
+  } catch (e) {
+    log.error(e, 'downloadXamFile', 'Error occurred while attempting to download XAM file.');
+    return handleExceptionResponse(e, res);
+  }
 }
 
-function getDistrictName(district) {
-  return district.districtNumber + ' - ' + district.name;
+function getSchoolName(school) {
+  return school.mincode + ' - ' + school.schoolName;
 }
 
 function getAssessmentSpecialCases(req, res) {  
@@ -213,6 +236,13 @@ function getAssessmentSpecialCases(req, res) {
   }
 }
 
+async function getAssessmentStudent(assessmentStudentID, res, token, correlationID) {
+  if (res.locals.requestedAssessmentStudent && res.locals.requestedAssessmentStudent.assessmentStudentID === assessmentStudentID) {
+    return res.locals.requestedAssessmentStudent;
+  }
+  return getData(token, `${config.get('assessments:assessmentStudentsURL')}/${assessmentStudentID}`, correlationID);
+}
+
 module.exports = {
   getAssessmentSessions,
   getActiveAssessmentSessions,
@@ -220,7 +250,9 @@ module.exports = {
   getAssessmentStudentsPaginated,
   getAssessmentStudentByID,
   updateAssessmentStudentByID,
-  deleteAssessmentStudentByID,
+  removeAssessmentStudents,
   getAssessmentSpecialCases,
-  postAssessmentStudent
+  postAssessmentStudent,
+  downloadXamFile
 };
+

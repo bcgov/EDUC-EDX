@@ -13,6 +13,7 @@ const gradReportsRoot = baseRoot + '/gradReports';
 const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
 const assessmentsRoot = baseRoot + '/assessments';
+const challengeReportsRoot = baseRoot + '/challengeReports';
 
 let object;
 
@@ -138,10 +139,12 @@ export const ApiRoutes = Object.freeze({
   assessments: {
     BASE_URL: assessmentsRoot,
     GET_ASSESSMENT_SESSIONS: assessmentsRoot + '/assessment-sessions',
-    GET_ASSESSMENT_TYPES: assessmentsRoot + '/assessment-types',
     GET_ASSESSMENT_SPECIALCASE_TYPES: assessmentsRoot + '/assessment-specialcase-types',
-    ASSESSMENT_STUDENTS: assessmentsRoot + '/assessment-registrations/student',
-    GET_ASSESSMENT_STUDENTS_PAGINATED: assessmentsRoot + '/assessment-registrations/paginated',
+    ASSESSMENT_REGISTRATIONS: assessmentsRoot + '/assessment-registrations',
+    BASE_REPORTS_URL: assessmentsRoot + '/reports',
+  },
+  challengeReports: {
+    BASE_URL: challengeReportsRoot
   }
 });
 
@@ -169,9 +172,7 @@ export const PAGE_TITLES = Object.freeze({
   GRADUATION: 'Graduation',
   GRAD_DATA_COLLECTION: 'Graduation Records and Achievement Data Collection',
   GRAD_UPLOAD_ERRORS: 'Graduation Errors and Warnings',
-  ASSESSMENT: 'Assessments',
-  ASSESSMENT_SESSIONS: 'Assessment Sessions',
-  ASSESSMENT_SESSION_DETAIL: 'Assessment Session Detail',
+  ASSESSMENT: 'Graduation Assessments',
   GRAD_PROJECTIONS: 'Transcript Verification Reports',
   GRAD_SCHOOL_STUDENT_SEARCH: 'Student Search',
   GRAD_SCHOOL_CURRENT_STUDENTS: 'Current Students',
@@ -180,6 +181,7 @@ export const PAGE_TITLES = Object.freeze({
   GRAD_DISTRICT_PROJECTIONS: 'Graduation Projections and Transcript Verification Reports',
   GRAD_DISTRICT_REPORTS: 'Graduation Summary Reports',
   GRAD_CHANGE_FORM: 'GRAD Change Form',
+  CHALLENGE_REPORTS: 'Funding Reports for Course Challenges'
 });
 
 

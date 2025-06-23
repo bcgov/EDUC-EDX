@@ -218,14 +218,14 @@
         </v-row>
       </div>
       <div v-else-if="hasRequiredPermission('GRAD_SCH_UPLOAD')">
-        <v-row v-if="isBetweenSchoolSummerPeriod">
+        <v-row v-if="isBeforeSummerSchoolPeriod">
           <v-col cols="12">
             <v-alert
               density="compact"
               type="info"
               variant="tonal"
             >
-              Uploads are unavailable, as the School Year Reporting Period is complete. The Summer Reporting Period will open in August.
+              Uploads are unavailable, as the School Year Reporting Period is complete. The Summer Reporting Period will open on {{ summerPeriodStart }}.
             </v-alert>
           </v-col>
         </v-row>
@@ -260,7 +260,7 @@
               color="#003366"
               text="Upload Graduation Data Files"
               :loading="isLoadingFiles"
-              :disabled="isBetweenSchoolSummerPeriod || isBetweenSummerSchoolPeriod"
+              :disabled="isBeforeSummerSchoolPeriod || isBetweenSummerSchoolPeriod"
               @click="handleFileImport"
             />
           </v-col>
@@ -382,30 +382,30 @@
               </span>
               <span v-else-if="column.key ==='alert'">
                 <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
-                <v-tooltip text="Files processed. Error report available.">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-icon
-                    icon="mdi-check-circle-outline"
-                    v-bind="tooltipProps"
-                    color="success"
-                  />
-                  </template>
-                </v-tooltip>
-              </span>
-              <span v-else-if="isFilesetInProgress(props.item)">
-                <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-progress-circular
-                    :width="4"
-                    color="primary"
-                    v-bind="tooltipProps"
-                    indeterminate
-                  >
-                    <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
-                  </v-progress-circular>
-                  </template>
-                </v-tooltip>
-              </span>
+                  <v-tooltip text="Files processed. Error report available.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-check-circle-outline"
+                        v-bind="tooltipProps"
+                        color="success"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+                <span v-else-if="isFilesetInProgress(props.item)">
+                  <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-progress-circular
+                        :width="4"
+                        color="primary"
+                        v-bind="tooltipProps"
+                        indeterminate
+                      >
+                        <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
+                      </v-progress-circular>
+                    </template>
+                  </v-tooltip>
+                </span>
                 <span v-else>
                   <v-tooltip text="Missing files. Upload missing files to continue processing.">
                     <template #activator="{ props: tooltipProps }">
@@ -534,7 +534,10 @@
                     <v-col cols="9">
                       <span><b>{{ file.name }}</b> - {{ file.error }}</span>
                     </v-col>
-                    <v-col cols="2" class="d-flex justify-end">
+                    <v-col
+                      cols="2"
+                      class="d-flex justify-end"
+                    >
                       <ClipboardButton
                         id="copyErrorButton"
                         :copy-text="file.error"
@@ -646,17 +649,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-  <v-dialog
-    v-model="previewUploadedStudents"
-  >
-    <PreviewStudents
-      :headers="summerHeaders"
-      :summer-students="summerStudents"
-      :school-i-d="schoolID"
-      @close="closeSheet"
-    />
-  </v-dialog>
+  <PreviewStudentsDialog ref="previewDialog" />
 </template>
   
 <script>
@@ -672,15 +665,16 @@ import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import {LocalDateTime} from '@js-joda/core';
-import PreviewStudents from '../../PreviewStudents.vue';
 import ClipboardButton from '../../../util/ClipboardButton.vue';
+import PreviewStudentsDialog from '../../PreviewStudentsDialog.vue';
+import {formatDate} from '../../../../utils/format';
   
 export default {
   name: 'GradSchoolUploadDataComponent',
   components: {
     ClipboardButton,
     ConfirmationDialog,
-    PreviewStudents
+    PreviewStudentsDialog
   },
   mixins: [alertMixin],
   props: {
@@ -697,6 +691,7 @@ export default {
   emits: [],
   data() {
     return {
+      summerPeriodStart: '',
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
       acceptableXLSFileExtensions: ['.xlsx'],
       requiredRules: [v => !!v || 'Required'],
@@ -725,7 +720,7 @@ export default {
       fileUploadList: [],
       progressCounts: [],
       isSummerPeriod: false,
-      isBetweenSchoolSummerPeriod: false,
+      isBeforeSummerSchoolPeriod: false,
       isBetweenSummerSchoolPeriod: false,
       filesetList: [],
       totalElements: 0,
@@ -738,7 +733,7 @@ export default {
         moreFilters: {}
       },
       headers: [
-        {key: 'alert'},
+        {key: 'alert', sortable: false},
         {title: 'DEM File', key: 'demFileName', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
         {title: 'CRS File', key: 'crsFileName', sortable: false},
@@ -812,11 +807,6 @@ export default {
     clearInterval(this.interval);
   },
   methods: {
-    async closeSheet() {
-      this.previewUploadedStudents = !this.previewUploadedStudents;
-      this.summerStudents = [];
-      await this.getFilesetPaginated();
-    },
     openFileDialogAfterConfirm(){
       this.showUploadConfirmationDialog = false;
       this.handleFileImport();
@@ -828,9 +818,6 @@ export default {
       this.inputKey=0;
       this.inputKeyXLS=0;
       this.isXlsUpload = false;
-      if(this.isSummerPeriod && this.successfulXLSUploadCount === 1) {
-        this.previewUploadedStudents = true;
-      }
     },
     setActiveReportingDates() {
       let reportingPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
@@ -839,6 +826,7 @@ export default {
       this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
       this.setPeriodFlags();
     },
+    formatDate,
     getGradSchoolDetails() {
       ApiService.apiAxios.get(ApiRoutes.gdc.BASE_URL + '/school/' + this.schoolID + '/grad-school')
         .then(response => {
@@ -851,11 +839,12 @@ export default {
       const schoolPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
       const schoolPeriodEnd = LocalDateTime.parse(this.collectionObject.schYrEnd);
 
+      this.summerPeriodStart = formatDate(summerPeriodStart.toString().substring(0, 10),'uuuu-MM-dd', 'uuuu/MM/dd');
       const today = LocalDateTime.now();
 
       this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
       this.isBetweenSummerSchoolPeriod = (today.isBefore(schoolPeriodStart) && today.isBefore(summerPeriodStart)) || (today.isAfter(summerPeriodEnd) && today.isAfter(schoolPeriodEnd));
-      this.isBetweenSchoolSummerPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
+      this.isBeforeSummerSchoolPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
     },
     toggleMoreInfoTooltip(){
       this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
@@ -972,9 +961,15 @@ export default {
             };
             this.summerStudents.push(detail);
             this.successfulXLSUploadCount += 1;
-            fileJSON.status = this.fileUploadSuccess;
-          }
-          );
+          });
+        const previewDialog = await this.$refs.previewDialog.open(this.summerHeaders, this.summerStudents, null, this.schoolID, {color: '#fff', closeIcon: false, subtitle: false, dark: false});
+        if (!previewDialog) {
+          this.summerStudents = [];
+          fileJSON.error = 'Upload cancelled by the user';
+          fileJSON.status = 'Abandoned';
+        } else {
+          fileJSON.status = this.fileUploadSuccess;
+        }  
       } catch (e) {
         console.error(e);
         fileJSON.error = e.response.data;

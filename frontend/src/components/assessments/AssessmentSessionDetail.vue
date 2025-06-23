@@ -1,32 +1,55 @@
 <template>
-  <v-container class="containerSetup" :fluid="true">
-    <v-row class="d-flex justify-start">
-      <v-col>
-        <h2 class="subjectHeading">School Year: {{ schoolYear.replace('-','/') }}</h2>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col>
-        <v-divider class="divider" />
-      </v-col>
-    </v-row>
-    <v-row v-if="isLoading" class="mt-0">
+  <v-container
+    class="containerSetup"
+    :fluid="true"
+  >
+    <v-row
+      v-if="isLoading"
+      class="mt-0"
+    >
       <v-col>
         <Spinner />
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col class="border">
-        <v-tabs v-model="tab" color="#38598a">
-          <v-tab :value="1"> Registrations and Results </v-tab>
+      <v-col>
+        <v-tabs
+          v-model="tab"
+          style="color: #38598a"
+        >
+          <v-tab 
+            :value="1"
+            prepend-icon="mdi-account-multiple-outline"
+          >
+            Registrations and Results 
+          </v-tab>
+          <v-tab 
+            :value="2"
+            prepend-icon="mdi-finance"
+          >
+            Reports
+          </v-tab>
         </v-tabs>
         <v-window v-model="tab">
-          <v-window-item :value="1" transition="false" reverse-transition="false">
-            <StudentRegistrations v-if="schoolYearSessions.length > 0" :school-year="schoolYear"
-                                  :school-year-sessions="schoolYearSessions" :session-ID="sessionID" />
+          <v-window-item
+            :value="1"
+            transition="false"
+            reverse-transition="false"
+          >
+            <StudentRegistrations
+              v-if="schoolYearSessions.length > 0"
+              :school-year="schoolYear"
+              :school-year-sessions="schoolYearSessions"
+              :session-i-d="sessionID"
+            />
           </v-window-item>
-          <v-window-item :value="2" transition="false" reverse-transition="false"/>
-          <v-window-item :value="3" transition="false" reverse-transition="false"/>
+          <v-window-item
+            :value="2"
+            transition="false"
+            reverse-transition="false"
+          >
+            <AssessmentReports />
+          </v-window-item>
         </v-window>
       </v-col>
     </v-row>
@@ -40,19 +63,18 @@ import { ApiRoutes } from '../../utils/constants';
 import { mapState } from 'pinia';
 import Spinner from '../common/Spinner.vue';
 import {authStore} from '../../store/modules/auth';
+import { easStore } from '../../store/modules/eas';
+import AssessmentReports from './reports/AssessmentReports.vue';
 
 export default {
   name: 'AssessmentSessionDetail',
   components: {
     StudentRegistrations,
     Spinner,
+    AssessmentReports
   },
   mixins: [alertMixin],
   props: {
-    schoolYear: {
-      type: String,
-      required: true,
-    },
     sessionID: {
       type: String,
       required: false,
@@ -64,22 +86,24 @@ export default {
       assessmentStudents: [],
       schoolYearSessions: [],
       isLoading: false,
-      tab: ''
+      tab: '',
+      session: ''
     };
   },
   computed: {
-    ...mapState(authStore, ['userInfo']),    
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(easStore, ['schoolYear'])   
   },
-  created() {    
+  async created() {    
     this.loading = true;
-    this.getAllSessionsforYear();
+    easStore().getActiveSchoolYear(this.userInfo.activeInstituteType).then(() => this.getAllSessionsforYear());
   },
   methods: {
     async  getAllSessionsforYear() {
       this.loading = true;
       ApiService.apiAxios
         .get(
-          `${ApiRoutes.eas.GET_ASSESSMENT_SESSIONS}/school-year/` + this.schoolYear + '/' + this.userInfo.activeInstituteType,
+          `${ApiRoutes.assessments.GET_ASSESSMENT_SESSIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/school-year/${this.schoolYear}`,
           {}
         ).then((response) => {
           this.schoolYearSessions = response.data;          
@@ -90,14 +114,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },    
-    backToAssesmentSessions() {
-      if(this.userInfo.activeInstituteType === 'DISTRICT'){
-        this.$router.push({name: 'district-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});
-      } else {
-        this.$router.push({name: 'school-assessment-sessions', params: {institutionID: this.userInfo.activeInstituteIdentifier}});
-      }
-    },
+    }
   },
 };
 </script>
@@ -108,10 +125,14 @@ export default {
   padding: 35px;
   margin-bottom: 2em;
 }
-.divider {
-  border-color: #fcba19;
-  border-width: 3px;
-  opacity: unset;
+.heading {
+  margin-top: 12px;
+  margin-bottom: 1em;
+  font-weight: bold;
+  text-align: start;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: #38598AFF;
 }
 .containerSetup {
   padding-right: 5em !important;

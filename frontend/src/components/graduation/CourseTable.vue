@@ -6,21 +6,34 @@
     :headers="headers"
     mobile-breakpoint="0"
   >
-    <template #headers>
+    <template #headers="{ getSortIcon, toggleSort }">
       <tr>
         <th
           v-for="column in headers"
           id="header"
           :key="column.key"
+          :class="{
+            'text-center': column.align === 'center',
+            'text-start': column.align === 'start',
+            'text-end': column.align === 'end',
+            'v-data-table__th--sortable': column.sortable,
+          }"
+          :style="{ cursor: column.sortable ? 'pointer' : 'default' }"
+          @click="column.sortable && toggleSort(column)"
         >
-          <v-row>
-            <v-col class="header-text mr-12">
-              {{ column.title }}
-            </v-col>
-          </v-row>
+          <div class="v-data-table-header__content d-flex align-center">
+            <span class="header-text mr-12">{{ column.title }}</span>
+            <v-icon
+              v-if="column.sortable"
+              class="v-data-table-header__sort-icon ml-1"
+              :icon="getSortIcon(column)"
+              size="x-small"
+            />
+          </div>
         </th>
       </tr>
     </template>
+
     <template #item="props">
       <tr
         class="mt-2"
@@ -32,8 +45,7 @@
           class="pt-2 row-text"
         >
           <span v-if="column.key === 'course'">
-            <span v-if="props.item['courseCode'] === null">-</span>
-            <span v-else-if="props.item['courseLevel'] === null">-</span>
+            <span v-if="(props.item['courseCode'] === null) && (props.item['courseLevel'] === null)">-</span>
             <span v-else>{{ props.item['courseCode'] }}{{ props.item['courseLevel'] }}</span>
           </span>
           <span v-else-if="column.key === 'status'">
@@ -51,11 +63,13 @@
           <span v-else-if="column.key === 'interimPercentage'">
             <span v-if="props.item['interimPercentage'] && props.item['interimLetterGrade']">{{ props.item['interimPercentage'] }} ({{ props.item['interimLetterGrade'] }})</span>
             <span v-else-if="props.item['interimPercentage']">{{ props.item['interimPercentage'] }}</span>
+            <span v-else-if="props.item['interimLetterGrade']">{{ props.item['interimLetterGrade'] }}</span>
             <span v-else>-</span>
           </span>
           <span v-else-if="column.key === 'finalPercentage'">
             <span v-if="props.item['finalPercentage'] && props.item['finalLetterGrade']">{{ props.item['finalPercentage'] }} ({{ props.item['finalLetterGrade'] }})</span>
             <span v-else-if="props.item['finalPercentage']">{{ props.item['finalPercentage'] }}</span>
+            <span v-else-if="props.item['finalLetterGrade']">{{ props.item['finalLetterGrade'] }}</span>
             <span v-else>-</span>
           </span>
           <span v-else-if="column.key === 'relatedCourse'">
@@ -75,7 +89,7 @@
         
 <script>
 import alertMixin from '../../mixins/alertMixin';
-        
+
 export default {
   name: 'CourseTable',
   components: {
@@ -133,7 +147,7 @@ export default {
         return '';
       }
     },
-       
+
   }
 };
 </script>
