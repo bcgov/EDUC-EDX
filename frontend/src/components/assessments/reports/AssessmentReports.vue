@@ -304,7 +304,7 @@ export default {
   async created() {
     authStore().getUserInfo().then(() => {
       this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
-      this.schoolUserSchoolID = this.userInfo.activeInstituteIdentifier;
+      this.schoolUserSchoolID = this.userInfo.activeInstituteType === 'SCHOOL' ? this.userInfo.activeInstituteIdentifier : null;
     });
     await this.getAllSessions();
     this.setupSchoolLists();
