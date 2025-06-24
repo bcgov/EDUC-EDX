@@ -290,7 +290,8 @@ export default {
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
       selectedSessionID: null,
-      isDistrictUser: false
+      isDistrictUser: false,
+      schoolUserSchoolID: null
     };
   },
   computed: {
@@ -303,6 +304,7 @@ export default {
   async created() {
     authStore().getUserInfo().then(() => {
       this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
+      this.schoolUserSchoolID = this.userInfo.activeInstituteType === 'SCHOOL' ? this.userInfo.activeInstituteIdentifier : null;
     });
     await this.getAllSessions();
     this.setupSchoolLists();
@@ -391,7 +393,8 @@ export default {
     async downloadXamFile() {
       this.isLoading = true;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType}/${this.selectedSessionID}/school/${this.schoolNameNumberFilter}/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType}/${this.selectedSessionID}/school/${
+          this.isDistrictUser ? this.schoolNameNumberFilter : this.schoolUserSchoolID}/download`;
         window.open(url);
       } catch (error) {
         console.error(error);
