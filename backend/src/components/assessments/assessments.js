@@ -201,7 +201,7 @@ async function updateAssessmentStudentByID(req, res) {
 async function downloadXamFile(req, res) {
   try {
     const token = getAccessToken(req);
-    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/download`;
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/XAM_FILE/download`;
 
     const data = await getData(token, url);
 
@@ -218,6 +218,30 @@ async function downloadXamFile(req, res) {
     }
   } catch (e) {
     log.error(e, 'downloadXamFile', 'Error occurred while attempting to download XAM file.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function downloadAssessmentSessionResultsCSVFile(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/SESSION_RESULTS/download`;
+
+    const data = await getData(token, url);
+
+    const fileName = `${data?.reportType || 'SessionResults.csv'}`;
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    if (data && data.documentData) {
+      const buffer = Buffer.from(data.documentData, 'base64');
+      return res.send(buffer);
+    } else {
+      const emptyBuffer = Buffer.from('');
+      return res.send(emptyBuffer);
+    }
+  } catch (e) {
+    log.error(e, 'downloadAssessmentSessionResultsCSVFile', 'An error occurred while attempting to download the Assessment Session Results CSV file.');
     return handleExceptionResponse(e, res);
   }
 }
@@ -253,6 +277,7 @@ module.exports = {
   removeAssessmentStudents,
   getAssessmentSpecialCases,
   postAssessmentStudent,
-  downloadXamFile
+  downloadXamFile,
+  downloadAssessmentSessionResultsCSVFile
 };
 

@@ -178,7 +178,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Session Results.csv"
-                :download-action="() => downloadDetailedDOARReport()"
+                :download-action="() => downloadAssessmentResultCSV()"
               />
             </v-col>
           </v-row>
@@ -290,8 +290,6 @@ export default {
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
       selectedSessionID: null,
-      isDistrictUser: false,
-      schoolUserSchoolID: null
     };
   },
   computed: {
@@ -299,13 +297,16 @@ export default {
     ...mapState(authStore, ['userInfo']),
     disableCondition() {
       return this.userInfo.activeInstituteType === 'DISTRICT' ? (!this.schoolNameNumberFilter || !this.selectedSessionID)  : !this.selectedSessionID;
+    },
+    schoolIdentifierForReports() {
+      if (this.userInfo.activeInstituteType === 'SCHOOL') {
+        return this.userInfo.activeInstituteIdentifier;
+      }
+      return this.schoolNameNumberFilter;
     }
   },
   async created() {
-    authStore().getUserInfo().then(() => {
-      this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
-      this.schoolUserSchoolID = this.userInfo.activeInstituteType === 'SCHOOL' ? this.userInfo.activeInstituteIdentifier : null;
-    });
+    authStore().getUserInfo();
     await this.getAllSessions();
     this.setupSchoolLists();
   },
@@ -377,7 +378,21 @@ export default {
           this.isSearchingStudent = false;
         });
     },
-   
+    async downloadAssessmentResultCSV() {
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/sessionResultsCSV/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
+
+    },
     async downloadStudentReport() {
      
     },
@@ -388,20 +403,17 @@ export default {
 
     },
     async downloadAssessmentResults() {
-
+      
     },
     async downloadXamFile() {
       this.isLoading = true;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType}/${this.selectedSessionID}/school/${
-          this.isDistrictUser ? this.schoolNameNumberFilter : this.schoolUserSchoolID}/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/xam/download`;
         window.open(url);
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message
-            ? error?.response?.data?.message
-            : 'An error occurred while trying to retrieve your school\'s report.'
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
         );
       } finally {
         this.isLoading = false;
