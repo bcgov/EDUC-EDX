@@ -50,7 +50,7 @@ export const FTE = Object.freeze(
       { tableID: 'eligEnrolmentFTE', title: 'Eligible Enrolment & FTE for the District', endpoint:'enrollment'},
       { tableID: 'eligEnrolmentFTEPerSchool', title: 'Eligible Enrolment & FTE per School', endpoint:'grade-enrollment'},
       { tableID: 'ineligibleFTE', title: 'Students Not Eligible For Funding in the District', endpoint:'zero-fte-summary'},
-      { tableID: 'youthPRPHeadcountPerSchool', title: 'Youth or PRP Headcounts per School', endpoint:'youth-prp-per-school'},
+      { tableID: 'youthPRPHeadcountPerSchool', title: 'Youth Custody or PRP Headcounts per School', endpoint:'prp-or-youth-summary'},
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,

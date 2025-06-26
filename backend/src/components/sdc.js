@@ -708,7 +708,7 @@ function getFileDetails(reportType, mincode) {
     'DIS_CAREER_HEADCOUNT': { filename: `EligibleCareerProgramHeadcount_District_${mincode}.pdf`, contentType: 'application/pdf' },
     'DIS_CAREER_HEADCOUNT_PER_SCHOOL': { filename: `Eligible CareerProgramHeadcountPerSchool_District${mincode}.pdf`, contentType: 'application/pdf' },
     'DIS_ZERO_FTE_SUMMARY': { filename: `StudentsNotElgibleForFunding_District_${mincode}.pdf`, contentType: 'application/pdf' },
-    'DIS_PRP_OR_YOUTH_SUMMARY': { filename: `YouthOrPRPHeadcountsPerSchool_District_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DIS_PRP_OR_YOUTH_SUMMARY': { filename: `YouthCustodyOrPRPHeadcountsPerSchool_District_${mincode}.pdf`, contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];

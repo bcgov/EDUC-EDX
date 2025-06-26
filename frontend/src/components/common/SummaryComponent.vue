@@ -31,7 +31,7 @@
               :class="`${reportType}-headcount-card`"
               height="100%"
             >
-              <v-card-item class="pb-0">
+              <v-card-item class="pb-0 headcount-card-item-flex">
                 <v-card-title :class="`${reportType}-headcount-header column-header`">
                   {{ header.title }}
                 </v-card-title>
@@ -316,9 +316,10 @@ export default {
 #downloadReport {
   color: #003366;
 }
- 
+
+.headcount-card-item-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
-       
-       
-     
-   
