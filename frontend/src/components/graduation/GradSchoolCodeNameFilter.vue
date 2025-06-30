@@ -110,6 +110,7 @@ export default {
       this.schoolsCacheMap.forEach(school => {
         let gradSchool = this.gradSchoolMap.get(school.schoolID);
         if (school.districtID !== this.districtID) return;
+        if (['OFFSHORE', 'INDEPEND', 'INDP_FNS'].includes(school.schoolCategoryCode)) return;
         if (gradSchool?.canIssueTranscripts !== 'Y') return;
         if (!school.effectiveDate) return;
 
