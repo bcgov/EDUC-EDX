@@ -160,6 +160,7 @@ export const PAGE_TITLES = Object.freeze({
   ALL_DISTRICT_SCHOOL_USERS: 'All School Users',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
+  DOAR_SUMMARY:'Distribution of Assessment Results (DOAR) Summary - Report Description',
   STAFF_LOGIN:'Staff Login',
   NEW_USER_INVITE:'New User',
   SCHOOLS:'Schools',

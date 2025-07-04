@@ -41,6 +41,7 @@ import GradSchoolStudentSearch from './components/graduation/school/students/Gra
 import GradSchoolCurrentStudents from './components/graduation/school/students/GradSchoolCurrentStudents.vue';
 import GraduationDistrictTabs from './components/graduation/district/GraduationDistrictTabs.vue';
 import ChallengeReports from './components/challengeReports/ChallengeReports.vue';
+import DoarSummary from './components/assessments/static/DoarSummary.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -106,6 +107,15 @@ const router = createRouter({
       path: '/activation-error',
       name: 'activation-error',
       component: UserActivationLinkError
+    },
+    {
+      path: '/doar-summary',
+      name: 'doar-summary',
+      component: DoarSummary,
+      meta: {
+        pageTitle: PAGE_TITLES.ASSESSMENT,
+        requiresAuth: true
+      }
     },
     {
       path: '/login',
