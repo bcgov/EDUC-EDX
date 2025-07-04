@@ -215,7 +215,22 @@
           style="border: 1px solid black;border-radius: 10px;"
         >
           <v-card-title style="font-size: medium;">
-            Distribution of Assessment Results (DOAR)
+            <v-row>
+              <v-col class="d-flex justify-start">
+                Distribution of Assessment Results (DOAR)
+              </v-col>
+              <v-col class="d-flex justify-end mt-1">
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  style="cursor: pointer;"
+                  size="24"
+                  @click="openDOARSummaryHelp"
+                >
+                  mdi-help-circle-outline
+                </v-icon>
+              </v-col>
+            </v-row>
           </v-card-title>
           <v-row class="pl-3 pb-3">
             <v-col 
@@ -347,6 +362,10 @@ export default {
         }
       });
       this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
+    },
+    openDOARSummaryHelp() {
+      const routeData = this.$router.resolve({name: 'doar-summary'});
+      window.open(routeData.href, '_blank');
     },
     searchStudentForGivenPEN() {
       this.isSearchingStudent = true;

@@ -105,7 +105,7 @@
               />
               <v-autocomplete
                 id="AssessmentCenter"
-                v-model="assessmentStudentDetail.assessmentCenterID"
+                v-model="assessmentStudentDetail.assessmentCenterSchoolID"
                 variant="underlined"
                 :items="assessmentCenterSearchNames"
                 label="Assessment Center"
