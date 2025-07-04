@@ -27,14 +27,14 @@
               text="Add Registration"
               prepend-icon="mdi-plus"
               class="mr-1 mb-1"
-              variant="outlined"
               @click="openCreateStudentRegDialog"
             />
             <v-btn
               id="removeStudentReg"
               color="#003366"
               text="Remove Registration"
-              prepend-icon="mdi-minus"
+              variant="outlined"
+              prepend-icon="mdi-trash-can-outline"
               class="mr-1 mb-1"
               :disabled="selectedAssessmentStudents.length <= 0"
               @click="removeStudents"
@@ -244,7 +244,7 @@ export default {
       }
     },
     getAssessmentStudents() {
-      this.loading = true;
+      this.isLoading = true;
       let sort = {assessmentStudentID: 'ASC',};
       let assessmentSearchParams = cloneDeep(this.filterSearchParams);
       if (! this.sessionID) {
@@ -279,7 +279,7 @@ export default {
       if (!confirmation) {
         return;
       }
-      this.loading = true;
+      this.isLoading = true;
       let payload = this.selectedAssessmentStudents.map(sas => sas.assessmentStudentID);
       ApiService.apiAxios.post(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/remove`, payload)
         .then(() => {
@@ -290,7 +290,7 @@ export default {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to remove the registrations. Please try again later.');
         }).finally(() => {
-          this.loading = false;
+          this.isLoading = false;
         });
     },
     applyFilters($event) {

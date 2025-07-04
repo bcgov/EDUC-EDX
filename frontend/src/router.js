@@ -378,7 +378,7 @@ const router = createRouter({
           },
         },
         {
-          path: '/assessment-sessions/details',
+          path: '/assessment-sessions/district/details',
           name: 'district-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,
@@ -389,7 +389,7 @@ const router = createRouter({
           },
         },
         {
-          path: '/assessment-sessions/details',
+          path: '/assessment-sessions/school/details',
           name: 'school-assessment-session-detail',
           component: AssessmentSessionDetail,
           props:  true,

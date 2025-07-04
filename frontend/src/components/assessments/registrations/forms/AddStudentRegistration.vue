@@ -61,7 +61,6 @@
                     variant="underlined"
                     :maxlength="25"
                     density="compact"
-                    :rules="[rules.required(), rules.number()]"
                   />
                 </v-col>
               </v-row>
@@ -137,7 +136,7 @@
                 <v-col>
                   <v-autocomplete
                     id="AssessmentCenter"
-                    v-model="newStudentDetail.assessmentCenterID"
+                    v-model="newStudentDetail.assessmentCenterSchoolID"
                     variant="underlined"
                     :items="assessmentCenterSearchNames"
                     label="Assessment Center"
@@ -279,7 +278,7 @@ export default {
       newStudentDetail: {
         assessmentID: null,
         schoolOfRecordSchoolID: null,
-        assessmentCenterID: null,
+        assessmentCenterSchoolID: null,
         givenName: null,
         surname: null,
         pen: null,

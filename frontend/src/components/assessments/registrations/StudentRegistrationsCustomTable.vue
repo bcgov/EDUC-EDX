@@ -68,6 +68,7 @@
               {{ props.item['surname'] }}, {{ props.item['givenName'] }}
             </span>
             <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
+            <span v-else-if="column.key === 'select'"></span>
             <span v-else>-</span>
           </td>
         </tr>

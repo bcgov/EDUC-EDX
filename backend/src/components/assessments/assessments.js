@@ -1,9 +1,18 @@
 'use strict';
-const { logApiError, getAccessToken, getData, putData, postData, getCreateOrUpdateUserValue,  getDataWithParams, handleExceptionResponse} = require('../utils');
+const {
+  logApiError,
+  getAccessToken,
+  getData,
+  putData,
+  postData,
+  getCreateOrUpdateUserValue,
+  getDataWithParams,
+  handleExceptionResponse
+} = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
-const { createMoreFiltersSearchCriteria } = require('./studentFilters');
+const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
@@ -95,7 +104,7 @@ async function getAssessmentStudentsPaginated(req, res) {
     };
 
     const token = getAccessToken(req);
-    let data = await getDataWithParams(token,`${config.get('assessments:assessmentStudentsURL')}/paginated`, params);
+    let data = await getDataWithParams(token, `${config.get('assessments:assessmentStudentsURL')}/paginated`, params);
 
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
@@ -115,7 +124,7 @@ async function getAssessmentStudentsPaginated(req, res) {
   }
 }
 
-async function postAssessmentStudent(req, res){
+async function postAssessmentStudent(req, res) {
   try {
     const payload = {
       ...req.body,
@@ -133,9 +142,9 @@ async function postAssessmentStudent(req, res){
 }
 
 async function getAssessmentStudentByID(req, res) {
-  try {  
+  try {
     const token = getAccessToken(req);
-    let assessmentStudent = getAssessmentStudent(req.params.assessmentStudentID, res, token, req.session?.correlationID);
+    let assessmentStudent = await getAssessmentStudent(req.params.assessmentStudentID, res, token, req.session?.correlationID);
     return res.status(200).json(includeAssessmentStudentProps(assessmentStudent));
   } catch (e) {
     if (e?.status === 404) {
@@ -159,21 +168,21 @@ async function removeAssessmentStudents(req, res) {
 }
 
 function includeAssessmentStudentProps(assessmentStudent) {
-  if(assessmentStudent) {
+  if (assessmentStudent) {
     let school = cacheService.getSchoolBySchoolID(assessmentStudent.schoolOfRecordSchoolID);
     let assessmentCenter = cacheService.getSchoolBySchoolID(assessmentStudent.assessmentCenterID);
 
-    if(school) {
+    if (school) {
       assessmentStudent.schoolName_desc = getSchoolName(school);
     }
-    
-    if(assessmentCenter) {
+
+    if (assessmentCenter) {
       assessmentStudent.assessmentCenterName_desc = getSchoolName(assessmentCenter);
-    }    
+    }
 
     assessmentStudent.assessmentTypeName_desc = assessmentStudent.assessmentTypeCode;
     assessmentStudent.provincialSpecialCaseName_desc = assessmentStudent.provincialSpecialCaseCode ? cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode) : null;
-    assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') +' '+assessmentStudent.courseYear;
+    assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') + ' ' + assessmentStudent.courseYear;
   }
   return assessmentStudent;
 }
@@ -187,7 +196,7 @@ async function updateAssessmentStudentByID(req, res) {
   try {
     const token = getAccessToken(req);
     const payload = req.body;
-    payload.updateUser =  getCreateOrUpdateUserValue(req);
+    payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.updateDate = null;
     payload.createDate = null;
     const result = await putData(token, payload, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
@@ -250,7 +259,7 @@ function getSchoolName(school) {
   return school.mincode + ' - ' + school.schoolName;
 }
 
-function getAssessmentSpecialCases(req, res) {  
+function getAssessmentSpecialCases(req, res) {
   try {
     const codes = cacheService.getAllAssessmentSpecialCases();
     return res.status(HttpStatus.OK).json(Object.fromEntries(codes));
