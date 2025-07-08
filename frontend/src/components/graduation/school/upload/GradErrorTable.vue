@@ -88,13 +88,19 @@
             {{ props.item[column.key] }}
           </span>
           <span v-else-if="column.key === 'submissionLink'">
-            <v-btn
-              icon="mdi-page-next-outline"
-              color="primary"
-              variant="text"
-              :to="getSubmissionRoute(props.item['pen'])"
-              target="_blank"
-            />
+            <v-tooltip content-class="customTooltip">
+              <template #activator="{ props: tooltipProps }">
+                <v-btn
+                  icon="mdi-page-next-outline"
+                  color="primary"
+                  variant="text"
+                  v-bind="tooltipProps"
+                  :to="getSubmissionRoute(props.item['pen'])"
+                  target="_blank"
+                />
+              </template>
+              <span id="submissionLinkTooltip">View details of submission.</span>
+            </v-tooltip>
           </span>
           <span v-else>-</span>
         </td>
