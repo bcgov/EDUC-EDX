@@ -82,16 +82,32 @@ async function getAssessmentStudentsPaginated(req, res) {
   try {
     const search = req.query.searchParams?.['moreFilters'] ? createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']) : [];
 
-    const instituteFilter = {
-      condition: CONDITION.AND,
-      searchCriteriaList: [{
-        key: req.session.activeInstituteType === 'SCHOOL' ? 'schoolOfRecordSchoolID' : 'districtID',
-        value: req.session.activeInstituteIdentifier,
-        operation: FILTER_OPERATION.EQUAL,
-        valueType: VALUE_TYPE.UUID,
-        condition: CONDITION.AND
-      }]
-    };
+    let instituteFilter;
+    if(req.session.activeInstituteType === 'SCHOOL') {
+      instituteFilter = {
+        condition: CONDITION.AND,
+        searchCriteriaList: [{
+          key: 'schoolOfRecordSchoolID',
+          value: req.session.activeInstituteIdentifier,
+          operation: FILTER_OPERATION.EQUAL,
+          valueType: VALUE_TYPE.UUID,
+          condition: CONDITION.AND
+        }]
+      };
+    } else {
+      let schools = cacheService.getAllSchoolIDsForDistrictID(req.session.activeInstituteIdentifier);
+      instituteFilter = {
+        condition: CONDITION.AND,
+        searchCriteriaList: [{
+          key: 'schoolOfRecordSchoolID',
+          value: schools.join(','),
+          operation: FILTER_OPERATION.IN,
+          valueType: VALUE_TYPE.UUID,
+          condition: CONDITION.AND
+        }]
+      };
+    }
+    
     search.push(instituteFilter);
 
     const params = {

@@ -710,7 +710,7 @@ function checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent(req, res, ne
   }
   if (!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, req.body.schoolOfRecordSchoolID)) {
     return res.status(HttpStatus.BAD_REQUEST).json({
-      message: 'The current user does not have access to the specified schoolOfRecordSchoolID.'
+      message: 'The current user does not have access to the specified school.'
     });
   }
   return next();
