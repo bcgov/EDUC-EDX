@@ -1,9 +1,7 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentSessionResultsCSVFile,
-    downloadAssessmentReport
-} = require('../components/assessments/assessments');
+const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentReport} = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findAssessmentStudentID_params, findAssessmentStudentIDs_body, loadRequestedAssessmentStudent, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudents, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, findSchoolID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
