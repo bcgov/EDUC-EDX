@@ -1,7 +1,9 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentSessionResultsCSVFile } = require('../components/assessments/assessments');
+const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentSessionResultsCSVFile,
+    downloadAssessmentReport
+} = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findAssessmentStudentID_params, findAssessmentStudentIDs_body, loadRequestedAssessmentStudent, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudents, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, findSchoolID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
@@ -31,7 +33,7 @@ router.get('/assessment-specialcase-types', passport.authenticate('jwt', {sessio
 
 router.get('/reports/district/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
 router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
-router.get('/reports/district/:sessionID/school/:schoolID/sessionResultsCSV/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentSessionResultsCSVFile);
-router.get('/reports/school/:sessionID/school/:schoolID/sessionResultsCSV/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentSessionResultsCSVFile);
+router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
+router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
 
 module.exports = router;

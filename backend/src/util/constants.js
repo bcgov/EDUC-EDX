@@ -190,7 +190,13 @@ const SDC_UPLOAD_TOPIC = 'SDC_UPLOAD_TOPIC';
 const GDC_UPLOAD_TOPIC = 'GDC_UPLOAD_TOPIC';
 const GRAD_SCHOOL_CACHE_REFRESH_TOPIC = 'GRAD_SCHOOL_CACHE_REFRESH_TOPIC';
 
-const reportTypeValues = [
+const assessmentsReportTypeValues = [
+  ['SESSION_RESULTS', 'SESSION_RESULTS'],
+  ['SCHOOL_STUDENTS_IN_SESSION', 'SCHOOL_STUDENTS_IN_SESSION']
+];
+const ASSESSMENTS_REPORT_TYPE_CODE_MAP = Object.freeze(new Map(assessmentsReportTypeValues));
+
+const sdcReportTypeValues = [
   ['ell', 'ELL_HEADCOUNT'],
   ['ell_dis', 'DIS_ELL_HEADCOUNT'],
   ['ell-per-school_dis', 'DIS_ELL_HEADCOUNT_PER_SCHOOL'],
@@ -233,7 +239,7 @@ const reportTypeValues = [
   ['zero-fte-summary_dis','DIS_ZERO_FTE_SUMMARY'], 
   ['prp-or-youth-summary_dis','DIS_PRP_OR_YOUTH_SUMMARY'],
 ];
-const REPORT_TYPE_CODE_MAP = Object.freeze(new Map(reportTypeValues));
+const SDC_REPORT_TYPE_CODE_MAP = Object.freeze(new Map(sdcReportTypeValues));
 
 const ENROLLED_PROGRAM_TYPE_CODE_MAP = Object.freeze({
   FRENCH_ENROLLED_PROGRAM_CODES: ['11', '08', '14', '05'],
@@ -260,7 +266,7 @@ const STUDENT_TYPE_CODES = Object.freeze({
 module.exports = {
   FILTER_OPERATION,
   CONDITION,
-  REPORT_TYPE_CODE_MAP,
+  SDC_REPORT_TYPE_CODE_MAP,
   VALUE_TYPE,
   PEN_REQ_BATCH_STATUS_CODES,
   EVENT_TYPE,
@@ -277,7 +283,8 @@ module.exports = {
   MULTI_PEN_MATCH_STATUSES,
   NOT_FOUND_PEN_MATCH_STATUSES,
   GDC_UPLOAD_TOPIC,
-  GRAD_SCHOOL_CACHE_REFRESH_TOPIC
+  GRAD_SCHOOL_CACHE_REFRESH_TOPIC,
+  ASSESSMENTS_REPORT_TYPE_CODE_MAP
 };
 /**
  * Test comment

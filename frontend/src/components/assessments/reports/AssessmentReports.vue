@@ -194,7 +194,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Session Results by Student.pdf"
-                :download-action="() => downloadStudentReport()"
+                :download-action="() => downloadSessionResultsByStudentPDF()"
               />
             </v-col>
           </v-row>
@@ -400,7 +400,22 @@ export default {
     async downloadAssessmentResultCSV() {
       this.isLoading = true;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/sessionResultsCSV/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SESSION_RESULTS/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
+
+    },
+    async downloadSessionResultsByStudentPDF() {
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_IN_SESSION/download`;
         window.open(url);
       } catch (error) {
         console.error(error);
