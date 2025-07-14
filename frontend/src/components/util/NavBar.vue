@@ -293,7 +293,7 @@ export default {
         {
           title: PAGE_TITLES.CHALLENGE_REPORTS,
           link: { name: 'challengeReports', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.hasRequiredPermission(PERMISSION.CHALLENGE_REPORTS)
+          authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW)
         }
       ];
       this.hasAnyItems = this.items.filter(obj => obj.authorized).length > 0;

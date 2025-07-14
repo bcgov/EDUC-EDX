@@ -3,7 +3,7 @@ const { getAccessToken, handleExceptionResponse, getData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
-const {getSchoolBySchoolID, getDistrictByDistrictID} = require("./cache-service");
+const {getSchoolBySchoolID, getDistrictByDistrictID} = require('./cache-service');
 
 async function getActiveChallengeReportsPeriod(req, res) {
   try {

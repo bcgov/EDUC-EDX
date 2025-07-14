@@ -7,7 +7,7 @@ const log = require('./logger');
 const config = require('../config');
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION, ENROLLED_PROGRAM_TYPE_CODE_MAP, DUPLICATE_TYPE_CODES} = require('../util/constants');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
-const {REPORT_TYPE_CODE_MAP} = require('../util/constants');
+const {SDC_REPORT_TYPE_CODE_MAP} = require('../util/constants');
 const cacheService = require('./cache-service');
 const redisUtil = require('../util/redis/redis-utils');
 const broadcastUtil = require('../socket/broadcast-utils');
@@ -635,7 +635,7 @@ function createSearchCriteria(searchParams = []) {
 
 async function downloadSdcReport(req, res) {
   try {
-    const reportType = REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    const reportType = SDC_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
     if (!reportType) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Invalid report type provided'

@@ -318,8 +318,8 @@ export default {
       await appStore().getInstitutesData();
     }
   },
-  created() {
-    authStore().getUserInfo().then(() => {
+  async created() {
+    await authStore().getUserInfo().then(() => {
       this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
     });
     this.setupSchoolList();
@@ -335,12 +335,29 @@ export default {
     },
     setupSchoolList() {
       this.activeSchoolsMap?.forEach((school) => {
-        this.schoolSearchNames.push({
-          schoolCodeName: school.mincode + ' - ' + school.schoolName,
-          schoolID: school.schoolID,
-        });
+        if(this.isDistrictUser) {
+          if (school.districtID === this.userInfo.activeInstituteIdentifier && !['OFFSHORE', 'INDEPEND', 'INDP_FNS'].includes(school.schoolCategoryCode)) {
+            this.schoolSearchNames.push({
+              schoolCodeName: school.mincode + ' - ' + school.schoolName,
+              schoolID: school.schoolID,
+            });
+          }
+          this.assessmentCenterSearchNames.push({
+            schoolCodeName: school.mincode + ' - ' + school.schoolName,
+            schoolID: school.schoolID,
+          });
+        }else{
+          this.schoolSearchNames.push({
+            schoolCodeName: school.mincode + ' - ' + school.schoolName,
+            schoolID: school.schoolID,
+          });
+          this.assessmentCenterSearchNames.push({
+            schoolCodeName: school.mincode + ' - ' + school.schoolName,
+            schoolID: school.schoolID,
+          });
+        }
       });
-      this.assessmentCenterSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
+      this.assessmentCenterSearchNames = sortBy(this.assessmentCenterSearchNames, ['schoolCodeName']);
       this.schoolSearchNames = sortBy(this.schoolSearchNames, ['schoolCodeName']);
     },
     setupSessions() {

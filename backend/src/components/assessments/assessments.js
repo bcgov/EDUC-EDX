@@ -15,7 +15,7 @@ const cacheService = require('../cache-service');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
-const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
+const {FILTER_OPERATION, VALUE_TYPE, CONDITION, ASSESSMENTS_REPORT_TYPE_CODE_MAP} = require('../../util/constants');
 const log = require('../logger');
 
 async function getAssessmentSessions(req, res) {
@@ -82,16 +82,32 @@ async function getAssessmentStudentsPaginated(req, res) {
   try {
     const search = req.query.searchParams?.['moreFilters'] ? createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters']) : [];
 
-    const instituteFilter = {
-      condition: CONDITION.AND,
-      searchCriteriaList: [{
-        key: req.session.activeInstituteType === 'SCHOOL' ? 'schoolOfRecordSchoolID' : 'districtID',
-        value: req.session.activeInstituteIdentifier,
-        operation: FILTER_OPERATION.EQUAL,
-        valueType: VALUE_TYPE.UUID,
-        condition: CONDITION.AND
-      }]
-    };
+    let instituteFilter;
+    if(req.session.activeInstituteType === 'SCHOOL') {
+      instituteFilter = {
+        condition: CONDITION.AND,
+        searchCriteriaList: [{
+          key: 'schoolOfRecordSchoolID',
+          value: req.session.activeInstituteIdentifier,
+          operation: FILTER_OPERATION.EQUAL,
+          valueType: VALUE_TYPE.UUID,
+          condition: CONDITION.AND
+        }]
+      };
+    } else {
+      let schools = cacheService.getAllSchoolIDsForDistrictID(req.session.activeInstituteIdentifier);
+      instituteFilter = {
+        condition: CONDITION.AND,
+        searchCriteriaList: [{
+          key: 'schoolOfRecordSchoolID',
+          value: schools.join(','),
+          operation: FILTER_OPERATION.IN,
+          valueType: VALUE_TYPE.UUID,
+          condition: CONDITION.AND
+        }]
+      };
+    }
+    
     search.push(instituteFilter);
 
     const params = {
@@ -231,28 +247,35 @@ async function downloadXamFile(req, res) {
   }
 }
 
-async function downloadAssessmentSessionResultsCSVFile(req, res) {
+async function downloadAssessmentReport(req, res) {
   try {
-    const token = getAccessToken(req);
-    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/SESSION_RESULTS/download`;
-
-    const data = await getData(token, url);
-
-    const fileName = `${data?.reportType || 'SessionResults.csv'}`;
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
-
-    if (data && data.documentData) {
-      const buffer = Buffer.from(data.documentData, 'base64');
-      return res.send(buffer);
-    } else {
-      const emptyBuffer = Buffer.from('');
-      return res.send(emptyBuffer);
+    const reportType = ASSESSMENTS_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Invalid report type provided'
+      });
     }
+
+    const token = getAccessToken(req);
+    
+    let mincode = cacheService.getSchoolBySchoolID(req.params.schoolID).mincode;
+    let url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/${reportType}/download`;
+
+    const resData = await getData(token, url);
+    const fileDetails = getFileDetails(reportType, mincode);
+
+    setResponseHeaders(res, fileDetails);
+    const buffer = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
-    log.error(e, 'downloadAssessmentSessionResultsCSVFile', 'An error occurred while attempting to download the Assessment Session Results CSV file.');
+    log.error('downloadAssessmentReport Error', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+function setResponseHeaders(res, { filename, contentType }) {
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.setHeader('Content-Type', contentType);
 }
 
 function getSchoolName(school) {
@@ -276,6 +299,15 @@ async function getAssessmentStudent(assessmentStudentID, res, token, correlation
   return getData(token, `${config.get('assessments:assessmentStudentsURL')}/${assessmentStudentID}`, correlationID);
 }
 
+function getFileDetails(reportType, mincode) {
+  const mappings = {
+    'SESSION_RESULTS': { filename: `SessionResults_${mincode}.csv`, contentType: 'text/csv' },
+    'SCHOOL_STUDENTS_IN_SESSION': { filename: `SchoolStudentsInSession_${mincode}.pdf`, contentType: 'application/pdf' },
+    'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
+  };
+  return mappings[reportType] || mappings['DEFAULT'];
+}
+
 module.exports = {
   getAssessmentSessions,
   getActiveAssessmentSessions,
@@ -287,6 +319,6 @@ module.exports = {
   getAssessmentSpecialCases,
   postAssessmentStudent,
   downloadXamFile,
-  downloadAssessmentSessionResultsCSVFile
+  downloadAssessmentReport
 };
 
