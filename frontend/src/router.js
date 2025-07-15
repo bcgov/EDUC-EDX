@@ -440,7 +440,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.CHALLENGE_REPORTS,
             requiresAuth: true,
-            permission: PERMISSION.GRAD_DIS_RPT_VIEW
+            permission: PERMISSION.CHALLENGE_REPORTS
           }
         }
       ]
