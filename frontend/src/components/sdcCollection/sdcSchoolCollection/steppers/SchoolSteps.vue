@@ -66,6 +66,7 @@
     <ProvincialDuplicatesStep
       :school-collection-object="schoolCollectionObject"
       :is-step-complete="isStepComplete"
+      :is-collection-active="isSdcSchoolCollectionActive"
       @refresh-store="refreshStore"
       @next="next"
     />
