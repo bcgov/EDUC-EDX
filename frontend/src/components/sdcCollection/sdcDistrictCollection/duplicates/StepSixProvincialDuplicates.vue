@@ -33,7 +33,9 @@
         class="divider"
         :value="name"
       >
-        {{ name }} {{ name === 'Enrolment Duplicates' ? '(' + nonAllowableDuplicates.length + ')': '(' + nonAllowableProgramDuplicates.length + ')' }}
+        {{ name }}
+        {{ name === 'Enrolment Duplicates' ? ' (' + nonAllowableDuplicates.length + ')': '' }}
+        {{ name === 'Program Duplicates' ? ' (' + nonAllowableProgramDuplicates.length + ')': '' }}
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
@@ -65,6 +67,17 @@
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"
           @refresh-duplicates="getProvincialDuplicates()"
+        />
+      </v-window-item>
+      <v-window-item
+        value="Submitted Data Reports"
+        transition="false"
+        reverse-transition="false"
+      >
+        <StepThreeVerifyData
+          :district-collection-object="districtCollectionObject"
+          :is-final-sign-off="true"
+          :is-collection-active="isCollectionActive"
         />
       </v-window-item>
     </v-window>
@@ -113,10 +126,12 @@ import DuplicateTab from '../../../common/DuplicateTab.vue';
 import {mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import {PERMISSION} from '../../../../utils/constants/Permission';
+import StepThreeVerifyData from '../stepThreeVerifyData/StepThreeVerifyData.vue';
 
 export default defineComponent({
   name: 'StepSixProvincialDuplicates',
   components: {
+    StepThreeVerifyData,
     DuplicateTab,
     Spinner,
     PrimaryButton,
@@ -128,6 +143,10 @@ export default defineComponent({
       required: true,
     },
     isStepComplete: {
+      type: Boolean,
+      required: true
+    },
+    isCollectionActive: {
       type: Boolean,
       required: true
     }
@@ -148,7 +167,8 @@ export default defineComponent({
       tab: null,
       tabs: [
         'Enrolment Duplicates',
-        'Program Duplicates'
+        'Program Duplicates',
+        'Submitted Data Reports'
       ],
     };
   },

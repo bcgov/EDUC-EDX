@@ -170,6 +170,7 @@
                 <StepSixProvincialDuplicates
                   :district-collection-object="districtCollectionObject"
                   :is-step-complete="isStepComplete"
+                  :is-collection-active="isSdcDistrictCollectionActive"
                   @next="next"
                 />
               </v-stepper-window-item>

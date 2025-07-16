@@ -67,6 +67,19 @@
           @refresh-duplicates="getProvincialDuplicates()"
         />
       </v-window-item>
+      <v-window-item
+        value="Submitted Data Reports"
+        transition="false"
+        reverse-transition="false"
+      >
+        <StepThreeVerifyData
+          :school-collection-object="schoolCollectionObject"
+          :is-step-complete="true"
+          :is-final-sign-off="true"
+          :is-collection-active="isCollectionActive"
+          :show-final-submission-tabs="false"
+        />
+      </v-window-item>
     </v-window>
   </div>
   <v-row justify="end">
@@ -114,10 +127,12 @@ import {mapState} from 'pinia';
 import {authStore} from '../../../store/modules/auth';
 import { appStore } from '../../../store/modules/app';
 import {SCHOOL_CATEGORY_CODES} from '../../../utils/constants/SchoolCategoryCodeTypes';
+import StepThreeVerifyData from './stepThreeVerifyData/StepThreeVerifyData.vue';
 
 export default defineComponent({
   name: 'ProvincialDuplicatesStep',
   components: {
+    StepThreeVerifyData,
     DuplicateTab,
     Spinner,
     PrimaryButton,
@@ -132,7 +147,11 @@ export default defineComponent({
     isStepComplete: {
       type: Boolean,
       required: true
-    }
+    },
+    isCollectionActive: {
+      type: Boolean,
+      required: true
+    },
   },
   emits: ['next', 'refresh-store'],
   data() {
@@ -150,7 +169,8 @@ export default defineComponent({
       tab: null,
       tabs: [
         'Enrolment Duplicates',
-        'Program Duplicates'
+        'Program Duplicates',
+        'Submitted Data Reports'
       ],
     };
   },

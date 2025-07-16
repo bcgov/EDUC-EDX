@@ -131,6 +131,8 @@
       <v-window-item
         v-if="isFinalSignOff && !isMigratedCollection && showFinalSubmissionTabs"
         value="DeletedStudents"
+        transition="false"
+        reverse-transition="false"
       >
         <DeleteSchoolStudentsComponent
           :school="school"
