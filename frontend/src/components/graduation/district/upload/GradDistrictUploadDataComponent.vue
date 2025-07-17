@@ -494,6 +494,22 @@
                     </v-col>
                   </v-row>
                   <v-row
+                    v-else-if="file.status === fileUploadSuccessPENMissing && file.warning === null && file.error === null"
+                    class="mt-1 mx-1 fileUploadSuccess"
+                  >
+                    <v-col cols="1">
+                      <v-icon
+                        icon="mdi-file-document"
+                      />
+                    </v-col>
+                    <v-col>
+                      <span><b>{{ file.name }}</b> - Upload Successful</span>
+                      <div style="font-style: italic">
+                        {{ file.message }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row
                     v-else-if="file.warning !== null"
                     class="mt-1 mx-1 fileUploadWarning"
                   >
@@ -702,6 +718,7 @@ export default {
       isLoadingFiles: false,
       fileUploadPending: FILE_UPLOAD_STATUS.PENDING,
       fileUploadSuccess: FILE_UPLOAD_STATUS.UPLOADED,
+      fileUploadSuccessPENMissing: FILE_UPLOAD_STATUS.UPLOADED_WITH_MISSING_PENS,
       fileUploadError: FILE_UPLOAD_STATUS.ERROR,
       populatedSuccessMessage: null,
       successfulUploadCount: 0,
@@ -1032,9 +1049,15 @@ export default {
           fileType: fileJSON.name.split('.')[1]
         };
         await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file', document)
-          .then(() => {});
-        this.successfulUploadCount += 1;
-        fileJSON.status = this.fileUploadSuccess;
+          .then(response => {
+            if(response.data.numberOfMissingPENs > 0){
+              fileJSON.status = this.fileUploadSuccessPENMissing;
+              fileJSON.message = 'Please note, ' + response.data.numberOfMissingPENs + ' record(s) were not loaded due to missing PENs';
+            }else{
+              fileJSON.status = this.fileUploadSuccess;
+            }
+            this.successfulUploadCount += 1;
+          });
       } catch (e) {
         if(e?.message.includes('428')){
           const confirmation = await this.$refs.confirmIncorrectDatesFile.open('Confirm File ' + fileJSON.name, null, {color: '#fff', width: 580, closeIcon: false, subtitle: false, dark: false, resolveText: 'Yes', rejectText: 'No'});
@@ -1045,9 +1068,15 @@ export default {
           }
           try {
             await ApiService.apiAxios.post(ApiRoutes.gdc.BASE_URL + '/district/' + this.districtID + '/upload-file?fileOverride=true', document)
-              .then(() => {});
-            this.successfulUploadCount += 1;
-            fileJSON.status = this.fileUploadSuccess;
+              .then(response => {
+                if(response.data.numberOfMissingPENs > 0){
+                  fileJSON.status = this.fileUploadSuccessPENMissing;
+                  fileJSON.message = 'Please note, ' + response.data.numberOfMissingPENs + ' record(s) were not loaded due to missing PENs';
+                }else{
+                  fileJSON.status = this.fileUploadSuccess;
+                }
+                this.successfulUploadCount += 1;
+              });
           }catch (e2) {
             console.error(e);
             fileJSON.error = 'Error occurred during upload, please try again later.';
