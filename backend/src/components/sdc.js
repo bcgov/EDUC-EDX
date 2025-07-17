@@ -200,6 +200,13 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       });
     }
 
+    if(req.query.searchParams?.['assignedPen']) {
+      search.push({
+        condition: CONDITION.AND,
+        searchCriteriaList: createAssignedPENSearchCriteria(req.query.searchParams['assignedPen'])
+      });
+    }
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -251,6 +258,16 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
       return handleExceptionResponse(e, res);
     }
   }
+}
+
+function createAssignedPENSearchCriteria(searchParams) {
+  let searchCriteriaList = [];
+
+  if(searchParams.label === 'REVIEW_PEN') {
+    searchCriteriaList.push({ key: 'penMatchResult', operation: FILTER_OPERATION.IN, value: 'INREVIEW', valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+  }
+
+  return searchCriteriaList;
 }
 
 async function getSDCSchoolCollectionStudentSummaryCounts(req, res) {
