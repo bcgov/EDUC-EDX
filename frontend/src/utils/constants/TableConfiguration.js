@@ -1082,3 +1082,9 @@ export const SCH_DUPLICATES = Object.freeze(
     ],
   }
 );
+
+export const PEN_MATCHING = Object.freeze(
+  {
+    defaultFilter: { label: 'REVIEW_PEN', description: '' }
+  }
+);

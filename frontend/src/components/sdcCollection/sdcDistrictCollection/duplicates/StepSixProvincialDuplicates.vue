@@ -94,7 +94,7 @@
     />
   </v-row>
   <v-row
-    v-if="disableNextButton()"
+    v-if="disableNextButton() && (nonAllowableDuplicates.length > 0 || nonAllowableProgramDuplicates.length > 0)"
     justify="end"
     class="my-0"
   >
@@ -109,6 +109,15 @@
         {{ nonAllowableProgramDuplicates.length }} program
       </span>
       duplicate(s) unresolved
+    </p>
+  </v-row>
+  <v-row
+    v-if="disableNextButton() && studentsInPenReviewCount > 0"
+    justify="end"
+    class="my-0"
+  >
+    <p class="form-hint mr-3">
+      {{ studentsInPenReviewCount }} student PEN review(s) in progress
     </p>
   </v-row>
 </template>
@@ -127,6 +136,8 @@ import {mapState} from 'pinia';
 import {authStore} from '../../../../store/modules/auth';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import StepThreeVerifyData from '../stepThreeVerifyData/StepThreeVerifyData.vue';
+import {isEmpty, omitBy} from 'lodash';
+import {PEN_MATCHING} from '../../../../utils/constants/TableConfiguration';
 
 export default defineComponent({
   name: 'StepSixProvincialDuplicates',
@@ -170,6 +181,12 @@ export default defineComponent({
         'Program Duplicates',
         'Submitted Data Reports'
       ],
+      filterSearchParams: {
+        assignedPen: PEN_MATCHING.defaultFilter,
+        notSdcSchoolCollectionStudentStatusCode: 'ERROR,DELETED',
+        moreFilters: {}
+      },
+      studentsInPenReviewCount: null
     };
   },
   computed: {
@@ -182,8 +199,10 @@ export default defineComponent({
     }
   },
   async created() {
+    this.isLoading = true;
     sdcCollectionStore().getCodes().then(() => {
       this.getProvincialDuplicates();
+      this.loadStudentsInPenReview();
     });
   },
   methods: {
@@ -191,10 +210,9 @@ export default defineComponent({
       return this.isStepComplete || this.hasEditPermission;
     },
     disableNextButton() {
-      return this.nonAllowableDuplicates?.length > 0 || this.nonAllowableProgramDuplicates?.length > 0;
+      return this.isLoading || this.nonAllowableDuplicates?.length > 0 || this.nonAllowableProgramDuplicates?.length > 0 || this.studentsInPenReviewCount > 0;
     },
     getProvincialDuplicates(){
-      this.isLoading = true;
       ApiService.apiAxios.get(ApiRoutes.sdc.SDC_DISTRICT_COLLECTION + '/'+ this.sdcDistrictCollectionID + '/provincial-duplicates').then(response => {
         this.nonAllowableDuplicates = response.data?.enrollmentDuplicates?.NON_ALLOW;
         this.nonAllowableProgramDuplicates = response.data?.programDuplicates?.NON_ALLOW;
@@ -204,6 +222,23 @@ export default defineComponent({
         this.apiError = true;
       }).finally(() => {
         this.isLoading = false;
+      });
+    },
+    loadStudentsInPenReview() {
+      ApiService.apiAxios.get(`${ApiRoutes.sdc.SDC_DISTRICT_COLLECTION}/${this.$route.params.sdcDistrictCollectionID}/paginated?tableFormat=true`, {
+        params: {
+          pageNumber: 0,
+          pageSize: 1,
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
+          sort: {
+            legalLastName: 'ASC'
+          },
+        }
+      }).then(response => {
+        this.studentsInPenReviewCount = response.data.totalElements;
+      }).catch(error => {
+        this.apiError = true;
+        console.error(error);
       });
     },
     markStepAsComplete(){
