@@ -44,38 +44,13 @@
           :key="column.key"
           class="pt-2 row-text"
         >
-          <span v-if="column.key === 'course'">
-            <span v-if="(props.item['courseCode'] === null) && (props.item['courseLevel'] === null)">-</span>
-            <span v-else>{{ props.item['courseCode'] }}{{ props.item['courseLevel'] }}</span>
-          </span>
-          <span v-else-if="column.key === 'status'">
+          <span v-if="column.key === 'status'">
             <v-icon
               size="25"
               :color="getIssueIconColor(props.item['studentStatusCode'])"
             >
               {{ getIssueIcon(props.item['studentStatusCode']) }}
             </v-icon>
-          </span>
-          <span v-else-if="column.key === 'session'">
-            <span v-if="props.item['courseMonth'] === null || props.item['courseYear'] === null">-</span>
-            <span v-else> {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}</span>
-          </span>
-          <span v-else-if="column.key === 'interimPercentage'">
-            <span v-if="props.item['interimPercentage'] && props.item['interimLetterGrade']">{{ props.item['interimPercentage'] }} ({{ props.item['interimLetterGrade'] }})</span>
-            <span v-else-if="props.item['interimPercentage']">{{ props.item['interimPercentage'] }}</span>
-            <span v-else-if="props.item['interimLetterGrade']">{{ props.item['interimLetterGrade'] }}</span>
-            <span v-else>-</span>
-          </span>
-          <span v-else-if="column.key === 'finalPercentage'">
-            <span v-if="props.item['finalPercentage'] && props.item['finalLetterGrade']">{{ props.item['finalPercentage'] }} ({{ props.item['finalLetterGrade'] }})</span>
-            <span v-else-if="props.item['finalPercentage']">{{ props.item['finalPercentage'] }}</span>
-            <span v-else-if="props.item['finalLetterGrade']">{{ props.item['finalLetterGrade'] }}</span>
-            <span v-else>-</span>
-          </span>
-          <span v-else-if="column.key === 'relatedCourse'">
-            <span v-if="props.item['relatedCourse'] === null">-</span>
-            <span v-else-if="props.item['relatedLevel'] === null">-</span>
-            <span v-else>{{ props.item['relatedCourse'] }}{{ props.item['relatedLevel'] }}</span>
           </span>
           <span v-else-if="props.item[column.key]">
             {{ props.item[column.key] }}

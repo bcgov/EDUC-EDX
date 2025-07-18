@@ -146,6 +146,38 @@ async function getStudentFilesetByPenFilesetId(req, res) {
     const token = getAccessToken(req);
     let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
 
+    data.courseStudents.forEach(cs => {
+      cs.session = cs.courseYear + '/' + cs.courseMonth;
+      if(cs.courseCode && cs.courseLevel){
+        cs.course = cs.courseCode + cs.courseLevel;
+      }else if(cs.courseCode){
+        cs.course = cs.courseCode;
+      }else{
+        cs.course = '-';
+      }
+      if(cs.interimPercentage && cs.interimLetterGrade){
+        cs.interimGrade = cs.interimPercentage + ' (' + cs.interimLetterGrade + ')';
+      }else if(cs.interimPercentage){
+        cs.interimGrade = cs.interimPercentage;
+      }else{
+        cs.interimGrade = cs.interimLetterGrade;
+      }
+      if(cs.finalPercentage && cs.finalLetterGrade){
+        cs.finalGrade = cs.finalPercentage + ' (' + cs.finalLetterGrade + ')';
+      }else if(cs.interimPercentage){
+        cs.finalGrade = cs.finalPercentage;
+      }else{
+        cs.finalGrade = cs.finalLetterGrade;
+      }
+      if(!cs.relatedCourse){
+        cs.relatedCourseValue = '-';
+      }else if(!cs.relatedLevel){
+        cs.relatedCourseValue = '-';
+      }else{
+        cs.relatedCourseValue = cs.relatedCourse + cs.relatedLevel;
+      }
+    });
+    
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset object', e.stack);
