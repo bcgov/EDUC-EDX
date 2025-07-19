@@ -177,6 +177,10 @@ async function getStudentFilesetByPenFilesetId(req, res) {
         cs.relatedCourseValue = cs.relatedCourse + cs.relatedLevel;
       }
     });
+
+    data.assessmentStudents.forEach(as => {
+      as.session = as.courseYear + '/' + as.courseMonth;
+    });
     
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
