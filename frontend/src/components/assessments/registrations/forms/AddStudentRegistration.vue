@@ -21,7 +21,17 @@
         </v-col>
       </v-row>
     </v-card-title>
-
+    <v-card-text class="mt-0 mb-6">
+      <v-alert
+        v-if="showLTP12BannerForNonCSF()"
+        class="mt-4"
+        density="compact"
+        type="warning"
+        variant="tonal"
+      >
+        <span>LTP12 is a Programme Francophone assessment. Please use LTF12 if student is in French Immersion program.</span>
+      </v-alert>
+    </v-card-text>
     <v-card-text class="mt-0 mb-6">
       <v-row v-if="isLoading()">
         <v-col class="d-flex justify-center">
@@ -98,6 +108,7 @@
                     item-value="schoolID"
                     autocomplete="off"
                     :rules="[rules.required()]"
+                    @update:model-value="setSchool"
                   />
                 </v-col>
               </v-row>
@@ -111,7 +122,7 @@
                     label="Session"
                     item-title="sessionCodeName"
                     item-value="sessionCodeValue"
-                    :disabled="!!sessionID"
+                    :disabled="!!sessionID || !newStudentDetail.schoolOfRecordSchoolID"
                     :rules="[rules.required()]"
                     @update:model-value="refreshAssessmentTypes($event)"
                   />
@@ -127,7 +138,7 @@
                     item-value="assessmentCodeValue"
                     autocomplete="off"
                     :rules="[rules.required()]"
-                    :disabled="!sessionID && !selectedSessionID"
+                    :disabled="!sessionID && (!selectedSessionID || !newStudentDetail.schoolOfRecordSchoolID)"
                     @update:model-value="syncAssessmentValue($event)"
                   />
                 </v-col>
@@ -275,6 +286,7 @@ export default {
       assessmentCenterSearchNames: [],
       addStudentRegistrationFormValid: false,
       hasError: false,
+      school: null,
       newStudentDetail: {
         assessmentID: null,
         schoolOfRecordSchoolID: null,
@@ -322,6 +334,11 @@ export default {
     await authStore().getUserInfo().then(() => {
       this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
     });
+    await appStore().getInstitutesData().finally(() => {
+      if(!this.isDistrictUser) {
+        this.school = this.activeSchoolsMap.get(this.userInfo.activeInstituteIdentifier);
+      }
+    });
     this.setupSchoolList();
     this.setupSessions();
     if(this.sessionID){
@@ -332,6 +349,18 @@ export default {
   methods: {
     isLoading(){
       return this.loadingCount > 0;
+    },
+    showLTP12BannerForNonCSF() {
+      const filteredAssessmentTypes = this.assessmentTypeSearchNames.filter((at) => at.assessmentCodeValue === this.newStudentDetail.assessmentID);
+      return !this.isSchoolCSF() && filteredAssessmentTypes.length > 0 && filteredAssessmentTypes[0].assessmentCodeName === 'LTP12';
+    },
+    setSchool(){
+      if(this.newStudentDetail.schoolOfRecordSchoolID) {
+        this.school = this.activeSchoolsMap.get(this.newStudentDetail.schoolOfRecordSchoolID);
+      }
+    },
+    isSchoolCSF(){
+      return this.school?.schoolReportingRequirementCode === 'CSF';
     },
     setupSchoolList() {
       this.activeSchoolsMap?.forEach((school) => {

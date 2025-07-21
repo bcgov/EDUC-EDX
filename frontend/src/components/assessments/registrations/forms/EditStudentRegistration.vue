@@ -16,6 +16,19 @@
         v-else
         ref="topDiv"
       >
+        <v-row class="mb-2">
+          <v-col cols="12">
+            <v-alert
+              v-if="showLTP12BannerForNonCSF()"
+              class="mt-4"
+              density="compact"
+              type="warning"
+              variant="tonal"
+            >
+              <span>LTP12 is a Programme Francophone assessment. Please use LTF12 if student is in French Immersion program.</span>
+            </v-alert>
+          </v-col>
+        </v-row>
         <v-row class="mt-n2">
           <v-col :cols="hasError ? 6 : 12">
             <v-form
@@ -273,6 +286,7 @@ export default {
       selectedAssessmentStudentID: null,
       studentRegistrationDetailsFormValid: false,
       assessmentStudentDetail: {},
+      school: null,
       loadingCount: 0,
       isActive: false,
       isSessionEditable: false,
@@ -318,27 +332,25 @@ export default {
       await appStore().getInstitutesData();
     }    
   },
-  created() {
-    authStore()
-      .getUserInfo()
-      .then(() => {
-        appStore()
-          .getInstitutesData()
-          .then(() => {            
-            this.loading = false;
-          });
-        easStore()
-          .getSpecialCaseCodes()
-          .then(() => {            
-            this.setupSpecialCaseCodes();     
-            this.loading = false;
-          });
+  async created() {
+    await authStore().getUserInfo().then(() => {
+      easStore().getSpecialCaseCodes().then(() => {            
+        this.setupSpecialCaseCodes();     
+        this.loading = false;
       });
+    });
     this.setupProficiencyScore();
   },
   methods: {
     isLoading(){
       return this.loadingCount > 0;
+    },
+    showLTP12BannerForNonCSF() {
+      const filteredAssessmentTypes = this.assessmentTypeSearchNames.filter((at) => at.assessmentID === this.assessmentStudentDetail.assessmentID);
+      return !this.isSchoolCSF() && filteredAssessmentTypes.length > 0 && filteredAssessmentTypes[0].assessmentCodeName === 'LTP12';
+    },
+    isSchoolCSF(){
+      return this.school?.schoolReportingRequirementCode === 'CSF';
     },
     setupSchoolList() {
       this.schoolSearchNames = [];
@@ -397,6 +409,7 @@ export default {
         this.assessmentTypeSearchNames.push({
           assessmentCodeName: assessment.assessmentTypeName,
           assessmentCodeValue: assessment.assessmentTypeName,
+          assessmentID: assessment.assessmentID,
           displayOrder: assessment.displayOrder
         });
       });            
@@ -421,13 +434,14 @@ export default {
     },        
     getAssessmentStudentDetail(assessmentStudentID) {
       this.loadingCount += 1;
-      this.selectedAssessmentStudentID=assessmentStudentID;
+      this.selectedAssessmentStudentID = assessmentStudentID;
       ApiService.apiAxios.get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/${assessmentStudentID}`)
         .then(response => {
           this.assessmentStudentDetail = response.data;
           this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);          
           this.setupActiveFlag();
           this.setupSchoolList();
+          this.school = this.activeSchoolsMap.get(this.assessmentStudentDetail?.schoolOfRecordSchoolID);
         }).catch(error => {
           console.error(error);
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student registration details. Please try again later.');
