@@ -229,7 +229,7 @@
             id="newMessagePostBtn"
             text="Send"
             width="7rem"
-            :disabled="!isValidForm || fileSizeAlert"
+            :disabled="!isValidForm || fileSizeAlert || expandAddStudent || expandAttachFile"
             :loading="processing"
             :click-action="sendNewMessage"
           />
