@@ -202,7 +202,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Session Results by Assessment.pdf"
-                :download-action="() => downloadAssessmentResults()"
+                :download-action="() => downloadSessionResultsByAssessmentPDF()"
               />
             </v-col>
           </v-row>
@@ -416,6 +416,21 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_IN_SESSION/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
+
+    },
+    async downloadSessionResultsByAssessmentPDF() {
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_BY_ASSESSMENT/download`;
         window.open(url);
       } catch (error) {
         console.error(error);

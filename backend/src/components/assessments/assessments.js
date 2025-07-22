@@ -303,6 +303,7 @@ function getFileDetails(reportType, mincode) {
   const mappings = {
     'SESSION_RESULTS': { filename: `SessionResults_${mincode}.csv`, contentType: 'text/csv' },
     'SCHOOL_STUDENTS_IN_SESSION': { filename: `SchoolStudentsInSession_${mincode}.pdf`, contentType: 'application/pdf' },
+    'SCHOOL_STUDENTS_BY_ASSESSMENT': { filename: `SchoolStudentsByAssessment_${mincode}.pdf`, contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];
