@@ -62,7 +62,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
       { title: 'AssessmentCode', key: 'assessmentTypeCode' },
-      { title: 'Score', key: 'score' },
+      { title: 'Score', key: 'proficiencyScore' },
       { title: 'ISR', key: 'isr' },
     ],
     allowedFilters: {
@@ -82,7 +82,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
       { title: 'AssessmentCode', key: 'assessmentTypeCode' },
-      { title: 'Score', key: 'score' },
+      { title: 'Score', key: 'proficiencyScore' },
       { title: 'ISR', key: 'isr' },
     ],
     allowedFilters: {
