@@ -199,6 +199,8 @@ function includeAssessmentStudentProps(assessmentStudent) {
     assessmentStudent.assessmentTypeName_desc = assessmentStudent.assessmentTypeCode;
     assessmentStudent.provincialSpecialCaseName_desc = assessmentStudent.provincialSpecialCaseCode ? cacheService.getSpecialCaseTypeLabelByCode(assessmentStudent.provincialSpecialCaseCode) : null;
     assessmentStudent.sessionName_desc = moment(assessmentStudent.courseMonth, 'MM').format('MMMM') + ' ' + assessmentStudent.courseYear;
+
+    assessmentStudent.result = assessmentStudent.proficiencyScore ? assessmentStudent.proficiencyScore : assessmentStudent.provincialSpecialCaseCode ? assessmentStudent.provincialSpecialCaseName_desc : null;
   }
   return assessmentStudent;
 }

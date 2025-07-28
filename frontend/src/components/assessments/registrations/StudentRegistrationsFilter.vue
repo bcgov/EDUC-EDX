@@ -325,8 +325,7 @@ export default {
           });
         easStore()
           .getSpecialCaseCodes()
-          .then(() => {            
-            this.setupSpecialCaseCodes();     
+          .then(() => {
             this.loading = false;
           });
       });
@@ -359,14 +358,6 @@ export default {
       });
       this.sessionSearchNames = sortBy(this.sessionSearchNames, ['courseYear','courseMonth']); 
       this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']); 
-    },
-    setupSpecialCaseCodes() {
-      this.specialCaseSearchNames = [];
-      Object.keys(this.specialCaseCodes).forEach(key => {
-        this.specialCaseSearchNames.push({title: this.specialCaseCodes[key], id: key, value: key});
-      });
-      this.specialCaseSearchNames.push({title: 'No Result', id: 'noResults', value: 'false'});
-      this.specialCaseSearchNames = sortBy(this.specialCaseSearchNames, ['id']); 
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
