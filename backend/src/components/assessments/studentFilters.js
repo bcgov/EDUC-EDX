@@ -60,20 +60,29 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       searchCriteriaList.push({ key: 'assessmentEntity.assessmentTypeCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
     
-    if (key === 'specialCaseCode' && pValue) {
-      searchCriteriaList.push({ key: 'provincialSpecialCaseCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    if (key === 'provincialSpecialCaseCode' && pValue) {
+      if(pValue.length === 1 && pValue[0] === 'N') {
+        searchCriteriaList.push({ key: 'provincialSpecialCaseCode', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });  
+      }else{
+        searchCriteriaList.push({ key: 'provincialSpecialCaseCode', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
     }
 
     if (key === 'proficiencyScore' && pValue) {
-      if(JSON.parse(pValue) === true) {
-        searchCriteriaList.push({ key: 'proficiencyScore', value: 0, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });        
+      if(pValue.length === 1 && pValue[0] === 'N') {
+        searchCriteriaList.push({ key: 'proficiencyScore', value: 0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });        
       } else {
         searchCriteriaList.push({ key: 'proficiencyScore', value:0, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });        
       }     
     }
 
     if (key === 'proficiencyScoreValue' && pValue) {
-      searchCriteriaList.push({ key: 'proficiencyScore', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+      if(pValue.length === 1 && pValue[0] === 'N') {
+        searchCriteriaList.push({ key: 'proficiencyScore', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else {
+        searchCriteriaList.push({ key: 'proficiencyScore', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+      }
+      
     }
 
   }
