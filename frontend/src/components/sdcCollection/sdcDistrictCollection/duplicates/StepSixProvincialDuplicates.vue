@@ -51,7 +51,7 @@
           :headers-config="PROVINCIAL_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"
-          @refresh-duplicates="getProvincialDuplicates()"
+          @refresh-duplicates="refreshDuplicatesAndPenReview()"
         />
       </v-window-item>
       <v-window-item
@@ -66,7 +66,7 @@
           duplicate-level="PROVINCIAL"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :can-resolve-duplicates="districtCollectionObject.sdcDistrictCollectionStatusCode === 'P_DUP_POST' && hasEditPermission"
-          @refresh-duplicates="getProvincialDuplicates()"
+          @refresh-duplicates="refreshDuplicatesAndPenReview()"
         />
       </v-window-item>
       <v-window-item
@@ -240,6 +240,10 @@ export default defineComponent({
         this.apiError = true;
         console.error(error);
       });
+    },
+    refreshDuplicatesAndPenReview() {
+      this.getProvincialDuplicates();
+      this.loadStudentsInPenReview();
     },
     markStepAsComplete(){
       let updateCollection = {

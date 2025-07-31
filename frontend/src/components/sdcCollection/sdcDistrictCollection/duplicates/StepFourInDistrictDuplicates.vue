@@ -49,7 +49,7 @@
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableDuplicates"
           :can-resolve-duplicates="hasEditPermission"
-          @refresh-duplicates="getInDistrictDuplicates()"
+          @refresh-duplicates="refreshDuplicatesAndPenReview()"
         />
       </v-window-item>
       <v-window-item
@@ -64,7 +64,7 @@
           :headers-config="IN_DISTRICT_DUPLICATES"
           :non-allowable-duplicates="nonAllowableProgramDuplicates"
           :can-resolve-duplicates="hasEditPermission"
-          @refresh-duplicates="getInDistrictDuplicates()"
+          @refresh-duplicates="refreshDuplicatesAndPenReview()"
         />
       </v-window-item>
     </v-window>
@@ -221,6 +221,10 @@ export default defineComponent({
         this.apiError = true;
         console.error(error);
       });
+    },
+    refreshDuplicatesAndPenReview() {
+      this.getInDistrictDuplicates();
+      this.loadStudentsInPenReview();
     },
     markStepAsComplete(){
       let updateCollection = {
