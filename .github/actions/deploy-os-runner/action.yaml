@@ -62,9 +62,9 @@ runs:
         echo ::set-output name=runner_name::"$RUNNER_ID"
         DEPLOYMENT_CONFIG_FILE=os-deployment.yaml
         # get config
-        wget https://raw.githubusercontent.com/bcgov/EDUC-EDX/master/tools/openshift/test-runner.dc.yaml
+        wget https://raw.githubusercontent.com/bcgov/EDUC-EDX/master/tools/openshift/test-runner.deployment.yaml
         # replace vars
-        envsubst < test-runner.dc.yaml > $DEPLOYMENT_CONFIG_FILE
+        envsubst < test-runner.deployment.yaml > $DEPLOYMENT_CONFIG_FILE
         # Login to OpenShift and select project
         oc login --token=${{ inputs.openshift-token }} --server=${{ inputs.openshift-server }}
         oc project ${{ inputs.runner-deployment-namespace }}

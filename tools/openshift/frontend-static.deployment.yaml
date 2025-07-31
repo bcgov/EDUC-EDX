@@ -1,105 +1,90 @@
 ---
-  apiVersion: template.openshift.io/v1
-  kind: Template
-  labels:
-    template: "${REPO_NAME}-template"
-  metadata:
-    name: "${REPO_NAME}-frontend-dc"
-    creationTimestamp:
-  objects:
-  - apiVersion: v1
-    kind: DeploymentConfig
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: "${REPO_NAME}-template"
+metadata:
+  name: "${REPO_NAME}-frontend-deployment"
+objects:
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
-      annotations:
-        openshift.io/generated-by: OpenShiftNewApp
-      creationTimestamp:
       labels:
         app: "${APP_NAME}-${BRANCH}"
       name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       replicas: ${{MIN_REPLICAS}}
       selector:
-        app: "${APP_NAME}-${BRANCH}"
-        deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
+        matchLabels:
+          app: "${APP_NAME}-${BRANCH}"
       strategy:
-        resources: {}
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
-          annotations:
-            openshift.io/generated-by: OpenShiftNewApp
-          creationTimestamp:
           labels:
             app: "${APP_NAME}-${BRANCH}"
-            deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
         spec:
           containers:
-          - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
-            imagePullPolicy: Always
-            volumeMounts:
-            - name: tls-certs
-              mountPath: "/etc/tls-certs"
-              readOnly: true
-            - name: config-env
-              mountPath: "/srv/js/config"
-            livenessProbe:
-              failureThreshold: 3
-              httpGet:
-                path: "/"
-                port: 2015
-                scheme: HTTP
-              periodSeconds: 10
-              successThreshold: 1
-              timeoutSeconds: 1
-            name: "${APP_NAME}-frontend-${BRANCH}"
-            ports:
-            - containerPort: 2015
-              protocol: TCP
-            readinessProbe:
-              failureThreshold: 3
-              httpGet:
-                path: "/"
-                port: 2015
-                scheme: HTTP
-              periodSeconds: 10
-              successThreshold: 1
-              timeoutSeconds: 1
-            resources:
-              requests:
-                cpu: "${MIN_CPU}"
-                memory: "${MIN_MEM}"
-              limits:
-                cpu: "${MAX_CPU}"
-                memory: "${MAX_MEM}"
+            - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
+              imagePullPolicy: Always
+              volumeMounts:
+                - name: tls-certs
+                  mountPath: "/etc/tls-certs"
+                  readOnly: true
+                - name: config-env
+                  mountPath: "/srv/js/config"
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: "/"
+                  port: 2015
+                  scheme: HTTP
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              name: "${APP_NAME}-frontend-${BRANCH}"
+              ports:
+                - containerPort: 2015
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: "/"
+                  port: 2015
+                  scheme: HTTP
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              resources:
+                requests:
+                  cpu: "${MIN_CPU}"
+                  memory: "${MIN_MEM}"
+                limits:
+                  cpu: "${MAX_CPU}"
+                  memory: "${MAX_MEM}"
           volumes:
-          - name: tls-certs
-            secret:
-              secretName: edx-frontend-cert
-          - name: config-env
-            configMap:
-              name: edx-frontend-config-map
-      test: false
-      triggers:
-      - type: ConfigChange
+            - name: tls-certs
+              secret:
+                secretName: "edx-frontend-cert"
+            - name: config-env
+              configMap:
+                name: "edx-frontend-config-map"
   - apiVersion: v1
     kind: Service
     metadata:
       annotations:
         service.alpha.openshift.io/serving-cert-secret-name: "edx-frontend-cert"
-        openshift.io/generated-by: OpenShiftNewApp
-      creationTimestamp:
       labels:
         app: "${APP_NAME}-${BRANCH}"
       name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       ports:
-      - name: 2015-tcp
-        port: 2015
-        protocol: TCP
-        targetPort: 2015
+        - name: 2015-tcp
+          port: 2015
+          protocol: TCP
+          targetPort: 2015
       selector:
         app: "${APP_NAME}-${BRANCH}"
-        deploymentconfig: "${APP_NAME}-frontend-${BRANCH}"
   - apiVersion: v1
     kind: Route
     metadata:
@@ -152,10 +137,9 @@
       name: "${APP_NAME}-frontend-${BRANCH}-cpu-autoscaler"
     spec:
       scaleTargetRef:
-        apiVersion: apps.openshift.io/v1
-        kind: DeploymentConfig
+        apiVersion: apps/v1
+        kind: Deployment
         name: "${APP_NAME}-frontend-${BRANCH}"
-        subresource: scale
       minReplicas: ${{MIN_REPLICAS}}
       maxReplicas: ${{MAX_REPLICAS}}
       metrics:
@@ -165,7 +149,7 @@
             target:
               type: Utilization
               averageUtilization: 90
-  parameters:
+parameters:
   - name: REPO_NAME
     description: Application repository name
     required: true
