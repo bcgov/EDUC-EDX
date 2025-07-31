@@ -10,19 +10,19 @@ objects:
     kind: Deployment
     metadata:
       labels:
-        app: "${APP_NAME}-backend-${BRANCH}"
+        app: "${APP_NAME}-${BRANCH}"
       name: "${APP_NAME}-backend-${BRANCH}"
     spec:
       replicas: ${{MIN_REPLICAS}}
       selector:
         matchLabels:
-          app: "${APP_NAME}-backend-${BRANCH}"
+          app: "${APP_NAME}-${BRANCH}"
       strategy:
         type: RollingUpdate
       template:
         metadata:
           labels:
-            app: "${APP_NAME}-backend-${BRANCH}"
+            app: "${APP_NAME}-${BRANCH}"
         spec:
           containers:
             - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-backend-${BRANCH}:${TAG}
