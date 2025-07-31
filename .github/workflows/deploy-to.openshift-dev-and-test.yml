@@ -248,7 +248,7 @@ jobs:
           echo "--- Backend Logs ---"
           oc logs deployment/${{ env.IMAGE_NAME }} --tail=100
           echo "--- Frontend Logs ---"
-          oc logs deployment//${{ env.APP_NAME }}-frontend-${{ env.BRANCH }} --tail=100
+          oc logs deployment/${{ env.APP_NAME }}-frontend-${{ env.BRANCH }} --tail=100
 
 #
 #      - name: ZAP Scan
@@ -369,7 +369,7 @@ jobs:
           echo "--- Backend Logs ---"
           oc logs deployment/${{ env.IMAGE_NAME }} --tail=100
           echo "--- Frontend Logs ---"
-          oc logs deployment//${{ env.APP_NAME }}-frontend-${{ env.BRANCH }} --tail=100
+          oc logs deployment/${{ env.APP_NAME }}-frontend-${{ env.BRANCH }} --tail=100
 
 #      - name: ZAP Scan
 #        uses: zaproxy/action-full-scan@v0.7.0
