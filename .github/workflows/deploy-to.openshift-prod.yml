@@ -159,6 +159,7 @@ jobs:
           -p MAX_CPU=${{ env.MAX_CPU }} \
           -p MIN_MEM=${{ env.MIN_MEM }} \
           -p MAX_MEM=${{ env.MAX_MEM }} \
+          -p HOST_ROUTE=${{ env.HOST_ROUTE }} \
         | oc apply -f -
         
         # Update configmaps and set env

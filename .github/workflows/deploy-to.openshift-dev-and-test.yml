@@ -214,6 +214,7 @@ jobs:
             -p MAX_CPU=${{ env.MAX_CPU }} \
             -p MIN_MEM=${{ env.MIN_MEM }} \
             -p MAX_MEM=${{ env.MAX_MEM }} \
+            -p HOST_ROUTE=${{ env.HOST_ROUTE }} \
           | oc apply -f -
           
           oc tag ${{ steps.push-image-frontend.outputs.registry-path }} ${{ env.REPO_NAME }}-frontend-static:${{ env.TAG }}
@@ -318,6 +319,22 @@ jobs:
           # Cancel any rollouts in progress
           oc rollout cancel deployment/${{ env.IMAGE_NAME }} 2> /dev/null || true && echo "No rollout in progress"
           
+          oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ env.TAG }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ env.TAG }}
+          oc process -f tools/openshift/backend.deployment.yaml \
+            -p APP_NAME=${{ env.APP_NAME }} \
+            -p REPO_NAME=${{ env.REPO_NAME }} \
+            -p BRANCH=${{ env.BRANCH }} \
+            -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE_TEST }} \
+            -p TAG=${{ env.TAG }} \
+            -p MIN_REPLICAS=${{ env.MIN_REPLICAS_TEST }} \
+            -p MAX_REPLICAS=${{ env.MAX_REPLICAS_TEST }} \
+            -p MIN_CPU=${{ env.MIN_CPU }} \
+            -p MAX_CPU=${{ env.MAX_CPU }} \
+            -p MIN_MEM=${{ env.MIN_MEM }} \
+            -p MAX_MEM=${{ env.MAX_MEM }} \
+            -p HOST_ROUTE=${{ env.HOST_ROUTE }} \
+          | oc apply -f -
+          
           oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-frontend-static:${{ env.TAG }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-frontend-static:${{ env.TAG }}
           oc process -f tools/openshift/frontend-static.deployment.yaml \
             -p APP_NAME=${{ env.APP_NAME }} \
@@ -335,21 +352,6 @@ jobs:
             -p CA_CERT="${{ env.CA_CERT }}" \
             -p CERTIFICATE="${{ env.CERTIFICATE }}" \
             -p PRIVATE_KEY="${{ env.PRIVATE_KEY }}" \
-          | oc apply -f -
-          
-          oc tag ${{ env.NAMESPACE }}-dev/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ env.TAG }} ${{ env.NAMESPACE }}-test/${{ env.REPO_NAME }}-backend-${{ env.BRANCH }}:${{ env.TAG }}
-          oc process -f tools/openshift/backend.deployment.yaml \
-            -p APP_NAME=${{ env.APP_NAME }} \
-            -p REPO_NAME=${{ env.REPO_NAME }} \
-            -p BRANCH=${{ env.BRANCH }} \
-            -p NAMESPACE=${{ env.OPENSHIFT_NAMESPACE_TEST }} \
-            -p TAG=${{ env.TAG }} \
-            -p MIN_REPLICAS=${{ env.MIN_REPLICAS_TEST }} \
-            -p MAX_REPLICAS=${{ env.MAX_REPLICAS_TEST }} \
-            -p MIN_CPU=${{ env.MIN_CPU }} \
-            -p MAX_CPU=${{ env.MAX_CPU }} \
-            -p MIN_MEM=${{ env.MIN_MEM }} \
-            -p MAX_MEM=${{ env.MAX_MEM }} \
           | oc apply -f -
           
           curl -s https://raw.githubusercontent.com/bcgov/${{ env.REPO_NAME }}/master/tools/config/update-configmap.sh | bash /dev/stdin test ${{ env.APP_NAME }} ${{ env.NAMESPACE }} ${{ env.COMMON_NAMESPACE }} ${{ env.PEN_NAMESPACE_TEST }} ${{ env.GRAD_DATA_COLLECTION_NAMESPACE_TEST}} ${{ env.ASSESSMENT_NAMESPACE_TEST}} ${{ env.SPLUNK_TOKEN }} ${{ env.GRAD_REPORTS_NAMESPACE_TEST }}
