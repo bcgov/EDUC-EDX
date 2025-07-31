@@ -163,7 +163,9 @@ export default {
       hasAnyItems: false,
       bannerEnvironment: null,
       bannerColor: null,
-      disableSdcFunctionality: null
+      disableSdcFunctionality: null,
+      disableGdcFunctionality: null,
+      disableAssessmentFunctionality: null,
     };
   },
   computed: {
@@ -194,12 +196,28 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    disableGdcFunctionality: {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
+    },
+    disableAssessmentFunctionality: {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
     }
   },
   async created(){
     this.bannerEnvironment = this.config.BANNER_ENVIRONMENT;
     this.bannerColor = this.config.BANNER_COLOR;
     this.disableSdcFunctionality = this.config.DISABLE_SDC_FUNCTIONALITY;
+    this.disableGdcFunctionality = this.config.DISABLE_GRAD_FUNCTIONALITY;
+    this.disableAssessmentFunctionality = this.config.DISABLE_ASSESSMENT_FUNCTIONALITY;
   },
   methods: {
     refreshUserPermissions(){
@@ -232,12 +250,12 @@ export default {
         {
           title: PAGE_TITLES.GRADUATION,
           link: { name: 'graduationSchoolTabs', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableGdcFunctionality,
         },
         {
           title: PAGE_TITLES.ASSESSMENT,
           link: {name: 'school-assessment-session-detail'},
-          authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableAssessmentFunctionality,
         },
         {
           title: PAGE_TITLES.DISTRICT_DETAILS,
@@ -262,12 +280,12 @@ export default {
         {
           title: PAGE_TITLES.GRADUATION,
           link: { name: 'graduationDistrictTabs', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) && this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
         },
         {
           title: PAGE_TITLES.ASSESSMENT,
           link: {name: 'district-assessment-session-detail'},
-          authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableAssessmentFunctionality,
         },
         {
           title: PAGE_TITLES.ADMINISTRATION,
@@ -293,7 +311,7 @@ export default {
         {
           title: PAGE_TITLES.CHALLENGE_REPORTS,
           link: { name: 'challengeReports', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-          authorized: this.hasRequiredPermission(PERMISSION.CHALLENGE_REPORTS)
+          authorized: this.hasRequiredPermission(PERMISSION.CHALLENGE_REPORTS) && !this.disableAssessmentFunctionality
         }
       ];
       this.hasAnyItems = this.items.filter(obj => obj.authorized).length > 0;
