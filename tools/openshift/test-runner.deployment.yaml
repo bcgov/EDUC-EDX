@@ -1,57 +1,89 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: template.openshift.io/v1
+kind: Template
 metadata:
-  name: ${RUNNER_ID}
+  name: test-runner-deployment-template
   namespace: ${OPENSHIFT_NAMESPACE}
-  labels:
-    app: ${RUNNER_ID}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ${RUNNER_ID}
-  template:
-    metadata:
-      labels:
-        app: ${RUNNER_ID}
-    spec:
-      containers:
-        - name: ${RUNNER_ID}
-          image: >-
-            image-registry.apps.silver.devops.gov.bc.ca/${OPENSHIFT_NAMESPACE}/gh-runner-ubuntu-18:latest
-          resources:
-            requests:
-              cpu: 100m
-              memory: 1Gi
-            limits:
-              cpu: 500m
-              memory: 4Gi
-          envFrom:
-            - secretRef:
-                name: ${SECRET_REF}
-          env:
-            - name: REPO
-              value: ${GITHUB_REPO}
-            - name: ORGANIZATION
-              value: bcgov
-            - name: ACCESS_TOKEN
-              value: ${GITHUB_ACCESS_TOKEN}
-            - name: LABELS
-              value: ${LABELS}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ${RUNNER_ID}-service
-  namespace: ${OPENSHIFT_NAMESPACE}
-  labels:
-    app: ${RUNNER_ID}
-spec:
-  selector:
-    app: ${RUNNER_ID}
-  ports:
-    - port: 80
-      targetPort: 8080
-      protocol: TCP
-  type: ClusterIP
+parameters:
+  - name: LABELS
+    description: Any labels
+    required: false
+  - name: GITHUB_ACCESS_TOKEN
+    description: Access token to reach github repo
+    required: false
+  - name: GITHUB_REPO
+    description: The repo to run against
+    required: false
+  - name: SECRET_REF
+    description: Which OS secret to reference for this run
+    required: false
+  - name: RUNNER_ID
+    description: The runner id (usually randomized)
+    required: false
+  - name: OPENSHIFT_NAMESPACE
+    description: The namespace we are running in
+    required: false
+objects:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: ${RUNNER_ID}
+    namespace: ${OPENSHIFT_NAMESPACE}
+    labels:
+      app: test-runner
+      runner-id: ${RUNNER_ID}
+      component: github-runner
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: test-runner
+        runner-id: ${RUNNER_ID}
+    template:
+      metadata:
+        labels:
+          app: test-runner
+          runner-id: ${RUNNER_ID}
+          component: github-runner
+      spec:
+        containers:
+          - name: ${RUNNER_ID}
+            image: >-
+              image-registry.apps.silver.devops.gov.bc.ca/${OPENSHIFT_NAMESPACE}/gh-runner-ubuntu-18:latest
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                cpu: 500m
+                memory: 4Gi
+            envFrom:
+              - secretRef:
+                  name: ${SECRET_REF}
+            env:
+              - name: REPO
+                value: ${GITHUB_REPO}
+              - name: ORGANIZATION
+                value: bcgov
+              - name: ACCESS_TOKEN
+                value: ${GITHUB_ACCESS_TOKEN}
+              - name: LABELS
+                value: ${LABELS}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${RUNNER_ID}-service
+    namespace: ${OPENSHIFT_NAMESPACE}
+    labels:
+      app: test-runner
+      runner-id: ${RUNNER_ID}
+      component: github-runner
+  spec:
+    selector:
+      app: test-runner
+      runner-id: ${RUNNER_ID}
+    ports:
+      - port: 80
+        targetPort: 8080
+        protocol: TCP
+    type: ClusterIP
 
