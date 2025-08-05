@@ -337,6 +337,7 @@ export default {
     await appStore().getInstitutesData().finally(() => {
       if(!this.isDistrictUser) {
         this.school = this.activeSchoolsMap.get(this.userInfo.activeInstituteIdentifier);
+        this.newStudentDetail.schoolOfRecordSchoolID = this.userInfo.activeInstituteIdentifier;
       }
     });
     this.setupSchoolList();
