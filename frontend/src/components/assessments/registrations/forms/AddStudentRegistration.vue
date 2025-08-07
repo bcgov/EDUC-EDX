@@ -22,6 +22,18 @@
       </v-row>
     </v-card-title>
     <v-card-text class="mt-0 mb-6">
+      <v-row v-if="activeSession.assessmentRegistrationsExportDate !== null">
+        <v-col>
+          <v-alert
+            density="compact"
+            type="info"
+            variant="tonal"
+          >
+            <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessments System on 
+              {{activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessments System unless schools enter them directly.</span>
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-alert
         v-if="showLTP12BannerForNonCSF()"
         class="mt-4"
@@ -32,7 +44,7 @@
         <span>LTP12 is a Programme Francophone assessment. Please use LTF12 if student is in French Immersion program.</span>
       </v-alert>
     </v-card-text>
-    <v-card-text class="mt-0 mb-6">
+    <v-card-text class="mt-n5 mb-6">
       <v-row v-if="isLoading()">
         <v-col class="d-flex justify-center">
           <Spinner
@@ -274,7 +286,12 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
+    activeSession: {
+      type: Object,
+      required: true,
+      default: null
+    },
   },
   emits: ['form-validity','reload-student-registrations', 'close-new-student-registration'],
   data() {

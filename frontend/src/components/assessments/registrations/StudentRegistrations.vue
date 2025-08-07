@@ -3,6 +3,18 @@
     id="enrollmentTab"
     fluid
   >
+  <v-row v-if="activeSession.assessmentRegistrationsExportDate !== null">
+    <v-col>
+      <v-alert
+        density="compact"
+        type="info"
+        variant="tonal"
+      >
+        <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessments System on 
+          {{activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessments System unless schools enter them directly.</span>
+      </v-alert>
+    </v-col>
+  </v-row>
     <v-row>
       <v-col cols="12">
         <v-row justify="space-between">
@@ -71,6 +83,7 @@
               :reset="resetFlag"
               :can-load-next="canLoadNext"
               :can-load-previous="canLoadPrevious"
+              :active-session="activeSession"
               @reload-registrations="reload"
               @editSelectedRow="editRegistration"
               @loadNext="loadNext"
@@ -111,6 +124,7 @@
       <AddStudentRegistration
         :session-id="sessionID"
         :school-year-sessions="schoolYearSessions"
+        :active-session="activeSession"
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
         @close-new-student-registration="closeNewAndLoadStudentRegistrations"
         @update:sessionID="sessionID = $event"
@@ -126,6 +140,7 @@
       <StudentRegistrationDetail
         :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
         :school-year-sessions="schoolYearSessions"
+        :active-session="activeSession"
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
         @close-student-registration="closeEditAndLoadStudentRegistrations"
       />
@@ -198,7 +213,19 @@ export default {
       newStudentRegistrationSheet: false,
       reloadStudentRegistrationsFlag: false,
       editStudentRegistrationSheet: false,
+      activeSession: null
     };
+  },
+  watch: {
+    schoolYearSessions: {
+      handler(value) {
+        if(value.length > 0) {
+          let openSession = value.filter(sch => sch.isOpen);
+          this.activeSession = openSession[0];
+        }
+      },
+      immediate: true
+    }
   },
   computed: {
     ...mapState(authStore, ['userInfo']),

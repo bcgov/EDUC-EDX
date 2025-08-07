@@ -92,11 +92,33 @@ export const SPECIAL_CASE_FILTER = Object.freeze(
   }
 );
 
+export const REGISTRATIONS_TRANSFER_FILTER = Object.freeze(
+  {
+    heading: 'Registrations Transferred to e-Assessments System',
+    id: 'transfer',
+    multiple: false,
+    key: 'transfer',
+    filterOptions: [
+      {
+        title: 'Transferred',
+        id: 'transfered',
+        value: 'transfered'
+      },
+      {
+        title: 'Not Transferred',
+        id: 'notTransfered',
+        value: 'notTransfered'
+      },
+    ]
+  }
+);
+
 
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
     tableHeaders: [
       { title: 'select', key: 'select' },
+      { title: '', key: 'alert' },
       { title: 'School', key: 'schoolName_desc' },
       { title: 'Session', key: 'session'},
       { title: 'Assessment Code', key: 'assessmentTypeCode' },
@@ -113,6 +135,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
       proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER,
       provincialSpecialCaseCode: SPECIAL_CASE_FILTER,
+      transfer: REGISTRATIONS_TRANSFER_FILTER
     }
   });
 
@@ -120,6 +143,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
   {
     tableHeaders: [
       { title: 'select', key: 'select' },
+      { title: '', key: 'alert' },
       { title: 'Session', key: 'session'},
       { title: 'Assessment Code', key: 'assessmentTypeCode' },
       { title: 'PEN', key: 'pen' },
@@ -135,6 +159,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
       proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER,
       provincialSpecialCaseCode: SPECIAL_CASE_FILTER,
+      transfer: REGISTRATIONS_TRANSFER_FILTER
     }
   });
 
