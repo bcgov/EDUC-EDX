@@ -47,6 +47,7 @@
       <template #item="props">
         <tr
           class="hoverTable"
+          :style="{background: activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null ? 'lightgoldenrodyellow' : 'white'}"
           @click="rowClicked(props.item)"
         >
           <td
@@ -61,7 +62,20 @@
               hide-details="true"
               @click.stop
             />
-            <span v-if="column.key === 'session'">
+            <span v-if="column.key === 'alert'">
+              <span v-if="activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null">
+                  <v-tooltip text="Registration not transferred to e-Assessments System.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-alert-outline"
+                        v-bind="tooltipProps"
+                        color="warning"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+            </span>
+            <span v-else-if="column.key === 'session'">
               {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}
             </span>
             <span v-else-if="column.key === 'name'">
@@ -149,6 +163,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    activeSession: {
+      type: Object,
+      required: true,
+      default: null
     },
   },
   emits: [ 'reload-registrations', 'editSelectedRow', 'loadPrevious', 'loadNext', 'selected-rows-changed'],

@@ -22,6 +22,7 @@
         :selected-assessment-student-id="selectedStudentRegistrationId"
         :school-year-sessions="schoolYearSessions"
         :save-event="saveStudentRegistration"
+        :active-session="activeSession"
         @form-validity="isValid"
         @reset-student-registration-parent="reset()"
         @reset-student-registration-pagination="closeAndReload()"
@@ -48,7 +49,12 @@ export default {
       type: Object,
       required: true,
       default: null,
-    }
+    },
+    activeSession: {
+      type: Object,
+      required: true,
+      default: null
+    },
   },
   emits: ['close-student-registration', 'reload-student-registrations'],
   data() {

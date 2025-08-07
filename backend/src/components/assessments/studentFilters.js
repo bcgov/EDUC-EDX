@@ -17,6 +17,14 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     }  
     //Default Filter End
     
+    if (key === 'transfer' && pValue) {
+     if(pValue.toString() === 'transfered') {
+      searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+     } else if(pValue.toString() === 'notTransfered') {
+      searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+     }
+    }
+
     if (key === 'surName' && pValue) {
       searchCriteriaList.push({ key: 'surName', value: pValue.toString(), operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
