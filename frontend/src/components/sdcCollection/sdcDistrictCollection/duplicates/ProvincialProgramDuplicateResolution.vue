@@ -201,15 +201,13 @@ export default {
     updateStudentObject(valueToBeRemoved) {
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED') {
         this.currentUsersStudent.specialEducationCategoryCode = null;
-        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent?.enrolledProgramCodes?.join('');
+        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent?.enrolledProgramCodes || [];
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER') {
-        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
-        this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
+        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
         this.currentUsersStudent.careerProgramCode = null;
       } else {
-        let updateEnrolledPrograms = this.currentUsersStudent.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
-        this.currentUsersStudent.enrolledProgramCodes = updateEnrolledPrograms.join('');
-      } 
+        this.currentUsersStudent.enrolledProgramCodes = this.currentUsersStudent.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
+      }
     },
     getDuplicatePrograms() {
       let programs = [];
