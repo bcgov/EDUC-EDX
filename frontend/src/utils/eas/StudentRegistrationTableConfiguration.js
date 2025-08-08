@@ -125,16 +125,11 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
-      { title: 'Score', key: 'proficiencyScore' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
-      { title: 'ISR', key: 'isr' },
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-      proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER,
-      provincialSpecialCaseCode: SPECIAL_CASE_FILTER,
       transfer: REGISTRATIONS_TRANSFER_FILTER
     }
   });
@@ -149,16 +144,11 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' },
-      { title: 'Score', key: 'proficiencyScore' },
-      { title: 'Special Case', key: 'provincialSpecialCaseName_desc' },
-      { title: 'ISR', key: 'isr' },
+      { title: 'Assessment Center', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-      proficiencyScoreValue: PROFICIENCY_SCORE_RANGE_FILTER,
-      provincialSpecialCaseCode: SPECIAL_CASE_FILTER,
       transfer: REGISTRATIONS_TRANSFER_FILTER
     }
   });
