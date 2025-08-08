@@ -21,13 +21,13 @@
             :value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
-            Registrations and Results 
+            Registrations
           </v-tab>
           <v-tab 
             :value="2"
             prepend-icon="mdi-finance"
           >
-            Reports
+            Reports & Results
           </v-tab>
         </v-tabs>
         <v-window v-model="tab">
@@ -37,11 +37,22 @@
             reverse-transition="false"
           >
             <StudentRegistrations
-              v-if="schoolYearSessions.length > 0"
+              v-if="schoolYearSessions.length > 5"
               :school-year="schoolYear"
               :school-year-sessions="schoolYearSessions"
               :session-i-d="sessionID"
             />
+            <v-row v-else>
+              <v-col class="mt-5">
+                <v-alert
+                  density="compact"
+                  type="info"
+                  variant="tonal"
+                >
+                  <span>Assessment registrations are unavailable until new sessions open in the fall.</span>
+                </v-alert>
+              </v-col>
+            </v-row>
           </v-window-item>
           <v-window-item
             :value="2"
@@ -96,10 +107,14 @@ export default {
   },
   async created() {    
     this.loading = true;
-    easStore().getActiveSchoolYear(this.userInfo.activeInstituteType).then(() => this.getAllSessionsforYear());
+    easStore().getActiveSchoolYear(this.userInfo.activeInstituteType).then(() => {
+      if(this.schoolYear.length > 0) {
+        this.getAllSessionsforYear();
+      }
+    });
   },
   methods: {
-    async  getAllSessionsforYear() {
+    async getAllSessionsforYear() {
       this.loading = true;
       ApiService.apiAxios
         .get(
