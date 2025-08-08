@@ -224,18 +224,16 @@ export default {
     updateStudentObject(valueToBeRemoved, studentId) {
       let studentToBeUpdated = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID === studentId);
       let otherStudent = this.duplicateStudents.find(student => student.sdcSchoolCollectionStudentID !== studentId);
-      otherStudent.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes?.join('');
+      otherStudent.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes || [];
 
       if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'SPECIAL_ED'){
         studentToBeUpdated.specialEducationCategoryCode = null;
-        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes?.join('');
+        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated?.enrolledProgramCodes || [];
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'CAREER'){
         studentToBeUpdated.careerProgramCode = null;
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
+        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated.enrolledProgramCodes.filter(value => !enrolledProgram.CAREER_ENROLLED_PROGRAM_CODES.includes(value));
       } else {
-        let updateEnrolledPrograms = studentToBeUpdated.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
-        studentToBeUpdated.enrolledProgramCodes = updateEnrolledPrograms.join('');
+        studentToBeUpdated.enrolledProgramCodes = studentToBeUpdated.enrolledProgramCodes.filter(value => !value.includes(valueToBeRemoved));
       }
     },
     getDuplicatePrograms() {
@@ -257,7 +255,7 @@ export default {
         }
 
         for(let progs of mappedPrograms){
-          programs.push(progs)
+          programs.push(progs);
         }
       } else if(this.selectedProgramDuplicate?.programDuplicateTypeCode === 'LANGUAGE') {
         let mappedPrograms = this.mapEnrolledProgram(enrolledProgram.LANGUAGE_PROGRAM_CODES);
@@ -269,7 +267,6 @@ export default {
       return programs;
     },
     mapEnrolledProgram(enrolledProgramFilter) {
-      console.log(this.sdcStudentOneDetailCopy)
       return this.sdcStudentOneDetailCopy?.enrolledProgramCodes
         ?.filter(programCode => enrolledProgramFilter.includes(programCode) &&
             this.sdcStudentTwoDetailCopy?.enrolledProgramCodes.includes(programCode))
