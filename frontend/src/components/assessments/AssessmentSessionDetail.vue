@@ -37,7 +37,7 @@
             reverse-transition="false"
           >
             <StudentRegistrations
-              v-if="schoolYearSessions.length > 5"
+              v-if="schoolYearSessions.length > 0"
               :school-year="schoolYear"
               :school-year-sessions="schoolYearSessions"
               :session-i-d="sessionID"
