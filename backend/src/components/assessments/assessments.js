@@ -264,7 +264,8 @@ async function downloadAssessmentReport(req, res) {
     let url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/${reportType}/download`;
 
     const resData = await getData(token, url);
-    const fileDetails = getFileDetails(reportType, mincode);
+    let session = req.query.sessionCode;
+    const fileDetails = getFileDetails(reportType, mincode, session);
 
     setResponseHeaders(res, fileDetails);
     const buffer = Buffer.from(resData.documentData, 'base64');
@@ -301,11 +302,11 @@ async function getAssessmentStudent(assessmentStudentID, res, token, correlation
   return getData(token, `${config.get('assessments:assessmentStudentsURL')}/${assessmentStudentID}`, correlationID);
 }
 
-function getFileDetails(reportType, mincode) {
+function getFileDetails(reportType, mincode, session) {
   const mappings = {
-    'SESSION_RESULTS': { filename: `SessionResults_${mincode}.csv`, contentType: 'text/csv' },
-    'SCHOOL_STUDENTS_IN_SESSION': { filename: `SchoolStudentsInSession_${mincode}.pdf`, contentType: 'application/pdf' },
-    'SCHOOL_STUDENTS_BY_ASSESSMENT': { filename: `SchoolStudentsByAssessment_${mincode}.pdf`, contentType: 'application/pdf' },
+    'SESSION_RESULTS': { filename: `${mincode} - ${session} - Results.csv`, contentType: 'text/csv' },
+    'SCHOOL_STUDENTS_IN_SESSION': { filename: `${mincode} - ${session} - Results by Student.pdf`, contentType: 'application/pdf' },
+    'SCHOOL_STUDENTS_BY_ASSESSMENT': { filename: `${mincode} - ${session} - Results by Assessment.pdf`, contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];

@@ -283,11 +283,6 @@ export default {
       type: String,
       required: false,
       default: null
-    },
-    collectionObject: {
-      type: Object,
-      required: false,
-      default: null
     }
   },
   data() {
@@ -300,6 +295,7 @@ export default {
       penRules: [v => !!v || 'Required', v => (!v || isValidPEN(v) || 'Invalid PEN')],
       isSearchingStudent: false,
       sessionSearchNames: [],
+      sessions: [],
       schoolYearSessions: [],
       rules: Rules,
       schoolNameNumberFilter: null,
@@ -341,17 +337,18 @@ export default {
         });
     },
     setupSessions() {
-      let sessions = [];
+      this.sessions = [];
       let sessionYearMinusTwo = LocalDate.now().minusYears(2).year();
       this.schoolYearSessions?.forEach((session) => {
         if(parseInt(session.courseYear) >= sessionYearMinusTwo){
-          sessions.push({
+          this.sessions.push({
             sessionCodeName: session.courseYear + '/' + session.courseMonth,
+            sessionCode: session.courseYear + '' + session.courseMonth,
             sessionCodeValue: session.sessionID
           });
         }
       });
-      this.sessionSearchNames = sortBy(sessions, ['sessionCourseYear','sessionCourseMonth']);
+      this.sessionSearchNames = sortBy(this.sessions, ['sessionCourseYear','sessionCourseMonth']);
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
@@ -399,8 +396,9 @@ export default {
     },
     async downloadAssessmentResultCSV() {
       this.isLoading = true;
+      let sessionName = this.sessions.filter(session => session.sessionCodeValue === this.selectedSessionID).at(0).sessionCode;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SESSION_RESULTS/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SESSION_RESULTS/download?sessionCode=${sessionName}`;
         window.open(url);
       } catch (error) {
         console.error(error);
@@ -414,8 +412,9 @@ export default {
     },
     async downloadSessionResultsByStudentPDF() {
       this.isLoading = true;
+      let sessionName = this.sessions.filter(session => session.sessionCodeValue === this.selectedSessionID).at(0).sessionCode;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_IN_SESSION/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_IN_SESSION/download?sessionCode=${sessionName}`;
         window.open(url);
       } catch (error) {
         console.error(error);
@@ -429,8 +428,9 @@ export default {
     },
     async downloadSessionResultsByAssessmentPDF() {
       this.isLoading = true;
+      let sessionName = this.sessions.filter(session => session.sessionCodeValue === this.selectedSessionID).at(0).sessionCode;
       try {
-        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_BY_ASSESSMENT/download`;
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/SCHOOL_STUDENTS_BY_ASSESSMENT/download?sessionCode=${sessionName}`;
         window.open(url);
       } catch (error) {
         console.error(error);
