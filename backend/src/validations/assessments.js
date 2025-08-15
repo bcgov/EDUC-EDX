@@ -30,6 +30,9 @@ const putStudentAssessmentSchema = object({
     downloadDate: string().nullable().optional(),
     courseMonth: number().optional(),
     courseYear: number().optional(),
+    studentStatus: string().nullable().optional(),
+    gradeAtRegistration: string().nullable().optional(),
+    wroteFlag: string().nullable().optional(),
     assessmentStudentValidationIssues: array().of(object({
       assessmentStudentValidationIssueID:string().nullable().optional(),
       assessmentStudentID:string().nullable().optional(),
@@ -72,6 +75,9 @@ const postAssessmentStudentSchema = object({
     proficiencyScore: number().nullable().optional(),
     localCourseID: string().max(20).nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
+    studentStatus: string().nullable().optional(),
+    gradeAtRegistration: string().nullable().optional(),
+    wroteFlag: string().nullable().optional(),
     assessmentStudentValidationIssues: array().of(object({
       assessmentStudentID:string().nullable().optional(),
       validationIssueSeverityCode:string().nullable().optional(),
