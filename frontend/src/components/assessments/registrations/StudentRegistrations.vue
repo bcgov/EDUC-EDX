@@ -4,7 +4,7 @@
     fluid
   >
     <v-row v-if="activeSession.assessmentRegistrationsExportDate !== null">
-      <v-col>
+      <v-col class="pb-0">
         <v-alert
           density="compact"
           type="info"
@@ -13,6 +13,74 @@
           <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessments System on 
             {{ activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessments System unless schools enter them directly.</span>
         </v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-if="activeSession.assessmentRegistrationsExportDate !== null">
+      <v-col class="d-flex justify-end pt-0">
+        <v-dialog max-width="700">
+          <template #activator="{ props: activatorProps }">
+            <v-btn
+              v-bind="activatorProps"
+              text="More Info"
+              variant="text"
+              prepend-icon="mdi-dots-horizontal"
+            />
+          </template>
+          <template #default="{ isActive }">
+            <v-card>
+              <v-card-title class="sheetHeader pt-1 pb-1">
+                <v-row no-gutters>
+                  <v-col class="d-flex justify-start">
+                    Graduation Assessment Registration – Key Steps
+                  </v-col>
+                  <v-col class="d-flex justify-end">
+                    <v-btn
+                      id="cancel"
+                      color="white"
+                      text="Close"
+                      size="30"
+                      icon="mdi-close"
+                      variant="tonal"
+                      @click="isActive.value = false"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-title>
+              <v-divider />
+              <v-card-text>
+                <ol class="pa-5">
+                  <li>
+                    <strong>Scheduling Students for a Grad Assessment</strong>
+                    <ul class="pl-5">
+                      <li>Add students in your school information system (SIS).</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Submitting via EDX Grad Data Collection</strong>
+                    <ul class="pl-5">
+                      <li>Upload DEM, CRS, and XAM files. Include assessment registrations, with a valid session date, in the XAM file.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Managing Registrations in EDX*</strong>
+                    <ul class="pl-5">
+                      <li>Confirm, add, or delete student registrations for any future session in the current school year.</li>
+                      <li><strong>Transfer to EAS:</strong> Before each session, registrations are copied from EDX into the e-Assessment System (EAS). When this happens, a notice will appear in EDX.</li>
+                      <li>
+                        <strong>After EAS transfer:</strong> After the EDX registration transfer, administrators will be invited to log in to EAS. New or changed registrations should be updated in:
+                        <ul class="pl-5">
+                          <li>EAS to ensure students can write the assessment, and</li>
+                          <li>EDX to help keep graduation projection reports accurate, but this is not required.</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ol>
+                <p><strong>*Important:</strong> Keep your SIS in sync with any changes in EDX. Changes made only in EDX may be overwritten by your next Graduation Data Collection File upload.</p>
+              </v-card-text>
+            </v-card>
+          </template>
+        </v-dialog>
       </v-col>
     </v-row>
     <v-row>
