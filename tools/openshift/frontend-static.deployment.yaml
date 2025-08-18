@@ -10,19 +10,19 @@ objects:
     kind: Deployment
     metadata:
       labels:
-        app: "${APP_NAME}-${BRANCH}"
+        app: "${APP_NAME}-frontend-${BRANCH}"
       name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       replicas: ${{MIN_REPLICAS}}
       selector:
         matchLabels:
-          app: "${APP_NAME}-${BRANCH}"
+          app: "${APP_NAME}-frontend-${BRANCH}"
       strategy:
         type: RollingUpdate
       template:
         metadata:
           labels:
-            app: "${APP_NAME}-${BRANCH}"
+            app: "${APP_NAME}-frontend-${BRANCH}"
         spec:
           containers:
             - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${REPO_NAME}-frontend-static:${TAG}
@@ -75,7 +75,7 @@ objects:
       annotations:
         service.alpha.openshift.io/serving-cert-secret-name: "edx-frontend-cert"
       labels:
-        app: "${APP_NAME}-${BRANCH}"
+        app: "${APP_NAME}-frontend-${BRANCH}"
       name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       ports:
@@ -84,14 +84,14 @@ objects:
           protocol: TCP
           targetPort: 2015
       selector:
-        app: "${APP_NAME}-${BRANCH}"
+        app: "${APP_NAME}-frontend-${BRANCH}"
   - apiVersion: v1
     kind: Route
     metadata:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: "${APP_NAME}-${BRANCH}"
+        app: "${APP_NAME}-frontend-${BRANCH}"
       name: "${APP_NAME}-frontend-${BRANCH}"
     spec:
       host: "${HOST_ROUTE}"
@@ -114,7 +114,7 @@ objects:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: "${APP_NAME}-${BRANCH}"
+        app: "${APP_NAME}-frontend-${BRANCH}"
       name: "www.${APP_NAME}-frontend-${BRANCH}"
     spec:
       host: "www.${HOST_ROUTE}"
