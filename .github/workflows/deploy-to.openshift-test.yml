@@ -43,7 +43,7 @@ env:
   MIN_CPU: "300m"
   MAX_CPU: "600m"
   MIN_MEM: "250Mi"
-  MAX_MEM: "500Mi"
+  MAX_MEM: "600Mi"
   # SITE_URL should have no scheme or port. It will be prepended with https://
   HOST_ROUTE: ${{ secrets.SITE_URL }}
 
