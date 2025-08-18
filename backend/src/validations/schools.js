@@ -63,6 +63,7 @@ const putSchoolSchema = object({
     closedDate: date().nullable(),
     canIssueCertificates: boolean().nullable(),
     canIssueTranscripts: boolean().nullable(),
+    vendorSourceSystemCode: string().max(10),
     contacts: array().of(schoolContactSchema),
     addresses: array().of(schoolAddressSchema.shape({
       schoolAddressId: string().nullable(),
