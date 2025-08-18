@@ -16,7 +16,7 @@ const auth = {
   isTokenExpired(token) {
     const now = Date.now().valueOf() / 1000;
     const payload = jsonwebtoken.decode(token);
-
+    log.info('Checking for token expiry. Token expiring at '+payload['exp']);
     return (!!payload['exp'] && payload['exp'] < (now + 30)); // Add 30 seconds to make sure , edge case is avoided and token is refreshed.
   },
 

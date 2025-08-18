@@ -275,12 +275,14 @@ router.post('/refresh', [
     });
   }
   if (!req['user'] || !req['user'].refreshToken || !req?.user?.jwt) {
+    log.info('Unauthorized: Missing token properties, user, refreshToken, jwt.');
     res.status(401).json(UnauthorizedRsp);
   } else {
     if (auth.isTokenExpired(req.user.jwt)) {
       if (req?.user?.refreshToken && auth.isRenewable(req.user.refreshToken)) {
         return generateTokens(req, res);
       } else {
+        log.info('Unauthorized: Non-renewable Token.');
         res.status(401).json(UnauthorizedRsp);
       }
     } else {
@@ -309,6 +311,7 @@ router.get('/token', auth.refreshJWT, (req, res) => {
     };
     res.status(200).json(responseJson);
   } else {
+    log.info('Get token: Unauthorized access');
     res.status(401).json(UnauthorizedRsp);
   }
 });
@@ -323,6 +326,7 @@ async function generateTokens(req, res) {
     };
     res.status(200).json(responseJson);
   } else {
+    log.info('Unauthorized: Unable to renew token');
     res.status(401).json(UnauthorizedRsp);
   }
 }
@@ -332,6 +336,7 @@ router.get('/user-session-remaining-time', passport.authenticate('jwt', {session
     log.info(`session remaining time is :: ${remainingTime} for user`, req.session?.passport?.user?.displayName);
     return res.status(200).json(req.session.cookie.maxAge);
   } else {
+    log.info('Unauthorized: Missing user cookie');
     return res.sendStatus(401);
   }
 });
