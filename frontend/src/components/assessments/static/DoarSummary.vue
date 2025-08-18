@@ -1,7 +1,9 @@
 
 <template>
   <div class="assessment-report">
-    <h2 class="justify-center text-center">Distribution of Assessment Results (DOAR) Summary - Report Description</h2>
+    <h2 class="justify-center text-center">
+      Distribution of Assessment Results (DOAR) Summary - Report Description
+    </h2>
     <h1>Description</h1>
     <p>
       This report lists the distribution of graduation assessment results for an assessment session for BC and Yukon.
@@ -11,9 +13,9 @@
     <h1>Included</h1>
     <ul>
       <li>The selected assessment session</li>
-      <li>Provincial totals – all BC schools (both public and independent) and all Yukon public schools, except for Non-Independent First Nations schools.</li>
-      <li>All Public totals – all public BC and Yukon schools, except for Non-Independent First Nations schools.</li>
-      <li>District totals – public schools only. Within the District, except for Non-Independent First Nations schools.</li>
+      <li>Provincial totals - all BC schools (both public and independent) and all Yukon public schools, except for Non-Independent First Nations schools.</li>
+      <li>All Public totals - all public BC and Yukon schools, except for Non-Independent First Nations schools.</li>
+      <li>District totals - public schools only. Within the District, except for Non-Independent First Nations schools.</li>
     </ul>
 
     <h1>Excluded</h1>
@@ -23,7 +25,12 @@
     </ul>
 
     <h1>Definitions</h1>
-    <h1 style="font-size: 1.0em" class="mb-n1 mt-2">Proficiency Scores</h1>
+    <h1
+      style="font-size: 1.0em"
+      class="mb-n1 mt-2"
+    >
+      Proficiency Scores
+    </h1>
     <ul>
       <li><strong>"1" = Emerging</strong></li>
       <li><strong>"2" = Developing</strong></li>
@@ -34,21 +41,21 @@
 
     <h1>School Types</h1>
     <p>
-      <strong>Public School</strong> – A body of students, teachers, other staff, and facilities organized as a unit for educational purposes
+      <strong>Public School</strong> - A body of students, teachers, other staff, and facilities organized as a unit for educational purposes
       under the supervision of an administrative officer and administered by a district school board. This includes Online Learning Schools.
     </p>
     <p>
-      <strong>Independent School</strong> – A school that is maintained and operated in British Columbia by an authority that provides an
+      <strong>Independent School</strong> - A school that is maintained and operated in British Columbia by an authority that provides an
       educational program to 10 or more school-aged students as outlined in the Independent School Act.
     </p>
 
     <h1>Assessment Status</h1>
     <p>
-      <strong>Aegrotat Standing</strong> - means the student has been excused from writing a Provincial Graduation Assessment due to
+      <strong>Aegrotat Standing</strong> - the student has been excused from writing a Provincial Graduation Assessment due to
       unpredictable circumstances that render the student unable to write an assessment, even at a future session.
     </p>
     <p>
-      <strong>Disqualification</strong> – an assessment is disqualified when the assessment rules are breached. No mark is given for the assessment.
+      <strong>Disqualification</strong> - an assessment is disqualified when the assessment rules are breached. No mark is given for the assessment.
     </p>
 
     <h1>Notes</h1>
