@@ -249,7 +249,7 @@ export default {
         },
         {
           title: PAGE_TITLES.GRADUATION,
-          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) || this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT)) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableGdcFunctionality,
+          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'SCHOOL',
           items: [
             {
               title: PAGE_TITLES.GRAD_DATA_COLLECTION,
@@ -285,7 +285,7 @@ export default {
         },
         {
           title: PAGE_TITLES.GRADUATION,
-          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) || this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT)) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
+          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD)  && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'DISTRICT',
           items: [
             {
               title: PAGE_TITLES.GRAD_DATA_COLLECTION,
