@@ -16,8 +16,7 @@ let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'G
 let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_EDIT', 'CHALLENGE_REPORTS'];
 let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
 let assessmentStaffAdminSchoolPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW','EAS_SCH_EDIT'];
-let assessmentStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'EAS_DIS_EDIT'];
-
+let assessmentStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW','EAS_DIS_EDIT'];
 let schoolMap = new Map();
 let districtToSchoolsMap = new Map();
 let schools = [];

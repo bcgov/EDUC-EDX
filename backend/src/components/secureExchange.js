@@ -973,7 +973,7 @@ async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, scho
     log.info('Staff admin user logged in, redirecting to selected school');
     setGradStaffAdminSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
-  }else if(directToGrad && schoolID && isAssesmentAdmin){
+  }else if(directToGrad && schoolID && isAssessmentAdmin){
     log.info('Staff admin user logged in, redirecting to selected school');
     setAssessmentStaffAdminSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
