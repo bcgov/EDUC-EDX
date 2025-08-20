@@ -318,9 +318,7 @@ export default {
         appStore()
           .getInstitutesData()
           .then(() => {
-            if(this.userInfo.activeInstituteType === 'DISTRICT'){
-              this.setupSchoolLists();
-            }
+            this.setupSchoolLists();
             this.loading = false;
           });
         easStore()
@@ -363,11 +361,11 @@ export default {
       this.schoolSearchNames = [];
       this.assessmentCenterSearchNames = [];
       this.schoolsMap?.forEach((school) => {
-        let schoolCodeName = school.schoolName + ' - ' + school.mincode;
+        let schoolCodeName = `${school.schoolName} - ${school.mincode}`;
 
         this.assessmentCenterSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
 
-        if(school.districtID === this.userInfo.activeInstituteIdentifier) {
+        if ((this.userInfo.activeInstituteType === 'DISTRICT') && (school.districtID === this.userInfo.activeInstituteIdentifier)) {
           this.schoolSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
         }
       });
