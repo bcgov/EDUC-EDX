@@ -962,7 +962,7 @@ async function setInstituteTypeIdentifierAndRedirect(req, res) {
   }
 }
 
-async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, isGradAdmin) {
+async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, isGradAdmin,  isAssessmentAdmin) {
   log.info('Set InstituteTypeIdentifierAndRedirectToSchool And Redirect called');
 
   if(sdcSchoolCollectionID && schoolID){
@@ -973,7 +973,11 @@ async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, scho
     log.info('Staff admin user logged in, redirecting to selected school');
     setGradStaffAdminSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
-  }else if(directToGrad && schoolID && !isGradAdmin){
+  }else if(directToGrad && schoolID && isAssessmentAdmin){
+    log.info('Staff admin user logged in, redirecting to selected school');
+    setAssessmentStaffAdminSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
+    res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
+  } else if(directToGrad && schoolID && !isGradAdmin){
     log.info('Staff viewer user logged in, redirecting to selected school');
     setGradStaffViewerSessionInstituteIdentifiers(req, schoolID, 'SCHOOL');
     res.redirect(config.get('server:frontend') + '/graduation/' + schoolID);
@@ -983,7 +987,7 @@ async function setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, scho
   }
 }
 
-async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, isGradAdmin) {
+async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, isGradAdmin, isAssessmentAdmin) {
   log.info('Set InstituteTypeIdentifierAndRedirectToDistrict And Redirect called');
 
   if(sdcDistrictCollectionID && districtID){
@@ -994,7 +998,11 @@ async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, distric
     log.info('Staff admin user logged in, redirecting to selected district');
     setGradStaffAdminSessionInstituteIdentifiers(req, districtID, 'DISTRICT');
     res.redirect(config.get('server:frontend') + '/graduation/' + districtID);
-  }else if(directToGrad && districtID && !isGradAdmin){
+  }else if(directToGrad && districtID && isAssessmentAdmin){
+    log.info('Staff admin user logged in, redirecting to selected district');
+    setAssessmentStaffAdminSessionInstituteIdentifiers(req, districtID, 'DISTRICT');
+    res.redirect(config.get('server:frontend') + '/graduation/' + districtID);
+  } else if(directToGrad && districtID && !isGradAdmin){
     log.info('Staff viewer user logged in, redirecting to selected district');
     setGradStaffViewerSessionInstituteIdentifiers(req, districtID, 'DISTRICT');
     res.redirect(config.get('server:frontend') + '/graduation/' + districtID);
@@ -1025,9 +1033,9 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
           res.redirect(config.get('server:frontend') + '/unauthorizedNoEDXUser');
           return;
         }
-        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false);
+        await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false, false);
       });
-  }else if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER'))) && directToGrad){
+  }else if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER')) || (roles.includes('ASSESSMENT_ADMIN'))) && directToGrad){
     Promise.all([
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID)
     ])
@@ -1039,9 +1047,13 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
         });
 
         if(roles.includes('GRAD_DATA_COLLECTION_ADMIN')){
-          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, true);
-        }else{
-          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false);
+          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, true, false);
+        }
+        else if (roles.includes('ASSESSMENT_ADMIN')){
+          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false, true);
+        }
+        else{
+          await setStaffInstituteTypeIdentifierAndRedirectToSchool(req, res, schoolID, sdcSchoolCollectionID, directToGrad, false, false);
         }
       });
   }else{
@@ -1081,7 +1093,7 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
 
  function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
-  if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER'))) && directToGrad){
+  if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER')) || (roles.includes('ASSESSMENT_ADMIN'))) && directToGrad){
     Promise.all([
       getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
     ])
@@ -1091,9 +1103,12 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
         });//this is list of active districtIDs associated to the user
 
         if(roles.includes('GRAD_DATA_COLLECTION_ADMIN')){
-          await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, true);
-        }else{
-          await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, false);
+          await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, true, false);
+        }else if (roles.includes('ASSESSMENT_ADMIN')) {
+          await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, true, true);
+        }
+        else{
+          await setInstituteTypeIdentifierAndRedirectToDistrict(req, res, districtID, sdcDistrictCollectionID, directToGrad, false, false);
         }
       });
   } else{
@@ -1168,6 +1183,22 @@ function setGradStaffAdminSessionInstituteIdentifiers(req, activeInstituteIdenti
       permissionsArray = cacheService.getGradStaffSchoolAdminPermissions();
     } else {
       permissionsArray = cacheService.getGradStaffDistrictAdminPermissions();
+    }
+  }
+
+  req.session.activeInstitutePermissions = permissionsArray;
+}
+
+function setAssessmentStaffAdminSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeInstituteType) {
+  req.session.activeInstituteIdentifier = activeInstituteIdentifier;
+  req.session.activeInstituteType = activeInstituteType;
+  let permissionsArray = [];
+
+  if(req.session.passport.user._json.idir_guid){
+    if(activeInstituteType === 'SCHOOL') {
+      permissionsArray = cacheService.getAssessmentStaffSchoolAdminPermissions();
+    } else {
+      permissionsArray = cacheService.getAssessmentStaffDistrictAdminPermissions();
     }
   }
 
