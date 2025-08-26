@@ -349,6 +349,18 @@ export default {
         }
       });
       this.sessionSearchNames = sortBy(this.sessions, ['sessionCourseYear','sessionCourseMonth']);
+
+      const approvedSessions = this.schoolYearSessions.filter(session =>
+        !session.isOpen && parseInt(session.courseYear) >= sessionYearMinusTwo
+      );
+
+      if (approvedSessions.length > 0) {
+        const mostRecentApprovedSession = approvedSessions.sort((a, b) =>
+          LocalDateTime.parse(b.activeUntilDate).compareTo(LocalDateTime.parse(a.activeUntilDate))
+        )[0];
+
+        this.selectedSessionID = mostRecentApprovedSession.sessionID;
+      }
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
