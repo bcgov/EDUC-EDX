@@ -450,7 +450,7 @@ export default {
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve the student\'s report.'
         );
       } finally {
         this.isLoading = false;
