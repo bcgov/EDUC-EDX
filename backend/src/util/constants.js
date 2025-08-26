@@ -197,6 +197,11 @@ const assessmentsReportTypeValues = [
 ];
 const ASSESSMENTS_REPORT_TYPE_CODE_MAP = Object.freeze(new Map(assessmentsReportTypeValues));
 
+const assessmentsStudentReportTypeValues = [
+  ['ISR', 'ISR']
+];
+const ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP = Object.freeze(new Map(assessmentsStudentReportTypeValues));
+
 const sdcReportTypeValues = [
   ['ell', 'ELL_HEADCOUNT'],
   ['ell_dis', 'DIS_ELL_HEADCOUNT'],
@@ -285,7 +290,8 @@ module.exports = {
   NOT_FOUND_PEN_MATCH_STATUSES,
   GDC_UPLOAD_TOPIC,
   GRAD_SCHOOL_CACHE_REFRESH_TOPIC,
-  ASSESSMENTS_REPORT_TYPE_CODE_MAP
+  ASSESSMENTS_REPORT_TYPE_CODE_MAP,
+  ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP
 };
 /**
  * Test comment

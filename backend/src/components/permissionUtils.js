@@ -6,6 +6,7 @@ const {getAccessToken, getData, SecureExchangeStatuses, getDataWithParams} = req
 const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config');
 const log = require('./logger');
+const {v4: validate } = require('uuid');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
 
 //Common checks
@@ -831,6 +832,24 @@ async function checkUserRoleForNewUser(req, res, next) {
   return next();
 }
 
+function isValidUUIDParam(paramName) {
+  return function(req, res, next) {
+    if (!req.params[paramName]) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'No request parameter was provided.'
+      });
+    }
+
+    if (!validate(req.params[paramName])) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Not a valid UUID provided for request parameter.'
+      });
+    }
+    return next();
+  };
+}
+
+
 async function checkValidRoles(req, incomingRoles, schoolID) {
   const token = getAccessToken(req);
   const params = {
@@ -844,6 +863,7 @@ async function checkValidRoles(req, incomingRoles, schoolID) {
 }
 
 const permUtils = {
+  isValidUUIDParam,
   checkIfRoleIsAllowedForSchool,
   checkUserRoleForNewUser,
   checkEDXUserAccessToRequestedInstitute,

@@ -15,7 +15,9 @@ const cacheService = require('../cache-service');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
-const {FILTER_OPERATION, VALUE_TYPE, CONDITION, ASSESSMENTS_REPORT_TYPE_CODE_MAP} = require('../../util/constants');
+const {FILTER_OPERATION, VALUE_TYPE, CONDITION, ASSESSMENTS_REPORT_TYPE_CODE_MAP,
+  ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP
+} = require('../../util/constants');
 const log = require('../logger');
 
 async function getAssessmentSessions(req, res) {
@@ -276,6 +278,31 @@ async function downloadAssessmentReport(req, res) {
   }
 }
 
+async function downloadAssessmentStudentReport(req, res) {
+  try {
+    const reportType = ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Invalid report type provided'
+      });
+    }
+
+    const token = getAccessToken(req);
+
+    let url = `${config.get('assessments:rootURL')}/report/student/${req.params.studentID}/${reportType}/download`;
+
+    const resData = await getData(token, url);
+    const fileDetails = getFileDetails(reportType, null, null);
+
+    setResponseHeaders(res, fileDetails);
+    const buffer = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(buffer);
+  } catch (e) {
+    log.error('downloadAssessmentReport Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function setResponseHeaders(res, { filename, contentType }) {
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
@@ -307,6 +334,7 @@ function getFileDetails(reportType, mincode, session) {
     'SESSION_RESULTS': { filename: `${mincode} - ${session} - Results.csv`, contentType: 'text/csv' },
     'SCHOOL_STUDENTS_IN_SESSION': { filename: `${mincode} - ${session} - Results by Student.pdf`, contentType: 'application/pdf' },
     'SCHOOL_STUDENTS_BY_ASSESSMENT': { filename: `${mincode} - ${session} - Results by Assessment.pdf`, contentType: 'application/pdf' },
+    'ISR': { filename: 'Individual Student Report.pdf', contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];
@@ -323,6 +351,7 @@ module.exports = {
   getAssessmentSpecialCases,
   postAssessmentStudent,
   downloadXamFile,
-  downloadAssessmentReport
+  downloadAssessmentReport,
+  downloadAssessmentStudentReport
 };
 
