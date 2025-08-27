@@ -136,7 +136,7 @@
           variant="underlined"
           :items="schoolSearchNames"
           color="#003366"
-          label="School Name or Number"
+          label="School Code & Name"
           single-line
           :clearable="true"
           item-title="schoolCodeName"
@@ -156,6 +156,7 @@
           item-value="sessionCodeValue"
           :rules="[rules.required()]"
           :clearable="true"
+           @update:model-value="getAssessmentsForSelectedSession(selectedSessionID)"
         />
       </v-col>
     </v-row>
@@ -237,21 +238,26 @@
               cols="12"
             >
               <DownloadLink
-                label="Summary DOAR.pdf"
-                :download-action="() => downloadDetailedDOARReport('graduating')"
+                label="DOAR Summary.pdf"
+                :download-action="() => downloadSummaryDOARReport()"
               />
             </v-col>
           </v-row>
-          <v-row class="pl-3 pb-3 mt-n6">
-            <v-col 
-              cols="12"
-            >
-              <DownloadLink
-                label="Detailed DOAR.csv"
-                :download-action="() => downloadDetailedDOARReport('graduating')"
-              />
-            </v-col>
-          </v-row>
+          <div 
+            v-for="(assessment, index) in selectedAssessments"
+            :key="index"
+          >
+            <v-row class="pl-3 pb-3">
+              <v-col 
+                cols="12"
+              >
+                <DownloadLink
+                  :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
+                  :download-action="() => downloadDetailedDOARReport(getReportName(assessment?.assessmentTypeCode))"
+                />
+              </v-col>
+            </v-row>
+          </div>
         </v-card>
       </v-row>
     </div>
@@ -301,6 +307,7 @@ export default {
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
       selectedSessionID: null,
+      selectedAssessments: []
     };
   },
   computed: {
@@ -322,6 +329,11 @@ export default {
     this.setupSchoolLists();
   },
   methods: {
+    getAssessmentsForSelectedSession(selectedSessionID) {
+      this.selectedAssessments.splice(0);
+      var sessionObj = this.schoolYearSessions.filter(session => session.sessionID === selectedSessionID);
+      sessionObj[0]?.assessments.forEach(assessment => this.selectedAssessments.push(assessment));
+    },
     async getAllSessions() {
       this.loading = true;
       ApiService.apiAxios
@@ -438,6 +450,20 @@ export default {
       }
 
     },
+    async downloadSummaryDOARReport() {
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/doar-summary/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
+    },
     async downloadSessionResultsByAssessmentPDF() {
       this.isLoading = true;
       let sessionName = this.sessions.filter(session => session.sessionCodeValue === this.selectedSessionID).at(0).sessionCode;
@@ -468,8 +494,37 @@ export default {
         this.isLoading = false;
       }
     },
-    async downloadDetailedDOARReport() {
-
+    async downloadDetailedDOARReport(reportType) {
+      this.isLoading = true;
+      try {
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/${reportType}/download`;
+        window.open(url);
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert(
+          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+        );
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    getReportName(assessmentTypeCode) {
+      switch(assessmentTypeCode) {
+        case 'LTE10':
+          return 'lte10-detailed-doar';
+        case 'LTE12':
+          return 'lte12-detailed-doar';
+        case 'LTF12':
+          return 'ltf12-detailed-doar';
+        case 'LTP10':
+          return 'ltp10-detailed-doar';
+        case 'LTP12':
+          return 'ltp12-detailed-doar';
+        case 'NME10':
+          return 'nme-detailed-doar';
+        case 'NMF10':
+          return 'nmf-detailed-doar';
+      }
     },
     async downloadXamFile() {
       this.isLoading = true;

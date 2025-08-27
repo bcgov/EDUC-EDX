@@ -335,6 +335,14 @@ function getFileDetails(reportType, mincode, session) {
     'SCHOOL_STUDENTS_IN_SESSION': { filename: `${mincode} - ${session} - Results by Student.pdf`, contentType: 'application/pdf' },
     'SCHOOL_STUDENTS_BY_ASSESSMENT': { filename: `${mincode} - ${session} - Results by Assessment.pdf`, contentType: 'application/pdf' },
     'ISR': { filename: 'Individual Student Report.pdf', contentType: 'application/pdf' },
+    'nme-detailed-doar': { filename: `${mincode}-NME10-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'nmf-detailed-doar': { filename: `${mincode}-NMF10-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'lte10-detailed-doar': { filename: `${mincode}-LTE10-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'lte12-detailed-doar': { filename: `${mincode}-LTE12-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'ltf12-detailed-doar': { filename: `${mincode}-LTF12-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'ltp10-detailed-doar': { filename: `${mincode}-LTP10-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'ltp12-detailed-doar': { filename: `${mincode}-LTP12-Detailed DOAR.csv`, contentType: 'text/csv' },
+    'doar-summary': { filename: `${mincode}-DOAR Summary.pdf`, contentType: 'application/pdf' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];

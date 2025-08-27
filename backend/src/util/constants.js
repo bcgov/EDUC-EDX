@@ -193,7 +193,16 @@ const GRAD_SCHOOL_CACHE_REFRESH_TOPIC = 'GRAD_SCHOOL_CACHE_REFRESH_TOPIC';
 const assessmentsReportTypeValues = [
   ['SESSION_RESULTS', 'SESSION_RESULTS'],
   ['SCHOOL_STUDENTS_IN_SESSION', 'SCHOOL_STUDENTS_IN_SESSION'],
-  ['SCHOOL_STUDENTS_BY_ASSESSMENT', 'SCHOOL_STUDENTS_BY_ASSESSMENT']
+  ['SCHOOL_STUDENTS_BY_ASSESSMENT', 'SCHOOL_STUDENTS_BY_ASSESSMENT'],
+  ['nme-detailed-doar', 'nme-detailed-doar'],
+  ['nmf-detailed-doar', 'nmf-detailed-doar'],
+  ['lte10-detailed-doar', 'lte10-detailed-doar'],
+  ['lte12-detailed-doar', 'lte12-detailed-doar'],
+  ['ltf12-detailed-doar', 'ltf12-detailed-doar'],
+  ['ltp10-detailed-doar', 'ltp10-detailed-doar'],
+  ['ltp12-detailed-doar', 'ltp12-detailed-doar'],
+  ['doar-summary', 'doar-summary'],
+
 ];
 const ASSESSMENTS_REPORT_TYPE_CODE_MAP = Object.freeze(new Map(assessmentsReportTypeValues));
 
