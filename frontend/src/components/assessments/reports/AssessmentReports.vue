@@ -243,7 +243,10 @@
               />
             </v-col>
           </v-row>
-          <div v-for="(assessment) in selectedAssessments">
+          <div 
+            v-for="(assessment, index) in selectedAssessments"
+            :key="index"
+          >
             <v-row class="pl-3 pb-3">
               <v-col 
                 cols="12"
