@@ -98,6 +98,7 @@
         :headers="headers"
         class="elevation-1 mt-2 challenge-report-table"
         :hide-default-footer="true"
+        items-per-page="100"
       >
         <template #item="{ item }">
           <tr :class="{ 'district-row-blue': item.depth === 0 }">
